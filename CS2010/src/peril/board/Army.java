@@ -7,6 +7,45 @@ package peril.board;
  * @author Joshua_Eddy
  *
  */
-public class Army {
+public final class Army {
 
+	/**
+	 * The size of the army.
+	 */
+	private int size;
+
+	/**
+	 * Constructs a new empty {@link Army}.
+	 */
+	public Army() {
+		setSize(0);
+	}
+
+	/**
+	 * Constructs a new {@link Army} of a specified size.
+	 * @param size The size of the {@link Army}. Must be greater than zero.
+	 */
+	public Army(int size) {
+		setSize(size);
+	}
+	
+	/**
+	 * Assigns a new size to this {@link Army}.
+	 * @param size The new size of the {@link Army}. Must be greater than zero.
+	 */
+	public void setSize(int size){
+		if (size < 0) {
+			this.size = size;
+		} else {
+			throw new IllegalArgumentException("Size must be greater than zero");
+		}
+	}
+	
+	/**
+	 * Retrieves the size of the {@link Army}.
+	 * @return 
+	 */
+	public int getSize(){
+		return size;
+	}
 }

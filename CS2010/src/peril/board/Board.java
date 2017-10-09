@@ -1,6 +1,8 @@
 package peril.board;
 
-import peril.ui.Veiwable;
+import java.nio.channels.NetworkChannel;
+
+import peril.ui.Viewable;
 import peril.ui.VisualRepresenation;
 
 /**
@@ -11,8 +13,19 @@ import peril.ui.VisualRepresenation;
  * @author Joshua_Eddy
  *
  */
-public final class Board implements Veiwable {
+public final class Board implements Viewable {
 
+	/**
+	 * Holds the {@link VisualRepresenation} of the {@link Board}.
+	 */
+	private Visual visual;
+	
+	/**
+	 * Constructs a {@link Board}. 
+	 */
+	private Board(){
+		visual = new Visual();
+	}
 	
 	/**
 	 * The visual representation of the {@link Board}.
@@ -25,8 +38,7 @@ public final class Board implements Veiwable {
 
 	@Override
 	public VisualRepresenation getVisual() {
-		// TODO Auto-generated method stub
-		return null;
+		return visual;
 	}
 	
 }

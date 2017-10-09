@@ -5,7 +5,7 @@ package peril.ui;
  * @author Joshua_Eddy
  *
  */
-public interface Veiwable {
+public interface Viewable {
 
 	/**
 	 * Retrieves the visual representation of any object that realises {@link Viewable}.

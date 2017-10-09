@@ -2,7 +2,7 @@ package peril.board;
 
 import java.util.Random;
 
-import peril.ui.Veiwable;
+import peril.ui.Viewable;
 import peril.ui.VisualRepresenation;
 
 /**
@@ -13,7 +13,7 @@ import peril.ui.VisualRepresenation;
  * @author Joshua_Eddy
  *
  */
-public enum EnvironmentalHazard implements Veiwable {
+public enum EnvironmentalHazard implements Viewable {
 
 	/**
 	 * A VOLCANIC_ERUPTION has a 10% chance of occurring and may kill up to 20%

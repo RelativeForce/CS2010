@@ -1,6 +1,6 @@
 package peril.board;
 
-import peril.ui.Veiwable;
+import peril.ui.Viewable;
 import peril.ui.VisualRepresenation;
 
 /**
@@ -17,7 +17,7 @@ import peril.ui.VisualRepresenation;
  * @author Joshua_Eddy
  *
  */
-public final class Continent implements Veiwable {
+public final class Continent implements Viewable {
 
 	/**
 	 * Holds the {@link Countries} that comprise this {@link Continent}.

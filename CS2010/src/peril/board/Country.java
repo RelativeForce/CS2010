@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import peril.Player;
-import peril.ui.Veiwable;
+import peril.ui.Viewable;
 import peril.ui.VisualRepresenation;
 
 /**
@@ -23,7 +23,7 @@ import peril.ui.VisualRepresenation;
  * @see Java.util.List
  *
  */
-public class Country implements Veiwable {
+public class Country implements Viewable {
 
 	/**
 	 * Holds the {@link Player} that rules this {@link Country}.

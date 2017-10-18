@@ -16,10 +16,10 @@ import peril.ui.VisualRepresenation;
 public enum EnvironmentalHazard implements Viewable {
 
 	/**
-	 * A VOLCANIC_ERUPTION has a 10% chance of occurring and may kill up to 20%
-	 * of the units in an {@link Army}.
+	 * A VOLCANIC_ERUPTION has a 10% chance of occurring and may kill up to 20% of
+	 * the units in an {@link Army}.
 	 */
-	VOLCANIC_ERUPTION(20, 0.1) {
+	VOLCANIC_ERUPTION(20, 0.1, "Volcanic Eruption") {
 
 		/**
 		 * Holds the visual representation of the {@link VOLCANIC_ERUPTION}.
@@ -30,8 +30,8 @@ public enum EnvironmentalHazard implements Viewable {
 		private final Visual visual = new Visual();
 
 		/**
-		 * Encapsulates the behaviours of displaying an
-		 * {@link VOLCANIC_ERUPTION} on the {@link UserInterface}.
+		 * Encapsulates the behaviours of displaying an {@link VOLCANIC_ERUPTION} on the
+		 * {@link UserInterface}.
 		 * 
 		 * @author Joshua_Eddy
 		 * @see VisualRepresenation
@@ -50,10 +50,10 @@ public enum EnvironmentalHazard implements Viewable {
 
 	},
 	/**
-	 * A TORNADO has a 12% chance of occurring and may kill up to 30% of the
-	 * units in an {@link Army}.
+	 * A TORNADO has a 12% chance of occurring and may kill up to 30% of the units
+	 * in an {@link Army}.
 	 */
-	TORNADO(30, 0.12) {
+	TORNADO(30, 0.12, "Tornado") {
 
 		/**
 		 * Holds the visual representation of the {@link TORNADO}.
@@ -84,10 +84,10 @@ public enum EnvironmentalHazard implements Viewable {
 
 	},
 	/**
-	 * A HURRICANE has a 20% chance of occurring and may kill up to 10% of the
-	 * units in an {@link Army}.
+	 * A HURRICANE has a 20% chance of occurring and may kill up to 10% of the units
+	 * in an {@link Army}.
 	 */
-	HURRICANE(10, 0.2) {
+	HURRICANE(10, 0.2, "Hurrincane") {
 
 		/**
 		 * Holds the visual representation of the {@link HURRICANE}.
@@ -117,10 +117,10 @@ public enum EnvironmentalHazard implements Viewable {
 		}
 	},
 	/**
-	 * A TSUNAMI has a 17% chance of occurring and may kill up to 40% of the
-	 * units in an {@link Army}.
+	 * A TSUNAMI has a 17% chance of occurring and may kill up to 40% of the units
+	 * in an {@link Army}.
 	 */
-	TSUNAMI(40, 0.17) {
+	TSUNAMI(40, 0.17, "Tsunami") {
 
 		/**
 		 * Holds the visual representation of the {@link TSUNAMI}.
@@ -158,16 +158,20 @@ public enum EnvironmentalHazard implements Viewable {
 	private final int SEED = 5;
 
 	/**
-	 * The {@link Random} used to provide chance to
-	 * {@link EnvironmentalHazard}s.
+	 * The {@link Random} used to provide chance to {@link EnvironmentalHazard}s.
 	 */
 	private final Random GENERATOR = new Random(SEED);
 
 	/**
-	 * Holds the maximum percentage of the army stationed an {@link Country}
-	 * that this {@link EnvironmentalHazard} will kill.
+	 * Holds the maximum percentage of the army stationed an {@link Country} that
+	 * this {@link EnvironmentalHazard} will kill.
 	 */
 	private final int maxCasualties;
+
+	/**
+	 * The <code>String</code> representation of the {@link EnvironmentalHazard}.
+	 */
+	private final String name;
 
 	/**
 	 * Holds the percentage chance that wit will occur in a given turn.
@@ -178,15 +182,27 @@ public enum EnvironmentalHazard implements Viewable {
 	 * Constructs an {@link EnvironmentalHazard}.
 	 * 
 	 * @param maxCasualties
-	 *            The maximum percentage of the army stationed an
-	 *            {@link Country} that this {@link EnvironmentalHazard} will
-	 *            kill.
+	 *            The maximum percentage of the army stationed an {@link Country}
+	 *            that this {@link EnvironmentalHazard} will kill.
 	 * @param chance
 	 *            Percentage chance that wit will occur in a given turn.
+	 * @param name
+	 *            The <code>String</code> representation of the
+	 *            {@link EnvironmentalHazard}.
 	 */
-	private EnvironmentalHazard(int maxCasualties, double chance) {
+	private EnvironmentalHazard(int maxCasualties, double chance, String name) {
 		this.maxCasualties = maxCasualties;
 		this.chance = chance;
+		this.name = name;
+	}
+
+	/**
+	 * Retrieves the <code>String</code> representation of the
+	 * {@link EnvironmentalHazard}.
+	 */
+	@Override
+	public String toString() {
+		return name;
 	}
 
 	/**
@@ -224,8 +240,8 @@ public enum EnvironmentalHazard implements Viewable {
 	public abstract VisualRepresenation getVisual();
 
 	/**
-	 * Encapsulates the behaviours of displaying an {@link EnvironmentalHazard}
-	 * on the {@link UserInterface}.
+	 * Encapsulates the behaviours of displaying an {@link EnvironmentalHazard} on
+	 * the {@link UserInterface}.
 	 * 
 	 * @author Joshua_Eddy
 	 * @see VisualRepresenation

@@ -7,7 +7,7 @@ import peril.ui.VisualRepresenation;
 
 /**
  * These may occur once a turn and will kill a random percentage of the army
- * stationed an {@link Country}. Each type of EnvironmentalHazard has a
+ * stationed an {@link Continent}. Each type of EnvironmentalHazard has a
  * percentage chance that wit will occur in a given turn.
  * 
  * @author Joshua_Eddy

@@ -1,4 +1,0 @@
-levelDetails,5000,1000
-fileLocation,earthRegions.png
-country,Great_Britian,blue,tornado
-country,USA,FF00FF,Hurricane

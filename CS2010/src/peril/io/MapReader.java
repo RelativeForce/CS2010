@@ -72,7 +72,7 @@ public class MapReader {
 	}
 
 	/**
-	 * Retrieves the {@link Board} specifed by a given map name.
+	 * Retrieves the {@link Board} specified by a given map name.
 	 * @param directoryPath
 	 * @param mapName
 	 */
@@ -80,6 +80,10 @@ public class MapReader {
 
 		MapReader reader = new MapReader(directoryPath, mapName);
 		reader.parseDetailsFile();
+		
+		Board newBoard = new Board();
+		
+		// TODO: Add the readers fields to the new Board.
 
 	}
 
@@ -93,9 +97,7 @@ public class MapReader {
 
 		// Iterate through all the lines in the details file.
 		for (String line : detailsFile) {
-
 			parseLine(line);
-
 		}
 	}
 

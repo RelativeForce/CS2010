@@ -1,7 +1,7 @@
 package peril;
 
 /**
- * A coordinated. Has an x and y value. Immutable pattern
+ * A coordinate that has an x and y value. Immutable pattern
  * 
  * @author Joshua_Eddy
  *

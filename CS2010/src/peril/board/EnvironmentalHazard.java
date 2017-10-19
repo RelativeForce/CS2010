@@ -3,7 +3,7 @@ package peril.board;
 import java.util.Random;
 
 import peril.ui.Viewable;
-import peril.ui.VisualRepresenation;
+import peril.ui.VisualRepresentation;
 
 /**
  * These may occur once a turn and will kill a random percentage of the army
@@ -24,7 +24,7 @@ public enum EnvironmentalHazard implements Viewable {
 		/**
 		 * Holds the visual representation of the {@link VOLCANIC_ERUPTION}.
 		 * 
-		 * @see VisualRepresenation
+		 * @see VisualRepresentation
 		 * @see EnvironmentalHazardVisualRepresenation
 		 */
 		private final Visual visual = new Visual();
@@ -34,7 +34,7 @@ public enum EnvironmentalHazard implements Viewable {
 		 * {@link UserInterface}.
 		 * 
 		 * @author Joshua_Eddy
-		 * @see VisualRepresenation
+		 * @see VisualRepresentation
 		 * @see EnvironmentalHazardVisualRepresenation
 		 *
 		 */
@@ -44,7 +44,7 @@ public enum EnvironmentalHazard implements Viewable {
 		}
 
 		@Override
-		public VisualRepresenation getVisual() {
+		public VisualRepresentation getVisual() {
 			return visual;
 		}
 
@@ -58,7 +58,7 @@ public enum EnvironmentalHazard implements Viewable {
 		/**
 		 * Holds the visual representation of the {@link TORNADO}.
 		 * 
-		 * @see VisualRepresenation
+		 * @see VisualRepresentation
 		 * @see EnvironmentalHazardVisualRepresenation
 		 */
 		private final Visual visual = new Visual();
@@ -68,7 +68,7 @@ public enum EnvironmentalHazard implements Viewable {
 		 * {@link UserInterface}.
 		 * 
 		 * @author Joshua_Eddy
-		 * @see VisualRepresenation
+		 * @see VisualRepresentation
 		 * @see EnvironmentalHazardVisualRepresenation
 		 *
 		 */
@@ -78,7 +78,7 @@ public enum EnvironmentalHazard implements Viewable {
 		}
 
 		@Override
-		public VisualRepresenation getVisual() {
+		public VisualRepresentation getVisual() {
 			return visual;
 		}
 
@@ -92,7 +92,7 @@ public enum EnvironmentalHazard implements Viewable {
 		/**
 		 * Holds the visual representation of the {@link HURRICANE}.
 		 * 
-		 * @see VisualRepresenation
+		 * @see VisualRepresentation
 		 * @see EnvironmentalHazardVisualRepresenation
 		 */
 		private final Visual visual = new Visual();
@@ -102,7 +102,7 @@ public enum EnvironmentalHazard implements Viewable {
 		 * {@link UserInterface}.
 		 * 
 		 * @author Joshua_Eddy
-		 * @see VisualRepresenation
+		 * @see VisualRepresentation
 		 * @see EnvironmentalHazardVisualRepresenation
 		 *
 		 */
@@ -112,7 +112,7 @@ public enum EnvironmentalHazard implements Viewable {
 		}
 
 		@Override
-		public VisualRepresenation getVisual() {
+		public VisualRepresentation getVisual() {
 			return visual;
 		}
 	},
@@ -125,7 +125,7 @@ public enum EnvironmentalHazard implements Viewable {
 		/**
 		 * Holds the visual representation of the {@link TSUNAMI}.
 		 * 
-		 * @see VisualRepresenation
+		 * @see VisualRepresentation
 		 * @see EnvironmentalHazardVisualRepresenation
 		 */
 		private final Visual visual = new Visual();
@@ -135,7 +135,7 @@ public enum EnvironmentalHazard implements Viewable {
 		 * {@link UserInterface}.
 		 * 
 		 * @author Joshua_Eddy
-		 * @see VisualRepresenation
+		 * @see VisualRepresentation
 		 * @see EnvironmentalHazardVisualRepresenation
 		 *
 		 */
@@ -145,7 +145,7 @@ public enum EnvironmentalHazard implements Viewable {
 		}
 
 		@Override
-		public VisualRepresenation getVisual() {
+		public VisualRepresentation getVisual() {
 			return visual;
 		}
 	};
@@ -237,16 +237,16 @@ public enum EnvironmentalHazard implements Viewable {
 	}
 
 	@Override
-	public abstract VisualRepresenation getVisual();
+	public abstract VisualRepresentation getVisual();
 
 	/**
 	 * Encapsulates the behaviours of displaying an {@link EnvironmentalHazard} on
 	 * the {@link UserInterface}.
 	 * 
 	 * @author Joshua_Eddy
-	 * @see VisualRepresenation
+	 * @see VisualRepresentation
 	 */
-	private abstract class EnvironmentalHazardVisualRepresenation extends VisualRepresenation {
+	private abstract class EnvironmentalHazardVisualRepresenation extends VisualRepresentation {
 
 		// TODO Create visual representation for EnvironmentalHazard
 	}

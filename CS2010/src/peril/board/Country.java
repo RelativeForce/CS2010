@@ -6,7 +6,7 @@ import java.util.List;
 
 import peril.Player;
 import peril.ui.Viewable;
-import peril.ui.VisualRepresenation;
+import peril.ui.VisualRepresentation;
 
 /**
  * Encapsulates the behaviour of a Country. Countries:
@@ -47,9 +47,9 @@ public class Country implements Viewable {
 	/**
 	 * Holds the visual representation of the {@link Country}.
 	 * 
-	 * @see VisualRepresenation
+	 * @see VisualRepresentation
 	 */
-	private VisualRepresenation visual;
+	private VisualRepresentation visual;
 
 	/**
 	 * Constructs a new {@link Continent}.
@@ -110,7 +110,7 @@ public class Country implements Viewable {
 	}
 
 	@Override
-	public VisualRepresenation getVisual() {
+	public VisualRepresentation getVisual() {
 		return visual;
 	}
 
@@ -119,9 +119,9 @@ public class Country implements Viewable {
 	 * 
 	 * @author Joshua_Eddy
 	 *
-	 * @see VisualRepresenation
+	 * @see VisualRepresentation
 	 */
-	private class Visual extends VisualRepresenation {
+	private class Visual extends VisualRepresentation {
 
 	}
 

@@ -9,8 +9,8 @@ public interface Viewable {
 
 	/**
 	 * Retrieves the visual representation of any object that realises {@link Viewable}.
-	 * @return {@link VisualRepresenation}
+	 * @return {@link VisualRepresentation}
 	 */
-	VisualRepresenation getVisual();
+	VisualRepresentation getVisual();
 	
 }

@@ -3,7 +3,7 @@ package peril.board;
 import java.nio.channels.NetworkChannel;
 
 import peril.ui.Viewable;
-import peril.ui.VisualRepresenation;
+import peril.ui.VisualRepresentation;
 
 /**
  * Encapsulates the behaviour of the the game board in the {@link Game}. This
@@ -16,7 +16,7 @@ import peril.ui.VisualRepresenation;
 public final class Board implements Viewable {
 
 	/**
-	 * Holds the {@link VisualRepresenation} of the {@link Board}.
+	 * Holds the {@link VisualRepresentation} of the {@link Board}.
 	 */
 	private Visual visual;
 	
@@ -32,12 +32,12 @@ public final class Board implements Viewable {
 	 * @author Joshua_Eddy
 	 *
 	 */
-	private class Visual extends VisualRepresenation{
+	private class Visual extends VisualRepresentation{
 		
 	}
 
 	@Override
-	public VisualRepresenation getVisual() {
+	public VisualRepresentation getVisual() {
 		return visual;
 	}
 	

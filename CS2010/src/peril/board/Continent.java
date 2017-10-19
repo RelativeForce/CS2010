@@ -7,7 +7,7 @@ import org.junit.experimental.theories.Theories;
 
 import peril.Player;
 import peril.ui.Viewable;
-import peril.ui.VisualRepresenation;
+import peril.ui.VisualRepresentation;
 
 /**
  * Encapsulates the behaviour of a continent on the {@link Board}.
@@ -47,9 +47,9 @@ public final class Continent implements Viewable {
 	/**
 	 * Holds the visual representation of the {@link Continent}.
 	 * 
-	 * @see VisualRepresenation
+	 * @see VisualRepresentation
 	 */
-	private VisualRepresenation visual;
+	private VisualRepresentation visual;
 
 	/**
 	 * Constructs a new {@link Continent}.
@@ -70,9 +70,9 @@ public final class Continent implements Viewable {
 	 * 
 	 * @author Joshua_Eddy
 	 *
-	 * @see VisualRepresenation
+	 * @see VisualRepresentation
 	 */
-	private class Visual extends VisualRepresenation {
+	private class Visual extends VisualRepresentation {
 
 	}
 
@@ -112,7 +112,7 @@ public final class Continent implements Viewable {
 	}
 
 	@Override
-	public VisualRepresenation getVisual() {
+	public VisualRepresentation getVisual() {
 		return visual;
 	}
 

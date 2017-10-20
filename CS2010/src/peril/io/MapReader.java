@@ -76,7 +76,7 @@ public class MapReader {
 	 * @param directoryPath
 	 * @param mapName
 	 */
-	public static void getBoard(String directoryPath, String mapName) {
+	public static Board getBoard(String directoryPath, String mapName) {
 
 		MapReader reader = new MapReader(directoryPath, mapName);
 		reader.parseDetailsFile();

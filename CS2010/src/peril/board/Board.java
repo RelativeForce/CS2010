@@ -1,6 +1,5 @@
 package peril.board;
 
-import java.nio.channels.NetworkChannel;
 import java.util.LinkedList;
 import java.util.List;
 

@@ -2,6 +2,7 @@ package peril.board;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 import peril.Point;
 
@@ -31,6 +32,13 @@ public class Region {
 	private Integer[][] horizontalBoundaries;
 
 	/**
+	 * <code>boolean[][]</code> where if a pixel from the specified
+	 * {@link BufferedImage} is the specified {@link Color} the it is assigned true,
+	 * otherwise it is false.
+	 */
+	private boolean[][] object;
+
+	/**
 	 * Constructs a new <code>HitBox</code> object.
 	 * 
 	 * @param object
@@ -41,11 +49,93 @@ public class Region {
 	 */
 	public Region(BufferedImage image, Color colour) {
 
-		boolean[][] object = getRegion(image, colour);
+		object = getRegion(image, colour);
+		setVerticalBoundaries(image.getWidth(), image.getHeight());
+		setHorizontalBoundaries(image.getWidth(), image.getHeight());
 
-		setVerticalBoundaries(object, image.getWidth(), image.getHeight());
-		setHorizontalBoundaries(object, image.getWidth(), image.getHeight());
+	}
 
+	/**
+	 * Constructs a combined {@link Region}. Only used by
+	 * {@link Region#combine(List)}.
+	 * 
+	 * @param object
+	 *            <code>boolean[][]</code> where if a pixel from the specified
+	 *            {@link BufferedImage} is the specified {@link Color} the it is
+	 *            assigned true, otherwise it is false.
+	 * 
+	 */
+	private Region(boolean[][] object) {
+		this.object = object;
+	}
+
+	/**
+	 * Overlaps a specified {@link Region} onto this {@link Region}'s
+	 * {@link Region#object}.
+	 * 
+	 * @param region
+	 *            {@link Region} that is added to this {@link Region}.
+	 * @param width
+	 *            The width of both {@link Region}.
+	 * @param height
+	 *            The height ob both {@link Region}.
+	 */
+	private void addRegion(Region region, int width, int height) {
+
+		// Iterate through every element in the region.
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+
+				// If the current element in the parameter region is true but this regions's
+				// object is false the set it to true.
+				if (!this.object[x][y] || region.object[x][y]) {
+					this.object[x][y] = true;
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * Combines a {@link List} of {@link Region} into ONE {@link Region}.
+	 * 
+	 * @param list
+	 *            {@link List} of {@link Region}s to be combined.
+	 * @param width
+	 *            <code>int</code> width of the space the {@link Region} is in.
+	 * @param height
+	 *            <code>int</code> height of the space the {@link Region} is in.
+	 * @return {@link Region}
+	 */
+	public static Region combine(List<Region> list, int width, int height) {
+
+		if (list == null || list.isEmpty()) {
+			throw new IllegalArgumentException();
+		}
+		// Holds the region that will be the result.
+		Region base = null;
+
+		// Iterate through all the regions in the list.
+		for (Region region : list) {
+
+			// If the base region is null use the current regions boolean[][] to construct a
+			// new region. Otherwise add the region to the base.
+			if (base == null) {
+				base = new Region(region.object);
+			} else {
+				base.addRegion(region, width, height);
+			}
+		}
+
+		// If there is a base region, calculate the boundaries of the base region.
+		if (base != null) {
+
+			base.setVerticalBoundaries(width, height);
+			base.setHorizontalBoundaries(width, height);
+
+		}
+
+		return base;
 	}
 
 	/**
@@ -83,16 +173,12 @@ public class Region {
 	 * Assigns the outer horizontal boundaries of the region of pixels given by a
 	 * {@link BufferedImage} and {@link Color}.
 	 * 
-	 * @param object
-	 *            <code>boolean[][]</code> where if a pixel from the specified
-	 *            {@link BufferedImage} is the specified {@link Color} the it is
-	 *            assigned true, otherwise it is false.
 	 * @param width
 	 *            {@link BufferedImage#getWidth()}
 	 * @param height
 	 *            {@link BufferedImage#getHeight()}
 	 */
-	private void setHorizontalBoundaries(boolean[][] object, int width, int height) {
+	private void setHorizontalBoundaries(int width, int height) {
 
 		/*
 		 * IMPORTATNT CONCEPT: This methods iterates from the left edge of the image
@@ -162,16 +248,14 @@ public class Region {
 	 * Assigns the outer vertical boundaries of the region of pixels given by a
 	 * {@link BufferedImage} and {@link Color}.
 	 * 
-	 * @param object
-	 *            <code>boolean[][]</code> where if a pixel from the specified
-	 *            {@link BufferedImage} is the specified {@link Color} the it is
-	 *            assigned true, otherwise it is false.
+	 * 
+	 * 
 	 * @param width
 	 *            {@link BufferedImage#getWidth()}
 	 * @param height
 	 *            {@link BufferedImage#getHeight()}
 	 */
-	private void setVerticalBoundaries(boolean[][] object, int width, int height) {
+	private void setVerticalBoundaries(int width, int height) {
 
 		/*
 		 * IMPORTANT CONCEPT: This methods iterates from the bottom edge of the image

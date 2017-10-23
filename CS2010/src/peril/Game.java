@@ -120,17 +120,12 @@ public class Game {
 	 */
 	public void play() {
 
-		ui = new UserInterface(this);
-
-		Player currentPlayer = players[currentPlayerIndex];
 		// While the game is being played.
 		while (run) {
 
-			currentPlayer = players[currentPlayerIndex];
+			displayTurn(getCurrentPlayer());
 
-			displayTurn(currentPlayer);
-
-			executeTurn(currentPlayer);
+			executeTurn(getCurrentPlayer());
 
 			// Go to next player.
 			nextPlayer();

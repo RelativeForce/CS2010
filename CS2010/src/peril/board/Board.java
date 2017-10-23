@@ -31,7 +31,7 @@ public final class Board implements Viewable {
 	/**
 	 * Constructs a {@link Board}.
 	 */
-	private Board() {
+	public Board() {
 		visual = new Visual();
 		continents = new LinkedList<>();
 	}
@@ -54,7 +54,7 @@ public final class Board implements Viewable {
 
 			// If the click is inside the continents region get the country from the region.
 			if (continent.getVisual().isClicked(click)) {
-				return continent.getCountryByClick(click);
+				return continent.getCountry(click);
 			}
 		}
 
@@ -68,7 +68,7 @@ public final class Board implements Viewable {
 	 * {@link Continent#executeTurn()}.
 	 */
 	public void endRound() {
-		continents.forEach(continent -> continent.executeTurn());
+		continents.forEach(continent -> continent.endRound());
 	}
 
 	/**

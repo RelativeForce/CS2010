@@ -1,6 +1,8 @@
 package peril;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedTransferQueue;
 
@@ -35,25 +37,59 @@ public class Game {
 	 * The instance of the {@link Board} used for this game.
 	 */
 	private Board board;
-	
+
 	/**
 	 * The current turn of the {@link Game}. Initially zero;
 	 */
 	private int currentTurn;
 
 	/**
+	 * Holds all the players in an iterable array.
+	 */
+	private final Player[] players;
+
+	/**
+	 * The {@link Player} who's turn it is.
+	 */
+	private int currentPlayerIndex;
+
+	/**
+	 * Contains all the objectives that a {@link Player} can attain in the game.
+	 */
+	private List<Objective> objectives;
+
+	/**
 	 * Constructs a new {@link Game}.
 	 */
 	private Game() {
 
+		this.currentPlayerIndex = 0;
+		this.players = Player.values();
 		this.currentTurn = 0;
 		this.buffer = new LinkedTransferQueue<>();
 		this.run = true;
+		this.objectives = new LinkedList<>();
 
 		// Read the Board from the files.
 		File currentDirectory = new File(System.getProperty("user.dir"));
 		this.board = MapReader.getBoard(currentDirectory.getPath(), "Earth");
 
+	}
+
+	/**
+	 * Retrieves the {@link Player} who's current turn it is.
+	 * 
+	 * @return {@link Player}
+	 */
+	public Player getCurrentPlayer() {
+		return players[currentPlayerIndex];
+	}
+
+	/**
+	 * Iterates to the next player.
+	 */
+	public void nextPlayer() {
+		currentPlayerIndex = currentPlayerIndex++ % players.length;
 	}
 
 	/**
@@ -67,14 +103,16 @@ public class Game {
 
 	/**
 	 * Retrieves the current turn number.
+	 * 
 	 * @return <code>int</code>
 	 */
 	public int getTurnNumber() {
 		return currentTurn;
 	}
-	
+
 	/**
 	 * Retrieves the {@link Board} in <code>this</code> {@link Game}.
+	 * 
 	 * @return {@link Board}.
 	 */
 	public Board getBoard() {
@@ -134,7 +172,7 @@ public class Game {
 	 */
 	public void endRound() {
 		// TODO end round operations.
-		
+
 		currentTurn++;
 	}
 

@@ -48,6 +48,8 @@ public abstract class VisualRepresentation extends Clickable{
 	 */
 	public void setImage(int x, int y, Integer[] [] image) {
 		this.image = image;
+		this.x = x;
+		this.y = y;
 	}
 	
 	/**

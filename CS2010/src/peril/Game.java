@@ -194,7 +194,7 @@ public class Game {
 		processTransfer.transfer(action);
 
 		// Wait for winner to be displayed.
-		while (!action.isDone()) {
+		while (!action.isDone() && run) {
 			run();
 		}
 

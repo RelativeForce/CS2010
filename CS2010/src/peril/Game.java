@@ -8,6 +8,7 @@ import java.util.concurrent.LinkedTransferQueue;
 
 import peril.board.Board;
 import peril.io.MapReader;
+import peril.io.ChallengeReader;
 import peril.ui.UserInterface;
 
 /**
@@ -41,7 +42,7 @@ public class Game {
 	/**
 	 * The current turn of the {@link Game}. Initially zero;
 	 */
-	private int currentTurn;
+	private int currentRound;
 
 	/**
 	 * Holds all the players in an iterable array.
@@ -56,7 +57,7 @@ public class Game {
 	/**
 	 * Contains all the objectives that a {@link Player} can attain in the game.
 	 */
-	private List<Objective> objectives;
+	private List<Challenge> objectives;
 
 	/**
 	 * Constructs a new {@link Game}.
@@ -65,14 +66,14 @@ public class Game {
 
 		this.currentPlayerIndex = 0;
 		this.players = Player.values();
-		this.currentTurn = 0;
+		this.currentRound = 0;
 		this.buffer = new LinkedTransferQueue<>();
 		this.run = true;
-		this.objectives = new LinkedList<>();
 
-		// Read the Board from the files.
+		// Read the Board and Objectives from the files.
 		File currentDirectory = new File(System.getProperty("user.dir"));
 		this.board = MapReader.getBoard(currentDirectory.getPath(), "Earth");
+		this.objectives = ChallengeReader.getChallenges(currentDirectory.getPath(), "Earth");
 
 	}
 
@@ -86,28 +87,12 @@ public class Game {
 	}
 
 	/**
-	 * Iterates to the next player.
-	 */
-	public void nextPlayer() {
-		currentPlayerIndex = currentPlayerIndex++ % players.length;
-	}
-
-	/**
-	 * Performs all the tasks that occur at the end of a round of {@link Player}
-	 * turns. Including adding troops to all the {@link Country}s and checking who
-	 * owns each {@link Continent}.
-	 */
-	public void executeTurn() {
-		board.endRound();
-	}
-
-	/**
 	 * Retrieves the current turn number.
 	 * 
 	 * @return <code>int</code>
 	 */
 	public int getTurnNumber() {
-		return currentTurn;
+		return currentRound;
 	}
 
 	/**
@@ -167,23 +152,31 @@ public class Game {
 		// TODO Parse click
 	}
 
-	/*
-	 * Performs all the tasks that occur at the end of a round.
-	 */
-	public void endRound() {
-		// TODO end round operations.
-
-		currentTurn++;
-	}
-
 	/**
-	 * Executes a turn for a specified {@link Player}.
+	 * Executes a turn for the {@link Player} specified by
+	 * {@link Game#currentPlayerIndex}.
 	 * 
 	 * @param player
 	 *            {@link Player}.
 	 */
-	public void executeTurn(Player player) {
+	public void executeTurn() {
+
+		Player currentPlayer = players[currentPlayerIndex];
+
 		// TODO turn operations.
+
+		// Iterate though all the objectives to see if the the current player has
+		// completed them.
+		objectives.forEach(objective -> objective.hasCompleted(currentPlayer));
+
+		nextPlayer();
+
+		/**
+		 * If the last player just had their turn.
+		 */
+		if (currentPlayerIndex == 0) {
+			endRound();
+		}
 	}
 
 	/**
@@ -198,6 +191,24 @@ public class Game {
 		// TODO Parse input
 	}
 
+	/*
+	 * Performs all the tasks that occur at the end of a round.
+	 */
+	private void endRound() {
+		// TODO end round operations.
+
+		board.endRound();
+
+		currentRound++;
+	}
+
+	/**
+	 * Iterates to the next player.
+	 */
+	private void nextPlayer() {
+		currentPlayerIndex = currentPlayerIndex++ % players.length;
+	}
+
 	/**
 	 * Runs the game.
 	 * 
@@ -206,10 +217,14 @@ public class Game {
 	 */
 	public static void main(String[] args) {
 
+		// Create the instance of the game.
 		Game game = new Game();
-		game.run();
+
+		// Create the instance of the user interface.
 		UserInterface ui = new UserInterface(game);
 
+		// Start the background thread.
+		game.run();
 	}
 
 }

@@ -51,10 +51,10 @@ public class MapReader {
 	private Integer[][] normalMap;
 
 	/**
-	 * Constructs a new {@link MapReader} object.
+	 * Constructs a new {@link MapReader}.
 	 * 
 	 * @param directoryPath
-	 *            The path of the parent directory which contains the levels
+	 *            The path of the parent directory which contains the map files.
 	 */
 	private MapReader(String directoryPath, String mapName) {
 
@@ -79,7 +79,7 @@ public class MapReader {
 		reader.parseDetailsFile();
 
 		Board newBoard = new Board(reader.continents);
-		
+
 		// Set the normal map as the visual image of the visual representation.
 		newBoard.getVisual().setImage(0, 0, reader.normalMap);
 
@@ -87,10 +87,7 @@ public class MapReader {
 	}
 
 	/**
-	 * Reads the details of the current level from the level file.
-	 * 
-	 * @param levelNum
-	 *            The number of the level to be loaded.
+	 * Reads the details of the current map from the details file.
 	 */
 	private void parseDetailsFile() {
 

@@ -43,10 +43,6 @@ public final class Board implements Viewable {
 	 */
 	public Country getCountry(Point click) {
 
-		// TODO: Add the implementation that searches through all the continents regions
-		// and if the the point is inside the region then search all the countries in
-		// that continent.
-
 		// Iterate through all the continents on the board.
 		for (Continent continent : continents) {
 
@@ -61,6 +57,16 @@ public final class Board implements Viewable {
 
 	}
 
+	/**
+	 * Retrieves the {@link Continent}s on this {@link Board}.
+	 * @return {@link List} of {@link Continent}s.
+	 * 
+	 * @see java.util.List
+	 */
+	public List<Continent> getContinents(){
+		return continents;
+	}
+	
 	/**
 	 * Iterates through each {@link Continent} in the {@link Board} and
 	 * {@link Continent#executeTurn()}.

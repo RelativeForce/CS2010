@@ -25,22 +25,23 @@ public class MapReader {
 	private String[] detailsFile;
 
 	/**
-	 * The name of the current map, this will be used to locate all the map resources.
+	 * The name of the current map, this will be used to locate all the map
+	 * resources.
 	 */
 	private String mapName;
-	
+
 	/**
 	 * The path to the directory with all the map assets in it.
 	 */
 	private String directoryPath;
 
 	/**
-	 * The {@link List} of all the {@link Country}s on the {@link Board}. 
+	 * The {@link List} of all the {@link Country}s on the {@link Board}.
 	 */
 	private List<Country> countries;
 
 	/**
-	 *  The {@link List} of all the {@link Continent}s on the {@link Board}.
+	 * The {@link List} of all the {@link Continent}s on the {@link Board}.
 	 */
 	private List<Continent> continents;
 
@@ -56,11 +57,11 @@ public class MapReader {
 	 *            The path of the parent directory which contains the levels
 	 */
 	private MapReader(String directoryPath, String mapName) {
-		
+
 		this.mapName = mapName;
 		this.directoryPath = directoryPath;
 		this.detailsFile = TextFileReader.scanFile(directoryPath, mapName + "Details");
-		this.normalMap = ImageReader.getImage(directoryPath + File.separatorChar + mapName +".png");
+		this.normalMap = ImageReader.getImage(directoryPath + File.separatorChar + mapName + ".png");
 		this.countries = new LinkedList<>();
 		this.continents = new LinkedList<>();
 
@@ -68,6 +69,7 @@ public class MapReader {
 
 	/**
 	 * Retrieves the {@link Board} specified by a given map name.
+	 * 
 	 * @param directoryPath
 	 * @param mapName
 	 */
@@ -75,12 +77,12 @@ public class MapReader {
 
 		MapReader reader = new MapReader(directoryPath, mapName);
 		reader.parseDetailsFile();
-		
-		Board newBoard = new Board();
-		
-		// TODO: Add the readers fields to the new Board.
 
+		Board newBoard = new Board(reader.continents);
 		
+		// Set the normal map as the visual image of the visual representation.
+		newBoard.getVisual().setImage(0, 0, reader.normalMap);
+
 		return newBoard;
 	}
 
@@ -157,10 +159,11 @@ public class MapReader {
 
 			// Initialise the new country.
 			Country country = new Country(name);
-			
+
 			// Set the clickable region of the country
-			country.getVisual().setRegion(ImageReader.getColourRegion(directoryPath + File.separatorChar + mapName +"Countries.png", color));
-			
+			country.getVisual().setRegion(
+					ImageReader.getColourRegion(directoryPath + File.separatorChar + mapName + "Countries.png", color));
+
 			// Construct a new counrty and add the country to the list of countries.
 			countries.add(country);
 

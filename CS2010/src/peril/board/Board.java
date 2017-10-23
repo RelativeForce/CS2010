@@ -1,6 +1,5 @@
 package peril.board;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import peril.Point;
@@ -30,9 +29,9 @@ public final class Board implements Viewable {
 	/**
 	 * Constructs a {@link Board}.
 	 */
-	public Board() {
+	public Board(List<Continent> continents) {
 		visual = new Visual();
-		continents = new LinkedList<>();
+		this.continents = continents;
 	}
 
 	/**

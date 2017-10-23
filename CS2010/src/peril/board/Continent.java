@@ -3,9 +3,8 @@ package peril.board;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.experimental.theories.Theories;
-
 import peril.Player;
+import peril.Point;
 import peril.ui.Viewable;
 import peril.ui.VisualRepresentation;
 
@@ -36,6 +35,11 @@ public final class Continent implements Viewable {
 	private EnvironmentalHazard hazard;
 
 	/**
+	 * The {@link name} of the {@link Continent}.
+	 */
+	private String name;
+
+	/**
 	 * The current {@link Player} that rules all {@link Country}s in this
 	 * {@link Continent}. If all the {@link Country}s in this {@link Continent} are
 	 * NOT ruled by the same {@link Player} then this is <code>null</code>. This is
@@ -56,13 +60,32 @@ public final class Continent implements Viewable {
 	 * 
 	 * @param countries
 	 */
-	public Continent(EnvironmentalHazard hazard) {
+	public Continent(EnvironmentalHazard hazard, String name) {
 
 		this.countries = new LinkedList<Country>();
 		this.hazard = hazard;
 		this.visual = new Visual();
 		this.ruler = null;
+		this.name = name;
 
+	}
+
+	/**
+	 * Adds a {@link Country} to the {@link Continent}.
+	 * 
+	 * @param country
+	 */
+	public void addCountry(Country country) {
+		countries.add(country);
+	}
+
+	/**
+	 * Returns the {@link Name} of the {@link Continent}.
+	 * 
+	 * @return
+	 */
+	public String getName() {
+		return name;
 	}
 
 	/**
@@ -98,16 +121,37 @@ public final class Continent implements Viewable {
 	}
 
 	/**
-	 * Iterates through all the {@link Continent} and executes their turn. Also
-	 * causes each {@link Country} to experience this {@link Continent}s
-	 * {@link EnvironmentalHazard}.
+	 * Retrieves the country using a specified {@link Point} by iterating through
+	 * all the {@link Country}s in the {@link Continent} and checks if the specifies
+	 * {@link Point} is inside a {@link Country}.
+	 * 
+	 * @param click
+	 *            {@link Point}.
+	 * @return {@link Country}.
 	 */
-	public void executeTurn() {
-		// Iterates through all countries in the continent.
+	public Country getCountry(Point click) {
+
+		// Iterates through all the countries in this continent.
 		for (Country currentCountry : countries) {
-			currentCountry.endRound();
-			hazard.act(currentCountry.getArmy());
+
+			// Checks if the specifies click is inside the bounds of the current country.
+			if (currentCountry.getVisual().isClicked(click)) {
+				return currentCountry;
+			}
 		}
+		// Will return null if the click is not inside a country.
+		return null;
+	}
+
+	/**
+	 * Iterates through all the @{@link Country}s in the {@link Continent} and
+	 * performs their end of round operations.
+	 */
+	public void endRound() {
+		countries.forEach(currentCountry -> currentCountry.endRound(hazard));
+	}
+
+	public void executeTurn() {
 
 	}
 

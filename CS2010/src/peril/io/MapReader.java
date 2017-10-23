@@ -2,18 +2,13 @@ package peril.io;
 
 import java.awt.Color;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
 
 import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
 import peril.board.EnvironmentalHazard;
-import peril.board.Region;
 
 /**
  * Reader the map from a specified file and uses that to construct the
@@ -85,6 +80,8 @@ public class MapReader {
 		
 		// TODO: Add the readers fields to the new Board.
 
+		
+		return newBoard;
 	}
 
 	/**

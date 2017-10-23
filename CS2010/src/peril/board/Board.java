@@ -2,7 +2,6 @@ package peril.board;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import peril.Point;
 import peril.ui.Viewable;

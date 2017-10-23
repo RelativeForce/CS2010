@@ -208,16 +208,11 @@ public class Game {
 	 */
 	private void executeTurn(Player player) {
 
-		// While the user has his turn.
+		// While the user has his turn. This loop end when the action that is added to
+		// the queue by the ui sets endTurn to true.
 		while (!endTurn && run) {
 
-			while (processTransfer.isEmpty() && run) {
-				// Wait for the player to perform an action.
-				run();
-			}
-
-			// Execute the users command.
-			processTransfer.poll();
+			executeAction();
 
 		}
 
@@ -225,6 +220,23 @@ public class Game {
 
 		// Check challenge completion.
 		checkChallenges(player);
+
+	}
+
+	/**
+	 * Waits until the {@link Player} performs a {@link Action} on the
+	 * {@link UserInterface} and it is added to the queue of {@link Action}s to be
+	 * executed. When one is added it is executed.
+	 */
+	private void executeAction() {
+
+		while (processTransfer.isEmpty() && run) {
+			// Wait for the player to perform an action.
+			run();
+		}
+
+		// Execute the users command.
+		processTransfer.poll();
 
 	}
 

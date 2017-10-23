@@ -2,6 +2,7 @@ package peril.board;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import peril.Point;
 import peril.ui.Viewable;
@@ -21,20 +22,20 @@ public final class Board implements Viewable {
 	 * The {@link Continent}s in this {@link Board}.
 	 */
 	private List<Continent> continents;
-	
+
 	/**
 	 * Holds the {@link VisualRepresentation} of the {@link Board}.
 	 */
 	private Visual visual;
-	
+
 	/**
-	 * Constructs a {@link Board}. 
+	 * Constructs a {@link Board}.
 	 */
-	private Board(){
+	private Board() {
 		visual = new Visual();
 		continents = new LinkedList<>();
 	}
-	
+
 	/**
 	 * Retrieves a {@link Country} that is specified by the parameter {@link Point}.
 	 * 
@@ -42,7 +43,7 @@ public final class Board implements Viewable {
 	 *            {@link Point} on the board.
 	 * @return {@link Country}.
 	 */
-	private Country getCountry(Point click) {
+	public Country getCountry(Point click) {
 
 		// TODO: Add the implementation that searches through all the continents regions
 		// and if the the point is inside the region then search all the countries in
@@ -61,19 +62,28 @@ public final class Board implements Viewable {
 		return null;
 
 	}
-	
+
+	/**
+	 * Iterates through each {@link Continent} in the {@link Board} and
+	 * {@link Continent#executeTurn()}.
+	 */
+	public void endRound() {
+		continents.forEach(continent -> continent.executeTurn());
+	}
+
 	/**
 	 * The visual representation of the {@link Board}.
+	 * 
 	 * @author Joshua_Eddy
 	 *
 	 */
-	private class Visual extends VisualRepresentation{
-		
+	private class Visual extends VisualRepresentation {
+
 	}
 
 	@Override
 	public VisualRepresentation getVisual() {
 		return visual;
 	}
-	
+
 }

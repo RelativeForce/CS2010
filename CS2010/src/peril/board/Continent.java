@@ -105,7 +105,7 @@ public final class Continent implements Viewable {
 	public void executeTurn() {
 		// Iterates through all countries in the continent.
 		for (Country currentCountry : countries) {
-			currentCountry.executeTurn();
+			currentCountry.endRound();
 			hazard.act(currentCountry.getArmy());
 		}
 

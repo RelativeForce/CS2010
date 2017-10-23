@@ -13,7 +13,7 @@ import peril.board.Continent;
 import peril.board.Country;
 
 /**
- * Reads the objectives from an external file and uses then constructs the
+ * Reads the challenges from an external file and uses then constructs the
  * objectives for the {@link Game}.
  */
 public class ChallengeReader {
@@ -22,7 +22,7 @@ public class ChallengeReader {
 	 * The lines of the challenges file which specifies all the challenges of the
 	 * {@link Player}s on the specified map.
 	 */
-	private String[] objectivesFile;
+	private String[] challengesFile;
 
 
 	/**
@@ -38,7 +38,7 @@ public class ChallengeReader {
 	 */
 	private ChallengeReader(String directoryPath, String mapName) {
 
-		this.objectivesFile = TextFileReader.scanFile(directoryPath, mapName + "Challenges");
+		this.challengesFile = TextFileReader.scanFile(directoryPath, mapName + "Challenges");
 		challenges = new LinkedList<>();
 
 	}
@@ -51,7 +51,7 @@ public class ChallengeReader {
 	 */
 	private void parseObjectivesFile() {
 
-		for (String line : objectivesFile) {
+		for (String line : challengesFile) {
 			parseLine(line);
 		}
 

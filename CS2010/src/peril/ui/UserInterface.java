@@ -7,7 +7,11 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Player;
-import peril.ui.states.Combat;
+import peril.ui.states.CombatState;
+import peril.ui.states.EndState;
+import peril.ui.states.MovementState;
+import peril.ui.states.ReinforcementState;
+import peril.ui.states.SetupState;
 
 /**
  * The object that allows the user to interact with the {@link Game}. Follows
@@ -27,7 +31,11 @@ public class UserInterface extends StateBasedGame {
 	/**
 	 * The basic state that the game is in.
 	 */
-	private final Combat combatState;
+	private final CombatState combatState;
+	private final SetupState setupState;
+	private final ReinforcementState reinforcementState;
+	private final MovementState movementState;
+	private final EndState endState;
 
 	/**
 	 * Constructs a new {@link UserInterface}.
@@ -38,7 +46,11 @@ public class UserInterface extends StateBasedGame {
 	 */
 	private UserInterface(Game game) {
 		super("PERIL: A Turn Based Strategy Game");
-		this.combatState = new Combat();
+		this.combatState = new CombatState();
+		this.setupState = new SetupState();
+		this.reinforcementState = new ReinforcementState();
+		this.movementState =  new MovementState();;
+		this.endState =  new EndState();
 		this.game = game;
 	}
 
@@ -56,6 +68,10 @@ public class UserInterface extends StateBasedGame {
 			// Handle displaying the winner of the game.
 			combatState.displayWinner(player);
 		}
+
+	}
+
+	public void displayTurn(Player player) {
 
 	}
 
@@ -93,6 +109,10 @@ public class UserInterface extends StateBasedGame {
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
 		addState(combatState);
+		addState(setupState);
+		addState(reinforcementState);
+		addState(movementState);
+		addState(endState);
 	}
 
 	/**
@@ -101,7 +121,5 @@ public class UserInterface extends StateBasedGame {
 	 * @param player
 	 *            {@link Player} who's turn it is.
 	 */
-	public void displayTurn(Player player) {
 
-	}
 }

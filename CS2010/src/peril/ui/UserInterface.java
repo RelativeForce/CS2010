@@ -94,4 +94,14 @@ public class UserInterface extends StateBasedGame {
 	public void initStatesList(GameContainer container) throws SlickException {
 		addState(combatState);
 	}
+
+	/**
+	 * Displays the reenforcement game state.
+	 * 
+	 * @param player
+	 *            {@link Player} who's turn it is.
+	 */
+	public void displayTurn(Player player) {
+
+	}
 }

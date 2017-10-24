@@ -1,7 +1,8 @@
-package peril;
+package peril.multiThread;
 
 import java.util.function.Consumer;
 
+import peril.Game;
 import peril.ui.UserInterface;
 
 /**

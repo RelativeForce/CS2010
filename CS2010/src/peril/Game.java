@@ -8,6 +8,9 @@ import java.util.concurrent.LinkedTransferQueue;
 
 import peril.board.Board;
 import peril.io.MapReader;
+import peril.multiThread.Action;
+import peril.multiThread.ProcessTransfer;
+import peril.io.ChallengeReader;
 import peril.ui.UserInterface;
 
 /**
@@ -19,19 +22,19 @@ import peril.ui.UserInterface;
 public class Game {
 
 	/**
-	 * Whether or not the background thread is running or not.
+	 * Whether the game is running or not.
 	 */
 	public volatile boolean run;
 
 	/**
-	 * This {@link Queue} holds instructions stored as objects for the background
-	 * thread to execute. This allows for an asynchronous execution resulting is a
-	 * responsive {@link UserInterface}.
-	 * 
-	 * @see Queue
-	 * @see LinkedTransferQueue
+	 * Whether or not the current users turn is over or not.
 	 */
-	private Queue<Action<?>> buffer;
+	public volatile boolean endTurn;
+
+	/**
+	 * {@link ProcessTransfer#getInstane()}
+	 */
+	private ProcessTransfer processTransfer;
 
 	/**
 	 * The instance of the {@link Board} used for this game.
@@ -41,7 +44,7 @@ public class Game {
 	/**
 	 * The current turn of the {@link Game}. Initially zero;
 	 */
-	private int currentTurn;
+	private int currentRound;
 
 	/**
 	 * Holds all the players in an iterable array.
@@ -56,23 +59,32 @@ public class Game {
 	/**
 	 * Contains all the objectives that a {@link Player} can attain in the game.
 	 */
-	private List<Objective> objectives;
+	private List<Challenge> challenges;
+
+	/**
+	 * The {@link UserInterface} for the {@link Game}.
+	 */
+	private UserInterface ui;
 
 	/**
 	 * Constructs a new {@link Game}.
+	 * 
+	 * @param ui
+	 *            The {@link UserInterface} of the {@link Game}.
 	 */
 	private Game() {
 
 		this.currentPlayerIndex = 0;
 		this.players = Player.values();
-		this.currentTurn = 0;
-		this.buffer = new LinkedTransferQueue<>();
+		this.currentRound = 0;
+		this.processTransfer = ProcessTransfer.getInstane();
+		this.endTurn = false;
 		this.run = true;
-		this.objectives = new LinkedList<>();
 
-		// Read the Board from the files.
+		// Read the Board and Objectives from the files.
 		File currentDirectory = new File(System.getProperty("user.dir"));
 		this.board = MapReader.getBoard(currentDirectory.getPath(), "Earth");
+		this.challenges = ChallengeReader.getChallenges(currentDirectory.getPath(), "Earth");
 
 	}
 
@@ -86,28 +98,12 @@ public class Game {
 	}
 
 	/**
-	 * Iterates to the next player.
-	 */
-	public void nextPlayer() {
-		currentPlayerIndex = currentPlayerIndex++ % players.length;
-	}
-
-	/**
-	 * Performs all the tasks that occur at the end of a round of {@link Player}
-	 * turns. Including adding troops to all the {@link Country}s and checking who
-	 * owns each {@link Continent}.
-	 */
-	public void executeTurn() {
-		board.endRound();
-	}
-
-	/**
 	 * Retrieves the current turn number.
 	 * 
 	 * @return <code>int</code>
 	 */
 	public int getTurnNumber() {
-		return currentTurn;
+		return currentRound;
 	}
 
 	/**
@@ -120,39 +116,35 @@ public class Game {
 	}
 
 	/**
-	 * Adds a {@link Action} to the background thread queue.
-	 * 
-	 * @param action
-	 *            {@link Action} to perform.
+	 * Executes the core game play loop.
 	 */
-	public void addAction(Action<?> action) {
+	public void play() {
 
-		// Null check.
-		if (action == null) {
-			throw new IllegalArgumentException("Action cannot be null.");
+		// While the game is being played.
+		while (run) {
+
+			displayTurn(getCurrentPlayer());
+
+			executeTurn(getCurrentPlayer());
+
+			// Go to next player.
+			nextPlayer();
+
+			// If the last player just had their turn.
+			if (currentPlayerIndex == 0) {
+				endRound();
+			}
 		}
-
-		buffer.add(action);
 
 	}
 
 	/**
-	 * Starts the background {@link Game} loop that will end when {@link Game#run}
-	 * is <code>false</code>.
+	 * Performs the actions of the background loop. Any time the game thread is
+	 * waiting for an for an {@link Action} to execute or to be executed, call this
+	 * method.
 	 */
 	private void run() {
-
-		// Background thread loop.
-		while (run) {
-
-			// If there is an item in the buffer.
-			if (!buffer.isEmpty()) {
-				buffer.poll().execute();
-			}
-
-			// TODO Run music and check for inactivity
-
-		}
+		// TODO Background stuff.
 	}
 
 	/**
@@ -165,25 +157,6 @@ public class Game {
 	 */
 	public void parseInput(Point click) {
 		// TODO Parse click
-	}
-
-	/*
-	 * Performs all the tasks that occur at the end of a round.
-	 */
-	public void endRound() {
-		// TODO end round operations.
-
-		currentTurn++;
-	}
-
-	/**
-	 * Executes a turn for a specified {@link Player}.
-	 * 
-	 * @param player
-	 *            {@link Player}.
-	 */
-	public void executeTurn(Player player) {
-		// TODO turn operations.
 	}
 
 	/**
@@ -199,6 +172,137 @@ public class Game {
 	}
 
 	/**
+	 * Creates an {@link Action} that displays the specified winning {@link Player}
+	 * on the {@link UserInterface}. This {@link Action} is then passed to the
+	 * {@link UserInterface} thread while this thread waits for it to be completed
+	 * using {@link Action#isDone()}.
+	 * 
+	 * @param player
+	 *            {@link Player}
+	 */
+	private void displayWinner(Player player) {
+
+		// Display the winner to the user.
+		Action<UserInterface> action = new Action<>(ui, ui -> ui.displayWinner(player));
+
+		// Transfer the action to the ui.
+		processTransfer.transfer(action);
+
+		// Wait for winner to be displayed.
+		while (!action.isDone() && run) {
+			run();
+		}
+
+	}
+
+	/**
+	 * Executes a turn for a specified {@link Player}.
+	 * 
+	 * @param player
+	 *            {@link Player}.
+	 */
+	private void executeTurn(Player player) {
+
+		// While the user has his turn. This loop end when the action that is added to
+		// the queue by the ui sets endTurn to true.
+		while (!endTurn && run) {
+
+			executeAction();
+
+		}
+
+		endTurn = false;
+
+		// Check challenge completion.
+		checkChallenges(player);
+
+	}
+
+	/**
+	 * Waits until the {@link Player} performs a {@link Action} on the
+	 * {@link UserInterface} and it is added to the queue of {@link Action}s to be
+	 * executed. When one is added it is executed.
+	 */
+	private void executeAction() {
+
+		while (processTransfer.isEmpty() && run) {
+			// Wait for the player to perform an action.
+			run();
+		}
+
+		// Execute the users command.
+		processTransfer.poll();
+
+	}
+
+	/**
+	 * Creates an {@link Action} that displays the turn of the specified
+	 * {@link Player} on the {@link UserInterface}. This {@link Action} is then
+	 * passed to the {@link UserInterface} thread while this thread waits for it to
+	 * be completed using {@link Action#isDone()}.
+	 * 
+	 * @param player
+	 *            {@link Player}
+	 */
+	private void displayTurn(Player player) {
+
+		// Display the turn to the user.
+		Action<UserInterface> action = new Action<>(ui, ui -> ui.displayTurn(player));
+
+		// Transfer the action to the ui.
+		processTransfer.transfer(action);
+
+		// Wait for the ui to display the turn to the player.
+		while (!action.isDone() && run) {
+			run();
+		}
+	}
+
+	/**
+	 * Iterates thought all the available {@link Challenge}s to see if the specified
+	 * {@link Player} has completed them or not.
+	 * 
+	 * @param currentPlayer
+	 *            {@link Player}
+	 */
+	private void checkChallenges(Player currentPlayer) {
+
+		// Holds the completed challenges
+		List<Challenge> toRemove = new LinkedList<>();
+
+		// Iterate though all the objectives to see if the the current player has
+		// completed them.
+		for (Challenge challenge : challenges) {
+
+			// If the current player has completed the challenge remove it from the list of
+			// available challenges.
+			if (challenge.hasCompleted(currentPlayer, board)) {
+				toRemove.add(challenge);
+			}
+		}
+
+		// Remove the completed challenges.
+		toRemove.forEach(challenge -> challenges.remove(challenge));
+	}
+
+	/*
+	 * Performs all the tasks that occur at the end of a round.
+	 */
+	private void endRound() {
+
+		board.endRound();
+
+		currentRound++;
+	}
+
+	/**
+	 * Iterates to the next player.
+	 */
+	private void nextPlayer() {
+		currentPlayerIndex = currentPlayerIndex++ % players.length;
+	}
+
+	/**
 	 * Runs the game.
 	 * 
 	 * @param args
@@ -206,9 +310,9 @@ public class Game {
 	 */
 	public static void main(String[] args) {
 
+		// Create the instance of the game.
 		Game game = new Game();
-		game.run();
-		UserInterface ui = new UserInterface(game);
+		game.play();
 
 	}
 

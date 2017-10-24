@@ -32,8 +32,8 @@ public class UserInterface extends StateBasedGame {
 	/**
 	 * Constructs a new {@link UserInterface}.
 	 * 
-	 * @param The
-	 *            instance of {@link Game} that is running <code>this</code>
+	 * @param game
+	 *            The instance of {@link Game} that is running <code>this</code>
 	 *            {@link UserInterface}.
 	 */
 	private UserInterface(Game game) {

@@ -7,29 +7,16 @@ import java.util.List;
 import peril.Point;
 
 /**
- * Denotes the outer boundaries of the region of pixels given by a
- * {@link BufferedImage} and {@link Color}.
+ * Denotes the region of pixels given by a {@link BufferedImage} and a
+ * {@link Color}.
+ * 
+ * <br>
+ * Member class: {@link Reducer}
  * 
  * @author Joshua_Eddy
  *
  */
-public class Region {
-
-	/**
-	 * Holds a X by 2 table that denotes the top and bottom boundaries of the shape
-	 * with the {@link Color} specified in the
-	 * {@link Region#Region(BufferedImage, Color)}. Where X is the width of the
-	 * {@link BufferedImage} that was specified.
-	 */
-	private Integer[][] verticalBoundaries;
-
-	/**
-	 * Holds a X by 2 table that denotes the left and right boundaries of the shape
-	 * with the {@link Color} specified in the
-	 * {@link Region#Region(BufferedImage, Color)}. Where X is the height of the
-	 * {@link BufferedImage} that was specified.
-	 */
-	private Integer[][] horizontalBoundaries;
+public final class Region {
 
 	/**
 	 * <code>boolean[][]</code> where if a pixel from the specified
@@ -37,6 +24,28 @@ public class Region {
 	 * otherwise it is false.
 	 */
 	private boolean[][] object;
+
+	/**
+	 * The <code>int</code> width of this {@link Region}.
+	 */
+	private int width;
+
+	/**
+	 * The <code>int</code> height of this {@link Region}.
+	 */
+	private int height;
+
+	/**
+	 * The <code>int</code> x vector from the (0,0) of the image this {@link Region}
+	 * is a part of to (0,0) of this {@link Region}.
+	 */
+	private int x;
+
+	/**
+	 * The <code>int</code> y vector from the (0,0) of the image this {@link Region}
+	 * is a part of to (0,0) of this {@link Region}.
+	 */
+	private int y;
 
 	/**
 	 * Constructs a new <code>HitBox</code> object.
@@ -48,11 +57,7 @@ public class Region {
 	 * @see environment.graphics.objects.GraphicalObject
 	 */
 	public Region(BufferedImage image, Color colour) {
-
-		object = getRegion(image, colour);
-		setVerticalBoundaries(image.getWidth(), image.getHeight());
-		setHorizontalBoundaries(image.getWidth(), image.getHeight());
-
+		constructor(getRegion(image, colour), image.getWidth(), image.getHeight());
 	}
 
 	/**
@@ -63,37 +68,14 @@ public class Region {
 	 *            <code>boolean[][]</code> where if a pixel from the specified
 	 *            {@link BufferedImage} is the specified {@link Color} the it is
 	 *            assigned true, otherwise it is false.
-	 * 
-	 */
-	private Region(boolean[][] object) {
-		this.object = object;
-	}
-
-	/**
-	 * Overlaps a specified {@link Region} onto this {@link Region}'s
-	 * {@link Region#object}.
-	 * 
-	 * @param region
-	 *            {@link Region} that is added to this {@link Region}.
 	 * @param width
-	 *            The width of both {@link Region}.
+	 *            This width of the image this region is a part of.
 	 * @param height
-	 *            The height ob both {@link Region}.
+	 *            This height of the image this region is a part of.
+	 * 
 	 */
-	private void addRegion(Region region, int width, int height) {
-
-		// Iterate through every element in the region.
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-
-				// If the current element in the parameter region is true but this regions's
-				// object is false the set it to true.
-				if (!this.object[x][y] || region.object[x][y]) {
-					this.object[x][y] = true;
-				}
-			}
-		}
-
+	private Region(boolean[][] object, int width, int height) {
+		constructor(object, width, height);
 	}
 
 	/**
@@ -109,33 +91,62 @@ public class Region {
 	 */
 	public static Region combine(List<Region> list, int width, int height) {
 
-		if (list == null || list.isEmpty()) {
+		if (list == null || list.isEmpty() || width < 0 || height < 0) {
 			throw new IllegalArgumentException();
 		}
 		// Holds the region that will be the result.
-		Region base = null;
+		boolean[][] base = new boolean[width][height];
 
 		// Iterate through all the regions in the list.
 		for (Region region : list) {
 
-			// If the base region is null use the current regions boolean[][] to construct a
-			// new region. Otherwise add the region to the base.
-			if (base == null) {
-				base = new Region(region.object);
-			} else {
-				base.addRegion(region, width, height);
+			// Add the region to the base.
+
+			// Iterate through every element in the region.
+			for (int y = 0; y < region.height; y++) {
+				for (int x = 0; x < region.width; x++) {
+
+					// If the current element in the parameter region is true but this regions's
+					// object is false the set it to true.
+					if (!base[region.x + x][region.y + y] && region.object[x][y]) {
+						base[region.x + x][region.y + y] = true;
+					}
+				}
 			}
 		}
 
-		// If there is a base region, calculate the boundaries of the base region.
-		if (base != null) {
+		return new Region(base, width, height);
+	}
 
-			base.setVerticalBoundaries(width, height);
-			base.setHorizontalBoundaries(width, height);
+	/**
+	 * Retrieves whether or not the specified {@link Point} is inside this region.
+	 * 
+	 * @param point
+	 *            {@link Point}
+	 * @return <code>boolean</code>
+	 */
+	public boolean isInside(Point point) {
 
+		// If the x and y are out side the bounds of the region return false;
+		if (point.x < x && point.x > x + width && point.y < y && point.y > y + height) {
+			return false;
 		}
 
-		return base;
+		return object[point.x - x][point.y - y];
+	}
+
+	/**
+	 * Includes the common code from both constructors.
+	 * 
+	 * @param object
+	 *            The object that will be reduce and stored in this {@link Region}.
+	 * @param width
+	 *            This width of the image this region is a part of.
+	 * @param height
+	 *            This height of the image this region is a part of.
+	 */
+	private void constructor(boolean[][] object, int width, int height) {
+		this.object = new Reducer().reduce(object, width, height);
 	}
 
 	/**
@@ -170,160 +181,281 @@ public class Region {
 	}
 
 	/**
-	 * Assigns the outer horizontal boundaries of the region of pixels given by a
-	 * {@link BufferedImage} and {@link Color}.
+	 * Designed to reduce a <code>boolean[][]</code> from a specified
+	 * <code>int</code> width and <code>int</code> height to the smallest possible
+	 * <code>boolean[][]</code> without loosing any data. This will minimise the
+	 * storage space an increase the efficiency greatly. It also helps construct the
+	 * parent class {@link Region}.<br>
+	 * Using {@link Reducer#reduce(boolean[][], int, int)}<br>
+	 * Resembles the factory pattern.
 	 * 
-	 * @param width
-	 *            {@link BufferedImage#getWidth()}
-	 * @param height
-	 *            {@link BufferedImage#getHeight()}
+	 * @author Joshua_Eddy
+	 *
 	 */
-	private void setHorizontalBoundaries(int width, int height) {
+	private final class Reducer {
 
-		/*
-		 * IMPORTATNT CONCEPT: This methods iterates from the left edge of the image
-		 * (assuming that x grows as you go to the right on the screen) to find the left
-		 * most edge of the shape in the image. Then repeat the process from the right
-		 * edge. The result is a heightx2 table with the top row being the x coordinates
-		 * of the left edge of the regions shape and the bottom row being the x
-		 * coordinates for the right edge of the region shape.
+		/**
+		 * Holds the lower x boundary.
 		 */
+		private int lowerXBoundary;
 
-		// Initialise the horizontal array to be the same length as the height of the
-		// image.
-		horizontalBoundaries = new Integer[height][2];
+		/**
+		 * Holds the upper x boundary.
+		 */
+		private int upperXBoundary;
 
-		// Iterate through each row of the image.
-		for (int rowNum = 0; rowNum < height; rowNum++) {
+		/**
+		 * Holds the upper y boundary.
+		 */
+		private int upperYBoundary;
 
-			// Iterate through each column on the current row.
+		/**
+		 * Holds the lower y boundary.
+		 */
+		private int lowerYBoundary;
+
+		/**
+		 * Reduces a specified <code>boolean[][]</code> from the specified width and
+		 * height to the its smallest possible size without loss of data. This also
+		 * assigns {@link Region#width}, {@link Region#height}, {@link Region#x} and
+		 * {@link Region#y}.
+		 * 
+		 * @param toReduce
+		 * @param width
+		 * @param height
+		 * @return
+		 */
+		public boolean[][] reduce(boolean[][] toReduce, int width, int height) {
+
+			// Initial value is the opposite edge of the image.
+			lowerXBoundary = width;
+			lowerYBoundary = height;
+			upperXBoundary = 0;
+			upperYBoundary = 0;
+
+			setYBoundaries(toReduce, width, height);
+			setXBoundaries(toReduce, width, height);
+
+			return reduceArray(toReduce);
+
+		}
+
+		/**
+		 * Assigns the outer horizontal boundary of the region of pixels given by a
+		 * {@link BufferedImage} and {@link Color}.
+		 * 
+		 * @param toReduce
+		 * 
+		 * @param width
+		 *            {@link BufferedImage#getWidth()}
+		 * @param height
+		 *            {@link BufferedImage#getHeight()}
+		 */
+		private void setXBoundaries(boolean[][] toReduce, int width, int height) {
+
+			/*
+			 * IMPORTATNT CONCEPT: This methods iterates from the left edge of the image
+			 * (assuming that x grows as you go to the right on the screen) to find the left
+			 * most edge of the shape in the image. Then repeat the process from the right
+			 * edge. The result is lowest and and highest x values of valid elements.
+			 */
+
+			// Iterate through each row of the image.
+			for (int rowNum = 0; rowNum < height; rowNum++) {
+
+				getLowerXBoundary(toReduce, rowNum, width);
+
+				getUpperXBoundary(toReduce, rowNum, width);
+
+			}
+
+		}
+
+		/**
+		 * Assigns the outer vertical boundaries of the region of pixels given by a
+		 * {@link BufferedImage} and {@link Color}.
+		 * 
+		 * @param toReduce
+		 * 
+		 * 
+		 * 
+		 * @param width
+		 *            {@link BufferedImage#getWidth()}
+		 * @param height
+		 *            {@link BufferedImage#getHeight()}
+		 */
+		private void setYBoundaries(boolean[][] toReduce, int width, int height) {
+
+			/*
+			 * IMPORTANT CONCEPT: This methods iterates from the bottom edge of the image
+			 * (assuming that y grows as you go down the screen) to find the lowest edge of
+			 * the shape in the image. Then repeat the process from the top edge. The result
+			 * is lowest and and highest y values of valid elements.
+			 */
+
+			// Iterate through each row of the image.
+			for (int colNum = 0; colNum < width; colNum++) {
+
+				getLowerYBoundary(toReduce, colNum, height);
+
+				getUpperYBoundary(toReduce, colNum, height);
+
+			}
+
+		}
+
+		/**
+		 * Assigns {@link Region#lowerXBoundary} by iterating through all the columns in
+		 * the specified row.
+		 * 
+		 * @param toReduce
+		 *            <code>boolean[][]</code> to be reduced in size.
+		 * @param rowNum
+		 *            <code>int</code> index of the row currently being processed by
+		 *            {@link Reducer#setXBoundaries(boolean[][], int, int)}.
+		 * @param width
+		 *            <code>int</code> width of the <code>boolean[][]</code> that is
+		 *            being reduced.
+		 */
+		private void getLowerXBoundary(boolean[][] toReduce, int rowNum, int width) {
+
+			// Iterate through each column on the current row from the right.
 			for (int x = 0; x < width; x++) {
 
-				/*
-				 * If the current column is not at the end of the row and the column to the left
-				 * is false that is the boundary of this row OR if the current column is the end
-				 * of the row and is true it is this rows boundary.
-				 * 
-				 */
-				if (x > 0) {
-					if (!object[x - 1][rowNum]) {
-						horizontalBoundaries[rowNum][0] = x;
-						break;
+				// If the current column is further left that the current left boundary set it
+				// as the new left boundary. And exit the loop.
+				if (toReduce[x][rowNum]) {
+					if (x < lowerXBoundary) {
+						lowerXBoundary = 0;
 					}
-				} else {
-					if (object[x][rowNum]) {
-						horizontalBoundaries[rowNum][0] = x;
-						break;
-					}
+					break;
 				}
-
 			}
 
-			// Iterate through each column on the current row.
+		}
+
+		/**
+		 * Assigns {@link Region#upperXBoundary} by iterating through all the columns in
+		 * the specified row.
+		 * 
+		 * @param toReduce
+		 *            <code>boolean[][]</code> to be reduced in size.
+		 * @param rowNum
+		 *            <code>int</code> index of the row currently being processed by
+		 *            {@link Reducer#setXBoundaries(boolean[][], int, int)}.
+		 * @param width
+		 *            <code>int</code> width of the <code>boolean[][]</code> that is
+		 *            being reduced.
+		 */
+		private void getUpperXBoundary(boolean[][] toReduce, int rowNum, int width) {
+
+			// Iterate through each column on the current row from the left.
 			for (int x = width - 1; x >= 0; x--) {
 
-				/*
-				 * If the current column is not at the end of the row and the column to the
-				 * right is false that is the boundary of this row OR if the current column is
-				 * the end of the row and is true it is this rows boundary.
-				 * 
-				 */
-				if (x < width - 1) {
-					if (!object[x + 1][rowNum]) {
-						horizontalBoundaries[rowNum][1] = x;
-						break;
+				// If the current column is further right that the current right boundary set it
+				// as the new right boundary. And exit the loop.
+				if (toReduce[x][rowNum]) {
+					if (x > upperXBoundary) {
+						upperXBoundary = x;
 					}
-				} else {
-					if (object[x][rowNum]) {
-						horizontalBoundaries[rowNum][1] = x;
-						break;
-					}
+					break;
 				}
 			}
+
 		}
 
-	}
-
-	/**
-	 * Assigns the outer vertical boundaries of the region of pixels given by a
-	 * {@link BufferedImage} and {@link Color}.
-	 * 
-	 * 
-	 * 
-	 * @param width
-	 *            {@link BufferedImage#getWidth()}
-	 * @param height
-	 *            {@link BufferedImage#getHeight()}
-	 */
-	private void setVerticalBoundaries(int width, int height) {
-
-		/*
-		 * IMPORTANT CONCEPT: This methods iterates from the bottom edge of the image
-		 * (assuming that y grows as you go down the screen) to find the lowest edge of
-		 * the shape in the image. Then repeat the process from the top edge. The result
-		 * is a widthx2 table with the top row being the y coordinates of the bottom
-		 * edge of the regions shape and the bottom row being the y coordinates for the
-		 * top edge of the region shape.
+		/**
+		 * Assigns {@link Region#upperYBoundary} by iterating through all the rows in
+		 * the specified column.
+		 * 
+		 * @param toReduce
+		 *            <code>boolean[][]</code> to be reduced in size.
+		 * @param colNum
+		 *            <code>int</code> index of the column currently being processed by
+		 *            {@link Reducer#setYBoundaries(boolean[][], int, int)}.
+		 * @param height
+		 *            <code>int</code> height of the <code>boolean[][]</code> that is
+		 *            being reduced.
 		 */
+		private void getUpperYBoundary(boolean[][] toReduce, int colNum, int height) {
 
-		// Initialise the vertical array to be the same length as the width of the
-		// image.
-		verticalBoundaries = new Integer[width][2];
-
-		// Iterate through each row of the image.
-		for (int colNum = 0; colNum < width; colNum++) {
-
-			// Iterate through each row on the current column.
+			// Iterate through each row on the current column from the bottom.
 			for (int y = 0; y < height; y++) {
 
-				if (y > 0) {
-					if (!object[colNum][y + 1]) {
-						verticalBoundaries[colNum][0] = y;
-						break;
+				if (toReduce[colNum][y]) {
+					if (y < upperYBoundary) {
+						upperYBoundary = y;
 					}
-				} else {
-					if (object[colNum][y]) {
-						verticalBoundaries[colNum][0] = y;
-						break;
-					}
+					break;
 				}
+
 			}
 
-			// Iterate through each row on the current column.
+		}
+
+		/**
+		 * Assigns {@link Region#lowerYBoundary} by iterating through all the rows in
+		 * the specified column.
+		 * 
+		 * @param toReduce
+		 *            <code>boolean[][]</code> to be reduced in size.
+		 * @param colNum
+		 *            <code>int</code> index of the column currently being processed by
+		 *            {@link Reducer#setYBoundaries(boolean[][], int, int)}.
+		 * @param height
+		 *            <code>int</code> height of the <code>boolean[][]</code> that is
+		 *            being reduced.
+		 */
+		private void getLowerYBoundary(boolean[][] toReduce, int colNum, int height) {
+			// Iterate through each row on the current column from the top.
 			for (int y = height - 1; y >= 0; y--) {
 
-				if (y < height - 1) {
-					if (!object[colNum][y + 1]) {
-						verticalBoundaries[colNum][1] = y;
-						break;
+				if (toReduce[colNum][y]) {
+					if (y > lowerYBoundary) {
+						lowerYBoundary = y;
 					}
-				} else {
-					if (object[colNum][y]) {
-						verticalBoundaries[colNum][1] = y;
-						break;
-					}
+					break;
 				}
+
 			}
 		}
 
-	}
+		/**
+		 * Shrinks the size of a specified <code>boolean[][]</code> to its smallest
+		 * possible size based on {@link Reducer#lowerXBoundary},
+		 * {@link Reducer#lowerYBoundary}, {@link Reducer#upperXBoundary} and
+		 * {@link Reducer#upperYBoundary}. Assigns {@link Region#x} and
+		 * {@link Region#y}.
+		 * 
+		 * @param toReduce
+		 *            <code>boolean[][]</code> to be reduced in size.
+		 * @return <code>boolean[][]</code> smallest version of the specified array.
+		 */
+		private boolean[][] reduceArray(boolean[][] toReduce) {
 
-	/**
-	 * Retrieves whether or not the specified {@link Point} is inside this region.
-	 * 
-	 * @param point
-	 *            {@link Point}
-	 * @return <code>boolean</code>
-	 */
-	public boolean isInside(Point point) {
+			// Create the new object array to be the size of the space between the
+			// boundaries.
+			boolean[][] tempObejct = new boolean[upperXBoundary - lowerXBoundary][upperYBoundary - lowerYBoundary];
 
-		// If the x and y are out side the bounds of the region return false;
-		if (point.x < 0 && point.x > horizontalBoundaries.length && point.y < 0
-				&& point.y > verticalBoundaries.length) {
-			return false;
+			// Set the x and y values of the region to the lower boundaries.
+			x = lowerXBoundary;
+			y = lowerYBoundary;
+
+			// Iterate through each row of the object[][]
+			for (int y = lowerYBoundary; y < upperYBoundary; y++) {
+
+				// Iterate through each column of the object[][]
+				for (int x = lowerXBoundary; x < upperXBoundary; x++) {
+
+					// Assign the value of the current element in the object array to its
+					// corresponding position in the new object array.
+					tempObejct[x - lowerXBoundary][y - lowerYBoundary] = toReduce[x][y];
+				}
+			}
+
+			return tempObejct;
+
 		}
 
-		return ((point.x >= horizontalBoundaries[point.y][0] && point.x <= horizontalBoundaries[point.y][1])
-				&& (point.y >= verticalBoundaries[point.x][0] && point.y <= verticalBoundaries[point.x][1]));
 	}
 }

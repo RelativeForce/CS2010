@@ -80,6 +80,7 @@ public class Game {
 		this.processTransfer = ProcessTransfer.getInstane();
 		this.endTurn = false;
 		this.run = true;
+		this.ui = UserInterface.newUI(this);
 
 		// Read the Board and Objectives from the files.
 		File currentDirectory = new File(System.getProperty("user.dir"));
@@ -285,7 +286,7 @@ public class Game {
 		toRemove.forEach(challenge -> challenges.remove(challenge));
 	}
 
-	/*
+	/**
 	 * Performs all the tasks that occur at the end of a round.
 	 */
 	private void endRound() {

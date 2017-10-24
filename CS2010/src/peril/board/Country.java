@@ -1,5 +1,6 @@
 package peril.board;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -51,50 +52,35 @@ public class Country implements Viewable {
 	private VisualRepresentation visual;
 
 	/**
-	 * Holds the name of the {@link Country}.
-	 */
-	private String name;
-
-	/**
-	 * Constructs a new {@link Country}.
-	 * 
-	 * @param name
-	 *            of the {@link Country}.
-	 */
-	public Country(String name) {
-		this.neighbours = new LinkedList<Country>();
-		this.ruler = null;
-		this.army = new Army(1);
-		this.visual = new Visual();
-		this.name = name;
-	}
-
-	/**
-	 * Returns the name of the {@link Country}.
-	 * 
-	 * @return name.
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Sets the current {@link Ruler} of this {@link Country}.
+	 * Constructs a new {@link Continent}.
 	 * 
 	 * @param ruler
-	 *            {@link Player}
+	 *            The {@link Player} ruler of this {@link Country}.
+	 * @param army
+	 *            The {@link Army} stationed at this {@link Country}.
+	 * @param neighbours
+	 *            The array of {@link Country}(s) that this country is linked
+	 *            to.
 	 */
-	public void setRuler(Player ruler) {
-		this.ruler = ruler;
+	public Country(Player ruler, Army army, Country[] neighbours) {
+		constrcutor(ruler);
+
+		// Adds all the neighbours to the list.
+		this.neighbours.addAll(Arrays.asList(neighbours));
 	}
 
 	/**
-	 * Retrieves the {@link Army} at this {@link Country}.
+	 * Constructs a new {@link Continent} with a specified initial ruler and
+	 * army.
 	 * 
-	 * @return {@link Country#army}.
+	 * @param ruler
+	 *            The {@link Player} ruler of this {@link Country}.
+	 * @param army
+	 *            The {@link Army} stationed at this {@link Country}.
 	 */
-	public Army getArmy() {
-		return army;
+	public Country(Player ruler, Army army) {
+		constrcutor(ruler);
+
 	}
 
 	/**
@@ -108,20 +94,19 @@ public class Country implements Viewable {
 	}
 
 	/**
-	 * Performs the end round operation for this {@link Country}.
-	 */
-	public void endRound(EnvironmentalHazard hazard) {
-		army.setSize(army.getSize() + 1);
-		hazard.act(army);
-	}
-
-	/**
-	 * Retrieves the {@link Player} the rules <code>this</code> {@link Country}.
+	 * Performs the actions shared by all the constructors of {@link Country}.
 	 * 
-	 * @return {@link Country#ruler}.
+	 * @param ruler
+	 *            The {@link Player} ruler of this {@link Country}.
+	 * @see java.util.LinkedList
 	 */
-	public Player getRuler() {
-		return ruler;
+	private void constrcutor(Player ruler) {
+
+		// Assign the common fields.
+		this.neighbours = new LinkedList<Country>();
+		this.ruler = ruler;
+		this.army = new Army();
+		this.visual = new Visual();
 	}
 
 	@Override

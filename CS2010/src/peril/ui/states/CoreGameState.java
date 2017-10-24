@@ -35,7 +35,7 @@ public class CoreGameState extends BasicGameState {
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-
+		
 	}
 
 	@Override

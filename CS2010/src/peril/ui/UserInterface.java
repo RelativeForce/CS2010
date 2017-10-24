@@ -49,8 +49,8 @@ public class UserInterface extends StateBasedGame {
 		this.combatState = new CombatState();
 		this.setupState = new SetupState();
 		this.reinforcementState = new ReinforcementState();
-		this.movementState =  new MovementState();;
-		this.endState =  new EndState();
+		this.movementState = new MovementState();
+		this.endState = new EndState();
 		this.game = game;
 	}
 
@@ -66,13 +66,19 @@ public class UserInterface extends StateBasedGame {
 		if (super.getCurrentState().getID() == combatState.getID()) {
 
 			// Handle displaying the winner of the game.
-			combatState.displayWinner(player);
+			endState.displayWinner(player);
 		}
 
 	}
 
+	/**
+	 * Displays turn of the current player, or setup/end gamestate.
+	 * 
+	 * @param player
+	 *            {@link Player} who's turn it is.
+	 */
 	public void displayTurn(Player player) {
-
+		
 	}
 
 	/**
@@ -114,12 +120,5 @@ public class UserInterface extends StateBasedGame {
 		addState(movementState);
 		addState(endState);
 	}
-
-	/**
-	 * Displays the reenforcement game state.
-	 * 
-	 * @param player
-	 *            {@link Player} who's turn it is.
-	 */
 
 }

@@ -44,7 +44,7 @@ public class Game {
 	/**
 	 * The current turn of the {@link Game}. Initially zero;
 	 */
-	private int currentRound;
+	private volatile int currentRound;
 
 	/**
 	 * Holds all the players in an iterable array.
@@ -54,7 +54,7 @@ public class Game {
 	/**
 	 * The {@link Player} who's turn it is.
 	 */
-	private int currentPlayerIndex;
+	private volatile int currentPlayerIndex;
 
 	/**
 	 * Contains all the objectives that a {@link Player} can attain in the game.

@@ -102,7 +102,7 @@ public class Game {
 	 * 
 	 * @return <code>int</code>
 	 */
-	public int getTurnNumber() {
+	public int getRoundNumber() {
 		return currentRound;
 	}
 

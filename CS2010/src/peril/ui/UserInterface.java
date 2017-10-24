@@ -31,7 +31,7 @@ public class UserInterface extends StateBasedGame {
 
 	}
 
-	public void initStatesList(GameContainer gc) throws SlickException {
+	public void initStatesList(GameContainer container) throws SlickException {
 		addState(new CoreGameState());
 	}
 

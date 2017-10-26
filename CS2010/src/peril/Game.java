@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import peril.board.Board;
+import peril.Point;
 import peril.io.MapReader;
 import peril.multiThread.Action;
 import peril.multiThread.ProcessTransfer;

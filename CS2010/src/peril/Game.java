@@ -134,6 +134,8 @@ public class Game {
 				endRound();
 			}
 		}
+		
+		displayWinner(getCurrentPlayer());
 
 	}
 

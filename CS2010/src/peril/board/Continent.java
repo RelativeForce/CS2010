@@ -1,7 +1,12 @@
 package peril.board;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import peril.Player;
+import peril.Point;
 import peril.ui.Viewable;
-import peril.ui.VisualRepresenation;
+import peril.ui.VisualRepresentation;
 
 /**
  * Encapsulates the behaviour of a continent on the {@link Board}.
@@ -22,23 +27,65 @@ public final class Continent implements Viewable {
 	/**
 	 * Holds the {@link Countries} that comprise this {@link Continent}.
 	 */
-	private Country[] countries;
-	
+	private List<Country> countries;
+
+	/**
+	 * The {@link EnvironmentalHazard} that may affect this {@link Continent}.
+	 */
+	private EnvironmentalHazard hazard;
+
+	/**
+	 * The {@link name} of the {@link Continent}.
+	 */
+	private String name;
+
+	/**
+	 * The current {@link Player} that rules all {@link Country}s in this
+	 * {@link Continent}. If all the {@link Country}s in this {@link Continent} are
+	 * NOT ruled by the same {@link Player} then this is <code>null</code>. This is
+	 * determined in {@link Continent#isRuled()}.
+	 * 
+	 */
+	private Player ruler;
+
 	/**
 	 * Holds the visual representation of the {@link Continent}.
-	 * @see VisualRepresenation
+	 * 
+	 * @see VisualRepresentation
 	 */
-	private VisualRepresenation visual;
+	private VisualRepresentation visual;
 
 	/**
 	 * Constructs a new {@link Continent}.
+	 * 
 	 * @param countries
 	 */
-	public Continent(Country[] countries) {
+	public Continent(EnvironmentalHazard hazard, String name) {
 
-		this.countries = countries;
+		this.countries = new LinkedList<Country>();
+		this.hazard = hazard;
 		this.visual = new Visual();
+		this.ruler = null;
+		this.name = name;
 
+	}
+
+	/**
+	 * Adds a {@link Country} to the {@link Continent}.
+	 * 
+	 * @param country
+	 */
+	public void addCountry(Country country) {
+		countries.add(country);
+	}
+
+	/**
+	 * Returns the {@link Name} of the {@link Continent}.
+	 * 
+	 * @return
+	 */
+	public String getName() {
+		return name;
 	}
 
 	/**
@@ -46,14 +93,70 @@ public final class Continent implements Viewable {
 	 * 
 	 * @author Joshua_Eddy
 	 *
-	 *@see VisualRepresenation
+	 * @see VisualRepresentation
 	 */
-	private class Visual extends VisualRepresenation {
+	private class Visual extends VisualRepresentation {
+
+	}
+
+	/**
+	 * Determines and retrieves whether or not one {@link Player} rules all the
+	 * {@link Country}s in this {@link Continent}.
+	 * 
+	 * @return whether the ruler rules all {@link Country}s in the
+	 *         {@link Continent}.
+	 */
+	public boolean isRuled() {
+		// TODO: Whether all the countries are ruled by a particular player.
+		return ruler != null;
+	}
+
+	/**
+	 * Returns the current {@link Player} ruling this {@link Continent}.
+	 * 
+	 * @return {@link Player}.
+	 */
+	public Player getRuler() {
+		return ruler;
+	}
+
+	/**
+	 * Retrieves the country using a specified {@link Point} by iterating through
+	 * all the {@link Country}s in the {@link Continent} and checks if the specifies
+	 * {@link Point} is inside a {@link Country}.
+	 * 
+	 * @param click
+	 *            {@link Point}.
+	 * @return {@link Country}.
+	 */
+	public Country getCountry(Point click) {
+
+		// Iterates through all the countries in this continent.
+		for (Country currentCountry : countries) {
+
+			// Checks if the specifies click is inside the bounds of the current country.
+			if (currentCountry.getVisual().isClicked(click)) {
+				return currentCountry;
+			}
+		}
+		// Will return null if the click is not inside a country.
+		return null;
+	}
+
+	/**
+	 * Iterates through all the @{@link Country}s in the {@link Continent} and
+	 * performs their end of round operations.
+	 */
+	public void endRound() {
+		countries.forEach(currentCountry -> currentCountry.endRound(hazard));
+	}
+
+	public void executeTurn() {
 
 	}
 
 	@Override
-	public VisualRepresenation getVisual() {
+	public VisualRepresentation getVisual() {
 		return visual;
 	}
 

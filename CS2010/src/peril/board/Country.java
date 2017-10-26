@@ -1,12 +1,11 @@
 package peril.board;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import peril.Player;
 import peril.ui.Viewable;
-import peril.ui.VisualRepresenation;
+import peril.ui.VisualRepresentation;
 
 /**
  * Encapsulates the behaviour of a Country. Countries:
@@ -47,40 +46,55 @@ public class Country implements Viewable {
 	/**
 	 * Holds the visual representation of the {@link Country}.
 	 * 
-	 * @see VisualRepresenation
+	 * @see VisualRepresentation
 	 */
-	private VisualRepresenation visual;
+	private VisualRepresentation visual;
 
 	/**
-	 * Constructs a new {@link Continent}.
-	 * 
-	 * @param ruler
-	 *            The {@link Player} ruler of this {@link Country}.
-	 * @param army
-	 *            The {@link Army} stationed at this {@link Country}.
-	 * @param neighbours
-	 *            The array of {@link Country}(s) that this country is linked
-	 *            to.
+	 * Holds the name of the {@link Country}.
 	 */
-	public Country(Player ruler, Army army, Country[] neighbours) {
-		constrcutor(ruler);
+	private String name;
 
-		// Adds all the neighbours to the list.
-		this.neighbours.addAll(Arrays.asList(neighbours));
+	/**
+	 * Constructs a new {@link Country}.
+	 * 
+	 * @param name
+	 *            of the {@link Country}.
+	 */
+	public Country(String name) {
+		this.neighbours = new LinkedList<Country>();
+		this.ruler = null;
+		this.army = new Army(1);
+		this.visual = new Visual();
+		this.name = name;
 	}
 
 	/**
-	 * Constructs a new {@link Continent} with a specified initial ruler and
-	 * army.
+	 * Returns the name of the {@link Country}.
+	 * 
+	 * @return name.
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Sets the current {@link Ruler} of this {@link Country}.
 	 * 
 	 * @param ruler
-	 *            The {@link Player} ruler of this {@link Country}.
-	 * @param army
-	 *            The {@link Army} stationed at this {@link Country}.
+	 *            {@link Player}
 	 */
-	public Country(Player ruler, Army army) {
-		constrcutor(ruler);
+	public void setRuler(Player ruler) {
+		this.ruler = ruler;
+	}
 
+	/**
+	 * Retrieves the {@link Army} at this {@link Country}.
+	 * 
+	 * @return {@link Country#army}.
+	 */
+	public Army getArmy() {
+		return army;
 	}
 
 	/**
@@ -94,23 +108,24 @@ public class Country implements Viewable {
 	}
 
 	/**
-	 * Performs the actions shared by all the constructors of {@link Country}.
-	 * 
-	 * @param ruler
-	 *            The {@link Player} ruler of this {@link Country}.
-	 * @see java.util.LinkedList
+	 * Performs the end round operation for this {@link Country}.
 	 */
-	private void constrcutor(Player ruler) {
+	public void endRound(EnvironmentalHazard hazard) {
+		army.setSize(army.getSize() + 1);
+		hazard.act(army);
+	}
 
-		// Assign the common fields.
-		this.neighbours = new LinkedList<Country>();
-		this.ruler = ruler;
-		this.army = new Army();
-		this.visual = new Visual();
+	/**
+	 * Retrieves the {@link Player} the rules <code>this</code> {@link Country}.
+	 * 
+	 * @return {@link Country#ruler}.
+	 */
+	public Player getRuler() {
+		return ruler;
 	}
 
 	@Override
-	public VisualRepresenation getVisual() {
+	public VisualRepresentation getVisual() {
 		return visual;
 	}
 
@@ -119,9 +134,9 @@ public class Country implements Viewable {
 	 * 
 	 * @author Joshua_Eddy
 	 *
-	 * @see VisualRepresenation
+	 * @see VisualRepresentation
 	 */
-	private class Visual extends VisualRepresenation {
+	private class Visual extends VisualRepresentation {
 
 	}
 

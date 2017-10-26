@@ -3,7 +3,7 @@ Peril by The Strategic Goats
 
 Team Members by Git Username - Aston Username - Full Name:
 
-	Necrogear - rollij - Joseph Rolli,
+	Necrogear - rollij - Joseph Rolli
 
 	RelativeForce - eddyjic - Joshua Eddy
 

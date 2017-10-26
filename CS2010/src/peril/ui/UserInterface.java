@@ -38,7 +38,7 @@ public class UserInterface extends StateBasedGame {
 	private final ReinforcementState reinforcementState;
 	private final MovementState movementState;
 	private final EndState endState;
-	private final UIEventHandler eventHandler;
+
 
 	/**
 	 * Constructs a new {@link UserInterface}.
@@ -49,13 +49,12 @@ public class UserInterface extends StateBasedGame {
 	 */
 	private UserInterface(Game game) {
 		super("PERIL: A Turn Based Strategy Game");
-		this.combatState = new CombatState(game);
-		this.setupState = new SetupState(game);
-		this.reinforcementState = new ReinforcementState(game);
-		this.movementState = new MovementState(game);
-		this.endState = new EndState(game);
+		this.combatState = new CombatState(game, this);
+		this.setupState = new SetupState(game, this);
+		this.reinforcementState = new ReinforcementState(game, this);
+		this.movementState = new MovementState(game, this);
+		this.endState = new EndState(game, this);
 		this.game = game;
-		this.eventHandler = new UIEventHandler(this);
 	}
 
 	/**
@@ -127,8 +126,6 @@ public class UserInterface extends StateBasedGame {
 	 */
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
-		container.getInput().addKeyListener(eventHandler);
-		container.getInput().addMouseListener(eventHandler);
 		addState(setupState);
 		addState(combatState);
 		addState(reinforcementState);

@@ -1,11 +1,12 @@
 package peril.ui.states;
 
 import peril.Game;
+import peril.ui.UserInterface;
 
 public class ReinforcementState extends CoreGameState {
 
-	public ReinforcementState(Game game) {
-		super(game);
+	public ReinforcementState(Game game, UserInterface ui) {
+		super(game, ui);
 		stateName = "Reinforcement";
 	}
 

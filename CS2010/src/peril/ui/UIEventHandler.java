@@ -1,10 +1,13 @@
 package peril.ui;
 
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.MouseListener;
 
 import peril.board.Board;
+import peril.board.Country;
+import peril.Game;
 import peril.Point;
 
 /**
@@ -18,12 +21,15 @@ import peril.Point;
 public class UIEventHandler implements MouseListener, KeyListener {
 
 	private UserInterface ui;
-	
-	public UIEventHandler(UserInterface ui) {
-		if(ui == null)throw new IllegalArgumentException("UserInterface cannot be null");
+	private Game game;
+
+	public UIEventHandler(UserInterface ui, Game game) {
+		if (ui == null)
+			throw new IllegalArgumentException("UserInterface cannot be null");
 		this.ui = ui;
+		this.game = game;
 	}
-	
+
 	@Override
 	public void inputEnded() {
 		// TODO Auto-generated method stub
@@ -39,7 +45,7 @@ public class UIEventHandler implements MouseListener, KeyListener {
 	@Override
 	public boolean isAcceptingInput() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
@@ -50,32 +56,38 @@ public class UIEventHandler implements MouseListener, KeyListener {
 
 	@Override
 	public void mouseClicked(int button, int x, int y, int clickCount) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void mouseDragged(int oldx, int oldy, int newx, int newy) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseMoved(int oldx, int oldy, int newx, int newy) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mousePressed(int button, int x, int y) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseReleased(int button, int x, int y) {
-		// TODO Auto-generated method stub
-
+		
+		Board b = game.getBoard();
+		if (b != null) {
+			Image i = b.getVisual().getImage();
+			
+			int newY = i.getHeight() - y;
+			
+			Country c = b.getCountry(new Point(x, y));
+			if (c != null) {
+				System.out.println(c.getName());
+			}
+		}
 	}
 
 	@Override
@@ -85,8 +97,8 @@ public class UIEventHandler implements MouseListener, KeyListener {
 	}
 
 	/**
-	 * Converts a {@link Point} of the mouse into a {@link Point} relative to
-	 * the {@link Board}.
+	 * Converts a {@link Point} of the mouse into a {@link Point} relative to the
+	 * {@link Board}.
 	 * 
 	 * @param mouse
 	 *            {@link Point} of the mouse in the {@link UserInterface}.

@@ -1,18 +1,15 @@
 package peril.ui.states;
 
-import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
-
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-
 import peril.Game;
-import peril.Player;
+import peril.Point;
 import peril.board.Board;
+import peril.ui.UIEventHandler;
 import peril.ui.UserInterface;
 import peril.ui.VisualRepresentation;
 
@@ -28,9 +25,13 @@ public abstract class CoreGameState extends BasicGameState {
 	protected String stateName;
 	private Game game;
 	private Image board;
+	private final UIEventHandler eventHandler;
+	private int x;
+	private int y;
 
-	protected CoreGameState(Game game) {
+	protected CoreGameState(Game game, UserInterface ui) {
 		this.game = game;
+		this.eventHandler = new UIEventHandler(ui, game);
 
 	}
 
@@ -42,6 +43,8 @@ public abstract class CoreGameState extends BasicGameState {
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		gc.setUpdateOnlyWhenVisible(true);
+		gc.getInput().addKeyListener(eventHandler);
+		gc.getInput().addMouseListener(eventHandler);
 
 	}
 
@@ -57,7 +60,7 @@ public abstract class CoreGameState extends BasicGameState {
 			if (vr != null) {
 
 				board = vr.getImage();
-				
+
 				if (board != null) {
 
 					g.drawImage(board, 0, 0);
@@ -70,11 +73,15 @@ public abstract class CoreGameState extends BasicGameState {
 		}
 
 		g.drawString(stateName, 5, 50);
+		g.drawString("X" + x + "Y" + y, 700, 700);
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-
+		if (gc.getInput().isMouseButtonDown(0)) {
+			x = gc.getInput().getMouseX();
+			y = gc.getInput().getMouseY();
+		}
 	}
 
 	public String getStateName() {

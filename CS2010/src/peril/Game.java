@@ -82,11 +82,21 @@ public class Game {
 		this.run = true;
 		this.ui = UserInterface.newUI(this);
 
+		// this.challenges = ChallengeReader.getChallenges(currentDirectory.getPath(),
+		// "Earth");
+
+	}
+
+	/**
+	 * Starts the UI and reads the Board.
+	 */
+	private void init() {
+
 		// Read the Board and Objectives from the files.
 		File currentDirectory = new File(System.getProperty("user.dir"));
 		this.board = MapReader.getBoard(currentDirectory.getPath(), "Earth");
-		//this.challenges = ChallengeReader.getChallenges(currentDirectory.getPath(), "Earth");
 
+		this.ui.start();
 	}
 
 	/**
@@ -123,7 +133,6 @@ public class Game {
 
 		// While the game is being played.
 		while (run) {
-			
 
 			displayTurn(getCurrentPlayer());
 
@@ -137,7 +146,7 @@ public class Game {
 				endRound();
 			}
 		}
-		
+
 		displayWinner(getCurrentPlayer());
 
 	}
@@ -292,7 +301,9 @@ public class Game {
 
 		// Create the instance of the game.
 		Game game = new Game();
+		game.init();
 		game.play();
+		
 
 	}
 

@@ -35,10 +35,9 @@ public final class Army {
 	 */
 	public void setSize(int size){
 		if (size < 0) {
-			this.size = size;
-		} else {
 			throw new IllegalArgumentException("Size must be greater than zero");
-		}
+		}	
+		this.size = size;
 	}
 	
 	/**

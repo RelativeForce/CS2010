@@ -49,7 +49,7 @@ public class ImageReader {
 			return ImageIO.read(file);
 
 		} catch (IOException e) {
-
+			System.out.println("Error: Iamge NOT Found.");
 			e.printStackTrace();
 			return null;
 		}
@@ -79,7 +79,7 @@ public class ImageReader {
 		int height = rawImage.getHeight();
 
 		// Get the image buffer.
-		ImageBuffer imgbuff = new ImageBuffer(rawImage.getWidth(), height);
+		ImageBuffer imgbuff = new ImageBuffer(width, height);
 
 		// Iterate through the entire image and copy all the pixels into the image
 		// buffer.

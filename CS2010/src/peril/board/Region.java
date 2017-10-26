@@ -383,8 +383,9 @@ public final class Region {
 			for (int y = 0; y < height; y++) {
 
 				if (toReduce[colNum][y]) {
-					if (y < upperYBoundary) {
-						upperYBoundary = y;
+					
+					if (y < lowerYBoundary) {
+						lowerYBoundary = y;
 					}
 					break;
 				}
@@ -411,8 +412,8 @@ public final class Region {
 			for (int y = height - 1; y >= 0; y--) {
 
 				if (toReduce[colNum][y]) {
-					if (y > lowerYBoundary) {
-						lowerYBoundary = y;
+					if (y > upperYBoundary) {
+						upperYBoundary = y;
 					}
 					break;
 				}
@@ -435,7 +436,7 @@ public final class Region {
 
 			// Create the new object array to be the size of the space between the
 			// boundaries.
-			boolean[][] tempObejct = new boolean[upperXBoundary - lowerXBoundary][upperYBoundary - lowerYBoundary];
+			boolean[][] tempObject = new boolean[upperXBoundary - lowerXBoundary][upperYBoundary - lowerYBoundary];
 
 			// Set the x and y values of the region to the lower boundaries.
 			x = lowerXBoundary;
@@ -449,11 +450,11 @@ public final class Region {
 
 					// Assign the value of the current element in the object array to its
 					// corresponding position in the new object array.
-					tempObejct[x - lowerXBoundary][y - lowerYBoundary] = toReduce[x][y];
+					tempObject[x - lowerXBoundary][y - lowerYBoundary] = toReduce[x][y];
 				}
 			}
 
-			return tempObejct;
+			return tempObject;
 
 		}
 

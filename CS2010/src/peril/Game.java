@@ -3,8 +3,6 @@ package peril;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.LinkedTransferQueue;
 
 import peril.board.Board;
 import peril.io.MapReader;

@@ -88,7 +88,7 @@ public class ImageReader {
 
 				// Get the RGB values from the BufferedImage and put them in the ImageBuffer.
 				Color col = new Color(rawImage.getRGB(x, y));
-				imgbuff.setRGBA(x, y, col.getRed(), col.getGreen(), col.getBlue(), Color.OPAQUE);
+				imgbuff.setRGBA(x, y, col.getRed(), col.getGreen(), col.getBlue(), 255);
 			}
 		}
 

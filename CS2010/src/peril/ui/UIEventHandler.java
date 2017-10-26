@@ -1,67 +1,114 @@
 package peril.ui;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import org.newdawn.slick.Input;
+import org.newdawn.slick.KeyListener;
+import org.newdawn.slick.MouseListener;
+
+import peril.board.Board;
+import peril.Point;
 
 /**
  * Handles all the interactions that the user will cause using the
  * {@link UserInterface}.
  * 
- * @author Joshua_Eddy
+ * @author Joshua_Eddy, Adrian_Wong
  *
- * @see KeyListener
  * @see MouseListener
  */
-public class UIEventHandler implements KeyListener, MouseListener {
+public class UIEventHandler implements MouseListener, KeyListener {
 
+	private UserInterface ui;
+	
+	public UIEventHandler(UserInterface ui) {
+		if(ui == null)throw new IllegalArgumentException("UserInterface cannot be null");
+		this.ui = ui;
+	}
+	
 	@Override
-	public void mouseClicked(MouseEvent event) {
+	public void inputEnded() {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent event) {
+	public void inputStarted() {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void mouseExited(MouseEvent event) {
+	public boolean isAcceptingInput() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setInput(Input input) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void mousePressed(MouseEvent event) {
+	public void mouseClicked(int button, int x, int y, int clickCount) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
+	public void mouseDragged(int oldx, int oldy, int newx, int newy) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void keyPressed(KeyEvent e) {
+	public void mouseMoved(int oldx, int oldy, int newx, int newy) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
+	public void mousePressed(int button, int x, int y) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
+	public void mouseReleased(int button, int x, int y) {
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public void mouseWheelMoved(int change) {
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
+	 * Converts a {@link Point} of the mouse into a {@link Point} relative to
+	 * the {@link Board}.
+	 * 
+	 * @param mouse
+	 *            {@link Point} of the mouse in the {@link UserInterface}.
+	 */
+	private void convertToBoardPosition(Point mouse) {
+
+	}
+
+	@Override
+	public void keyPressed(int key, char c) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void keyReleased(int key, char c) {
+		// TODO Auto-generated method stub
+
+	}
+
+	// TODO private Button getButtonByClick(){}
+
+	// TODO private void executeButtonPress(Button button){}
 
 }

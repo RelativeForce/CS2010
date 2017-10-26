@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.newdawn.slick.geom.Shape;
+
 import peril.board.Board;
 import peril.io.MapReader;
 import peril.multiThread.Action;
@@ -83,7 +85,7 @@ public class Game {
 		// Read the Board and Objectives from the files.
 		File currentDirectory = new File(System.getProperty("user.dir"));
 		this.board = MapReader.getBoard(currentDirectory.getPath(), "Earth");
-		this.challenges = ChallengeReader.getChallenges(currentDirectory.getPath(), "Earth");
+		//this.challenges = ChallengeReader.getChallenges(currentDirectory.getPath(), "Earth");
 
 	}
 
@@ -121,6 +123,7 @@ public class Game {
 
 		// While the game is being played.
 		while (run) {
+			
 
 			displayTurn(getCurrentPlayer());
 
@@ -146,30 +149,6 @@ public class Game {
 	 */
 	private void run() {
 		// TODO Background stuff.
-	}
-
-	/**
-	 * Parses a click on the {@link Game#board}.
-	 * 
-	 * @param click
-	 *            A {@link Point} on the {@link Game#board} that the player clicked.
-	 *            If the {@link Point} is outside the {@link Board} bounds this
-	 *            throws an {@link IllegalArgumentException}.
-	 */
-	public void parseInput(Point click) {
-		// TODO Parse click
-	}
-
-	/**
-	 * Parses a key press on the {@link Game#board}.
-	 * 
-	 * @param code
-	 *            A integer representation of a key using
-	 *            {@link org.lwjgl.input.Keyboard}. If the key pressed in not valid
-	 *            this method does nothing.
-	 */
-	public void parseInput(int code) {
-		// TODO Parse input
 	}
 
 	/**

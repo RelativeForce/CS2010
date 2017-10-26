@@ -5,6 +5,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import org.newdawn.slick.Image;
+
+import org.newdawn.slick.ImageBuffer;
 
 import peril.board.Region;
 
@@ -66,24 +69,30 @@ public class ImageReader {
 	 *            The file path of an image.
 	 * @return <code>Integer[][]</code>
 	 */
-	public static Integer[][] getImage(String path) {
+	public static Image getImage(String path) {
 
 		// Holds the raw image retrieved from the image reader.
 		BufferedImage rawImage = new ImageReader(path).readImage();
 
-		// Holds the images RGB values
-		Integer[][] image = new Integer[rawImage.getWidth()][rawImage.getHeight()];
+		// Holds the width and height of the image.
+		int width = rawImage.getWidth();
+		int height = rawImage.getHeight();
 
-		/*
-		 * Iterate through the entire image and assign each pixels RGB value to its
-		 * corresponding position in the image array.
-		 */
-		for (int y = 0; y < rawImage.getHeight(); y++) {
-			for (int x = 0; x < rawImage.getWidth(); x++) {
-				image[x][y] = rawImage.getRGB(x, y);
+		// Get the image buffer.
+		ImageBuffer imgbuff = new ImageBuffer(rawImage.getWidth(), height);
+
+		// Iterate through the entire image and copy all the pixels into the image
+		// buffer.
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+
+				// Get the RGB values from the BufferedImage and put them in the ImageBuffer.
+				Color col = new Color(rawImage.getRGB(x, y));
+				imgbuff.setRGBA(x, y, col.getRed(), col.getGreen(), col.getBlue(), Color.OPAQUE);
 			}
 		}
-		return image;
+
+		return imgbuff.getImage();
 	}
 
 }

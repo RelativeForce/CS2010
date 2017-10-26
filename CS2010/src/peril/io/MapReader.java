@@ -5,6 +5,8 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.newdawn.slick.Image;
+
 import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
@@ -48,7 +50,7 @@ public class MapReader {
 	/**
 	 * The image of the {@link Board}.
 	 */
-	private Integer[][] normalMap;
+	private Image normalMap;
 
 	/**
 	 * Constructs a new {@link MapReader}.

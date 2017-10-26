@@ -57,6 +57,7 @@ public abstract class CoreGameState extends BasicGameState {
 			if (vr != null) {
 
 				board = vr.getImage();
+				
 				if (board != null) {
 
 					g.drawImage(board, 0, 0);

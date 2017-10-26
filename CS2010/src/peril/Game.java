@@ -90,13 +90,10 @@ public class Game {
 	/**
 	 * Starts the UI and reads the Board.
 	 */
-	private void init() {
-
+	public void init() {
 		// Read the Board and Objectives from the files.
 		File currentDirectory = new File(System.getProperty("user.dir"));
 		this.board = MapReader.getBoard(currentDirectory.getPath(), "Earth");
-
-		this.ui.start();
 	}
 
 	/**
@@ -301,9 +298,9 @@ public class Game {
 
 		// Create the instance of the game.
 		Game game = new Game();
+		game.ui.start();
 		game.init();
 		game.play();
-		
 
 	}
 

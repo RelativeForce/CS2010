@@ -1,8 +1,9 @@
 package peril.board;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
 import java.util.List;
+
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Image;
 
 import peril.Point;
 
@@ -56,7 +57,7 @@ public final class Region {
 	 * 
 	 * @see environment.graphics.objects.GraphicalObject
 	 */
-	public Region(BufferedImage image, Color colour) {
+	public Region(Image image, Color colour) {
 		constructor(getRegion(image, colour), image.getWidth(), image.getHeight());
 	}
 
@@ -160,7 +161,7 @@ public final class Region {
 	 *            {@link Color}
 	 * @return <code>boolean[][]</code>
 	 */
-	private boolean[][] getRegion(BufferedImage image, Color color) {
+	private boolean[][] getRegion(Image image, Color color) {
 
 		// Holds the array of booleans initially all elements are set to false
 		boolean[][] object = new boolean[image.getWidth()][image.getHeight()];
@@ -171,7 +172,7 @@ public final class Region {
 
 			for (int x = 0; x < image.getWidth(); x++) {
 
-				if (color.getRGB() == image.getRGB(x, y)) {
+				if (color.equals(image.getColor(x, y)) ) {
 					object[x][y] = true;
 				}
 			}

@@ -299,7 +299,6 @@ public class Game {
 		// Create the instance of the game.
 		Game game = new Game();
 		game.ui.start();
-		game.init();
 		game.play();
 
 	}

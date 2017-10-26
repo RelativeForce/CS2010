@@ -1,13 +1,8 @@
 package peril.io;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
-import org.newdawn.slick.ImageBuffer;
 
 import peril.board.Region;
 
@@ -22,7 +17,7 @@ public class ImageReader {
 	/**
 	 * The {@link File} that denotes the image this {@link ImageReader} will read.
 	 */
-	private final File file;
+	private final String path;
 
 	/**
 	 * Constructs a new {@link ImageReader}.
@@ -32,7 +27,7 @@ public class ImageReader {
 	 */
 	private ImageReader(final String path) {
 
-		file = new File(path);
+		this.path = path;
 	}
 
 	/**
@@ -40,15 +35,15 @@ public class ImageReader {
 	 * 
 	 * @return {@link BufferedImage}
 	 */
-	private BufferedImage readImage() {
+	private Image readImage() {
 
 		// Attempt to read the specified file and if there is an exception thrown return
 		// null.
 		try {
 
-			return ImageIO.read(file);
+			return new Image(path);
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.out.println("Error: Iamge NOT Found.");
 			e.printStackTrace();
 			return null;
@@ -57,6 +52,8 @@ public class ImageReader {
 
 	public static Region getColourRegion(String path, Color colour) {
 
+		
+		
 		return new Region(new ImageReader(path).readImage(), colour);
 
 	}
@@ -70,29 +67,11 @@ public class ImageReader {
 	 * @return <code>Integer[][]</code>
 	 */
 	public static Image getImage(String path) {
-
+		
 		// Holds the raw image retrieved from the image reader.
-		BufferedImage rawImage = new ImageReader(path).readImage();
+		return new ImageReader(path).readImage();
 
-		// Holds the width and height of the image.
-		int width = rawImage.getWidth();
-		int height = rawImage.getHeight();
-
-		// Get the image buffer.
-		ImageBuffer imgbuff = new ImageBuffer(width, height);
-
-		// Iterate through the entire image and copy all the pixels into the image
-		// buffer.
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-
-				// Get the RGB values from the BufferedImage and put them in the ImageBuffer.
-				Color col = new Color(rawImage.getRGB(x, y));
-				imgbuff.setRGBA(x, y, col.getRed(), col.getGreen(), col.getBlue(), 255);
-			}
-		}
-
-		return imgbuff.getImage();
+		
 	}
 
 }

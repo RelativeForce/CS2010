@@ -3,7 +3,7 @@ package peril.io;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
-
+import peril.board.Board;
 import peril.board.Region;
 
 /**
@@ -50,12 +50,14 @@ public class ImageReader {
 		}
 	}
 
+	/**
+	 * Retrieves a {@link Region} of the {@link Board} denoted by a {@link Color}.
+	 * @param path <code>String</code> path of the {@link Image} file.
+	 * @param colour {@link Color} that denotes this region on the board.
+	 * @return {@link Region}.
+	 */
 	public static Region getColourRegion(String path, Color colour) {
-
-		
-		
 		return new Region(new ImageReader(path).readImage(), colour);
-
 	}
 
 	/**

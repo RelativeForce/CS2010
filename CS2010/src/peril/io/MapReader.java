@@ -84,7 +84,7 @@ public class MapReader {
 		Board newBoard = new Board(reader.continents);
 
 		// Set the normal map as the visual image of the visual representation.
-		newBoard.getVisual().setImage(0, 0, reader.normalMap);
+		newBoard.setImage(0, 0, reader.normalMap);
 
 		return newBoard;
 	}

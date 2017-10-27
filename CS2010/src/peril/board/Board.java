@@ -14,7 +14,7 @@ import peril.ui.VisualRepresentation;
  * @author Joshua_Eddy
  *
  */
-public final class Board implements Viewable {
+public final class Board extends VisualRepresentation {
 
 	/**
 	 * The {@link Continent}s in this {@link Board}.
@@ -22,15 +22,9 @@ public final class Board implements Viewable {
 	private List<Continent> continents;
 
 	/**
-	 * Holds the {@link VisualRepresentation} of the {@link Board}.
-	 */
-	private VisualRepresentation visual;
-
-	/**
 	 * Constructs a {@link Board}.
 	 */
 	public Board(List<Continent> continents) {
-		visual = new VisualRepresentation();
 		this.continents = continents;
 	}
 
@@ -75,10 +69,4 @@ public final class Board implements Viewable {
 	public void endRound() {
 		continents.forEach(continent -> continent.endRound());
 	}
-
-	@Override
-	public VisualRepresentation getVisual() {
-		return visual;
-	}
-
 }

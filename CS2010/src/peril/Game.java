@@ -4,13 +4,10 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.newdawn.slick.geom.Shape;
-
 import peril.board.Board;
 import peril.io.MapReader;
 import peril.multiThread.Action;
 import peril.multiThread.ProcessTransfer;
-import peril.io.ChallengeReader;
 import peril.ui.UserInterface;
 
 /**
@@ -75,7 +72,7 @@ public class Game {
 	private Game() {
 
 		this.currentPlayerIndex = 0;
-		this.players = Player.values();
+		this.players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO, Player.PLAYERTHREE, Player.PLAYERFOUR };
 		this.currentRound = 0;
 		this.processTransfer = ProcessTransfer.getInstane();
 		this.endTurn = false;

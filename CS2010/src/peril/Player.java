@@ -1,6 +1,9 @@
 package peril;
 
+import org.newdawn.slick.Color;
+
 import peril.board.Army;
+import peril.ui.UserInterface;
 
 /**
  * The internal representation of a user of the system. This object will hold
@@ -11,57 +14,93 @@ import peril.board.Army;
  * @author Ezekiel_Trinidad
  *
  */
-public enum Player {
-	PLAYER_ONE("Player 1"), PLAYER_TWO("Player 2"), PLAYER_THREE("Player 3"), PLAYER_FOUR("Player 4");
-	
+public final class Player {
+
+	/**
+	 * Static instance of the first {@link Player}.
+	 * 
+	 */
+	public static final Player PLAYERONE = new Player("Player 1");
+
+	/**
+	 * Static instance of the second {@link Player}.
+	 * 
+	 */
+	public static final Player PLAYERTWO = new Player("Player 2");
+
+	/**
+	 * Static instance of the third {@link Player}.
+	 * 
+	 */
+	public static final Player PLAYERTHREE = new Player("Player 3");
+
+	/**
+	 * Static instance of the fourth {@link Player}.
+	 * 
+	 */
+	public static final Player PLAYERFOUR = new Player("Player 4");
+
 	/**
 	 * String Representation of the {@link Player}.
 	 */
 	private final String name;
-	
+
+	/**
+	 * The {@link Color} of this {@link Player}s overlay on the
+	 * {@link UserInterface}.
+	 */
+	private final Color color;
+
 	/**
 	 * The {@link Army} of the {@link Player}.
 	 * 
 	 */
 	private Army totalArmy;
-	
+
 	/**
 	 * The number of the {@link Country}s the {@link Player} owns.
 	 */
 	private int countries;
-	
+
 	/**
 	 * The number of {@link Continent}s the {@link Player} owns.
 	 */
 	private int continents;
-	
+
 	/**
 	 * Constructs a new {@link Player}.
 	 * 
-	 * @param name String Representation of the {@link Player}.
+	 * @param name
+	 *            String Representation of the {@link Player}.
 	 */
 	private Player(String name) {
 		this.name = name;
+		countries = 0;
+		continents = 0;
 	}
-	
+
 	/**
 	 * Awards the {@link Player} an {@link Army}.
 	 * 
-	 * @param army The army that will be awarded to the {@link Player}.
+	 * @param army
+	 *            The army that will be awarded to the {@link Player}.
 	 */
-	public void army(Army army) {
-		
+	public void award(Army army) {
+
+		// TODO Add army to the next turns set army that the player can distribute.
+
 	}
-	
+
 	/**
 	 * Sets the {@link Country}s owned by the {@link Player}.
 	 * 
-	 * @param countriesOwned The number of {@link Country}s the {@link Player} now owns.
+	 * @param countriesOwned
+	 *            The number of {@link Country}s the {@link Player} now owns.
 	 */
 	public void setCountriesRuled(int countriesOwned) {
 		countries = countriesOwned;
 	}
-	
+
 	/**
 	 * Gets the number of {@link Country}s owned by the {@link Player}.
 	 * 
@@ -70,16 +109,17 @@ public enum Player {
 	public int getCountriesOwned() {
 		return countries;
 	}
-	
+
 	/**
 	 * Sets the {@link Continent}s owned by the {@link Player}.
 	 * 
-	 * @param continentsOwned The number of {@link Continent}s the {@link Player} now owns.
+	 * @param continentsOwned
+	 *            The number of {@link Continent}s the {@link Player} now owns.
 	 */
 	public void setContinentsOwned(int continentsOwned) {
 		continents = continentsOwned;
 	}
-	
+
 	/**
 	 * Gets the number of {@link Continent}s owned by the {@link Player}.
 	 * 
@@ -88,9 +128,7 @@ public enum Player {
 	public int getContinentsOwned() {
 		return continents;
 	}
-	
 
-	
 	@Override
 	public String toString() {
 		return name;

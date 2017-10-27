@@ -134,8 +134,8 @@ public final class Region {
 		}
 
 		// If the x and y are out side the bounds of the region return false;
-		if (point.x < position.x || point.x > position.x + width || point.y < position.y
-				|| point.y > position.y + height) {
+		if (point.x < position.x || point.x >= position.x + width || point.y < position.y
+				|| point.y >= position.y + height) {
 			return false;
 		}
 

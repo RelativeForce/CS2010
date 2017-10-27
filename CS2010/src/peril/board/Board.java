@@ -3,7 +3,7 @@ package peril.board;
 import java.util.List;
 
 import peril.Point;
-import peril.ui.visual.Viewable;
+import peril.ui.visual.Clickable;
 
 /**
  * Encapsulates the behaviour of the the game board in the {@link Game}. This
@@ -13,7 +13,7 @@ import peril.ui.visual.Viewable;
  * @author Joshua_Eddy
  *
  */
-public final class Board extends Viewable {
+public final class Board extends Clickable {
 
 	/**
 	 * The {@link Continent}s in this {@link Board}.

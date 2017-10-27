@@ -19,7 +19,7 @@ import peril.ui.UserInterface;
  * 
  *
  */
-public abstract class Viewable extends Clickable {
+public abstract class Viewable {
 
 	/**
 	 * The image that represents this {@link Viewable} on the {@link UserInterface}.
@@ -62,12 +62,6 @@ public abstract class Viewable extends Clickable {
 	 * @return {@link Image}
 	 */
 	public Image getImage() {
-
-		// If this viewable has a region but does not have a image.
-		if (!hasImage() && hasRegion()) {
-			image = getRegion().convert();
-		}
-
 		return image;
 	}
 
@@ -86,12 +80,6 @@ public abstract class Viewable extends Clickable {
 	 * @return
 	 */
 	public Point getPosition() {
-
-		// If there is a region in this Viewable then use that position.
-		if (hasRegion()) {
-			return getRegion().getPosition();
-		}
-
 		return position;
 	}
 

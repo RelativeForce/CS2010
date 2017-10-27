@@ -5,7 +5,7 @@ import java.util.List;
 
 import peril.Player;
 import peril.Point;
-import peril.ui.visual.Viewable;
+import peril.ui.visual.Clickable;
 
 /**
  * Encapsulates the behaviour of a continent on the {@link Board}.
@@ -21,7 +21,7 @@ import peril.ui.visual.Viewable;
  * @author Joshua_Eddy
  *
  */
-public final class Continent extends Viewable {
+public final class Continent extends Clickable {
 
 	/**
 	 * Holds the {@link Countries} that comprise this {@link Continent}.

@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import peril.Player;
-import peril.ui.visual.Viewable;
+import peril.ui.visual.Clickable;
 
 /**
  * Encapsulates the behaviour of a Country. Countries:
@@ -21,7 +21,7 @@ import peril.ui.visual.Viewable;
  * @see Java.util.List
  *
  */
-public class Country extends Viewable {
+public class Country extends Clickable {
 
 	/**
 	 * Holds the {@link Player} that rules this {@link Country}.

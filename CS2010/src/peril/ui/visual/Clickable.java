@@ -1,5 +1,7 @@
 package peril.ui.visual;
 
+import org.newdawn.slick.Image;
+
 import peril.Point;
 
 /**
@@ -9,7 +11,7 @@ import peril.Point;
  * @author Joshua_Eddy
  *
  */
-public abstract class Clickable {
+public abstract class Clickable extends Viewable {
 
 	/**
 	 * The region that this encompasses on the screen.
@@ -46,6 +48,17 @@ public abstract class Clickable {
 		this.region = region;
 	}
 
+	@Override
+	public Image getImage() {
+
+		// If this viewable has a region but does not have a image.
+		if (!hasImage() && hasRegion()) {
+			setImage(region.getPosition(), region.convert());
+		}
+
+		return super.getImage();
+	}
+
 	/**
 	 * Retrieves the {@link Region} at this {@link Clickable}.
 	 * 
@@ -62,6 +75,17 @@ public abstract class Clickable {
 	 */
 	public boolean hasRegion() {
 		return region != null;
+	}
+
+	@Override
+	public Point getPosition() {
+
+		// If there is a region in this Viewable then use that position.
+		if (hasRegion()) {
+			return region.getPosition();
+		}
+
+		return super.getPosition();
 	}
 
 }

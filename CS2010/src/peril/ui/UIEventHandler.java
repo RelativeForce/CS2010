@@ -1,6 +1,5 @@
 package peril.ui;
 
-import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.MouseListener;
@@ -32,31 +31,27 @@ public class UIEventHandler implements MouseListener, KeyListener {
 
 	@Override
 	public void inputEnded() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void inputStarted() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public boolean isAcceptingInput() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public void setInput(Input input) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseClicked(int button, int x, int y, int clickCount) {
-		
+
 	}
 
 	@Override
@@ -72,38 +67,27 @@ public class UIEventHandler implements MouseListener, KeyListener {
 	@Override
 	public void mousePressed(int button, int x, int y) {
 
+		Board b = game.getBoard();
+		if (b != null) {
+			Country c = b.getCountry(new Point(x, y));
+			if (c != null) {
+				ui.highlight(c);
+				System.out.println(c.getName());
+			} else {
+				ui.highlight(null);
+			}
+		}
+
 	}
 
 	@Override
 	public void mouseReleased(int button, int x, int y) {
-		
-		Board b = game.getBoard();
-		if (b != null) {
-			Image i = b.getVisual().getImage();
-			
-			int newY = i.getHeight() - y;
-			
-			Country c = b.getCountry(new Point(x, y));
-			if (c != null) {
-				System.out.println(c.getName());
-			}
-		}
+
 	}
 
 	@Override
 	public void mouseWheelMoved(int change) {
 		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 * Converts a {@link Point} of the mouse into a {@link Point} relative to the
-	 * {@link Board}.
-	 * 
-	 * @param mouse
-	 *            {@link Point} of the mouse in the {@link UserInterface}.
-	 */
-	private void convertToBoardPosition(Point mouse) {
 
 	}
 

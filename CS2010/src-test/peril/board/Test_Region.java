@@ -62,10 +62,10 @@ public class Test_Region {
 		assertTrue(testArray[1][1] && testArray[1][2] && testArray[2][1] && testArray[2][2]);
 
 		// Assert that the x position is 1 as the lowest true value is at x = 1.
-		assertTrue(testRegion.getX() == 1);
+		assertTrue(testRegion.getPosition().x == 1);
 
 		// Assert that the y position is 1 as the lowest true value is at y = 1.
-		assertTrue(testRegion.getY() == 1);
+		assertTrue(testRegion.getPosition().y == 1);
 
 		// Assert that the width is 2 as the width of the region should be 2.
 		assertTrue(testRegion.getWidth() == 2);
@@ -121,15 +121,15 @@ public class Test_Region {
 		Region combined = Region.combine(toCombineList, 4, 4);
 
 		// Assert that the position of the region is (1,1)
-		assertTrue(combined.getX() == 1);
-		assertTrue(combined.getY() == 1);
+		assertTrue(combined.getPosition().x == 1);
+		assertTrue(combined.getPosition().y == 1);
 
 		// Assert that the region has dimensions of 2x3
 		assertTrue(combined.getWidth() == 2);
 		assertTrue(combined.getHeight() == 3);
 
 		boolean[][] object = combined.getObject();
-		
+
 		// Assert that the points in the region have the correct boolean state.
 		assertTrue(object[0][0]);
 		assertTrue(object[0][1]);

@@ -188,9 +188,6 @@ public final class Region {
 	 */
 	public Image convert() {
 
-		// Set the coordinates of the viewable to that of the region.
-		position = new Point(position.x, position.y);
-
 		// Holds the image of the region.
 		ImageBuffer imagebuffer = new ImageBuffer(width, height);
 

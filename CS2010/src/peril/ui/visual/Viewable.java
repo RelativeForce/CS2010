@@ -86,6 +86,12 @@ public abstract class Viewable extends Clickable {
 	 * @return
 	 */
 	public Point getPosition() {
+
+		// If there is a region in this Viewable then use that position.
+		if (hasRegion()) {
+			return getRegion().getPosition();
+		}
+
 		return position;
 	}
 

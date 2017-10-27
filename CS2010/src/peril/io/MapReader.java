@@ -212,7 +212,7 @@ public class MapReader {
 			 */
 			for (String countryName : details[3].split("-")) {
 				for (Country country : countries) {
-					if (country.toString().equals(countryName)) {
+					if (country.getName().equals(countryName)) {
 						newContinent.addCountry(country);
 						break;
 					}
@@ -260,14 +260,14 @@ public class MapReader {
 				break;
 			}
 
-			// If the current country has the same name as counrtyName1 assign counrty to
+			// If the current country has the same name as counrtyName1 assign country to
 			// country1
-			if (country.toString().equals(countryName1)) {
+			if (country.getName().equals(countryName1)) {
 				country1 = country;
 			}
-			// If the current country has the same name as counrtyName2 assign counrty to
+			// If the current country has the same name as counrtyName2 assign country to
 			// country2
-			else if (country.toString().equals(countryName2)) {
+			else if (country.getName().equals(countryName2)) {
 				country2 = country;
 			}
 

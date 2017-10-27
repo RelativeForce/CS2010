@@ -87,7 +87,7 @@ public enum EnvironmentalHazard implements Viewable {
 	 * A HURRICANE has a 20% chance of occurring and may kill up to 10% of the units
 	 * in an {@link Army}.
 	 */
-	HURRICANE(10, 0.2, "Hurrincane") {
+	HURRICANE(10, 0.2, "Hurricane") {
 
 		/**
 		 * Holds the visual representation of the {@link HURRICANE}.

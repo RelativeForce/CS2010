@@ -1,6 +1,9 @@
 package peril;
 
+import org.newdawn.slick.Color;
+
 import peril.board.Army;
+import peril.ui.UserInterface;
 
 /**
  * The internal representation of a user of the system. This object will hold
@@ -43,6 +46,12 @@ public final class Player {
 	private final String name;
 
 	/**
+	 * The {@link Color} of this {@link Player}s overlay on the
+	 * {@link UserInterface}.
+	 */
+	private final Color color;
+
+	/**
 	 * The {@link Army} of the {@link Player}.
 	 * 
 	 */
@@ -77,7 +86,7 @@ public final class Player {
 	 *            The army that will be awarded to the {@link Player}.
 	 */
 	public void award(Army army) {
-		
+
 		// TODO Add army to the next turns set army that the player can distribute.
 
 	}

@@ -62,20 +62,21 @@ public class Test_Region {
 		assertTrue(testArray[1][1] && testArray[1][2] && testArray[2][1] && testArray[2][2]);
 
 		// Assert that the x position is 1 as the lowest true value is at x = 1.
-		assertTrue(testRegion.x == 1);
+		assertTrue(testRegion.getX() == 1);
 
 		// Assert that the y position is 1 as the lowest true value is at y = 1.
-		assertTrue(testRegion.y == 1);
+		assertTrue(testRegion.getY() == 1);
 
 		// Assert that the width is 2 as the width of the region should be 2.
-		assertTrue(testRegion.width == 2);
+		assertTrue(testRegion.getWidth() == 2);
 
 		// Assert that the height is 2 as the height of the region should be 2.
-		assertTrue(testRegion.height == 2);
+		assertTrue(testRegion.getHeight() == 2);
+
+		boolean[][] object = testRegion.getObject();
 
 		// Assert that the Region reducer has shrunk the array to the 2x2.
-		assertTrue(testRegion.object[0][0] && testRegion.object[0][1] && testRegion.object[1][0]
-				&& testRegion.object[1][1]);
+		assertTrue(object[0][0] && object[0][1] && object[1][0] && object[1][1]);
 
 	}
 
@@ -120,20 +121,22 @@ public class Test_Region {
 		Region combined = Region.combine(toCombineList, 4, 4);
 
 		// Assert that the position of the region is (1,1)
-		assertTrue(combined.x == 1);
-		assertTrue(combined.y == 1);
+		assertTrue(combined.getX() == 1);
+		assertTrue(combined.getY() == 1);
 
 		// Assert that the region has dimensions of 2x3
-		assertTrue(combined.width == 2);
-		assertTrue(combined.height == 3);
+		assertTrue(combined.getWidth() == 2);
+		assertTrue(combined.getHeight() == 3);
 
+		boolean[][] object = combined.getObject();
+		
 		// Assert that the points in the region have the correct boolean state.
-		assertTrue(combined.object[0][0]);
-		assertTrue(combined.object[0][1]);
-		assertTrue(combined.object[1][0]);
-		assertTrue(combined.object[1][1]);
-		assertTrue(combined.object[0][2]);
-		assertTrue(!combined.object[1][2]);
+		assertTrue(object[0][0]);
+		assertTrue(object[0][1]);
+		assertTrue(object[1][0]);
+		assertTrue(object[1][1]);
+		assertTrue(object[0][2]);
+		assertTrue(!object[1][2]);
 
 	}
 

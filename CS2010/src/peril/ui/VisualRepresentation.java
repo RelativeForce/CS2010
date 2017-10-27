@@ -1,8 +1,12 @@
 package peril.ui;
 
+import java.awt.Color;
+
 import org.newdawn.slick.Image;
+import org.newdawn.slick.ImageBuffer;
 
 import peril.board.Clickable;
+import peril.board.Region;
 
 /**
  * Encapsulates the behaviour of an objects visual representation in the game.
@@ -14,15 +18,17 @@ import peril.board.Clickable;
  * <li>Can be displayed on-screen</li>
  * </ul>
  * 
- * @author Joshua_Eddy
+ * @author Joshua_Eddy, Joseph_Rolli
  * 
  * @see java.util.LinkedList
  * @see Java.util.List
  *
  */
-
 public class VisualRepresentation extends Clickable {
 
+	/**
+	 * 
+	 */
 	private Image image;
 
 	/**
@@ -43,18 +49,76 @@ public class VisualRepresentation extends Clickable {
 	private boolean isOverlay;
 
 	/**
+	 * Constructs a new {@link VisualRepresentation}.
+	 */
+	public VisualRepresentation() {
+		this.image = null;
+		this.isOverlay = false;
+		this.setX(0);
+		this.setY(0);
+	}
+
+	/**
 	 * Sets the image of the {@link VisualRepresentation}, and it's coordinates
 	 * relative to the origin.
 	 */
 	public void setImage(int x, int y, Image image) {
 		this.image = image;
-
+		this.isOverlay = false;
 		this.setX(x);
 		this.setY(y);
 	}
 
 	public Image getImage() {
+
+		Region region = super.getRegion();
+
+		if (image == null && region != null) {
+
+			image = convertRegionToImage(region);
+
+		}
+
 		return image;
+	}
+
+	private Image convertRegionToImage(Region region) {
+
+		// Holds the width and height of the region.
+		int width = region.getWidth();
+		int height = region.getHeight();
+
+		// Set the coordinates of the visual rep to that of the region.
+		setX(region.getX());
+		setY(region.getY());
+
+		// Holds the image of the region.
+		ImageBuffer imagebuffer = new ImageBuffer(width, height);
+
+		// Holds the boolean[][] object of the region.
+		boolean[][] object = region.getObject();
+
+		// Set the colour of the visual and get its rgb value.
+		Color color = Color.YELLOW;
+		int r = color.getRed();
+		int g = color.getGreen();
+		int b = color.getBlue();
+
+		// Iterate through every pixel in the object[][] and if it is true set the
+		// colour of the visual to the specified value.
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				if (object[x][y]) {
+					imagebuffer.setRGBA(x, y, r, g, b, 180);
+				}
+			}
+		}
+		return imagebuffer.getImage();
+
+	}
+
+	public boolean hasImage() {
+		return image != null;
 	}
 
 	/**

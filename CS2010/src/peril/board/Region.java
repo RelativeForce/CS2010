@@ -24,29 +24,29 @@ public final class Region {
 	 * {@link BufferedImage} is the specified {@link Color} the it is assigned true,
 	 * otherwise it is false.
 	 */
-	protected boolean[][] object;
+	private boolean[][] object;
 
 	/**
 	 * The <code>int</code> width of this {@link Region}.
 	 */
-	protected int width;
+	private int width;
 
 	/**
 	 * The <code>int</code> height of this {@link Region}.
 	 */
-	protected int height;
+	private int height;
 
 	/**
 	 * The <code>int</code> x vector from the (0,0) of the image this {@link Region}
 	 * is a part of to (0,0) of this {@link Region}.
 	 */
-	protected int x;
+	private int x;
 
 	/**
 	 * The <code>int</code> y vector from the (0,0) of the image this {@link Region}
 	 * is a part of to (0,0) of this {@link Region}.
 	 */
-	protected int y;
+	private int y;
 
 	/**
 	 * Constructs a new <code>HitBox</code> object.
@@ -75,7 +75,7 @@ public final class Region {
 	 *            This height of the image this region is a part of.
 	 * 
 	 */
-	protected Region(boolean[][] object, int width, int height) {
+	public Region(boolean[][] object, int width, int height) {
 		constructor(object, width, height);
 	}
 
@@ -92,14 +92,14 @@ public final class Region {
 	 */
 	public static Region combine(List<Region> list, int width, int height) {
 
-		// Check params 
+		// Check params
 		if (list == null) {
 			throw new IllegalArgumentException("List cannot be null.");
-		}else if(list.isEmpty()) {
+		} else if (list.isEmpty()) {
 			throw new IllegalArgumentException("List cannot be empty.");
-		}else if(width < 0) {
+		} else if (width < 0) {
 			throw new IllegalArgumentException("Width cannot be negative.");
-		}else if(height < 0) {
+		} else if (height < 0) {
 			throw new IllegalArgumentException("Height cannot be negative.");
 		}
 		// Holds the region that will be the result.
@@ -144,6 +144,51 @@ public final class Region {
 		}
 
 		return object[point.x - x][point.y - y];
+	}
+
+	/**
+	 * Retrieves the x position of the {@link Region}.
+	 * 
+	 * @return <code>int</code>
+	 */
+	public int getX() {
+		return x;
+	}
+
+	/**
+	 * Retrieves the y position of the {@link Region}.
+	 * 
+	 * @return <code>int</code>
+	 */
+	public int getY() {
+		return y;
+	}
+
+	/**
+	 * Retrieves the width of the {@link Region}.
+	 * 
+	 * @return <code>int</code>
+	 */
+	public int getWidth() {
+		return width;
+	}
+
+	/**
+	 * Retrieves the height of the {@link Region}.
+	 * 
+	 * @return <code>int</code>
+	 */
+	public int getHeight() {
+		return height;
+	}
+
+	/**
+	 * Retrieves the boolean object that represents the {@link Region}.
+	 * 
+	 * @return <code>boolean[][]</code>
+	 */
+	public boolean[][] getObject() {
+		return object;
 	}
 
 	/**

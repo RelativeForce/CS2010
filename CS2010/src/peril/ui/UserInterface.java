@@ -28,6 +28,8 @@ public class UserInterface extends StateBasedGame {
 	 */
 	private Game game;
 
+	private static AppGameContainer agc;
+
 	/**
 	 * The basic state that the game is in.
 	 */
@@ -36,6 +38,7 @@ public class UserInterface extends StateBasedGame {
 	private final ReinforcementState reinforcementState;
 	private final MovementState movementState;
 	private final EndState endState;
+
 
 	/**
 	 * Constructs a new {@link UserInterface}.
@@ -46,11 +49,11 @@ public class UserInterface extends StateBasedGame {
 	 */
 	private UserInterface(Game game) {
 		super("PERIL: A Turn Based Strategy Game");
-		this.combatState = new CombatState();
-		this.setupState = new SetupState();
-		this.reinforcementState = new ReinforcementState();
-		this.movementState = new MovementState();
-		this.endState = new EndState();
+		this.combatState = new CombatState(game, this);
+		this.setupState = new SetupState(game, this);
+		this.reinforcementState = new ReinforcementState(game, this);
+		this.movementState = new MovementState(game, this);
+		this.endState = new EndState(game, this);
 		this.game = game;
 	}
 
@@ -78,7 +81,7 @@ public class UserInterface extends StateBasedGame {
 	 *            {@link Player} who's turn it is.
 	 */
 	public void displayTurn(Player player) {
-		
+
 	}
 
 	/**
@@ -98,15 +101,24 @@ public class UserInterface extends StateBasedGame {
 
 		// Open that user interface on the screen.
 		try {
-			AppGameContainer agc = new AppGameContainer(ui);
-			agc.setDisplayMode(800, 500, false);
+			agc = new AppGameContainer(ui);
+			agc.setDisplayMode(1200, 800, false);
 			agc.setTargetFrameRate(60);
-			agc.start();
 		} catch (SlickException e) {
+			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
 
 		return ui;
+	}
+
+	public void start() {
+		try {
+			agc.start();
+		} catch (SlickException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -114,8 +126,8 @@ public class UserInterface extends StateBasedGame {
 	 */
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
-		addState(combatState);
 		addState(setupState);
+		addState(combatState);
 		addState(reinforcementState);
 		addState(movementState);
 		addState(endState);

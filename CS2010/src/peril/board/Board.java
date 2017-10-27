@@ -24,13 +24,13 @@ public final class Board implements Viewable {
 	/**
 	 * Holds the {@link VisualRepresentation} of the {@link Board}.
 	 */
-	private Visual visual;
+	private VisualRepresentation visual;
 
 	/**
 	 * Constructs a {@link Board}.
 	 */
 	public Board(List<Continent> continents) {
-		visual = new Visual();
+		visual = new VisualRepresentation();
 		this.continents = continents;
 	}
 
@@ -59,30 +59,21 @@ public final class Board implements Viewable {
 
 	/**
 	 * Retrieves the {@link Continent}s on this {@link Board}.
+	 * 
 	 * @return {@link List} of {@link Continent}s.
 	 * 
 	 * @see java.util.List
 	 */
-	public List<Continent> getContinents(){
+	public List<Continent> getContinents() {
 		return continents;
 	}
-	
+
 	/**
 	 * Iterates through each {@link Continent} in the {@link Board} and
 	 * {@link Continent#executeTurn()}.
 	 */
 	public void endRound() {
 		continents.forEach(continent -> continent.endRound());
-	}
-
-	/**
-	 * The visual representation of the {@link Board}.
-	 * 
-	 * @author Joshua_Eddy
-	 *
-	 */
-	private class Visual extends VisualRepresentation {
-
 	}
 
 	@Override

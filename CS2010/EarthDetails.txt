@@ -1,7 +1,6 @@
 Country,Great Britian,000000050
 Country,France,000000100
 Country,Germany,000000150
-Country,Russia,000000200
 Continent,West,Hurricane,Great Britian-France-Germany
 Link,Great Britian,France
 Link,France,Germany

@@ -1,11 +1,9 @@
 package peril.io;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Image;
 
+import peril.board.Board;
 import peril.board.Region;
 
 /**
@@ -19,7 +17,7 @@ public class ImageReader {
 	/**
 	 * The {@link File} that denotes the image this {@link ImageReader} will read.
 	 */
-	private final File file;
+	private final String path;
 
 	/**
 	 * Constructs a new {@link ImageReader}.
@@ -29,7 +27,7 @@ public class ImageReader {
 	 */
 	private ImageReader(final String path) {
 
-		file = new File(path);
+		this.path = path;
 	}
 
 	/**
@@ -37,25 +35,29 @@ public class ImageReader {
 	 * 
 	 * @return {@link BufferedImage}
 	 */
-	private BufferedImage readImage() {
+	private Image readImage() {
 
 		// Attempt to read the specified file and if there is an exception thrown return
 		// null.
 		try {
 
-			return ImageIO.read(file);
+			return new Image(path);
 
-		} catch (IOException e) {
-
+		} catch (Exception e) {
+			System.out.println("Error: Iamge NOT Found.");
 			e.printStackTrace();
 			return null;
 		}
 	}
 
+	/**
+	 * Retrieves a {@link Region} of the {@link Board} denoted by a {@link Color}.
+	 * @param path <code>String</code> path of the {@link Image} file.
+	 * @param colour {@link Color} that denotes this region on the board.
+	 * @return {@link Region}.
+	 */
 	public static Region getColourRegion(String path, Color colour) {
-
 		return new Region(new ImageReader(path).readImage(), colour);
-
 	}
 
 	/**
@@ -66,24 +68,12 @@ public class ImageReader {
 	 *            The file path of an image.
 	 * @return <code>Integer[][]</code>
 	 */
-	public static Integer[][] getImage(String path) {
-
+	public static Image getImage(String path) {
+		
 		// Holds the raw image retrieved from the image reader.
-		BufferedImage rawImage = new ImageReader(path).readImage();
+		return new ImageReader(path).readImage();
 
-		// Holds the images RGB values
-		Integer[][] image = new Integer[rawImage.getWidth()][rawImage.getHeight()];
-
-		/*
-		 * Iterate through the entire image and assign each pixels RGB value to its
-		 * corresponding position in the image array.
-		 */
-		for (int y = 0; y < rawImage.getHeight(); y++) {
-			for (int x = 0; x < rawImage.getWidth(); x++) {
-				image[x][y] = rawImage.getRGB(x, y);
-			}
-		}
-		return image;
+		
 	}
 
 }

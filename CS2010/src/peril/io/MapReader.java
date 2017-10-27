@@ -1,14 +1,17 @@
 package peril.io;
 
-import java.awt.Color;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Image;
 
 import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
 import peril.board.EnvironmentalHazard;
+import peril.board.Region;
 
 /**
  * Reader the map from a specified file and uses that to construct the
@@ -48,7 +51,7 @@ public class MapReader {
 	/**
 	 * The image of the {@link Board}.
 	 */
-	private Integer[][] normalMap;
+	private Image normalMap;
 
 	/**
 	 * Constructs a new {@link MapReader}.
@@ -204,18 +207,30 @@ public class MapReader {
 			// Create the new continent.
 			Continent newContinent = new Continent(hazard, name);
 
+			// Holds the regions of each country that will be used o make the continent.
+			List<Region> toAdd = new LinkedList<>();
+
 			/**
 			 * Iterate through all the countries in the countries map and if a country is
 			 * denoted by a string in the map detail add it to the new continent.
 			 */
 			for (String countryName : details[3].split("-")) {
+
+				// Iterate through all the countries that have been read from the file.
 				for (Country country : countries) {
-					if (country.toString().equals(countryName)) {
+
+					// If the country's name is specified by the details file to be in this
+					// continent.
+					if (country.getName().equals(countryName)) {
 						newContinent.addCountry(country);
+						toAdd.add(country.getVisual().getRegion());
 						break;
 					}
 				}
 			}
+
+			// Combine this continent's country's regions to form the continent's region.
+			newContinent.getVisual().setRegion(Region.combine(toAdd, normalMap.getWidth(), normalMap.getHeight()));
 
 			// Add the continent to the list of continents.
 			continents.add(newContinent);
@@ -258,14 +273,14 @@ public class MapReader {
 				break;
 			}
 
-			// If the current country has the same name as counrtyName1 assign counrty to
+			// If the current country has the same name as counrtyName1 assign country to
 			// country1
-			if (country.toString().equals(countryName1)) {
+			if (country.getName().equals(countryName1)) {
 				country1 = country;
 			}
-			// If the current country has the same name as counrtyName2 assign counrty to
+			// If the current country has the same name as counrtyName2 assign country to
 			// country2
-			else if (country.toString().equals(countryName2)) {
+			else if (country.getName().equals(countryName2)) {
 				country2 = country;
 			}
 

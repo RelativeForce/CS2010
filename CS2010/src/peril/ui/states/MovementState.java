@@ -1,5 +1,19 @@
 package peril.ui.states;
 
-public class MovementState extends CoreGameState{
+import peril.Game;
+import peril.ui.UserInterface;
+
+public class MovementState extends CoreGameState {
+
+	public MovementState(Game game, UserInterface ui) {
+		super(game, ui);
+		stateName = "Movement";
+	}
+
+	@Override
+	public int getID() {
+		// TODO Auto-generated method stub
+		return 3;
+	}
 
 }

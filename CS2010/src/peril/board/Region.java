@@ -1,8 +1,9 @@
 package peril.board;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
 import java.util.List;
+
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Image;
 
 import peril.Point;
 
@@ -23,29 +24,29 @@ public final class Region {
 	 * {@link BufferedImage} is the specified {@link Color} the it is assigned true,
 	 * otherwise it is false.
 	 */
-	private boolean[][] object;
+	protected boolean[][] object;
 
 	/**
 	 * The <code>int</code> width of this {@link Region}.
 	 */
-	private int width;
+	protected int width;
 
 	/**
 	 * The <code>int</code> height of this {@link Region}.
 	 */
-	private int height;
+	protected int height;
 
 	/**
 	 * The <code>int</code> x vector from the (0,0) of the image this {@link Region}
 	 * is a part of to (0,0) of this {@link Region}.
 	 */
-	private int x;
+	protected int x;
 
 	/**
 	 * The <code>int</code> y vector from the (0,0) of the image this {@link Region}
 	 * is a part of to (0,0) of this {@link Region}.
 	 */
-	private int y;
+	protected int y;
 
 	/**
 	 * Constructs a new <code>HitBox</code> object.
@@ -56,7 +57,7 @@ public final class Region {
 	 * 
 	 * @see environment.graphics.objects.GraphicalObject
 	 */
-	public Region(BufferedImage image, Color colour) {
+	public Region(Image image, Color colour) {
 		constructor(getRegion(image, colour), image.getWidth(), image.getHeight());
 	}
 
@@ -74,7 +75,7 @@ public final class Region {
 	 *            This height of the image this region is a part of.
 	 * 
 	 */
-	private Region(boolean[][] object, int width, int height) {
+	protected Region(boolean[][] object, int width, int height) {
 		constructor(object, width, height);
 	}
 
@@ -91,16 +92,21 @@ public final class Region {
 	 */
 	public static Region combine(List<Region> list, int width, int height) {
 
-		if (list == null || list.isEmpty() || width < 0 || height < 0) {
-			throw new IllegalArgumentException();
+		// Check params 
+		if (list == null) {
+			throw new IllegalArgumentException("List cannot be null.");
+		}else if(list.isEmpty()) {
+			throw new IllegalArgumentException("List cannot be empty.");
+		}else if(width < 0) {
+			throw new IllegalArgumentException("Width cannot be negative.");
+		}else if(height < 0) {
+			throw new IllegalArgumentException("Height cannot be negative.");
 		}
 		// Holds the region that will be the result.
 		boolean[][] base = new boolean[width][height];
 
 		// Iterate through all the regions in the list.
 		for (Region region : list) {
-
-			// Add the region to the base.
 
 			// Iterate through every element in the region.
 			for (int y = 0; y < region.height; y++) {
@@ -127,8 +133,13 @@ public final class Region {
 	 */
 	public boolean isInside(Point point) {
 
+		// Null param check.
+		if (point == null) {
+			throw new IllegalArgumentException("Point cannot be null");
+		}
+
 		// If the x and y are out side the bounds of the region return false;
-		if (point.x < x && point.x > x + width && point.y < y && point.y > y + height) {
+		if (point.x < x || point.x > x + width || point.y < y || point.y > y + height) {
 			return false;
 		}
 
@@ -160,7 +171,7 @@ public final class Region {
 	 *            {@link Color}
 	 * @return <code>boolean[][]</code>
 	 */
-	private boolean[][] getRegion(BufferedImage image, Color color) {
+	private boolean[][] getRegion(Image image, Color color) {
 
 		// Holds the array of booleans initially all elements are set to false
 		boolean[][] object = new boolean[image.getWidth()][image.getHeight()];
@@ -171,7 +182,7 @@ public final class Region {
 
 			for (int x = 0; x < image.getWidth(); x++) {
 
-				if (color.getRGB() == image.getRGB(x, y)) {
+				if (color.equals(image.getColor(x, y))) {
 					object[x][y] = true;
 				}
 			}
@@ -326,7 +337,7 @@ public final class Region {
 				// as the new left boundary. And exit the loop.
 				if (toReduce[x][rowNum]) {
 					if (x < lowerXBoundary) {
-						lowerXBoundary = 0;
+						lowerXBoundary = x;
 					}
 					break;
 				}
@@ -379,11 +390,11 @@ public final class Region {
 		 */
 		private void getUpperYBoundary(boolean[][] toReduce, int colNum, int height) {
 
-			// Iterate through each row on the current column from the bottom.
-			for (int y = 0; y < height; y++) {
+			// Iterate through each row on the current column from the top.
+			for (int y = height - 1; y >= 0; y--) {
 
 				if (toReduce[colNum][y]) {
-					if (y < upperYBoundary) {
+					if (y > upperYBoundary) {
 						upperYBoundary = y;
 					}
 					break;
@@ -407,16 +418,16 @@ public final class Region {
 		 *            being reduced.
 		 */
 		private void getLowerYBoundary(boolean[][] toReduce, int colNum, int height) {
-			// Iterate through each row on the current column from the top.
-			for (int y = height - 1; y >= 0; y--) {
+			// Iterate through each row on the current column from the bottom.
+			for (int y = 0; y < height; y++) {
 
 				if (toReduce[colNum][y]) {
-					if (y > lowerYBoundary) {
+
+					if (y < lowerYBoundary) {
 						lowerYBoundary = y;
 					}
 					break;
 				}
-
 			}
 		}
 
@@ -433,27 +444,30 @@ public final class Region {
 		 */
 		private boolean[][] reduceArray(boolean[][] toReduce) {
 
+			width = upperXBoundary - lowerXBoundary + 1;
+			height = upperYBoundary - lowerYBoundary + 1;
+
 			// Create the new object array to be the size of the space between the
 			// boundaries.
-			boolean[][] tempObejct = new boolean[upperXBoundary - lowerXBoundary][upperYBoundary - lowerYBoundary];
+			boolean[][] tempObject = new boolean[width][height];
 
 			// Set the x and y values of the region to the lower boundaries.
 			x = lowerXBoundary;
 			y = lowerYBoundary;
 
 			// Iterate through each row of the object[][]
-			for (int y = lowerYBoundary; y < upperYBoundary; y++) {
+			for (int y = lowerYBoundary; y <= upperYBoundary; y++) {
 
 				// Iterate through each column of the object[][]
-				for (int x = lowerXBoundary; x < upperXBoundary; x++) {
+				for (int x = lowerXBoundary; x <= upperXBoundary; x++) {
 
 					// Assign the value of the current element in the object array to its
 					// corresponding position in the new object array.
-					tempObejct[x - lowerXBoundary][y - lowerYBoundary] = toReduce[x][y];
+					tempObject[x - lowerXBoundary][y - lowerYBoundary] = toReduce[x][y];
 				}
 			}
 
-			return tempObejct;
+			return tempObject;
 
 		}
 

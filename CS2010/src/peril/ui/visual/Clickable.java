@@ -9,12 +9,14 @@ import peril.Point;
  * extends this will be able to be clicked by the mouse.
  * 
  * @author Joshua_Eddy
+ * 
+ * @see Viewable
  *
  */
 public abstract class Clickable extends Viewable {
 
 	/**
-	 * The region that this encompasses on the screen.
+	 * The {@link Region} that this encompasses on the screen.
 	 */
 	private Region region;
 
@@ -48,6 +50,11 @@ public abstract class Clickable extends Viewable {
 		this.region = region;
 	}
 
+	/**
+	 * Retrieve the {@link Clickable} {@link Image}. If the {@link Region} is not
+	 * null and the {@link Image} is then set the {@link Image} as a highlight over
+	 * the {@link Region}.
+	 */
 	@Override
 	public Image getImage() {
 
@@ -77,10 +84,15 @@ public abstract class Clickable extends Viewable {
 		return region != null;
 	}
 
+	/**
+	 * Retrieves the {@link Point} position of this {@link Clickable}. If the
+	 * {@link Region} of this {@link Clickable} is not null retrieve the
+	 * {@link Point} position of the {@link Region}.
+	 */
 	@Override
 	public Point getPosition() {
 
-		// If there is a region in this Viewable then use that position.
+		// If there is a region in this clickable then use that position.
 		if (hasRegion()) {
 			return region.getPosition();
 		}

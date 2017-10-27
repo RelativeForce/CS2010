@@ -7,11 +7,12 @@ import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
+import peril.Point;
 import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
 import peril.board.EnvironmentalHazard;
-import peril.board.Region;
+import peril.ui.visual.Region;
 
 /**
  * Reader the map from a specified file and uses that to construct the
@@ -84,7 +85,7 @@ public class MapReader {
 		Board newBoard = new Board(reader.continents);
 
 		// Set the normal map as the visual image of the visual representation.
-		newBoard.getVisual().setImage(0, 0, reader.normalMap);
+		newBoard.setImage(new Point(0, 0), reader.normalMap);
 
 		return newBoard;
 	}
@@ -161,7 +162,7 @@ public class MapReader {
 			Country country = new Country(name);
 
 			// Set the clickable region of the country
-			country.getVisual().setRegion(
+			country.setRegion(
 					ImageReader.getColourRegion(directoryPath + File.separatorChar + mapName + "Countries.png", color));
 
 			// Construct a new counrty and add the country to the list of countries.
@@ -223,14 +224,14 @@ public class MapReader {
 					// continent.
 					if (country.getName().equals(countryName)) {
 						newContinent.addCountry(country);
-						toAdd.add(country.getVisual().getRegion());
+						toAdd.add(country.getRegion());
 						break;
 					}
 				}
 			}
 
 			// Combine this continent's country's regions to form the continent's region.
-			newContinent.getVisual().setRegion(Region.combine(toAdd, normalMap.getWidth(), normalMap.getHeight()));
+			newContinent.setRegion(Region.combine(toAdd, normalMap.getWidth(), normalMap.getHeight()));
 
 			// Add the continent to the list of continents.
 			continents.add(newContinent);

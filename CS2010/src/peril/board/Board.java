@@ -3,8 +3,7 @@ package peril.board;
 import java.util.List;
 
 import peril.Point;
-import peril.ui.Viewable;
-import peril.ui.VisualRepresentation;
+import peril.ui.visual.Clickable;
 
 /**
  * Encapsulates the behaviour of the the game board in the {@link Game}. This
@@ -14,7 +13,7 @@ import peril.ui.VisualRepresentation;
  * @author Joshua_Eddy
  *
  */
-public final class Board implements Viewable {
+public final class Board extends Clickable {
 
 	/**
 	 * The {@link Continent}s in this {@link Board}.
@@ -22,15 +21,9 @@ public final class Board implements Viewable {
 	private List<Continent> continents;
 
 	/**
-	 * Holds the {@link VisualRepresentation} of the {@link Board}.
-	 */
-	private VisualRepresentation visual;
-
-	/**
 	 * Constructs a {@link Board}.
 	 */
 	public Board(List<Continent> continents) {
-		visual = new VisualRepresentation();
 		this.continents = continents;
 	}
 
@@ -47,7 +40,7 @@ public final class Board implements Viewable {
 		for (Continent continent : continents) {
 
 			// If the click is inside the continents region get the country from the region.
-			if (continent.getVisual().isClicked(click)) {
+			if (continent.isClicked(click)) {
 				return continent.getCountry(click);
 			}
 		}
@@ -75,10 +68,4 @@ public final class Board implements Viewable {
 	public void endRound() {
 		continents.forEach(continent -> continent.endRound());
 	}
-
-	@Override
-	public VisualRepresentation getVisual() {
-		return visual;
-	}
-
 }

@@ -2,9 +2,6 @@ package peril.board;
 
 import java.util.Random;
 
-import peril.ui.Viewable;
-import peril.ui.VisualRepresentation;
-
 /**
  * These may occur once a turn and will kill a random percentage of the army
  * stationed an {@link Continent}. Each type of EnvironmentalHazard has a
@@ -13,142 +10,28 @@ import peril.ui.VisualRepresentation;
  * @author Joshua_Eddy
  *
  */
-public enum EnvironmentalHazard implements Viewable {
+public enum EnvironmentalHazard{
 
 	/**
 	 * A VOLCANIC_ERUPTION has a 10% chance of occurring and may kill up to 20% of
 	 * the units in an {@link Army}.
 	 */
-	VOLCANIC_ERUPTION(20, 0.1, "Volcanic Eruption") {
-
-		/**
-		 * Holds the visual representation of the {@link VOLCANIC_ERUPTION}.
-		 * 
-		 * @see VisualRepresentation
-		 * @see EnvironmentalHazardVisualRepresenation
-		 */
-		private final Visual visual = new Visual();
-
-		/**
-		 * Encapsulates the behaviours of displaying an {@link VOLCANIC_ERUPTION} on the
-		 * {@link UserInterface}.
-		 * 
-		 * @author Joshua_Eddy
-		 * @see VisualRepresentation
-		 * @see EnvironmentalHazardVisualRepresenation
-		 *
-		 */
-		final class Visual extends EnvironmentalHazardVisualRepresenation {
-
-			// TODO Create visual representation for VOLCANIC_ERUPTION
-		}
-
-		@Override
-		public VisualRepresentation getVisual() {
-			return visual;
-		}
-
-	},
+	VOLCANIC_ERUPTION(20, 0.1, "Volcanic Eruption"),
 	/**
 	 * A TORNADO has a 12% chance of occurring and may kill up to 30% of the units
 	 * in an {@link Army}.
 	 */
-	TORNADO(30, 0.12, "Tornado") {
-
-		/**
-		 * Holds the visual representation of the {@link TORNADO}.
-		 * 
-		 * @see VisualRepresentation
-		 * @see EnvironmentalHazardVisualRepresenation
-		 */
-		private final Visual visual = new Visual();
-
-		/**
-		 * Encapsulates the behaviours of displaying an {@link TORNADO} on the
-		 * {@link UserInterface}.
-		 * 
-		 * @author Joshua_Eddy
-		 * @see VisualRepresentation
-		 * @see EnvironmentalHazardVisualRepresenation
-		 *
-		 */
-		final class Visual extends EnvironmentalHazardVisualRepresenation {
-
-			// TODO Create visual representation for TORNADO
-		}
-
-		@Override
-		public VisualRepresentation getVisual() {
-			return visual;
-		}
-
-	},
+	TORNADO(30, 0.12, "Tornado"),
 	/**
 	 * A HURRICANE has a 20% chance of occurring and may kill up to 10% of the units
 	 * in an {@link Army}.
 	 */
-	HURRICANE(10, 0.2, "Hurricane") {
-
-		/**
-		 * Holds the visual representation of the {@link HURRICANE}.
-		 * 
-		 * @see VisualRepresentation
-		 * @see EnvironmentalHazardVisualRepresenation
-		 */
-		private final Visual visual = new Visual();
-
-		/**
-		 * Encapsulates the behaviours of displaying an {@link HURRICANE} on the
-		 * {@link UserInterface}.
-		 * 
-		 * @author Joshua_Eddy
-		 * @see VisualRepresentation
-		 * @see EnvironmentalHazardVisualRepresenation
-		 *
-		 */
-		final class Visual extends EnvironmentalHazardVisualRepresenation {
-
-			// TODO Create visual representation for HURRICANE
-		}
-
-		@Override
-		public VisualRepresentation getVisual() {
-			return visual;
-		}
-	},
+	HURRICANE(10, 0.2, "Hurricane"),
 	/**
 	 * A TSUNAMI has a 17% chance of occurring and may kill up to 40% of the units
 	 * in an {@link Army}.
 	 */
-	TSUNAMI(40, 0.17, "Tsunami") {
-
-		/**
-		 * Holds the visual representation of the {@link TSUNAMI}.
-		 * 
-		 * @see VisualRepresentation
-		 * @see EnvironmentalHazardVisualRepresenation
-		 */
-		private final Visual visual = new Visual();
-
-		/**
-		 * Encapsulates the behaviours of displaying an {@link TSUNAMI} on the
-		 * {@link UserInterface}.
-		 * 
-		 * @author Joshua_Eddy
-		 * @see VisualRepresentation
-		 * @see EnvironmentalHazardVisualRepresenation
-		 *
-		 */
-		final class Visual extends EnvironmentalHazardVisualRepresenation {
-
-			// TODO Create visual representation for TSUNAMI
-		}
-
-		@Override
-		public VisualRepresentation getVisual() {
-			return visual;
-		}
-	};
+	TSUNAMI(40, 0.17, "Tsunami");
 
 	/**
 	 * The seed used by the {@link GENERATOR}.
@@ -233,22 +116,5 @@ public enum EnvironmentalHazard implements Viewable {
 			army.setSize(currentSize - casualties);
 
 		}
-
 	}
-
-	@Override
-	public abstract VisualRepresentation getVisual();
-
-	/**
-	 * Encapsulates the behaviours of displaying an {@link EnvironmentalHazard} on
-	 * the {@link UserInterface}.
-	 * 
-	 * @author Joshua_Eddy
-	 * @see VisualRepresentation
-	 */
-	private abstract class EnvironmentalHazardVisualRepresenation extends VisualRepresentation {
-
-		// TODO Create visual representation for EnvironmentalHazard
-	}
-
 }

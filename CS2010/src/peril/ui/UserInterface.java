@@ -3,11 +3,14 @@ package peril.ui;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Player;
+import peril.board.Country;
 import peril.ui.states.CombatState;
+import peril.ui.states.CoreGameState;
 import peril.ui.states.EndState;
 import peril.ui.states.MovementState;
 import peril.ui.states.ReinforcementState;
@@ -29,7 +32,7 @@ public class UserInterface extends StateBasedGame {
 	private Game game;
 
 	private static AppGameContainer agc;
-
+	
 	/**
 	 * The basic state that the game is in.
 	 */
@@ -38,6 +41,8 @@ public class UserInterface extends StateBasedGame {
 	private final ReinforcementState reinforcementState;
 	private final MovementState movementState;
 	private final EndState endState;
+	
+	private final UIEventHandler eventHandler;
 
 
 	/**
@@ -55,6 +60,7 @@ public class UserInterface extends StateBasedGame {
 		this.movementState = new MovementState(game, this);
 		this.endState = new EndState(game, this);
 		this.game = game;
+		this.eventHandler = new UIEventHandler(this, game);
 	}
 
 	/**
@@ -102,7 +108,7 @@ public class UserInterface extends StateBasedGame {
 		// Open that user interface on the screen.
 		try {
 			agc = new AppGameContainer(ui);
-			agc.setDisplayMode(1200, 800, false);
+			agc.setDisplayMode(620, 496, false);
 			agc.setTargetFrameRate(60);
 		} catch (SlickException e) {
 			System.out.println(e.getMessage());
@@ -112,6 +118,13 @@ public class UserInterface extends StateBasedGame {
 		return ui;
 	}
 
+	public void highlight(Country country) {
+		GameState state = super.getCurrentState();
+		if( state instanceof CoreGameState) {
+			((CoreGameState) state).highlight(country);;
+		}
+	}
+	
 	public void start() {
 		try {
 			agc.start();
@@ -131,6 +144,8 @@ public class UserInterface extends StateBasedGame {
 		addState(reinforcementState);
 		addState(movementState);
 		addState(endState);
+		container.getInput().addKeyListener(eventHandler);
+		container.getInput().addMouseListener(eventHandler);
 	}
 
 }

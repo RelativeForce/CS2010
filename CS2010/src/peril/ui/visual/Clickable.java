@@ -1,4 +1,6 @@
-package peril.board;
+package peril.ui.visual;
+
+import org.newdawn.slick.Image;
 
 import peril.Point;
 
@@ -9,7 +11,7 @@ import peril.Point;
  * @author Joshua_Eddy
  *
  */
-public abstract class Clickable {
+public abstract class Clickable extends Viewable {
 
 	/**
 	 * The region that this encompasses on the screen.
@@ -21,11 +23,12 @@ public abstract class Clickable {
 	 * objects {@link Clickable#region}. If the {@link Region} is <code>null</code>
 	 * then this will return <code>false</code>.
 	 * 
-	 * @param point {@link Point}
+	 * @param point
+	 *            {@link Point}
 	 * @return Clicked or not.
 	 */
 	public boolean isClicked(Point point) {
-		if (region == null) {
+		if (!hasRegion()) {
 			throw new NullPointerException("Region is null.");
 		}
 		return region.isInside(point);
@@ -33,7 +36,9 @@ public abstract class Clickable {
 
 	/**
 	 * Assigns the {@link Region} to this.
-	 * @param region {@link Region}.
+	 * 
+	 * @param region
+	 *            {@link Region}.
 	 */
 	public void setRegion(Region region) {
 		if (region == null) {
@@ -42,9 +47,45 @@ public abstract class Clickable {
 
 		this.region = region;
 	}
-	
+
+	@Override
+	public Image getImage() {
+
+		// If this viewable has a region but does not have a image.
+		if (!hasImage() && hasRegion()) {
+			setImage(region.getPosition(), region.convert());
+		}
+
+		return super.getImage();
+	}
+
+	/**
+	 * Retrieves the {@link Region} at this {@link Clickable}.
+	 * 
+	 * @return {@link Region}
+	 */
 	public Region getRegion() {
 		return region;
+	}
+
+	/**
+	 * Whether or not this {@link Clickable} has a {@link Region} or not.
+	 * 
+	 * @return <code>boolean</code>
+	 */
+	public boolean hasRegion() {
+		return region != null;
+	}
+
+	@Override
+	public Point getPosition() {
+
+		// If there is a region in this Viewable then use that position.
+		if (hasRegion()) {
+			return region.getPosition();
+		}
+
+		return super.getPosition();
 	}
 
 }

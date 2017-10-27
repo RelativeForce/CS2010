@@ -4,8 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import peril.Player;
-import peril.ui.Viewable;
-import peril.ui.VisualRepresentation;
+import peril.ui.visual.Clickable;
 
 /**
  * Encapsulates the behaviour of a Country. Countries:
@@ -22,7 +21,7 @@ import peril.ui.VisualRepresentation;
  * @see Java.util.List
  *
  */
-public class Country implements Viewable {
+public class Country extends Clickable {
 
 	/**
 	 * Holds the {@link Player} that rules this {@link Country}.
@@ -44,13 +43,6 @@ public class Country implements Viewable {
 	private Army army;
 
 	/**
-	 * Holds the visual representation of the {@link Country}.
-	 * 
-	 * @see VisualRepresentation
-	 */
-	private VisualRepresentation visual;
-
-	/**
 	 * Holds the name of the {@link Country}.
 	 */
 	private String name;
@@ -65,7 +57,6 @@ public class Country implements Viewable {
 		this.neighbours = new LinkedList<Country>();
 		this.ruler = null;
 		this.army = new Army(1);
-		this.visual = new Visual();
 		this.name = name;
 	}
 
@@ -122,22 +113,6 @@ public class Country implements Viewable {
 	 */
 	public Player getRuler() {
 		return ruler;
-	}
-
-	@Override
-	public VisualRepresentation getVisual() {
-		return visual;
-	}
-
-	/**
-	 * The visual representation of the {@link Country}.
-	 * 
-	 * @author Joshua_Eddy
-	 *
-	 * @see VisualRepresentation
-	 */
-	private class Visual extends VisualRepresentation {
-
 	}
 
 }

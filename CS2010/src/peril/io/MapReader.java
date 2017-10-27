@@ -7,6 +7,7 @@ import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
+import peril.Point;
 import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
@@ -84,7 +85,7 @@ public class MapReader {
 		Board newBoard = new Board(reader.continents);
 
 		// Set the normal map as the visual image of the visual representation.
-		newBoard.setImage(0, 0, reader.normalMap);
+		newBoard.setImage(new Point(0, 0), reader.normalMap);
 
 		return newBoard;
 	}

@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.ImageBuffer;
 
 import peril.Point;
+import peril.ui.Viewable;
 
 /**
  * Denotes the region of pixels given by a {@link BufferedImage} and a
@@ -37,16 +39,10 @@ public final class Region {
 	private int height;
 
 	/**
-	 * The <code>int</code> x vector from the (0,0) of the image this {@link Region}
-	 * is a part of to (0,0) of this {@link Region}.
+	 * The {@link Point} vector from the (0,0) of the image this {@link Region} is a
+	 * part of to (0,0) of this {@link Region}.
 	 */
-	private int x;
-
-	/**
-	 * The <code>int</code> y vector from the (0,0) of the image this {@link Region}
-	 * is a part of to (0,0) of this {@link Region}.
-	 */
-	private int y;
+	private Point position;
 
 	/**
 	 * Constructs a new <code>HitBox</code> object.
@@ -114,8 +110,8 @@ public final class Region {
 
 					// If the current element in the parameter region is true but this regions's
 					// object is false the set it to true.
-					if (!base[region.x + x][region.y + y] && region.object[x][y]) {
-						base[region.x + x][region.y + y] = true;
+					if (!base[region.position.x + x][region.position.y + y] && region.object[x][y]) {
+						base[region.position.x + x][region.position.y + y] = true;
 					}
 				}
 			}
@@ -139,29 +135,21 @@ public final class Region {
 		}
 
 		// If the x and y are out side the bounds of the region return false;
-		if (point.x < x || point.x > x + width || point.y < y || point.y > y + height) {
+		if (point.x < position.x || point.x > position.x + width || point.y < position.y
+				|| point.y > position.y + height) {
 			return false;
 		}
 
-		return object[point.x - x][point.y - y];
+		return object[point.x - position.x][point.y - position.y];
 	}
 
 	/**
-	 * Retrieves the x position of the {@link Region}.
+	 * Retrieves the {@link Point} position of the {@link Region}.
 	 * 
-	 * @return <code>int</code>
+	 * @return {@link Point}
 	 */
-	public int getX() {
-		return x;
-	}
-
-	/**
-	 * Retrieves the y position of the {@link Region}.
-	 * 
-	 * @return <code>int</code>
-	 */
-	public int getY() {
-		return y;
+	public Point getPosition() {
+		return position;
 	}
 
 	/**
@@ -234,6 +222,41 @@ public final class Region {
 		}
 
 		return object;
+	}
+
+	/**
+	 * Converts this {@link Region} into a {@link Image} that is stored on
+	 * {@link Viewable#image}.
+	 * 
+	 * @param region
+	 *            {@link Region}
+	 * @return {@link Image}
+	 */
+	public Image convert() {
+
+		// Set the coordinates of the viewable to that of the region.
+		position = new Point(position.x, position.y);
+
+		// Holds the image of the region.
+		ImageBuffer imagebuffer = new ImageBuffer(width, height);
+
+		// Set the colour of the visual and get its rgb value.
+		Color color = Color.yellow;
+		int r = color.getRed();
+		int g = color.getGreen();
+		int b = color.getBlue();
+
+		// Iterate through every pixel in the object[][] and if it is true set the
+		// colour of the visual to the specified value.
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				if (object[x][y]) {
+					imagebuffer.setRGBA(x, y, r, g, b, 180);
+				}
+			}
+		}
+		return imagebuffer.getImage();
+
 	}
 
 	/**
@@ -496,9 +519,8 @@ public final class Region {
 			// boundaries.
 			boolean[][] tempObject = new boolean[width][height];
 
-			// Set the x and y values of the region to the lower boundaries.
-			x = lowerXBoundary;
-			y = lowerYBoundary;
+			// Set the position of the region to the lower boundaries.
+			position = new Point(lowerXBoundary, lowerYBoundary);
 
 			// Iterate through each row of the object[][]
 			for (int y = lowerYBoundary; y <= upperYBoundary; y++) {
@@ -517,4 +539,5 @@ public final class Region {
 		}
 
 	}
+
 }

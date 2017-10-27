@@ -25,7 +25,7 @@ public abstract class Clickable {
 	 * @return Clicked or not.
 	 */
 	public boolean isClicked(Point point) {
-		if (region == null) {
+		if (!hasRegion()) {
 			throw new NullPointerException("Region is null.");
 		}
 		return region.isInside(point);
@@ -45,6 +45,10 @@ public abstract class Clickable {
 	
 	public Region getRegion() {
 		return region;
+	}
+	
+	public boolean hasRegion() {
+		return region != null;
 	}
 
 }

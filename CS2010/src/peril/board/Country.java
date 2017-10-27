@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import peril.Player;
-import peril.ui.Viewable;
+import peril.ui.visual.Viewable;
 
 /**
  * Encapsulates the behaviour of a Country. Countries:

@@ -1,9 +1,9 @@
-package peril.ui;
+package peril.ui.visual;
 
 import org.newdawn.slick.Image;
 
 import peril.Point;
-import peril.board.Clickable;
+import peril.ui.UserInterface;
 
 /**
  * Encapsulates the behaviour of an objects visual representation in the game.

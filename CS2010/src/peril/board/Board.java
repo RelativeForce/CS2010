@@ -3,7 +3,7 @@ package peril.board;
 import java.util.List;
 
 import peril.Point;
-import peril.ui.Viewable;
+import peril.ui.visual.Viewable;
 
 /**
  * Encapsulates the behaviour of the the game board in the {@link Game}. This

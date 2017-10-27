@@ -1,4 +1,4 @@
-package peril.board;
+package peril.ui.visual;
 
 import java.util.List;
 
@@ -7,7 +7,6 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.ImageBuffer;
 
 import peril.Point;
-import peril.ui.Viewable;
 
 /**
  * Denotes the region of pixels given by a {@link BufferedImage} and a

@@ -1,4 +1,4 @@
-package peril.board;
+package peril.ui.visual;
 
 import peril.Point;
 

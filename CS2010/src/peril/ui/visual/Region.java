@@ -293,28 +293,39 @@ public final class Region {
 		private int lowerYBoundary;
 
 		/**
+		 * The array that this {@link Reducer} will shrink to save memory space.
+		 */
+		private boolean[][] toReduce;
+
+		/**
 		 * Reduces a specified <code>boolean[][]</code> from the specified width and
 		 * height to the its smallest possible size without loss of data. This also
 		 * assigns {@link Region#width}, {@link Region#height}, {@link Region#x} and
 		 * {@link Region#y}.
 		 * 
 		 * @param toReduce
+		 *            The <code>boolean[][]</code> to reduce in size.
 		 * @param width
+		 *            Initial <code>int</code> width of the <code>boolean[][]</code>
+		 *            array.
 		 * @param height
-		 * @return
+		 *            Initial <code>int</code> height of the <code>boolean[][]</code>
+		 *            array.
+		 * @return <code>boolean[][]</code> reduced array.
 		 */
 		public boolean[][] reduce(boolean[][] toReduce, int width, int height) {
 
 			// Initial value is the opposite edge of the image.
-			lowerXBoundary = width;
-			lowerYBoundary = height;
-			upperXBoundary = 0;
-			upperYBoundary = 0;
+			this.lowerXBoundary = width;
+			this.lowerYBoundary = height;
+			this.upperXBoundary = 0;
+			this.upperYBoundary = 0;
+			this.toReduce = toReduce;
 
-			setYBoundaries(toReduce, width, height);
-			setXBoundaries(toReduce, width, height);
+			setYBoundaries(width, height);
+			setXBoundaries(width, height);
 
-			return reduceArray(toReduce);
+			return reduceArray();
 
 		}
 
@@ -322,14 +333,12 @@ public final class Region {
 		 * Assigns the outer horizontal boundary of the region of pixels given by a
 		 * {@link BufferedImage} and {@link Color}.
 		 * 
-		 * @param toReduce
-		 * 
 		 * @param width
 		 *            {@link BufferedImage#getWidth()}
 		 * @param height
 		 *            {@link BufferedImage#getHeight()}
 		 */
-		private void setXBoundaries(boolean[][] toReduce, int width, int height) {
+		private void setXBoundaries(int width, int height) {
 
 			/*
 			 * IMPORTATNT CONCEPT: This methods iterates from the left edge of the image
@@ -341,9 +350,9 @@ public final class Region {
 			// Iterate through each row of the image.
 			for (int rowNum = 0; rowNum < height; rowNum++) {
 
-				getLowerXBoundary(toReduce, rowNum, width);
+				getLowerXBoundary(rowNum, width);
 
-				getUpperXBoundary(toReduce, rowNum, width);
+				getUpperXBoundary(rowNum, width);
 
 			}
 
@@ -353,16 +362,13 @@ public final class Region {
 		 * Assigns the outer vertical boundaries of the region of pixels given by a
 		 * {@link BufferedImage} and {@link Color}.
 		 * 
-		 * @param toReduce
-		 * 
-		 * 
 		 * 
 		 * @param width
 		 *            {@link BufferedImage#getWidth()}
 		 * @param height
 		 *            {@link BufferedImage#getHeight()}
 		 */
-		private void setYBoundaries(boolean[][] toReduce, int width, int height) {
+		private void setYBoundaries(int width, int height) {
 
 			/*
 			 * IMPORTANT CONCEPT: This methods iterates from the bottom edge of the image
@@ -374,9 +380,9 @@ public final class Region {
 			// Iterate through each row of the image.
 			for (int colNum = 0; colNum < width; colNum++) {
 
-				getLowerYBoundary(toReduce, colNum, height);
+				getLowerYBoundary(colNum, height);
 
-				getUpperYBoundary(toReduce, colNum, height);
+				getUpperYBoundary(colNum, height);
 
 			}
 
@@ -386,8 +392,6 @@ public final class Region {
 		 * Assigns {@link Region#lowerXBoundary} by iterating through all the columns in
 		 * the specified row.
 		 * 
-		 * @param toReduce
-		 *            <code>boolean[][]</code> to be reduced in size.
 		 * @param rowNum
 		 *            <code>int</code> index of the row currently being processed by
 		 *            {@link Reducer#setXBoundaries(boolean[][], int, int)}.
@@ -395,7 +399,7 @@ public final class Region {
 		 *            <code>int</code> width of the <code>boolean[][]</code> that is
 		 *            being reduced.
 		 */
-		private void getLowerXBoundary(boolean[][] toReduce, int rowNum, int width) {
+		private void getLowerXBoundary(int rowNum, int width) {
 
 			// Iterate through each column on the current row from the right.
 			for (int x = 0; x < width; x++) {
@@ -416,8 +420,6 @@ public final class Region {
 		 * Assigns {@link Region#upperXBoundary} by iterating through all the columns in
 		 * the specified row.
 		 * 
-		 * @param toReduce
-		 *            <code>boolean[][]</code> to be reduced in size.
 		 * @param rowNum
 		 *            <code>int</code> index of the row currently being processed by
 		 *            {@link Reducer#setXBoundaries(boolean[][], int, int)}.
@@ -425,7 +427,7 @@ public final class Region {
 		 *            <code>int</code> width of the <code>boolean[][]</code> that is
 		 *            being reduced.
 		 */
-		private void getUpperXBoundary(boolean[][] toReduce, int rowNum, int width) {
+		private void getUpperXBoundary(int rowNum, int width) {
 
 			// Iterate through each column on the current row from the left.
 			for (int x = width - 1; x >= 0; x--) {
@@ -445,9 +447,7 @@ public final class Region {
 		/**
 		 * Assigns {@link Region#upperYBoundary} by iterating through all the rows in
 		 * the specified column.
-		 * 
-		 * @param toReduce
-		 *            <code>boolean[][]</code> to be reduced in size.
+		 *
 		 * @param colNum
 		 *            <code>int</code> index of the column currently being processed by
 		 *            {@link Reducer#setYBoundaries(boolean[][], int, int)}.
@@ -455,7 +455,7 @@ public final class Region {
 		 *            <code>int</code> height of the <code>boolean[][]</code> that is
 		 *            being reduced.
 		 */
-		private void getUpperYBoundary(boolean[][] toReduce, int colNum, int height) {
+		private void getUpperYBoundary(int colNum, int height) {
 
 			// Iterate through each row on the current column from the top.
 			for (int y = height - 1; y >= 0; y--) {
@@ -475,8 +475,6 @@ public final class Region {
 		 * Assigns {@link Region#lowerYBoundary} by iterating through all the rows in
 		 * the specified column.
 		 * 
-		 * @param toReduce
-		 *            <code>boolean[][]</code> to be reduced in size.
 		 * @param colNum
 		 *            <code>int</code> index of the column currently being processed by
 		 *            {@link Reducer#setYBoundaries(boolean[][], int, int)}.
@@ -484,7 +482,7 @@ public final class Region {
 		 *            <code>int</code> height of the <code>boolean[][]</code> that is
 		 *            being reduced.
 		 */
-		private void getLowerYBoundary(boolean[][] toReduce, int colNum, int height) {
+		private void getLowerYBoundary(int colNum, int height) {
 			// Iterate through each row on the current column from the bottom.
 			for (int y = 0; y < height; y++) {
 
@@ -505,11 +503,9 @@ public final class Region {
 		 * {@link Reducer#upperYBoundary}. Assigns {@link Region#x} and
 		 * {@link Region#y}.
 		 * 
-		 * @param toReduce
-		 *            <code>boolean[][]</code> to be reduced in size.
 		 * @return <code>boolean[][]</code> smallest version of the specified array.
 		 */
-		private boolean[][] reduceArray(boolean[][] toReduce) {
+		private boolean[][] reduceArray() {
 
 			width = upperXBoundary - lowerXBoundary + 1;
 			height = upperYBoundary - lowerYBoundary + 1;

@@ -11,6 +11,7 @@ import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
 import peril.board.EnvironmentalHazard;
+import peril.board.Region;
 
 /**
  * Reader the map from a specified file and uses that to construct the
@@ -206,18 +207,30 @@ public class MapReader {
 			// Create the new continent.
 			Continent newContinent = new Continent(hazard, name);
 
+			// Holds the regions of each country that will be used o make the continent.
+			List<Region> toAdd = new LinkedList<>();
+
 			/**
 			 * Iterate through all the countries in the countries map and if a country is
 			 * denoted by a string in the map detail add it to the new continent.
 			 */
 			for (String countryName : details[3].split("-")) {
+
+				// Iterate through all the countries that have been read from the file.
 				for (Country country : countries) {
+
+					// If the country's name is specified by the details file to be in this
+					// continent.
 					if (country.getName().equals(countryName)) {
 						newContinent.addCountry(country);
+						toAdd.add(country.getVisual().getRegion());
 						break;
 					}
 				}
 			}
+
+			// Combine this continent's country's regions to form the continent's region.
+			newContinent.getVisual().setRegion(Region.combine(toAdd, normalMap.getWidth(), normalMap.getHeight()));
 
 			// Add the continent to the list of continents.
 			continents.add(newContinent);

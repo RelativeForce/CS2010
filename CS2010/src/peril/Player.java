@@ -20,25 +20,25 @@ public final class Player {
 	 * Static instance of the first {@link Player}.
 	 * 
 	 */
-	public static final Player PLAYERONE = new Player("Player 1");
+	public static final Player PLAYERONE = new Player("Player 1", Color.red);
 
 	/**
 	 * Static instance of the second {@link Player}.
 	 * 
 	 */
-	public static final Player PLAYERTWO = new Player("Player 2");
+	public static final Player PLAYERTWO = new Player("Player 2", Color.blue);
 
 	/**
 	 * Static instance of the third {@link Player}.
 	 * 
 	 */
-	public static final Player PLAYERTHREE = new Player("Player 3");
+	public static final Player PLAYERTHREE = new Player("Player 3", Color.green);
 
 	/**
 	 * Static instance of the fourth {@link Player}.
 	 * 
 	 */
-	public static final Player PLAYERFOUR = new Player("Player 4");
+	public static final Player PLAYERFOUR = new Player("Player 4", Color.yellow);
 
 	/**
 	 * String Representation of the {@link Player}.
@@ -73,10 +73,11 @@ public final class Player {
 	 * @param name
 	 *            String Representation of the {@link Player}.
 	 */
-	private Player(String name) {
+	private Player(String name, Color color) {
 		this.name = name;
-		countries = 0;
-		continents = 0;
+		this.countries = 0;
+		this.continents = 0;
+		this.color = color;
 	}
 
 	/**

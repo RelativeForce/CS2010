@@ -179,6 +179,41 @@ public final class Region {
 	}
 
 	/**
+	 * Converts this {@link Region} into a {@link Image} that is stored on
+	 * {@link Viewable#image}.
+	 * 
+	 * @param region
+	 *            {@link Region}
+	 * @return {@link Image}
+	 */
+	public Image convert() {
+
+		// Set the coordinates of the viewable to that of the region.
+		position = new Point(position.x, position.y);
+
+		// Holds the image of the region.
+		ImageBuffer imagebuffer = new ImageBuffer(width, height);
+
+		// Set the colour of the visual and get its rgb value.
+		Color color = Color.yellow;
+		int r = color.getRed();
+		int g = color.getGreen();
+		int b = color.getBlue();
+
+		// Iterate through every pixel in the object[][] and if it is true set the
+		// colour of the visual to the specified value.
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				if (object[x][y]) {
+					imagebuffer.setRGBA(x, y, r, g, b, 180);
+				}
+			}
+		}
+		return imagebuffer.getImage();
+
+	}
+
+	/**
 	 * Includes the common code from both constructors.
 	 * 
 	 * @param object
@@ -221,41 +256,6 @@ public final class Region {
 		}
 
 		return object;
-	}
-
-	/**
-	 * Converts this {@link Region} into a {@link Image} that is stored on
-	 * {@link Viewable#image}.
-	 * 
-	 * @param region
-	 *            {@link Region}
-	 * @return {@link Image}
-	 */
-	public Image convert() {
-
-		// Set the coordinates of the viewable to that of the region.
-		position = new Point(position.x, position.y);
-
-		// Holds the image of the region.
-		ImageBuffer imagebuffer = new ImageBuffer(width, height);
-
-		// Set the colour of the visual and get its rgb value.
-		Color color = Color.yellow;
-		int r = color.getRed();
-		int g = color.getGreen();
-		int b = color.getBlue();
-
-		// Iterate through every pixel in the object[][] and if it is true set the
-		// colour of the visual to the specified value.
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				if (object[x][y]) {
-					imagebuffer.setRGBA(x, y, r, g, b, 180);
-				}
-			}
-		}
-		return imagebuffer.getImage();
-
 	}
 
 	/**

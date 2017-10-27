@@ -21,7 +21,8 @@ public abstract class Clickable {
 	 * objects {@link Clickable#region}. If the {@link Region} is <code>null</code>
 	 * then this will return <code>false</code>.
 	 * 
-	 * @param point {@link Point}
+	 * @param point
+	 *            {@link Point}
 	 * @return Clicked or not.
 	 */
 	public boolean isClicked(Point point) {
@@ -33,7 +34,9 @@ public abstract class Clickable {
 
 	/**
 	 * Assigns the {@link Region} to this.
-	 * @param region {@link Region}.
+	 * 
+	 * @param region
+	 *            {@link Region}.
 	 */
 	public void setRegion(Region region) {
 		if (region == null) {
@@ -42,11 +45,21 @@ public abstract class Clickable {
 
 		this.region = region;
 	}
-	
+
+	/**
+	 * Retrieves the {@link Region} at this {@link Clickable}.
+	 * 
+	 * @return {@link Region}
+	 */
 	public Region getRegion() {
 		return region;
 	}
-	
+
+	/**
+	 * Whether or not this {@link Clickable} has a {@link Region} or not.
+	 * 
+	 * @return <code>boolean</code>
+	 */
 	public boolean hasRegion() {
 		return region != null;
 	}

@@ -161,7 +161,7 @@ public class MapReader {
 			Country country = new Country(name);
 
 			// Set the clickable region of the country
-			country.getVisual().setRegion(
+			country.setRegion(
 					ImageReader.getColourRegion(directoryPath + File.separatorChar + mapName + "Countries.png", color));
 
 			// Construct a new counrty and add the country to the list of countries.
@@ -223,14 +223,14 @@ public class MapReader {
 					// continent.
 					if (country.getName().equals(countryName)) {
 						newContinent.addCountry(country);
-						toAdd.add(country.getVisual().getRegion());
+						toAdd.add(country.getRegion());
 						break;
 					}
 				}
 			}
 
 			// Combine this continent's country's regions to form the continent's region.
-			newContinent.getVisual().setRegion(Region.combine(toAdd, normalMap.getWidth(), normalMap.getHeight()));
+			newContinent.setRegion(Region.combine(toAdd, normalMap.getWidth(), normalMap.getHeight()));
 
 			// Add the continent to the list of continents.
 			continents.add(newContinent);

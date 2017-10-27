@@ -4,7 +4,6 @@ import java.util.List;
 
 import peril.Point;
 import peril.ui.Viewable;
-import peril.ui.VisualRepresentation;
 
 /**
  * Encapsulates the behaviour of the the game board in the {@link Game}. This
@@ -14,7 +13,7 @@ import peril.ui.VisualRepresentation;
  * @author Joshua_Eddy
  *
  */
-public final class Board extends VisualRepresentation {
+public final class Board extends Viewable {
 
 	/**
 	 * The {@link Continent}s in this {@link Board}.
@@ -41,7 +40,7 @@ public final class Board extends VisualRepresentation {
 		for (Continent continent : continents) {
 
 			// If the click is inside the continents region get the country from the region.
-			if (continent.getVisual().isClicked(click)) {
+			if (continent.isClicked(click)) {
 				return continent.getCountry(click);
 			}
 		}

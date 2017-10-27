@@ -6,7 +6,6 @@ import java.util.List;
 import peril.Player;
 import peril.Point;
 import peril.ui.Viewable;
-import peril.ui.VisualRepresentation;
 
 /**
  * Encapsulates the behaviour of a continent on the {@link Board}.
@@ -22,7 +21,7 @@ import peril.ui.VisualRepresentation;
  * @author Joshua_Eddy
  *
  */
-public final class Continent implements Viewable {
+public final class Continent extends Viewable {
 
 	/**
 	 * Holds the {@link Countries} that comprise this {@link Continent}.
@@ -49,13 +48,6 @@ public final class Continent implements Viewable {
 	private Player ruler;
 
 	/**
-	 * Holds the visual representation of the {@link Continent}.
-	 * 
-	 * @see VisualRepresentation
-	 */
-	private VisualRepresentation visual;
-
-	/**
 	 * Constructs a new {@link Continent}.
 	 * 
 	 * @param countries
@@ -64,7 +56,6 @@ public final class Continent implements Viewable {
 
 		this.countries = new LinkedList<Country>();
 		this.hazard = hazard;
-		this.visual = new Visual();
 		this.ruler = null;
 		this.name = name;
 
@@ -86,17 +77,6 @@ public final class Continent implements Viewable {
 	 */
 	public String getName() {
 		return name;
-	}
-
-	/**
-	 * The visual representation of the {@link Continent}.
-	 * 
-	 * @author Joshua_Eddy
-	 *
-	 * @see VisualRepresentation
-	 */
-	private class Visual extends VisualRepresentation {
-
 	}
 
 	/**
@@ -135,7 +115,7 @@ public final class Continent implements Viewable {
 		for (Country currentCountry : countries) {
 
 			// Checks if the specifies click is inside the bounds of the current country.
-			if (currentCountry.getVisual().isClicked(click)) {
+			if (currentCountry.isClicked(click)) {
 				return currentCountry;
 			}
 		}
@@ -154,10 +134,4 @@ public final class Continent implements Viewable {
 	public void executeTurn() {
 
 	}
-
-	@Override
-	public VisualRepresentation getVisual() {
-		return visual;
-	}
-
 }

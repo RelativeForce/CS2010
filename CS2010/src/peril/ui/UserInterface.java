@@ -108,7 +108,7 @@ public class UserInterface extends StateBasedGame {
 		// Open that user interface on the screen.
 		try {
 			agc = new AppGameContainer(ui);
-			agc.setDisplayMode(620, 496, false);
+			agc.setDisplayMode(1500, 745, false);
 			agc.setTargetFrameRate(60);
 		} catch (SlickException e) {
 			System.out.println(e.getMessage());

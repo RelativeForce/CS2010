@@ -55,7 +55,7 @@ public abstract class CoreGameState extends BasicGameState {
 		if (b != null) {
 			g.drawImage(b.getImage(), 0, 0);
 		} else {
-			game.init();
+			game.loadAssets();
 		}
 
 		if (higlightedCountry != null) {

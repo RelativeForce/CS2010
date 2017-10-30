@@ -87,10 +87,10 @@ public class Game {
 	/**
 	 * Starts the UI and reads the Board.
 	 */
-	public void init() {
+	public void loadAssets() {
 		// Read the Board and Objectives from the files.
 		File currentDirectory = new File(System.getProperty("user.dir"));
-		this.board = MapReader.getBoard(currentDirectory.getPath(), "Earth");
+		this.board = MapReader.getBoard(currentDirectory.getPath(), "World");
 	}
 
 	/**

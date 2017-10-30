@@ -1,0 +1,32 @@
+Country,Alaska,000000051
+Country,Canada,000000102
+Country,USA,000000153
+Country,Gulf,000000204
+Country,Latin America,000000255
+Country,Central South America,000051000
+Country,Southern South America,000102000
+Country,Arctic,000153000
+Country,Western Europe,000204000
+Country,Central Europe,000255000
+Country,Eastern Europe,051000000
+Country,Northern Europe,102000000
+Country,Russia,153000000
+Country,Middle East,204000000
+Country,Arabia,255000000
+Country,Central Asia,000051051
+Country,China and Japan,000051102
+Country,Southern Asia,000051153
+Country,Australia,000051204
+Country,Western Africa,000051255
+Country,Desert Africa,000102051
+Country,Central Africa,000102102
+Country,Southern Africa,000102153
+Continent,North America,Hurricane,Alaska-Canada-USA-Gulf-Arctic
+Continent,South America,Tornado,Latin America-Central South America-Southern South America
+Continent,Europe,Hurricane,Western Europe-Central Europe-Eastern Europe-Northern Europe
+Continent,Asia,Tornado,Russia-Central Asia-China and Japan-Arabia
+Continent,Austrilasia,Hurricane,Southern Asia-Australia
+Continent,Africa,Tornado,Middle East-Western Africa-Desert Africa-Central Africa-Southern Africa
+Link,Great Britian,France
+Link,France,Germany
+Link,Germany,Russia

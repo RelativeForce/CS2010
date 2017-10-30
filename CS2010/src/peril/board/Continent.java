@@ -87,7 +87,10 @@ public final class Continent extends Clickable {
 	 *         {@link Continent}.
 	 */
 	public boolean isRuled() {
-		// TODO: Whether all the countries are ruled by a particular player.
+
+		// Check if this country is ruled.
+		checkRuler();
+
 		return ruler != null;
 	}
 
@@ -132,6 +135,53 @@ public final class Continent extends Clickable {
 	}
 
 	public void executeTurn() {
+
+	}
+
+	/**
+	 * Retrieve the {@link List} of {@link Country}s for this {@link Continent}.
+	 * 
+	 * @return {@link List} of {@link Country}s
+	 */
+	public List<Country> getCountries() {
+		return countries;
+	}
+
+	/**
+	 * Checks if this {@link Continent} is ruled by a single {@link Player}.
+	 */
+	private void checkRuler() {
+
+		// Holds the country that was last iterated over.
+		Country previous = null;
+
+		// Iterate through all the countries.
+		for (Country country : countries) {
+
+			/*
+			 * If this is the first iteration of the loop set the ruler of this continent as
+			 * the ruler of the current country.
+			 */
+			if (previous == null) {
+				ruler = country.getRuler();
+			}
+
+			previous = country;
+
+			/*
+			 * If there is only one country then the ruler of that country will be the ruler
+			 * of the continent otherwise check through all the countries and if an of them
+			 * differ from that first countries ruler then there is not a single ruler of
+			 * the continent. In that case the ruler should be set as null. If all the
+			 * countries have the same ruler then set then the ruler of the first country
+			 * ruler them all.
+			 */
+			if (!ruler.equals(previous.getRuler())) {
+				ruler = null;
+				break;
+			}
+
+		}
 
 	}
 }

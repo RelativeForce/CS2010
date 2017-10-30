@@ -4,8 +4,10 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 
 import peril.Point;
 import peril.board.Board;
@@ -24,25 +26,9 @@ import peril.ui.visual.Region;
 public class MapReader {
 
 	/**
-	 * The lines of the details file which specifies all the details about the map.
-	 */
-	private String[] detailsFile;
-
-	/**
-	 * The name of the current map, this will be used to locate all the map
-	 * resources.
-	 */
-	private String mapName;
-
-	/**
 	 * The path to the directory with all the map assets in it.
 	 */
 	private String directoryPath;
-
-	/**
-	 * The {@link List} of all the {@link Country}s on the {@link Board}.
-	 */
-	private List<Country> countries;
 
 	/**
 	 * The {@link List} of all the {@link Continent}s on the {@link Board}.
@@ -50,9 +36,19 @@ public class MapReader {
 	private List<Continent> continents;
 
 	/**
+	 * The lines of the details file which specifies all the details about the map.
+	 */
+	private String[] detailsFile;
+
+	/**
 	 * The image of the {@link Board}.
 	 */
 	private Image normalMap;
+
+	/**
+	 * The {@link List} of all the {@link Country}s on the {@link Board}.
+	 */
+	private List<Country> countries;
 
 	/**
 	 * Constructs a new {@link MapReader}.
@@ -60,14 +56,12 @@ public class MapReader {
 	 * @param directoryPath
 	 *            The path of the parent directory which contains the map files.
 	 */
-	private MapReader(String directoryPath, String mapName) {
+	public MapReader(String directoryPath) {
 
-		this.mapName = mapName;
 		this.directoryPath = directoryPath;
-		this.detailsFile = TextFileReader.scanFile(directoryPath, mapName + "Details");
-		this.normalMap = ImageReader.getImage(directoryPath + File.separatorChar + mapName + ".png");
-		this.countries = new LinkedList<>();
+		this.detailsFile = TextFileReader.scanFile(directoryPath, "details.txt");
 		this.continents = new LinkedList<>();
+		this.countries = new LinkedList<>();
 
 	}
 
@@ -75,25 +69,27 @@ public class MapReader {
 	 * Retrieves the {@link Board} specified by a given map name.
 	 * 
 	 * @param directoryPath
-	 * @param mapName
+	 * @param board
+	 *            The {@link Board} which all the information read from the map
+	 *            files will be added to. If there are any errors in the details
 	 */
-	public static Board getBoard(String directoryPath, String mapName) {
+	public void parseBoard(Board board) {
+		
+		normalMap = ImageReader.getImage(directoryPath + File.separatorChar + "normal.png");
+		parseDetails();
 
-		MapReader reader = new MapReader(directoryPath, mapName);
-		reader.parseDetailsFile();
-
-		Board newBoard = new Board(reader.continents);
+		// Set the boards continents
+		board.setContinents(continents);
 
 		// Set the normal map as the visual image of the visual representation.
-		newBoard.setImage(new Point(0, 0), reader.normalMap);
+		board.setImage(new Point(0, 0), normalMap);
 
-		return newBoard;
-	}
+	}	
 
 	/**
 	 * Reads the details of the current map from the details file.
 	 */
-	private void parseDetailsFile() {
+	private void parseDetails() {
 
 		// Iterate through all the lines in the details file.
 		for (String line : detailsFile) {
@@ -130,6 +126,8 @@ public class MapReader {
 
 	}
 
+
+
 	/**
 	 * Parses a <code>String</code> array of details into a new {@link Country}.
 	 * 
@@ -162,8 +160,7 @@ public class MapReader {
 			Country country = new Country(name);
 
 			// Set the clickable region of the country
-			country.setRegion(
-					ImageReader.getColourRegion(directoryPath + File.separatorChar + mapName + "Countries.png", color));
+			country.setRegion(ImageReader.getColourRegion(directoryPath + File.separatorChar + "countries.png", color));
 
 			// Construct a new counrty and add the country to the list of countries.
 			countries.add(country);
@@ -286,6 +283,12 @@ public class MapReader {
 			}
 
 		}
+
+	}
+
+	public void setAppGameContainerDimensions(AppGameContainer agc) throws SlickException {
+
+		agc.setDisplayMode(1500, 745, false);
 
 	}
 

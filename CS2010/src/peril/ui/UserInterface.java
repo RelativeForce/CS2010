@@ -1,6 +1,5 @@
 package peril.ui;
 
-import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
@@ -31,8 +30,6 @@ public class UserInterface extends StateBasedGame {
 	 */
 	private Game game;
 
-	private static AppGameContainer agc;
-	
 	/**
 	 * The basic state that the game is in.
 	 */
@@ -41,9 +38,8 @@ public class UserInterface extends StateBasedGame {
 	private final ReinforcementState reinforcementState;
 	private final MovementState movementState;
 	private final EndState endState;
-	
-	private final UIEventHandler eventHandler;
 
+	private final UIEventHandler eventHandler;
 
 	/**
 	 * Constructs a new {@link UserInterface}.
@@ -52,7 +48,7 @@ public class UserInterface extends StateBasedGame {
 	 *            The instance of {@link Game} that is running <code>this</code>
 	 *            {@link UserInterface}.
 	 */
-	private UserInterface(Game game) {
+	public UserInterface(Game game) {
 		super("PERIL: A Turn Based Strategy Game");
 		this.combatState = new CombatState(game, this);
 		this.setupState = new SetupState(game, this);
@@ -90,47 +86,11 @@ public class UserInterface extends StateBasedGame {
 
 	}
 
-	/**
-	 * Generates a new {@link UserInterface} and displays it to the user. Pattern:
-	 * Factory
-	 * 
-	 * @param game
-	 *            The instance of {@link Game} that is running <code>this</code>
-	 *            {@link UserInterface}.
-	 * 
-	 * @return {@link UserInterface}
-	 */
-	public static UserInterface newUI(Game game) {
-
-		// Create a new user interface.
-		UserInterface ui = new UserInterface(game);
-
-		// Open that user interface on the screen.
-		try {
-			agc = new AppGameContainer(ui);
-			agc.setDisplayMode(620, 496, false);
-			agc.setTargetFrameRate(60);
-		} catch (SlickException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
-
-		return ui;
-	}
-
 	public void highlight(Country country) {
 		GameState state = super.getCurrentState();
-		if( state instanceof CoreGameState) {
-			((CoreGameState) state).highlight(country);;
-		}
-	}
-	
-	public void start() {
-		try {
-			agc.start();
-		} catch (SlickException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
+		if (state instanceof CoreGameState) {
+			((CoreGameState) state).highlight(country);
+			;
 		}
 	}
 

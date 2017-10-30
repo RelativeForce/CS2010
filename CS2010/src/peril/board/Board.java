@@ -23,7 +23,16 @@ public final class Board extends Clickable {
 	/**
 	 * Constructs a {@link Board}.
 	 */
-	public Board(List<Continent> continents) {
+	public Board() {
+		this.continents = null;
+	}
+
+	public void setContinents(List<Continent> continents) {
+
+		if (continents == null) {
+			throw new NullPointerException("Continents is null.");
+		}
+
 		this.continents = continents;
 	}
 
@@ -35,6 +44,8 @@ public final class Board extends Clickable {
 	 * @return {@link Country}.
 	 */
 	public Country getCountry(Point click) {
+
+		checkContinents();
 
 		// Iterate through all the continents on the board.
 		for (Continent continent : continents) {
@@ -58,7 +69,20 @@ public final class Board extends Clickable {
 	 * @see java.util.List
 	 */
 	public List<Continent> getContinents() {
+
+		checkContinents();
+
 		return continents;
+	}
+
+	/**
+	 * Checks whether {@link Board#continents} is <code>null</code>. If it is this
+	 * method will throw {@link IllegalStateException}.
+	 */
+	private void checkContinents() {
+		if (continents == null) {
+			throw new IllegalStateException("There are no Continents on this board");
+		}
 	}
 
 	/**
@@ -66,6 +90,9 @@ public final class Board extends Clickable {
 	 * {@link Continent#executeTurn()}.
 	 */
 	public void endRound() {
+		
+		checkContinents();
+		
 		continents.forEach(continent -> continent.endRound());
 	}
 }

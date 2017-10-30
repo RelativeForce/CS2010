@@ -52,10 +52,10 @@ public abstract class CoreGameState extends BasicGameState {
 
 		Board b = game.getBoard();
 
-		if (b != null) {
+		if (b != null && b.hasImage()) {
 			g.drawImage(b.getImage(), 0, 0);
 		} else {
-			game.init();
+			game.loadAssets();
 		}
 
 		if (higlightedCountry != null) {

@@ -4,6 +4,9 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.SlickException;
+
 import peril.board.Board;
 import peril.io.MapReader;
 import peril.multiThread.Action;
@@ -17,6 +20,12 @@ import peril.ui.UserInterface;
  *
  */
 public class Game {
+
+	/**
+	 * The name of the current map, this will be used to locate all the map
+	 * resources.
+	 */
+	private static final String BOARD_NAME = "Europe";
 
 	/**
 	 * Whether the game is running or not.
@@ -62,6 +71,12 @@ public class Game {
 	 * The {@link UserInterface} for the {@link Game}.
 	 */
 	private UserInterface ui;
+	
+	private MapReader mapReader;
+
+	private Thread background;
+
+	private AppGameContainer agc;
 
 	/**
 	 * Constructs a new {@link Game}.
@@ -71,13 +86,40 @@ public class Game {
 	 */
 	private Game() {
 
+		this.mapReader = new MapReader(new File(System.getProperty("user.dir")).getPath() + File.separatorChar + BOARD_NAME) ;
 		this.currentPlayerIndex = 0;
 		this.players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO, Player.PLAYERTHREE, Player.PLAYERFOUR };
 		this.currentRound = 0;
 		this.processTransfer = ProcessTransfer.getInstane();
 		this.endTurn = false;
 		this.run = true;
-		this.ui = UserInterface.newUI(this);
+		this.board = new Board();
+		this.ui = new UserInterface(this);
+
+		try {
+			agc = new AppGameContainer(ui);
+			mapReader.setAppGameContainerDimensions(agc);
+			agc.setTargetFrameRate(60);
+			agc.start();
+		} catch (SlickException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		// Initialise and start the background thread.
+		this.background = new Thread() {
+
+			@Override
+			public void run() {
+
+				while (run) {
+					if (!processTransfer.isEmpty()) {
+						processTransfer.poll();
+					}
+				}
+			}
+		};
+		this.background.start();
 
 		// this.challenges = ChallengeReader.getChallenges(currentDirectory.getPath(),
 		// "Earth");
@@ -87,10 +129,8 @@ public class Game {
 	/**
 	 * Starts the UI and reads the Board.
 	 */
-	public void init() {
-		// Read the Board and Objectives from the files.
-		File currentDirectory = new File(System.getProperty("user.dir"));
-		this.board = MapReader.getBoard(currentDirectory.getPath(), "Earth");
+	public void loadAssets() {
+		mapReader.parseBoard(board);
 	}
 
 	/**
@@ -295,7 +335,6 @@ public class Game {
 
 		// Create the instance of the game.
 		Game game = new Game();
-		game.ui.start();
 		game.play();
 
 	}

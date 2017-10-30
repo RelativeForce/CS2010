@@ -62,6 +62,10 @@ public abstract class Viewable {
 	 * @return {@link Image}
 	 */
 	public Image getImage() {
+		if(image == null) {
+			throw new NullPointerException("Image cannot be null.");
+		}
+		
 		return image;
 	}
 

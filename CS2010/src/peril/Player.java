@@ -122,6 +122,14 @@ public final class Player {
 	}
 
 	/**
+	 * Gets the {@link Player}'s color
+	 * 
+	 */
+	public Color getColor() {
+		return color;
+	}
+	
+	/**
 	 * Gets the number of {@link Continent}s owned by the {@link Player}.
 	 * 
 	 * @return continents Number of {@link Continent}s.

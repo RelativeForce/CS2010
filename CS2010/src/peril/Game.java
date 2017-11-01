@@ -372,15 +372,6 @@ public class Game extends StateBasedGame {
 	}
 
 	/**
-	 * Performs the actions of the background loop. Any time the game thread is
-	 * waiting for an for an {@link Action} to execute or to be executed, call this
-	 * method.
-	 */
-	private void run() {
-		// TODO Background stuff.
-	}
-
-	/**
 	 * Creates an {@link Action} that displays the specified winning {@link Player}
 	 * on the {@link UserInterface}. This {@link Action} is then passed to the
 	 * {@link UserInterface} thread while this thread waits for it to be completed

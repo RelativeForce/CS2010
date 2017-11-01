@@ -3,7 +3,6 @@ package peril.ui.visual;
 import org.newdawn.slick.Image;
 
 import peril.Point;
-import peril.ui.UserInterface;
 
 /**
  * Encapsulates the behaviour of an objects visual representation in the game.

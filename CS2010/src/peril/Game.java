@@ -125,9 +125,15 @@ public class Game extends StateBasedGame {
 	private Game() {
 		super("PERIL: A Turn Based Strategy Game");
 
+		// Create the map file path
+		StringBuilder mapPath = new StringBuilder(new File(System.getProperty("user.dir")).getPath());
+		mapPath.append(File.separatorChar);
+		mapPath.append("maps");
+		mapPath.append(File.separatorChar);
+		mapPath.append(BOARD_NAME);
+		
 		// Initialise the map reader and the players.
-		this.mapReader = new MapReader(
-				new File(System.getProperty("user.dir")).getPath() + File.separatorChar + BOARD_NAME);
+		this.mapReader = new MapReader(mapPath.toString());
 		this.players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO, Player.PLAYERTHREE, Player.PLAYERFOUR };
 
 		// Set the game indexes to there initial values.

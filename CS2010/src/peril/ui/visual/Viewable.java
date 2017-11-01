@@ -82,4 +82,32 @@ public abstract class Viewable {
 		return position;
 	}
 
+	/**
+	 * Retrieves the Width of the {@link Image} in this {@link Viewable}.
+	 * 
+	 * @return <code>int</code>
+	 */
+	public int getWidth() {
+
+		// If there is a image in this Viewable then use that Width.
+		if (hasImage()) {
+			return image.getWidth();
+		}
+		throw new NullPointerException("The image is null.");
+	}
+
+	/**
+	 * Retrieves the height of the {@link Image} in this {@link Viewable}.
+	 * 
+	 * @return <code>int</code>
+	 */
+	public int getHeight() {
+
+		// If there is a image in this Viewable then use that height.
+		if (hasImage()) {
+			return image.getHeight();
+		}
+		throw new NullPointerException("The image is null.");
+	}
+
 }

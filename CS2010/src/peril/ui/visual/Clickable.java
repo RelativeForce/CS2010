@@ -90,8 +90,37 @@ public abstract class Clickable extends Viewable {
 		if (hasRegion()) {
 			return region.getPosition();
 		}
-
 		return super.getPosition();
+	}
+
+	/**
+	 * Retrieves the width of the {@link Region} in this {@link Clickable}. If the
+	 * {@link Region} is null this returns {@link Viewable#getWidth()}.
+	 * 
+	 * @return <code>int</code>
+	 */
+	public int getWidth() {
+
+		// If there is a region in this clickable then use that width.
+		if (hasRegion()) {
+			return region.getWidth();
+		}
+		return super.getWidth();
+	}
+
+	/**
+	 * Retrieves the height of the {@link Region} in this {@link Clickable}. If the
+	 * {@link Region} is null this returns {@link Viewable#getHeight()}.
+	 * 
+	 * @return <code>int</code>
+	 */
+	public int getHeight() {
+
+		// If there is a region in this clickable then use that height.
+		if (hasRegion()) {
+			return region.getHeight();
+		}
+		return super.getHeight();
 	}
 
 }

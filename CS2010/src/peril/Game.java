@@ -118,9 +118,6 @@ public class Game extends StateBasedGame {
 
 	/**
 	 * Constructs a new {@link Game}.
-	 * 
-	 * @param ui
-	 *            The {@link UserInterface} of the {@link Game}.
 	 */
 	private Game() {
 		super("PERIL: A Turn Based Strategy Game");
@@ -131,7 +128,7 @@ public class Game extends StateBasedGame {
 		mapPath.append("maps");
 		mapPath.append(File.separatorChar);
 		mapPath.append(BOARD_NAME);
-		
+
 		// Initialise the map reader and the players.
 		this.mapReader = new MapReader(mapPath.toString());
 		this.players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO, Player.PLAYERTHREE, Player.PLAYERFOUR };

@@ -7,7 +7,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
-import peril.board.Board;
 import peril.board.Country;
 
 /**
@@ -43,25 +42,21 @@ public abstract class CoreGameState extends BasicGameState {
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		gc.setUpdateOnlyWhenVisible(true);
+
+		if (game.getBoard() == null) {
+			game.loadAssets();
+		}
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
-		Board b = game.getBoard();
+		if (higlightedCountry != null) {
 
-		if (b != null && b.hasImage()) {
-			g.drawImage(b.getImage(), 0, 0);
-		} else {
-			game.loadAssets();
-		}
-
-		if (higlightedCountry != null ) {
-			
 			Image c = higlightedCountry.getImage();
-			
-			if(c != null)g.drawImage(c, higlightedCountry.getPosition().x,
-					higlightedCountry.getPosition().y);
+
+			if (c != null)
+				g.drawImage(c, higlightedCountry.getPosition().x, higlightedCountry.getPosition().y);
 		}
 
 		g.drawString(stateName, 5, 50);

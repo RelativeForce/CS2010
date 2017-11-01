@@ -5,13 +5,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.state.GameState;
+import org.newdawn.slick.state.StateBasedGame;
 
 import peril.board.Board;
+import peril.board.Country;
 import peril.io.MapReader;
-import peril.multiThread.Action;
-import peril.multiThread.ProcessTransfer;
-import peril.ui.UserInterface;
+import peril.ui.UIEventHandler;
+import peril.ui.states.*;
 
 /**
  * Encapsulate the main game logic.
@@ -19,13 +22,13 @@ import peril.ui.UserInterface;
  * @author Joshua_Eddy
  *
  */
-public class Game {
+public class Game extends StateBasedGame {
 
 	/**
 	 * The name of the current map, this will be used to locate all the map
 	 * resources.
 	 */
-	private static final String BOARD_NAME = "Europe";
+	public static final String BOARD_NAME = "Europe";
 
 	/**
 	 * Whether the game is running or not.
@@ -38,9 +41,39 @@ public class Game {
 	public volatile boolean endTurn;
 
 	/**
-	 * {@link ProcessTransfer#getInstane()}
+	 * The state that displays combat to the user. This is heavily couples with
+	 * {@link CombatHandler}.
 	 */
-	private ProcessTransfer processTransfer;
+	private final CombatState combatState;
+
+	/**
+	 * The {@link SetupState} that will allow the user to set up which
+	 * {@link Player} owns which {@link Country}.
+	 */
+	private final SetupState setupState;
+
+	/**
+	 * The {@link ReinforcementState} that allows the {@link Player} to distribute
+	 * their {@link Army} to the {@link Country}s they rule.
+	 */
+	private final ReinforcementState reinforcementState;
+
+	/**
+	 * The {@link MovementState} which lets the user move {@link Army}s from one
+	 * {@link Country} to another.
+	 */
+	private final MovementState movementState;
+
+	/**
+	 * The {@link EndState} that displays the results of the {@link Game}.
+	 */
+	private final EndState endState;
+
+	/**
+	 * The {@link UIEventHandler} that processes all of the user inputs and triggers
+	 * the appropriate operations.
+	 */
+	private final UIEventHandler eventHandler;
 
 	/**
 	 * The instance of the {@link Board} used for this game.
@@ -68,14 +101,18 @@ public class Game {
 	private List<Challenge> challenges;
 
 	/**
-	 * The {@link UserInterface} for the {@link Game}.
+	 * The {@link MapReader} that reads the {@link Board} from external memory.
 	 */
-	private UserInterface ui;
-	
 	private MapReader mapReader;
 
+	/**
+	 * The {@link Thread} that run the the background tasks.
+	 */
 	private Thread background;
 
+	/**
+	 * The {@link AppGameContainer} that contains this {@link Game}.
+	 */
 	private AppGameContainer agc;
 
 	/**
@@ -85,19 +122,35 @@ public class Game {
 	 *            The {@link UserInterface} of the {@link Game}.
 	 */
 	private Game() {
+		super("PERIL: A Turn Based Strategy Game");
 
-		this.mapReader = new MapReader(new File(System.getProperty("user.dir")).getPath() + File.separatorChar + BOARD_NAME) ;
-		this.currentPlayerIndex = 0;
+		// Initialise the map reader and the players.
+		this.mapReader = new MapReader(
+				new File(System.getProperty("user.dir")).getPath() + File.separatorChar + BOARD_NAME);
 		this.players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO, Player.PLAYERTHREE, Player.PLAYERFOUR };
+
+		// Set the game indexes to there initial values.
+		this.currentPlayerIndex = 0;
 		this.currentRound = 0;
-		this.processTransfer = ProcessTransfer.getInstane();
+
+		// Assign the game to run.
 		this.endTurn = false;
 		this.run = true;
-		this.board = new Board();
-		this.ui = new UserInterface(this);
 
+		// Construct the board.
+		this.board = new Board();
+
+		// Initialise the game states.
+		this.combatState = new CombatState(this);
+		this.setupState = new SetupState(this);
+		this.reinforcementState = new ReinforcementState(this);
+		this.movementState = new MovementState(this);
+		this.endState = new EndState(this);
+		this.eventHandler = new UIEventHandler(this);
+
+		// Construct and launch the game as a Slick2D state based game.
 		try {
-			agc = new AppGameContainer(ui);
+			agc = new AppGameContainer(this);
 			mapReader.setAppGameContainerDimensions(agc);
 			agc.setTargetFrameRate(60);
 			agc.start();
@@ -105,7 +158,7 @@ public class Game {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
-		
+
 		// Initialise and start the background thread.
 		this.background = new Thread() {
 
@@ -113,9 +166,7 @@ public class Game {
 			public void run() {
 
 				while (run) {
-					if (!processTransfer.isEmpty()) {
-						processTransfer.poll();
-					}
+					// TODO Background tasks
 				}
 			}
 		};
@@ -124,6 +175,48 @@ public class Game {
 		// this.challenges = ChallengeReader.getChallenges(currentDirectory.getPath(),
 		// "Earth");
 
+	}
+
+	/**
+	 * Highlights a {@link Country} on the screen by adding it to the
+	 * {@link CoreGameState} for the state to render.
+	 * 
+	 * @param country
+	 *            {@link Country}
+	 */
+	public void highlight(Country country) {
+
+		// Get the current state of the game.
+		GameState state = super.getCurrentState();
+
+		// Check that the state is a CoreGameState and if it is not throw an exception
+		// as there is an invalid state in the game.
+		if (state instanceof CoreGameState) {
+
+			// Highlight the country
+			((CoreGameState) state).highlight(country);
+		} else {
+			throw new IllegalStateException("The current state is not a CoreGameState.");
+		}
+	}
+
+	/**
+	 * Adds {@link CoreGameState}s to the {@link GameContainer} for this
+	 * {@link Game}.
+	 */
+	@Override
+	public void initStatesList(GameContainer container) throws SlickException {
+
+		// Add all the game states to the game to the game container.
+		super.addState(setupState);
+		super.addState(combatState);
+		super.addState(reinforcementState);
+		super.addState(movementState);
+		super.addState(endState);
+
+		// Assign Key and Mouse Listener as the UIEventhandler
+		container.getInput().addKeyListener(eventHandler);
+		container.getInput().addMouseListener(eventHandler);
 	}
 
 	/**
@@ -168,9 +261,8 @@ public class Game {
 		// While the game is being played.
 		while (run) {
 
-			displayTurn(getCurrentPlayer());
-
-			executeTurn(getCurrentPlayer());
+			this.enterState(reinforcementState.getID());
+			// TODO this.getCurrentState().display(getCurrentPlayer());
 
 			// Go to next player.
 			nextPlayer();
@@ -179,6 +271,8 @@ public class Game {
 			if (currentPlayerIndex == 0) {
 				endRound();
 			}
+
+			checkChallenges(getCurrentPlayer());
 		}
 
 		displayWinner(getCurrentPlayer());
@@ -205,56 +299,7 @@ public class Game {
 	 */
 	private void displayWinner(Player player) {
 
-		// Display the winner to the user.
-		Action<UserInterface> action = new Action<>(ui, ui -> ui.displayWinner(player));
-
-		// Transfer the action to the ui.
-		processTransfer.transfer(action);
-
-		// Wait for winner to be displayed.
-		while (!action.isDone() && run) {
-			run();
-		}
-
-	}
-
-	/**
-	 * Executes a turn for a specified {@link Player}.
-	 * 
-	 * @param player
-	 *            {@link Player}.
-	 */
-	private void executeTurn(Player player) {
-
-		// While the user has his turn. This loop end when the action that is added to
-		// the queue by the ui sets endTurn to true.
-		while (!endTurn && run) {
-
-			executeAction();
-
-		}
-
-		endTurn = false;
-
-		// Check challenge completion.
-		checkChallenges(player);
-
-	}
-
-	/**
-	 * Waits until the {@link Player} performs a {@link Action} on the
-	 * {@link UserInterface} and it is added to the queue of {@link Action}s to be
-	 * executed. When one is added it is executed.
-	 */
-	private void executeAction() {
-
-		while (processTransfer.isEmpty() && run) {
-			// Wait for the player to perform an action.
-			run();
-		}
-
-		// Execute the users command.
-		processTransfer.poll();
+		// TODO display winning player
 
 	}
 
@@ -268,17 +313,7 @@ public class Game {
 	 *            {@link Player}
 	 */
 	private void displayTurn(Player player) {
-
-		// Display the turn to the user.
-		Action<UserInterface> action = new Action<>(ui, ui -> ui.displayTurn(player));
-
-		// Transfer the action to the ui.
-		processTransfer.transfer(action);
-
-		// Wait for the ui to display the turn to the player.
-		while (!action.isDone() && run) {
-			run();
-		}
+		// TODO display turn
 	}
 
 	/**

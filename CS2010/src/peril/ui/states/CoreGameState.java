@@ -9,10 +9,9 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.board.Board;
 import peril.board.Country;
-import peril.ui.UserInterface;
 
 /**
- * @author Joseph_Rolli
+ * @author Joseph_Rolli, Joshua_Eddy
  */
 
 public abstract class CoreGameState extends BasicGameState {
@@ -22,16 +21,14 @@ public abstract class CoreGameState extends BasicGameState {
 	 */
 	protected String stateName;
 	protected Game game;
-	protected UserInterface ui;
 	private int x;
 	private int y;
 
 	private Country higlightedCountry;
 
-	protected CoreGameState(Game game, UserInterface ui) {
+	protected CoreGameState(Game game) {
 		this.game = game;
 		this.higlightedCountry = null;
-		this.ui = ui;
 	}
 
 	public void highlight(Country country) {

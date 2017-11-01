@@ -19,13 +19,9 @@ import peril.Point;
  */
 public class UIEventHandler implements MouseListener, KeyListener {
 
-	private UserInterface ui;
 	private Game game;
 
-	public UIEventHandler(UserInterface ui, Game game) {
-		if (ui == null)
-			throw new IllegalArgumentException("UserInterface cannot be null");
-		this.ui = ui;
+	public UIEventHandler(Game game) {
 		this.game = game;
 	}
 
@@ -71,10 +67,10 @@ public class UIEventHandler implements MouseListener, KeyListener {
 		if (b != null) {
 			Country c = b.getCountry(new Point(x, y));
 			if (c != null) {
-				ui.highlight(c);
+				game.highlight(c);
 				System.out.println(c.getName());
 			} else {
-				ui.highlight(null);
+				game.highlight(null);
 			}
 		}
 

@@ -123,36 +123,7 @@ public class Game extends StateBasedGame {
 	private Game() {
 		super("PERIL: A Turn Based Strategy Game");
 
-		// Initialise the game states.
-		this.combatState = new CombatState(this);
-		this.setupState = new SetupState(this);
-		this.reinforcementState = new ReinforcementState(this);
-		this.movementState = new MovementState(this);
-		this.endState = new EndState(this);
-		this.eventHandler = new UIEventHandler(this);
-
-		// Create the map file path
-		StringBuilder mapPath = new StringBuilder(new File(System.getProperty("user.dir")).getPath());
-		mapPath.append(File.separatorChar);
-		mapPath.append("maps");
-
-		// Construct the container for the game as a Slick2D state based game. And parse
-		// the details of the map from the maps file.
-		try {
-			agc = new AppGameContainer(this);
-			setAppGameContainerDimensions(mapPath.toString());
-			agc.setTargetFrameRate(60);
-		} catch (SlickException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
-		
-		// Add the path to the map's folder
-		mapPath.append(File.separatorChar);
-		mapPath.append(BOARD_NAME);
-
-		// Initialise the map reader and the players.
-		this.mapReader = new MapReader(mapPath.toString());
+		// Initialise the the players array.
 		this.players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO, Player.PLAYERTHREE, Player.PLAYERFOUR };
 
 		// Set the game indexes to there initial values.
@@ -165,13 +136,6 @@ public class Game extends StateBasedGame {
 
 		// Construct the board.
 		this.board = new Board();
-		
-		try {
-			agc.start();
-		} catch (SlickException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
 
 		// Initialise and start the background thread.
 		this.background = new Thread() {
@@ -188,6 +152,50 @@ public class Game extends StateBasedGame {
 
 		// this.challenges = ChallengeReader.getChallenges(currentDirectory.getPath(),
 		// "Earth");
+
+		// Initialise the game states.
+		this.combatState = new CombatState(this);
+		this.setupState = new SetupState(this);
+		this.reinforcementState = new ReinforcementState(this);
+		this.movementState = new MovementState(this);
+		this.endState = new EndState(this);
+		this.eventHandler = new UIEventHandler(this);
+
+		// Holds the directory this game is operating in.
+		String baseDirectory = new File(System.getProperty("user.dir")).getPath();
+
+		// Create the map file path
+		StringBuilder mapPath = new StringBuilder(baseDirectory);
+		mapPath.append(File.separatorChar);
+		mapPath.append("game_assets");
+		mapPath.append(File.separatorChar);
+		mapPath.append("maps");
+
+		// Construct the container for the game as a Slick2D state based game. And parse
+		// the details of the map from the maps file.
+		try {
+			agc = new AppGameContainer(this);
+			setAppGameContainerDimensions(mapPath.toString());
+
+		} catch (SlickException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+
+		// Add the path to the map's folder
+		mapPath.append(File.separatorChar);
+		mapPath.append(BOARD_NAME);
+
+		// Initialise the map reader and the players array.
+		this.mapReader = new MapReader(mapPath.toString());
+
+		try {
+			agc.setTargetFrameRate(60);
+			agc.start();
+		} catch (SlickException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
 
 	}
 

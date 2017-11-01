@@ -3,6 +3,8 @@ package peril.board;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.newdawn.slick.Color;
+
 import peril.Player;
 import peril.ui.visual.Clickable;
 
@@ -77,6 +79,12 @@ public class Country extends Clickable {
 	 */
 	public void setRuler(Player ruler) {
 		this.ruler = ruler;
+		if (ruler != null) {
+			this.setImage(getRegion().getPosition(), getRegion().convert(ruler.getColor()));
+		} else {
+			this.setImage(getRegion().getPosition(), getRegion().convert(Color.white));
+		}
+
 	}
 
 	/**

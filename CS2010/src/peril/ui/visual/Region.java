@@ -186,13 +186,16 @@ public final class Region {
 	 *            {@link Region}
 	 * @return {@link Image}
 	 */
-	public Image convert() {
+	public Image convert(Color color) {
 
+		if(color ==  null) {
+			throw new NullPointerException("Colour cannot be null");
+		}
+		
 		// Holds the image of the region.
 		ImageBuffer imagebuffer = new ImageBuffer(width, height);
 
 		// Set the colour of the visual and get its rgb value.
-		Color color = Color.yellow;
 		int r = color.getRed();
 		int g = color.getGreen();
 		int b = color.getBlue();

@@ -57,12 +57,6 @@ public abstract class Clickable extends Viewable {
 	 */
 	@Override
 	public Image getImage() {
-
-		// If this viewable has a region but does not have a image.
-		if (!hasImage() && hasRegion()) {
-			setImage(region.getPosition(), region.convert());
-		}
-
 		return super.getImage();
 	}
 

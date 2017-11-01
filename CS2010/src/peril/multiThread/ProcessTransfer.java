@@ -3,8 +3,6 @@ package peril.multiThread;
 import java.util.Queue;
 import java.util.concurrent.LinkedTransferQueue;
 
-import peril.ui.UserInterface;
-
 /**
  * A multi-thread safe queue that allows {@link Action}s to be passed from
  * thread to thread.
@@ -22,7 +20,7 @@ public class ProcessTransfer {
 	/**
 	 * This {@link Queue} holds instructions stored as objects for the background
 	 * thread to execute. This allows for an asynchronous execution resulting is a
-	 * responsive {@link UserInterface}.
+	 * responsive user interface.
 	 * 
 	 * @see Queue
 	 * @see LinkedTransferQueue

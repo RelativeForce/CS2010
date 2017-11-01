@@ -3,26 +3,12 @@ package peril.multiThread;
 import java.util.function.Consumer;
 
 import peril.Game;
-import peril.ui.UserInterface;
 
 /**
- * Encapsulates a task that is passed form the {@link UserInterface} to the
+ * Encapsulates a task that is passed form the {@link Game} to the
  * background {@link Game} thread. This exists solely as a wrapper for a
- * task.<br>
- * <br>
+ * task.
  * 
- * Example: Parsing an input using the {@link Game} background thread where
- * 'game' is the {@link UserInterface}'s local instance of a {@link Game}.<br>
- * <br>
- * <code>
- * Action&lt;Game&gt; action = new Action&lt;Game&gt;(<br>
- * &nbsp game,<br>
- * &nbsp game->game.parseInput(clickPosition)<br>);<br>
- * game.addAction(action);<br>
- * while(!action.isDone()){<br>
- * &nbsp // spin a waiting wheel<br>
- * }
- * </code>
  * 
  * @author Joshua_Eddy
  *

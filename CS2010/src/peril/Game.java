@@ -17,7 +17,8 @@ import peril.ui.UIEventHandler;
 import peril.ui.states.*;
 
 /**
- * Encapsulate the main game logic.
+ * Encapsulate the main game logic for Peril. This also extends
+ * {@link StateBasedGame}.
  * 
  * @author Joshua_Eddy
  *

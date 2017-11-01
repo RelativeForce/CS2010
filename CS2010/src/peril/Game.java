@@ -387,19 +387,6 @@ public class Game extends StateBasedGame {
 	}
 
 	/**
-	 * Creates an {@link Action} that displays the turn of the specified
-	 * {@link Player} on the {@link UserInterface}. This {@link Action} is then
-	 * passed to the {@link UserInterface} thread while this thread waits for it to
-	 * be completed using {@link Action#isDone()}.
-	 * 
-	 * @param player
-	 *            {@link Player}
-	 */
-	private void displayTurn(Player player) {
-		// TODO display turn
-	}
-
-	/**
 	 * Iterates thought all the available {@link Challenge}s to see if the specified
 	 * {@link Player} has completed them or not.
 	 * 

@@ -116,11 +116,15 @@ public abstract class CoreGameState extends BasicGameState {
 				int x = country.getPosition().x + country.getWidth()/2;
 				int y =	country.getPosition().y + country.getHeight()/2;
 				
-				//Draw a background oval.
+				//Draw a background oval with the rulers colour. If no ruler found default to light grey.
+				if (country.getRuler()!=null) {
+				g.setColor(country.getRuler().getColor());
+				}else{
 				g.setColor(Color.lightGray);
-				g.fillOval(x, y, 15, 25);
-				
+				}
+				g.fillOval(x-3, y-3, 15, 25);
 				g.setColor(Color.black);
+				
 				//If the country has an army, draw a string representing the number of troops within that army at (x,y).
 				if (country.getArmy() != null) {
 					int troopNumber = country.getArmy().getSize();

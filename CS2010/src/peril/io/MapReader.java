@@ -183,20 +183,7 @@ public class MapReader {
 			String name = details[1];
 
 			// Holds the hazard the will be assigned to this continent.
-			EnvironmentalHazard hazard = null;
-
-			/*
-			 * Iterate through all the hazards in the game and if the hazard specified in
-			 * the map file details is the same as one from the game set the hazard of the
-			 * new continent as that. Otherwise there will be NO hazard in the new
-			 * continent.
-			 */
-			for (EnvironmentalHazard indexHazard : EnvironmentalHazard.values()) {
-				if (indexHazard.toString().equals(details[2])) {
-					hazard = indexHazard;
-					break;
-				}
-			}
+			EnvironmentalHazard hazard = EnvironmentalHazard.getByName(details[2]);
 
 			// Create the new continent.
 			Continent newContinent = new Continent(hazard, name);

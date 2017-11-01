@@ -10,7 +10,7 @@ import java.util.Random;
  * @author Joshua_Eddy
  *
  */
-public enum EnvironmentalHazard{
+public enum EnvironmentalHazard {
 
 	/**
 	 * A VOLCANIC_ERUPTION has a 10% chance of occurring and may kill up to 20% of
@@ -116,5 +116,30 @@ public enum EnvironmentalHazard{
 			army.setSize(currentSize - casualties);
 
 		}
+	}
+
+	/**
+	 * Retrieves the {@link EnvironmentalHazard} using the specified name. If there
+	 * is no {@link EnvironmentalHazard} with that name then this returns
+	 * <code>null</code>.
+	 * 
+	 * @param name
+	 *            Name of the {@link EnvironmentalHazard}
+	 * @return {@link EnvironmentalHazard} specified by the parameter name.
+	 */
+	public static EnvironmentalHazard getByName(String name) {
+
+		/*
+		 * Iterate through all the hazards in the game and if the hazard specified by
+		 * the parameter name is the same as one from the game set the hazard of the new
+		 * continent as that. Otherwise there will be NO hazard in the new continent.
+		 */
+		for (EnvironmentalHazard indexHazard : EnvironmentalHazard.values()) {
+			if (indexHazard.toString().equals(name)) {
+				return indexHazard;
+			}
+		}
+
+		return null;
 	}
 }

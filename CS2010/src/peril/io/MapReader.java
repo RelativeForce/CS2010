@@ -4,10 +4,8 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
 
 import peril.Point;
 import peril.board.Board;
@@ -74,7 +72,7 @@ public class MapReader {
 	 *            files will be added to. If there are any errors in the details
 	 */
 	public void parseBoard(Board board) {
-		
+
 		normalMap = ImageReader.getImage(directoryPath + File.separatorChar + "normal.png");
 		parseDetails();
 
@@ -84,7 +82,7 @@ public class MapReader {
 		// Set the normal map as the visual image of the visual representation.
 		board.setImage(new Point(0, 0), normalMap);
 
-	}	
+	}
 
 	/**
 	 * Reads the details of the current map from the details file.
@@ -125,8 +123,6 @@ public class MapReader {
 		}
 
 	}
-
-
 
 	/**
 	 * Parses a <code>String</code> array of details into a new {@link Country}.
@@ -285,11 +281,4 @@ public class MapReader {
 		}
 
 	}
-
-	public void setAppGameContainerDimensions(AppGameContainer agc) throws SlickException {
-
-		agc.setDisplayMode(1500, 745, false);
-
-	}
-
 }

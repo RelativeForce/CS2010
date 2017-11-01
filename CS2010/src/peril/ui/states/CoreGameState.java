@@ -43,13 +43,16 @@ public abstract class CoreGameState extends BasicGameState {
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		gc.setUpdateOnlyWhenVisible(true);
 
-		if (game.getBoard() == null) {
+		if (game.getBoard() != null) {
 			game.loadAssets();
 		}
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+
+		if (game.getBoard().hasImage())
+			g.drawImage(game.getBoard().getImage(), game.getBoard().getPosition().x, game.getBoard().getPosition().y);
 
 		if (higlightedCountry != null) {
 

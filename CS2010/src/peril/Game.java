@@ -13,6 +13,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.board.Board;
 import peril.board.Country;
 import peril.io.MapReader;
+import peril.io.TextFileReader;
 import peril.ui.UIEventHandler;
 import peril.ui.states.*;
 
@@ -122,10 +123,31 @@ public class Game extends StateBasedGame {
 	private Game() {
 		super("PERIL: A Turn Based Strategy Game");
 
+		// Initialise the game states.
+		this.combatState = new CombatState(this);
+		this.setupState = new SetupState(this);
+		this.reinforcementState = new ReinforcementState(this);
+		this.movementState = new MovementState(this);
+		this.endState = new EndState(this);
+		this.eventHandler = new UIEventHandler(this);
+
 		// Create the map file path
 		StringBuilder mapPath = new StringBuilder(new File(System.getProperty("user.dir")).getPath());
 		mapPath.append(File.separatorChar);
 		mapPath.append("maps");
+
+		// Construct the container for the game as a Slick2D state based game. And parse
+		// the details of the map from the maps file.
+		try {
+			agc = new AppGameContainer(this);
+			setAppGameContainerDimensions(mapPath.toString());
+			agc.setTargetFrameRate(60);
+		} catch (SlickException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		// Add the path to the map's folder
 		mapPath.append(File.separatorChar);
 		mapPath.append(BOARD_NAME);
 
@@ -143,20 +165,8 @@ public class Game extends StateBasedGame {
 
 		// Construct the board.
 		this.board = new Board();
-
-		// Initialise the game states.
-		this.combatState = new CombatState(this);
-		this.setupState = new SetupState(this);
-		this.reinforcementState = new ReinforcementState(this);
-		this.movementState = new MovementState(this);
-		this.endState = new EndState(this);
-		this.eventHandler = new UIEventHandler(this);
-
-		// Construct and launch the game as a Slick2D state based game.
+		
 		try {
-			agc = new AppGameContainer(this);
-			mapReader.setAppGameContainerDimensions(agc);
-			agc.setTargetFrameRate(60);
 			agc.start();
 		} catch (SlickException e) {
 			System.out.println(e.getMessage());
@@ -178,6 +188,76 @@ public class Game extends StateBasedGame {
 
 		// this.challenges = ChallengeReader.getChallenges(currentDirectory.getPath(),
 		// "Earth");
+
+	}
+
+	/**
+	 * Reads the maps file and assigns the width and height of the window based on
+	 * the data stored in this file. This method exists due to the fact that Slick2D
+	 * is single threaded and does not allow the processing of images before the
+	 * window is loaded.
+	 * 
+	 * @param mapsFilePath
+	 *            The file path of the folder the maps file is inside.
+	 * @throws SlickException
+	 *             Thrown by
+	 *             {@link AppGameContainer#setDisplayMode(int, int, boolean)}
+	 */
+	private void setAppGameContainerDimensions(String mapsFilePath) throws SlickException {
+
+		// Iterate through each line in the maps file.
+		for (String line : TextFileReader.scanFile(mapsFilePath, "maps.txt")) {
+
+			// Split the line by the commas
+			String[] details = line.split(",");
+
+			// Holds the maps name.
+			String mapName;
+
+			// Parse the map name. If it is invalid throw the appropriate error.
+			try {
+				mapName = details[0];
+			} catch (Exception e) {
+				throw new IllegalArgumentException("The map name is not present.");
+			}
+
+			// If the map's name is the same as the boards name.
+			if (mapName.equals(BOARD_NAME)) {
+
+				// Holds the dimensions of the map.
+				int width;
+				int height;
+
+				// Parse the dimensions of the map and if they are invalid throw the appropriate
+				// exception.
+				try {
+					width = Integer.parseInt(details[1]);
+
+					if (width <= 0) {
+						throw new IllegalArgumentException("Width must be greater than zero.");
+					}
+
+				} catch (Exception e) {
+					throw new IllegalArgumentException("Width of the map is not a valid integer.");
+				}
+
+				try {
+					height = Integer.parseInt(details[2]);
+
+					if (height <= 0) {
+						throw new IllegalArgumentException("Height must be greater than zero.");
+					}
+
+				} catch (Exception e) {
+					throw new IllegalArgumentException("Height of the map is not a valid integer.");
+				}
+
+				// If the dimensions are valid assign them to the window.
+				agc.setDisplayMode(width, height, false);
+				return;
+			}
+
+		}
 
 	}
 

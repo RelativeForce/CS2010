@@ -51,16 +51,6 @@ public abstract class Clickable extends Viewable {
 	}
 
 	/**
-	 * Retrieve the {@link Clickable} {@link Image}. If the {@link Region} is not
-	 * null and the {@link Image} is then set the {@link Image} as a highlight over
-	 * the {@link Region}.
-	 */
-	@Override
-	public Image getImage() {
-		return super.getImage();
-	}
-
-	/**
 	 * Retrieves the {@link Region} at this {@link Clickable}.
 	 * 
 	 * @return {@link Region}

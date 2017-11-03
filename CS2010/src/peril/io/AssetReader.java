@@ -63,6 +63,24 @@ public class AssetReader {
 
 	private void parseLine(String line) {
 
+		String[] details = line.split(",");
+
+		switch (details[0]) {
+		case "button":
+			parseButton(details);
+			break;
+		default:
+			// Invalid line - do nothing
+			break;
+		}
+
+	}
+
+	private void parseButton(String[] details) {
+		
+		
+		
+
 	}
 
 	/**

@@ -12,6 +12,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.board.Board;
 import peril.board.Country;
+import peril.io.AssetReader;
 import peril.io.MapReader;
 import peril.io.TextFileReader;
 import peril.ui.UIEventHandler;
@@ -117,6 +118,8 @@ public class Game extends StateBasedGame {
 	 */
 	private AppGameContainer agc;
 
+	private AssetReader assetReader;
+
 	/**
 	 * Constructs a new {@link Game}.
 	 */
@@ -164,6 +167,15 @@ public class Game extends StateBasedGame {
 		// Holds the directory this game is operating in.
 		String baseDirectory = new File(System.getProperty("user.dir")).getPath();
 
+		// Create the ui_assets file path
+		StringBuilder assestsPath = new StringBuilder(baseDirectory);
+		assestsPath.append(File.separatorChar);
+		assestsPath.append("ui_assets");
+
+		this.assetReader = new AssetReader(
+				new CoreGameState[] { combatState, setupState, reinforcementState, movementState, endState },
+				assestsPath.toString());
+
 		// Create the map file path
 		StringBuilder mapPath = new StringBuilder(baseDirectory);
 		mapPath.append(File.separatorChar);
@@ -187,8 +199,9 @@ public class Game extends StateBasedGame {
 		mapPath.append(BOARD_NAME);
 
 		// Initialise the map reader and the players array.
-		this.mapReader = new MapReader(mapPath.toString());
+		this.mapReader = new MapReader(mapPath.toString(), board);
 
+		// Start the display.
 		try {
 			agc.setTargetFrameRate(60);
 			agc.start();
@@ -315,7 +328,8 @@ public class Game extends StateBasedGame {
 	 * Starts the UI and reads the Board.
 	 */
 	public void loadAssets() {
-		mapReader.parseBoard(board);
+		mapReader.read();
+		assetReader.read();
 	}
 
 	/**

@@ -49,29 +49,41 @@ public class MapReader {
 	private List<Country> countries;
 
 	/**
+	 * Holds the board this {@link MapReader} will populate when
+	 * {@link MapReader#parseBoard(Board)} is performed.
+	 */
+	private Board board;
+
+	/**
 	 * Constructs a new {@link MapReader}.
 	 * 
 	 * @param directoryPath
 	 *            The path of the parent directory which contains the map files.
+	 * @param board
+	 *            Holds the board this {@link MapReader} will populate when
+	 *            {@link MapReader#parseBoard(Board)} is performed using the details
+	 *            file from the directory path}.
 	 */
-	public MapReader(String directoryPath) {
+	public MapReader(String directoryPath, Board board) {
+
+		if (directoryPath.isEmpty()) {
+			throw new NullPointerException("Directory path cannot be null.");
+		} else if (board == null) {
+			throw new NullPointerException("Directory path cannot be null.");
+		}
 
 		this.directoryPath = directoryPath;
 		this.detailsFile = TextFileReader.scanFile(directoryPath, "details.txt");
 		this.continents = new LinkedList<>();
 		this.countries = new LinkedList<>();
+		this.board = board;
 
 	}
 
 	/**
-	 * Retrieves the {@link Board} specified by a given map name.
-	 * 
-	 * @param directoryPath
-	 * @param board
-	 *            The {@link Board} which all the information read from the map
-	 *            files will be added to. If there are any errors in the details
+	 * Populates the {@link MapReader#board}.
 	 */
-	public void parseBoard(Board board) {
+	public void read() {
 
 		normalMap = ImageReader.getImage(directoryPath + File.separatorChar + "normal.png");
 		parseDetails();

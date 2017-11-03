@@ -17,7 +17,7 @@ import peril.ui.visual.Clickable;
  * <li>Have a {@link Player} that rules them.</li>
  * </ul>
  * 
- * @author Joshua_Eddy
+ * @author Joshua_Eddy, James_Rowntree
  * 
  * @see java.util.LinkedList
  * @see Java.util.List
@@ -88,6 +88,18 @@ public class Country extends Clickable {
 	}
 
 	/**
+	 * Set an {@link Country#army} to the specifies army.
+	 * 
+	 * @param army
+	 */
+	public void setArmy(Army army) {
+		if (army == null) {
+			throw new NullPointerException("Current army cannnot be null");
+		}
+		this.army = army;
+	}
+
+	/**
 	 * Retrieves the {@link Army} at this {@link Country}.
 	 * 
 	 * @return {@link Country#army}.
@@ -97,12 +109,24 @@ public class Country extends Clickable {
 	}
 
 	/**
+	 * Retrieves the {@link Country#neighbours}.
+	 * 
+	 * @return {@link List} of type {@link Country}.
+	 */
+	public List<Country> getNeighbours() {
+		return neighbours;
+	}
+
+	/**
 	 * Adds a {@link Country} that this country is linked to.
 	 * 
 	 * @param neighbour
 	 *            {@link Country}
 	 */
 	public void addNeighbour(Country neighbour) {
+		if (neighbour == null) {
+			throw new NullPointerException("The neighbour cannot be null");
+		}
 		neighbours.add(neighbour);
 	}
 

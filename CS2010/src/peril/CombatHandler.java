@@ -1,5 +1,7 @@
 package peril;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 import peril.board.Army;
@@ -29,6 +31,15 @@ public class CombatHandler {
 	}
 
 	/**
+	 * Constructs a new {@link CombatHandler} with a SEED.
+	 * 
+	 * @param SEED unique seed for the {@link Random} number generator
+	 */
+	public CombatHandler(long SEED) {
+		random = new Random(SEED);
+	}
+	
+	/**
 	 * When a {@link Player} clicks on another {@link Country} to fight. This pits 2
 	 * {@link Army}'s against each other. This emulates 1 turn of combat between 2
 	 * {@link Player}s.
@@ -53,6 +64,16 @@ public class CombatHandler {
 			int atkDiceRoll = random.nextInt(6);
 			atkDiceRolls[i] = atkDiceRoll;
 		}
+		Arrays.sort(atkDiceRolls); //sort array into ascending order (can't sort it as descending order for some reason)
+		int[] sortedAtkDiceRolls = new int[atkSquadSize];
+		int counterAtkLoop = 0;
+		
+		//changes the order from ascending to descending
+		for(int i = atkDiceRolls.length; i >= 0; i--) //loops starting from the end of the new sorted array
+		{
+			sortedAtkDiceRolls[counterAtkLoop] = atkDiceRolls[i]; 
+			counterAtkLoop++;
+		}
 		
 		//initialise dice rolls for the defending army
 		if(armyDef.getSize()>1) {
@@ -63,9 +84,18 @@ public class CombatHandler {
 			defDiceRolls[1] = random.nextInt();
 		}
 		
+		int[] sortedDefDiceRolls = new int[2];
+		int counterDefLoop = 0;
+		for(int i = defDiceRolls.length; i >= 0; i--) 
+		{
+			sortedDefDiceRolls[counterDefLoop] = defDiceRolls[i];
+			counterDefLoop++;
+		}
+		
+		
 		//compares each attacking dice roll against the defending dice roll
 		for(int i = 0; i < atkDiceRolls.length; i++) {
-			if(atkDiceRolls[i]<=defDiceRolls[i]) {
+			if(sortedAtkDiceRolls[i]<=sortedDefDiceRolls[i]) {
 				int woundedArmy = armyAtk.getSize() -1;
 				armyAtk.setSize(woundedArmy);
 			}

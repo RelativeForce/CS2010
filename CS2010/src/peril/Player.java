@@ -1,5 +1,7 @@
 package peril;
 
+import java.nio.channels.NetworkChannel;
+
 import org.newdawn.slick.Color;
 
 import peril.board.Army;
@@ -52,11 +54,18 @@ public final class Player {
 	private final Color color;
 
 	/**
-	 * The {@link Army} of the {@link Player}.
+	 * The total {@link Army} of the {@link Player}.
 	 * 
 	 */
 	private Army totalArmy;
 
+	
+	/**
+	 * The amount of distributable {@link Army} the {@link Player} has.
+	 * 
+	 */
+	private Army distributableArmy;
+	
 	/**
 	 * The number of the {@link Country}s the {@link Player} owns.
 	 */
@@ -89,7 +98,22 @@ public final class Player {
 	public void award(Army army) {
 
 		// TODO Add army to the next turns set army that the player can distribute.
+		distributableArmy.setSize(distributableArmy.getSize() + army.getSize());
 
+	}
+	
+	/**
+	 * Sets the distributable {@link Army} the {@link Player} will have.
+	 * 
+	 * @param newArmy The new distributable {@link Army}.
+	 */
+	public void setDistributableArmy(Army newArmy) {
+		distributableArmy = newArmy;
+	}
+	
+	
+	public Army getDistributableArmy() {
+		return distributableArmy;
 	}
 
 	/**

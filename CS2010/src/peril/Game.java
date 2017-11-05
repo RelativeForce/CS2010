@@ -10,6 +10,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import peril.board.Army;
 import peril.board.Board;
 import peril.board.Country;
 import peril.io.AssetReader;
@@ -130,6 +131,8 @@ public class Game extends StateBasedGame {
 
 		// Initialise the the players array.
 		this.players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO, Player.PLAYERTHREE, Player.PLAYERFOUR };
+		
+		Player.PLAYERONE.award(new Army(5));
 
 		// Set the game indexes to there initial values.
 		this.currentPlayerIndex = 0;
@@ -447,8 +450,8 @@ public class Game extends StateBasedGame {
 	/**
 	 * Iterates to the next player.
 	 */
-	private void nextPlayer() {
-		currentPlayerIndex = currentPlayerIndex++ % players.length;
+	public void nextPlayer() {
+		currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
 	}
 
 	/**

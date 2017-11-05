@@ -146,6 +146,7 @@ public abstract class CoreGameState extends BasicGameState {
 				clickable -> g.drawImage(clickable.getImage(), clickable.getPosition().x, clickable.getPosition().y));
 
 		g.drawString(stateName, 5, 50);
+		g.drawString(game.getCurrentPlayer().toString(), 5, 35);
 		drawArmies(g);
 	}
 

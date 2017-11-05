@@ -85,37 +85,48 @@ public class UIEventHandler implements MouseListener, KeyListener {
 		}
 
 		if (!clickedButton) {
-			
+
 			Board board = game.getBoard();
-			
+
 			if (board != null) {
-				
+
 				Country clickedCountry = board.getCountry(new Point(x, y));
 
 				Country highlighted = ((CoreGameState) game.getCurrentState()).getHighlightedCountry();
 
-				if (clickedCountry != null && highlighted != null && !clickedCountry.equals(highlighted)) {
+				if (clickedCountry != null) {
+					clickedCountry.setImage(clickedCountry.getRegion().getPosition(),
+							clickedCountry.getRegion().convert(Color.yellow));
 
-					Point position = highlighted.getRegion().getPosition();
-					Region region = highlighted.getRegion();
-					Player ruler = highlighted.getRuler();
-
-					if (ruler != null) {
-						highlighted.setImage(position, region.convert(ruler.getColor()));
-					} else {
-						highlighted.setImage(null, null);
+					if (highlighted != null && !clickedCountry.equals(highlighted)) {
+						unhighlight(highlighted);
 					}
 
-				}
-
-				if (clickedCountry != null) {
-					clickedCountry.setImage(clickedCountry.getRegion().getPosition(), clickedCountry.getRegion().convert(Color.yellow));
 					game.highlight(clickedCountry);
 					System.out.println(clickedCountry.getName());
 				} else {
+					unhighlight(highlighted);
 					game.highlight(null);
 				}
 			}
+		}
+
+	}
+
+	private void unhighlight(Country toUnhighlight) {
+
+		if (toUnhighlight != null) {
+
+			Point position = toUnhighlight.getRegion().getPosition();
+			Region region = toUnhighlight.getRegion();
+			Player ruler = toUnhighlight.getRuler();
+
+			if (ruler != null) {
+				toUnhighlight.setImage(position, region.convert(ruler.getColor()));
+			} else {
+				toUnhighlight.setImage(null, null);
+			}
+
 		}
 
 	}
@@ -133,14 +144,27 @@ public class UIEventHandler implements MouseListener, KeyListener {
 	public void keyPressed(int key, char c) {
 
 		Country highlighted = ((CoreGameState) game.getCurrentState()).getHighlightedCountry();
-		if (key == Input.KEY_1) {
+
+		switch (key) {
+		case Input.KEY_1:
 			highlighted.setRuler(Player.PLAYERONE);
-		} else if (key == Input.KEY_2) {
+			break;
+		case Input.KEY_2:
 			highlighted.setRuler(Player.PLAYERTWO);
-		} else if (key == Input.KEY_3) {
+			break;
+		case Input.KEY_3:
 			highlighted.setRuler(Player.PLAYERTHREE);
-		} else if (key == Input.KEY_4) {
+			break;
+		case Input.KEY_4:
 			highlighted.setRuler(Player.PLAYERFOUR);
+			break;
+		case Input.KEY_SPACE:
+			highlighted.setRuler(null);
+			break;
+		case Input.KEY_N:
+			game.nextPlayer();
+			break;
+
 		}
 
 	}

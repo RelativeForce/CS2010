@@ -13,6 +13,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.board.Continent;
 import peril.board.Country;
+import peril.ui.Button;
 import peril.ui.visual.Clickable;
 import peril.ui.visual.Viewable;
 
@@ -48,7 +49,7 @@ public abstract class CoreGameState extends BasicGameState {
 	/**
 	 * The current {@link Country} that the player has highlighted.
 	 */
-	private Country higlightedCountry;
+	private Country highlightedCountry;
 
 	/**
 	 * Constructs a new {@link CoreGameState}.
@@ -58,14 +59,14 @@ public abstract class CoreGameState extends BasicGameState {
 	 */
 	protected CoreGameState(Game game) {
 		this.game = game;
-		this.higlightedCountry = null;
+		this.highlightedCountry = null;
 	}
 
 	/**
 	 * Set the current {@link Country} that the player has highlighted.
 	 */
 	public void highlight(Country country) {
-		higlightedCountry = country;
+		highlightedCountry = country;
 	}
 
 	@Override
@@ -124,12 +125,12 @@ public abstract class CoreGameState extends BasicGameState {
 		if (game.getBoard().hasImage())
 			g.drawImage(game.getBoard().getImage(), game.getBoard().getPosition().x, game.getBoard().getPosition().y);
 
-		if (higlightedCountry != null) {
+		if (highlightedCountry != null) {
 
-			Image c = higlightedCountry.getImage();
+			Image c = highlightedCountry.getImage();
 
 			if (c != null)
-				g.drawImage(c, higlightedCountry.getPosition().x, higlightedCountry.getPosition().y);
+				g.drawImage(c, highlightedCountry.getPosition().x, highlightedCountry.getPosition().y);
 		}
 
 		g.drawString(stateName, 5, 50);
@@ -236,5 +237,14 @@ public abstract class CoreGameState extends BasicGameState {
 	public List<Clickable> getClickableElements() {
 		return clickables;
 	}
+	
+	/**
+	 * Returns a the current highlighted {@link Country} in this state.
+	 * 
+	 */
+	public Country getHighlightedCountry() {
+		return highlightedCountry;
+	}
+	
 
 }

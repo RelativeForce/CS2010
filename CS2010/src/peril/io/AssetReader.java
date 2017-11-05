@@ -190,7 +190,7 @@ public class AssetReader {
 		}
 
 		Point position = new Point(x, y);
-		
+
 		// Construct button
 		Button newButton = new Button(position, asset, action);
 
@@ -226,13 +226,26 @@ public class AssetReader {
 
 				// If there is a country highlighted increase its army's size by 1 and
 				// subtract one from the current player's army to distribute.
-				if (highlightedCountry != null && armySize > 0) {
+				if (highlightedCountry != null) {
 
-					Army army = highlightedCountry.getArmy();
+					if (armySize > 0) {
 
-					army.setSize(army.getSize() + 1);
+						if (highlightedCountry.getRuler().equals(player)) {
 
-					player.setDistributableArmySize(armySize - 1);
+							Army army = highlightedCountry.getArmy();
+
+							army.setSize(army.getSize() + 1);
+
+							player.setDistributableArmySize(armySize - 1);
+
+						} else {
+							System.out.println(player.toString() + " does not rule this country");
+						}
+
+					} else {
+						System.out.println("No units to distribute.");
+					}
+
 				} else {
 					System.out.println("No country selected.");
 				}

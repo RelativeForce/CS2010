@@ -36,7 +36,7 @@ public final class Player {
 	 * Static instance of the fourth {@link Player}.
 	 * 
 	 */
-	public static final Player PLAYERFOUR = new Player("Player 4", Color.yellow);
+	public static final Player PLAYERFOUR = new Player("Player 4", Color.pink);
 
 	/**
 	 * String Representation of the {@link Player}.

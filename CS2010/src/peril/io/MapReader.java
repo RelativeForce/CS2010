@@ -168,8 +168,10 @@ public class MapReader {
 			Country country = new Country(name);
 
 			// Set the clickable region of the country
-			country.setRegion(ImageReader.getColourRegion(directoryPath + File.separatorChar + "countries.png", color));
-
+			
+			Region region = ImageReader.getColourRegion(directoryPath + File.separatorChar + "countries.png", color);
+			country.setRegion(region);			
+			
 			// Construct a new counrty and add the country to the list of countries.
 			countries.add(country);
 

@@ -43,14 +43,6 @@ public abstract class Viewable {
 	 * origin.
 	 */
 	public void setImage(Point position, Image image) {
-
-		// Check position
-		if (position == null) {
-			throw new NullPointerException("Point cannot be null.");
-		} else if (image == null) {
-			throw new NullPointerException("Image cannot be null.");
-		}
-
 		this.image = image;
 		this.position = position;
 	}

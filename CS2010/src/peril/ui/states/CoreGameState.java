@@ -1,5 +1,6 @@
 package peril.ui.states;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.newdawn.slick.Color;
@@ -59,6 +60,8 @@ public abstract class CoreGameState extends BasicGameState {
 	protected CoreGameState(Game game) {
 		this.game = game;
 		this.higlightedCountry = null;
+		this.clickables = new LinkedList<>();
+		this.viewables = new LinkedList<>();
 	}
 
 	/**
@@ -98,9 +101,7 @@ public abstract class CoreGameState extends BasicGameState {
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		gc.setUpdateOnlyWhenVisible(true);
 
-		if (game.getBoard() != null) {
-			game.loadAssets();
-		}
+		game.loadAssets();
 	}
 
 	@Override
@@ -120,9 +121,17 @@ public abstract class CoreGameState extends BasicGameState {
 	 */
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
-		//If the board has a visual representation, render it in the graphics context.
+		// If the board has a visual representation, render it in the graphics context.
 		if (game.getBoard().hasImage())
 			g.drawImage(game.getBoard().getImage(), game.getBoard().getPosition().x, game.getBoard().getPosition().y);
+
+		game.getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
+
+			Image image = country.getImage();
+			if (image != null) {
+				g.drawImage(image, country.getPosition().x, country.getPosition().y);
+			}
+		}));
 
 		if (higlightedCountry != null) {
 
@@ -131,6 +140,9 @@ public abstract class CoreGameState extends BasicGameState {
 			if (c != null)
 				g.drawImage(c, higlightedCountry.getPosition().x, higlightedCountry.getPosition().y);
 		}
+
+		clickables.forEach(
+				clickable -> g.drawImage(clickable.getImage(), clickable.getPosition().x, clickable.getPosition().y));
 
 		g.drawString(stateName, 5, 50);
 		drawArmies(g);
@@ -152,6 +164,10 @@ public abstract class CoreGameState extends BasicGameState {
 	 */
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 
+	}
+
+	public Game getGame() {
+		return game;
 	}
 
 	/**
@@ -216,12 +232,11 @@ public abstract class CoreGameState extends BasicGameState {
 	/*
 	 * Adds a clickable element to the list of clickables in this state.
 	 * 
-	 * @param element
-	 *            The {@link Clickable} element to be added to the list.
-	 *            
+	 * @param element The {@link Clickable} element to be added to the list.
+	 * 
 	 */
 	public void addElement(Clickable element) {
-		//Check whether the region is valid.
+		// Check whether the region is valid.
 		if (element.hasRegion()) {
 			clickables.add(element);
 		} else {
@@ -237,4 +252,7 @@ public abstract class CoreGameState extends BasicGameState {
 		return clickables;
 	}
 
+	public Country getHighlightedCountry() {
+		return higlightedCountry;
+	}
 }

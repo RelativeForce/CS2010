@@ -1,12 +1,19 @@
 package peril.ui;
 
+import java.util.List;
+
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.MouseListener;
 
 import peril.board.Board;
 import peril.board.Country;
+import peril.ui.states.CoreGameState;
+import peril.ui.visual.Clickable;
+import peril.ui.visual.Region;
 import peril.Game;
+import peril.Player;
 import peril.Point;
 
 /**
@@ -63,14 +70,51 @@ public class UIEventHandler implements MouseListener, KeyListener {
 	@Override
 	public void mousePressed(int button, int x, int y) {
 
-		Board b = game.getBoard();
-		if (b != null) {
-			Country c = b.getCountry(new Point(x, y));
-			if (c != null) {
-				game.highlight(c);
-				System.out.println(c.getName());
-			} else {
-				game.highlight(null);
+		boolean clickedButton = false;
+		List<Clickable> elements = ((CoreGameState) game.getCurrentState()).getClickableElements();
+
+		Point click = new Point(x, y);
+
+		for (Clickable element : elements) {
+			if (element.isClicked(click)) {
+				if (element instanceof Button) {
+					((Button) element).click();
+					clickedButton = true;
+				}
+			}
+		}
+
+		if (!clickedButton) {
+			
+			Board board = game.getBoard();
+			
+			if (board != null) {
+				
+				Country clickedCountry = board.getCountry(new Point(x, y));
+
+				Country highlighted = ((CoreGameState) game.getCurrentState()).getHighlightedCountry();
+
+				if (clickedCountry != null && highlighted != null && !clickedCountry.equals(highlighted)) {
+
+					Point position = highlighted.getRegion().getPosition();
+					Region region = highlighted.getRegion();
+					Player ruler = highlighted.getRuler();
+
+					if (ruler != null) {
+						highlighted.setImage(position, region.convert(ruler.getColor()));
+					} else {
+						highlighted.setImage(null, null);
+					}
+
+				}
+
+				if (clickedCountry != null) {
+					clickedCountry.setImage(clickedCountry.getRegion().getPosition(), clickedCountry.getRegion().convert(Color.yellow));
+					game.highlight(clickedCountry);
+					System.out.println(clickedCountry.getName());
+				} else {
+					game.highlight(null);
+				}
 			}
 		}
 
@@ -83,13 +127,21 @@ public class UIEventHandler implements MouseListener, KeyListener {
 
 	@Override
 	public void mouseWheelMoved(int change) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void keyPressed(int key, char c) {
-		// TODO Auto-generated method stub
+
+		Country highlighted = ((CoreGameState) game.getCurrentState()).getHighlightedCountry();
+		if (key == Input.KEY_1) {
+			highlighted.setRuler(Player.PLAYERONE);
+		} else if (key == Input.KEY_2) {
+			highlighted.setRuler(Player.PLAYERTWO);
+		} else if (key == Input.KEY_3) {
+			highlighted.setRuler(Player.PLAYERTHREE);
+		} else if (key == Input.KEY_4) {
+			highlighted.setRuler(Player.PLAYERFOUR);
+		}
 
 	}
 
@@ -98,9 +150,4 @@ public class UIEventHandler implements MouseListener, KeyListener {
 		// TODO Auto-generated method stub
 
 	}
-
-	// TODO private Button getButtonByClick(){}
-
-	// TODO private void executeButtonPress(Button button){}
-
 }

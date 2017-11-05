@@ -44,13 +44,13 @@ public final class Region {
 	private Point position;
 
 	/**
-	 * Constructs a new <code>HitBox</code> object.
+	 * Constructs a new {@link Region} using an {@link Image}.
 	 * 
-	 * @param object
-	 *            The <code>GraphicalObject</code> from which the
-	 *            <code>HitBox</code> is derived.
-	 * 
-	 * @see environment.graphics.objects.GraphicalObject
+	 * @param image
+	 *            {@link Image} that contains the {@link Region} of the of a
+	 *            specified {@link Color}.
+	 * @param colour
+	 *            {@link Color} of the specified {@link Region}.
 	 */
 	public Region(Image image, Color colour) {
 		constructor(getRegion(image, colour), image.getWidth(), image.getHeight());
@@ -72,6 +72,14 @@ public final class Region {
 	 */
 	public Region(boolean[][] object, int width, int height) {
 		constructor(object, width, height);
+	}
+
+	/**
+	 * Constructs a new {@link Region} using an {@link Image}.
+	 * @param image {@link Image}
+	 */
+	public Region(Image image) {
+		constructor(getRegion(image), image.getWidth(), image.getHeight());
 	}
 
 	/**
@@ -152,6 +160,19 @@ public final class Region {
 	}
 
 	/**
+	 * Sets the {@link Region#position}
+	 * @param position
+	 */
+	public void setPosition(Point position) {
+		
+		if(position == null) {
+			throw new NullPointerException("Position cannot be null.");
+		}
+		
+		this.position = position;
+	}
+	
+	/**
 	 * Retrieves the width of the {@link Region}.
 	 * 
 	 * @return <code>int</code>
@@ -188,10 +209,10 @@ public final class Region {
 	 */
 	public Image convert(Color color) {
 
-		if(color ==  null) {
+		if (color == null) {
 			throw new NullPointerException("Colour cannot be null");
 		}
-		
+
 		// Holds the image of the region.
 		ImageBuffer imagebuffer = new ImageBuffer(width, height);
 
@@ -229,11 +250,40 @@ public final class Region {
 
 	/**
 	 * Retrieves a <code>boolean[][]</code> where if a pixel from the specified
-	 * {@link BufferedImage} is the specified {@link Color} the it is assigned true,
+	 * {@link Image} is not {@link Color#transparent} it is assigned true,
 	 * otherwise it is false.
 	 * 
 	 * @param image
-	 *            {@link BufferedImage}
+	 *            {@link Image}
+	 * @return <code>boolean[][]</code>
+	 */
+	private boolean[][] getRegion(Image image) {
+
+		// Holds the array of booleans initially all elements are set to false
+		boolean[][] object = new boolean[image.getWidth()][image.getHeight()];
+
+		// Iterate through all pixel in the image and if a pixel is the same colour as
+		// the one specified set that pixels position to true.
+		for (int y = 0; y < image.getHeight(); y++) {
+
+			for (int x = 0; x < image.getWidth(); x++) {
+
+				if (!image.getColor(x, y).equals(Color.transparent) ) {
+					object[x][y] = true;
+				}
+			}
+		}
+
+		return object;
+	}
+	
+	/**
+	 * Retrieves a <code>boolean[][]</code> where if a pixel from the specified
+	 * {@link Image} is the specified {@link Color} the it is assigned true,
+	 * otherwise it is false.
+	 * 
+	 * @param image
+	 *            {@link Image}
 	 * @param color
 	 *            {@link Color}
 	 * @return <code>boolean[][]</code>

@@ -93,6 +93,8 @@ public class Game extends StateBasedGame {
 	 */
 	private final Player[] players;
 
+	private volatile boolean isLoaded;
+
 	/**
 	 * The {@link Player} who's turn it is.
 	 */
@@ -136,6 +138,7 @@ public class Game extends StateBasedGame {
 		// Assign the game to run.
 		this.endTurn = false;
 		this.run = true;
+		this.isLoaded = false;
 
 		// Construct the board.
 		this.board = new Board();
@@ -318,6 +321,7 @@ public class Game extends StateBasedGame {
 		super.addState(reinforcementState);
 		super.addState(movementState);
 		super.addState(endState);
+		this.enterState(reinforcementState.getID());
 
 		// Assign Key and Mouse Listener as the UIEventhandler
 		container.getInput().addKeyListener(eventHandler);
@@ -328,8 +332,11 @@ public class Game extends StateBasedGame {
 	 * Starts the UI and reads the Board.
 	 */
 	public void loadAssets() {
-		mapReader.read();
-		assetReader.read();
+		if (!isLoaded) {
+			mapReader.read();
+			assetReader.read();
+			isLoaded = true;
+		}
 	}
 
 	/**

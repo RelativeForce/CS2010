@@ -135,7 +135,7 @@ public final class Player {
 	 * 
 	 * @return
 	 */
-	public int getDistributableArmy() {
+	public int getDistributableArmySize() {
 		return distributableArmy.getSize();
 	}
 

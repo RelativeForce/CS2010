@@ -173,7 +173,7 @@ public class Game extends StateBasedGame {
 		assestsPath.append("ui_assets");
 
 		this.assetReader = new AssetReader(
-				new CoreGameState[] { combatState, setupState, reinforcementState, movementState, endState },
+				new CoreGameState[] { combatState, setupState, reinforcementState, movementState, endState }, this,
 				assestsPath.toString());
 
 		// Create the map file path

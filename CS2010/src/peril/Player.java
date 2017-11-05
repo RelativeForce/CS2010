@@ -1,19 +1,15 @@
 package peril;
 
-import java.nio.channels.NetworkChannel;
-
 import org.newdawn.slick.Color;
 
 import peril.board.Army;
-import peril.ui.UserInterface;
 
 /**
  * The internal representation of a user of the system. This object will hold
  * all of the details about a users game such as the number of {@link Country}s
  * that user has.
  * 
- * @author Joshua_Eddy
- * @author Ezekiel_Trinidad
+ * @author Joshua_Eddy, Ezekiel_Trinidad
  *
  */
 public final class Player {
@@ -59,13 +55,13 @@ public final class Player {
 	 */
 	private Army totalArmy;
 
-	
 	/**
-	 * The amount of distributable {@link Army} the {@link Player} has.
+	 * The {@link Army} to be distributed by the {@link Player} at the start of the
+	 * next turn.
 	 * 
 	 */
 	private Army distributableArmy;
-	
+
 	/**
 	 * The number of the {@link Country}s the {@link Player} owns.
 	 */
@@ -87,6 +83,8 @@ public final class Player {
 		this.countries = 0;
 		this.continents = 0;
 		this.color = color;
+		this.distributableArmy = new Army(0);
+		this.totalArmy = new Army(0);
 	}
 
 	/**
@@ -96,24 +94,49 @@ public final class Player {
 	 *            The army that will be awarded to the {@link Player}.
 	 */
 	public void award(Army army) {
-
-		// TODO Add army to the next turns set army that the player can distribute.
 		distributableArmy.setSize(distributableArmy.getSize() + army.getSize());
+	}
 
-	}
-	
 	/**
-	 * Sets the distributable {@link Army} the {@link Player} will have.
+	 * Sets the size of the {@link Army} the {@link Player} will have to distribute
+	 * at the start of the next turn.
 	 * 
-	 * @param newArmy The new distributable {@link Army}.
+	 * @param size
+	 *            <code>int</code> new size of the {@link Army}. Cannot be &lt; zero
 	 */
-	public void setDistributableArmy(Army newArmy) {
-		distributableArmy = newArmy;
+	public void setDistributableArmySize(int size) {
+		distributableArmy.setSize(size);
 	}
-	
-	
-	public Army getDistributableArmy() {
-		return distributableArmy;
+
+	/**
+	 * Sets the new size of this {@link Player}'s total {@link Army}s. This should
+	 * represent the combined {@link Army} size of this {@link Player}.
+	 * 
+	 * @param size
+	 *            <code>int</code> new size of the {@link Army}. Cannot be &lt; zero
+	 */
+	public void setTotalArmySize(int size) {
+		totalArmy.setSize(size);
+	}
+
+	/**
+	 * Retrieves the size of this {@link Player}'s total {@link Army}s. This should
+	 * represent the combined {@link Army} size of this {@link Player}.
+	 * 
+	 * @return <code>int</code> size of the {@link Army}.
+	 */
+	public int getTotalArmySize() {
+		return totalArmy.getSize();
+	}
+
+	/**
+	 * Retrieves the size of the {@link Army} the {@link Player} will have to
+	 * distribute at the start of the next turn.
+	 * 
+	 * @return
+	 */
+	public int getDistributableArmy() {
+		return distributableArmy.getSize();
 	}
 
 	/**
@@ -127,22 +150,22 @@ public final class Player {
 	}
 
 	/**
-	 * Gets the number of {@link Country}s owned by the {@link Player}.
+	 * Gets the number of {@link Country}s ruled by the {@link Player}.
 	 * 
 	 * @return countries Number of {@link Country}s.
 	 */
-	public int getCountriesOwned() {
+	public int getCountriesRuled() {
 		return countries;
 	}
 
 	/**
-	 * Sets the {@link Continent}s owned by the {@link Player}.
+	 * Sets the {@link Continent}s ruled by the {@link Player}.
 	 * 
-	 * @param continentsOwned
+	 * @param continentsRuled
 	 *            The number of {@link Continent}s the {@link Player} now owns.
 	 */
-	public void setContinentsOwned(int continentsOwned) {
-		continents = continentsOwned;
+	public void setContinentsRuled(int continentsRuled) {
+		continents = continentsRuled;
 	}
 
 	/**
@@ -152,7 +175,7 @@ public final class Player {
 	public Color getColor() {
 		return color;
 	}
-	
+
 	/**
 	 * Gets the number of {@link Continent}s owned by the {@link Player}.
 	 * 

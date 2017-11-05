@@ -13,7 +13,6 @@ import peril.multiThread.Action;
 import peril.ui.Button;
 import peril.ui.states.CoreGameState;
 import peril.ui.visual.Clickable;
-import peril.ui.visual.Region;
 import peril.ui.visual.Viewable;
 
 /**

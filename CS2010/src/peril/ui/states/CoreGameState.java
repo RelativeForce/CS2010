@@ -49,7 +49,7 @@ public abstract class CoreGameState extends BasicGameState {
 	/**
 	 * The current {@link Country} that the player has highlighted.
 	 */
-	private Country higlightedCountry;
+	private Country highlightedCountry;
 
 	/**
 	 * Constructs a new {@link CoreGameState}.
@@ -59,7 +59,8 @@ public abstract class CoreGameState extends BasicGameState {
 	 */
 	protected CoreGameState(Game game) {
 		this.game = game;
-		this.higlightedCountry = null;
+
+		this.highlightedCountry = null;
 		this.clickables = new LinkedList<>();
 		this.viewables = new LinkedList<>();
 	}
@@ -68,7 +69,7 @@ public abstract class CoreGameState extends BasicGameState {
 	 * Set the current {@link Country} that the player has highlighted.
 	 */
 	public void highlight(Country country) {
-		higlightedCountry = country;
+		highlightedCountry = country;
 	}
 
 	@Override
@@ -133,12 +134,12 @@ public abstract class CoreGameState extends BasicGameState {
 			}
 		}));
 
-		if (higlightedCountry != null) {
+		if (highlightedCountry != null) {
 
-			Image c = higlightedCountry.getImage();
+			Image c = highlightedCountry.getImage();
 
 			if (c != null)
-				g.drawImage(c, higlightedCountry.getPosition().x, higlightedCountry.getPosition().y);
+				g.drawImage(c, highlightedCountry.getPosition().x, highlightedCountry.getPosition().y);
 		}
 
 		clickables.forEach(
@@ -251,8 +252,12 @@ public abstract class CoreGameState extends BasicGameState {
 	public List<Clickable> getClickableElements() {
 		return clickables;
 	}
-
+	
+	/**
+	 * Returns a the current highlighted {@link Country} in this state.
+	 * 
+	 */
 	public Country getHighlightedCountry() {
-		return higlightedCountry;
+		return highlightedCountry;
 	}
 }

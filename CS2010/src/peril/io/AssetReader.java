@@ -247,6 +247,25 @@ public class AssetReader {
 				}
 			});
 
+		// Enter combat state.
+		case 1:
+			return new Action<CoreGameState>(state, actionState -> {
+				actionState.getGame().enterState(3);
+			});
+
+		// Enter movement state.
+		case 2:
+			return new Action<CoreGameState>(state, actionState -> {
+				actionState.getGame().enterState(4);
+			});
+
+			//Enter reinforcement state.
+		case 3:
+			return new Action<CoreGameState>(state, actionState -> {
+				actionState.getGame().enterState(2);
+				actionState.getGame().nextPlayer();
+			});
+			
 		}
 		return null;
 	}

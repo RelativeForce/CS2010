@@ -156,7 +156,7 @@ public abstract class CoreGameState extends BasicGameState {
 		// Draw state name
 		g.drawString(stateName, 5, 5);
 
-		// Set the text color to magenta
+		// Set the text color to current player's colour.
 		g.setColor(game.getCurrentPlayer().getColor());
 
 		// Draw player name

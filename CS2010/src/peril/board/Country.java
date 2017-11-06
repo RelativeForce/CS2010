@@ -118,6 +118,17 @@ public class Country extends Clickable {
 	}
 
 	/**
+	 * Checks if the {@link Country} is a neighbour of this {@link Country}.
+	 * 
+	 * @param country
+	 *            {@link Country} to check
+	 * @return Whether it is a neighbour or not.
+	 */
+	public boolean isNeighbour(Country country) {
+		return neighbours.contains(country);
+	}
+
+	/**
 	 * Adds a {@link Country} that this country is linked to.
 	 * 
 	 * @param neighbour

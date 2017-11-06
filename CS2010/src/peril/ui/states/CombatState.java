@@ -1,14 +1,24 @@
 package peril.ui.states;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
+import peril.Player;
 import peril.Point;
 import peril.board.Country;
 
+/**
+ * Encapsulates the behaviour of the 'Combat' state of the game. In this state
+ * the {@link Game#getCurrentPlayer()} chooses which of their {@link Country}s
+ * they will attack other {@link Country}s with.
+ * 
+ * @author Joseph_Rolli, Joshua_Eddy
+ *
+ */
 public class CombatState extends CoreGameState {
 
 	/**
@@ -16,11 +26,16 @@ public class CombatState extends CoreGameState {
 	 */
 	private static final int ID = 3;
 
+	/**
+	 * The target {@link Country} for the
+	 * {@link CoreGameState#getHighlightedCountry()}.
+	 */
 	private Country enemyCounrty;
 
 	public CombatState(Game game) {
 		super(game);
 		stateName = "Combat";
+		enemyCounrty = null;
 	}
 
 	@Override
@@ -38,19 +53,25 @@ public class CombatState extends CoreGameState {
 
 	@Override
 	public void highlightCountry(Country country) {
-		
-		if(country.getRuler() != null ) {
-			
-			if(!country.getRuler().equals(game.getCurrentPlayer())) {
-				
-				
-				
-			}
-			
+
+		// If the country is null then set the primary highlighted as null and
+		// unhighlight the current enemy country.
+		if (country != null) {
+
+			// Holds the current player
+			Player player = game.getCurrentPlayer();
+
+			// Holds the ruler of the country
+			Player ruler = country.getRuler();
+
+			processCountry(country, player, ruler);
+
+		} else {
+			unhighlightCountry(enemyCounrty);
+			enemyCounrty = null;
+			super.highlightCountry(country);
 		}
-		
-		super.highlightCountry(country);
-		
+
 	}
 
 	@Override
@@ -70,5 +91,56 @@ public class CombatState extends CoreGameState {
 	@Override
 	public void parseButton(int key, char c) {
 		// Do nothing
+	}
+
+	/**
+	 * Processes whether a {@link Country} is a valid target for the
+	 * {@link CoreGameState#getHighlightedCountry()} to attack. This is based on the
+	 * {@link Player} ruler and the {@link Player} ({@link Game#getCurrentPlayer()})
+	 * 
+	 * @param country
+	 *            {@link Country}
+	 * @param player
+	 *            {@link Player}
+	 * @param ruler
+	 *            {@link Player}
+	 */
+	private void processCountry(Country country, Player player, Player ruler) {
+
+		// If there is a primary friendly country and the target is not null and the
+		// ruler of the country is not the player.
+		if (getHighlightedCountry() != null && !player.equals(ruler)) {
+
+			if (ruler != null) {
+
+				// if the country is a neighbour of the primary highlighted country then it is a
+				// valid target.
+				if (getHighlightedCountry().isNeighbour(country)) {
+
+					System.out.println("A valid target");
+					unhighlightCountry(enemyCounrty);
+					enemyCounrty = country;
+					enemyCounrty.setImage(enemyCounrty.getRegion().getPosition(),
+							enemyCounrty.getRegion().convert(Color.black));
+
+				} else {
+					// DO NOTHING
+				}
+			} else {
+				// DO NOTHING
+			}
+
+		}
+		// If the country clicked is to be the new primary country but is not ruler by
+		// the player
+		else if (!player.equals(ruler)) {
+			// DO NOTHING
+		}
+		// If the country clicked is to be the new primary country and is owned by the
+		// player.
+		else {
+			unhighlightCountry(enemyCounrty);
+			super.highlightCountry(country);
+		}
 	}
 }

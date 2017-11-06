@@ -74,7 +74,19 @@ public abstract class CoreGameState extends BasicGameState {
 	 * Set the current {@link Country} that the player has highlighted.
 	 */
 	public void highlightCountry(Country country) {
+
+		if (highlightedCountry != null) {
+			unhighlightCountry(highlightedCountry);
+		}
+
 		highlightedCountry = country;
+
+		if (highlightedCountry != null) {
+			// Highlight the country
+			highlightedCountry.setImage(highlightedCountry.getRegion().getPosition(),
+					highlightedCountry.getRegion().convert(Color.yellow));
+		}
+
 	}
 
 	/**
@@ -127,9 +139,9 @@ public abstract class CoreGameState extends BasicGameState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
 		// If the board has a visual representation, render it in the graphics context.
-		if (game.getBoard().hasImage())
+		if (game.getBoard().hasImage()) {
 			g.drawImage(game.getBoard().getImage(), game.getBoard().getPosition().x, game.getBoard().getPosition().y);
-
+		}
 		// For every country on the board.
 		game.getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
 
@@ -318,10 +330,6 @@ public abstract class CoreGameState extends BasicGameState {
 			// If a country was clicked
 			if (clickedCountry != null) {
 
-				// Highlight the country that was clicked
-				clickedCountry.setImage(clickedCountry.getRegion().getPosition(),
-						clickedCountry.getRegion().convert(Color.yellow));
-
 				// If the currently highlighted country and the clicked country are different
 				// unhighlight the current country.
 				if (highlighted != null && !clickedCountry.equals(highlighted)) {
@@ -330,7 +338,6 @@ public abstract class CoreGameState extends BasicGameState {
 
 				// Highlight the clicked country
 				highlightCountry(clickedCountry);
-				System.out.println(clickedCountry.getName());
 			} else {
 				unhighlightCountry(highlighted);
 				highlightCountry(null);

@@ -4,7 +4,6 @@ import java.io.File;
 
 import org.newdawn.slick.Image;
 
-import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Army;
@@ -36,12 +35,6 @@ public class AssetReader {
 	private String directoryPath;
 
 	/**
-	 * Holds the instance of {@link Game} that was used to construct this
-	 * {@link AssetReader}.
-	 */
-	private Game game;
-
-	/**
 	 * Constructs a new {@link AssetReader}.
 	 * 
 	 * @param coreGameStates
@@ -50,7 +43,7 @@ public class AssetReader {
 	 * @param directoryPath
 	 *            File path of the asset details file.
 	 */
-	public AssetReader(CoreGameState[] coreGameStates, Game game, String directoryPath) {
+	public AssetReader(CoreGameState[] coreGameStates, String directoryPath) {
 
 		// Check params
 		if (directoryPath.isEmpty()) {
@@ -250,19 +243,19 @@ public class AssetReader {
 		// Enter combat state.
 		case 1:
 			return new Action<CoreGameState>(state, actionState -> {
-				actionState.getGame().enterState(3);
+				actionState.getGame().enterState(actionState.getGame().combatState.getID());
 			});
 
 		// Enter movement state.
 		case 2:
 			return new Action<CoreGameState>(state, actionState -> {
-				actionState.getGame().enterState(4);
+				actionState.getGame().enterState(actionState.getGame().movementState.getID());
 			});
 
 			//Enter reinforcement state.
 		case 3:
 			return new Action<CoreGameState>(state, actionState -> {
-				actionState.getGame().enterState(2);
+				actionState.getGame().enterState(actionState.getGame().reinforcementState.getID());
 				actionState.getGame().nextPlayer();
 			});
 			

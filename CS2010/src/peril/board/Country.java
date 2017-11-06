@@ -134,7 +134,6 @@ public class Country extends Clickable {
 	 * Performs the end round operation for this {@link Country}.
 	 */
 	public void endRound(EnvironmentalHazard hazard) {
-		army.setSize(army.getSize() + 1);
 		hazard.act(army);
 	}
 

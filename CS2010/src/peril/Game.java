@@ -165,7 +165,7 @@ public class Game extends StateBasedGame {
 		assestsPath.append("ui_assets");
 
 		this.assetReader = new AssetReader(
-				new CoreGameState[] { combatState, setupState, reinforcementState, movementState, endState }, this,
+				new CoreGameState[] { combatState, setupState, reinforcementState, movementState, endState },
 				assestsPath.toString());
 
 		// Create the map file path
@@ -271,6 +271,10 @@ public class Game extends StateBasedGame {
 	 */
 	public void nextPlayer() {
 		currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+
+		if (currentPlayerIndex == 0) {
+			endRound();
+		}
 	}
 
 	@Override
@@ -316,9 +320,13 @@ public class Game extends StateBasedGame {
 	/**
 	 * Performs all the tasks that occur at the end of a round.
 	 */
-	public void endRound() {
+	private void endRound() {
 
 		board.endRound();
+		
+		for(Player player : players) {
+			player.setDistributableArmySize(player.getDistributableArmySize() + 5);
+		}
 
 		currentRound++;
 	}

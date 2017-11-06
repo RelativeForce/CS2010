@@ -112,8 +112,12 @@ public enum EnvironmentalHazard {
 			// Generate a random proportion of the army to kill.
 			int casualties = (currentSize * (minCasualties + GENERATOR.nextInt(maxCasualties - minCasualties))) / 100;
 
-			// Remove the dead regiments.
-			army.setSize(currentSize - casualties);
+			if (currentSize - casualties < 1) {
+				army.setSize(1);
+			} else {
+				// Remove the dead regiments.
+				army.setSize(currentSize - casualties);
+			}
 
 		}
 	}

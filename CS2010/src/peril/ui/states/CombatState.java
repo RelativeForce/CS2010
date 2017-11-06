@@ -1,6 +1,10 @@
 package peril.ui.states;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Player;
@@ -37,6 +41,16 @@ public class CombatState extends CoreGameState {
 		}
 	}
 
+	@Override
+	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+		super.render(gc, sbg, g);
+
+		// Draw player name and set the text color to the player's color
+		g.setColor(game.getCurrentPlayer().getColor());
+		g.drawString(game.getCurrentPlayer().toString(), 5, 20);
+		
+	}
+	
 	@Override
 	public void parseButton(int key, char c) {
 		// TODO Auto-generated method stub

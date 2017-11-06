@@ -3,6 +3,7 @@ package peril.ui.states;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -47,7 +48,30 @@ public class SetupState extends CoreGameState {
 
 	@Override
 	public void parseButton(int key, char c) {
-		// TODO Auto-generated method stub
+
+		Country highlighted = getHighlightedCountry();
+
+		if (highlighted != null) {
+			
+			switch (key) {
+			case Input.KEY_1:
+				highlighted.setRuler(Player.PLAYERONE);
+				break;
+			case Input.KEY_2:
+				highlighted.setRuler(Player.PLAYERTWO);
+				break;
+			case Input.KEY_3:
+				highlighted.setRuler(Player.PLAYERTHREE);
+				break;
+			case Input.KEY_4:
+				highlighted.setRuler(Player.PLAYERFOUR);
+				break;
+			case Input.KEY_SPACE:
+				highlighted.setRuler(null);
+				break;
+
+			}
+		}
 
 	}
 
@@ -122,7 +146,7 @@ public class SetupState extends CoreGameState {
 			}
 		}
 	}
-	
+
 	/**
 	 * Removes the highlight colouring effect on a {@link Country}.
 	 * 

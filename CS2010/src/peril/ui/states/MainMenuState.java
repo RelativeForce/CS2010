@@ -21,7 +21,11 @@ public class MainMenuState extends CoreGameState{
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		// TODO Auto-generated method stub
+		super.render(gc, sbg, g);
+
+		// Draw player name and set the text color to the player's color
+		g.setColor(game.getCurrentPlayer().getColor());
+		g.drawString(game.getCurrentPlayer().toString(), 5, 20);
 		
 	}
 
@@ -42,4 +46,5 @@ public class MainMenuState extends CoreGameState{
 		
 	}
 
+	
 }

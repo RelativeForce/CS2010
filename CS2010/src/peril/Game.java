@@ -217,7 +217,7 @@ public class Game extends StateBasedGame {
 		super.addState(reinforcementState);
 		super.addState(movementState);
 		super.addState(endState);
-		this.enterState(reinforcementState.getID());
+		this.enterState(setupState.getID());
 
 		// Assign Key and Mouse Listener as the UIEventhandler
 		container.getInput().addKeyListener(eventHandler);

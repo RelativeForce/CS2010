@@ -254,14 +254,20 @@ public class AssetReader {
 				actionState.getGame().enterState(actionState.getGame().movementState.getID());
 			});
 
-			//Enter reinforcement state.
+		// Enter reinforcement state.
 		case 3:
 			return new Action<CoreGameState>(state, actionState -> {
 				actionState.unhighlightCountry();
 				actionState.getGame().enterState(actionState.getGame().reinforcementState.getID());
 				actionState.getGame().nextPlayer();
 			});
-			
+		// Leave set up state
+		case 4:
+			return new Action<CoreGameState>(state, actionState -> {
+				actionState.unhighlightCountry();
+				actionState.getGame().enterState(actionState.getGame().reinforcementState.getID());
+			});
+
 		}
 		return null;
 	}

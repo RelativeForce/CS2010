@@ -3,7 +3,6 @@ package peril.ui.states;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -39,6 +38,10 @@ public class ReinforcementState extends CoreGameState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
 
+		// Draw player name and set the text color to the player's color
+		g.setColor(game.getCurrentPlayer().getColor());
+		g.drawString(game.getCurrentPlayer().toString(), 5, 20);
+		
 		// Set the text color to magenta
 		g.setColor(Color.black);
 
@@ -63,35 +66,7 @@ public class ReinforcementState extends CoreGameState {
 
 	@Override
 	public void parseButton(int key, char c) {
-		
-		Country highlighted = getHighlightedCountry();
-
-		switch (key) {
-		case Input.KEY_1:
-			if (highlighted != null)
-				highlighted.setRuler(Player.PLAYERONE);
-			break;
-		case Input.KEY_2:
-			if (highlighted != null)
-				highlighted.setRuler(Player.PLAYERTWO);
-			break;
-		case Input.KEY_3:
-			if (highlighted != null)
-				highlighted.setRuler(Player.PLAYERTHREE);
-			break;
-		case Input.KEY_4:
-			if (highlighted != null)
-				highlighted.setRuler(Player.PLAYERFOUR);
-			break;
-		case Input.KEY_SPACE:
-			if (highlighted != null)
-				highlighted.setRuler(null);
-			break;
-		case Input.KEY_N:
-			game.nextPlayer();
-			break;
-
-		}		
+				
 	}
 	
 	/**

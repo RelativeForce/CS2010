@@ -100,7 +100,7 @@ public class UIEventHandler implements MouseListener, KeyListener {
 	public void keyPressed(int key, char c) {
 
 		Country highlighted = ((CoreGameState) game.getCurrentState()).getHighlightedCountry();
-		if (highlighted != null)
+		
 			switch (key) {
 			case Input.KEY_1:
 				if (highlighted != null)

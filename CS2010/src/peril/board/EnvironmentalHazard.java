@@ -118,7 +118,6 @@ public enum EnvironmentalHazard {
 				// Remove the dead regiments.
 				army.setSize(currentSize - casualties);
 			}
-
 		}
 	}
 

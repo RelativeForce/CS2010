@@ -144,40 +144,80 @@ public class MapReader {
 	 */
 	private void parseCountry(String[] details) {
 
-		// Enter try-catch as many parts of this section can throw erroneous exceptions.
-		try {
+		int BUTTON_LENGTH = 5;
 
-			// Holds the name of the country
-			String name = details[1];
-
-			// Holds the rgb value of the counrty's region.
-			String rgb = details[2];
-
-			/*
-			 * Convert the rgb values stored in the rgb string and store them in their own
-			 * variable.
-			 */
-			int r = Integer.parseInt(rgb.substring(0, 3));
-			int g = Integer.parseInt(rgb.substring(3, 6));
-			int b = Integer.parseInt(rgb.substring(6, 9));
-
-			// Initialise a new color using the rgb values.
-			Color color = new Color(r, g, b);
-
-			// Initialise the new country.
-			Country country = new Country(name);
-
-			// Set the clickable region of the country
-			
-			Region region = ImageReader.getColourRegion(directoryPath + File.separatorChar + "countries.png", color);
-			country.setRegion(region);			
-			
-			// Construct a new counrty and add the country to the list of countries.
-			countries.add(country);
-
-		} catch (Exception ex) {
-			throw new IllegalArgumentException("details not valid.");
+		if (details.length != BUTTON_LENGTH) {
+			throw new IllegalArgumentException(
+					"The line does not contain the correct number of elements, there should be " + BUTTON_LENGTH + "");
 		}
+
+		String name = details[1];
+
+		/*
+		 * Convert the rgb values stored in the rgb string and store them in their own
+		 * variable.
+		 */
+		int r;
+		int g;
+		int b;
+
+		// Parse the red rgb value of the counrty's region.
+		try {
+			r = Integer.parseInt(details[2].substring(0, 3));
+		} catch (Exception ex) {
+			throw new IllegalArgumentException(details[2] + " is not a valid rgb value.");
+		}
+
+		// Parse the green rgb value of the counrty's region.
+		try {
+			g = Integer.parseInt(details[2].substring(3, 6));
+		} catch (Exception ex) {
+			throw new IllegalArgumentException(details[2] + " is not a valid rgb value.");
+		}
+
+		// Parse the blue rgb value of the counrty's region.
+		try {
+			b = Integer.parseInt(details[2].substring(6, 9));
+		} catch (Exception ex) {
+			throw new IllegalArgumentException(details[2] + " is not a valid rgb value.");
+		}
+
+		// Check if the rgb values are valid
+		if ((r > 255 || r < 0) || (g > 255 || g < 0) || (b > 255 || b < 0)) {
+			throw new IllegalArgumentException(details[2] + " is not a valid rgb value.");
+		}
+
+		int xOffset;
+		int yOffset;
+
+		try {
+			xOffset = Integer.parseInt(details[3]);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(details[3] + " is not a valid x coordinate.");
+		}
+
+		try {
+			yOffset = Integer.parseInt(details[4]);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(details[4] + " is not a valid x coordinate.");
+		}
+
+		// Initialise a new color using the rgb values.
+		Color color = new Color(r, g, b);
+
+		// Initialise the new country.
+		Country country = new Country(name);
+		
+		// Set the army offset.
+		country.getArmy().setOffset(new Point(xOffset, yOffset));
+
+		// Set the clickable region of the country
+
+		Region region = ImageReader.getColourRegion(directoryPath + File.separatorChar + "countries.png", color);
+		country.setRegion(region);
+
+		// Construct a new counrty and add the country to the list of countries.
+		countries.add(country);
 
 	}
 

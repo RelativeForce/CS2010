@@ -1,7 +1,17 @@
 Country,Great Britian,000000050
 Country,France,000000100
 Country,Germany,000000150
-Continent,West,Hurricane,Great Britian-France-Germany
+Country,Poland,000000200
+Country,Italy,000000250
+Country,Greece,000050000
+Country,Spain,000100000
+Country,Russia,000150000
+Country,Sweden,000200000
+Country,Norway,000250000
+Continent,West,Hurricane,Great Britian-France-Germany-Spain
+Continent,Center,Tornado,Greece-Poland-Italy
+Continent,East,Hurricane,Russia
+Continent,North,Tsunami,Sweden-Norway
 Link,Great Britian,France
 Link,France,Germany
 Link,Germany,Russia

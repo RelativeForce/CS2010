@@ -5,6 +5,7 @@ import org.newdawn.slick.Image;
 import peril.Point;
 import peril.multiThread.Action;
 import peril.ui.visual.Clickable;
+import peril.ui.visual.Region;
 
 /**
  * Encapsulates the behaviour of a button on screen. This button can be clicked
@@ -34,7 +35,7 @@ public class Button extends Clickable {
 	 *            The {@link Action} this button will perform when
 	 *            {@link Button#click()} is performed.
 	 */
-	Button(Point position, Image image, Action<?> action) {
+	public Button(Point position, Image image, Action<?> action) {
 		super();
 
 		// Check the params
@@ -48,6 +49,11 @@ public class Button extends Clickable {
 
 		// Initialise the image and action.
 		this.setImage(position, image);
+		
+		Region region = new Region(image);
+		region.setPosition(position);
+		
+		this.setRegion(region);
 		this.action = action;
 	}
 

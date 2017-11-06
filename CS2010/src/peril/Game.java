@@ -10,6 +10,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import peril.board.Army;
 import peril.board.Board;
 import peril.board.Country;
 import peril.io.AssetReader;
@@ -93,6 +94,8 @@ public class Game extends StateBasedGame {
 	 */
 	private final Player[] players;
 
+	private volatile boolean isLoaded;
+
 	/**
 	 * The {@link Player} who's turn it is.
 	 */
@@ -118,6 +121,10 @@ public class Game extends StateBasedGame {
 	 */
 	private AppGameContainer agc;
 
+	/**
+	 * The {@link AssetReader} that loads all the {@link CoreGameState} states
+	 * buttons into the game from memory.
+	 */
 	private AssetReader assetReader;
 
 	/**
@@ -129,6 +136,8 @@ public class Game extends StateBasedGame {
 		// Initialise the the players array.
 		this.players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO, Player.PLAYERTHREE, Player.PLAYERFOUR };
 
+		Player.PLAYERONE.award(new Army(5));
+
 		// Set the game indexes to there initial values.
 		this.currentPlayerIndex = 0;
 		this.currentRound = 0;
@@ -136,6 +145,7 @@ public class Game extends StateBasedGame {
 		// Assign the game to run.
 		this.endTurn = false;
 		this.run = true;
+		this.isLoaded = false;
 
 		// Construct the board.
 		this.board = new Board();
@@ -173,7 +183,7 @@ public class Game extends StateBasedGame {
 		assestsPath.append("ui_assets");
 
 		this.assetReader = new AssetReader(
-				new CoreGameState[] { combatState, setupState, reinforcementState, movementState, endState },
+				new CoreGameState[] { combatState, setupState, reinforcementState, movementState, endState }, this,
 				assestsPath.toString());
 
 		// Create the map file path
@@ -318,18 +328,26 @@ public class Game extends StateBasedGame {
 		super.addState(reinforcementState);
 		super.addState(movementState);
 		super.addState(endState);
+		this.enterState(reinforcementState.getID());
 
 		// Assign Key and Mouse Listener as the UIEventhandler
 		container.getInput().addKeyListener(eventHandler);
 		container.getInput().addMouseListener(eventHandler);
+
+		// Hide FPS counter
+		container.setShowFPS(false);
+		container.setVSync(true);
 	}
 
 	/**
 	 * Starts the UI and reads the Board.
 	 */
 	public void loadAssets() {
-		mapReader.read();
-		assetReader.read();
+		if (!isLoaded) {
+			mapReader.read();
+			assetReader.read();
+			isLoaded = true;
+		}
 	}
 
 	/**
@@ -440,8 +458,8 @@ public class Game extends StateBasedGame {
 	/**
 	 * Iterates to the next player.
 	 */
-	private void nextPlayer() {
-		currentPlayerIndex = currentPlayerIndex++ % players.length;
+	public void nextPlayer() {
+		currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
 	}
 
 	/**

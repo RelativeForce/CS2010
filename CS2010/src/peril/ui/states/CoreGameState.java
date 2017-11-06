@@ -1,5 +1,6 @@
 package peril.ui.states;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.newdawn.slick.Color;
@@ -48,7 +49,7 @@ public abstract class CoreGameState extends BasicGameState {
 	/**
 	 * The current {@link Country} that the player has highlighted.
 	 */
-	private Country higlightedCountry;
+	private Country highlightedCountry;
 
 	/**
 	 * Constructs a new {@link CoreGameState}.
@@ -58,17 +59,19 @@ public abstract class CoreGameState extends BasicGameState {
 	 */
 	protected CoreGameState(Game game) {
 		this.game = game;
-		this.higlightedCountry = null;
+
+		this.highlightedCountry = null;
+		this.clickables = new LinkedList<>();
+		this.viewables = new LinkedList<>();
 	}
 
 	/**
 	 * Set the current {@link Country} that the player has highlighted.
 	 */
 	public void highlight(Country country) {
-		higlightedCountry = country;
+		highlightedCountry = country;
 	}
-
-	@Override
+	
 	/**
 	 * Called when the state is entered, before slick2d's game loop commences.
 	 * 
@@ -78,12 +81,11 @@ public abstract class CoreGameState extends BasicGameState {
 	 * @param sbg
 	 *            The {@link StateBasedGame} this state is a part of.
 	 */
-	public void enter(GameContainer gc, StateBasedGame sbg) {
-		System.out.println("Entering gamestate:" + Integer.toString(getID()));
-
-	}
-
 	@Override
+	public void enter(GameContainer gc, StateBasedGame sbg) {
+		System.out.println("Entering gamestate: " + stateName);
+	}
+	
 	/**
 	 * Called when the state is first created, before slick2d's game loop commences.
 	 * Initialises the state and loads resources.
@@ -95,15 +97,13 @@ public abstract class CoreGameState extends BasicGameState {
 	 *            The {@link StateBasedGame} this state is a part of.
 	 * 
 	 */
+	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		gc.setUpdateOnlyWhenVisible(true);
 
-		if (game.getBoard() != null) {
-			game.loadAssets();
-		}
+		game.loadAssets();
 	}
 
-	@Override
 	/**
 	 * Called as part of slick2d's game loop. Renders this state to the game's
 	 * graphics context
@@ -118,25 +118,50 @@ public abstract class CoreGameState extends BasicGameState {
 	 *            A graphics context that can be used to render primitives to the
 	 *            accelerated canvas provided by LWJGL.
 	 */
+	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
-		//If the board has a visual representation, render it in the graphics context.
+		// If the board has a visual representation, render it in the graphics context.
 		if (game.getBoard().hasImage())
 			g.drawImage(game.getBoard().getImage(), game.getBoard().getPosition().x, game.getBoard().getPosition().y);
 
-		if (higlightedCountry != null) {
+		// For every country on the board.
+		game.getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
 
-			Image c = higlightedCountry.getImage();
+			// Holds the image of the country
+			Image image = country.getImage();
 
-			if (c != null)
-				g.drawImage(c, higlightedCountry.getPosition().x, higlightedCountry.getPosition().y);
+			// Draw the image of the country on top of the board.
+			if (image != null) {
+				g.drawImage(image, country.getPosition().x, country.getPosition().y);
+			}
+		}));
+
+		// If there is a highlight country
+		if (highlightedCountry != null) {
+
+			// Holds the highlight image
+			Image highlightImage = highlightedCountry.getImage();
+
+			// If there is an image in the highlighted country
+			if (highlightImage != null) {
+				g.drawImage(highlightImage, highlightedCountry.getPosition().x, highlightedCountry.getPosition().y);
+			}
 		}
 
-		g.drawString(stateName, 5, 50);
+		// Draw all the clickable objects.
+		clickables.forEach(
+				clickable -> g.drawImage(clickable.getImage(), clickable.getPosition().x, clickable.getPosition().y));
+
+		// Draw state name
+		g.drawString(stateName, 5, 5);
+
+		// Draw player name
+		g.drawString(game.getCurrentPlayer().toString(), 5, 20);
+
 		drawArmies(g);
 	}
-
-	@Override
+	
 	/**
 	 * Called as part of slick2d's game loop. Update the state's logic based on the
 	 * amount of time that has passed.
@@ -150,8 +175,18 @@ public abstract class CoreGameState extends BasicGameState {
 	 * @param delta
 	 *            The amount of time thats passed in millisecond since last update
 	 */
+	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 
+	}
+
+	/**
+	 * Gets the {@link Game} that uses this {@link CoreGameState}.
+	 * 
+	 * @return {@link Game}
+	 */
+	public Game getGame() {
+		return game;
 	}
 
 	/**
@@ -170,7 +205,7 @@ public abstract class CoreGameState extends BasicGameState {
 	 *            A graphics context that can be used to render primitives to the
 	 *            accelerated canvas provided by LWJGL.
 	 */
-	public void drawArmies(Graphics g) {
+	private void drawArmies(Graphics g) {
 
 		// Iterate across every country in every continent on the game board.
 		for (Continent continent : game.getBoard().getContinents()) {
@@ -216,12 +251,11 @@ public abstract class CoreGameState extends BasicGameState {
 	/*
 	 * Adds a clickable element to the list of clickables in this state.
 	 * 
-	 * @param element
-	 *            The {@link Clickable} element to be added to the list.
-	 *            
+	 * @param element The {@link Clickable} element to be added to the list.
+	 * 
 	 */
 	public void addElement(Clickable element) {
-		//Check whether the region is valid.
+		// Check whether the region is valid.
 		if (element.hasRegion()) {
 			clickables.add(element);
 		} else {
@@ -237,4 +271,11 @@ public abstract class CoreGameState extends BasicGameState {
 		return clickables;
 	}
 
+	/**
+	 * Returns a the current highlighted {@link Country} in this state.
+	 * 
+	 */
+	public Country getHighlightedCountry() {
+		return highlightedCountry;
+	}
 }

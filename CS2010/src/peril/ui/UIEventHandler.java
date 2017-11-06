@@ -100,28 +100,33 @@ public class UIEventHandler implements MouseListener, KeyListener {
 	public void keyPressed(int key, char c) {
 
 		Country highlighted = ((CoreGameState) game.getCurrentState()).getHighlightedCountry();
+		if (highlighted != null)
+			switch (key) {
+			case Input.KEY_1:
+				if (highlighted != null)
+					highlighted.setRuler(Player.PLAYERONE);
+				break;
+			case Input.KEY_2:
+				if (highlighted != null)
+					highlighted.setRuler(Player.PLAYERTWO);
+				break;
+			case Input.KEY_3:
+				if (highlighted != null)
+					highlighted.setRuler(Player.PLAYERTHREE);
+				break;
+			case Input.KEY_4:
+				if (highlighted != null)
+					highlighted.setRuler(Player.PLAYERFOUR);
+				break;
+			case Input.KEY_SPACE:
+				if (highlighted != null)
+					highlighted.setRuler(null);
+				break;
+			case Input.KEY_N:
+				game.nextPlayer();
+				break;
 
-		switch (key) {
-		case Input.KEY_1:
-			highlighted.setRuler(Player.PLAYERONE);
-			break;
-		case Input.KEY_2:
-			highlighted.setRuler(Player.PLAYERTWO);
-			break;
-		case Input.KEY_3:
-			highlighted.setRuler(Player.PLAYERTHREE);
-			break;
-		case Input.KEY_4:
-			highlighted.setRuler(Player.PLAYERFOUR);
-			break;
-		case Input.KEY_SPACE:
-			highlighted.setRuler(null);
-			break;
-		case Input.KEY_N:
-			game.nextPlayer();
-			break;
-
-		}
+			}
 
 	}
 

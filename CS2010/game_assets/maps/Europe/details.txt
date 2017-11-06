@@ -1,13 +1,13 @@
-Country,Great Britian,000000050
-Country,France,000000100
-Country,Germany,000000150
-Country,Poland,000000200
-Country,Italy,000000250
-Country,Greece,000050000
-Country,Spain,000100000
-Country,Russia,000150000
-Country,Sweden,000200000
-Country,Norway,000250000
+Country,Great Britian,000000050,0,0
+Country,France,000000100,0,0
+Country,Germany,000000150,-10,0
+Country,Poland,000000200,0,-10
+Country,Italy,000000250,0,-15
+Country,Greece,000050000,-15,0
+Country,Spain,000100000,-20,0
+Country,Russia,000150000,0,0
+Country,Sweden,000200000,-15,0
+Country,Norway,000250000,-50,30
 Continent,West,Hurricane,Great Britian-France-Germany-Spain
 Continent,Center,Tornado,Greece-Poland-Italy
 Continent,East,Hurricane,Russia

@@ -72,4 +72,14 @@ public final class Army {
 	public int getSize() {
 		return size;
 	}
+
+	public void setOffset(Point offset) {
+		
+		if(offset == null) {
+			throw new NullPointerException("Offset cannot be null.");
+		}
+		
+		this.offset = offset;
+		
+	}
 }

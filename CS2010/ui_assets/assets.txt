@@ -1,1 +1,2 @@
+// asset_type,state_name,function_code,asset_file_name,width,height,x,y
 button,Reinforcement,0,reinforceButton.png,50,30,10,80

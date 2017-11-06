@@ -13,6 +13,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Point;
+import peril.board.Army;
 import peril.board.Country;
 import peril.ui.visual.Clickable;
 import peril.ui.visual.Viewable;
@@ -274,6 +275,12 @@ public abstract class CoreGameState extends BasicGameState {
 			int x = country.getPosition().x + country.getWidth() / 2;
 			int y = country.getPosition().y + country.getHeight() / 2;
 
+			Army army = country.getArmy();
+
+			// Move the (x,y) by the offset
+			x += army.getOffset().x;
+			y += army.getOffset().y;
+
 			// Draw a background oval with the rulers colour. If no ruler found default to
 			// light grey.
 			if (country.getRuler() != null) {
@@ -284,21 +291,19 @@ public abstract class CoreGameState extends BasicGameState {
 			g.fillOval(x - 3, y - 3, 15, 25);
 			g.setColor(Color.black);
 
-			// If the country has an army, draw a string representing the number of troops
+			// Draw a string representing the number of troops
 			// within that army at (x,y).
-			if (country.getArmy() != null) {
-				int troopNumber = country.getArmy().getSize();
-				g.drawString(Integer.toString(troopNumber), x, y);
-			} else {
-				g.drawString(Integer.toString(0), x, y);
-			}
+			int troopNumber = army.getSize();
+			g.drawString(Integer.toString(troopNumber), x, y);
+
 		}));
 	}
 
 	/**
 	 * Draws the {@link Player} and {@link CoreGameState#stateName} on the screen.
 	 * 
-	 * @param g {@link Graphics}
+	 * @param g
+	 *            {@link Graphics}
 	 */
 	private void drawPlayerView(Graphics g) {
 

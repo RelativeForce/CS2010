@@ -24,5 +24,30 @@ Continent,North,Tsunami,Sweden-Norway-Finland
 
 // Link, country1, country2
 Link,Great Britian,France
+Link,Great Britian,Germany
 Link,France,Germany
+Link,France,Spain
+Link,France,Italy
 Link,Germany,Russia
+Link,Germany,Italy
+Link,Germany,Sweden
+Link,Germany,Chump
+Link,Germany,Poland
+Link,Italy,Chump
+Link,Chump,Poland
+Link,Chump,Flump
+Link,Chump,Mump
+Link,Mump,Greece
+Link,Mump,Flump
+Link,Greece,Slump
+Link,Poland,Umple
+Link,Poland,Flump
+Link,Norway,Sweden
+Link,Sweden,Finland
+Link,Finland,Russia
+Link,Umple,Russia
+Link,Flump,Russia
+Link,Slump,Russia
+
+
+

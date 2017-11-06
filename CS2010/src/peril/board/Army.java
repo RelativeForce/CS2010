@@ -12,7 +12,7 @@ public final class Army {
 	/**
 	 * The size of the army.
 	 */
-	private int size;
+	private volatile int size;
 
 	/**
 	 * Constructs a new empty {@link Army}.

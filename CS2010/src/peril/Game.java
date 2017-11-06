@@ -121,6 +121,10 @@ public class Game extends StateBasedGame {
 	 */
 	private AppGameContainer agc;
 
+	/**
+	 * The {@link AssetReader} that loads all the {@link CoreGameState} states
+	 * buttons into the game from memory.
+	 */
 	private AssetReader assetReader;
 
 	/**
@@ -131,7 +135,7 @@ public class Game extends StateBasedGame {
 
 		// Initialise the the players array.
 		this.players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO, Player.PLAYERTHREE, Player.PLAYERFOUR };
-		
+
 		Player.PLAYERONE.award(new Army(5));
 
 		// Set the game indexes to there initial values.
@@ -329,6 +333,10 @@ public class Game extends StateBasedGame {
 		// Assign Key and Mouse Listener as the UIEventhandler
 		container.getInput().addKeyListener(eventHandler);
 		container.getInput().addMouseListener(eventHandler);
+
+		// Hide FPS counter
+		container.setShowFPS(false);
+		container.setVSync(true);
 	}
 
 	/**

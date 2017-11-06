@@ -71,7 +71,6 @@ public abstract class CoreGameState extends BasicGameState {
 	public void highlight(Country country) {
 		highlightedCountry = country;
 	}
-
 	
 	/**
 	 * Called when the state is entered, before slick2d's game loop commences.
@@ -155,10 +154,10 @@ public abstract class CoreGameState extends BasicGameState {
 				clickable -> g.drawImage(clickable.getImage(), clickable.getPosition().x, clickable.getPosition().y));
 
 		// Draw state name
-		g.drawString(stateName, 5, 50);
+		g.drawString(stateName, 5, 5);
 
 		// Draw player name
-		g.drawString(game.getCurrentPlayer().toString(), 5, 35);
+		g.drawString(game.getCurrentPlayer().toString(), 5, 20);
 
 		drawArmies(g);
 	}

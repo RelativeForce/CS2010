@@ -115,22 +115,14 @@ public class AssetReader {
 		}
 
 		int functionCode;
-		int stateID;
 		Image asset;
 		int width;
 		int height;
 		int x;
 		int y;
 
-		// Parse the state id
-		try {
-			stateID = Integer.parseInt(details[1]);
-		} catch (Exception e) {
-			throw new IllegalArgumentException(details[1] + " is not a valid state id");
-		}
-
-		// Get the state by id
-		CoreGameState state = getGameStateByID(stateID);
+		// Get the state by name
+		CoreGameState state = getGameStateByName(details[1]);
 
 		// Parse the function code
 		try {
@@ -262,23 +254,22 @@ public class AssetReader {
 	/**
 	 * Retrieves a game state with a specified id.
 	 * 
-	 * @param id
-	 *            <code>int</code> id of the {@link CoreGameState}
-	 * @return {@link CoreGameState} with the specified id checked using
-	 *         {@link CoreGameState#getID()}.
+	 * @param name
+	 *            {@link CoreGameState#getStateName()}
+	 * @return {@link CoreGameState} with the specified name.
 	 */
-	private CoreGameState getGameStateByID(int id) {
+	private CoreGameState getGameStateByName(String name) {
 
 		// Iterate through all game states in the reader.
 		for (CoreGameState state : coreGameStates) {
 
-			// Return the state that has the specified id.
-			if (state.getID() == id) {
+			// Return the state that has the specified name.
+			if (state.getStateName().equals(name)) {
 				return state;
 			}
 		}
 
-		throw new NullPointerException("ID: " + id + " is not assigned to a game state.");
+		throw new NullPointerException("State: " + name + " is not assigned to a game state.");
 	}
 
 }

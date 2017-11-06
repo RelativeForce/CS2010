@@ -243,28 +243,28 @@ public class AssetReader {
 		// Enter combat state.
 		case 1:
 			return new Action<CoreGameState>(state, actionState -> {
-				actionState.unhighlightCountry();
+				actionState.unhighlightCountry(actionState.getHighlightedCountry());
 				actionState.getGame().enterState(actionState.getGame().combatState.getID());
 			});
 
 		// Enter movement state.
 		case 2:
 			return new Action<CoreGameState>(state, actionState -> {
-				actionState.unhighlightCountry();
+				actionState.unhighlightCountry(actionState.getHighlightedCountry());
 				actionState.getGame().enterState(actionState.getGame().movementState.getID());
 			});
 
 		// Enter reinforcement state.
 		case 3:
 			return new Action<CoreGameState>(state, actionState -> {
-				actionState.unhighlightCountry();
+				actionState.unhighlightCountry(actionState.getHighlightedCountry());
 				actionState.getGame().enterState(actionState.getGame().reinforcementState.getID());
 				actionState.getGame().nextPlayer();
 			});
 		// Leave set up state
 		case 4:
 			return new Action<CoreGameState>(state, actionState -> {
-				actionState.unhighlightCountry();
+				actionState.unhighlightCountry(actionState.getHighlightedCountry());
 				actionState.getGame().enterState(actionState.getGame().reinforcementState.getID());
 			});
 

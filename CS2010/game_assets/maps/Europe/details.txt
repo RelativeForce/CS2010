@@ -1,3 +1,4 @@
+// type, name, rgb, x offset, y offset
 Country,Great Britian,000000050,0,0
 Country,France,000000100,0,0
 Country,Germany,000000150,-10,0

@@ -1,3 +1,4 @@
+// type, name, rgb, x offset, y offset
 Country,Alaska,000000051,0,0
 Country,Canada,000000102,0,0
 Country,USA,000000153,0,0

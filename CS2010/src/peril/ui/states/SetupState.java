@@ -10,6 +10,11 @@ import peril.Point;
 
 public class SetupState extends CoreGameState {
 
+	/**
+	 * The ID of this {@link SetupState}
+	 */
+	private static final int ID = 1;
+	
 	public SetupState(Game game) {
 		super(game);
 		stateName = "Setup";
@@ -22,7 +27,7 @@ public class SetupState extends CoreGameState {
 
 	@Override
 	public int getID() {
-		return 0;
+		return ID;
 	}
 
 	@Override

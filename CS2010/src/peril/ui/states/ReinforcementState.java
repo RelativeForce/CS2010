@@ -29,7 +29,7 @@ public class ReinforcementState extends CoreGameState {
 	/**
 	 * The ID of this {@link ReinforcementState}
 	 */
-	private static final int ID = 1;
+	private static final int ID = 2;
 
 	public ReinforcementState(Game game) {
 		super(game);

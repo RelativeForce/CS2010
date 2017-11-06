@@ -6,6 +6,11 @@ import peril.Point;
 
 public class EndState extends CoreGameState{
 
+	/**
+	 * The ID of this {@link EndState}
+	 */
+	private static final int ID = 5;
+	
 	public EndState(Game game) {
 		super(game);
 		stateName = "EndState";
@@ -17,7 +22,7 @@ public class EndState extends CoreGameState{
 
 	@Override
 	public int getID() {
-		return 4;
+		return ID;
 	}
 
 	@Override

@@ -5,6 +5,11 @@ import peril.Point;
 
 public class MovementState extends CoreGameState {
 
+	/**
+	 * The ID of this {@link MovementState}.
+	 */
+	private static final int ID = 4;
+	
 	public MovementState(Game game) {
 		super(game);
 		stateName = "Movement";
@@ -13,7 +18,7 @@ public class MovementState extends CoreGameState {
 	@Override
 	public int getID() {
 		// TODO Auto-generated method stub
-		return 3;
+		return ID;
 	}
 
 	@Override

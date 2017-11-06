@@ -272,6 +272,15 @@ public class Game extends StateBasedGame {
 	public void nextPlayer() {
 		currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
 
+		//Calculate and set player's number of distributable reinforcements.
+		for (Player player : players) {
+			if (player.getCountriesRuled() <= 11) {
+				player.setDistributableArmySize(3);
+			} else {
+				player.setDistributableArmySize(player.getCountriesRuled() / 3);
+			}
+		}
+		
 		if (currentPlayerIndex == 0) {
 			endRound();
 		}
@@ -323,14 +332,6 @@ public class Game extends StateBasedGame {
 	private void endRound() {
 
 		board.endRound();
-
-		for (Player player : players) {
-			if (player.getCountriesRuled() <= 11) {
-				player.setDistributableArmySize(3);
-			} else {
-				player.setDistributableArmySize(player.getCountriesRuled() / 3);
-			}
-		}
 		currentRound++;
 	}
 	/**

@@ -48,30 +48,30 @@ public class Game extends StateBasedGame {
 	 * The state that displays combat to the user. This is heavily couples with
 	 * {@link CombatHandler}.
 	 */
-	private final CombatState combatState;
+	public final CombatState combatState;
 
 	/**
 	 * The {@link SetupState} that will allow the user to set up which
 	 * {@link Player} owns which {@link Country}.
 	 */
-	private final SetupState setupState;
+	public final SetupState setupState;
 
 	/**
 	 * The {@link ReinforcementState} that allows the {@link Player} to distribute
 	 * their {@link Army} to the {@link Country}s they rule.
 	 */
-	private final ReinforcementState reinforcementState;
+	public final ReinforcementState reinforcementState;
 
 	/**
 	 * The {@link MovementState} which lets the user move {@link Army}s from one
 	 * {@link Country} to another.
 	 */
-	private final MovementState movementState;
+	public final MovementState movementState;
 
 	/**
 	 * The {@link EndState} that displays the results of the {@link Game}.
 	 */
-	private final EndState endState;
+	public final EndState endState;
 
 	/**
 	 * The {@link UIEventHandler} that processes all of the user inputs and triggers
@@ -112,11 +112,6 @@ public class Game extends StateBasedGame {
 	private MapReader mapReader;
 
 	/**
-	 * The {@link Thread} that run the the background tasks.
-	 */
-	private Thread background;
-
-	/**
 	 * The {@link AppGameContainer} that contains this {@link Game}.
 	 */
 	private AppGameContainer agc;
@@ -149,19 +144,6 @@ public class Game extends StateBasedGame {
 
 		// Construct the board.
 		this.board = new Board();
-
-		// Initialise and start the background thread.
-		this.background = new Thread() {
-
-			@Override
-			public void run() {
-
-				while (run) {
-					// TODO Background tasks
-				}
-			}
-		};
-		this.background.start();
 
 		// this.challenges = ChallengeReader.getChallenges(currentDirectory.getPath(),
 		// "Earth");
@@ -220,6 +202,125 @@ public class Game extends StateBasedGame {
 			e.printStackTrace();
 		}
 
+	}
+
+	/**
+	 * Adds {@link CoreGameState}s to the {@link GameContainer} for this
+	 * {@link Game}.
+	 */
+	@Override
+	public void initStatesList(GameContainer container) throws SlickException {
+
+		// Add all the game states to the game to the game container.
+		super.addState(setupState);
+		super.addState(combatState);
+		super.addState(reinforcementState);
+		super.addState(movementState);
+		super.addState(endState);
+		this.enterState(reinforcementState.getID());
+
+		// Assign Key and Mouse Listener as the UIEventhandler
+		container.getInput().addKeyListener(eventHandler);
+		container.getInput().addMouseListener(eventHandler);
+
+		// Hide FPS counter
+		container.setShowFPS(false);
+		container.setVSync(true);
+	}
+
+	/**
+	 * Starts the UI and reads the Board.
+	 */
+	public void loadAssets() {
+		if (!isLoaded) {
+			mapReader.read();
+			assetReader.read();
+			isLoaded = true;
+		}
+	}
+
+	/**
+	 * Retrieves the {@link Player} who's current turn it is.
+	 * 
+	 * @return {@link Player}
+	 */
+	public Player getCurrentPlayer() {
+		return players[currentPlayerIndex];
+	}
+
+	/**
+	 * Retrieves the current turn number.
+	 * 
+	 * @return <code>int</code>
+	 */
+	public int getRoundNumber() {
+		return currentRound;
+	}
+
+	/**
+	 * Retrieves the {@link Board} in <code>this</code> {@link Game}.
+	 * 
+	 * @return {@link Board}.
+	 */
+	public Board getBoard() {
+		return board;
+	}
+
+	/**
+	 * Iterates to the next player.
+	 */
+	public void nextPlayer() {
+		currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+	}
+
+	@Override
+	public CoreGameState getCurrentState() {
+
+		// Holds the current game state.
+		GameState state = super.getCurrentState();
+
+		// If the current state is a CoreGameState return it as a CoreGameState
+		if (state instanceof CoreGameState) {
+			return (CoreGameState) state;
+		}
+		throw new IllegalStateException(state.getID() + " is not a valid state as it is not a CoreGameState.");
+	}
+
+	/**
+	 * Iterates thought all the available {@link Challenge}s to see if the specified
+	 * {@link Player} has completed them or not.
+	 * 
+	 * @param currentPlayer
+	 *            {@link Player}
+	 */
+	public void checkChallenges(Player currentPlayer) {
+
+		// Holds the completed challenges
+		List<Challenge> toRemove = new LinkedList<>();
+
+		// Iterate though all the objectives to see if the the current player has
+		// completed them.
+		for (Challenge challenge : challenges) {
+
+			// If the current player has completed the challenge remove it from the list of
+			// available challenges.
+			if (challenge.hasCompleted(currentPlayer, board)) {
+				toRemove.add(challenge);
+			}
+		}
+
+		// Remove the completed challenges.
+		toRemove.forEach(challenge -> challenges.remove(challenge));
+	}
+
+	/**
+	 * Performs all the tasks that occur at the end of a round.
+	 */
+	public void endRound() {
+
+		board.endRound();
+
+		currentRound++;
 	}
 
 	/**
@@ -293,166 +394,6 @@ public class Game extends StateBasedGame {
 	}
 
 	/**
-	 * Adds {@link CoreGameState}s to the {@link GameContainer} for this
-	 * {@link Game}.
-	 */
-	@Override
-	public void initStatesList(GameContainer container) throws SlickException {
-
-		// Add all the game states to the game to the game container.
-		super.addState(setupState);
-		super.addState(combatState);
-		super.addState(reinforcementState);
-		super.addState(movementState);
-		super.addState(endState);
-		this.enterState(reinforcementState.getID());
-
-		// Assign Key and Mouse Listener as the UIEventhandler
-		container.getInput().addKeyListener(eventHandler);
-		container.getInput().addMouseListener(eventHandler);
-
-		// Hide FPS counter
-		container.setShowFPS(false);
-		container.setVSync(true);
-	}
-
-	/**
-	 * Starts the UI and reads the Board.
-	 */
-	public void loadAssets() {
-		if (!isLoaded) {
-			mapReader.read();
-			assetReader.read();
-			isLoaded = true;
-		}
-	}
-
-	/**
-	 * Retrieves the {@link Player} who's current turn it is.
-	 * 
-	 * @return {@link Player}
-	 */
-	public Player getCurrentPlayer() {
-		return players[currentPlayerIndex];
-	}
-
-	/**
-	 * Retrieves the current turn number.
-	 * 
-	 * @return <code>int</code>
-	 */
-	public int getRoundNumber() {
-		return currentRound;
-	}
-
-	/**
-	 * Retrieves the {@link Board} in <code>this</code> {@link Game}.
-	 * 
-	 * @return {@link Board}.
-	 */
-	public Board getBoard() {
-		return board;
-	}
-
-	/**
-	 * Executes the core game play loop.
-	 */
-	public void play() {
-
-		// While the game is being played.
-		while (run) {
-
-			this.enterState(reinforcementState.getID());
-			// TODO this.getCurrentState().display(getCurrentPlayer());
-
-			// Go to next player.
-			nextPlayer();
-
-			// If the last player just had their turn.
-			if (currentPlayerIndex == 0) {
-				endRound();
-			}
-
-			checkChallenges(getCurrentPlayer());
-		}
-
-		displayWinner(getCurrentPlayer());
-
-	}
-
-	/**
-	 * Creates an {@link Action} that displays the specified winning {@link Player}
-	 * on the {@link UserInterface}. This {@link Action} is then passed to the
-	 * {@link UserInterface} thread while this thread waits for it to be completed
-	 * using {@link Action#isDone()}.
-	 * 
-	 * @param player
-	 *            {@link Player}
-	 */
-	private void displayWinner(Player player) {
-
-		// TODO display winning player
-
-	}
-
-	/**
-	 * Iterates thought all the available {@link Challenge}s to see if the specified
-	 * {@link Player} has completed them or not.
-	 * 
-	 * @param currentPlayer
-	 *            {@link Player}
-	 */
-	private void checkChallenges(Player currentPlayer) {
-
-		// Holds the completed challenges
-		List<Challenge> toRemove = new LinkedList<>();
-
-		// Iterate though all the objectives to see if the the current player has
-		// completed them.
-		for (Challenge challenge : challenges) {
-
-			// If the current player has completed the challenge remove it from the list of
-			// available challenges.
-			if (challenge.hasCompleted(currentPlayer, board)) {
-				toRemove.add(challenge);
-			}
-		}
-
-		// Remove the completed challenges.
-		toRemove.forEach(challenge -> challenges.remove(challenge));
-	}
-
-	/**
-	 * Performs all the tasks that occur at the end of a round.
-	 */
-	private void endRound() {
-
-		board.endRound();
-
-		currentRound++;
-	}
-
-	/**
-	 * Iterates to the next player.
-	 */
-	public void nextPlayer() {
-		currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-	}
-
-	@Override
-	public CoreGameState getCurrentState() {
-
-		// Holds the current game state.
-		GameState state = super.getCurrentState();
-
-		// If the current state is a CoreGameState return it as a CoreGameState
-		if (state instanceof CoreGameState) {
-			return (CoreGameState) state;
-		}
-		throw new IllegalStateException(state.getID() + " is not a valid state as it is not a CoreGameState.");
-	}
-
-	/**
 	 * Runs the game.
 	 * 
 	 * @param args
@@ -461,8 +402,7 @@ public class Game extends StateBasedGame {
 	public static void main(String[] args) {
 
 		// Create the instance of the game.
-		Game game = new Game();
-		game.play();
+		new Game();
 
 	}
 

@@ -38,17 +38,13 @@ public class ReinforcementState extends CoreGameState {
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-
-		// Set the text color to magenta
-		g.setColor(Color.magenta);
-
 		super.render(gc, sbg, g);
 
 		// Set the text color to magenta
-		g.setColor(Color.magenta);
+		g.setColor(Color.black);
 
 		// Draw player name
-		g.drawString("Units to place: " + game.getCurrentPlayer().getDistributableArmySize(), 5, 35);
+		g.drawString("Units: " + game.getCurrentPlayer().getDistributableArmySize(), 5, 35);
 	}
 
 	@Override

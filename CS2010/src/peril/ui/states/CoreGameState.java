@@ -153,14 +153,7 @@ public abstract class CoreGameState extends BasicGameState {
 		clickables.forEach(
 				clickable -> g.drawImage(clickable.getImage(), clickable.getPosition().x, clickable.getPosition().y));
 
-		// Draw state name
-		g.drawString(stateName, 5, 5);
-
-		// Set the text color to magenta
-		g.setColor(game.getCurrentPlayer().getColor());
-
-		// Draw player name
-		g.drawString(game.getCurrentPlayer().toString(), 5, 20);
+		drawPlayerView(g);
 
 		drawArmies(g);
 	}
@@ -300,5 +293,26 @@ public abstract class CoreGameState extends BasicGameState {
 				g.drawString(Integer.toString(0), x, y);
 			}
 		}));
+	}
+
+	/**
+	 * Draws the {@link Player} and {@link CoreGameState#stateName} on the screen.
+	 * 
+	 * @param g {@link Graphics}
+	 */
+	private void drawPlayerView(Graphics g) {
+
+		// Draw the background box
+		g.setColor(Color.lightGray);
+		g.fillRect(0, 0, 130, 60);
+
+		// Draw state name
+		g.setColor(Color.black);
+		g.drawString(stateName, 5, 5);
+
+		// Draw player name and set the text color to the player's color
+		g.setColor(game.getCurrentPlayer().getColor());
+		g.drawString(game.getCurrentPlayer().toString(), 5, 20);
+
 	}
 }

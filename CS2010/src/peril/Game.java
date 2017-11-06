@@ -293,29 +293,6 @@ public class Game extends StateBasedGame {
 	}
 
 	/**
-	 * Highlights a {@link Country} on the screen by adding it to the
-	 * {@link CoreGameState} for the state to render.
-	 * 
-	 * @param country
-	 *            {@link Country}
-	 */
-	public void highlight(Country country) {
-
-		// Get the current state of the game.
-		GameState state = super.getCurrentState();
-
-		// Check that the state is a CoreGameState and if it is not throw an exception
-		// as there is an invalid state in the game.
-		if (state instanceof CoreGameState) {
-
-			// Highlight the country
-			((CoreGameState) state).highlight(country);
-		} else {
-			throw new IllegalStateException("The current state is not a CoreGameState.");
-		}
-	}
-
-	/**
 	 * Adds {@link CoreGameState}s to the {@link GameContainer} for this
 	 * {@link Game}.
 	 */
@@ -460,6 +437,19 @@ public class Game extends StateBasedGame {
 	 */
 	public void nextPlayer() {
 		currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+	}
+
+	@Override
+	public CoreGameState getCurrentState() {
+
+		// Holds the current game state.
+		GameState state = super.getCurrentState();
+
+		// If the current state is a CoreGameState return it as a CoreGameState
+		if (state instanceof CoreGameState) {
+			return (CoreGameState) state;
+		}
+		throw new IllegalStateException(state.getID() + " is not a valid state as it is not a CoreGameState.");
 	}
 
 	/**

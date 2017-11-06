@@ -12,7 +12,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
-import peril.board.Continent;
+import peril.Point;
 import peril.board.Country;
 import peril.ui.visual.Clickable;
 import peril.ui.visual.Viewable;
@@ -68,7 +68,7 @@ public abstract class CoreGameState extends BasicGameState {
 	/**
 	 * Set the current {@link Country} that the player has highlighted.
 	 */
-	public void highlight(Country country) {
+	public void highlightCountry(Country country) {
 		highlightedCountry = country;
 	}
 
@@ -201,46 +201,6 @@ public abstract class CoreGameState extends BasicGameState {
 	}
 
 	/**
-	 * Draws the {@link army} in its current state over the {@link Country} it is
-	 * located.
-	 * 
-	 * @param g
-	 *            A graphics context that can be used to render primitives to the
-	 *            accelerated canvas provided by LWJGL.
-	 */
-	private void drawArmies(Graphics g) {
-
-		// Iterate across every country in every continent on the game board.
-		for (Continent continent : game.getBoard().getContinents()) {
-			for (Country country : continent.getCountries()) {
-
-				// Sets x and y as the central width and height of the current country.
-				int x = country.getPosition().x + country.getWidth() / 2;
-				int y = country.getPosition().y + country.getHeight() / 2;
-
-				// Draw a background oval with the rulers colour. If no ruler found default to
-				// light grey.
-				if (country.getRuler() != null) {
-					g.setColor(country.getRuler().getColor());
-				} else {
-					g.setColor(Color.lightGray);
-				}
-				g.fillOval(x - 3, y - 3, 15, 25);
-				g.setColor(Color.black);
-
-				// If the country has an army, draw a string representing the number of troops
-				// within that army at (x,y).
-				if (country.getArmy() != null) {
-					int troopNumber = country.getArmy().getSize();
-					g.drawString(Integer.toString(troopNumber), x, y);
-				} else {
-					g.drawString(Integer.toString(0), x, y);
-				}
-			}
-		}
-	}
-
-	/**
 	 * Adds a viewable element to the list of viewables in this state.
 	 * 
 	 * @param element
@@ -275,10 +235,70 @@ public abstract class CoreGameState extends BasicGameState {
 	}
 
 	/**
+	 * Processes a click at a {@link Point} on this {@link CoreGameState}.
+	 * 
+	 * @param button
+	 *            <code>int</code> button
+	 * @param click
+	 *            {@link Point} of the click
+	 */
+	public abstract void parseClick(int button, Point click);
+
+	/**
+	 * Processes a button press on this {@link CoreGameState}.
+	 * 
+	 * @param key
+	 *            <code>int</code> key code
+	 * @param c
+	 *            <code>char</code> char on the button
+	 * 
+	 * @see org.newdawn.slick.Input
+	 */
+	public abstract void parseButton(int key, char c);
+
+	/**
 	 * Returns a the current highlighted {@link Country} in this state.
 	 * 
 	 */
 	public Country getHighlightedCountry() {
 		return highlightedCountry;
+	}
+
+	/**
+	 * Draws the {@link army} in its current state over the {@link Country} it is
+	 * located.
+	 * 
+	 * @param g
+	 *            A graphics context that can be used to render primitives to the
+	 *            accelerated canvas provided by LWJGL.
+	 */
+	private void drawArmies(Graphics g) {
+
+		// Iterate across every country on the game board.
+		game.getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
+
+			// Sets x and y as the central width and height of the current country.
+			int x = country.getPosition().x + country.getWidth() / 2;
+			int y = country.getPosition().y + country.getHeight() / 2;
+
+			// Draw a background oval with the rulers colour. If no ruler found default to
+			// light grey.
+			if (country.getRuler() != null) {
+				g.setColor(country.getRuler().getColor());
+			} else {
+				g.setColor(Color.lightGray);
+			}
+			g.fillOval(x - 3, y - 3, 15, 25);
+			g.setColor(Color.black);
+
+			// If the country has an army, draw a string representing the number of troops
+			// within that army at (x,y).
+			if (country.getArmy() != null) {
+				int troopNumber = country.getArmy().getSize();
+				g.drawString(Integer.toString(troopNumber), x, y);
+			} else {
+				g.drawString(Integer.toString(0), x, y);
+			}
+		}));
 	}
 }

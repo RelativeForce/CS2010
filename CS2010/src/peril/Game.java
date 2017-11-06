@@ -323,14 +323,16 @@ public class Game extends StateBasedGame {
 	private void endRound() {
 
 		board.endRound();
-		
-		for(Player player : players) {
-			player.setDistributableArmySize(player.getDistributableArmySize() + 5);
-		}
 
+		for (Player player : players) {
+			if (player.getCountriesRuled() <= 11) {
+				player.setDistributableArmySize(3);
+			} else {
+				player.setDistributableArmySize(player.getCountriesRuled() / 3);
+			}
+		}
 		currentRound++;
 	}
-
 	/**
 	 * Reads the maps file and assigns the width and height of the window based on
 	 * the data stored in this file. This method exists due to the fact that Slick2D

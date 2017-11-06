@@ -1,0 +1,3 @@
+ArmySize,20
+CountriesOwned,7
+ContinentsOwned,1

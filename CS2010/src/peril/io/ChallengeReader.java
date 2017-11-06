@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import peril.Challenge;
+import peril.Game;
 import peril.Player;
 import peril.board.Army;
 import peril.board.Board;
@@ -28,15 +29,24 @@ public class ChallengeReader {
 	private List<Challenge> challenges;
 
 	/**
+	 * The {@link Game} is using this {@link ChallengeReader}.
+	 */
+	private Game game;
+
+	/**
 	 * Constructs a new {@link ChallengeReader}.
 	 * 
+	 * @param game
+	 *            The {@link Game} is using this {@link ChallengeReader}.
 	 * @param directoryPath
 	 *            The path of the parent directory which contains the map files.
+	 * 
 	 */
-	private ChallengeReader(String directoryPath, String mapName) {
+	public ChallengeReader(Game game, String directoryPath) {
 
-		this.challengesFile = TextFileReader.scanFile(directoryPath, mapName + "Challenges");
-		challenges = new LinkedList<>();
+		this.challengesFile = TextFileReader.scanFile(directoryPath, "challenges.txt");
+		this.challenges = new LinkedList<>();
+		this.game = game;
 
 	}
 
@@ -46,12 +56,14 @@ public class ChallengeReader {
 	 * @param levelNum
 	 *            The number of the level to be loaded.
 	 */
-	private void parsechallengesFile() {
+	public void read() {
 
 		// Iterate through all the lines of the challenges file.
 		for (String line : challengesFile) {
 			parseLine(line);
 		}
+
+		game.setChallenges(challenges);
 
 	}
 
@@ -256,27 +268,6 @@ public class ChallengeReader {
 			throw new IllegalArgumentException("details not valid.");
 		}
 
-	}
-
-	/**
-	 * Retrieves the {@link Challenge}s from a specified file.
-	 * 
-	 * @param directoryPath
-	 *            The <code>string</code> path to the directory containing the file.
-	 * @param mapName
-	 *            The name of the map.
-	 * @return {@link List} of {@link Challenge}sS
-	 */
-	public static List<Challenge> getChallenges(String directoryPath, String mapName) {
-
-		// Create a reader to read the challenges file.
-		ChallengeReader reader = new ChallengeReader(directoryPath, mapName);
-
-		// Parse the contents of the file.
-		reader.parsechallengesFile();
-
-		// Return the challenges.
-		return reader.challenges;
 	}
 
 }

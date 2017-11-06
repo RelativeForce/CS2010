@@ -1,7 +1,5 @@
 package peril.ui.visual;
 
-import org.newdawn.slick.Image;
-
 import peril.Point;
 
 /**

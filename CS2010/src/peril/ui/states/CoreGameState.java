@@ -12,10 +12,12 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
+import peril.Player;
 import peril.Point;
 import peril.board.Army;
 import peril.board.Country;
 import peril.ui.visual.Clickable;
+import peril.ui.visual.Region;
 import peril.ui.visual.Viewable;
 
 /**
@@ -256,6 +258,39 @@ public abstract class CoreGameState extends BasicGameState {
 	 */
 	public Country getHighlightedCountry() {
 		return highlightedCountry;
+	}
+
+	/**
+	 * Removes the highlight colouring effect on
+	 * {@link CoreGameState#highlightedCountry}.
+	 * 
+	 */
+	public void unhighlightCountry() {
+
+		// If there is a highlighted country
+		if (highlightedCountry != null) {
+
+			// Holds the position of the country
+			Point position = highlightedCountry.getRegion().getPosition();
+
+			// Holds the region of the country
+			Region region = highlightedCountry.getRegion();
+
+			// Holds the ruler of the country
+			Player ruler = highlightedCountry.getRuler();
+
+			// If there is a ruler then return the colour of the country to that of the
+			// ruler. Otherwise remove the highlight effect.
+			if (ruler != null) {
+				highlightedCountry.setImage(position, region.convert(ruler.getColor()));
+			} else {
+				highlightedCountry.setImage(null, null);
+			}
+
+			highlightCountry(null);
+
+		}
+
 	}
 
 	/**

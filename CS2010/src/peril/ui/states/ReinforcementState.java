@@ -14,7 +14,6 @@ import peril.board.Board;
 import peril.board.Country;
 import peril.ui.Button;
 import peril.ui.visual.Clickable;
-import peril.ui.visual.Region;
 
 /**
  * Encapsulates the behaviour of the Reinforcement {@link CoreGameState} where
@@ -154,52 +153,15 @@ public class ReinforcementState extends CoreGameState {
 				// If the currently highlighted country and the clicked country are different
 				// unhighlight the current country.
 				if (highlighted != null && !clickedCountry.equals(highlighted)) {
-					unhighlightCountry(highlighted);
+					unhighlightCountry();
 				}
 
 				// Highlight the clicked country
 				highlightCountry(clickedCountry);
 				System.out.println(clickedCountry.getName());
 			} else {
-				unhighlightCountry(highlighted);
-				highlightCountry(null);
+				unhighlightCountry();
 			}
 		}
 	}
-
-	/**
-	 * Removes the highlight colouring effect on a {@link Country}.
-	 * 
-	 * @param toUnhighlight
-	 *            {@link Country}
-	 */
-	private void unhighlightCountry(Country toUnhighlight) {
-
-		// If there is a country to unhighlight
-		if (toUnhighlight != null) {
-
-			// Holds the position of the country
-			Point position = toUnhighlight.getRegion().getPosition();
-
-			// Holds the region of the country
-			Region region = toUnhighlight.getRegion();
-
-			// Holds the ruler of the country
-			Player ruler = toUnhighlight.getRuler();
-
-			// If there is a ruler then return the colour of the country to that of the
-			// ruler. Otherwise remove the highlight effect.
-			if (ruler != null) {
-				toUnhighlight.setImage(position, region.convert(ruler.getColor()));
-			} else {
-				toUnhighlight.setImage(null, null);
-			}
-
-		}
-
-	}
-	
-	
-
-	
 }

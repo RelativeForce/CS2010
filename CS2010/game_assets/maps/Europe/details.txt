@@ -1,4 +1,4 @@
-// type, name, rgb, x offset, y offset
+// Country, name, rgb, x offset, y offset
 Country,Great Britian,000000050,0,0
 Country,France,000000100,0,0
 Country,Germany,000000150,-10,0
@@ -9,10 +9,20 @@ Country,Spain,000100000,-20,0
 Country,Russia,000150000,0,0
 Country,Sweden,000200000,-15,0
 Country,Norway,000250000,-50,30
+Country,Finland,050050000,0,0
+Country,Umple,050100000,0,0
+Country,Flump,050150000,0,0
+Country,Chump,050200000,0,-10
+Country,Mump,050250000,0,0
+Country,Slump,100050000,0,0
+
+// Continent, name, hazard, countries
 Continent,West,Hurricane,Great Britian-France-Germany-Spain
-Continent,Center,Tornado,Greece-Poland-Italy
-Continent,East,Hurricane,Russia
-Continent,North,Tsunami,Sweden-Norway
+Continent,Center,Tornado,Greece-Poland-Italy-Chump-Mump
+Continent,East,Hurricane,Russia-Umple-Flump-Slump
+Continent,North,Tsunami,Sweden-Norway-Finland
+
+// Link, country1, country2
 Link,Great Britian,France
 Link,France,Germany
 Link,Germany,Russia

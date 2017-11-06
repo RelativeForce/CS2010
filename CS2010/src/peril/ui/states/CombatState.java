@@ -32,6 +32,12 @@ public class CombatState extends CoreGameState {
 	 */
 	private Country enemyCounrty;
 
+	/**
+	 * Constructs a new {@link CombatState}.
+	 * 
+	 * @param game
+	 *            The {@link Game} that houses this {@link CoreGameState}.
+	 */
 	public CombatState(Game game) {
 		super(game);
 		stateName = "Combat";

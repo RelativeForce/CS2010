@@ -9,10 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Player;
 import peril.Point;
-import peril.board.Board;
 import peril.board.Country;
-import peril.ui.Button;
-import peril.ui.visual.Clickable;
 
 /**
  * Encapsulates the behaviour of the Reinforcement {@link CoreGameState} where
@@ -67,76 +64,5 @@ public class ReinforcementState extends CoreGameState {
 	@Override
 	public void parseButton(int key, char c) {
 				
-	}
-	
-	/**
-	 * Simulate a click a specified {@link Point} and check if any of the
-	 * {@link Clickable} {@link Button}s are intersected by the {@link Point}.
-	 * 
-	 * @param click
-	 *            {@link Point}
-	 * @return whether any {@link Button} was intersected by the {@link Point}.
-	 */
-	private boolean clickButton(Point click) {
-
-		// Iterate through all the buttons in the current state.
-		for (Clickable element : ((CoreGameState) game.getCurrentState()).getClickableElements()) {
-
-			// If the click is in the current element
-			if (element.isClicked(click)) {
-
-				// If the element is a button
-				if (element instanceof Button) {
-
-					// Click the button
-					((Button) element).click();
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Simulates a click at a {@link Point} on the {@link Board} and highlights the
-	 * {@link Country} that clicked.
-	 * 
-	 * @param click
-	 *            {@link Point}
-	 */
-	private void clickBoard(Point click) {
-
-		// Holds the game board
-		Board board = game.getBoard();
-
-		// If there is a game board
-		if (board != null) {
-
-			// Get the country that is clicked.
-			Country clickedCountry = board.getCountry(click);
-
-			// Get the currently highlighted country
-			Country highlighted = getHighlightedCountry();
-
-			// If a country was clicked
-			if (clickedCountry != null) {
-
-				// Highlight the country that was clicked
-				clickedCountry.setImage(clickedCountry.getRegion().getPosition(),
-						clickedCountry.getRegion().convert(Color.yellow));
-
-				// If the currently highlighted country and the clicked country are different
-				// unhighlight the current country.
-				if (highlighted != null && !clickedCountry.equals(highlighted)) {
-					unhighlightCountry();
-				}
-
-				// Highlight the clicked country
-				highlightCountry(clickedCountry);
-				System.out.println(clickedCountry.getName());
-			} else {
-				unhighlightCountry();
-			}
-		}
 	}
 }

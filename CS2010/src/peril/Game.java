@@ -14,6 +14,7 @@ import peril.board.Army;
 import peril.board.Board;
 import peril.board.Country;
 import peril.io.AssetReader;
+import peril.io.ChallengeReader;
 import peril.io.MapReader;
 import peril.io.TextFileReader;
 import peril.ui.UIEventHandler;
@@ -94,6 +95,9 @@ public class Game extends StateBasedGame {
 	 */
 	private final Player[] players;
 
+	/**
+	 * Whether all the assets are loaded or not.
+	 */
 	private volatile boolean isLoaded;
 
 	/**
@@ -121,6 +125,11 @@ public class Game extends StateBasedGame {
 	 * buttons into the game from memory.
 	 */
 	private AssetReader assetReader;
+
+	/**
+	 * {@link ChallengeReader} that loads the {@link Challenge}s from memory.
+	 */
+	private ChallengeReader challengeReader;
 
 	/**
 	 * Constructs a new {@link Game}.
@@ -172,6 +181,9 @@ public class Game extends StateBasedGame {
 		StringBuilder mapPath = new StringBuilder(baseDirectory);
 		mapPath.append(File.separatorChar);
 		mapPath.append("game_assets");
+
+		this.challengeReader = new ChallengeReader(this, mapPath.toString());
+
 		mapPath.append(File.separatorChar);
 		mapPath.append("maps");
 
@@ -232,9 +244,12 @@ public class Game extends StateBasedGame {
 	 * Starts the UI and reads the Board.
 	 */
 	public void loadAssets() {
+
+		// If the assests are not already loaded
 		if (!isLoaded) {
 			mapReader.read();
 			assetReader.read();
+			challengeReader.read();
 			isLoaded = true;
 		}
 	}
@@ -272,7 +287,7 @@ public class Game extends StateBasedGame {
 	public void nextPlayer() {
 		currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
 
-		//Calculate and set player's number of distributable reinforcements.
+		// Calculate and set player's number of distributable reinforcements.
 		for (Player player : players) {
 			if (player.getCountriesRuled() <= 11) {
 				player.setDistributableArmySize(3);
@@ -280,7 +295,7 @@ public class Game extends StateBasedGame {
 				player.setDistributableArmySize(player.getCountriesRuled() / 3);
 			}
 		}
-		
+
 		if (currentPlayerIndex == 0) {
 			endRound();
 		}
@@ -327,6 +342,21 @@ public class Game extends StateBasedGame {
 	}
 
 	/**
+	 * Set the {@link List} of {@link Challenge}s for this {@link Game}.
+	 * 
+	 * @param challenges
+	 *            {@link List} NOT NULL
+	 */
+	public void setChallenges(List<Challenge> challenges) {
+
+		if (challenges == null) {
+			throw new NullPointerException("Challenge list cannot be null.");
+		}
+
+		this.challenges = challenges;
+	}
+
+	/**
 	 * Performs all the tasks that occur at the end of a round.
 	 */
 	private void endRound() {
@@ -334,6 +364,7 @@ public class Game extends StateBasedGame {
 		board.endRound();
 		currentRound++;
 	}
+
 	/**
 	 * Reads the maps file and assigns the width and height of the window based on
 	 * the data stored in this file. This method exists due to the fact that Slick2D
@@ -416,5 +447,4 @@ public class Game extends StateBasedGame {
 		new Game();
 
 	}
-
 }

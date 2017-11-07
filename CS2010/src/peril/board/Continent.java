@@ -134,10 +134,6 @@ public final class Continent extends Clickable {
 		countries.forEach(currentCountry -> currentCountry.endRound(hazard));
 	}
 
-	public void executeTurn() {
-
-	}
-
 	/**
 	 * Retrieve the {@link List} of {@link Country}s for this {@link Continent}.
 	 * 

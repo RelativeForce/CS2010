@@ -1,3 +1,6 @@
 ArmySize,20
-CountriesOwned,7
+ArmySize,10
+CountriesOwned,5
+CountriesOwned,10
 ContinentsOwned,1
+ContinentsOwned,2

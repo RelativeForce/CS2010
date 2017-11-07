@@ -25,7 +25,7 @@ public class CombatState extends CoreGameState {
 	 * The ID of this {@link CombatState}
 	 */
 	private static final int ID = 3;
-
+	
 	/**
 	 * The target {@link Country} for the
 	 * {@link CoreGameState#getHighlightedCountry()}.
@@ -160,5 +160,16 @@ public class CombatState extends CoreGameState {
 			unhighlightCountry(enemyCounrty);
 			super.highlightCountry(country);
 		}
+	}
+	
+	/**
+	 * Retrieves the {@link Country} the
+	 * {@link CoreGameState#getHighlightedCountry()} will sent troops too when
+	 * attacking.
+	 * 
+	 * @return {@link Counrty}
+	 */
+	public Country getEnemyCountry() {
+		return enemyCounrty;
 	}
 }

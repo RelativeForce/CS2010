@@ -4,12 +4,14 @@ import java.io.File;
 
 import org.newdawn.slick.Image;
 
+import peril.CombatHandler;
 import peril.Player;
 import peril.Point;
 import peril.board.Army;
 import peril.board.Country;
 import peril.multiThread.Action;
 import peril.ui.Button;
+import peril.ui.states.CombatState;
 import peril.ui.states.CoreGameState;
 import peril.ui.states.MovementState;
 import peril.ui.visual.Clickable;
@@ -245,6 +247,7 @@ public class AssetReader {
 		case 1:
 			return new Action<CoreGameState>(state, actionState -> {
 				actionState.unhighlightCountry(actionState.getHighlightedCountry());
+				actionState.highlightCountry(null);
 				actionState.getGame().enterState(actionState.getGame().combatState.getID());
 			});
 
@@ -252,6 +255,7 @@ public class AssetReader {
 		case 2:
 			return new Action<CoreGameState>(state, actionState -> {
 				actionState.unhighlightCountry(actionState.getHighlightedCountry());
+				actionState.highlightCountry(null);
 				actionState.getGame().enterState(actionState.getGame().movementState.getID());
 			});
 
@@ -259,6 +263,7 @@ public class AssetReader {
 		case 3:
 			return new Action<CoreGameState>(state, actionState -> {
 				actionState.unhighlightCountry(actionState.getHighlightedCountry());
+				actionState.highlightCountry(null);
 				actionState.getGame().enterState(actionState.getGame().reinforcementState.getID());
 				actionState.getGame().nextPlayer();
 			});
@@ -266,6 +271,7 @@ public class AssetReader {
 		case 4:
 			return new Action<CoreGameState>(state, actionState -> {
 				actionState.unhighlightCountry(actionState.getHighlightedCountry());
+				actionState.highlightCountry(null);
 				actionState.getGame().enterState(actionState.getGame().reinforcementState.getID());
 			});
 		// Fortify another country by moving one troop to the new country.
@@ -287,18 +293,17 @@ public class AssetReader {
 
 					// If the army of the primary highlighted country is larger that 1 unit in size
 					if (primary.getArmy().getSize() > 1) {
-						
+
 						// Holds the army of the primary country
 						Army primaryArmy = primary.getArmy();
 
 						// Holds the army of the target country
 						Army targetArmy = target.getArmy();
-						
+
 						// Move the unit.
 						targetArmy.setSize(targetArmy.getSize() + 1);
 						primaryArmy.setSize(primaryArmy.getSize() - 1);
-						
-						
+
 					} else {
 						// DO NOTHING
 					}
@@ -306,6 +311,16 @@ public class AssetReader {
 				} else {
 					// DO NOTHING
 				}
+			});
+		// Combat case
+		case 6:
+			return new Action<CoreGameState>(state, actionState -> {
+				CombatHandler combathandler = actionState.getGame().getCombatHandler();
+				CombatState cState = (CombatState) actionState;
+				Country primary = cState.getHighlightedCountry();
+				Country target = cState.getEnemyCountry();
+				combathandler.fight(primary.getArmy(), target.getArmy(), 1);
+
 			});
 
 		}

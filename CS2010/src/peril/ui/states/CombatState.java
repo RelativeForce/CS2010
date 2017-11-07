@@ -30,6 +30,12 @@ public class CombatState extends CoreGameState {
 	 * The target {@link Country} for the
 	 * {@link CoreGameState#getHighlightedCountry()}.
 	 */
+	private Country targetCounrty;
+	
+	/**
+	 * The target {@link Country} for the
+	 * {@link CoreGameState#getHighlightedCountry()}.
+	 */
 	private Country enemyCounrty;
 
 	/**
@@ -157,5 +163,16 @@ public class CombatState extends CoreGameState {
 			unhighlightCountry(enemyCounrty);
 			super.highlightCountry(country);
 		}
+	}
+	
+	/**
+	 * Retrieves the {@link Country} the
+	 * {@link CoreGameState#getHighlightedCountry()} will sent troops too when
+	 * fortify is clicked.
+	 * 
+	 * @return {@link Counrty}
+	 */
+	public Country getTargetCountry() {
+		return targetCounrty;
 	}
 }

@@ -5,3 +5,4 @@ button,Combat,2,endButton.png,50,30,10,110
 button,Movement,3,endButton.png,50,30,10,110
 button,Setup,4,endButton.png,50,30,10,110
 button,Movement,5,fortifyButton.png,50,30,10,80
+button,Combat,6,attackButton.png,50,30,10,80

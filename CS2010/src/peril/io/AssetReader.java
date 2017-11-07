@@ -229,6 +229,7 @@ public class AssetReader {
 
 							// Remove the unit from the list of units to place.
 							player.setDistributableArmySize(armySize - 1);
+							player.setTotalArmySize(player.getTotalArmySize() + 1);
 
 						} else {
 							System.out.println(player.toString() + " does not rule this country");
@@ -272,6 +273,33 @@ public class AssetReader {
 			return new Action<CoreGameState>(state, actionState -> {
 				actionState.unhighlightCountry(actionState.getHighlightedCountry());
 				actionState.highlightCountry(null);
+
+				// For every continent on the board.
+				actionState.getGame().getBoard().getContinents().forEach(continent -> {
+
+					// If the continents is ruled by one player add on to the players ruled
+					// continents
+					if (continent.isRuled()) {
+						continent.getRuler().setContinentsRuled(continent.getRuler().getContinentsRuled() + 1);
+					}
+
+					// For every country in the continent
+					continent.getCountries().forEach(country -> {
+
+						// If the country has a ruler
+						if (country.getRuler() != null) {
+
+							// Increment the number of countries that player rules.
+							country.getRuler().setCountriesRuled(country.getRuler().getCountriesRuled() + 1);
+
+							// Add the size of the countries army to the total size of the players army.
+							country.getRuler().setTotalArmySize(
+									country.getRuler().getTotalArmySize() + country.getArmy().getSize());
+
+						}
+					});
+				});
+
 				actionState.getGame().enterState(actionState.getGame().reinforcementState.getID());
 			});
 		// Fortify another country by moving one troop to the new country.
@@ -312,19 +340,49 @@ public class AssetReader {
 					// DO NOTHING
 				}
 			});
-		// Combat case
+		// Execute a combat turn.
 		case 6:
 			return new Action<CoreGameState>(state, actionState -> {
+
 				CombatHandler combathandler = actionState.getGame().getCombatHandler();
-				CombatState cState = (CombatState) actionState;
-				Country primary = cState.getHighlightedCountry();
-				Country target = cState.getEnemyCountry();
+
+				// TODO change implementation to remove instances of casting.
+				if (!(actionState instanceof CombatState)) {
+					throw new IllegalStateException("Function code: 6 is not permitted with the '"
+							+ actionState.getStateName() + "' state. It is only permitted with 'Combat' state.");
+				}
+
+				CombatState combatState = (CombatState) actionState;
+
+				Country attacking = combatState.getHighlightedCountry();
+				Country defending = combatState.getEnemyCountry();
 
 				// If there is two countries highlighted
-				if (primary != null && target != null) {
+				if (attacking != null && defending != null) {
+
+					Player attackingPlayer = attacking.getRuler();
+					Player defendingPlayer = defending.getRuler();
+					
 					// If the army of the primary highlighted country is larger that 1 unit in size
-					if (primary.getArmy().getSize() > 1) {
-						combathandler.fight(primary.getArmy(), target.getArmy(), 1);
+					if (attacking.getArmy().getSize() > 1) {
+
+						// Execute the combat
+						combathandler.fight(attacking, defending, 1);
+
+						// If the country has been conquered
+						if (attacking.getRuler().equals(defending.getRuler())) {
+
+							if (defendingPlayer != null) {
+								defendingPlayer.setCountriesRuled(defendingPlayer.getCountriesRuled() - 1);
+								defendingPlayer.setTotalArmySize(defendingPlayer.getTotalArmySize() - 1);
+							}
+
+							attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
+							attackingPlayer.setTotalArmySize(attackingPlayer.getTotalArmySize() + 1);
+
+							combatState.setPostCombat();
+							combatState.highlightCountry(defending);
+						}
 					}
 				}
 			});

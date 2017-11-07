@@ -9,8 +9,7 @@ import peril.board.Country;
 /**
  * Encapsulates all the game combat logic.
  * 
- * @author Joshua_Eddy
- * @author Ezekiel_Trinidad
+ * @author Joshua_Eddy, Ezekiel_Trinidad
  *
  */
 public class CombatHandler {
@@ -44,66 +43,85 @@ public class CombatHandler {
 	 * {@link Army}'s against each other. This emulates 1 turn of combat between 2
 	 * {@link Player}s.
 	 * 
-	 * @param armyAtk
-	 *            This is the {@link Army} that the {@link Player} uses to attack a
-	 *            {@link Country}.
-	 * @param armyDef
-	 *            This is the {@link Army} that defend against the {@link Player}'s
-	 *            attacking {@link Army}.
+	 * @param attacking
+	 *            This is the {@link Country} that the {@link Player} uses to attack
+	 *            a {@link Country}.
+	 * @param defending
+	 *            This is the {@link Country} that defend against the
+	 *            {@link Player}'s attacking {@link Army}.
 	 * @param atkSquadSize
 	 *            Amount of units (dice) the attacking {@link Army} wants to pit
 	 *            against the defending {@link Army}
 	 */
-	public void fight(Army armyAtk, Army armyDef, int atkSquadSize) {
+	public void fight(Country attacking, Country defending, int atkSquadSize) {
 
-		int[] atkDiceRolls = new int[atkSquadSize];
-		int[] defDiceRolls = new int[2]; // maximum of 2 defending armies for the defending player
+		Army attackingArmy = attacking.getArmy();
+		Army defendingArmy = defending.getArmy();
+
+		// Check parameter
+		if (atkSquadSize > 3 || atkSquadSize < 0) {
+			throw new IllegalArgumentException(
+					"The attacker cannot attact with more that 3 or less than 3 units at a time.");
+		}
+
+		// Get the dice rolls for the attackers and defenders.
+		int[] attackerDiceRolls = getDiceRolls(atkSquadSize);
+		int[] defenderDiceRolls = getDiceRolls(defendingArmy.getSize() > 1 ? 2 : 1);
+
+		// Get the size of the smaller set of dice.
+		int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length
+				: attackerDiceRolls.length;
+
+		// Compare each attacking dice roll against the defending dice roll
+		for (int i = 0; i < diceToCheck; i++) {
+			/*
+			 * If the attackers dice is higher than the deffender's remove one unit from the
+			 * defender's army and vice versa.
+			 */
+			if (attackerDiceRolls[i] > defenderDiceRolls[i]) {
+				if (defendingArmy.getSize() == 1) {
+					defending.setRuler(attacking.getRuler());
+				}else {
+					defendingArmy.setSize(defendingArmy.getSize() - 1);
+					defending.getRuler().setTotalArmySize(defending.getRuler().getTotalArmySize() - 1);
+				}
+
+			} else {
+				if(attackingArmy.getSize() == 1) {
+					attacking.setRuler(defending.getRuler());
+				}else {
+					attackingArmy.setSize(attackingArmy.getSize() - 1);
+					attacking.getRuler().setTotalArmySize(attacking.getRuler().getTotalArmySize() - 1);
+				}
+				
+			}
+
+		}
+
+	}
+
+	/**
+	 * Gets an <code>int[]</code> of {@link Random#nextInt(int)} with bounds of 1 -
+	 * 6
+	 * 
+	 * @param numberOfRolls
+	 *            <code>int</code> number of rolls
+	 * @return <code>int[]</code>
+	 */
+	private int[] getDiceRolls(int numberOfRolls) {
+
+		// Holds the dice roles.
+		int[] rolls = new int[numberOfRolls];
 
 		// initialise dice rolls for the attacking army
-		for (int i = 0; i < atkSquadSize; i++) {
-			int atkDiceRoll = random.nextInt(6);
-			atkDiceRolls[i] = atkDiceRoll;
-		}
-		Arrays.sort(atkDiceRolls); // sort array into ascending order (can't sort it as descending order for some
-									// reason)
-		int[] sortedAtkDiceRolls = new int[atkSquadSize];
-		int counterAtkLoop = 0;
-
-		// changes the order from ascending to descending
-		for (int i = atkDiceRolls.length - 1; i >= 0; i--) // loops starting from the end of the new sorted array
-		{
-			sortedAtkDiceRolls[counterAtkLoop] = atkDiceRolls[i];
-			counterAtkLoop++;
+		for (int rollIndex = 0; rollIndex < numberOfRolls; rollIndex++) {
+			rolls[rollIndex] = random.nextInt(6) + 1;
 		}
 
-		// initialise dice rolls for the defending army
-		if (armyDef.getSize() > 1) {
-			defDiceRolls[0] = random.nextInt();
-		} else {
-			defDiceRolls[0] = random.nextInt();
-			defDiceRolls[1] = random.nextInt();
-		}
+		// Sort the dice roles into ascending order.
+		Arrays.sort(rolls);
 
-		int[] sortedDefDiceRolls = new int[2];
-		int counterDefLoop = 0;
-		for (int i = defDiceRolls.length - 1; i >= 0; i--) {
-			sortedDefDiceRolls[counterDefLoop] = defDiceRolls[i];
-			counterDefLoop++;
-		}
-
-		// compares each attacking dice roll against the defending dice roll
-		for (int i = 0; i < atkDiceRolls.length - 1; i++) {
-			if (sortedAtkDiceRolls[i] <= sortedDefDiceRolls[i]) {
-				int woundedArmy = armyAtk.getSize() - 1;
-				armyAtk.setSize(woundedArmy);
-			}
-
-			else {
-				int woundedArmy = armyDef.getSize() - 1;
-				armyDef.setSize(woundedArmy);
-			}
-		}
-
+		return rolls;
 	}
 
 }

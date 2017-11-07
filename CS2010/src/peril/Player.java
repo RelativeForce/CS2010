@@ -181,7 +181,7 @@ public final class Player {
 	 * 
 	 * @return continents Number of {@link Continent}s.
 	 */
-	public int getContinentsOwned() {
+	public int getContinentsRuled() {
 		return continents;
 	}
 

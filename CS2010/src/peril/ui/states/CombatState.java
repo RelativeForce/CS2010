@@ -25,12 +25,14 @@ public class CombatState extends CoreGameState {
 	 * The ID of this {@link CombatState}
 	 */
 	private static final int ID = 3;
-	
+
 	/**
 	 * The target {@link Country} for the
 	 * {@link CoreGameState#getHighlightedCountry()}.
 	 */
 	private Country enemyCounrty;
+
+	private boolean isPostCombat;
 
 	/**
 	 * Constructs a new {@link CombatState}.
@@ -42,11 +44,20 @@ public class CombatState extends CoreGameState {
 		super(game);
 		stateName = "Combat";
 		enemyCounrty = null;
+		isPostCombat = false;
 	}
 
 	@Override
 	public int getID() {
 		return ID;
+	}
+
+	public void setPostCombat() {
+		isPostCombat = true;
+	}
+
+	public void setPreCombat() {
+		isPostCombat = false;
 	}
 
 	@Override
@@ -71,7 +82,24 @@ public class CombatState extends CoreGameState {
 
 	@Override
 	public void highlightCountry(Country country) {
-		
+
+		if (isPostCombat) {
+			highlightCountryPostCombat(country);
+		} else {
+			highlightCounrtyPreCombat(country);
+		}
+
+	}
+
+	/**
+	 * If a {@link Player} has not conquered a new {@link Country} since they last
+	 * clicked a {@link Country}.
+	 * 
+	 * @param country
+	 *            {@link Country} that was clicked.
+	 */
+	private void highlightCounrtyPreCombat(Country country) {
+
 		// If the country is null then set the primary highlighted as null and
 		// unhighlight the current enemy country.
 		if (country != null) {
@@ -90,7 +118,16 @@ public class CombatState extends CoreGameState {
 			super.unhighlightCountry(super.getHighlightedCountry());
 			super.highlightCountry(country);
 		}
+	}
 
+	private void highlightCountryPostCombat(Country country) {
+
+		super.unhighlightCountry(country);
+		enemyCounrty = null;
+		super.unhighlightCountry(getHighlightedCountry());
+		super.highlightCountry(null);
+
+		setPreCombat();
 	}
 
 	@Override
@@ -140,7 +177,7 @@ public class CombatState extends CoreGameState {
 					unhighlightCountry(enemyCounrty);
 					enemyCounrty = country;
 					enemyCounrty.setImage(enemyCounrty.getRegion().getPosition(),
-							enemyCounrty.getRegion().convert(Color.black));
+							enemyCounrty.getRegion().convert(Color.yellow));
 
 				} else {
 					// DO NOTHING
@@ -163,7 +200,7 @@ public class CombatState extends CoreGameState {
 			super.highlightCountry(country);
 		}
 	}
-	
+
 	/**
 	 * Retrieves the {@link Country} the
 	 * {@link CoreGameState#getHighlightedCountry()} will sent troops too when

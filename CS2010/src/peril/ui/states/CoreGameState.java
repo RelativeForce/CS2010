@@ -381,12 +381,22 @@ public abstract class CoreGameState extends BasicGameState {
 			} else {
 				g.setColor(Color.lightGray);
 			}
-			g.fillOval(x - 3, y - 3, 15, 25);
+			
+			int troopNumber = army.getSize();
+			
+			if(troopNumber > 99) {
+				g.fillOval(x - 9, y - 3, 45, 25);
+			}else if(troopNumber > 9) {
+				g.fillOval(x - 6, y - 3, 30, 25);
+			}else {
+				g.fillOval(x - 3, y - 3, 15, 25);
+			}
+			
 			g.setColor(Color.black);
 
 			// Draw a string representing the number of troops
 			// within that army at (x,y).
-			int troopNumber = army.getSize();
+			
 			g.drawString(Integer.toString(troopNumber), x, y);
 
 		}));

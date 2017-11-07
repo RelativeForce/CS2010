@@ -172,7 +172,7 @@ public final class Continent extends Clickable {
 			 * countries have the same ruler then set then the ruler of the first country
 			 * ruler them all.
 			 */
-			if (!ruler.equals(previous.getRuler())) {
+			if (ruler == null || !ruler.equals(previous.getRuler())) {
 				ruler = null;
 				break;
 			}

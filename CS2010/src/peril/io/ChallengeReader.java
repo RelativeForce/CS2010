@@ -194,7 +194,7 @@ public class ChallengeReader {
 								if (ownedCountries >= numberOfCountries) {
 
 									// Give the player a army of size 5 to distribute.
-									player.award(new Army(20));
+									player.award(new Army(8));
 
 									return true;
 								}
@@ -253,7 +253,7 @@ public class ChallengeReader {
 								if (currentArmySize >= sizeOfArmy) {
 
 									// Give the player a army of size 5 to distribute.
-									player.award(new Army(10));
+									player.award(new Army(5));
 
 									return true;
 								}

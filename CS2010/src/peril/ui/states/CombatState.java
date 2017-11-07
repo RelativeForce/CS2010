@@ -71,7 +71,7 @@ public class CombatState extends CoreGameState {
 
 	@Override
 	public void highlightCountry(Country country) {
-
+		
 		// If the country is null then set the primary highlighted as null and
 		// unhighlight the current enemy country.
 		if (country != null) {
@@ -85,8 +85,9 @@ public class CombatState extends CoreGameState {
 			processCountry(country, player, ruler);
 
 		} else {
-			unhighlightCountry(enemyCounrty);
+			super.unhighlightCountry(enemyCounrty);
 			enemyCounrty = null;
+			super.unhighlightCountry(super.getHighlightedCountry());
 			super.highlightCountry(country);
 		}
 
@@ -158,6 +159,7 @@ public class CombatState extends CoreGameState {
 		// player.
 		else {
 			unhighlightCountry(enemyCounrty);
+			super.unhighlightCountry(super.getHighlightedCountry());
 			super.highlightCountry(country);
 		}
 	}

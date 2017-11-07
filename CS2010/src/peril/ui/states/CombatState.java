@@ -63,6 +63,9 @@ public class CombatState extends CoreGameState {
 		// Unhighlight both highlighted countries when this method is called from a
 		// external class.
 		super.unhighlightCountry(enemyCounrty);
+
+		enemyCounrty = null;
+
 		super.unhighlightCountry(country);
 	}
 

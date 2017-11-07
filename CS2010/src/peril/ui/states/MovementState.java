@@ -11,6 +11,14 @@ import peril.Player;
 import peril.Point;
 import peril.board.Country;
 
+/**
+ * Encapsulates the behaviour of the 'Movement' state of the game. In this state
+ * the {@link Game#getCurrentPlayer()} chooses which of their {@link Country}s
+ * they will move units to another {@link Country}.
+ * 
+ * @author Joshua_Eddy, Joseph_Rolli
+ *
+ */
 public class MovementState extends CoreGameState {
 
 	/**
@@ -24,6 +32,12 @@ public class MovementState extends CoreGameState {
 	 */
 	private Country targetCounrty;
 
+	/**
+	 * Constructs a new {@link MovementState}.
+	 * 
+	 * @param game
+	 *            The {@link Game} that houses this {@link CoreGameState}.
+	 */
 	public MovementState(Game game) {
 		super(game);
 		stateName = "Movement";
@@ -32,7 +46,7 @@ public class MovementState extends CoreGameState {
 
 	@Override
 	public void highlightCountry(Country country) {
-
+		
 		// If the country is null then set the primary highlighted as null and
 		// unhighlight the current enemy country.
 		if (country != null) {
@@ -48,6 +62,7 @@ public class MovementState extends CoreGameState {
 		} else {
 			super.unhighlightCountry(targetCounrty);
 			targetCounrty = null;
+			super.unhighlightCountry(super.getHighlightedCountry());
 			super.highlightCountry(country);
 		}
 
@@ -87,7 +102,12 @@ public class MovementState extends CoreGameState {
 		// Unhighlight both highlighted countries when this method is called from a
 		// external class.
 		super.unhighlightCountry(targetCounrty);
+		
+		targetCounrty = null;
+		
 		super.unhighlightCountry(country);
+		
+		
 	}
 
 	/**

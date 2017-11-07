@@ -318,7 +318,7 @@ public class AssetReader {
 				CombatHandler combathandler = actionState.getGame().getCombatHandler();
 				CombatState cState = (CombatState) actionState;
 				Country primary = cState.getHighlightedCountry();
-				Country target = cState.getTargetCountry();
+				Country target = cState.getEnemyCountry();
 				combathandler.fight(primary.getArmy(), target.getArmy(), 1);
 
 			});

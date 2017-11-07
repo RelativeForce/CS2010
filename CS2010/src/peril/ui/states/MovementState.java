@@ -11,6 +11,14 @@ import peril.Player;
 import peril.Point;
 import peril.board.Country;
 
+/**
+ * Encapsulates the behaviour of the 'Movement' state of the game. In this state
+ * the {@link Game#getCurrentPlayer()} chooses which of their {@link Country}s
+ * they will move units to another {@link Country}.
+ * 
+ * @author Joshua_Eddy, Joseph_Rolli
+ *
+ */
 public class MovementState extends CoreGameState {
 
 	/**
@@ -24,6 +32,12 @@ public class MovementState extends CoreGameState {
 	 */
 	private Country targetCounrty;
 
+	/**
+	 * Constructs a new {@link MovementState}.
+	 * 
+	 * @param game
+	 *            The {@link Game} that houses this {@link CoreGameState}.
+	 */
 	public MovementState(Game game) {
 		super(game);
 		stateName = "Movement";

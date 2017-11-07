@@ -79,7 +79,7 @@ public class Game extends StateBasedGame {
 	 * the appropriate operations.
 	 */
 	private final UIEventHandler eventHandler;
-	
+
 	/**
 	 * The {@link CombatHandler} that processes all of the game's combat.
 	 */
@@ -144,7 +144,7 @@ public class Game extends StateBasedGame {
 
 		// Initialise the the players array.
 		this.players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO, Player.PLAYERTHREE, Player.PLAYERFOUR };
-		
+
 		Player.PLAYERONE.setDistributableArmySize(3);
 
 		// Set the game indexes to there initial values.
@@ -169,8 +169,8 @@ public class Game extends StateBasedGame {
 		this.movementState = new MovementState(this);
 		this.endState = new EndState(this);
 		this.eventHandler = new UIEventHandler(this);
-		
-		//Initialise games combatHandler
+
+		// Initialise games combatHandler
 		this.combatHandler = new CombatHandler();
 
 		// Holds the directory this game is operating in.
@@ -304,14 +304,14 @@ public class Game extends StateBasedGame {
 	public void nextPlayer() {
 		currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
 
-		// Calculate and set player's number of distributable reinforcements.
-		for (Player player : players) {
-			if (player.getCountriesRuled() <= 11) {
-				player.setDistributableArmySize(3);
-			} else {
-				player.setDistributableArmySize(player.getCountriesRuled() / 3);
-			}
+		if (getCurrentPlayer().getCountriesRuled() <= 11) {
+			getCurrentPlayer().setDistributableArmySize(getCurrentPlayer().getDistributableArmySize() + 3);
+		} else {
+			getCurrentPlayer().setDistributableArmySize(
+					getCurrentPlayer().getDistributableArmySize() + (getCurrentPlayer().getCountriesRuled() / 3));
 		}
+		
+		checkChallenges(getCurrentPlayer());
 
 		if (currentPlayerIndex == 0) {
 			endRound();
@@ -377,7 +377,6 @@ public class Game extends StateBasedGame {
 	 * Performs all the tasks that occur at the end of a round.
 	 */
 	private void endRound() {
-
 		board.endRound();
 		currentRound++;
 	}

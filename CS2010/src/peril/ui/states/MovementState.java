@@ -101,7 +101,12 @@ public class MovementState extends CoreGameState {
 		// Unhighlight both highlighted countries when this method is called from a
 		// external class.
 		super.unhighlightCountry(targetCounrty);
+		
+		targetCounrty = null;
+		
 		super.unhighlightCountry(country);
+		
+		
 	}
 
 	/**

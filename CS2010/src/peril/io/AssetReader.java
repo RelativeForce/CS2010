@@ -319,8 +319,14 @@ public class AssetReader {
 				CombatState cState = (CombatState) actionState;
 				Country primary = cState.getHighlightedCountry();
 				Country target = cState.getEnemyCountry();
-				combathandler.fight(primary.getArmy(), target.getArmy(), 1);
 
+				// If there is two countries highlighted
+				if (primary != null && target != null) {
+					// If the army of the primary highlighted country is larger that 1 unit in size
+					if (primary.getArmy().getSize() > 1) {
+						combathandler.fight(primary.getArmy(), target.getArmy(), 1);
+					}
+				}
 			});
 
 		}

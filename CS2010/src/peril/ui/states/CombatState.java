@@ -58,6 +58,15 @@ public class CombatState extends CoreGameState {
 	}
 
 	@Override
+	public void unhighlightCountry(Country country) {
+
+		// Unhighlight both highlighted countries when this method is called from a
+		// external class.
+		super.unhighlightCountry(enemyCounrty);
+		super.unhighlightCountry(country);
+	}
+
+	@Override
 	public void highlightCountry(Country country) {
 
 		// If the country is null then set the primary highlighted as null and

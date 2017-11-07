@@ -68,7 +68,7 @@ public class CombatHandler {
 		int counterAtkLoop = 0;
 		
 		//changes the order from ascending to descending
-		for(int i = atkDiceRolls.length; i >= 0; i--) //loops starting from the end of the new sorted array
+		for(int i = atkDiceRolls.length - 1; i >= 0; i--) //loops starting from the end of the new sorted array
 		{
 			sortedAtkDiceRolls[counterAtkLoop] = atkDiceRolls[i]; 
 			counterAtkLoop++;
@@ -85,7 +85,7 @@ public class CombatHandler {
 		
 		int[] sortedDefDiceRolls = new int[2];
 		int counterDefLoop = 0;
-		for(int i = defDiceRolls.length; i >= 0; i--) 
+		for(int i = defDiceRolls.length - 1; i >= 0; i--) 
 		{
 			sortedDefDiceRolls[counterDefLoop] = defDiceRolls[i];
 			counterDefLoop++;
@@ -93,7 +93,7 @@ public class CombatHandler {
 		
 		
 		//compares each attacking dice roll against the defending dice roll
-		for(int i = 0; i < atkDiceRolls.length; i++) {
+		for(int i = 0; i < atkDiceRolls.length - 1; i++) {
 			if(sortedAtkDiceRolls[i]<=sortedDefDiceRolls[i]) {
 				int woundedArmy = armyAtk.getSize() -1;
 				armyAtk.setSize(woundedArmy);

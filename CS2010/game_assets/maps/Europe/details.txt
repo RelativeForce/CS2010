@@ -43,8 +43,10 @@ Link,Greece,Slump
 Link,Poland,Umple
 Link,Poland,Flump
 Link,Norway,Sweden
+Link,Norway,Russia
 Link,Sweden,Finland
 Link,Finland,Russia
 Link,Umple,Russia
 Link,Flump,Russia
+Link,Flump,Umple
 Link,Slump,Russia

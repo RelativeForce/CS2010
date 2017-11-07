@@ -169,7 +169,7 @@ public class CombatState extends CoreGameState {
 	 * {@link CoreGameState#getHighlightedCountry()} will sent troops too when
 	 * attacking.
 	 * 
-	 * @return {@link Counrty}
+	 * @return {@link Country}
 	 */
 	public Country getEnemyCountry() {
 		return enemyCounrty;

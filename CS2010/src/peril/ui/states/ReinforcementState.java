@@ -30,6 +30,31 @@ public class ReinforcementState extends CoreGameState {
 		super(game);
 		stateName = "Reinforcement";
 	}
+	
+	@Override
+	public void highlightCountry(Country country) {
+
+		super.unhighlightCountry(super.getHighlightedCountry());
+		
+		// If the country is null then set the primary highlighted as null and
+		// unhighlight the current enemy country.
+		if (country != null) {
+
+			// Holds the current player
+			Player player = game.getCurrentPlayer();
+
+			// Holds the ruler of the country
+			Player ruler = country.getRuler();
+
+			if(player.equals(ruler)) {
+				super.highlightCountry(country);
+			}
+
+		} else {
+			super.highlightCountry(country);
+		}
+
+	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {

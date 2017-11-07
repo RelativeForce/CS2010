@@ -42,6 +42,17 @@ public class SetupState extends CoreGameState {
 	}
 
 	@Override
+	public void highlightCountry(Country country) {
+
+		// Unhighlight the current country
+		super.unhighlightCountry(super.getHighlightedCountry());
+
+		// Hightlight the new country
+		super.highlightCountry(country);
+
+	}
+
+	@Override
 	public void parseButton(int key, char c) {
 
 		Country highlighted = getHighlightedCountry();

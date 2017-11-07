@@ -75,10 +75,6 @@ public abstract class CoreGameState extends BasicGameState {
 	 */
 	public void highlightCountry(Country country) {
 
-		if (highlightedCountry != null) {
-			unhighlightCountry(highlightedCountry);
-		}
-
 		highlightedCountry = country;
 
 		if (highlightedCountry != null) {
@@ -322,26 +318,8 @@ public abstract class CoreGameState extends BasicGameState {
 		if (board != null) {
 
 			// Get the country that is clicked.
-			Country clickedCountry = board.getCountry(click);
+			highlightCountry(board.getCountry(click));
 
-			// Get the currently highlighted country
-			Country highlighted = getHighlightedCountry();
-
-			// If a country was clicked
-			if (clickedCountry != null) {
-
-				// If the currently highlighted country and the clicked country are different
-				// unhighlight the current country.
-				if (highlighted != null && !clickedCountry.equals(highlighted)) {
-					unhighlightCountry(highlighted);
-				}
-
-				// Highlight the clicked country
-				highlightCountry(clickedCountry);
-			} else {
-				unhighlightCountry(highlighted);
-				highlightCountry(null);
-			}
 		}
 	}
 

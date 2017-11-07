@@ -46,7 +46,7 @@ public class MovementState extends CoreGameState {
 
 	@Override
 	public void highlightCountry(Country country) {
-
+		
 		// If the country is null then set the primary highlighted as null and
 		// unhighlight the current enemy country.
 		if (country != null) {
@@ -62,6 +62,7 @@ public class MovementState extends CoreGameState {
 		} else {
 			super.unhighlightCountry(targetCounrty);
 			targetCounrty = null;
+			super.unhighlightCountry(super.getHighlightedCountry());
 			super.highlightCountry(country);
 		}
 

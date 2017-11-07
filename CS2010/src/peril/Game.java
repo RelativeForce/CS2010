@@ -279,6 +279,15 @@ public class Game extends StateBasedGame {
 	}
 
 	/**
+	 * Retrieves the combat handler.
+	 * 
+	 * @return <code>CombatHandler</code>
+	 */
+	public CombatHandler getCombatHandler() {
+		return combatHandler;
+	}
+
+	/**
 	 * Retrieves the {@link Board} in <code>this</code> {@link Game}.
 	 * 
 	 * @return {@link Board}.

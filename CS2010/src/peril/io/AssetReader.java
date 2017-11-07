@@ -11,6 +11,7 @@ import peril.board.Country;
 import peril.multiThread.Action;
 import peril.ui.Button;
 import peril.ui.states.CoreGameState;
+import peril.ui.states.MovementState;
 import peril.ui.visual.Clickable;
 import peril.ui.visual.Viewable;
 
@@ -266,6 +267,45 @@ public class AssetReader {
 			return new Action<CoreGameState>(state, actionState -> {
 				actionState.unhighlightCountry(actionState.getHighlightedCountry());
 				actionState.getGame().enterState(actionState.getGame().reinforcementState.getID());
+			});
+		// Fortify another country by moving one troop to the new country.
+		case 5:
+			return new Action<CoreGameState>(state, actionState -> {
+
+				// TODO change implementation to remove instances of casting.
+				if (!(actionState instanceof MovementState)) {
+					throw new IllegalStateException("Function code: 5 is not permitted with the '"
+							+ actionState.getStateName() + "' state. It is only permitted with 'Movement' state.");
+				}
+
+				MovementState mState = (MovementState) actionState;
+				Country primary = mState.getHighlightedCountry();
+				Country target = mState.getTargetCountry();
+
+				// If there is two countries highlighted
+				if (primary != null && target != null) {
+
+					// If the army of the primary highlighted country is larger that 1 unit in size
+					if (primary.getArmy().getSize() > 1) {
+						
+						// Holds the army of the primary country
+						Army primaryArmy = primary.getArmy();
+
+						// Holds the army of the target country
+						Army targetArmy = target.getArmy();
+						
+						// Move the unit.
+						targetArmy.setSize(targetArmy.getSize() + 1);
+						primaryArmy.setSize(primaryArmy.getSize() - 1);
+						
+						
+					} else {
+						// DO NOTHING
+					}
+
+				} else {
+					// DO NOTHING
+				}
 			});
 
 		}

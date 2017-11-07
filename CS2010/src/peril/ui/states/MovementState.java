@@ -91,6 +91,17 @@ public class MovementState extends CoreGameState {
 	}
 
 	/**
+	 * Retrieves the {@link Country} the
+	 * {@link CoreGameState#getHighlightedCountry()} will sent troops too when
+	 * fortify is clicked.
+	 * 
+	 * @return {@link Counrty}
+	 */
+	public Country getTargetCountry() {
+		return targetCounrty;
+	}
+
+	/**
 	 * Processes whether a {@link Country} is a valid target for the
 	 * {@link CoreGameState#getHighlightedCountry()} to attack. This is based on the
 	 * {@link Player} ruler and the {@link Player} ({@link Game#getCurrentPlayer()})
@@ -102,7 +113,6 @@ public class MovementState extends CoreGameState {
 	 * @param ruler
 	 *            {@link Player}
 	 */
-
 	private void processCountry(Country country, Player player, Player ruler) {
 
 		// If there is a primary friendly country and the target is not null and the

@@ -79,6 +79,11 @@ public class Game extends StateBasedGame {
 	 * the appropriate operations.
 	 */
 	private final UIEventHandler eventHandler;
+	
+	/**
+	 * The {@link CombatHandler} that processes all of the game's combat.
+	 */
+	private final CombatHandler combatHandler;
 
 	/**
 	 * The instance of the {@link Board} used for this game.
@@ -162,6 +167,9 @@ public class Game extends StateBasedGame {
 		this.movementState = new MovementState(this);
 		this.endState = new EndState(this);
 		this.eventHandler = new UIEventHandler(this);
+		
+		//Initialise games combatHandler
+		this.combatHandler = new CombatHandler();
 
 		// Holds the directory this game is operating in.
 		String baseDirectory = new File(System.getProperty("user.dir")).getPath();

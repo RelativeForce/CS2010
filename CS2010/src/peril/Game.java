@@ -144,6 +144,8 @@ public class Game extends StateBasedGame {
 
 		// Initialise the the players array.
 		this.players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO, Player.PLAYERTHREE, Player.PLAYERFOUR };
+		
+		Player.PLAYERONE.setDistributableArmySize(3);
 
 		// Set the game indexes to there initial values.
 		this.currentPlayerIndex = 0;

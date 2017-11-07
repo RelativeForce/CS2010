@@ -25,12 +25,6 @@ public class CombatState extends CoreGameState {
 	 * The ID of this {@link CombatState}
 	 */
 	private static final int ID = 3;
-
-	/**
-	 * The target {@link Country} for the
-	 * {@link CoreGameState#getHighlightedCountry()}.
-	 */
-	private Country targetCounrty;
 	
 	/**
 	 * The target {@link Country} for the
@@ -168,11 +162,11 @@ public class CombatState extends CoreGameState {
 	/**
 	 * Retrieves the {@link Country} the
 	 * {@link CoreGameState#getHighlightedCountry()} will sent troops too when
-	 * fortify is clicked.
+	 * attacking.
 	 * 
 	 * @return {@link Counrty}
 	 */
-	public Country getTargetCountry() {
-		return targetCounrty;
+	public Country getEnemyCountry() {
+		return enemyCounrty;
 	}
 }

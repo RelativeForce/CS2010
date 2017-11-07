@@ -1,0 +1,8 @@
+// asset_type,state_name,function_code,asset_file_name,width,height,x,y
+button,Reinforcement,0,reinforceButton.png,50,30,10,80
+button,Reinforcement,1,endButton.png,50,30,10,110
+button,Combat,2,endButton.png,50,30,10,110
+button,Movement,3,endButton.png,50,30,10,110
+button,Setup,4,endButton.png,50,30,10,110
+button,Movement,5,fortifyButton.png,50,30,10,80
+button,Combat,6,attackButton.png,50,30,10,80

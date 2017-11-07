@@ -2,153 +2,36 @@ package peril.board;
 
 import java.util.Random;
 
-import peril.ui.Viewable;
-import peril.ui.VisualRepresenation;
-
 /**
  * These may occur once a turn and will kill a random percentage of the army
- * stationed an {@link Country}. Each type of EnvironmentalHazard has a
+ * stationed an {@link Continent}. Each type of EnvironmentalHazard has a
  * percentage chance that wit will occur in a given turn.
  * 
  * @author Joshua_Eddy
  *
  */
-public enum EnvironmentalHazard implements Viewable {
+public enum EnvironmentalHazard {
 
 	/**
-	 * A VOLCANIC_ERUPTION has a 10% chance of occurring and may kill up to 20%
-	 * of the units in an {@link Army}.
+	 * A VOLCANIC_ERUPTION has a 10% chance of occurring and may kill up to 20% of
+	 * the units in an {@link Army}.
 	 */
-	VOLCANIC_ERUPTION(20, 0.1) {
-
-		/**
-		 * Holds the visual representation of the {@link VOLCANIC_ERUPTION}.
-		 * 
-		 * @see VisualRepresenation
-		 * @see EnvironmentalHazardVisualRepresenation
-		 */
-		private final Visual visual = new Visual();
-
-		/**
-		 * Encapsulates the behaviours of displaying an
-		 * {@link VOLCANIC_ERUPTION} on the {@link UserInterface}.
-		 * 
-		 * @author Joshua_Eddy
-		 * @see VisualRepresenation
-		 * @see EnvironmentalHazardVisualRepresenation
-		 *
-		 */
-		final class Visual extends EnvironmentalHazardVisualRepresenation {
-
-			// TODO Create visual representation for VOLCANIC_ERUPTION
-		}
-
-		@Override
-		public VisualRepresenation getVisual() {
-			return visual;
-		}
-
-	},
+	VOLCANIC_ERUPTION(20, 0.1, "Volcanic Eruption"),
 	/**
-	 * A TORNADO has a 12% chance of occurring and may kill up to 30% of the
-	 * units in an {@link Army}.
+	 * A TORNADO has a 12% chance of occurring and may kill up to 30% of the units
+	 * in an {@link Army}.
 	 */
-	TORNADO(30, 0.12) {
-
-		/**
-		 * Holds the visual representation of the {@link TORNADO}.
-		 * 
-		 * @see VisualRepresenation
-		 * @see EnvironmentalHazardVisualRepresenation
-		 */
-		private final Visual visual = new Visual();
-
-		/**
-		 * Encapsulates the behaviours of displaying an {@link TORNADO} on the
-		 * {@link UserInterface}.
-		 * 
-		 * @author Joshua_Eddy
-		 * @see VisualRepresenation
-		 * @see EnvironmentalHazardVisualRepresenation
-		 *
-		 */
-		final class Visual extends EnvironmentalHazardVisualRepresenation {
-
-			// TODO Create visual representation for TORNADO
-		}
-
-		@Override
-		public VisualRepresenation getVisual() {
-			return visual;
-		}
-
-	},
+	TORNADO(30, 0.12, "Tornado"),
 	/**
-	 * A HURRICANE has a 20% chance of occurring and may kill up to 10% of the
-	 * units in an {@link Army}.
+	 * A HURRICANE has a 20% chance of occurring and may kill up to 10% of the units
+	 * in an {@link Army}.
 	 */
-	HURRICANE(10, 0.2) {
-
-		/**
-		 * Holds the visual representation of the {@link HURRICANE}.
-		 * 
-		 * @see VisualRepresenation
-		 * @see EnvironmentalHazardVisualRepresenation
-		 */
-		private final Visual visual = new Visual();
-
-		/**
-		 * Encapsulates the behaviours of displaying an {@link HURRICANE} on the
-		 * {@link UserInterface}.
-		 * 
-		 * @author Joshua_Eddy
-		 * @see VisualRepresenation
-		 * @see EnvironmentalHazardVisualRepresenation
-		 *
-		 */
-		final class Visual extends EnvironmentalHazardVisualRepresenation {
-
-			// TODO Create visual representation for HURRICANE
-		}
-
-		@Override
-		public VisualRepresenation getVisual() {
-			return visual;
-		}
-	},
+	HURRICANE(10, 0.2, "Hurricane"),
 	/**
-	 * A TSUNAMI has a 17% chance of occurring and may kill up to 40% of the
-	 * units in an {@link Army}.
+	 * A TSUNAMI has a 17% chance of occurring and may kill up to 40% of the units
+	 * in an {@link Army}.
 	 */
-	TSUNAMI(40, 0.17) {
-
-		/**
-		 * Holds the visual representation of the {@link TSUNAMI}.
-		 * 
-		 * @see VisualRepresenation
-		 * @see EnvironmentalHazardVisualRepresenation
-		 */
-		private final Visual visual = new Visual();
-
-		/**
-		 * Encapsulates the behaviours of displaying an {@link TSUNAMI} on the
-		 * {@link UserInterface}.
-		 * 
-		 * @author Joshua_Eddy
-		 * @see VisualRepresenation
-		 * @see EnvironmentalHazardVisualRepresenation
-		 *
-		 */
-		final class Visual extends EnvironmentalHazardVisualRepresenation {
-
-			// TODO Create visual representation for TSUNAMI
-		}
-
-		@Override
-		public VisualRepresenation getVisual() {
-			return visual;
-		}
-	};
+	TSUNAMI(40, 0.17, "Tsunami");
 
 	/**
 	 * The seed used by the {@link GENERATOR}.
@@ -158,16 +41,20 @@ public enum EnvironmentalHazard implements Viewable {
 	private final int SEED = 5;
 
 	/**
-	 * The {@link Random} used to provide chance to
-	 * {@link EnvironmentalHazard}s.
+	 * The {@link Random} used to provide chance to {@link EnvironmentalHazard}s.
 	 */
 	private final Random GENERATOR = new Random(SEED);
 
 	/**
-	 * Holds the maximum percentage of the army stationed an {@link Country}
-	 * that this {@link EnvironmentalHazard} will kill.
+	 * Holds the maximum percentage of the army stationed an {@link Country} that
+	 * this {@link EnvironmentalHazard} will kill.
 	 */
 	private final int maxCasualties;
+
+	/**
+	 * The <code>String</code> representation of the {@link EnvironmentalHazard}.
+	 */
+	private final String name;
 
 	/**
 	 * Holds the percentage chance that wit will occur in a given turn.
@@ -178,15 +65,27 @@ public enum EnvironmentalHazard implements Viewable {
 	 * Constructs an {@link EnvironmentalHazard}.
 	 * 
 	 * @param maxCasualties
-	 *            The maximum percentage of the army stationed an
-	 *            {@link Country} that this {@link EnvironmentalHazard} will
-	 *            kill.
+	 *            The maximum percentage of the army stationed an {@link Country}
+	 *            that this {@link EnvironmentalHazard} will kill.
 	 * @param chance
 	 *            Percentage chance that wit will occur in a given turn.
+	 * @param name
+	 *            The <code>String</code> representation of the
+	 *            {@link EnvironmentalHazard}.
 	 */
-	private EnvironmentalHazard(int maxCasualties, double chance) {
+	private EnvironmentalHazard(int maxCasualties, double chance, String name) {
 		this.maxCasualties = maxCasualties;
 		this.chance = chance;
+		this.name = name;
+	}
+
+	/**
+	 * Retrieves the <code>String</code> representation of the
+	 * {@link EnvironmentalHazard}.
+	 */
+	@Override
+	public String toString() {
+		return name;
 	}
 
 	/**
@@ -213,26 +112,37 @@ public enum EnvironmentalHazard implements Viewable {
 			// Generate a random proportion of the army to kill.
 			int casualties = (currentSize * (minCasualties + GENERATOR.nextInt(maxCasualties - minCasualties))) / 100;
 
-			// Remove the dead regiments.
-			army.setSize(currentSize - casualties);
-
+			if (currentSize - casualties < 1) {
+				army.setSize(1);
+			} else {
+				// Remove the dead regiments.
+				army.setSize(currentSize - casualties);
+			}
 		}
-
 	}
-
-	@Override
-	public abstract VisualRepresenation getVisual();
 
 	/**
-	 * Encapsulates the behaviours of displaying an {@link EnvironmentalHazard}
-	 * on the {@link UserInterface}.
+	 * Retrieves the {@link EnvironmentalHazard} using the specified name. If there
+	 * is no {@link EnvironmentalHazard} with that name then this returns
+	 * <code>null</code>.
 	 * 
-	 * @author Joshua_Eddy
-	 * @see VisualRepresenation
+	 * @param name
+	 *            Name of the {@link EnvironmentalHazard}
+	 * @return {@link EnvironmentalHazard} specified by the parameter name.
 	 */
-	private abstract class EnvironmentalHazardVisualRepresenation extends VisualRepresenation {
+	public static EnvironmentalHazard getByName(String name) {
 
-		// TODO Create visual representation for EnvironmentalHazard
+		/*
+		 * Iterate through all the hazards in the game and if the hazard specified by
+		 * the parameter name is the same as one from the game set the hazard of the new
+		 * continent as that. Otherwise there will be NO hazard in the new continent.
+		 */
+		for (EnvironmentalHazard indexHazard : EnvironmentalHazard.values()) {
+			if (indexHazard.toString().equals(name)) {
+				return indexHazard;
+			}
+		}
+
+		return null;
 	}
-
 }

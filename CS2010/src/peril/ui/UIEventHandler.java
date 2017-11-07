@@ -1,67 +1,93 @@
 package peril.ui;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import org.newdawn.slick.Input;
+import org.newdawn.slick.KeyListener;
+import org.newdawn.slick.MouseListener;
+
+import peril.Game;
+import peril.Point;
 
 /**
  * Handles all the interactions that the user will cause using the
  * {@link UserInterface}.
  * 
- * @author Joshua_Eddy
+ * @author Joshua_Eddy, Adrian_Wong
  *
- * @see KeyListener
  * @see MouseListener
  */
-public class UIEventHandler implements KeyListener, MouseListener {
+public class UIEventHandler implements MouseListener, KeyListener {
+
+	/**
+	 * The instance of the {@link Game} that this {@link UIEventHandler} assists.
+	 */
+	private Game game;
+
+	/**
+	 * Constructs an new {@link UIEventHandler};
+	 * 
+	 * @param game
+	 *            {@link UIEventHandler#game}
+	 */
+	public UIEventHandler(Game game) {
+		this.game = game;
+	}
 
 	@Override
-	public void mouseClicked(MouseEvent event) {
-		// TODO Auto-generated method stub
+	public void inputEnded() {
 
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent event) {
-		// TODO Auto-generated method stub
+	public void inputStarted() {
 
 	}
 
 	@Override
-	public void mouseExited(MouseEvent event) {
-		// TODO Auto-generated method stub
+	public boolean isAcceptingInput() {
+		return true;
+	}
+
+	@Override
+	public void setInput(Input input) {
 
 	}
 
 	@Override
-	public void mousePressed(MouseEvent event) {
-		// TODO Auto-generated method stub
+	public void mouseClicked(int button, int x, int y, int clickCount) {
 
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+	public void mouseDragged(int oldx, int oldy, int newx, int newy) {
 
 	}
 
 	@Override
-	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
+	public void mouseMoved(int oldx, int oldy, int newx, int newy) {
 
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
+	public void mousePressed(int button, int x, int y) {
+		game.getCurrentState().parseClick(button, new Point(x, y));
+	}
+
+	@Override
+	public void mouseReleased(int button, int x, int y) {
 
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
+	public void mouseWheelMoved(int change) {
+	}
 
+	@Override
+	public void keyPressed(int key, char c) {
+		game.getCurrentState().parseButton(key, c);
+	}
+
+	@Override
+	public void keyReleased(int key, char c) {
 	}
 
 }

@@ -1,5 +1,7 @@
 package peril.board;
 
+import peril.Point;
+
 /**
  * Encapsulates the behaviours of a collection of units. This will be aggregated
  * by the {@link CombatHandler} and composes the {@link Country}.
@@ -10,42 +12,74 @@ package peril.board;
 public final class Army {
 
 	/**
-	 * The size of the army.
+	 * The {@link Point} offset from the centre of the country this army will be
+	 * displayed at.
 	 */
-	private int size;
+	private Point offset;
 
 	/**
-	 * Constructs a new empty {@link Army}.
+	 * The size of the army.
+	 */
+	private volatile int size;
+
+	/**
+	 * Constructs a new empty {@link Army} with an offset of (0,0).
 	 */
 	public Army() {
-		setSize(0);
+		setSize(1);
+		offset = new Point(0, 0);
 	}
 
 	/**
-	 * Constructs a new {@link Army} of a specified size.
-	 * @param size The size of the {@link Army}. Must be greater than zero.
+	 * Constructs a new {@link Army} of a specified size with an offset of (0,0).
+	 * 
+	 * @param size
+	 *            The size of the {@link Army}. Must be greater than zero.
 	 */
 	public Army(int size) {
 		setSize(size);
+		offset = new Point(0, 0);
 	}
-	
+
 	/**
 	 * Assigns a new size to this {@link Army}.
-	 * @param size The new size of the {@link Army}. Must be greater than zero.
+	 * 
+	 * @param size
+	 *            The new size of the {@link Army}. Must be greater than zero.
 	 */
-	public void setSize(int size){
+	public void setSize(int size) {
 		if (size < 0) {
-			this.size = size;
-		} else {
 			throw new IllegalArgumentException("Size must be greater than zero");
 		}
+		this.size = size;
 	}
-	
+
+	/**
+	 * Retrieves the {@link Point} offset from the centre of the country this army
+	 * will be displayed at.
+	 * 
+	 * @return {@link Point} offset.
+	 */
+	public Point getOffset() {
+		return offset;
+	}
+
 	/**
 	 * Retrieves the size of the {@link Army}.
-	 * @return 
+	 * 
+	 * @return
 	 */
-	public int getSize(){
+	public int getSize() {
 		return size;
+	}
+
+	public void setOffset(Point offset) {
+		
+		if(offset == null) {
+			throw new NullPointerException("Offset cannot be null.");
+		}
+		
+		this.offset = offset;
+		
 	}
 }

@@ -7,6 +7,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Point;
+import peril.ui.states.gameStates.CoreGameState;
 
 public class MainMenuState extends CoreGameState{
 	

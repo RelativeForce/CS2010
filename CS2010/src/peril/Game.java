@@ -18,7 +18,7 @@ import peril.io.ChallengeReader;
 import peril.io.MapReader;
 import peril.io.TextFileReader;
 import peril.ui.UIEventHandler;
-import peril.ui.states.*;
+import peril.ui.states.gameStates.*;
 
 /**
  * Encapsulate the main game logic for Peril. This also extends

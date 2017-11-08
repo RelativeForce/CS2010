@@ -1,4 +1,4 @@
-package peril.ui.states;
+package peril.ui.states.gameStates;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;

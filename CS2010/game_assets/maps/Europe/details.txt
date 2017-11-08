@@ -50,3 +50,4 @@ Link,Umple,Russia
 Link,Flump,Russia
 Link,Flump,Umple
 Link,Slump,Russia
+Link,Russia,Finland

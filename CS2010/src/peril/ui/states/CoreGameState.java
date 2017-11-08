@@ -352,6 +352,42 @@ public abstract class CoreGameState extends BasicGameState {
 	}
 
 	/**
+	 * Draws all the links between all the {@link Country}s.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 */
+	protected void drawAllLinks(Graphics g) {
+
+		// Get all the countries from the board.
+		game.getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
+
+			Army army = country.getArmy();
+
+			// Sets x and y as the central width and height of the current country.
+			final int countryX = country.getPosition().x + (country.getWidth() / 2) + army.getOffset().x;
+			final int countryY = country.getPosition().y + (country.getHeight() / 2) + army.getOffset().y;
+
+			// For each neighbour of that country draw the link from the neighbour to the
+			// current country
+			country.getNeighbours().forEach(neighbour -> {
+
+				Army neighbourArmy = neighbour.getArmy();
+
+				// Sets x and y as the central width and height of the neighbour country.
+				final int neighbourX = neighbour.getPosition().x + (neighbour.getWidth() / 2)
+						+ neighbourArmy.getOffset().x;
+				final int neighbourY = neighbour.getPosition().y + (neighbour.getHeight() / 2)
+						+ neighbourArmy.getOffset().y;
+
+				// Draw the line from the country to the neighbour
+				g.drawLine(countryX, countryY, neighbourX, neighbourY);
+			});
+		}));
+
+	}
+
+	/**
 	 * Draws the {@link army} in its current state over the {@link Country} it is
 	 * located.
 	 * 
@@ -381,22 +417,22 @@ public abstract class CoreGameState extends BasicGameState {
 			} else {
 				g.setColor(Color.lightGray);
 			}
-			
+
 			int troopNumber = army.getSize();
-			
-			if(troopNumber > 99) {
+
+			if (troopNumber > 99) {
 				g.fillOval(x - 9, y - 3, 45, 25);
-			}else if(troopNumber > 9) {
+			} else if (troopNumber > 9) {
 				g.fillOval(x - 6, y - 3, 30, 25);
-			}else {
+			} else {
 				g.fillOval(x - 3, y - 3, 15, 25);
 			}
-			
+
 			g.setColor(Color.black);
 
 			// Draw a string representing the number of troops
 			// within that army at (x,y).
-			
+
 			g.drawString(Integer.toString(troopNumber), x, y);
 
 		}));
@@ -419,4 +455,5 @@ public abstract class CoreGameState extends BasicGameState {
 		g.drawString(stateName, 5, 5);
 
 	}
+
 }

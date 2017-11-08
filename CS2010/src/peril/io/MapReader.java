@@ -207,7 +207,7 @@ public class MapReader {
 
 		// Initialise the new country.
 		Country country = new Country(name);
-		
+
 		// Set the army offset.
 		country.getArmy().setOffset(new Point(xOffset, yOffset));
 
@@ -300,14 +300,6 @@ public class MapReader {
 		 */
 		for (Country country : countries) {
 
-			// If both countries have been found set them as each other's neighbour and
-			// leave the loop.
-			if (country1 != null && country2 != null) {
-				country1.addNeighbour(country2);
-				country2.addNeighbour(country1);
-				break;
-			}
-
 			// If the current country has the same name as counrtyName1 assign country to
 			// country1
 			if (country.getName().equals(countryName1)) {
@@ -317,6 +309,14 @@ public class MapReader {
 			// country2
 			else if (country.getName().equals(countryName2)) {
 				country2 = country;
+			}
+
+			// If both countries have been found set them as each other's neighbour and
+			// leave the loop.
+			if (country1 != null && country2 != null) {
+				country1.addNeighbour(country2);
+				country2.addNeighbour(country1);
+				break;
 			}
 
 		}

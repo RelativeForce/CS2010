@@ -16,9 +16,13 @@ public class EndState extends CoreGameState{
 	 */
 	private static final int ID = 5;
 	
+	/**
+	 * The name of a specific {@link EndState}.
+	 */
+	private static final String STATE_NAME = "EndState";
+	
 	public EndState(Game game) {
-		super(game);
-		stateName = "EndState";
+		super(game, STATE_NAME);
 	}
 	
 	public void displayWinner(Player player) {
@@ -47,8 +51,8 @@ public class EndState extends CoreGameState{
 		super.render(gc, sbg, g);
 
 		// Draw player name and set the text color to the player's color
-		g.setColor(game.getCurrentPlayer().getColor());
-		g.drawString(game.getCurrentPlayer().toString(), 5, 20);
+		g.setColor(getGame().getCurrentPlayer().getColor());
+		g.drawString(getGame().getCurrentPlayer().toString(), 5, 20);
 		
 	}
 }

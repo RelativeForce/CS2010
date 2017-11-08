@@ -17,10 +17,15 @@ public class SetupState extends CoreGameState {
 	 * The ID of this {@link SetupState}
 	 */
 	private static final int ID = 1;
+	
+	/**
+	 * The name of a specific {@link SetupState}.
+	 */
+	private static final String STATE_NAME = "Setup";
+	
 
 	public SetupState(Game game) {
-		super(game);
-		stateName = "Setup";
+		super(game, STATE_NAME);
 	}
 
 	@Override

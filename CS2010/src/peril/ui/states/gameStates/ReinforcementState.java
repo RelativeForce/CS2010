@@ -25,10 +25,14 @@ public class ReinforcementState extends CoreGameState {
 	 * The ID of this {@link ReinforcementState}
 	 */
 	private static final int ID = 2;
+	
+	/**
+	 * The name of a specific {@link ReinforcementState}.
+	 */
+	private static final String STATE_NAME = "Reinforcement";
 
 	public ReinforcementState(Game game) {
-		super(game);
-		stateName = "Reinforcement";
+		super(game, STATE_NAME);
 	}
 	
 	@Override
@@ -41,7 +45,7 @@ public class ReinforcementState extends CoreGameState {
 		if (country != null) {
 
 			// Holds the current player
-			Player player = game.getCurrentPlayer();
+			Player player = getGame().getCurrentPlayer();
 
 			// Holds the ruler of the country
 			Player ruler = country.getRuler();
@@ -61,14 +65,14 @@ public class ReinforcementState extends CoreGameState {
 		super.render(gc, sbg, g);
 
 		// Draw player name and set the text color to the player's color
-		g.setColor(game.getCurrentPlayer().getColor());
-		g.drawString(game.getCurrentPlayer().toString(), 5, 20);
+		g.setColor(getGame().getCurrentPlayer().getColor());
+		g.drawString(getGame().getCurrentPlayer().toString(), 5, 20);
 		
 		// Set the text color to magenta
 		g.setColor(Color.black);
 
 		// Draw player name
-		g.drawString("Units: " + game.getCurrentPlayer().getDistributableArmySize(), 5, 35);
+		g.drawString("Units: " + getGame().getCurrentPlayer().getDistributableArmySize(), 5, 35);
 	}
 
 	@Override

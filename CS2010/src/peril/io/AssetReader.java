@@ -183,7 +183,7 @@ public class AssetReader {
 		Button newButton = new Button(position, asset, action);
 
 		// Add the button to the state, cast to clickable so the correct method is used
-		state.addElement((Clickable) newButton);
+		state.addButton(newButton);
 
 	}
 

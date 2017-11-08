@@ -8,16 +8,22 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Point;
 import peril.ui.states.InteractiveState;
+import peril.ui.states.gameStates.CombatState;
 
-public class MainMenuState extends InteractiveState{
-	
+public class MainMenuState extends InteractiveState {
+
 	/**
 	 * The ID of this {@link MainMenuState}.
 	 */
 	private static final int ID = 0;
 
+	/**
+	 * The name of a specific {@link CombatState}.
+	 */
+	private static final String STATE_NAME = "Main Menu";
+
 	protected MainMenuState(Game game) {
-		super(game);
+		super(game, STATE_NAME);
 	}
 
 	@Override
@@ -25,9 +31,9 @@ public class MainMenuState extends InteractiveState{
 		super.render(gc, sbg, g);
 
 		// Draw player name and set the text color to the player's color
-		g.setColor(game.getCurrentPlayer().getColor());
-		g.drawString(game.getCurrentPlayer().toString(), 5, 20);
-		
+		g.setColor(getGame().getCurrentPlayer().getColor());
+		g.drawString(getGame().getCurrentPlayer().toString(), 5, 20);
+
 	}
 
 	@Override
@@ -51,5 +57,4 @@ public class MainMenuState extends InteractiveState{
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 	}
 
-	
 }

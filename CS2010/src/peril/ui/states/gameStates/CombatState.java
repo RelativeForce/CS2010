@@ -27,22 +27,30 @@ public class CombatState extends CoreGameState {
 	private static final int ID = 3;
 
 	/**
+	 * The name of a specific {@link CombatState}.
+	 */
+	private static final String STATE_NAME = "Combat";
+
+	/**
 	 * The target {@link Country} for the
 	 * {@link CoreGameState#getHighlightedCountry()}.
 	 */
 	private Country enemyCounrty;
 
+	/**
+	 * Whether or not {@link CombatState} is currently after or before a country has
+	 * been conquered.
+	 */
 	private boolean isPostCombat;
 
 	/**
 	 * Constructs a new {@link CombatState}.
 	 * 
 	 * @param game
-	 *            The {@link Game} that houses this {@link CoreGameState}.
+	 *            The {@link Game} that houses this {@link CombatState}.
 	 */
 	public CombatState(Game game) {
-		super(game);
-		stateName = "Combat";
+		super(game, STATE_NAME);
 		enemyCounrty = null;
 		isPostCombat = false;
 	}
@@ -105,7 +113,7 @@ public class CombatState extends CoreGameState {
 		if (country != null) {
 
 			// Holds the current player
-			Player player = game.getCurrentPlayer();
+			Player player = getGame().getCurrentPlayer();
 
 			// Holds the ruler of the country
 			Player ruler = country.getRuler();
@@ -135,8 +143,8 @@ public class CombatState extends CoreGameState {
 		super.render(gc, sbg, g);
 
 		// Draw player name and set the text color to the player's color
-		g.setColor(game.getCurrentPlayer().getColor());
-		g.drawString(game.getCurrentPlayer().toString(), 5, 20);
+		g.setColor(getGame().getCurrentPlayer().getColor());
+		g.drawString(getGame().getCurrentPlayer().toString(), 5, 20);
 
 		if (enemyCounrty != null) {
 			g.drawImage(enemyCounrty.getImage(), enemyCounrty.getPosition().x, enemyCounrty.getPosition().y);

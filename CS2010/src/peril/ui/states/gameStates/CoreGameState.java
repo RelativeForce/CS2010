@@ -17,9 +17,11 @@ import peril.ui.states.InteractiveState;
 import peril.ui.visual.Region;
 
 /**
+ * A {@link InteractiveState} which displays the {@link Board} from the
+ * {@link Game} to the user.
+ * 
  * @author Joseph_Rolli, Joshua_Eddy
  */
-
 public abstract class CoreGameState extends InteractiveState {
 
 	/**
@@ -32,12 +34,12 @@ public abstract class CoreGameState extends InteractiveState {
 	 * 
 	 * @param game
 	 *            The {@link Game} this state is a part of.
+	 * @param stateName
+	 *            Holds the name of a specific {@link CoreGameState}.
 	 */
-	protected CoreGameState(Game game) {
-		super(game);
-
+	protected CoreGameState(Game game, String stateName) {
+		super(game, stateName);
 		this.highlightedCountry = null;
-		
 	}
 
 	/**
@@ -55,61 +57,16 @@ public abstract class CoreGameState extends InteractiveState {
 
 	}
 
-	/**
-	 * Called when the state is entered, before slick2d's game loop commences.
-	 * 
-	 * @param gc
-	 *            The game window.
-	 * 
-	 * @param sbg
-	 *            The {@link StateBasedGame} this state is a part of.
-	 */
-	@Override
-	public void enter(GameContainer gc, StateBasedGame sbg) {
-		System.out.println("Entering gamestate: " + stateName);
-	}
-
-	/**
-	 * Called when the state is first created, before slick2d's game loop commences.
-	 * Initialises the state and loads resources.
-	 * 
-	 * @param gc
-	 *            The game window.
-	 * 
-	 * @param sbg
-	 *            The {@link StateBasedGame} this state is a part of.
-	 * 
-	 */
-	@Override
-	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		gc.setUpdateOnlyWhenVisible(true);
-
-		game.loadAssets();
-	}
-
-	/**
-	 * Called as part of slick2d's game loop. Renders this state to the game's
-	 * graphics context
-	 * 
-	 * @param gc
-	 *            The game window.
-	 * 
-	 * @param sbg
-	 *            The {@link StateBasedGame} this state is a part of.
-	 *
-	 * @param g
-	 *            A graphics context that can be used to render primitives to the
-	 *            accelerated canvas provided by LWJGL.
-	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
 		// If the board has a visual representation, render it in the graphics context.
-		if (game.getBoard().hasImage()) {
-			g.drawImage(game.getBoard().getImage(), game.getBoard().getPosition().x, game.getBoard().getPosition().y);
+		if (getGame().getBoard().hasImage()) {
+			g.drawImage(getGame().getBoard().getImage(), getGame().getBoard().getPosition().x,
+					getGame().getBoard().getPosition().y);
 		}
 		// For every country on the board.
-		game.getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
+		getGame().getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
 
 			// Holds the image of the country
 			Image image = country.getImage();
@@ -139,46 +96,6 @@ public abstract class CoreGameState extends InteractiveState {
 
 		drawArmies(g);
 	}
-
-	/**
-	 * Called as part of slick2d's game loop. Update the state's logic based on the
-	 * amount of time that has passed.
-	 * 
-	 * @param gc
-	 *            The game window.
-	 * 
-	 * @param sbg
-	 *            The {@link StateBasedGame} this state is a part of.
-	 * 
-	 * @param delta
-	 *            The amount of time thats passed in millisecond since last update
-	 */
-	@Override
-	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-
-	}
-
-	/**
-	 * Processes a click at a {@link Point} on this {@link CoreGameState}.
-	 * 
-	 * @param button
-	 *            <code>int</code> button
-	 * @param click
-	 *            {@link Point} of the click
-	 */
-	public abstract void parseClick(int button, Point click);
-
-	/**
-	 * Processes a button press on this {@link CoreGameState}.
-	 * 
-	 * @param key
-	 *            <code>int</code> key code
-	 * @param c
-	 *            <code>char</code> char on the button
-	 * 
-	 * @see org.newdawn.slick.Input
-	 */
-	public abstract void parseButton(int key, char c);
 
 	/**
 	 * Returns a the current highlighted {@link Country} in this state.
@@ -230,7 +147,7 @@ public abstract class CoreGameState extends InteractiveState {
 	protected void clickBoard(Point click) {
 
 		// Holds the game board
-		Board board = game.getBoard();
+		Board board = getGame().getBoard();
 
 		// If there is a game board
 		if (board != null) {
@@ -250,7 +167,7 @@ public abstract class CoreGameState extends InteractiveState {
 	protected void drawAllLinks(Graphics g) {
 
 		// Get all the countries from the board.
-		game.getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
+		getGame().getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
 
 			Army army = country.getArmy();
 
@@ -288,7 +205,7 @@ public abstract class CoreGameState extends InteractiveState {
 	private void drawArmies(Graphics g) {
 
 		// Iterate across every country on the game board.
-		game.getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
+		getGame().getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
 
 			// Sets x and y as the central width and height of the current country.
 			int x = country.getPosition().x + country.getWidth() / 2;
@@ -342,7 +259,7 @@ public abstract class CoreGameState extends InteractiveState {
 
 		// Draw state name
 		g.setColor(Color.black);
-		g.drawString(stateName, 5, 5);
+		g.drawString(getStateName(), 5, 5);
 
 	}
 

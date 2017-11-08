@@ -25,6 +25,11 @@ public class MovementState extends CoreGameState {
 	 * The ID of this {@link MovementState}.
 	 */
 	private static final int ID = 4;
+	
+	/**
+	 * The name of a specific {@link MovementState}.
+	 */
+	private static final String STATE_NAME = "Movement";
 
 	/**
 	 * The target {@link Country} for the
@@ -39,8 +44,7 @@ public class MovementState extends CoreGameState {
 	 *            The {@link Game} that houses this {@link CoreGameState}.
 	 */
 	public MovementState(Game game) {
-		super(game);
-		stateName = "Movement";
+		super(game, STATE_NAME);
 		targetCounrty = null;
 	}
 
@@ -52,7 +56,7 @@ public class MovementState extends CoreGameState {
 		if (country != null) {
 
 			// Holds the current player
-			Player player = game.getCurrentPlayer();
+			Player player = getGame().getCurrentPlayer();
 
 			// Holds the ruler of the country
 			Player ruler = country.getRuler();
@@ -90,9 +94,9 @@ public class MovementState extends CoreGameState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
 
-		// Draw player name and set the text color to the player's color
-		g.setColor(game.getCurrentPlayer().getColor());
-		g.drawString(game.getCurrentPlayer().toString(), 5, 20);
+		// Draw player name and set the text colour to the player's colour
+		g.setColor(getGame().getCurrentPlayer().getColor());
+		g.drawString(getGame().getCurrentPlayer().toString(), 5, 20);
 
 	}
 

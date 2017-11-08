@@ -16,18 +16,23 @@ import peril.ui.states.gameStates.CoreGameState;
 import peril.ui.visual.Clickable;
 import peril.ui.visual.Viewable;
 
+/**
+ * 
+ * @author Joshua_Eddy
+ *
+ */
 public abstract class InteractiveState extends BasicGameState {
 
 	/**
-	 * Holds the name of a specific {@link CoreGameState}.
+	 * Holds the name of a specific {@link InteractiveState}.
 	 */
-	protected String stateName;
+	private String stateName;
 
 	/**
 	 * Holds the the current {@link Game} this {@link CoreGameState} is associated
 	 * with.
 	 */
-	protected Game game;
+	private Game game;
 
 	/**
 	 * A {@link List} of {@link Button} elements that this {@link CoreGameState}
@@ -36,65 +41,52 @@ public abstract class InteractiveState extends BasicGameState {
 	private List<Button> buttons;
 
 	/**
-	 * A {@link List} of {@link Viewable} elements that this {@link CoreGameState}
-	 * has.
+	 * A {@link List} of {@link Viewable} elements that this
+	 * {@link InteractiveState} has.
 	 */
-	protected List<Viewable> viewables;
+	private List<Viewable> viewables;
 
-	public InteractiveState(Game game) {
+	/**
+	 * Constructs a new {@link InteractiveState}.
+	 * 
+	 * @param game
+	 *            The {@link Game} this state is a part of.
+	 * @param stateName
+	 *            Holds the name of a specific {@link InteractiveState}.
+	 */
+	public InteractiveState(Game game, String stateName) {
 
 		if (game == null) {
 			throw new NullPointerException("Game cannot be null.");
+		} else if (stateName.isEmpty()) {
+			throw new NullPointerException("StateName cannot be empty.");
 		}
 
 		this.game = game;
+		this.stateName = stateName;
 		this.buttons = new LinkedList<>();
 		this.viewables = new LinkedList<>();
 	}
 
 	/**
-	 * Adds a viewable element to the list of viewables in this state.
+	 * Adds a {@link Viewable} element to the list of {@link Viewable}s in this
+	 * state.
 	 * 
 	 * @param element
 	 *            The {@link Viewable} element to be added to the list.
 	 * 
 	 */
-	public void addElement(Viewable element) {
+	public void addVisual(Viewable element) {
 		viewables.add(element);
 	}
 
 	/**
-	 * Gets the {@link Game} that uses this {@link CoreGameState}.
+	 * Gets the {@link Game} that uses this {@link InteractiveState}.
 	 * 
 	 * @return {@link Game}
 	 */
 	public Game getGame() {
 		return game;
-	}
-
-	/**
-	 * Simulate a click a specified {@link Point} and check if any of the
-	 * {@link Clickable} {@link Button}s are intersected by the {@link Point}.
-	 * 
-	 * @param click
-	 *            {@link Point}
-	 * @return whether any {@link Button} was intersected by the {@link Point}.
-	 */
-	protected boolean clickButton(Point click) {
-
-		// Iterate through all the buttons in the current state.
-		for (Button button : game.getCurrentState().getButtons()) {
-
-			// If the click is in the current element
-			if (button.isClicked(click)) {
-
-				// Click the button
-				button.click();
-				return true;
-
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -129,7 +121,7 @@ public abstract class InteractiveState extends BasicGameState {
 	}
 
 	/**
-	 * Processes a click at a {@link Point} on this {@link CoreGameState}.
+	 * Processes a click at a {@link Point} on this {@link InteractiveState}.
 	 * 
 	 * @param button
 	 *            <code>int</code> button
@@ -139,7 +131,7 @@ public abstract class InteractiveState extends BasicGameState {
 	public abstract void parseClick(int button, Point click);
 
 	/**
-	 * Processes a button press on this {@link CoreGameState}.
+	 * Processes a button press on this {@link InteractiveState}.
 	 * 
 	 * @param key
 	 *            <code>int</code> key code
@@ -150,18 +142,100 @@ public abstract class InteractiveState extends BasicGameState {
 	 */
 	public abstract void parseButton(int key, char c);
 
+	/**
+	 * Called when the state is entered, before slick2d's game loop commences.
+	 * 
+	 * @param gc
+	 *            The game window.
+	 * 
+	 * @param sbg
+	 *            The {@link StateBasedGame} this state is a part of.
+	 */
 	@Override
-	public abstract void init(GameContainer gc, StateBasedGame sbg) throws SlickException;
+	public void enter(GameContainer gc, StateBasedGame sbg) {
+		System.out.println("Entering gamestate: " + stateName);
+	}
 
+	/**
+	 * Called when the state is first created, before slick2d's game loop commences.
+	 * Initialises the state and loads resources.
+	 * 
+	 * @param gc
+	 *            The game window.
+	 * 
+	 * @param sbg
+	 *            The {@link StateBasedGame} this state is a part of.
+	 * 
+	 */
+	@Override
+	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		gc.setUpdateOnlyWhenVisible(true);
+		game.loadAssets();
+	}
+
+	/**
+	 * Called as part of slick2d's game loop. Renders this state to the game's
+	 * graphics context
+	 * 
+	 * @param gc
+	 *            The game window.
+	 * 
+	 * @param sbg
+	 *            The {@link StateBasedGame} this state is a part of.
+	 *
+	 * @param g
+	 *            A graphics context that can be used to render primitives to the
+	 *            accelerated canvas provided by LWJGL.
+	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		buttons.forEach(button -> g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y));
 	}
 
+	/**
+	 * Called as part of slick2d's game loop. Update the state's logic based on the
+	 * amount of time that has passed.
+	 * 
+	 * @param gc
+	 *            The game window.
+	 * 
+	 * @param sbg
+	 *            The {@link StateBasedGame} this state is a part of.
+	 * 
+	 * @param delta
+	 *            The amount of time thats passed in millisecond since last update
+	 */
 	@Override
-	public abstract void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException;
+	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+
+	}
 
 	@Override
 	public abstract int getID();
+
+	/**
+	 * Simulate a click a specified {@link Point} and check if any of the
+	 * {@link Clickable} {@link Button}s are intersected by the {@link Point}.
+	 * 
+	 * @param click
+	 *            {@link Point}
+	 * @return whether any {@link Button} was intersected by the {@link Point}.
+	 */
+	protected boolean clickButton(Point click) {
+
+		// Iterate through all the buttons in the current state.
+		for (Button button : game.getCurrentState().getButtons()) {
+
+			// If the click is in the current element
+			if (button.isClicked(click)) {
+
+				// Click the button
+				button.click();
+				return true;
+
+			}
+		}
+		return false;
+	}
 
 }

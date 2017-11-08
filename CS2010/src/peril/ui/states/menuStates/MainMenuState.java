@@ -1,4 +1,4 @@
-package peril.ui.states;
+package peril.ui.states.menuStates;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -7,9 +7,9 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Point;
-import peril.ui.states.gameStates.CoreGameState;
+import peril.ui.states.InteractiveState;
 
-public class MainMenuState extends CoreGameState{
+public class MainMenuState extends InteractiveState{
 	
 	/**
 	 * The ID of this {@link MainMenuState}.
@@ -37,14 +37,18 @@ public class MainMenuState extends CoreGameState{
 
 	@Override
 	public void parseClick(int button, Point click) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void parseButton(int key, char c) {
-		// TODO Auto-generated method stub
-		
+	}
+
+	@Override
+	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+	}
+
+	@Override
+	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 	}
 
 	

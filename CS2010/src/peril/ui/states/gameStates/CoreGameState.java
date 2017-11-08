@@ -1,14 +1,10 @@
 package peril.ui.states.gameStates;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
@@ -17,39 +13,14 @@ import peril.Point;
 import peril.board.Army;
 import peril.board.Board;
 import peril.board.Country;
-import peril.ui.Button;
-import peril.ui.visual.Clickable;
+import peril.ui.states.InteractiveState;
 import peril.ui.visual.Region;
-import peril.ui.visual.Viewable;
 
 /**
  * @author Joseph_Rolli, Joshua_Eddy
  */
 
-public abstract class CoreGameState extends BasicGameState {
-
-	/**
-	 * Holds the name of a specific {@link CoreGameState}.
-	 */
-	protected String stateName;
-
-	/**
-	 * Holds the the current {@link Game} this {@link CoreGameState} is associated
-	 * with.
-	 */
-	protected Game game;
-
-	/**
-	 * A {@link List} of {@link Viewable} elements that this {@link CoreGameState}
-	 * has.
-	 */
-	protected List<Viewable> viewables;
-
-	/**
-	 * A {@link List} of {@link Clickable} elements that this {@link CoreGameState}
-	 * has.
-	 */
-	protected List<Clickable> clickables;
+public abstract class CoreGameState extends InteractiveState {
 
 	/**
 	 * The current {@link Country} that the player has highlighted.
@@ -63,11 +34,10 @@ public abstract class CoreGameState extends BasicGameState {
 	 *            The {@link Game} this state is a part of.
 	 */
 	protected CoreGameState(Game game) {
-		this.game = game;
+		super(game);
 
 		this.highlightedCountry = null;
-		this.clickables = new LinkedList<>();
-		this.viewables = new LinkedList<>();
+		
 	}
 
 	/**
@@ -163,8 +133,7 @@ public abstract class CoreGameState extends BasicGameState {
 		}
 
 		// Draw all the clickable objects.
-		clickables.forEach(
-				clickable -> g.drawImage(clickable.getImage(), clickable.getPosition().x, clickable.getPosition().y));
+		super.render(gc, sbg, g);
 
 		drawStateBox(g);
 
@@ -187,57 +156,6 @@ public abstract class CoreGameState extends BasicGameState {
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 
-	}
-
-	/**
-	 * Gets the {@link Game} that uses this {@link CoreGameState}.
-	 * 
-	 * @return {@link Game}
-	 */
-	public Game getGame() {
-		return game;
-	}
-
-	/**
-	 * Returns the name of the current state, as a String.
-	 * 
-	 */
-	public String getStateName() {
-		return stateName;
-	}
-
-	/**
-	 * Adds a viewable element to the list of viewables in this state.
-	 * 
-	 * @param element
-	 *            The {@link Viewable} element to be added to the list.
-	 * 
-	 */
-	public void addElement(Viewable element) {
-		viewables.add(element);
-	}
-
-	/*
-	 * Adds a clickable element to the list of clickables in this state.
-	 * 
-	 * @param element The {@link Clickable} element to be added to the list.
-	 * 
-	 */
-	public void addElement(Clickable element) {
-		// Check whether the region is valid.
-		if (element.hasRegion()) {
-			clickables.add(element);
-		} else {
-			throw new IllegalArgumentException("Clickable elemnent must have a valid region.");
-		}
-	}
-
-	/**
-	 * Returns a list of {@link Clickable} elements present in this state.
-	 * 
-	 */
-	public List<Clickable> getClickableElements() {
-		return clickables;
 	}
 
 	/**
@@ -321,34 +239,6 @@ public abstract class CoreGameState extends BasicGameState {
 			highlightCountry(board.getCountry(click));
 
 		}
-	}
-
-	/**
-	 * Simulate a click a specified {@link Point} and check if any of the
-	 * {@link Clickable} {@link Button}s are intersected by the {@link Point}.
-	 * 
-	 * @param click
-	 *            {@link Point}
-	 * @return whether any {@link Button} was intersected by the {@link Point}.
-	 */
-	protected boolean clickButton(Point click) {
-
-		// Iterate through all the buttons in the current state.
-		for (Clickable element : ((CoreGameState) game.getCurrentState()).getClickableElements()) {
-
-			// If the click is in the current element
-			if (element.isClicked(click)) {
-
-				// If the element is a button
-				if (element instanceof Button) {
-
-					// Click the button
-					((Button) element).click();
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	/**

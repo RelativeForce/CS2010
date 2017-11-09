@@ -18,6 +18,9 @@ import peril.ui.visual.Viewable;
 
 /**
  * 
+ * A state that allows the user to click on {@link Buttons} and displays
+ * {@link Viewable} objects.
+ * 
  * @author Joshua_Eddy
  *
  */
@@ -175,7 +178,7 @@ public abstract class InteractiveState extends BasicGameState {
 
 	/**
 	 * Called as part of slick2d's game loop. Renders this state to the game's
-	 * graphics context
+	 * graphics context. Draws all the {@link Button}s then the {@link Viewable} objects.
 	 * 
 	 * @param gc
 	 *            The game window.

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -220,10 +221,22 @@ public abstract class InteractiveState extends BasicGameState {
 
 	}
 
+	/**
+	 * Retrieves the the <code>int</code> id of this {@link InteractiveState}.
+	 */
 	@Override
 	public int getID() {
 		return id;
 	}
+
+	/**
+	 * 
+	 * The {@link Music} that plays in the background of this
+	 * {@link InteractiveState}.
+	 *
+	 * @return {@link Music}
+	 */
+	public abstract Music getMusic();
 
 	/**
 	 * Simulate a click a specified {@link Point} and check if any of the

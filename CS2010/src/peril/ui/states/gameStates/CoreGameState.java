@@ -4,6 +4,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -265,4 +266,8 @@ public abstract class CoreGameState extends InteractiveState {
 
 	}
 
+	@Override
+	public Music getMusic() {
+		return getGame().musicHelper.read("HumanMusic");
+	}
 }

@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Music;
+import org.newdawn.slick.MusicListener;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -28,7 +30,7 @@ import peril.ui.states.menuStates.MainMenuState;
  * @author Joshua_Eddy
  *
  */
-public class Game extends StateBasedGame {
+public class Game extends StateBasedGame implements MusicListener{
 
 	/**
 	 * Whether the game is running or not.
@@ -136,6 +138,8 @@ public class Game extends StateBasedGame {
 	 */
 	private ChallengeReader challengeReader;
 
+	public final MusicHelper musicHelper;
+
 	private String mapsDirectory;
 
 	/**
@@ -179,24 +183,30 @@ public class Game extends StateBasedGame {
 		String baseDirectory = new File(System.getProperty("user.dir")).getPath();
 
 		// Create the ui_assets file path
-		StringBuilder assestsPath = new StringBuilder(baseDirectory);
-		assestsPath.append(File.separatorChar);
-		assestsPath.append("ui_assets");
+		StringBuilder ui_assestsPath = new StringBuilder(baseDirectory);
+		ui_assestsPath.append(File.separatorChar);
+		ui_assestsPath.append("ui_assets");
 
 		this.assetReader = new AssetReader(new CoreGameState[] { combat, setup, reinforcement, movement, end },
-				assestsPath.toString());
+				ui_assestsPath.toString());
 
 		// Create the map file path
-		StringBuilder mapPath = new StringBuilder(baseDirectory);
-		mapPath.append(File.separatorChar);
-		mapPath.append("game_assets");
+		StringBuilder game_assetsPath = new StringBuilder(baseDirectory);
+		game_assetsPath.append(File.separatorChar);
+		game_assetsPath.append("game_assets");
 
-		this.challengeReader = new ChallengeReader(this, mapPath.toString());
+		this.challengeReader = new ChallengeReader(this, game_assetsPath.toString());
 
-		mapPath.append(File.separatorChar);
-		mapPath.append("maps");
+		StringBuilder musicPath = new StringBuilder(game_assetsPath);
+		musicPath.append(File.separatorChar);
+		musicPath.append("music");
 
-		this.mainMenu = new MainMenuState(this, 0, mapPath.toString());
+		this.musicHelper = new MusicHelper(musicPath.toString(), this);
+
+		game_assetsPath.append(File.separatorChar);
+		game_assetsPath.append("maps");
+
+		this.mainMenu = new MainMenuState(this, 0, game_assetsPath.toString());
 
 		// Construct the container for the game as a Slick2D state based game. And parse
 		// the details of the map from the maps file.
@@ -210,8 +220,8 @@ public class Game extends StateBasedGame {
 		}
 
 		// Add the path to the map's folder
-		mapPath.append(File.separatorChar);
-		mapsDirectory = mapPath.toString();
+		game_assetsPath.append(File.separatorChar);
+		mapsDirectory = game_assetsPath.toString();
 
 		// Start the display.
 		try {
@@ -329,7 +339,7 @@ public class Game extends StateBasedGame {
 			endRound();
 		}
 	}
-
+	
 	/**
 	 * Retrieves the current {@link InteractiveState} of the {@link Game}. This will
 	 * throw {@link IllegalArgumentException} if the {@link GameState} is not a
@@ -410,4 +420,17 @@ public class Game extends StateBasedGame {
 		new Game();
 
 	}
+
+	
+	@Override
+	public void musicEnded(Music music) {
+		getCurrentState().getMusic().play();
+	}
+
+	@Override
+	public void musicSwapped(Music music1, Music music2) {
+
+	}
+
+
 }

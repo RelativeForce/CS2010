@@ -5,7 +5,6 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.Music;
-import org.newdawn.slick.MusicListener;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -25,7 +24,7 @@ import peril.ui.visual.VisualList;
  * @see InteractiveState
  *
  */
-public class MainMenuState extends InteractiveState implements MusicListener{
+public class MainMenuState extends InteractiveState {
 
 	/**
 	 * The name of a specific {@link InteractiveState}.
@@ -51,7 +50,10 @@ public class MainMenuState extends InteractiveState implements MusicListener{
 	 * The {@link Font} for displaying the name of the game.
 	 */
 	private Font headingFont;
-	
+
+	/**
+	 * The music that plays in the background of this {@link MainMenuState}.
+	 */
 	private Music background;
 
 	/**
@@ -117,18 +119,23 @@ public class MainMenuState extends InteractiveState implements MusicListener{
 		// Initialise the map and all its elements
 		maps.setFont(mapFont);
 		maps.init();
+
+		// Start the music intro
+		getGame().musicHelper.read("HumanMusicIntro").play();
 		
-		background = new Music("C:\\Users\\Joshua\\Documents\\GitHub\\CS2010\\CS2010\\game_assets\\HumanMusic.ogg");
-		
-		Music intro = new Music("C:\\Users\\Joshua\\Documents\\GitHub\\CS2010\\CS2010\\game_assets\\HumanMusicIntro.ogg");
-		intro.addListener(this);
-		intro.play();
+		// Set the music that will be repeated when the intro finishes
+		background = getGame().musicHelper.read("HumanMusic");
 
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 
+	}
+
+	@Override
+	public Music getMusic() {
+		return background;
 	}
 
 	/**
@@ -236,16 +243,4 @@ public class MainMenuState extends InteractiveState implements MusicListener{
 		}
 
 	}
-
-	@Override
-	public void musicEnded(Music music) {
-		background.loop();
-	}
-
-	@Override
-	public void musicSwapped(Music arg0, Music arg1) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

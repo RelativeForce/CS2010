@@ -1,9 +1,11 @@
-package peril;
+package peril.io;
 
 import java.io.File;
 
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
+
+import peril.Game;
 
 /**
  * A wrapper class for handling the music directory and reading {@link Music}
@@ -12,7 +14,7 @@ import org.newdawn.slick.SlickException;
  * @author Joshua_Eddy
  *
  */
-public class MusicHelper {
+public class MusicReader {
 
 	/**
 	 * The path to the music directory.
@@ -20,26 +22,26 @@ public class MusicHelper {
 	private String musicDirectory;
 
 	/**
-	 * The {@link Game} this {@link MusicHelper} is a part of.
+	 * The {@link Game} this {@link MusicReader} is a part of.
 	 */
 	private Game game;
 
 	/**
-	 * Constructs a new {@link MusicHelper}.
+	 * Constructs a new {@link MusicReader}.
 	 * 
 	 * @param musicDirectory
 	 *            The path to the music directory.
 	 * @param game
-	 *            The {@link Game} this {@link MusicHelper} is a part of.
+	 *            The {@link Game} this {@link MusicReader} is a part of.
 	 */
-	public MusicHelper(String musicDirectory, Game game) {
+	public MusicReader(String musicDirectory, Game game) {
 		this.musicDirectory = musicDirectory;
 		this.game = game;
 	}
 
 	/**
 	 * Reads a specified .ogg file from the music directory that this
-	 * {@link MusicHelper} stores.
+	 * {@link MusicReader} stores.
 	 * 
 	 * @param fileName
 	 *            The file name of the music. OMIT file extension!

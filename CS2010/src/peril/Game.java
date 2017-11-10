@@ -18,6 +18,7 @@ import peril.board.Country;
 import peril.io.AssetReader;
 import peril.io.ChallengeReader;
 import peril.io.MapReader;
+import peril.io.MusicReader;
 import peril.ui.UIEventHandler;
 import peril.ui.states.InteractiveState;
 import peril.ui.states.gameStates.*;
@@ -138,7 +139,7 @@ public class Game extends StateBasedGame implements MusicListener{
 	 */
 	private ChallengeReader challengeReader;
 
-	public final MusicHelper musicHelper;
+	public final MusicReader musicHelper;
 
 	private String mapsDirectory;
 
@@ -201,7 +202,7 @@ public class Game extends StateBasedGame implements MusicListener{
 		musicPath.append(File.separatorChar);
 		musicPath.append("music");
 
-		this.musicHelper = new MusicHelper(musicPath.toString(), this);
+		this.musicHelper = new MusicReader(musicPath.toString(), this);
 
 		game_assetsPath.append(File.separatorChar);
 		game_assetsPath.append("maps");

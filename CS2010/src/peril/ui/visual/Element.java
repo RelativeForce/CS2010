@@ -1,12 +1,9 @@
-package peril.ui.states.menuStates;
+package peril.ui.visual;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import peril.Point;
-import peril.ui.states.Font;
-import peril.ui.visual.Clickable;
-import peril.ui.visual.Region;
 
 public class Element<T> extends Clickable {
 

@@ -1,4 +1,4 @@
-package peril.ui.states.menuStates;
+package peril.ui.visual;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -6,7 +6,6 @@ import java.util.List;
 import org.newdawn.slick.Graphics;
 
 import peril.Point;
-import peril.ui.states.Font;
 
 public class VisualList<T> {
 

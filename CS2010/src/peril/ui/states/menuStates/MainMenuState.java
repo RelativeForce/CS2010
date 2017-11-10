@@ -10,8 +10,10 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Point;
 import peril.io.TextFileReader;
-import peril.ui.states.Font;
 import peril.ui.states.InteractiveState;
+import peril.ui.visual.Element;
+import peril.ui.visual.Font;
+import peril.ui.visual.VisualList;
 
 /**
  * Encapsulates the behaviour of the main menu.

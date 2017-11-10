@@ -5,6 +5,16 @@ import org.newdawn.slick.Graphics;
 
 import peril.Point;
 
+/**
+ * 
+ * An element of the {@link VisualList} that can be displayed on screen using
+ * {@link Element#draw(Graphics, Font)}.
+ * 
+ * @author Joshua_Eddy
+ *
+ * @param <T>
+ *            The type of the {@link Element#payload}
+ */
 public class Element<T> extends Clickable {
 
 	/**
@@ -12,12 +22,19 @@ public class Element<T> extends Clickable {
 	 */
 	private T payload;
 
+	/**
+	 * The text representation of the {@link Element}.
+	 */
 	private String text;
 
 	/**
 	 * Constructs a new {@link Element}.
 	 * 
 	 * @param payload
+	 *            The {@link T} that will be returned if this {@link Element} is
+	 *            selected.
+	 * @param text
+	 *            The text representation of the {@link Element}.
 	 */
 	public Element(String text, T payload) {
 		super();

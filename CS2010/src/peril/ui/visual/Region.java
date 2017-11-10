@@ -76,10 +76,39 @@ public final class Region {
 
 	/**
 	 * Constructs a new {@link Region} using an {@link Image}.
-	 * @param image {@link Image}
+	 * 
+	 * @param image
+	 *            {@link Image}
 	 */
 	public Region(Image image) {
 		constructor(getRegion(image), image.getWidth(), image.getHeight());
+	}
+
+	/**
+	 * Constructs a new {@link Region} that is a rectangle.
+	 * 
+	 * @param width
+	 *            <code>int</code> width of the rectangle.
+	 * @param height
+	 *            <code>int</code> height of the rectangle.
+	 * @param position
+	 *            {@link Point}
+	 */
+	public Region(int width, int height, Point position) {
+
+		// Initialise the fields
+		this.position = position;
+		this.object = new boolean[width][height];
+		this.width = width;
+		this.height = height;
+
+		// Assign all the points in the array as true;
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				object[x][y] = true;
+			}
+		}
+
 	}
 
 	/**
@@ -161,17 +190,18 @@ public final class Region {
 
 	/**
 	 * Sets the {@link Region#position}
+	 * 
 	 * @param position
 	 */
 	public void setPosition(Point position) {
-		
-		if(position == null) {
+
+		if (position == null) {
 			throw new NullPointerException("Position cannot be null.");
 		}
-		
+
 		this.position = position;
 	}
-	
+
 	/**
 	 * Retrieves the width of the {@link Region}.
 	 * 
@@ -250,8 +280,8 @@ public final class Region {
 
 	/**
 	 * Retrieves a <code>boolean[][]</code> where if a pixel from the specified
-	 * {@link Image} is not {@link Color#transparent} it is assigned true,
-	 * otherwise it is false.
+	 * {@link Image} is not {@link Color#transparent} it is assigned true, otherwise
+	 * it is false.
 	 * 
 	 * @param image
 	 *            {@link Image}
@@ -268,7 +298,7 @@ public final class Region {
 
 			for (int x = 0; x < image.getWidth(); x++) {
 
-				if (!image.getColor(x, y).equals(Color.transparent) ) {
+				if (!image.getColor(x, y).equals(Color.transparent)) {
 					object[x][y] = true;
 				}
 			}
@@ -276,7 +306,7 @@ public final class Region {
 
 		return object;
 	}
-	
+
 	/**
 	 * Retrieves a <code>boolean[][]</code> where if a pixel from the specified
 	 * {@link Image} is the specified {@link Color} the it is assigned true,

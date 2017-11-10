@@ -30,7 +30,8 @@ public class Font {
 	 * @param color
 	 *            The {@link Color} of the {@link Font}.
 	 * @param size
-	 *            The <code>int</code> size of the {@link Font}.
+	 *            The <code>int</code> size of the {@link Font}. Seems to break over
+	 *            56
 	 */
 	public Font(String fontName, Color color, int size) {
 		this.color = color;
@@ -57,8 +58,9 @@ public class Font {
 		org.newdawn.slick.Font originalFont = g.getFont();
 
 		// Set the new font and color.
-		g.setFont(ttFont);
 		g.setColor(color);
+		g.setFont(ttFont);
+
 
 		// Draw the text
 		g.drawString(text, x, y);

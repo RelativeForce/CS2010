@@ -180,7 +180,6 @@ public abstract class InteractiveState extends BasicGameState {
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		gc.setUpdateOnlyWhenVisible(true);
-		game.loadAssets();
 	}
 
 	/**

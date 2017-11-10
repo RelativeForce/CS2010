@@ -100,7 +100,7 @@ public class Game extends StateBasedGame {
 	private volatile int currentRound;
 
 	/**
-	 * Holds all the players in an iterable array.
+	 * Holds all the {@link Player}s in this {@link Game}.
 	 */
 	private final Player[] players;
 
@@ -164,7 +164,7 @@ public class Game extends StateBasedGame {
 		this.board = new Board();
 
 		// Initialise the game states.
-		this.mainMenu = new MainMenuState(this, 0);
+		
 		this.setup = new SetupState(this, 1);
 		this.reinforcement = new ReinforcementState(this, 2);
 		this.combat = new CombatState(this, 3);
@@ -197,6 +197,8 @@ public class Game extends StateBasedGame {
 
 		mapPath.append(File.separatorChar);
 		mapPath.append("maps");
+		
+		this.mainMenu = new MainMenuState(this, 0, mapPath.toString());
 
 		// Construct the container for the game as a Slick2D state based game. And parse
 		// the details of the map from the maps file.
@@ -256,7 +258,7 @@ public class Game extends StateBasedGame {
 	/**
 	 * Starts the UI and reads the Board.
 	 */
-	public void loadAssets() {
+	public void loadAssets(String mapName) {
 
 		// If the assests are not already loaded
 		if (!isLoaded) {
@@ -326,6 +328,11 @@ public class Game extends StateBasedGame {
 		}
 	}
 
+	/**
+	 * Retrieves the current {@link InteractiveState} of the {@link Game}. This will
+	 * throw {@link IllegalArgumentException} if the {@link GameState} is not a
+	 * {@link InteractiveState}.
+	 */
 	@Override
 	public InteractiveState getCurrentState() {
 

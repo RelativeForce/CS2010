@@ -22,24 +22,27 @@ import peril.board.Country;
 public class ReinforcementState extends CoreGameState {
 
 	/**
-	 * The ID of this {@link ReinforcementState}
-	 */
-	private static final int ID = 2;
-	
-	/**
 	 * The name of a specific {@link ReinforcementState}.
 	 */
 	private static final String STATE_NAME = "Reinforcement";
 
-	public ReinforcementState(Game game) {
-		super(game, STATE_NAME);
+	/**
+	 * Constructs a new {@link ReinforcementState}.
+	 * 
+	 * @param game
+	 *            The {@link Game} this {@link ReinforcementState} is a part of.
+	 * @param id
+	 *            The ID of this {@link ReinforcementState}
+	 */
+	public ReinforcementState(Game game, int id) {
+		super(game, STATE_NAME, id);
 	}
-	
+
 	@Override
 	public void highlightCountry(Country country) {
 
 		super.unhighlightCountry(super.getHighlightedCountry());
-		
+
 		// If the country is null then set the primary highlighted as null and
 		// unhighlight the current enemy country.
 		if (country != null) {
@@ -50,7 +53,7 @@ public class ReinforcementState extends CoreGameState {
 			// Holds the ruler of the country
 			Player ruler = country.getRuler();
 
-			if(player.equals(ruler)) {
+			if (player.equals(ruler)) {
 				super.highlightCountry(country);
 			}
 
@@ -67,17 +70,12 @@ public class ReinforcementState extends CoreGameState {
 		// Draw player name and set the text color to the player's color
 		g.setColor(getGame().getCurrentPlayer().getColor());
 		g.drawString(getGame().getCurrentPlayer().toString(), 5, 20);
-		
+
 		// Set the text color to magenta
 		g.setColor(Color.black);
 
 		// Draw player name
 		g.drawString("Units: " + getGame().getCurrentPlayer().getDistributableArmySize(), 5, 35);
-	}
-
-	@Override
-	public int getID() {
-		return ID;
 	}
 
 	@Override
@@ -92,6 +90,6 @@ public class ReinforcementState extends CoreGameState {
 
 	@Override
 	public void parseButton(int key, char c) {
-				
+
 	}
 }

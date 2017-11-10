@@ -36,9 +36,11 @@ public abstract class CoreGameState extends InteractiveState {
 	 *            The {@link Game} this state is a part of.
 	 * @param stateName
 	 *            Holds the name of a specific {@link CoreGameState}.
+	 * @param id
+	 *            The id of this {@link CoreGameState}.
 	 */
-	protected CoreGameState(Game game, String stateName) {
-		super(game, stateName);
+	protected CoreGameState(Game game, String stateName, int id) {
+		super(game, stateName, id);
 		this.highlightedCountry = null;
 	}
 

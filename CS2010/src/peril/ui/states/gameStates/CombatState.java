@@ -22,11 +22,6 @@ import peril.board.Country;
 public class CombatState extends CoreGameState {
 
 	/**
-	 * The ID of this {@link CombatState}
-	 */
-	private static final int ID = 3;
-
-	/**
 	 * The name of a specific {@link CombatState}.
 	 */
 	private static final String STATE_NAME = "Combat";
@@ -48,16 +43,13 @@ public class CombatState extends CoreGameState {
 	 * 
 	 * @param game
 	 *            The {@link Game} that houses this {@link CombatState}.
+	 * @param id
+	 *            The ID of this {@link CombatState}
 	 */
-	public CombatState(Game game) {
-		super(game, STATE_NAME);
+	public CombatState(Game game, int id) {
+		super(game, STATE_NAME, id);
 		enemyCounrty = null;
 		isPostCombat = false;
-	}
-
-	@Override
-	public int getID() {
-		return ID;
 	}
 
 	public void setPostCombat() {

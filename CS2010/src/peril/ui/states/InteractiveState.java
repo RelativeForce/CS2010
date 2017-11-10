@@ -12,7 +12,6 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Point;
 import peril.ui.Button;
-import peril.ui.states.gameStates.CoreGameState;
 import peril.ui.visual.Clickable;
 import peril.ui.visual.Viewable;
 
@@ -32,13 +31,13 @@ public abstract class InteractiveState extends BasicGameState {
 	private String stateName;
 
 	/**
-	 * Holds the the current {@link Game} this {@link CoreGameState} is associated
-	 * with.
+	 * Holds the the current {@link Game} this {@link InteractiveState} is
+	 * associated with.
 	 */
 	private Game game;
 
 	/**
-	 * A {@link List} of {@link Button} elements that this {@link CoreGameState}
+	 * A {@link List} of {@link Button} elements that this {@link InteractiveState}
 	 * has.
 	 */
 	private List<Button> buttons;
@@ -50,14 +49,21 @@ public abstract class InteractiveState extends BasicGameState {
 	private List<Viewable> viewables;
 
 	/**
+	 * The id of this {@link InteractiveState}.
+	 */
+	private final int id;
+
+	/**
 	 * Constructs a new {@link InteractiveState}.
 	 * 
 	 * @param game
 	 *            The {@link Game} this state is a part of.
 	 * @param stateName
 	 *            Holds the name of a specific {@link InteractiveState}.
+	 * @param id
+	 *            The id of this {@link InteractiveState}.
 	 */
-	public InteractiveState(Game game, String stateName) {
+	public InteractiveState(Game game, String stateName, int id) {
 
 		if (game == null) {
 			throw new NullPointerException("Game cannot be null.");
@@ -65,6 +71,7 @@ public abstract class InteractiveState extends BasicGameState {
 			throw new NullPointerException("StateName cannot be empty.");
 		}
 
+		this.id = id;
 		this.game = game;
 		this.stateName = stateName;
 		this.buttons = new LinkedList<>();
@@ -178,7 +185,8 @@ public abstract class InteractiveState extends BasicGameState {
 
 	/**
 	 * Called as part of slick2d's game loop. Renders this state to the game's
-	 * graphics context. Draws all the {@link Button}s then the {@link Viewable} objects.
+	 * graphics context. Draws all the {@link Button}s then the {@link Viewable}
+	 * objects.
 	 * 
 	 * @param gc
 	 *            The game window.
@@ -214,7 +222,9 @@ public abstract class InteractiveState extends BasicGameState {
 	}
 
 	@Override
-	public abstract int getID();
+	public int getID() {
+		return id;
+	}
 
 	/**
 	 * Simulate a click a specified {@link Point} and check if any of the

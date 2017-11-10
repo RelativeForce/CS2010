@@ -249,7 +249,7 @@ public class AssetReader {
 			return new Action<CoreGameState>(state, actionState -> {
 				actionState.unhighlightCountry(actionState.getHighlightedCountry());
 				actionState.highlightCountry(null);
-				actionState.getGame().enterState(actionState.getGame().combatState.getID());
+				actionState.getGame().enterState(actionState.getGame().combat.getID());
 			});
 
 		// Enter movement state.
@@ -257,7 +257,7 @@ public class AssetReader {
 			return new Action<CoreGameState>(state, actionState -> {
 				actionState.unhighlightCountry(actionState.getHighlightedCountry());
 				actionState.highlightCountry(null);
-				actionState.getGame().enterState(actionState.getGame().movementState.getID());
+				actionState.getGame().enterState(actionState.getGame().movement.getID());
 			});
 
 		// Enter reinforcement state.
@@ -265,7 +265,7 @@ public class AssetReader {
 			return new Action<CoreGameState>(state, actionState -> {
 				actionState.unhighlightCountry(actionState.getHighlightedCountry());
 				actionState.highlightCountry(null);
-				actionState.getGame().enterState(actionState.getGame().reinforcementState.getID());
+				actionState.getGame().enterState(actionState.getGame().reinforcement.getID());
 				actionState.getGame().nextPlayer();
 			});
 		// Leave set up state
@@ -303,7 +303,7 @@ public class AssetReader {
 				// Check the challenges of the first player.
 				actionState.getGame().checkChallenges(actionState.getGame().getCurrentPlayer());
 
-				actionState.getGame().enterState(actionState.getGame().reinforcementState.getID());
+				actionState.getGame().enterState(actionState.getGame().reinforcement.getID());
 			});
 		// Fortify another country by moving one troop to the new country.
 		case 5:

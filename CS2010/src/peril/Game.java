@@ -18,7 +18,9 @@ import peril.io.ChallengeReader;
 import peril.io.MapReader;
 import peril.io.TextFileReader;
 import peril.ui.UIEventHandler;
+import peril.ui.states.InteractiveState;
 import peril.ui.states.gameStates.*;
+import peril.ui.states.menuStates.MainMenuState;
 
 /**
  * Encapsulate the main game logic for Peril. This also extends
@@ -49,30 +51,32 @@ public class Game extends StateBasedGame {
 	 * The state that displays combat to the user. This is heavily couples with
 	 * {@link CombatHandler}.
 	 */
-	public final CombatState combatState;
+	public final CombatState combat;
+
+	public final MainMenuState mainMenu;
 
 	/**
 	 * The {@link SetupState} that will allow the user to set up which
 	 * {@link Player} owns which {@link Country}.
 	 */
-	public final SetupState setupState;
+	public final SetupState setup;
 
 	/**
 	 * The {@link ReinforcementState} that allows the {@link Player} to distribute
 	 * their {@link Army} to the {@link Country}s they rule.
 	 */
-	public final ReinforcementState reinforcementState;
+	public final ReinforcementState reinforcement;
 
 	/**
 	 * The {@link MovementState} which lets the user move {@link Army}s from one
 	 * {@link Country} to another.
 	 */
-	public final MovementState movementState;
+	public final MovementState movement;
 
 	/**
 	 * The {@link EndState} that displays the results of the {@link Game}.
 	 */
-	public final EndState endState;
+	public final EndState end;
 
 	/**
 	 * The {@link UIEventHandler} that processes all of the user inputs and triggers
@@ -159,15 +163,15 @@ public class Game extends StateBasedGame {
 		// Construct the board.
 		this.board = new Board();
 
-		// this.challenges = ChallengeReader.getChallenges(currentDirectory.getPath(),
-		// "Earth");
-
 		// Initialise the game states.
-		this.combatState = new CombatState(this);
-		this.setupState = new SetupState(this);
-		this.reinforcementState = new ReinforcementState(this);
-		this.movementState = new MovementState(this);
-		this.endState = new EndState(this);
+		this.mainMenu = new MainMenuState(this, 0);
+		this.setup = new SetupState(this, 1);
+		this.reinforcement = new ReinforcementState(this, 2);
+		this.combat = new CombatState(this, 3);
+		this.movement = new MovementState(this, 4);
+		this.end = new EndState(this, 5);
+
+		// Initialise the event handler.
 		this.eventHandler = new UIEventHandler(this);
 
 		// Initialise games combatHandler
@@ -181,8 +185,7 @@ public class Game extends StateBasedGame {
 		assestsPath.append(File.separatorChar);
 		assestsPath.append("ui_assets");
 
-		this.assetReader = new AssetReader(
-				new CoreGameState[] { combatState, setupState, reinforcementState, movementState, endState },
+		this.assetReader = new AssetReader(new CoreGameState[] { combat, setup, reinforcement, movement, end },
 				assestsPath.toString());
 
 		// Create the map file path
@@ -231,13 +234,15 @@ public class Game extends StateBasedGame {
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
 
-		// Add all the game states to the game to the game container.
-		super.addState(setupState);
-		super.addState(combatState);
-		super.addState(reinforcementState);
-		super.addState(movementState);
-		super.addState(endState);
-		this.enterState(setupState.getID());
+		// Add starting state to the game container.
+		super.addState(mainMenu);
+
+		// Add all other states to game container.
+		super.addState(setup);
+		super.addState(reinforcement);
+		super.addState(combat);
+		super.addState(movement);
+		super.addState(end);
 
 		// Assign Key and Mouse Listener as the UIEventhandler
 		container.getInput().addKeyListener(eventHandler);
@@ -302,13 +307,13 @@ public class Game extends StateBasedGame {
 	 * Iterates to the next player.
 	 */
 	public void nextPlayer() {
-		
+
 		currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
 
 		if (getRoundNumber() > 0) {
 			checkChallenges(getCurrentPlayer());
 		}
-		
+
 		if (getCurrentPlayer().getCountriesRuled() <= 11) {
 			getCurrentPlayer().setDistributableArmySize(getCurrentPlayer().getDistributableArmySize() + 3);
 		} else {
@@ -316,23 +321,22 @@ public class Game extends StateBasedGame {
 					getCurrentPlayer().getDistributableArmySize() + (getCurrentPlayer().getCountriesRuled() / 3));
 		}
 
-		
 		if (currentPlayerIndex == 0) {
 			endRound();
 		}
 	}
 
 	@Override
-	public CoreGameState getCurrentState() {
+	public InteractiveState getCurrentState() {
 
 		// Holds the current game state.
 		GameState state = super.getCurrentState();
 
 		// If the current state is a CoreGameState return it as a CoreGameState
-		if (state instanceof CoreGameState) {
-			return (CoreGameState) state;
+		if (state instanceof InteractiveState) {
+			return (InteractiveState) state;
 		}
-		throw new IllegalStateException(state.getID() + " is not a valid state as it is not a CoreGameState.");
+		throw new IllegalStateException(state.getID() + " is not a valid state as it is not a InteractiveState.");
 	}
 
 	/**

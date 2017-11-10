@@ -9,41 +9,46 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 
-public class EndState extends CoreGameState{
+/**
+ * 
+ * The final state of the game where the winner is displayed.
+ * 
+ * @author Joshua_Eddy
+ *
+ */
+public class EndState extends CoreGameState {
 
-	/**
-	 * The ID of this {@link EndState}
-	 */
-	private static final int ID = 5;
-	
 	/**
 	 * The name of a specific {@link EndState}.
 	 */
 	private static final String STATE_NAME = "EndState";
-	
-	public EndState(Game game) {
-		super(game, STATE_NAME);
-	}
-	
-	public void displayWinner(Player player) {
-		
+
+	/**
+	 * Constructs a new {@link EndState}.
+	 * 
+	 * @param game
+	 *            The {@link Game} this state is a part of.
+	 * @param id
+	 *            The id of this {@link EndState}.
+	 */
+	public EndState(Game game, int id) {
+		super(game, STATE_NAME, id);
 	}
 
-	@Override
-	public int getID() {
-		return ID;
+	public void displayWinner(Player player) {
+
 	}
 
 	@Override
 	public void parseClick(int button, Point click) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void parseButton(int key, char c) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -53,6 +58,6 @@ public class EndState extends CoreGameState{
 		// Draw player name and set the text color to the player's color
 		g.setColor(getGame().getCurrentPlayer().getColor());
 		g.drawString(getGame().getCurrentPlayer().toString(), 5, 20);
-		
+
 	}
 }

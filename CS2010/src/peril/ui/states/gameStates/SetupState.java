@@ -11,31 +11,36 @@ import peril.Player;
 import peril.Point;
 import peril.board.Country;
 
+/**
+ * The state where the user selects which player gets what {@link Country}s.
+ * 
+ * @author Joshua_Eddy, Joseph_Rolli
+ * 
+ *         {@link CoreGameState}
+ *
+ */
 public class SetupState extends CoreGameState {
 
-	/**
-	 * The ID of this {@link SetupState}
-	 */
-	private static final int ID = 1;
-	
 	/**
 	 * The name of a specific {@link SetupState}.
 	 */
 	private static final String STATE_NAME = "Setup";
-	
 
-	public SetupState(Game game) {
-		super(game, STATE_NAME);
+	/**
+	 * Constructs a new {@link SetupState}.
+	 * 
+	 * @param game
+	 *            The {@link Game} this {@link SetupState} is a part of.
+	 * @param id
+	 *            The ID of this {@link SetupState}
+	 */
+	public SetupState(Game game, int id) {
+		super(game, STATE_NAME, id);
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
-	}
-
-	@Override
-	public int getID() {
-		return ID;
 	}
 
 	@Override

@@ -22,11 +22,6 @@ import peril.board.Country;
 public class MovementState extends CoreGameState {
 
 	/**
-	 * The ID of this {@link MovementState}.
-	 */
-	private static final int ID = 4;
-	
-	/**
 	 * The name of a specific {@link MovementState}.
 	 */
 	private static final String STATE_NAME = "Movement";
@@ -41,16 +36,19 @@ public class MovementState extends CoreGameState {
 	 * Constructs a new {@link MovementState}.
 	 * 
 	 * @param game
-	 *            The {@link Game} that houses this {@link CoreGameState}.
+	 *            The {@link Game} that houses this {@link MovementState}.
+	 * @param id
+	 *            The ID of this {@link MovementState}.
+	 * 
 	 */
-	public MovementState(Game game) {
-		super(game, STATE_NAME);
+	public MovementState(Game game, int id) {
+		super(game, STATE_NAME, id);
 		targetCounrty = null;
 	}
 
 	@Override
 	public void highlightCountry(Country country) {
-		
+
 		// If the country is null then set the primary highlighted as null and
 		// unhighlight the current enemy country.
 		if (country != null) {
@@ -70,11 +68,6 @@ public class MovementState extends CoreGameState {
 			super.highlightCountry(country);
 		}
 
-	}
-
-	@Override
-	public int getID() {
-		return ID;
 	}
 
 	@Override
@@ -106,12 +99,11 @@ public class MovementState extends CoreGameState {
 		// Unhighlight both highlighted countries when this method is called from a
 		// external class.
 		super.unhighlightCountry(targetCounrty);
-		
+
 		targetCounrty = null;
-		
+
 		super.unhighlightCountry(country);
-		
-		
+
 	}
 
 	/**

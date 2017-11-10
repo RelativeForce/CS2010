@@ -299,6 +299,9 @@ public class AssetReader {
 						}
 					});
 				});
+				
+				// Check the challenges of the first player.
+				actionState.getGame().checkChallenges(actionState.getGame().getCurrentPlayer());
 
 				actionState.getGame().enterState(actionState.getGame().reinforcementState.getID());
 			});

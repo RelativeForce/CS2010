@@ -302,17 +302,21 @@ public class Game extends StateBasedGame {
 	 * Iterates to the next player.
 	 */
 	public void nextPlayer() {
+		
 		currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
 
+		if (getRoundNumber() > 0) {
+			checkChallenges(getCurrentPlayer());
+		}
+		
 		if (getCurrentPlayer().getCountriesRuled() <= 11) {
 			getCurrentPlayer().setDistributableArmySize(getCurrentPlayer().getDistributableArmySize() + 3);
 		} else {
 			getCurrentPlayer().setDistributableArmySize(
 					getCurrentPlayer().getDistributableArmySize() + (getCurrentPlayer().getCountriesRuled() / 3));
 		}
-		
-		checkChallenges(getCurrentPlayer());
 
+		
 		if (currentPlayerIndex == 0) {
 			endRound();
 		}

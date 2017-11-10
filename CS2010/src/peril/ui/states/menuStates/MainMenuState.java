@@ -4,6 +4,8 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.Music;
+import org.newdawn.slick.MusicListener;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -23,7 +25,7 @@ import peril.ui.visual.VisualList;
  * @see InteractiveState
  *
  */
-public class MainMenuState extends InteractiveState {
+public class MainMenuState extends InteractiveState implements MusicListener{
 
 	/**
 	 * The name of a specific {@link InteractiveState}.
@@ -49,6 +51,8 @@ public class MainMenuState extends InteractiveState {
 	 * The {@link Font} for displaying the name of the game.
 	 */
 	private Font headingFont;
+	
+	private Music background;
 
 	/**
 	 * Constructs a new {@link MainMenuState}
@@ -113,11 +117,18 @@ public class MainMenuState extends InteractiveState {
 		// Initialise the map and all its elements
 		maps.setFont(mapFont);
 		maps.init();
+		
+		background = new Music("C:\\Users\\Joshua\\Documents\\GitHub\\CS2010\\CS2010\\game_assets\\HumanMusic.ogg");
+		
+		Music intro = new Music("C:\\Users\\Joshua\\Documents\\GitHub\\CS2010\\CS2010\\game_assets\\HumanMusicIntro.ogg");
+		intro.addListener(this);
+		intro.play();
 
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+
 	}
 
 	/**
@@ -224,6 +235,17 @@ public class MainMenuState extends InteractiveState {
 			this.name = name;
 		}
 
+	}
+
+	@Override
+	public void musicEnded(Music music) {
+		background.loop();
+	}
+
+	@Override
+	public void musicSwapped(Music arg0, Music arg1) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

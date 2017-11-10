@@ -35,6 +35,9 @@ public class MainMenuState extends InteractiveState {
 	 */
 	private final String[] mapsFile;
 
+	/**
+	 * The {@link VisualList} of the maps read from the map file.
+	 */
 	private VisualList<Map> maps;
 
 	/**
@@ -81,19 +84,21 @@ public class MainMenuState extends InteractiveState {
 
 	@Override
 	public void parseButton(int key, char c) {
-		if (key == Input.KEY_ENTER) {
 
+		if (key == Input.KEY_ENTER) {
+			// Attempt to load the map
 			try {
 				loadMap();
-
 			} catch (SlickException e) {
 
 			}
-		} else if (key == Input.KEY_DOWN) {
-
+		}
+		// Move the highlight to the next map down
+		else if (key == Input.KEY_DOWN) {
 			maps.down();
-		} else if (key == Input.KEY_UP) {
-
+		}
+		// Move the highlight to the next map up
+		else if (key == Input.KEY_UP) {
 			maps.up();
 		}
 	}
@@ -105,6 +110,7 @@ public class MainMenuState extends InteractiveState {
 		mapFont = new Font("Arial", Color.green, 20);
 		headingFont = new Font("Arial", Color.red, 56);
 
+		// Initialise the map and all its elements
 		maps.setFont(mapFont);
 		maps.init();
 
@@ -151,12 +157,8 @@ public class MainMenuState extends InteractiveState {
 	}
 
 	/**
-	 * Loads the {@link MainMenuState#selectedMap} into the {@link Game} and
-	 * re-sizes the window of the {@link Game}.
-	 * 
-	 * @param map
-	 *            {@link MainMenuState#selectedMap}.
-	 * @throws SlickException
+	 * Loads the {@link MainMenuState#mapFont} {@link VisualList#getSelected()} into
+	 * the {@link Game} and re-sizes the window of the {@link Game}.
 	 */
 	private void loadMap() throws SlickException {
 
@@ -176,13 +178,19 @@ public class MainMenuState extends InteractiveState {
 				throw new IllegalArgumentException("Height must be greater than zero.");
 			}
 
-			// Loads the game assets
+			// Loads the game assets and move into the set up state
 			getGame().loadAssets(map.name, map.width, map.height);
 			getGame().enterState(getGame().setup.getID());
 		}
 
 	}
 
+	/**
+	 * A wrapper for the details of a map in the {@link Game}.
+	 * 
+	 * @author Joshua_Eddy
+	 *
+	 */
 	private class Map {
 
 		/**

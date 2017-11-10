@@ -115,7 +115,7 @@ public class MainMenuState extends InteractiveState {
 			maps.forEach(currentMap -> {
 
 				if (currentMap.isClicked(click)) {
-					selectElement(currentMap);
+					selectMap(currentMap);
 				}
 
 			});
@@ -131,6 +131,20 @@ public class MainMenuState extends InteractiveState {
 				getGame().enterState(getGame().setup.getID());
 			} catch (SlickException e) {
 
+			}
+		} else if (key == Input.KEY_DOWN) {
+
+			int index = maps.indexOf(selectedMap);
+
+			if (index < maps.size() - 1) {
+				selectMap(maps.get(index + 1));
+			}
+		} else if (key == Input.KEY_UP) {
+
+			int index = maps.indexOf(selectedMap);
+
+			if (index > 0) {
+				selectMap(maps.get(index - 1));
 			}
 		}
 	}
@@ -160,7 +174,7 @@ public class MainMenuState extends InteractiveState {
 	 * @param map
 	 *            {@link Map}
 	 */
-	public void selectElement(Map map) {
+	public void selectMap(Map map) {
 		selectedMap = map;
 	}
 
@@ -181,8 +195,13 @@ public class MainMenuState extends InteractiveState {
 	 */
 	private void drawMapList(Graphics g) {
 
+		// Draws the background menu box.
 		g.fillRect(mapListX, mapListY, width, (maps.size() * height));
+
+		// Highlights the selected map
 		g.drawImage(selectedMap.getImage(), selectedMap.getPosition().x, selectedMap.getPosition().y);
+
+		// Draw the map names in the game.
 		maps.forEach(map -> map.draw(g));
 	}
 
@@ -205,32 +224,46 @@ public class MainMenuState extends InteractiveState {
 
 	}
 
+	/**
+	 * Loads the {@link MainMenuState#selectedMap} into the {@link Game} and
+	 * re-sizes the window of the {@link Game}.
+	 * 
+	 * @param map
+	 *            {@link MainMenuState#selectedMap}.
+	 * @throws SlickException
+	 */
 	private void loadMap(Map map) throws SlickException {
 
-		for (String line : mapsFile) {
+		String[] element = selectedMap.getElements();
 
-			String[] mapDetails = line.split(",");
-
-			if (mapDetails[0].equals(map.element[0])) {
-
-				int width;
-				try {
-					width = Integer.parseInt(mapDetails[1]);
-				} catch (Exception e) {
-					throw new IllegalArgumentException("Width must be an integer");
-				}
-
-				int height;
-				try {
-					height = Integer.parseInt(mapDetails[2]);
-				} catch (Exception e) {
-					throw new IllegalArgumentException("Height must be an integer");
-				}
-
-				getGame().loadAssets(map.getElement()[0], width, height);
-			}
-
+		// Parse width
+		int width;
+		try {
+			width = Integer.parseInt(element[1]);
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Width must be an integer");
 		}
+
+		// Parse height
+		int height;
+		try {
+			height = Integer.parseInt(element[2]);
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Height must be an integer");
+		}
+
+		// Check width
+		if (width <= 0) {
+			throw new IllegalArgumentException("Width must greater than zero.");
+		}
+
+		// Check height
+		if (height <= 0) {
+			throw new IllegalArgumentException("Height must be greater than zero.");
+		}
+
+		// Loads the game assets
+		getGame().loadAssets(selectedMap.getElements()[0], width, height);
 
 	}
 
@@ -239,7 +272,7 @@ public class MainMenuState extends InteractiveState {
 		/**
 		 * The string array of the details of the maps
 		 */
-		private String[] element;
+		private String[] elements;
 
 		/**
 		 * Constructs a new {@link Map}.
@@ -248,16 +281,16 @@ public class MainMenuState extends InteractiveState {
 		 */
 		public Map(String[] element) {
 			super();
-			this.element = element;
+			this.elements = element;
 		}
 
 		/**
-		 * Retrieves the {@link Map#element}.
+		 * Retrieves the {@link Map#elements}.
 		 * 
 		 * @return {@link String}[]
 		 */
-		public String[] getElement() {
-			return element;
+		public String[] getElements() {
+			return elements;
 		}
 
 		/**
@@ -283,7 +316,7 @@ public class MainMenuState extends InteractiveState {
 		 * @param g
 		 */
 		public void draw(Graphics g) {
-			mapFont.draw(g, element[0], getPosition().x, getPosition().y);
+			mapFont.draw(g, elements[0], getPosition().x, getPosition().y);
 		}
 	}
 

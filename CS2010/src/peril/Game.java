@@ -46,6 +46,9 @@ public class Game extends StateBasedGame {
 	 */
 	public final CombatState combat;
 
+	/**
+	 * The {@link MainMenuState} of the {@link Game}.
+	 */
 	public final MainMenuState mainMenu;
 
 	/**
@@ -132,7 +135,7 @@ public class Game extends StateBasedGame {
 	 * {@link ChallengeReader} that loads the {@link Challenge}s from memory.
 	 */
 	private ChallengeReader challengeReader;
-	
+
 	private String mapsDirectory;
 
 	/**
@@ -159,7 +162,7 @@ public class Game extends StateBasedGame {
 		this.board = new Board();
 
 		// Initialise the game states.
-		
+
 		this.setup = new SetupState(this, 1);
 		this.reinforcement = new ReinforcementState(this, 2);
 		this.combat = new CombatState(this, 3);
@@ -192,14 +195,14 @@ public class Game extends StateBasedGame {
 
 		mapPath.append(File.separatorChar);
 		mapPath.append("maps");
-		
+
 		this.mainMenu = new MainMenuState(this, 0, mapPath.toString());
 
 		// Construct the container for the game as a Slick2D state based game. And parse
 		// the details of the map from the maps file.
 		try {
 			agc = new AppGameContainer(this);
-			agc.setDisplayMode(300,200, false);
+			agc.setDisplayMode(300, 200, false);
 
 		} catch (SlickException e) {
 			System.out.println(e.getMessage());
@@ -249,17 +252,18 @@ public class Game extends StateBasedGame {
 
 	/**
 	 * Starts the UI and reads the Board.
-	 * @throws SlickException 
+	 * 
+	 * @throws SlickException
 	 */
 	public void loadAssets(String mapName, int width, int height) throws SlickException {
 
 		// If the assests are not already loaded
 		if (!isLoaded) {
-			
+
 			agc.setDisplayMode(width, height, false);
 			// Initialise the map reader and the players array.
 			this.mapReader = new MapReader(mapsDirectory + mapName, board);
-			
+
 			mapReader.read();
 			assetReader.read();
 			challengeReader.read();

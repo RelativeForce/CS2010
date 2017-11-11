@@ -167,21 +167,16 @@ public class CombatState extends CoreGameState {
 		// ruler of the country is not the player.
 		if (getHighlightedCountry() != null && !player.equals(ruler)) {
 
-			if (ruler != null) {
+			// if the country is a neighbour of the primary highlighted country then it is a
+			// valid target.
+			if (getHighlightedCountry().isNeighbour(country)) {
 
-				// if the country is a neighbour of the primary highlighted country then it is a
-				// valid target.
-				if (getHighlightedCountry().isNeighbour(country)) {
+				System.out.println("A valid target");
+				unhighlightCountry(enemyCounrty);
+				enemyCounrty = country;
+				enemyCounrty.setImage(enemyCounrty.getRegion().getPosition(),
+						enemyCounrty.getRegion().convert(Color.yellow));
 
-					System.out.println("A valid target");
-					unhighlightCountry(enemyCounrty);
-					enemyCounrty = country;
-					enemyCounrty.setImage(enemyCounrty.getRegion().getPosition(),
-							enemyCounrty.getRegion().convert(Color.yellow));
-
-				} else {
-					// DO NOTHING
-				}
 			} else {
 				// DO NOTHING
 			}

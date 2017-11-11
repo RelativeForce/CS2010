@@ -189,20 +189,6 @@ public final class Region {
 	}
 
 	/**
-	 * Sets the {@link Region#position}
-	 * 
-	 * @param position
-	 */
-	public void setPosition(Point position) {
-
-		if (position == null) {
-			throw new NullPointerException("Position cannot be null.");
-		}
-
-		this.position = position;
-	}
-
-	/**
 	 * Retrieves the width of the {@link Region}.
 	 * 
 	 * @return <code>int</code>
@@ -262,6 +248,21 @@ public final class Region {
 		}
 		return imagebuffer.getImage();
 
+	}
+
+	/**
+	 * Sets the {@link Region#position}
+	 * 
+	 * @param position
+	 *            {@link Point}
+	 */
+	protected void setPosition(Point position) {
+
+		if (position == null) {
+			throw new NullPointerException("Position cannot be null.");
+		}
+
+		this.position = position;
 	}
 
 	/**

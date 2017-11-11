@@ -4,6 +4,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
@@ -141,6 +142,40 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	/**
+	 * Processes a button click on a {@link CoreGameState}.
+	 */
+	@Override
+	public void parseButton(int key, char c) {
+
+		// Movement increment
+		int increment = 50;
+
+		switch (key) {
+		case Input.KEY_UP:
+			getGame().getBoard().move(new Point(0, +increment));
+			break;
+		case Input.KEY_DOWN:
+			getGame().getBoard().move(new Point(0, -increment));
+			break;
+		case Input.KEY_LEFT:
+			getGame().getBoard().move(new Point(+increment, 0));
+			break;
+		case Input.KEY_RIGHT:
+			getGame().getBoard().move(new Point(-increment, 0));
+			break;
+		default:
+			break;
+
+		}
+
+	}
+
+	@Override
+	public Music getMusic() {
+		return getGame().musicHelper.read("HumanMusic");
+	}
+
+	/**
 	 * Simulates a click at a {@link Point} on the {@link Board} and highlights the
 	 * {@link Country} that clicked.
 	 * 
@@ -266,8 +301,4 @@ public abstract class CoreGameState extends InteractiveState {
 
 	}
 
-	@Override
-	public Music getMusic() {
-		return getGame().musicHelper.read("HumanMusic");
-	}
 }

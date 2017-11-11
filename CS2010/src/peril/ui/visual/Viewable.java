@@ -75,6 +75,19 @@ public abstract class Viewable {
 	}
 
 	/**
+	 * Sets the {@link Point} position of this {@link Viewable}.
+	 * 
+	 * @param position
+	 *            {@link Point}
+	 */
+	public void setPosition(Point position) {
+		if (position == null) {
+			throw new NullPointerException("Position cannot be null.");
+		}
+		this.position = position;
+	}
+
+	/**
 	 * Retrieves the Width of the {@link Image} in this {@link Viewable}.
 	 * 
 	 * @return <code>int</code>

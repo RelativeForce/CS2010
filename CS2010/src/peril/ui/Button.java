@@ -49,11 +49,9 @@ public class Button extends Clickable {
 
 		// Initialise the image and action.
 		this.setImage(position, image);
+		this.setRegion(new Region(image));
+		this.setPosition(position);
 		
-		Region region = new Region(image);
-		region.setPosition(position);
-		
-		this.setRegion(region);
 		this.action = action;
 	}
 

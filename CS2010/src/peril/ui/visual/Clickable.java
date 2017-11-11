@@ -82,6 +82,21 @@ public abstract class Clickable extends Viewable {
 	}
 
 	/**
+	 * Sets the {@link Point} position of this {@link Clickable}.
+	 * 
+	 * @param position
+	 *            {@link Point}
+	 */
+	public void setPosition(Point position) {
+
+		super.setPosition(position);
+
+		if (hasRegion()) {
+			region.setPosition(position);
+		}
+	}
+
+	/**
 	 * Retrieves the width of the {@link Region} in this {@link Clickable}. If the
 	 * {@link Region} is null this returns {@link Viewable#getWidth()}.
 	 * 

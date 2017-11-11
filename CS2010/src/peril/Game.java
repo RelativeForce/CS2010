@@ -164,7 +164,7 @@ public class Game extends StateBasedGame implements MusicListener{
 		this.isLoaded = false;
 
 		// Construct the board.
-		this.board = new Board();
+		this.board = new Board(this);
 
 		// Initialise the game states.
 
@@ -422,10 +422,15 @@ public class Game extends StateBasedGame implements MusicListener{
 
 	}
 
-	
 	@Override
-	public void musicEnded(Music music) {
-		getCurrentState().getMusic().play();
+	public void musicEnded(Music previousMusic) {
+		
+		Music stateMusic = getCurrentState().getMusic();
+		
+		if(stateMusic != null) {
+			stateMusic.play();
+		}
+		
 	}
 
 	@Override

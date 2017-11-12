@@ -22,5 +22,10 @@ public abstract class Challenge {
 	 * @return <code>boolean</code> {@link Challenge} completion status.
 	 */
 	public abstract boolean hasCompleted(Player player, Board board);
+	
+	@Override
+	public String toString() {
+		return "Challenge Completed: ";
+	}
 
 }

@@ -113,6 +113,8 @@ public class ChallengeReader {
 			// this challenge.
 			int numberOfContinets = Integer.parseInt(details[1]);
 
+			int reward = Integer.parseInt(details[2]);
+
 			challenges.add(new Challenge() {
 
 				@Override
@@ -134,7 +136,7 @@ public class ChallengeReader {
 							if (ownedContinents >= numberOfContinets) {
 
 								// Give the player a army of size 5 to distribute.
-								player.award(new Army(5));
+								player.award(new Army(reward));
 
 								return true;
 							}
@@ -143,6 +145,11 @@ public class ChallengeReader {
 					}
 					return false;
 
+				}
+
+				@Override
+				public String toString() {
+					return super.toString() + "Own " + numberOfContinets + " Continents.";
 				}
 
 			});
@@ -170,6 +177,8 @@ public class ChallengeReader {
 			// this challenge.
 			int numberOfCountries = Integer.parseInt(details[1]);
 
+			int reward = Integer.parseInt(details[2]);
+
 			challenges.add(new Challenge() {
 
 				@Override
@@ -194,7 +203,7 @@ public class ChallengeReader {
 								if (ownedCountries >= numberOfCountries) {
 
 									// Give the player a army of size 5 to distribute.
-									player.award(new Army(8));
+									player.award(new Army(reward));
 
 									return true;
 								}
@@ -203,6 +212,12 @@ public class ChallengeReader {
 					}
 					return false;
 				}
+
+				@Override
+				public String toString() {
+					return super.toString() + "Own " + numberOfCountries + " Countries.";
+				}
+
 			});
 
 		} catch (Exception ex) {
@@ -227,6 +242,8 @@ public class ChallengeReader {
 			// Holds the number of continents that the player must own in order to complete
 			// this challenge.
 			int sizeOfArmy = Integer.parseInt(details[1]);
+
+			int reward = Integer.parseInt(details[2]);
 
 			challenges.add(new Challenge() {
 
@@ -253,7 +270,7 @@ public class ChallengeReader {
 								if (currentArmySize >= sizeOfArmy) {
 
 									// Give the player a army of size 5 to distribute.
-									player.award(new Army(5));
+									player.award(new Army(reward));
 
 									return true;
 								}
@@ -261,6 +278,12 @@ public class ChallengeReader {
 						}
 					}
 					return false;
+				}
+
+				@Override
+				public String toString() {
+
+					return super.toString() + "Lead " + sizeOfArmy + " Units.";
 				}
 			});
 

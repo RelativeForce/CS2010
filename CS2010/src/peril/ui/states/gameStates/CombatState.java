@@ -52,14 +52,26 @@ public class CombatState extends CoreGameState {
 		isPostCombat = false;
 	}
 
+	/**
+	 * Sets the state if this {@link CombatState} to after a {@link Country} has
+	 * been conquered.
+	 */
 	public void setPostCombat() {
 		isPostCombat = true;
 	}
 
+	/**
+	 * Sets the state if this {@link CombatState} to before a {@link Country} has
+	 * been conquered.
+	 */
 	public void setPreCombat() {
 		isPostCombat = false;
 	}
 
+	/**
+	 * {@link CoreGameState#clickButton(Point)} if that returns false then
+	 * {@link CoreGameState#clickBoard(Point)}.
+	 */
 	@Override
 	public void parseClick(int button, Point click) {
 		// If the states buttons were not clicked click the board.
@@ -68,6 +80,10 @@ public class CombatState extends CoreGameState {
 		}
 	}
 
+	/**
+	 * If there is a highlighted enemy country remove the highlight effect on that
+	 * as well as the primary country.
+	 */
 	@Override
 	public void unhighlightCountry(Country country) {
 
@@ -80,6 +96,11 @@ public class CombatState extends CoreGameState {
 		super.unhighlightCountry(country);
 	}
 
+	/**
+	 * Highlights a specified {@link Country}. If there is a friendly
+	 * {@link Country} already highlighted then this will check if the
+	 * {@link Country} is a valid target and allow highlighting accordingly.
+	 */
 	@Override
 	public void highlightCountry(Country country) {
 
@@ -120,6 +141,13 @@ public class CombatState extends CoreGameState {
 		}
 	}
 
+	/**
+	 * If a {@link Player} has not conquered a new {@link Country} since they last
+	 * clicked a {@link Country}. Remove the highlight effect on both the primary
+	 * and secondary country.
+	 * 
+	 * @param country
+	 */
 	private void highlightCountryPostCombat(Country country) {
 
 		super.unhighlightCountry(country);
@@ -130,6 +158,11 @@ public class CombatState extends CoreGameState {
 		setPreCombat();
 	}
 
+	/**
+	 * Displays
+	 * {@link CoreGameState#render(GameContainer, StateBasedGame, Graphics) } then
+	 * the current {@link Player}s name and then the enemy {@link Country}.
+	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
@@ -144,6 +177,9 @@ public class CombatState extends CoreGameState {
 
 	}
 
+	/**
+	 * Processes a button press on this {@link CombatState}.
+	 */
 	@Override
 	public void parseButton(int key, char c) {
 		// Do nothing

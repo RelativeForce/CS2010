@@ -113,52 +113,6 @@ public class CombatState extends CoreGameState {
 	}
 
 	/**
-	 * If a {@link Player} has not conquered a new {@link Country} since they last
-	 * clicked a {@link Country}.
-	 * 
-	 * @param country
-	 *            {@link Country} that was clicked.
-	 */
-	private void highlightCounrtyPreCombat(Country country) {
-
-		// If the country is null then set the primary highlighted as null and
-		// unhighlight the current enemy country.
-		if (country != null) {
-
-			// Holds the current player
-			Player player = getGame().getCurrentPlayer();
-
-			// Holds the ruler of the country
-			Player ruler = country.getRuler();
-
-			processCountry(country, player, ruler);
-
-		} else {
-			super.unhighlightCountry(enemyCounrty);
-			enemyCounrty = null;
-			super.unhighlightCountry(super.getHighlightedCountry());
-			super.highlightCountry(country);
-		}
-	}
-
-	/**
-	 * If a {@link Player} has not conquered a new {@link Country} since they last
-	 * clicked a {@link Country}. Remove the highlight effect on both the primary
-	 * and secondary country.
-	 * 
-	 * @param country
-	 */
-	private void highlightCountryPostCombat(Country country) {
-
-		super.unhighlightCountry(country);
-		enemyCounrty = null;
-		super.unhighlightCountry(getHighlightedCountry());
-		super.highlightCountry(null);
-
-		setPreCombat();
-	}
-
-	/**
 	 * Displays
 	 * {@link CoreGameState#render(GameContainer, StateBasedGame, Graphics) } then
 	 * the current {@link Player}s name and then the enemy {@link Country}.
@@ -241,5 +195,51 @@ public class CombatState extends CoreGameState {
 	 */
 	public Country getEnemyCountry() {
 		return enemyCounrty;
+	}
+
+	/**
+	 * If a {@link Player} has not conquered a new {@link Country} since they last
+	 * clicked a {@link Country}.
+	 * 
+	 * @param country
+	 *            {@link Country} that was clicked.
+	 */
+	private void highlightCounrtyPreCombat(Country country) {
+
+		// If the country is null then set the primary highlighted as null and
+		// unhighlight the current enemy country.
+		if (country != null) {
+
+			// Holds the current player
+			Player player = getGame().getCurrentPlayer();
+
+			// Holds the ruler of the country
+			Player ruler = country.getRuler();
+
+			processCountry(country, player, ruler);
+
+		} else {
+			super.unhighlightCountry(enemyCounrty);
+			enemyCounrty = null;
+			super.unhighlightCountry(super.getHighlightedCountry());
+			super.highlightCountry(country);
+		}
+	}
+
+	/**
+	 * If a {@link Player} has not conquered a new {@link Country} since they last
+	 * clicked a {@link Country}. Remove the highlight effect on both the primary
+	 * and secondary country.
+	 * 
+	 * @param country
+	 */
+	private void highlightCountryPostCombat(Country country) {
+
+		super.unhighlightCountry(country);
+		enemyCounrty = null;
+		super.unhighlightCountry(getHighlightedCountry());
+		super.highlightCountry(null);
+
+		setPreCombat();
 	}
 }

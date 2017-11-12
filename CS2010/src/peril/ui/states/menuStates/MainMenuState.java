@@ -9,6 +9,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
+import peril.Player;
 import peril.Point;
 import peril.io.TextFileReader;
 import peril.ui.states.InteractiveState;
@@ -41,6 +42,8 @@ public class MainMenuState extends InteractiveState {
 	 */
 	private VisualList<Map> maps;
 
+	private VisualList<PlayerArray> players;
+
 	/**
 	 * The {@link Font} used for displaying {@link MainMenuState#maps}.
 	 */
@@ -50,6 +53,8 @@ public class MainMenuState extends InteractiveState {
 	 * The {@link Font} for displaying the name of the game.
 	 */
 	private Font headingFont;
+	
+	private Font textFont;
 
 	/**
 	 * The music that plays in the background of this {@link MainMenuState}.
@@ -68,23 +73,34 @@ public class MainMenuState extends InteractiveState {
 
 		super(game, STATE_NAME, id);
 		mapsFile = TextFileReader.scanFile(mapsFilePath, "maps.txt");
-		maps = new VisualList<>(15, 90, 90, 22, 2);
+		maps = new VisualList<>(15, 90, 90, 22, 2, 10);
+		players = new VisualList<>(200, 90, 20, 22, 3, 5);
 		getMaps();
+		getPlayers();
 
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+		
+		g.setBackground(Color.lightGray);
+		
 		super.render(gc, sbg, g);
-
+		
+		textFont.draw(g, "Players: ", 200, 70);
+		textFont.draw(g, "Map: ", 15, 70);
 		headingFont.draw(g, "Peril", 10, 5);
+		
 		maps.draw(g);
+		players.draw(g);
 	}
 
 	@Override
 	public void parseClick(int button, Point click) {
 		if (!super.clickButton(click)) {
-			maps.click(click);
+			if (!maps.click(click)) {
+				players.click(click);
+			}
 		}
 	}
 
@@ -99,14 +115,6 @@ public class MainMenuState extends InteractiveState {
 
 			}
 		}
-		// Move the highlight to the next map down
-		else if (key == Input.KEY_DOWN) {
-			maps.down();
-		}
-		// Move the highlight to the next map up
-		else if (key == Input.KEY_UP) {
-			maps.up();
-		}
 	}
 
 	@Override
@@ -115,14 +123,19 @@ public class MainMenuState extends InteractiveState {
 		// Initialise the fonts;
 		mapFont = new Font("Arial", Color.green, 20);
 		headingFont = new Font("Arial", Color.red, 56);
+		textFont = new Font("Arial", Color.blue, 15);
 
-		// Initialise the map and all its elements
+		// Initialise the maps list and all its elements
 		maps.setFont(mapFont);
 		maps.init();
 
+		// Initialise the players list and all its elements
+		players.setFont(mapFont);
+		players.init();
+
 		// Start the music intro
 		getGame().musicHelper.read("HumanMusicIntro").play();
-		
+
 		// Set the music that will be repeated when the intro finishes
 		background = getGame().musicHelper.read("HumanMusic");
 
@@ -175,16 +188,27 @@ public class MainMenuState extends InteractiveState {
 	}
 
 	/**
+	 * The visual representation of the list of players on screen.
+	 */
+	private void getPlayers() {
+		players.add(new Element<PlayerArray>("2", new PlayerArray(2)));
+		players.add(new Element<PlayerArray>("3", new PlayerArray(3)));
+		players.add(new Element<PlayerArray>("4", new PlayerArray(4)));
+	}
+
+	/**
 	 * Loads the {@link MainMenuState#mapFont} {@link VisualList#getSelected()} into
 	 * the {@link Game} and re-sizes the window of the {@link Game}.
 	 */
 	private void loadMap() throws SlickException {
 
-		Element<Map> element = maps.getSelected();
+		Element<Map> mapElement = maps.getSelected();
+		Element<PlayerArray> playersElement = players.getSelected();
 
-		if (element != null) {
+		if (mapElement != null && playersElement != null) {
 
-			Map map = element.get();
+			Map map = mapElement.get();
+			PlayerArray playersArray = playersElement.get();
 
 			// Check width
 			if (map.width <= 0) {
@@ -198,6 +222,7 @@ public class MainMenuState extends InteractiveState {
 
 			// Loads the game assets and move into the set up state
 			getGame().loadAssets(map.name, map.width, map.height);
+			getGame().setPlayers(playersArray.players);
 			getGame().enterState(getGame().setup.getID());
 		}
 
@@ -242,5 +267,48 @@ public class MainMenuState extends InteractiveState {
 			this.name = name;
 		}
 
+	}
+
+	/**
+	 * Holds an array of {@link Player}s used as the payload for the
+	 * {@link Element}s in {@link MainMenuState#players}.
+	 * 
+	 * @author Joshua_Eddy
+	 *
+	 */
+	private class PlayerArray {
+
+		/**
+		 * An array of {@link players}.
+		 */
+		public final Player[] players;
+
+		/**
+		 * Constructs a new {@link PlayerArray}.
+		 * 
+		 * @param numberOfPlayers
+		 *            The number of {@link Player}s in the {@link PlayerArray}.
+		 */
+		public PlayerArray(int numberOfPlayers) {
+
+			switch (numberOfPlayers) {
+			case 1:
+				players = new Player[] { Player.PLAYERONE };
+				break;
+			case 2:
+				players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO };
+				break;
+			case 3:
+				players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO, Player.PLAYERTHREE };
+				break;
+			case 4:
+				players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO, Player.PLAYERTHREE, Player.PLAYERFOUR };
+				break;
+			default:
+				throw new IllegalArgumentException(
+						numberOfPlayers + " is not a valid number of players, it should be 1 to 4. ");
+			}
+
+		}
 	}
 }

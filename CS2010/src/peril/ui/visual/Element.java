@@ -72,8 +72,14 @@ public class Element<T> extends Clickable {
 	 * Draws the name of the {@link Element} on screen.
 	 * 
 	 * @param g
+	 *            {@link Graphics}
+	 * @param font
+	 *            {@link Font}
+	 * @param padding
+	 *            The number of pixels to the left of this {@link Element}s
+	 *            {@link Point} position this will be displayed.
 	 */
-	public void draw(Graphics g, Font font) {
-		font.draw(g, text, getPosition().x, getPosition().y);
+	public void draw(Graphics g, Font font, int padding) {
+		font.draw(g, text, getPosition().x + padding, getPosition().y);
 	}
 }

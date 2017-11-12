@@ -33,7 +33,7 @@ import peril.ui.states.menuStates.MainMenuState;
  * @author Joshua_Eddy
  *
  */
-public class Game extends StateBasedGame implements MusicListener{
+public class Game extends StateBasedGame implements MusicListener {
 
 	/**
 	 * Whether the game is running or not.
@@ -80,6 +80,11 @@ public class Game extends StateBasedGame implements MusicListener{
 	public final EndState end;
 
 	/**
+	 * The {@link MusicReader} for this {@link Game}.
+	 */
+	public final MusicReader musicHelper;
+
+	/**
 	 * The {@link UIEventHandler} that processes all of the user inputs and triggers
 	 * the appropriate operations.
 	 */
@@ -103,7 +108,7 @@ public class Game extends StateBasedGame implements MusicListener{
 	/**
 	 * Holds all the {@link Player}s in this {@link Game}.
 	 */
-	private final Player[] players;
+	private Player[] players;
 
 	/**
 	 * Whether all the assets are loaded or not.
@@ -141,8 +146,9 @@ public class Game extends StateBasedGame implements MusicListener{
 	 */
 	private ChallengeReader challengeReader;
 
-	public final MusicReader musicHelper;
-
+	/**
+	 * Holds the path to the directory containing the maps file.
+	 */
 	private String mapsDirectory;
 
 	/**
@@ -215,7 +221,7 @@ public class Game extends StateBasedGame implements MusicListener{
 		// the details of the map from the maps file.
 		try {
 			agc = new AppGameContainer(this);
-			agc.setDisplayMode(300, 200, false);
+			agc.setDisplayMode(400, 250, false);
 
 		} catch (SlickException e) {
 			System.out.println(e.getMessage());
@@ -342,7 +348,7 @@ public class Game extends StateBasedGame implements MusicListener{
 			endRound();
 		}
 	}
-	
+
 	/**
 	 * Retrieves the current {@link InteractiveState} of the {@link Game}. This will
 	 * throw {@link IllegalArgumentException} if the {@link GameState} is not a
@@ -426,13 +432,13 @@ public class Game extends StateBasedGame implements MusicListener{
 
 	@Override
 	public void musicEnded(Music previousMusic) {
-		
+
 		Music stateMusic = getCurrentState().getMusic();
-		
-		if(stateMusic != null) {
+
+		if (stateMusic != null) {
 			stateMusic.play();
 		}
-		
+
 	}
 
 	@Override
@@ -440,5 +446,14 @@ public class Game extends StateBasedGame implements MusicListener{
 
 	}
 
+	public void setPlayers(Player[] players) {
+
+		if (players.length == 0) {
+			throw new IllegalArgumentException("players array cannot be empty");
+		}
+
+		this.players = players;
+		this.currentPlayerIndex = 0;
+	}
 
 }

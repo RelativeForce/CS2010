@@ -62,6 +62,12 @@ public class VisualList<T> {
 	private Element<T> selected;
 
 	/**
+	 * The number of pixels that the {@link Element}s will be displayed from the
+	 * edge of the left wall.
+	 */
+	private int padding;
+
+	/**
 	 * Constructs a new {@link VisualList}.
 	 * 
 	 * @param x
@@ -75,8 +81,11 @@ public class VisualList<T> {
 	 * @param elementsInView
 	 *            The <code>int</code> number of {@link Element}s that are displayed
 	 *            in the box at once in the {@link VisualList}.
+	 * @param padding
+	 *            The number of pixels that the {@link Element}s will be displayed
+	 *            from the edge of the left wall.
 	 */
-	public VisualList(int x, int y, int width, int height, int elementsInView) {
+	public VisualList(int x, int y, int width, int height, int elementsInView, int padding) {
 
 		elements = new LinkedList<>();
 		selected = null;
@@ -85,6 +94,7 @@ public class VisualList<T> {
 		this.width = width;
 		this.height = height;
 		this.elementsInView = elementsInView;
+		this.padding = padding;
 	}
 
 	/**
@@ -173,7 +183,7 @@ public class VisualList<T> {
 		}
 
 		// Draw the map names in the game.
-		elements.forEach(element -> element.draw(g, font));
+		elements.forEach(element -> element.draw(g, font, padding));
 	}
 
 	/**

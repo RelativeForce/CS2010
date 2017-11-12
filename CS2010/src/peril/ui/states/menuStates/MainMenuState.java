@@ -42,6 +42,10 @@ public class MainMenuState extends InteractiveState {
 	 */
 	private VisualList<Map> maps;
 
+	/**
+	 * The {@link VisualList} of the number of {@link Player}s that can be in the
+	 * {@link Game}.
+	 */
 	private VisualList<PlayerArray> players;
 
 	/**
@@ -53,7 +57,10 @@ public class MainMenuState extends InteractiveState {
 	 * The {@link Font} for displaying the name of the game.
 	 */
 	private Font headingFont;
-	
+
+	/**
+	 * The {@link Font} of normal text on the {@link MainMenuState}.
+	 */
 	private Font textFont;
 
 	/**
@@ -82,15 +89,15 @@ public class MainMenuState extends InteractiveState {
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		
+
 		g.setBackground(Color.lightGray);
-		
+
 		super.render(gc, sbg, g);
-		
+
 		textFont.draw(g, "Players: ", 200, 70);
 		textFont.draw(g, "Map: ", 15, 70);
 		headingFont.draw(g, "Peril", 10, 5);
-		
+
 		maps.draw(g);
 		players.draw(g);
 	}
@@ -221,8 +228,8 @@ public class MainMenuState extends InteractiveState {
 			}
 
 			// Loads the game assets and move into the set up state
-			getGame().loadAssets(map.name, map.width, map.height);
 			getGame().setPlayers(playersArray.players);
+			getGame().loadAssets(map.name, map.width, map.height);
 			getGame().enterState(getGame().setup.getID());
 		}
 
@@ -293,16 +300,16 @@ public class MainMenuState extends InteractiveState {
 
 			switch (numberOfPlayers) {
 			case 1:
-				players = new Player[] { Player.PLAYERONE };
+				players = new Player[] { Player.ONE };
 				break;
 			case 2:
-				players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO };
+				players = new Player[] { Player.ONE, Player.TWO };
 				break;
 			case 3:
-				players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO, Player.PLAYERTHREE };
+				players = new Player[] { Player.ONE, Player.TWO, Player.THREE };
 				break;
 			case 4:
-				players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO, Player.PLAYERTHREE, Player.PLAYERFOUR };
+				players = new Player[] { Player.ONE, Player.TWO, Player.THREE, Player.FOUR };
 				break;
 			default:
 				throw new IllegalArgumentException(

@@ -3,6 +3,7 @@ package peril;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
@@ -158,9 +159,9 @@ public class Game extends StateBasedGame implements MusicListener {
 		super("PERIL: A Turn Based Strategy Game");
 
 		// Initialise the the players array.
-		this.players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO, Player.PLAYERTHREE, Player.PLAYERFOUR };
+		this.players = new Player[] { Player.ONE, Player.TWO, Player.THREE, Player.FOUR };
 
-		Player.PLAYERONE.setDistributableArmySize(3);
+		Player.ONE.setDistributableArmySize(3);
 
 		// Set the game indexes to there initial values.
 		this.currentPlayerIndex = 0;
@@ -276,7 +277,7 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public void loadAssets(String mapName, int width, int height) throws SlickException {
 
-		// If the assests are not already loaded
+		// If the assets are not already loaded
 		if (!isLoaded) {
 
 			agc.setDisplayMode(width, height, false);
@@ -286,6 +287,22 @@ public class Game extends StateBasedGame implements MusicListener {
 			mapReader.read();
 			assetReader.read();
 			challengeReader.read();
+			
+			Random rand = new Random();
+			
+			board.getContinents().forEach(continent->continent.getCountries().forEach(country->{
+				
+				
+				
+				
+				
+				
+				
+				
+			}));
+			
+			
+			
 			isLoaded = true;
 		}
 	}

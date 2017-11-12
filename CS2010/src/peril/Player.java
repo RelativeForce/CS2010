@@ -18,25 +18,25 @@ public final class Player {
 	 * Static instance of the first {@link Player}.
 	 * 
 	 */
-	public static final Player PLAYERONE = new Player("Player 1", Color.red);
+	public static final Player ONE = new Player("Player 1", Color.red);
 
 	/**
 	 * Static instance of the second {@link Player}.
 	 * 
 	 */
-	public static final Player PLAYERTWO = new Player("Player 2", Color.blue);
+	public static final Player TWO = new Player("Player 2", Color.blue);
 
 	/**
 	 * Static instance of the third {@link Player}.
 	 * 
 	 */
-	public static final Player PLAYERTHREE = new Player("Player 3", Color.green);
+	public static final Player THREE = new Player("Player 3", Color.green);
 
 	/**
 	 * Static instance of the fourth {@link Player}.
 	 * 
 	 */
-	public static final Player PLAYERFOUR = new Player("Player 4", Color.pink.multiply(Color.pink));
+	public static final Player FOUR = new Player("Player 4", Color.pink.multiply(Color.pink));
 
 	/**
 	 * String Representation of the {@link Player}.

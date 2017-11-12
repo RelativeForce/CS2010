@@ -71,23 +71,23 @@ public class SetupState extends CoreGameState {
 
 			switch (key) {
 			case Input.KEY_1:
-				if(getGame().isPlaying(Player.PLAYERONE)) {
-					highlighted.setRuler(Player.PLAYERONE);
+				if(getGame().isPlaying(Player.ONE)) {
+					highlighted.setRuler(Player.ONE);
 				}
 				break;
 			case Input.KEY_2:
-				if(getGame().isPlaying(Player.PLAYERTWO)) {
-					highlighted.setRuler(Player.PLAYERTWO);
+				if(getGame().isPlaying(Player.TWO)) {
+					highlighted.setRuler(Player.TWO);
 				}
 				break;
 			case Input.KEY_3:
-				if(getGame().isPlaying(Player.PLAYERTHREE)) {
-					highlighted.setRuler(Player.PLAYERTHREE);
+				if(getGame().isPlaying(Player.THREE)) {
+					highlighted.setRuler(Player.THREE);
 				}
 				break;
 			case Input.KEY_4:
-				if(getGame().isPlaying(Player.PLAYERFOUR)) {
-					highlighted.setRuler(Player.PLAYERFOUR);
+				if(getGame().isPlaying(Player.FOUR)) {
+					highlighted.setRuler(Player.FOUR);
 				}
 				break;
 			case Input.KEY_SPACE:

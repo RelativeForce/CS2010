@@ -237,6 +237,7 @@ public class AssetReader {
 							// Remove the unit from the list of units to place.
 							player.setDistributableArmySize(armySize - 1);
 							player.setTotalArmySize(player.getTotalArmySize() + 1);
+							actionState.getGame().checkChallenges(actionState.getGame().getCurrentPlayer());
 
 						} else {
 							System.out.println(player.toString() + " does not rule this country");
@@ -340,8 +341,6 @@ public class AssetReader {
 				});
 
 				// Check the challenges of the first player.
-				actionState.getGame().checkChallenges(actionState.getGame().getCurrentPlayer());
-
 				actionState.getGame().enterState(actionState.getGame().reinforcement.getID());
 			});
 		// Fortify another country by moving one troop to the new country.
@@ -423,6 +422,7 @@ public class AssetReader {
 
 							actionState.setPostCombat();
 							actionState.highlightCountry(defending);
+							actionState.getGame().checkChallenges(actionState.getGame().getCurrentPlayer());
 						}
 					}
 				}

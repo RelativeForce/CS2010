@@ -1,5 +1,10 @@
 package peril.ui.states.gameStates;
 
+import java.util.IdentityHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -9,6 +14,7 @@ import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import peril.Challenge;
 import peril.Game;
 import peril.Player;
 import peril.Point;
@@ -32,6 +38,12 @@ public abstract class CoreGameState extends InteractiveState {
 	private Country highlightedCountry;
 
 	/**
+	 * A {@link Map} of all the {@link Challenge}s on screen and their associated
+	 * time {@link Delay}s.
+	 */
+	private Map<Challenge, Delay> challenges;
+
+	/**
 	 * Constructs a new {@link CoreGameState}.
 	 * 
 	 * @param game
@@ -44,6 +56,7 @@ public abstract class CoreGameState extends InteractiveState {
 	protected CoreGameState(Game game, String stateName, int id) {
 		super(game, stateName, id);
 		this.highlightedCountry = null;
+		this.challenges = new IdentityHashMap<>();
 	}
 
 	/**
@@ -99,6 +112,14 @@ public abstract class CoreGameState extends InteractiveState {
 		drawStateBox(g);
 
 		drawArmies(g);
+
+		drawChallenges(g, 130, 15);
+	}
+
+	@Override
+	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+		super.update(gc, sbg, delta);
+		elapseTime();
 	}
 
 	/**
@@ -170,9 +191,28 @@ public abstract class CoreGameState extends InteractiveState {
 
 	}
 
+	/**
+	 * Retrieves the {@link Music} played by this {@link CoreGameState}.
+	 */
 	@Override
 	public Music getMusic() {
 		return getGame().musicHelper.read("HumanMusic");
+	}
+
+	/**
+	 * Adds a {@link Challenge} to this {@link CoreGameState} to be displayed to the
+	 * user.
+	 * 
+	 * @param challenge
+	 *            {@link Challenge} to be displayed.
+	 */
+	public void show(Challenge challenge) {
+
+		if (challenge == null) {
+			throw new NullPointerException("Challenge cannot be null.");
+		}
+
+		challenges.put(challenge, new Delay(1000));
 	}
 
 	/**
@@ -245,6 +285,30 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	/**
+	 * Causes the {@link Delay} to elapse in each value of
+	 * {@link CoreGameState#challenges}. If a {@link Delay} has elapsed its
+	 * associated {@link Challenge} is removed from the
+	 * {@link CoreGameState#challenges}.
+	 */
+	private void elapseTime() {
+
+		// Holds the challenges to be removed.
+		List<Challenge> toRemove = new LinkedList<>();
+
+		// Iterate through all the challenges and elapse time. If the delay has elapsed
+		// then remove it's challenge from the map.
+		for (Challenge challenge : challenges.keySet()) {
+
+			if (challenges.get(challenge).hasElapsed()) {
+				toRemove.add(challenge);
+			}
+		}
+
+		// Remove all the elapsed challenges.
+		toRemove.forEach(challenge -> challenges.remove(challenge));
+	}
+
+	/**
 	 * Draws the {@link army} in its current state over the {@link Country} it is
 	 * located.
 	 * 
@@ -313,4 +377,72 @@ public abstract class CoreGameState extends InteractiveState {
 
 	}
 
+	/**
+	 * Draws all the {@link Challenge}s on screen.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 * @param x
+	 *            position of the top {@link Challenge} pop up.
+	 * @param y
+	 *            position of the top {@link Challenge} pop up.
+	 */
+	private void drawChallenges(Graphics g, int x, int y) {
+
+		// Draw a box back drop
+		g.setColor(Color.lightGray);
+		g.fillRect(x, y, 400, challenges.size() * 20);
+
+		// Add padding
+		x += 2;
+		y += 2;
+
+		// Draw each challenge on screen.
+		g.setColor(Color.black);
+		for (Challenge challenge : challenges.keySet()) {
+			g.drawString(challenge.toString(), x, y);
+			y += 15;
+		}
+
+	}
+
+	/**
+	 * Encapsulates the behaviour of a time delay.
+	 * 
+	 * @author Joshua_Eddy
+	 *
+	 */
+	private class Delay {
+
+		/**
+		 * The number of {@link Delay#hasElapsed()} executions before this {@link Delay}
+		 * has elapsed.
+		 */
+		private long time;
+
+		/**
+		 * Constructs a new {@link Delay}.
+		 * 
+		 * @param time
+		 *            The number of {@link Delay#hasElapsed()} executions before this
+		 *            {@link Delay} has elapsed.
+		 */
+		public Delay(long time) {
+			if (time <= 0) {
+				throw new IllegalArgumentException("Delay time cannot be <= zero.");
+			}
+			this.time = time;
+		}
+
+		/**
+		 * Reduces {@link Delay#time} and retrieves whether it has elapsed or not.
+		 * 
+		 * @return Whether this {@link Delay} has elapsed or not.
+		 */
+		public boolean hasElapsed() {
+			time--;
+			return time == 0;
+		}
+
+	}
 }

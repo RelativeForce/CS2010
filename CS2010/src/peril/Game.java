@@ -410,6 +410,10 @@ public class Game extends StateBasedGame implements MusicListener {
 			// available challenges.
 			if (challenge.hasCompleted(currentPlayer, board)) {
 				toRemove.add(challenge);
+
+				if (getCurrentState() instanceof CoreGameState) {
+					((CoreGameState) getCurrentState()).show(challenge);
+				}
 			}
 		}
 

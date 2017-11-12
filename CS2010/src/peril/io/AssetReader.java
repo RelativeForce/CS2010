@@ -11,6 +11,7 @@ import peril.board.Army;
 import peril.board.Country;
 import peril.multiThread.Action;
 import peril.ui.Button;
+import peril.ui.states.InteractiveState;
 import peril.ui.states.gameStates.CoreGameState;
 import peril.ui.states.gameStates.multiSelectState.CombatState;
 import peril.ui.states.gameStates.multiSelectState.MovementState;
@@ -18,7 +19,7 @@ import peril.ui.visual.Clickable;
 import peril.ui.visual.Viewable;
 
 /**
- * Reads all the {@link Viewable} and {@link Clickable} specifed by the ui
+ * Reads all the {@link Viewable} and {@link Clickable} specified by the ui
  * assets details file and puts them in their specified {@link CoreGameState}s.
  * 
  * @author Joshua_Eddy
@@ -30,7 +31,7 @@ public class AssetReader {
 	 * The {@link CoreGameState}s that will be populated when
 	 * {@link AssetReader#read()} is performed.
 	 */
-	private CoreGameState[] coreGameStates;
+	private InteractiveState[] states;
 
 	/**
 	 * File path of the asset details file.
@@ -46,7 +47,7 @@ public class AssetReader {
 	 * @param directoryPath
 	 *            File path of the asset details file.
 	 */
-	public AssetReader(CoreGameState[] coreGameStates, String directoryPath) {
+	public AssetReader(InteractiveState[] coreGameStates, String directoryPath) {
 
 		// Check params
 		if (directoryPath.isEmpty()) {
@@ -56,12 +57,12 @@ public class AssetReader {
 		}
 
 		this.directoryPath = directoryPath;
-		this.coreGameStates = coreGameStates;
+		this.states = coreGameStates;
 	}
 
 	/**
 	 * Populates the {@link CoreGameState}s stored in
-	 * {@link AssetReader#coreGameStates} will {@link Viewable} and
+	 * {@link AssetReader#states} will {@link Viewable} and
 	 * {@link Clickable} from the details file.
 	 * 
 	 * @see TextFileReader
@@ -118,7 +119,7 @@ public class AssetReader {
 		int y;
 
 		// Get the state by name
-		CoreGameState state = getGameStateByName(details[1]);
+		InteractiveState state = getGameStateByName(details[1]);
 
 		// Parse the function code
 		try {
@@ -197,17 +198,25 @@ public class AssetReader {
 	 *            by.
 	 * @return {@link Action}
 	 */
-	private Action<?> getActionByCode(int code, CoreGameState state) {
+	private Action<?> getActionByCode(int code, InteractiveState state) {
 		switch (code) {
 
 		case 0:
-			return new Action<CoreGameState>(state, actionState -> {
+			return new Action<InteractiveState>(state, actionState -> {
 
+				// TODO change implementation to remove instances of casting.
+				if (!(actionState instanceof CoreGameState)) {
+					throw new IllegalStateException("Function code: 0 is not permitted with the '"
+							+ actionState.getStateName() + "' state. It is only permitted with 'CoreGame' states.");
+				}
+				
+				CoreGameState coreGameState = (CoreGameState) actionState;
+				
 				// Holds the currently highlighted country
-				Country highlightedCountry = actionState.getHighlightedCountry();
+				Country highlightedCountry = coreGameState.getHighlightedCountry();
 
 				// Holds the current player.
-				Player player = actionState.getGame().getCurrentPlayer();
+				Player player = coreGameState.getGame().getCurrentPlayer();
 
 				// Holds the size of the army that the player has to distribute.
 				int armySize = player.getDistributableArmySize();
@@ -246,36 +255,72 @@ public class AssetReader {
 
 		// Enter combat state.
 		case 1:
-			return new Action<CoreGameState>(state, actionState -> {
-				actionState.unhighlightCountry(actionState.getHighlightedCountry());
-				actionState.highlightCountry(null);
-				actionState.getGame().enterState(actionState.getGame().combat.getID());
+			return new Action<InteractiveState>(state, actionState -> {
+				
+				// TODO change implementation to remove instances of casting.
+				if (!(actionState instanceof CoreGameState)) {
+					throw new IllegalStateException("Function code: 1 is not permitted with the '"
+							+ actionState.getStateName() + "' state. It is only permitted with 'CoreGame' states.");
+				}
+				
+				CoreGameState coreGameState = (CoreGameState) actionState;
+				
+				coreGameState.unhighlightCountry(coreGameState.getHighlightedCountry());
+				coreGameState.highlightCountry(null);
+				coreGameState.getGame().enterState(coreGameState.getGame().combat.getID());
 			});
 
 		// Enter movement state.
 		case 2:
-			return new Action<CoreGameState>(state, actionState -> {
-				actionState.unhighlightCountry(actionState.getHighlightedCountry());
-				actionState.highlightCountry(null);
-				actionState.getGame().enterState(actionState.getGame().movement.getID());
+			return new Action<InteractiveState>(state, actionState -> {
+				
+				// TODO change implementation to remove instances of casting.
+				if (!(actionState instanceof CoreGameState)) {
+					throw new IllegalStateException("Function code: 2 is not permitted with the '"
+							+ actionState.getStateName() + "' state. It is only permitted with 'CoreGame' states.");
+				}
+				
+				CoreGameState coreGameState = (CoreGameState) actionState;
+				
+				coreGameState.unhighlightCountry(coreGameState.getHighlightedCountry());
+				coreGameState.highlightCountry(null);
+				coreGameState.getGame().enterState(coreGameState.getGame().movement.getID());
 			});
 
 		// Enter reinforcement state.
 		case 3:
-			return new Action<CoreGameState>(state, actionState -> {
-				actionState.unhighlightCountry(actionState.getHighlightedCountry());
-				actionState.highlightCountry(null);
-				actionState.getGame().enterState(actionState.getGame().reinforcement.getID());
-				actionState.getGame().nextPlayer();
+			return new Action<InteractiveState>(state, actionState -> {
+				
+				// TODO change implementation to remove instances of casting.
+				if (!(actionState instanceof CoreGameState)) {
+					throw new IllegalStateException("Function code: 3 is not permitted with the '"
+							+ actionState.getStateName() + "' state. It is only permitted with 'CoreGame' states.");
+				}
+				
+				CoreGameState coreGameState = (CoreGameState) actionState;
+				
+				coreGameState.unhighlightCountry(coreGameState.getHighlightedCountry());
+				coreGameState.highlightCountry(null);
+				coreGameState.getGame().enterState(coreGameState.getGame().reinforcement.getID());
+				coreGameState.getGame().nextPlayer();
 			});
 		// Leave set up state
 		case 4:
-			return new Action<CoreGameState>(state, actionState -> {
-				actionState.unhighlightCountry(actionState.getHighlightedCountry());
-				actionState.highlightCountry(null);
+			return new Action<InteractiveState>(state, actionState -> {
+				
+				// TODO change implementation to remove instances of casting.
+				if (!(actionState instanceof CoreGameState)) {
+					throw new IllegalStateException("Function code: 0 is not permitted with the '"
+							+ actionState.getStateName() + "' state. It is only permitted with 'CoreGame' states.");
+				}
+				
+				CoreGameState coreGameState = (CoreGameState) actionState;
+				
+				coreGameState.unhighlightCountry(coreGameState.getHighlightedCountry());
+				coreGameState.highlightCountry(null);
 
 				// For every continent on the board.
-				actionState.getGame().getBoard().getContinents().forEach(continent -> {
+				coreGameState.getGame().getBoard().getContinents().forEach(continent -> {
 
 					// If the continents is ruled by one player add on to the players ruled
 					// continents
@@ -301,13 +346,13 @@ public class AssetReader {
 				});
 				
 				// Check the challenges of the first player.
-				actionState.getGame().checkChallenges(actionState.getGame().getCurrentPlayer());
+				coreGameState.getGame().checkChallenges(coreGameState.getGame().getCurrentPlayer());
 
-				actionState.getGame().enterState(actionState.getGame().reinforcement.getID());
+				coreGameState.getGame().enterState(coreGameState.getGame().reinforcement.getID());
 			});
 		// Fortify another country by moving one troop to the new country.
 		case 5:
-			return new Action<CoreGameState>(state, actionState -> {
+			return new Action<InteractiveState>(state, actionState -> {
 
 				// TODO change implementation to remove instances of casting.
 				if (!(actionState instanceof MovementState)) {
@@ -345,7 +390,7 @@ public class AssetReader {
 			});
 		// Execute a combat turn.
 		case 6:
-			return new Action<CoreGameState>(state, actionState -> {
+			return new Action<InteractiveState>(state, actionState -> {
 
 				CombatHandler combathandler = actionState.getGame().getCombatHandler();
 
@@ -401,10 +446,10 @@ public class AssetReader {
 	 *            {@link CoreGameState#getStateName()}
 	 * @return {@link CoreGameState} with the specified name.
 	 */
-	private CoreGameState getGameStateByName(String name) {
+	private InteractiveState getGameStateByName(String name) {
 
 		// Iterate through all game states in the reader.
-		for (CoreGameState state : coreGameStates) {
+		for (InteractiveState state : states) {
 
 			// Return the state that has the specified name.
 			if (state.getStateName().equals(name)) {

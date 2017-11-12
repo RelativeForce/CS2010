@@ -190,7 +190,7 @@ public class Game extends StateBasedGame implements MusicListener{
 		ui_assestsPath.append(File.separatorChar);
 		ui_assestsPath.append("ui_assets");
 
-		this.assetReader = new AssetReader(new CoreGameState[] { combat, setup, reinforcement, movement, end },
+		this.assetReader = new AssetReader(new InteractiveState[] { combat, setup, reinforcement, movement, end },
 				ui_assestsPath.toString());
 
 		// Create the map file path

@@ -2,12 +2,15 @@ package peril.ui.states.gameStates;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Player;
 import peril.Point;
+import peril.ui.states.InteractiveState;
+import peril.ui.visual.Font;
 
 /**
  * 
@@ -16,12 +19,16 @@ import peril.Point;
  * @author Joshua_Eddy
  *
  */
-public class EndState extends CoreGameState {
+public class EndState extends InteractiveState {
 
 	/**
 	 * The name of a specific {@link EndState}.
 	 */
 	private static final String STATE_NAME = "EndState";
+
+	private Font winnerFont;
+
+	private Player winner;
 
 	/**
 	 * Constructs a new {@link EndState}.
@@ -35,14 +42,14 @@ public class EndState extends CoreGameState {
 		super(game, STATE_NAME, id);
 	}
 
-	public void displayWinner(Player player) {
-
+	public void setWinner(Player player) {
+		winner = player;
+		winnerFont = new Font("Arial", player.getColor(), 50);
 	}
 
 	@Override
 	public void parseClick(int button, Point click) {
-		// TODO Auto-generated method stub
-
+		super.clickButton(click);
 	}
 
 	@Override
@@ -55,9 +62,17 @@ public class EndState extends CoreGameState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
 
-		// Draw player name and set the text color to the player's color
-		g.setColor(getGame().getCurrentPlayer().getColor());
-		g.drawString(getGame().getCurrentPlayer().toString(), 5, 20);
+		winnerFont.draw(g, winner.toString() + " WINS!!!!", gc.getWidth() / 2, gc.getHeight() / 2);
 
+	}
+
+	@Override
+	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		super.init(gc, sbg);
+	}
+
+	@Override
+	public Music getMusic() {
+		return null;
 	}
 }

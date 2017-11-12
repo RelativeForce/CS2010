@@ -1,4 +1,4 @@
-package peril.ui.states.gameStates;
+package peril.ui.states.gameStates.multiSelectState;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -10,6 +10,7 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Country;
+import peril.ui.states.gameStates.CoreGameState;
 
 /**
  * Encapsulates the behaviour of the 'Movement' state of the game. In this state

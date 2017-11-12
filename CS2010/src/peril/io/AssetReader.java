@@ -11,9 +11,9 @@ import peril.board.Army;
 import peril.board.Country;
 import peril.multiThread.Action;
 import peril.ui.Button;
-import peril.ui.states.gameStates.CombatState;
 import peril.ui.states.gameStates.CoreGameState;
-import peril.ui.states.gameStates.MovementState;
+import peril.ui.states.gameStates.multiSelectState.CombatState;
+import peril.ui.states.gameStates.multiSelectState.MovementState;
 import peril.ui.visual.Clickable;
 import peril.ui.visual.Viewable;
 

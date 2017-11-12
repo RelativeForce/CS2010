@@ -446,6 +446,12 @@ public class Game extends StateBasedGame implements MusicListener {
 
 	}
 
+	/**
+	 * Assigns an array of {@link Player} to this {@link Game}.
+	 * 
+	 * @param players
+	 *            {@link Player}s in the {@link Game}. NOT EMPTY
+	 */
 	public void setPlayers(Player[] players) {
 
 		if (players.length == 0) {
@@ -454,6 +460,27 @@ public class Game extends StateBasedGame implements MusicListener {
 
 		this.players = players;
 		this.currentPlayerIndex = 0;
+	}
+
+	/**
+	 * Retrieves whether or not a specified player is in this {@link Game}.
+	 * 
+	 * @param player
+	 *            {@link Player}
+	 * @return <code>boolean</code>
+	 */
+	public boolean isPlaying(Player player) {
+
+		// Iterate through all the players in the game.
+		for (Player currentPlayer : players) {
+
+			// If the player is playing then return true.
+			if (currentPlayer.equals(player)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

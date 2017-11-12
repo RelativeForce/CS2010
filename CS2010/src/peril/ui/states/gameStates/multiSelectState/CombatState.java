@@ -97,7 +97,7 @@ public class CombatState extends MultiSelectState {
 	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		
+
 		super.render(gc, sbg, g);
 		super.drawPlayerName(g);
 
@@ -112,6 +112,17 @@ public class CombatState extends MultiSelectState {
 	}
 
 	/**
+	 * Retrieves the {@link Country} the
+	 * {@link CoreGameState#getHighlightedCountry()} will sent troops too when
+	 * attacking.
+	 * 
+	 * @return {@link Country}
+	 */
+	public Country getEnemyCountry() {
+		return super.getSecondaryHightlightedCounrty();
+	}
+	
+	/**
 	 * Processes whether a {@link Country} is a valid target for the
 	 * {@link CoreGameState#getHighlightedCountry()} to attack. This is based on the
 	 * {@link Player} ruler and the {@link Player} ({@link Game#getCurrentPlayer()})
@@ -123,7 +134,7 @@ public class CombatState extends MultiSelectState {
 	 * @param ruler
 	 *            {@link Player}
 	 */
-	private void processCountry(Country country, Player player, Player ruler) {
+	protected void processCountry(Country country, Player player, Player ruler) {
 
 		// If there is a primary friendly country and the target is not null and the
 		// ruler of the country is not the player.
@@ -134,11 +145,11 @@ public class CombatState extends MultiSelectState {
 			if (getHighlightedCountry().isNeighbour(country)) {
 
 				System.out.println("A valid target");
-				
+
 				country.setImage(country.getRegion().getPosition(), country.getRegion().convert(Color.yellow));
 
 				unhighlightCountry(super.getSecondaryHightlightedCounrty());
-				
+
 				super.setSecondaryCountry(country);
 
 			} else {
@@ -158,17 +169,6 @@ public class CombatState extends MultiSelectState {
 			super.unhighlightCountry(super.getHighlightedCountry());
 			super.highlightCountry(country);
 		}
-	}
-
-	/**
-	 * Retrieves the {@link Country} the
-	 * {@link CoreGameState#getHighlightedCountry()} will sent troops too when
-	 * attacking.
-	 * 
-	 * @return {@link Country}
-	 */
-	public Country getEnemyCountry() {
-		return super.getSecondaryHightlightedCounrty();
 	}
 
 	/**

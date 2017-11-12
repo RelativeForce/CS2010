@@ -40,6 +40,11 @@ public class MovementState extends MultiSelectState {
 		super(game, STATE_NAME, id);
 	}
 
+	/**
+	 * Highlights a specified {@link Country} if it is friendly or a
+	 * {@link Country#getNeighbours()} of the
+	 * {@link CoreGameState#getHighlightedCountry()}..
+	 */
 	@Override
 	public void highlightCountry(Country country) {
 
@@ -64,6 +69,9 @@ public class MovementState extends MultiSelectState {
 
 	}
 
+	/**
+	 * Parse a click at a {@link Point} on this {@link MovementState}.
+	 */
 	@Override
 	public void parseClick(int button, Point click) {
 		// If the states buttons were not clicked click the board.
@@ -72,11 +80,17 @@ public class MovementState extends MultiSelectState {
 		}
 	}
 
+	/**
+	 * Parse a button press on this {@link MovementState}.
+	 */
 	@Override
 	public void parseButton(int key, char c) {
 		// DO NOTHING
 	}
 
+	/**
+	 * Render the {@link MovementState}. 
+	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
@@ -106,7 +120,7 @@ public class MovementState extends MultiSelectState {
 	 * @param ruler
 	 *            {@link Player}
 	 */
-	private void processCountry(Country country, Player player, Player ruler) {
+	protected void processCountry(Country country, Player player, Player ruler) {
 
 		// If there is a primary friendly country and the target is not null and the
 		// ruler of the country is not the player.
@@ -117,12 +131,11 @@ public class MovementState extends MultiSelectState {
 			if (getHighlightedCountry().isNeighbour(country)) {
 
 				System.out.println("A valid target");
-				
+
 				super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
-				
-				country.setImage(country.getRegion().getPosition(),
-						country.getRegion().convert(Color.yellow));
-				
+
+				country.setImage(country.getRegion().getPosition(), country.getRegion().convert(Color.yellow));
+
 				super.setSecondaryCountry(country);
 
 			} else {

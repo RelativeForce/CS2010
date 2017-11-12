@@ -287,24 +287,30 @@ public class Game extends StateBasedGame implements MusicListener {
 			mapReader.read();
 			assetReader.read();
 			challengeReader.read();
-			
-			Random rand = new Random();
-			
-			board.getContinents().forEach(continent->continent.getCountries().forEach(country->{
-				
-				
-				
-				
-				
-				
-				
-				
-			}));
-			
-			
-			
+
 			isLoaded = true;
 		}
+	}
+
+	/**
+	 * Distributes the countries between the {@link Game#players} equally.
+	 */
+	public void autoDistributeCountries() {
+
+		Random rand = new Random();
+
+		// Reset the all players number of countries to zero.
+		for (Player player : players) {
+			player.setCountriesRuled(0);
+		}
+
+		// Iterate through each country on the board.
+		board.getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
+
+			assignPlayer(country, rand);
+
+		}));
+
 	}
 
 	/**
@@ -427,14 +433,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	}
 
 	/**
-	 * Performs all the tasks that occur at the end of a round.
-	 */
-	private void endRound() {
-		board.endRound();
-		currentRound++;
-	}
-
-	/**
 	 * Runs the game.
 	 * 
 	 * @param args
@@ -500,4 +498,42 @@ public class Game extends StateBasedGame implements MusicListener {
 		return false;
 	}
 
+	/**
+	 * Assigns a {@link Player} ruler to a {@link Country} using a parameter
+	 * {@link Random}.
+	 * 
+	 * @param country
+	 *            {@link Country} that is to be ruled.
+	 * @param rand
+	 *            {@link Random}
+	 */
+	private void assignPlayer(Country country, Random rand) {
+
+		boolean set = false;
+
+		while (!set) {
+
+			// Get the player at the random index.
+			Player player = players[rand.nextInt(players.length)];
+
+			// If the player owns more that their fair share of the maps countries assign
+			// the player again.
+			if (player.getCountriesRuled() <= (board.getNumberOfCountries() / players.length)) {
+				set = true;
+				country.setRuler(player);
+				player.setCountriesRuled(player.getCountriesRuled() + 1);
+
+			}
+
+		}
+
+	}
+
+	/**
+	 * Performs all the tasks that occur at the end of a round.
+	 */
+	private void endRound() {
+		board.endRound();
+		currentRound++;
+	}
 }

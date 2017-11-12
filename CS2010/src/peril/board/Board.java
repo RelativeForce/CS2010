@@ -27,6 +27,11 @@ public final class Board extends Viewable {
 	private final Game game;
 
 	/**
+	 * The number of {@link Country}s in the {@link Board}.
+	 */
+	private int numberOfCountries;
+
+	/**
 	 * Constructs a {@link Board}.
 	 * 
 	 * @param game
@@ -39,6 +44,7 @@ public final class Board extends Viewable {
 		}
 		this.continents = null;
 		this.game = game;
+		this.numberOfCountries = 0;
 	}
 
 	/**
@@ -54,6 +60,11 @@ public final class Board extends Viewable {
 		}
 
 		this.continents = continents;
+
+		for (Continent continent : continents) {
+			numberOfCountries += continent.getCountries().size();
+		}
+
 	}
 
 	/**
@@ -93,16 +104,6 @@ public final class Board extends Viewable {
 		checkContinents();
 
 		return continents;
-	}
-
-	/**
-	 * Checks whether {@link Board#continents} is <code>null</code>. If it is this
-	 * method will throw {@link IllegalStateException}.
-	 */
-	private void checkContinents() {
-		if (continents == null) {
-			throw new IllegalStateException("There are no Continents on this board");
-		}
 	}
 
 	/**
@@ -174,6 +175,14 @@ public final class Board extends Viewable {
 	}
 
 	/**
+	 * Retrieves the number of {@link Country}s on this {@link Board}.
+	 * @return <code>int</code>
+	 */
+	public int getNumberOfCountries() {
+		return numberOfCountries;
+	}
+	
+	/**
 	 * Retrieves the a valid single dimension vector based on whether the specifed
 	 * vector will hit a boundary or not. If the specified vector will move the
 	 * board outside of the specified boundaries. The vector returned will be such
@@ -208,5 +217,15 @@ public final class Board extends Viewable {
 
 		return 0;
 
+	}
+
+	/**
+	 * Checks whether {@link Board#continents} is <code>null</code>. If it is this
+	 * method will throw {@link IllegalStateException}.
+	 */
+	private void checkContinents() {
+		if (continents == null) {
+			throw new IllegalStateException("There are no Continents on this board");
+		}
 	}
 }

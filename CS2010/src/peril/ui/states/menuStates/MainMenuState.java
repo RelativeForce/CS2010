@@ -230,6 +230,7 @@ public class MainMenuState extends InteractiveState {
 			// Loads the game assets and move into the set up state
 			getGame().setPlayers(playersArray.players);
 			getGame().loadAssets(map.name, map.width, map.height);
+			getGame().autoDistributeCountries();
 			getGame().enterState(getGame().setup.getID());
 		}
 

@@ -20,18 +20,12 @@ import peril.ui.states.gameStates.CoreGameState;
  * @author Joseph_Rolli, Joshua_Eddy
  *
  */
-public class CombatState extends CoreGameState {
+public class CombatState extends MultiSelectState {
 
 	/**
 	 * The name of a specific {@link CombatState}.
 	 */
 	private static final String STATE_NAME = "Combat";
-
-	/**
-	 * The target {@link Country} for the
-	 * {@link CoreGameState#getHighlightedCountry()}.
-	 */
-	private Country enemyCounrty;
 
 	/**
 	 * Whether or not {@link CombatState} is currently after or before a country has
@@ -49,7 +43,6 @@ public class CombatState extends CoreGameState {
 	 */
 	public CombatState(Game game, int id) {
 		super(game, STATE_NAME, id);
-		enemyCounrty = null;
 		isPostCombat = false;
 	}
 
@@ -82,22 +75,6 @@ public class CombatState extends CoreGameState {
 	}
 
 	/**
-	 * If there is a highlighted enemy country remove the highlight effect on that
-	 * as well as the primary country.
-	 */
-	@Override
-	public void unhighlightCountry(Country country) {
-
-		// Unhighlight both highlighted countries when this method is called from a
-		// external class.
-		super.unhighlightCountry(enemyCounrty);
-
-		enemyCounrty = null;
-
-		super.unhighlightCountry(country);
-	}
-
-	/**
 	 * Highlights a specified {@link Country}. If there is a friendly
 	 * {@link Country} already highlighted then this will check if the
 	 * {@link Country} is a valid target and allow highlighting accordingly.
@@ -120,15 +97,9 @@ public class CombatState extends CoreGameState {
 	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+		
 		super.render(gc, sbg, g);
-
-		// Draw player name and set the text color to the player's color
-		g.setColor(getGame().getCurrentPlayer().getColor());
-		g.drawString(getGame().getCurrentPlayer().toString(), 5, 20);
-
-		if (enemyCounrty != null) {
-			g.drawImage(enemyCounrty.getImage(), enemyCounrty.getPosition().x, enemyCounrty.getPosition().y);
-		}
+		super.drawPlayerName(g);
 
 	}
 
@@ -163,10 +134,12 @@ public class CombatState extends CoreGameState {
 			if (getHighlightedCountry().isNeighbour(country)) {
 
 				System.out.println("A valid target");
-				unhighlightCountry(enemyCounrty);
-				enemyCounrty = country;
-				enemyCounrty.setImage(enemyCounrty.getRegion().getPosition(),
-						enemyCounrty.getRegion().convert(Color.yellow));
+				
+				country.setImage(country.getRegion().getPosition(), country.getRegion().convert(Color.yellow));
+
+				unhighlightCountry(super.getSecondaryHightlightedCounrty());
+				
+				super.setSecondaryCountry(country);
 
 			} else {
 				// DO NOTHING
@@ -181,7 +154,7 @@ public class CombatState extends CoreGameState {
 		// If the country clicked is to be the new primary country and is owned by the
 		// player.
 		else {
-			unhighlightCountry(enemyCounrty);
+			unhighlightCountry(super.getSecondaryHightlightedCounrty());
 			super.unhighlightCountry(super.getHighlightedCountry());
 			super.highlightCountry(country);
 		}
@@ -195,7 +168,7 @@ public class CombatState extends CoreGameState {
 	 * @return {@link Country}
 	 */
 	public Country getEnemyCountry() {
-		return enemyCounrty;
+		return super.getSecondaryHightlightedCounrty();
 	}
 
 	/**
@@ -220,8 +193,8 @@ public class CombatState extends CoreGameState {
 			processCountry(country, player, ruler);
 
 		} else {
-			super.unhighlightCountry(enemyCounrty);
-			enemyCounrty = null;
+			super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
+			super.setSecondaryCountry(null);
 			super.unhighlightCountry(super.getHighlightedCountry());
 			super.highlightCountry(country);
 		}
@@ -237,7 +210,7 @@ public class CombatState extends CoreGameState {
 	private void highlightCountryPostCombat(Country country) {
 
 		super.unhighlightCountry(country);
-		enemyCounrty = null;
+		super.setSecondaryCountry(null);
 		super.unhighlightCountry(getHighlightedCountry());
 		super.highlightCountry(null);
 

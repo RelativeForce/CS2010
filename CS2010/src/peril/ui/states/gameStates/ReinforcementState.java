@@ -67,9 +67,7 @@ public class ReinforcementState extends CoreGameState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
 
-		// Draw player name and set the text color to the player's color
-		g.setColor(getGame().getCurrentPlayer().getColor());
-		g.drawString(getGame().getCurrentPlayer().toString(), 5, 20);
+		super.drawPlayerName(g);
 
 		// Set the text color to magenta
 		g.setColor(Color.black);

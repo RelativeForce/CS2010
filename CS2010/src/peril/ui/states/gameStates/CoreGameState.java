@@ -176,6 +176,18 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	/**
+	 * Draws the {@link Player}'s name in the {@link Player}'s {@link Color}.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 */
+	protected void drawPlayerName(Graphics g) {
+		// Draw player name and set the text color to the player's color
+		g.setColor(getGame().getCurrentPlayer().getColor());
+		g.drawString(getGame().getCurrentPlayer().toString(), 5, 20);
+	}
+
+	/**
 	 * Simulates a click at a {@link Point} on the {@link Board} and highlights the
 	 * {@link Country} that clicked.
 	 * 

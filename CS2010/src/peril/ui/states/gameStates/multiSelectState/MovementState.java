@@ -20,18 +20,12 @@ import peril.ui.states.gameStates.CoreGameState;
  * @author Joshua_Eddy, Joseph_Rolli
  *
  */
-public class MovementState extends CoreGameState {
+public class MovementState extends MultiSelectState {
 
 	/**
 	 * The name of a specific {@link MovementState}.
 	 */
 	private static final String STATE_NAME = "Movement";
-
-	/**
-	 * The target {@link Country} for the
-	 * {@link CoreGameState#getHighlightedCountry()}.
-	 */
-	private Country targetCounrty;
 
 	/**
 	 * Constructs a new {@link MovementState}.
@@ -44,7 +38,6 @@ public class MovementState extends CoreGameState {
 	 */
 	public MovementState(Game game, int id) {
 		super(game, STATE_NAME, id);
-		targetCounrty = null;
 	}
 
 	@Override
@@ -63,8 +56,8 @@ public class MovementState extends CoreGameState {
 			processCountry(country, player, ruler);
 
 		} else {
-			super.unhighlightCountry(targetCounrty);
-			targetCounrty = null;
+			super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
+			super.setSecondaryCountry(null);
 			super.unhighlightCountry(super.getHighlightedCountry());
 			super.highlightCountry(country);
 		}
@@ -87,24 +80,7 @@ public class MovementState extends CoreGameState {
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
-
-		// Draw player name and set the text colour to the player's colour
-		g.setColor(getGame().getCurrentPlayer().getColor());
-		g.drawString(getGame().getCurrentPlayer().toString(), 5, 20);
-
-	}
-
-	@Override
-	public void unhighlightCountry(Country country) {
-
-		// Unhighlight both highlighted countries when this method is called from a
-		// external class.
-		super.unhighlightCountry(targetCounrty);
-
-		targetCounrty = null;
-
-		super.unhighlightCountry(country);
-
+		super.drawPlayerName(g);
 	}
 
 	/**
@@ -115,7 +91,7 @@ public class MovementState extends CoreGameState {
 	 * @return {@link Counrty}
 	 */
 	public Country getTargetCountry() {
-		return targetCounrty;
+		return super.getSecondaryHightlightedCounrty();
 	}
 
 	/**
@@ -141,10 +117,13 @@ public class MovementState extends CoreGameState {
 			if (getHighlightedCountry().isNeighbour(country)) {
 
 				System.out.println("A valid target");
-				super.unhighlightCountry(targetCounrty);
-				targetCounrty = country;
-				targetCounrty.setImage(targetCounrty.getRegion().getPosition(),
-						targetCounrty.getRegion().convert(Color.yellow));
+				
+				super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
+				
+				country.setImage(country.getRegion().getPosition(),
+						country.getRegion().convert(Color.yellow));
+				
+				super.setSecondaryCountry(country);
 
 			} else {
 				// DO NOTHING
@@ -159,7 +138,7 @@ public class MovementState extends CoreGameState {
 		// If the country clicked is to be the new primary country and is owned by the
 		// player.
 		else {
-			super.unhighlightCountry(targetCounrty);
+			super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
 			super.highlightCountry(country);
 		}
 	}

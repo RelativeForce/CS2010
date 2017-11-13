@@ -361,15 +361,26 @@ public class Game extends StateBasedGame implements MusicListener {
 			checkChallenges(getCurrentPlayer());
 		}
 
-		if (getCurrentPlayer().getCountriesRuled() <= 11) {
-			getCurrentPlayer().setDistributableArmySize(getCurrentPlayer().getDistributableArmySize() + 3);
-		} else {
-			getCurrentPlayer().setDistributableArmySize(
-					getCurrentPlayer().getDistributableArmySize() + (getCurrentPlayer().getCountriesRuled() / 3));
-		}
+		reinforce(getCurrentPlayer());
 
 		if (currentPlayerIndex == 0) {
 			endRound();
+		}
+	}
+
+	/**
+	 * Gives the specified {@link Player} reinforcements based on the number of
+	 * countries they own.
+	 * 
+	 * @param player
+	 *            {@link Player}
+	 */
+	public void reinforce(Player player) {
+
+		if (player.getCountriesRuled() < 12) {
+			player.setDistributableArmySize(player.getDistributableArmySize() + 3);
+		} else {
+			player.setDistributableArmySize(player.getDistributableArmySize() + (player.getCountriesRuled() / 3));
 		}
 	}
 
@@ -450,6 +461,11 @@ public class Game extends StateBasedGame implements MusicListener {
 
 	}
 
+	/**
+	 * When the currently playing {@link Music} has finished, start the
+	 * {@link Music} of the {@link Game#getCurrentState()} if the
+	 * {@link InteractiveState} has {@link Music}.
+	 */
 	@Override
 	public void musicEnded(Music previousMusic) {
 
@@ -461,6 +477,9 @@ public class Game extends StateBasedGame implements MusicListener {
 
 	}
 
+	/**
+	 * When the {@link Music} playing in this {@link Game} has changed.
+	 */
 	@Override
 	public void musicSwapped(Music music1, Music music2) {
 

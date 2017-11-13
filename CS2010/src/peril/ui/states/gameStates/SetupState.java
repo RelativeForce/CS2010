@@ -71,30 +71,61 @@ public class SetupState extends CoreGameState {
 
 			switch (key) {
 			case Input.KEY_1:
-				if(getGame().isPlaying(Player.ONE)) {
-					highlighted.setRuler(Player.ONE);
+				if (getGame().isPlaying(Player.ONE)) {
+					swapRuler(highlighted, Player.ONE);
 				}
 				break;
 			case Input.KEY_2:
-				if(getGame().isPlaying(Player.TWO)) {
-					highlighted.setRuler(Player.TWO);
+				if (getGame().isPlaying(Player.TWO)) {
+					swapRuler(highlighted, Player.TWO);
 				}
 				break;
 			case Input.KEY_3:
-				if(getGame().isPlaying(Player.THREE)) {
-					highlighted.setRuler(Player.THREE);
+				if (getGame().isPlaying(Player.THREE)) {
+					swapRuler(highlighted, Player.THREE);
 				}
 				break;
 			case Input.KEY_4:
-				if(getGame().isPlaying(Player.FOUR)) {
-					highlighted.setRuler(Player.FOUR);
+				if (getGame().isPlaying(Player.FOUR)) {
+					swapRuler(highlighted, Player.FOUR);
 				}
 				break;
 			case Input.KEY_SPACE:
-				highlighted.setRuler(null);
+				swapRuler(highlighted, null);
 				break;
 
 			}
+		}
+
+	}
+
+	/**
+	 * Swaps the {@link Player} ruler of a specified {@link Country} for a new
+	 * {@link player}.
+	 * 
+	 * @param country
+	 *            {@link Country}
+	 * @param newRuler
+	 *            {@link Player} new ruler of the {@link Country}.
+	 */
+	private void swapRuler(Country country, Player newRuler) {
+
+		// Holds the old ruler of the country
+		Player oldRuler = country.getRuler();
+
+		// If the country has a ruler reduce the number of countries that player owns by
+		// one.
+		if (oldRuler != null) {
+			oldRuler.setCountriesRuled(oldRuler.getCountriesRuled() - 1);
+		}
+
+		// Reassign the ruler of the country.
+		country.setRuler(newRuler);
+
+		// If the country has a new ruler increase the number of countries that player
+		// owns by one.
+		if (newRuler != null) {
+			newRuler.setCountriesRuled(newRuler.getCountriesRuled() + 1);
 		}
 
 	}

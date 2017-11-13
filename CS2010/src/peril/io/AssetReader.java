@@ -322,25 +322,10 @@ public class AssetReader {
 					if (continent.isRuled()) {
 						continent.getRuler().setContinentsRuled(continent.getRuler().getContinentsRuled() + 1);
 					}
-
-					// For every country in the continent
-					continent.getCountries().forEach(country -> {
-
-						// If the country has a ruler
-						if (country.getRuler() != null) {
-
-							// Increment the number of countries that player rules.
-							country.getRuler().setCountriesRuled(country.getRuler().getCountriesRuled() + 1);
-
-							// Add the size of the countries army to the total size of the players army.
-							country.getRuler().setTotalArmySize(
-									country.getRuler().getTotalArmySize() + country.getArmy().getSize());
-
-						}
-					});
+					
 				});
 
-				// Check the challenges of the first player.
+				actionState.getGame().reinforce(actionState.getGame().getCurrentPlayer());
 				actionState.getGame().enterState(actionState.getGame().reinforcement.getID());
 			});
 		// Fortify another country by moving one troop to the new country.

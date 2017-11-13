@@ -117,6 +117,7 @@ public class SetupState extends CoreGameState {
 		// one.
 		if (oldRuler != null) {
 			oldRuler.setCountriesRuled(oldRuler.getCountriesRuled() - 1);
+			oldRuler.setTotalArmySize(oldRuler.getTotalArmySize() - 1);
 		}
 
 		// Reassign the ruler of the country.
@@ -126,6 +127,7 @@ public class SetupState extends CoreGameState {
 		// owns by one.
 		if (newRuler != null) {
 			newRuler.setCountriesRuled(newRuler.getCountriesRuled() + 1);
+			newRuler.setTotalArmySize(newRuler.getTotalArmySize() + 1);
 		}
 
 	}

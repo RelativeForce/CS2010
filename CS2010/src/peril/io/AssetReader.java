@@ -200,6 +200,7 @@ public class AssetReader {
 	private Action<?> getActionByCode(int code, InteractiveState state) {
 		switch (code) {
 
+		// Reinforce a country with one unit.
 		case 0:
 
 			// TODO change implementation to remove instances of casting.
@@ -398,10 +399,11 @@ public class AssetReader {
 						if (attacking.getRuler().equals(defending.getRuler())) {
 
 							if (defendingPlayer != null) {
+								
 								defendingPlayer.setCountriesRuled(defendingPlayer.getCountriesRuled() - 1);						
 								defendingPlayer.setTotalArmySize(defendingPlayer.getTotalArmySize() - 1);
-								
-								if(defendingPlayer.getTotalArmySize() == 0) {
+
+								if(defendingPlayer.getContinentsRuled() == 0) {
 									actionState.getGame().setLoser(defendingPlayer);
 									actionState.getGame().checkWinner();
 								}						
@@ -413,7 +415,11 @@ public class AssetReader {
 							actionState.setPostCombat();
 							actionState.highlightCountry(defending);						
 							
-							actionState.getGame().checkChallenges(actionState.getGame().getCurrentPlayer());
+							actionState.getGame().getBoard().getContinents().forEach(continent -> continent.isRuled());
+							
+							actionState.getGame().checkChallenges(attackingPlayer);
+							
+							
 						}
 					}
 				}

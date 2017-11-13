@@ -579,7 +579,7 @@ public class Game extends StateBasedGame implements MusicListener {
 				set = true;
 				country.setRuler(player);
 				player.setCountriesRuled(player.getCountriesRuled() + 1);
-
+				player.setTotalArmySize(player.getTotalArmySize() + 1);
 			}
 
 		}

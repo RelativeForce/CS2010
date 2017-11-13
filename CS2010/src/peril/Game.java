@@ -188,14 +188,6 @@ public class Game extends StateBasedGame implements MusicListener {
 		// Holds the directory this game is operating in.
 		String baseDirectory = new File(System.getProperty("user.dir")).getPath();
 
-		// Create the ui_assets file path
-		StringBuilder ui_assestsPath = new StringBuilder(baseDirectory);
-		ui_assestsPath.append(File.separatorChar);
-		ui_assestsPath.append("ui_assets");
-
-		this.assetReader = new AssetReader(new InteractiveState[] { combat, setup, reinforcement, movement, end },
-				ui_assestsPath.toString(), this);
-
 		// Create the map file path
 		StringBuilder game_assetsPath = new StringBuilder(baseDirectory);
 		game_assetsPath.append(File.separatorChar);
@@ -213,6 +205,15 @@ public class Game extends StateBasedGame implements MusicListener {
 		game_assetsPath.append("maps");
 
 		this.mainMenu = new MainMenuState(this, 0, game_assetsPath.toString());
+
+		// Create the ui_assets file path
+		StringBuilder ui_assestsPath = new StringBuilder(baseDirectory);
+		ui_assestsPath.append(File.separatorChar);
+		ui_assestsPath.append("ui_assets");
+
+		this.assetReader = new AssetReader(
+				new InteractiveState[] { mainMenu, combat, setup, reinforcement, movement, end },
+				ui_assestsPath.toString(), this);
 
 		// Construct the container for the game as a Slick2D state based game. And parse
 		// the details of the map from the maps file.
@@ -527,9 +528,9 @@ public class Game extends StateBasedGame implements MusicListener {
 		players.forEach(player -> player.setContinentsRuled(0));
 
 		board.getContinents().forEach(continent -> {
-			
+
 			continent.isRuled();
-			
+
 			if (continent.getRuler() != null) {
 				continent.getRuler().setContinentsRuled(continent.getRuler().getCountriesRuled() + 1);
 			}

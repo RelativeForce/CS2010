@@ -373,6 +373,11 @@ public class AssetReader {
 				}
 			});
 
+		case 7:
+			return new Action<Game>(game, game -> {
+				
+			});
+
 		}
 		return null;
 	}

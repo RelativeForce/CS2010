@@ -58,6 +58,9 @@ public class CombatHandler {
 		Army attackingArmy = attacking.getArmy();
 		Army defendingArmy = defending.getArmy();
 
+		Player defender = defending.getRuler();
+		Player attacker = attacking.getRuler();
+
 		// Check parameter
 		if (atkSquadSize > 3 || atkSquadSize < 0) {
 			throw new IllegalArgumentException(
@@ -79,21 +82,25 @@ public class CombatHandler {
 			 * defender's army and vice versa.
 			 */
 			if (attackerDiceRolls[i] > defenderDiceRolls[i]) {
+				
 				if (defendingArmy.getSize() == 1) {
-					defending.setRuler(attacking.getRuler());
-				}else {
+					defending.setRuler(attacker);
+					attacker.setTotalArmySize(attacker.getTotalArmySize() + 1);
+				} else {
 					defendingArmy.setSize(defendingArmy.getSize() - 1);
-					defending.getRuler().setTotalArmySize(defending.getRuler().getTotalArmySize() - 1);
 				}
+				defender.setTotalArmySize(defender.getTotalArmySize() - 1);
 
 			} else {
-				if(attackingArmy.getSize() == 1) {
-					attacking.setRuler(defending.getRuler());
-				}else {
-					attackingArmy.setSize(attackingArmy.getSize() - 1);
-					attacking.getRuler().setTotalArmySize(attacking.getRuler().getTotalArmySize() - 1);
-				}
 				
+				if (attackingArmy.getSize() == 1) {
+					attacking.setRuler(defender);
+					defender.setTotalArmySize(defender.getTotalArmySize() + 1);
+				} else {
+					attackingArmy.setSize(attackingArmy.getSize() - 1);
+				}
+				attacker.setTotalArmySize(attacker.getTotalArmySize() - 1);
+
 			}
 
 		}

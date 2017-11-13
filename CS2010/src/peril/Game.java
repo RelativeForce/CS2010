@@ -522,6 +522,21 @@ public class Game extends StateBasedGame implements MusicListener {
 		return false;
 	}
 
+	public void checkContinentRulership() {
+
+		players.forEach(player -> player.setContinentsRuled(0));
+
+		board.getContinents().forEach(continent -> {
+			
+			continent.isRuled();
+			
+			if (continent.getRuler() != null) {
+				continent.getRuler().setContinentsRuled(continent.getRuler().getCountriesRuled() + 1);
+			}
+		});
+
+	}
+
 	/**
 	 * Sets a specified {@link Player} as a loser which removes it from the
 	 * {@link Game#players} and adds it to the podium in the {@link EndState}.

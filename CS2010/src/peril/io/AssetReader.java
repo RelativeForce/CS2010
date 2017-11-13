@@ -238,7 +238,7 @@ public class AssetReader {
 							// Remove the unit from the list of units to place.
 							player.setDistributableArmySize(armySize - 1);
 							player.setTotalArmySize(player.getTotalArmySize() + 1);
-							actionState.getGame().checkChallenges(actionState.getGame().getCurrentPlayer());
+							actionState.getGame().checkChallenges(player);
 
 						} else {
 							System.out.println(player.toString() + " does not rule this country");
@@ -300,6 +300,7 @@ public class AssetReader {
 				actionState.highlightCountry(null);
 				actionState.getGame().enterState(actionState.getGame().reinforcement.getID());
 				actionState.getGame().nextPlayer();
+				System.out.println(actionState.getGame().getCurrentPlayer().getTotalArmySize());
 			});
 		// Leave set up state
 		case 4:
@@ -315,16 +316,7 @@ public class AssetReader {
 				actionState.unhighlightCountry(actionState.getHighlightedCountry());
 				actionState.highlightCountry(null);
 
-				// For every continent on the board.
-				actionState.getGame().getBoard().getContinents().forEach(continent -> {
-
-					// If the continents is ruled by one player add on to the players ruled
-					// continents
-					if (continent.isRuled()) {
-						continent.getRuler().setContinentsRuled(continent.getRuler().getContinentsRuled() + 1);
-					}
-					
-				});
+				actionState.getGame().checkContinentRulership();
 
 				actionState.getGame().reinforce(actionState.getGame().getCurrentPlayer());
 				actionState.getGame().enterState(actionState.getGame().reinforcement.getID());
@@ -401,21 +393,19 @@ public class AssetReader {
 							if (defendingPlayer != null) {
 								
 								defendingPlayer.setCountriesRuled(defendingPlayer.getCountriesRuled() - 1);						
-								defendingPlayer.setTotalArmySize(defendingPlayer.getTotalArmySize() - 1);
 
-								if(defendingPlayer.getContinentsRuled() == 0) {
+								if(defendingPlayer.getCountriesRuled() == 0) {
 									actionState.getGame().setLoser(defendingPlayer);
 									actionState.getGame().checkWinner();
 								}						
 							}
 
 							attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
-							attackingPlayer.setTotalArmySize(attackingPlayer.getTotalArmySize() + 1);
 
 							actionState.setPostCombat();
 							actionState.highlightCountry(defending);						
 							
-							actionState.getGame().getBoard().getContinents().forEach(continent -> continent.isRuled());
+							actionState.getGame().checkContinentRulership();
 							
 							actionState.getGame().checkChallenges(attackingPlayer);
 							

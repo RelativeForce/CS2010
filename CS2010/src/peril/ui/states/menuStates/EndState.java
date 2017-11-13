@@ -1,4 +1,4 @@
-package peril.ui.states.gameStates;
+package peril.ui.states.menuStates;
 
 import java.util.LinkedList;
 

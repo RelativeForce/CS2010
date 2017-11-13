@@ -25,6 +25,7 @@ import peril.ui.states.InteractiveState;
 import peril.ui.states.gameStates.*;
 import peril.ui.states.gameStates.multiSelectState.CombatState;
 import peril.ui.states.gameStates.multiSelectState.MovementState;
+import peril.ui.states.menuStates.EndState;
 import peril.ui.states.menuStates.MainMenuState;
 
 /**

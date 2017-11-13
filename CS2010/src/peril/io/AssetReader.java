@@ -5,6 +5,7 @@ import java.io.File;
 import org.newdawn.slick.Image;
 
 import peril.CombatHandler;
+import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Army;
@@ -12,9 +13,6 @@ import peril.board.Country;
 import peril.multiThread.Action;
 import peril.ui.Button;
 import peril.ui.states.InteractiveState;
-import peril.ui.states.gameStates.CoreGameState;
-import peril.ui.states.gameStates.multiSelectState.CombatState;
-import peril.ui.states.gameStates.multiSelectState.MovementState;
 import peril.ui.visual.Clickable;
 import peril.ui.visual.Viewable;
 
@@ -39,25 +37,33 @@ public class AssetReader {
 	private String directoryPath;
 
 	/**
+	 * The {@link Game} this {@link AssetReader} is a part of.
+	 */
+	private Game game;
+
+	/**
 	 * Constructs a new {@link AssetReader}.
 	 * 
-	 * @param coreGameStates
-	 *            The {@link CoreGameState}s that will be populated when
+	 * @param interactiveStates
+	 *            The {@link InteractiveState}s that will be populated when
 	 *            {@link AssetReader#read()} is performed.
 	 * @param directoryPath
 	 *            File path of the asset details file.
 	 */
-	public AssetReader(InteractiveState[] coreGameStates, String directoryPath) {
+	public AssetReader(InteractiveState[] interactiveStates, String directoryPath, Game game) {
 
 		// Check params
 		if (directoryPath.isEmpty()) {
 			throw new NullPointerException("File path cannot be empty.");
-		} else if (coreGameStates.length == 0) {
+		} else if (interactiveStates.length == 0) {
 			throw new NullPointerException("CoreGameState array cannot be empty.");
+		} else if (game == null) {
+			throw new NullPointerException("Game cannot be null.");
 		}
 
+		this.game = game;
 		this.directoryPath = directoryPath;
-		this.states = coreGameStates;
+		this.states = interactiveStates;
 	}
 
 	/**
@@ -127,7 +133,7 @@ public class AssetReader {
 			throw new IllegalArgumentException(details[2] + " is not a valid function code");
 		}
 
-		Action<?> action = getActionByCode(functionCode, state);
+		Action<?> action = getActionByCode(functionCode);
 
 		// Get the asset image
 		try {
@@ -197,24 +203,19 @@ public class AssetReader {
 	 *            by.
 	 * @return {@link Action}
 	 */
-	private Action<?> getActionByCode(int code, InteractiveState state) {
+	private Action<?> getActionByCode(int code) {
 		switch (code) {
 
+		// Reinforce a country with one unit.
 		case 0:
 
-			// TODO change implementation to remove instances of casting.
-			if (!(state instanceof CoreGameState)) {
-				throw new IllegalStateException("Function code: 0 is not permitted with the '" + state.getStateName()
-						+ "' state. It is only permitted with 'CoreGame' states.");
-			}
-
-			return new Action<CoreGameState>((CoreGameState) state, actionState -> {
+			return new Action<Game>(game, game -> {
 
 				// Holds the currently highlighted country
-				Country highlightedCountry = actionState.getHighlightedCountry();
+				Country highlightedCountry = game.reinforcement.getHighlightedCountry();
 
 				// Holds the current player.
-				Player player = actionState.getGame().getCurrentPlayer();
+				Player player = game.getCurrentPlayer();
 
 				// Holds the size of the army that the player has to distribute.
 				int armySize = player.getDistributableArmySize();
@@ -237,7 +238,7 @@ public class AssetReader {
 							// Remove the unit from the list of units to place.
 							player.setDistributableArmySize(armySize - 1);
 							player.setTotalArmySize(player.getTotalArmySize() + 1);
-							actionState.getGame().checkChallenges(actionState.getGame().getCurrentPlayer());
+							game.checkChallenges(player);
 
 						} else {
 							System.out.println(player.toString() + " does not rule this country");
@@ -255,107 +256,49 @@ public class AssetReader {
 		// Enter combat state.
 		case 1:
 
-			// TODO change implementation to remove instances of casting.
-			if (!(state instanceof CoreGameState)) {
-				throw new IllegalStateException("Function code: 1 is not permitted with the '" + state.getStateName()
-						+ "' state. It is only permitted with 'CoreGame' states.");
-			}
-
-			return new Action<CoreGameState>((CoreGameState) state, actionState -> {
-
-				actionState.unhighlightCountry(actionState.getHighlightedCountry());
-				actionState.highlightCountry(null);
-				actionState.getGame().enterState(actionState.getGame().combat.getID());
+			return new Action<Game>(game, game -> {
+				game.reinforcement.unhighlightCountry(game.reinforcement.getHighlightedCountry());
+				game.reinforcement.highlightCountry(null);
+				game.enterState(game.combat.getID());
 			});
 
 		// Enter movement state.
 		case 2:
-
-			// TODO change implementation to remove instances of casting.
-			if (!(state instanceof CoreGameState)) {
-				throw new IllegalStateException("Function code: 2 is not permitted with the '" + state.getStateName()
-						+ "' state. It is only permitted with 'CoreGame' states.");
-			}
-
-			return new Action<CoreGameState>((CoreGameState) state, actionState -> {
-
-				actionState.unhighlightCountry(actionState.getHighlightedCountry());
-				actionState.highlightCountry(null);
-				actionState.getGame().enterState(actionState.getGame().movement.getID());
+			return new Action<Game>(game, game -> {
+				game.combat.unhighlightCountry(game.combat.getHighlightedCountry());
+				game.combat.highlightCountry(null);
+				game.enterState(game.movement.getID());
 			});
 
 		// Enter reinforcement state.
 		case 3:
 
-			// TODO change implementation to remove instances of casting.
-			if (!(state instanceof CoreGameState)) {
-				throw new IllegalStateException("Function code: 3 is not permitted with the '" + state.getStateName()
-						+ "' state. It is only permitted with 'CoreGame' states.");
-			}
-
-			return new Action<CoreGameState>((CoreGameState) state, actionState -> {
-
-				actionState.unhighlightCountry(actionState.getHighlightedCountry());
-				actionState.highlightCountry(null);
-				actionState.getGame().enterState(actionState.getGame().reinforcement.getID());
-				actionState.getGame().nextPlayer();
+			return new Action<Game>(game, game -> {
+				game.movement.unhighlightCountry(game.movement.getHighlightedCountry());
+				game.movement.highlightCountry(null);
+				game.enterState(game.reinforcement.getID());
+				game.nextPlayer();
 			});
 		// Leave set up state
 		case 4:
 
-			// TODO change implementation to remove instances of casting.
-			if (!(state instanceof CoreGameState)) {
-				throw new IllegalStateException("Function code: 0 is not permitted with the '" + state.getStateName()
-						+ "' state. It is only permitted with 'CoreGame' states.");
-			}
+			return new Action<Game>(game, game -> {
 
-			return new Action<CoreGameState>((CoreGameState) state, actionState -> {
+				game.setup.unhighlightCountry(game.setup.getHighlightedCountry());
+				game.setup.highlightCountry(null);
 
-				actionState.unhighlightCountry(actionState.getHighlightedCountry());
-				actionState.highlightCountry(null);
+				game.checkContinentRulership();
 
-				// For every continent on the board.
-				actionState.getGame().getBoard().getContinents().forEach(continent -> {
-
-					// If the continents is ruled by one player add on to the players ruled
-					// continents
-					if (continent.isRuled()) {
-						continent.getRuler().setContinentsRuled(continent.getRuler().getContinentsRuled() + 1);
-					}
-
-					// For every country in the continent
-					continent.getCountries().forEach(country -> {
-
-						// If the country has a ruler
-						if (country.getRuler() != null) {
-
-							// Increment the number of countries that player rules.
-							country.getRuler().setCountriesRuled(country.getRuler().getCountriesRuled() + 1);
-
-							// Add the size of the countries army to the total size of the players army.
-							country.getRuler().setTotalArmySize(
-									country.getRuler().getTotalArmySize() + country.getArmy().getSize());
-
-						}
-					});
-				});
-
-				// Check the challenges of the first player.
-				actionState.getGame().enterState(actionState.getGame().reinforcement.getID());
+				game.reinforce(game.getCurrentPlayer());
+				game.enterState(game.reinforcement.getID());
 			});
 		// Fortify another country by moving one troop to the new country.
 		case 5:
 
-			// TODO change implementation to remove instances of casting.
-			if (!(state instanceof MovementState)) {
-				throw new IllegalStateException("Function code: 5 is not permitted with the '" + state.getStateName()
-						+ "' state. It is only permitted with 'Movement' state.");
-			}
+			return new Action<Game>(game, game -> {
 
-			return new Action<MovementState>((MovementState) state, actionState -> {
-
-				Country primary = actionState.getHighlightedCountry();
-				Country target = actionState.getTargetCountry();
+				Country primary = game.movement.getHighlightedCountry();
+				Country target = game.movement.getTargetCountry();
 
 				// If there is two countries highlighted
 				if (primary != null && target != null) {
@@ -383,19 +326,13 @@ public class AssetReader {
 			});
 		// Execute a combat turn.
 		case 6:
-			
-			// TODO change implementation to remove instances of casting.
-			if (!(state instanceof CombatState)) {
-				throw new IllegalStateException("Function code: 6 is not permitted with the '"
-						+ state.getStateName() + "' state. It is only permitted with 'Combat' state.");
-			}
-			
-			return new Action<CombatState>((CombatState)state, actionState -> {
 
-				CombatHandler combathandler = actionState.getGame().getCombatHandler();
+			return new Action<Game>(game, game -> {
 
-				Country attacking = actionState.getHighlightedCountry();
-				Country defending = actionState.getEnemyCountry();
+				CombatHandler combathandler = game.getCombatHandler();
+
+				Country attacking = game.combat.getHighlightedCountry();
+				Country defending = game.combat.getEnemyCountry();
 
 				// If there is two countries highlighted
 				if (attacking != null && defending != null) {
@@ -413,16 +350,24 @@ public class AssetReader {
 						if (attacking.getRuler().equals(defending.getRuler())) {
 
 							if (defendingPlayer != null) {
+
 								defendingPlayer.setCountriesRuled(defendingPlayer.getCountriesRuled() - 1);
-								defendingPlayer.setTotalArmySize(defendingPlayer.getTotalArmySize() - 1);
+
+								if (defendingPlayer.getCountriesRuled() == 0) {
+									game.setLoser(defendingPlayer);
+									game.checkWinner();
+								}
 							}
 
 							attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
-							attackingPlayer.setTotalArmySize(attackingPlayer.getTotalArmySize() + 1);
 
-							actionState.setPostCombat();
-							actionState.highlightCountry(defending);
-							actionState.getGame().checkChallenges(actionState.getGame().getCurrentPlayer());
+							game.combat.setPostCombat();
+							game.combat.highlightCountry(defending);
+
+							game.checkContinentRulership();
+
+							game.checkChallenges(attackingPlayer);
+
 						}
 					}
 				}

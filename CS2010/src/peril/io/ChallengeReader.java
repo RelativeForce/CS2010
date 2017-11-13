@@ -120,29 +120,13 @@ public class ChallengeReader {
 				@Override
 				public boolean hasCompleted(Player player, Board board) {
 
-					// Hold the number of continents that the player owns.
-					int ownedContinents = 0;
+					if (player.getContinentsRuled() >= numberOfContinets) {
+						// Give the player a army of size 5 to distribute.
+						player.award(new Army(reward));
 
-					// Iterate through each continent
-					for (Continent continent : board.getContinents()) {
-
-						// If the player rules the current continent increment the number of continents
-						// the player owns.
-						if (continent.getRuler() == player) {
-							ownedContinents++;
-
-							// If the player has or exceeds the number required to complete the challenge
-							// return true.
-							if (ownedContinents >= numberOfContinets) {
-
-								// Give the player a army of size 5 to distribute.
-								player.award(new Army(reward));
-
-								return true;
-							}
-						}
-
+						return true;
 					}
+
 					return false;
 
 				}
@@ -184,32 +168,13 @@ public class ChallengeReader {
 				@Override
 				public boolean hasCompleted(Player player, Board board) {
 
-					// Hold the number of continents that the player owns.
-					int ownedCountries = 0;
+					if (player.getCountriesRuled() >= numberOfCountries) {
+						// Give the player a reward army to distribute.
+						player.award(new Army(reward));
 
-					// Iterate through each continent
-					for (Continent continent : board.getContinents()) {
-
-						// Iterate through all the countries in the continent.
-						for (Country country : continent.getCountries()) {
-
-							// If the player rules the current country increment the number of continents
-							// the player owns.
-							if (country.getRuler() == player) {
-								ownedCountries++;
-
-								// If the player has or exceeds the number required to complete the challenge
-								// return true.
-								if (ownedCountries >= numberOfCountries) {
-
-									// Give the player a army of size 5 to distribute.
-									player.award(new Army(reward));
-
-									return true;
-								}
-							}
-						}
+						return true;
 					}
+
 					return false;
 				}
 
@@ -250,33 +215,12 @@ public class ChallengeReader {
 				@Override
 				public boolean hasCompleted(Player player, Board board) {
 
-					// Hold the number of continents that the player owns.
-					int currentArmySize = 0;
-
-					// Iterate through each continent
-					for (Continent continent : board.getContinents()) {
-
-						// Iterate through all the countries in the continent.
-						for (Country country : continent.getCountries()) {
-
-							// If the player rules the current country.
-							if (country.getRuler() == player) {
-
-								// Add the size of this country's army to the running total.
-								currentArmySize += country.getArmy().getSize();
-
-								// If the player has or exceeds the number required to complete the challenge
-								// return true.
-								if (currentArmySize >= sizeOfArmy) {
-
-									// Give the player a army of size 5 to distribute.
-									player.award(new Army(reward));
-
-									return true;
-								}
-							}
-						}
+					if (player.getTotalArmySize() >= sizeOfArmy) {
+						// Give the player a army of size 5 to distribute.
+						player.award(new Army(reward));
+						return true;
 					}
+
 					return false;
 				}
 

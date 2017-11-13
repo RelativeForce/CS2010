@@ -25,6 +25,7 @@ import peril.ui.states.InteractiveState;
 import peril.ui.states.gameStates.*;
 import peril.ui.states.gameStates.multiSelectState.CombatState;
 import peril.ui.states.gameStates.multiSelectState.MovementState;
+import peril.ui.states.menuStates.EndState;
 import peril.ui.states.menuStates.MainMenuState;
 
 /**
@@ -109,7 +110,7 @@ public class Game extends StateBasedGame implements MusicListener {
 	/**
 	 * Holds all the {@link Player}s in this {@link Game}.
 	 */
-	private Player[] players;
+	private List<Player> players;
 
 	/**
 	 * Whether all the assets are loaded or not.
@@ -158,11 +159,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	private Game() {
 		super("PERIL: A Turn Based Strategy Game");
 
-		// Initialise the the players array.
-		this.players = new Player[] { Player.ONE, Player.TWO, Player.THREE, Player.FOUR };
-
-		Player.ONE.setDistributableArmySize(3);
-
 		// Set the game indexes to there initial values.
 		this.currentPlayerIndex = 0;
 		this.currentRound = 0;
@@ -198,7 +194,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		ui_assestsPath.append("ui_assets");
 
 		this.assetReader = new AssetReader(new InteractiveState[] { combat, setup, reinforcement, movement, end },
-				ui_assestsPath.toString());
+				ui_assestsPath.toString(), this);
 
 		// Create the map file path
 		StringBuilder game_assetsPath = new StringBuilder(baseDirectory);
@@ -319,7 +315,12 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * @return {@link Player}
 	 */
 	public Player getCurrentPlayer() {
-		return players[currentPlayerIndex];
+
+		if (players == null) {
+			throw new NullPointerException("List of playing Players is null!");
+		}
+
+		return players.get(currentPlayerIndex);
 	}
 
 	/**
@@ -354,21 +355,32 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public void nextPlayer() {
 
-		currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+		currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
 
 		if (getRoundNumber() > 0) {
 			checkChallenges(getCurrentPlayer());
 		}
 
-		if (getCurrentPlayer().getCountriesRuled() <= 11) {
-			getCurrentPlayer().setDistributableArmySize(getCurrentPlayer().getDistributableArmySize() + 3);
-		} else {
-			getCurrentPlayer().setDistributableArmySize(
-					getCurrentPlayer().getDistributableArmySize() + (getCurrentPlayer().getCountriesRuled() / 3));
-		}
+		reinforce(getCurrentPlayer());
 
 		if (currentPlayerIndex == 0) {
 			endRound();
+		}
+	}
+
+	/**
+	 * Gives the specified {@link Player} reinforcements based on the number of
+	 * countries they own.
+	 * 
+	 * @param player
+	 *            {@link Player}
+	 */
+	public void reinforce(Player player) {
+
+		if (player.getCountriesRuled() < 12) {
+			player.setDistributableArmySize(player.getDistributableArmySize() + 3);
+		} else {
+			player.setDistributableArmySize(player.getDistributableArmySize() + (player.getCountriesRuled() / 3));
 		}
 	}
 
@@ -449,6 +461,11 @@ public class Game extends StateBasedGame implements MusicListener {
 
 	}
 
+	/**
+	 * When the currently playing {@link Music} has finished, start the
+	 * {@link Music} of the {@link Game#getCurrentState()} if the
+	 * {@link InteractiveState} has {@link Music}.
+	 */
 	@Override
 	public void musicEnded(Music previousMusic) {
 
@@ -460,6 +477,9 @@ public class Game extends StateBasedGame implements MusicListener {
 
 	}
 
+	/**
+	 * When the {@link Music} playing in this {@link Game} has changed.
+	 */
 	@Override
 	public void musicSwapped(Music music1, Music music2) {
 
@@ -471,9 +491,9 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * @param players
 	 *            {@link Player}s in the {@link Game}. NOT EMPTY
 	 */
-	public void setPlayers(Player[] players) {
+	public void setPlayers(List<Player> players) {
 
-		if (players.length == 0) {
+		if (players == null || players.isEmpty()) {
 			throw new IllegalArgumentException("players array cannot be empty");
 		}
 
@@ -502,6 +522,54 @@ public class Game extends StateBasedGame implements MusicListener {
 		return false;
 	}
 
+	public void checkContinentRulership() {
+
+		players.forEach(player -> player.setContinentsRuled(0));
+
+		board.getContinents().forEach(continent -> {
+			
+			continent.isRuled();
+			
+			if (continent.getRuler() != null) {
+				continent.getRuler().setContinentsRuled(continent.getRuler().getCountriesRuled() + 1);
+			}
+		});
+
+	}
+
+	/**
+	 * Sets a specified {@link Player} as a loser which removes it from the
+	 * {@link Game#players} and adds it to the podium in the {@link EndState}.
+	 * 
+	 * @param player
+	 *            {@link Player} that has lost.
+	 */
+	public void setLoser(Player player) {
+
+		// If the loser player is before the current player in the list, reduce the
+		// player index to account for the player being removed and the list's size
+		// changing.
+		if (this.currentPlayerIndex > players.indexOf(player)) {
+			this.currentPlayerIndex--;
+		}
+
+		// Add the player to the podium and remove it from the players in play.
+		end.addPlayerToPodium(player);
+		players.remove(player);
+
+	}
+
+	/**
+	 * Checks if there is only one {@link Player} in play. If this is the case then
+	 * that {@link Player} has won.
+	 */
+	public void checkWinner() {
+		if (players.size() == 1) {
+			end.addPlayerToPodium(players.get(0));
+			enterState(end.getID());
+		}
+	}
+
 	/**
 	 * Assigns a {@link Player} ruler to a {@link Country} using a parameter
 	 * {@link Random}.
@@ -518,15 +586,15 @@ public class Game extends StateBasedGame implements MusicListener {
 		while (!set) {
 
 			// Get the player at the random index.
-			Player player = players[rand.nextInt(players.length)];
+			Player player = players.get(rand.nextInt(players.size()));
 
 			// If the player owns more that their fair share of the maps countries assign
 			// the player again.
-			if (player.getCountriesRuled() <= (board.getNumberOfCountries() / players.length)) {
+			if (player.getCountriesRuled() <= (board.getNumberOfCountries() / players.size())) {
 				set = true;
 				country.setRuler(player);
 				player.setCountriesRuled(player.getCountriesRuled() + 1);
-
+				player.setTotalArmySize(player.getTotalArmySize() + 1);
 			}
 
 		}
@@ -540,4 +608,5 @@ public class Game extends StateBasedGame implements MusicListener {
 		board.endRound();
 		currentRound++;
 	}
+
 }

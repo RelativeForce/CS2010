@@ -1,5 +1,8 @@
 package peril.ui.states.menuStates;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -289,7 +292,7 @@ public class MainMenuState extends InteractiveState {
 		/**
 		 * An array of {@link players}.
 		 */
-		public final Player[] players;
+		public final List<Player> players;
 
 		/**
 		 * Constructs a new {@link PlayerArray}.
@@ -299,18 +302,26 @@ public class MainMenuState extends InteractiveState {
 		 */
 		public PlayerArray(int numberOfPlayers) {
 
+			players = new ArrayList<Player>();
+
 			switch (numberOfPlayers) {
 			case 1:
-				players = new Player[] { Player.ONE };
+				players.add(Player.ONE);
 				break;
 			case 2:
-				players = new Player[] { Player.ONE, Player.TWO };
+				players.add(Player.ONE);
+				players.add(Player.TWO);
 				break;
 			case 3:
-				players = new Player[] { Player.ONE, Player.TWO, Player.THREE };
+				players.add(Player.ONE);
+				players.add(Player.TWO);
+				players.add(Player.THREE);
 				break;
 			case 4:
-				players = new Player[] { Player.ONE, Player.TWO, Player.THREE, Player.FOUR };
+				players.add(Player.ONE);
+				players.add(Player.TWO);
+				players.add(Player.THREE);
+				players.add(Player.FOUR);
 				break;
 			default:
 				throw new IllegalArgumentException(

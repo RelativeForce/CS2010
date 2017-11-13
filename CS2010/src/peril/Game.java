@@ -109,7 +109,7 @@ public class Game extends StateBasedGame implements MusicListener {
 	/**
 	 * Holds all the {@link Player}s in this {@link Game}.
 	 */
-	private Player[] players;
+	private List<Player> players;
 
 	/**
 	 * Whether all the assets are loaded or not.
@@ -157,11 +157,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	private Game() {
 		super("PERIL: A Turn Based Strategy Game");
-
-		// Initialise the the players array.
-		this.players = new Player[] { Player.ONE, Player.TWO, Player.THREE, Player.FOUR };
-
-		Player.ONE.setDistributableArmySize(3);
 
 		// Set the game indexes to there initial values.
 		this.currentPlayerIndex = 0;
@@ -319,7 +314,12 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * @return {@link Player}
 	 */
 	public Player getCurrentPlayer() {
-		return players[currentPlayerIndex];
+
+		if (players == null) {
+			throw new NullPointerException("List of playing Players is null!");
+		}
+
+		return players.get(currentPlayerIndex);
 	}
 
 	/**
@@ -354,7 +354,7 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public void nextPlayer() {
 
-		currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+		currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
 
 		if (getRoundNumber() > 0) {
 			checkChallenges(getCurrentPlayer());
@@ -471,9 +471,9 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * @param players
 	 *            {@link Player}s in the {@link Game}. NOT EMPTY
 	 */
-	public void setPlayers(Player[] players) {
+	public void setPlayers(List<Player> players) {
 
-		if (players.length == 0) {
+		if (players == null || players.isEmpty()) {
 			throw new IllegalArgumentException("players array cannot be empty");
 		}
 
@@ -502,6 +502,26 @@ public class Game extends StateBasedGame implements MusicListener {
 		return false;
 	}
 
+	public void setLoser(Player player) {
+		
+		int currentPlayerIndex = this.currentPlayerIndex;
+		int removePlayerIndex = players.indexOf(player);
+		
+		end.addPlayerToPodium(player);
+		players.remove(player);
+		
+		if(currentPlayerIndex > removePlayerIndex) {
+			this.currentPlayerIndex--;
+		}
+	}
+
+	public void checkWinner() {
+		if(players.size() == 1) {
+			end.addPlayerToPodium(players.get(0));
+			enterState(end.getID());
+		}
+	}
+	
 	/**
 	 * Assigns a {@link Player} ruler to a {@link Country} using a parameter
 	 * {@link Random}.
@@ -518,11 +538,11 @@ public class Game extends StateBasedGame implements MusicListener {
 		while (!set) {
 
 			// Get the player at the random index.
-			Player player = players[rand.nextInt(players.length)];
+			Player player = players.get(rand.nextInt(players.size()));
 
 			// If the player owns more that their fair share of the maps countries assign
 			// the player again.
-			if (player.getCountriesRuled() <= (board.getNumberOfCountries() / players.length)) {
+			if (player.getCountriesRuled() <= (board.getNumberOfCountries() / players.size())) {
 				set = true;
 				country.setRuler(player);
 				player.setCountriesRuled(player.getCountriesRuled() + 1);
@@ -540,4 +560,5 @@ public class Game extends StateBasedGame implements MusicListener {
 		board.endRound();
 		currentRound++;
 	}
+
 }

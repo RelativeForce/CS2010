@@ -413,15 +413,21 @@ public class AssetReader {
 						if (attacking.getRuler().equals(defending.getRuler())) {
 
 							if (defendingPlayer != null) {
-								defendingPlayer.setCountriesRuled(defendingPlayer.getCountriesRuled() - 1);
+								defendingPlayer.setCountriesRuled(defendingPlayer.getCountriesRuled() - 1);						
 								defendingPlayer.setTotalArmySize(defendingPlayer.getTotalArmySize() - 1);
+								
+								if(defendingPlayer.getTotalArmySize() == 0) {
+									actionState.getGame().setLoser(defendingPlayer);
+									actionState.getGame().checkWinner();
+								}						
 							}
 
 							attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
 							attackingPlayer.setTotalArmySize(attackingPlayer.getTotalArmySize() + 1);
 
 							actionState.setPostCombat();
-							actionState.highlightCountry(defending);
+							actionState.highlightCountry(defending);						
+							
 							actionState.getGame().checkChallenges(actionState.getGame().getCurrentPlayer());
 						}
 					}

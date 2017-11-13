@@ -1,5 +1,8 @@
 package peril.ui.states.gameStates;
 
+import java.util.LinkedList;
+
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Music;
@@ -28,7 +31,9 @@ public class EndState extends InteractiveState {
 
 	private Font winnerFont;
 
-	private Player winner;
+	private LinkedList<Player> podium;
+
+	private Font loserFont;
 
 	/**
 	 * Constructs a new {@link EndState}.
@@ -40,11 +45,11 @@ public class EndState extends InteractiveState {
 	 */
 	public EndState(Game game, int id) {
 		super(game, STATE_NAME, id);
+		podium = new LinkedList<>();
 	}
 
-	public void setWinner(Player player) {
-		winner = player;
-		winnerFont = new Font("Arial", player.getColor(), 50);
+	public void addPlayerToPodium(Player player) {
+		podium.push(player);
 	}
 
 	@Override
@@ -62,17 +67,38 @@ public class EndState extends InteractiveState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
 
-		winnerFont.draw(g, winner.toString() + " WINS!!!!", gc.getWidth() / 2, gc.getHeight() / 2);
-
+		drawPodium(g, gc.getWidth(), gc.getHeight());
 	}
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
+		winnerFont = new Font("Arial", Color.yellow, 50);
+		loserFont = new Font("Arial", Color.red, 30);
 	}
 
 	@Override
 	public Music getMusic() {
 		return null;
 	}
+
+	private void drawPodium(Graphics g, int width, int height) {
+		int position = 1;
+
+		int y = height / 3;
+
+		for (Player player : podium) {
+
+			if (position == 1) {
+				winnerFont.draw(g, position + ". " + player.toString(), (width / 3) - 20, y);
+			} else {
+				loserFont.draw(g, position + ". " + player.toString(), width / 3, y);
+			}
+
+			y += 60;
+			position++;
+		}
+
+	}
+
 }

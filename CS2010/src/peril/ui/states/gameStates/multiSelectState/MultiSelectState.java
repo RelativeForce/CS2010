@@ -2,7 +2,6 @@ package peril.ui.states.gameStates.multiSelectState;
 
 import peril.Game;
 import peril.Player;
-import peril.Point;
 import peril.board.Country;
 import peril.ui.states.gameStates.CoreGameState;
 
@@ -36,12 +35,6 @@ public abstract class MultiSelectState extends CoreGameState {
 		super(game, stateName, id);
 		highlightedCounrty = null;
 	}
-
-	/**
-	 * Parse a click at a {@link Point} on the screen.
-	 */
-	@Override
-	public abstract void parseClick(int button, Point click);
 
 	/**
 	 * Removes the highlight effect on the primary and secondary highlighted

@@ -8,7 +8,6 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Player;
-import peril.Point;
 import peril.board.Country;
 
 /**
@@ -41,14 +40,6 @@ public class SetupState extends CoreGameState {
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
-	}
-
-	@Override
-	public void parseClick(int button, Point click) {
-		// If the states buttons were not clicked click the board.
-		if (!clickButton(click)) {
-			clickBoard(click);
-		}
 	}
 
 	@Override
@@ -96,7 +87,7 @@ public class SetupState extends CoreGameState {
 
 			}
 		}
-		
+
 		super.parseButton(key, c);
 
 	}

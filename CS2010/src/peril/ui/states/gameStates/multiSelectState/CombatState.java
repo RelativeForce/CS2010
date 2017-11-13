@@ -8,7 +8,6 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Player;
-import peril.Point;
 import peril.board.Country;
 import peril.ui.states.gameStates.CoreGameState;
 
@@ -60,18 +59,6 @@ public class CombatState extends MultiSelectState {
 	 */
 	public void setPreCombat() {
 		isPostCombat = false;
-	}
-
-	/**
-	 * {@link CoreGameState#clickButton(Point)} if that returns false then
-	 * {@link CoreGameState#clickBoard(Point)}.
-	 */
-	@Override
-	public void parseClick(int button, Point click) {
-		// If the states buttons were not clicked click the board.
-		if (!clickButton(click)) {
-			clickBoard(click);
-		}
 	}
 
 	/**

@@ -22,6 +22,7 @@ import peril.board.Army;
 import peril.board.Board;
 import peril.board.Country;
 import peril.ui.states.InteractiveState;
+import peril.ui.states.menuStates.PauseMenu;
 import peril.ui.visual.Region;
 
 /**
@@ -43,6 +44,8 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	private Map<Challenge, Delay> challenges;
 
+	private PauseMenu pauseMenu;
+
 	/**
 	 * Constructs a new {@link CoreGameState}.
 	 * 
@@ -57,6 +60,7 @@ public abstract class CoreGameState extends InteractiveState {
 		super(game, stateName, id);
 		this.highlightedCountry = null;
 		this.challenges = new IdentityHashMap<>();
+		this.pauseMenu = new PauseMenu(100, 100);
 	}
 
 	/**
@@ -106,20 +110,30 @@ public abstract class CoreGameState extends InteractiveState {
 			}
 		}
 
+		drawArmies(g);
+
 		// Draw all the clickable objects.
 		super.render(gc, sbg, g);
 
 		drawStateBox(g);
 
-		drawArmies(g);
-
 		drawChallenges(g, 130, 15);
+
+		if (pauseMenu.IsPaused()) {
+			pauseMenu.draw(g);
+		}
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		super.update(gc, sbg, delta);
 		elapseTime();
+	}
+
+	@Override
+	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		super.init(gc, sbg);
+		pauseMenu.init();
 	}
 
 	/**
@@ -184,9 +198,27 @@ public abstract class CoreGameState extends InteractiveState {
 		case Input.KEY_RIGHT:
 			getGame().getBoard().move(new Point(-increment, 0));
 			break;
+		case Input.KEY_ENTER:
+			pauseMenu.setPause(!pauseMenu.IsPaused());
+			break;
 		default:
 			break;
 
+		}
+
+	}
+
+	@Override
+	public void parseClick(int button, Point click) {
+
+		// If the player hasn't clicked the pause menu
+		if (!clickPauseMenu(click)) {
+
+			// If the player hasn't clicked a UI Button in the state, they must've clicked
+			// board.
+			if (!clickButton(click)) {
+				clickBoard(click);
+			}
 		}
 
 	}
@@ -282,6 +314,17 @@ public abstract class CoreGameState extends InteractiveState {
 			});
 		}));
 
+	}
+
+	protected boolean clickPauseMenu(Point click) {
+		if (pauseMenu.IsPaused()) {
+			if (pauseMenu.isClicked(click)) {
+				pauseMenu.parseClick(click);
+				return true;
+			}
+			pauseMenu.setPause(false);
+		}
+		return false;
 	}
 
 	/**

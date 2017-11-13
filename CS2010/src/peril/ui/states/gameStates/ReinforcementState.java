@@ -8,7 +8,6 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Player;
-import peril.Point;
 import peril.board.Country;
 
 /**
@@ -74,15 +73,5 @@ public class ReinforcementState extends CoreGameState {
 
 		// Draw player name
 		g.drawString("Units: " + getGame().getCurrentPlayer().getDistributableArmySize(), 5, 35);
-	}
-
-	@Override
-	public void parseClick(int button, Point click) {
-
-		// If the states buttons were not clicked click the board.
-		if (!clickButton(click)) {
-			clickBoard(click);
-		}
-
 	}
 }

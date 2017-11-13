@@ -8,7 +8,6 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Player;
-import peril.Point;
 import peril.board.Country;
 import peril.ui.states.gameStates.CoreGameState;
 
@@ -67,17 +66,6 @@ public class MovementState extends MultiSelectState {
 			super.highlightCountry(country);
 		}
 
-	}
-
-	/**
-	 * Parse a click at a {@link Point} on this {@link MovementState}.
-	 */
-	@Override
-	public void parseClick(int button, Point click) {
-		// If the states buttons were not clicked click the board.
-		if (!clickButton(click)) {
-			clickBoard(click);
-		}
 	}
 
 	/**

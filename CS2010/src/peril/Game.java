@@ -503,26 +503,39 @@ public class Game extends StateBasedGame implements MusicListener {
 		return false;
 	}
 
+	/**
+	 * Sets a specified {@link Player} as a loser which removes it from the
+	 * {@link Game#players} and adds it to the podium in the {@link EndState}.
+	 * 
+	 * @param player
+	 *            {@link Player} that has lost.
+	 */
 	public void setLoser(Player player) {
-		
-		int currentPlayerIndex = this.currentPlayerIndex;
-		int removePlayerIndex = players.indexOf(player);
-		
-		end.addPlayerToPodium(player);
-		players.remove(player);
-		
-		if(currentPlayerIndex > removePlayerIndex) {
+
+		// If the loser player is before the current player in the list, reduce the
+		// player index to account for the player being removed and the list's size
+		// changing.
+		if (this.currentPlayerIndex > players.indexOf(player)) {
 			this.currentPlayerIndex--;
 		}
+
+		// Add the player to the podium and remove it from the players in play.
+		end.addPlayerToPodium(player);
+		players.remove(player);
+
 	}
 
+	/**
+	 * Checks if there is only one {@link Player} in play. If this is the case then
+	 * that {@link Player} has won.
+	 */
 	public void checkWinner() {
-		if(players.size() == 1) {
+		if (players.size() == 1) {
 			end.addPlayerToPodium(players.get(0));
 			enterState(end.getID());
 		}
 	}
-	
+
 	/**
 	 * Assigns a {@link Player} ruler to a {@link Country} using a parameter
 	 * {@link Random}.

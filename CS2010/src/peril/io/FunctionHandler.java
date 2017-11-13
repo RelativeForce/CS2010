@@ -232,7 +232,11 @@ public class FunctionHandler {
 
 	private Action<?> playGame() {
 		return new Action<Game>(game, game -> {
-
+			try {
+				game.mainMenu.loadMap();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		});
 	}
 

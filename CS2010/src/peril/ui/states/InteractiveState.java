@@ -249,7 +249,7 @@ public abstract class InteractiveState extends BasicGameState {
 	protected boolean clickButton(Point click) {
 
 		// Iterate through all the buttons in the current state.
-		for (Button button : game.getCurrentState().getButtons()) {
+		for (Button button : getButtons()) {
 
 			// If the click is in the current element
 			if (button.isClicked(click)) {

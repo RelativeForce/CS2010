@@ -84,7 +84,7 @@ public class MainMenuState extends InteractiveState {
 		super(game, STATE_NAME, id);
 		mapsFile = TextFileReader.scanFile(mapsFilePath, "maps.txt");
 		maps = new VisualList<>(15, 90, 90, 22, 2, 10);
-		players = new VisualList<>(200, 90, 20, 22, 3, 5);
+		players = new VisualList<>(120, 90, 20, 22, 3, 5);
 		getMaps();
 		getPlayers();
 
@@ -97,7 +97,7 @@ public class MainMenuState extends InteractiveState {
 
 		super.render(gc, sbg, g);
 
-		textFont.draw(g, "Players: ", 200, 70);
+		textFont.draw(g, "Players: ", 120, 70);
 		textFont.draw(g, "Map: ", 15, 70);
 		headingFont.draw(g, "Peril", 10, 5);
 
@@ -107,6 +107,7 @@ public class MainMenuState extends InteractiveState {
 
 	@Override
 	public void parseClick(int button, Point click) {
+		
 		if (!super.clickButton(click)) {
 			if (!maps.click(click)) {
 				players.click(click);

@@ -6,4 +6,4 @@ button,Movement,3,endButton.png,50,30,10,110
 button,Setup,4,endButton.png,50,30,10,110
 button,Movement,5,fortifyButton.png,50,30,10,80
 button,Combat,6,attackButton.png,50,30,10,80
-button,Main Menu,7,playButton.png,50,30,50,50
+button,Main Menu,7,playButton.png,50,30,130,25

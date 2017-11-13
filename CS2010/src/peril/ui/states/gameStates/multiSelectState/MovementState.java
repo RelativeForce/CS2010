@@ -81,14 +81,6 @@ public class MovementState extends MultiSelectState {
 	}
 
 	/**
-	 * Parse a button press on this {@link MovementState}.
-	 */
-	@Override
-	public void parseButton(int key, char c) {
-		// DO NOTHING
-	}
-
-	/**
 	 * Render the {@link MovementState}. 
 	 */
 	@Override

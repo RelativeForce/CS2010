@@ -96,6 +96,8 @@ public class SetupState extends CoreGameState {
 
 			}
 		}
+		
+		super.parseButton(key, c);
 
 	}
 

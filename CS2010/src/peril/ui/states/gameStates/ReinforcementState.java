@@ -85,9 +85,4 @@ public class ReinforcementState extends CoreGameState {
 		}
 
 	}
-
-	@Override
-	public void parseButton(int key, char c) {
-
-	}
 }

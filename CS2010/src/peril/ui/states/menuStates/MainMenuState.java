@@ -130,6 +130,8 @@ public class MainMenuState extends InteractiveState {
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 
+		getGame().loadAssets();
+
 		// Initialise the fonts;
 		mapFont = new Font("Arial", Color.green, 20);
 		headingFont = new Font("Arial", Color.red, 56);
@@ -159,6 +161,39 @@ public class MainMenuState extends InteractiveState {
 	@Override
 	public Music getMusic() {
 		return background;
+	}
+
+	/**
+	 * Loads the {@link MainMenuState#mapFont} {@link VisualList#getSelected()} into
+	 * the {@link Game} and re-sizes the window of the {@link Game}.
+	 */
+	public void loadMap() throws SlickException {
+
+		Element<Map> mapElement = maps.getSelected();
+		Element<PlayerArray> playersElement = players.getSelected();
+
+		if (mapElement != null && playersElement != null) {
+
+			Map map = mapElement.get();
+			PlayerArray playersArray = playersElement.get();
+
+			// Check width
+			if (map.width <= 0) {
+				throw new IllegalArgumentException("Width must greater than zero.");
+			}
+
+			// Check height
+			if (map.height <= 0) {
+				throw new IllegalArgumentException("Height must be greater than zero.");
+			}
+
+			// Loads the game assets and move into the set up state
+			getGame().setPlayers(playersArray.players);
+			getGame().loadBoard(map.name, map.width, map.height);
+			getGame().autoDistributeCountries();
+			getGame().enterState(getGame().setup.getID());
+		}
+
 	}
 
 	/**
@@ -204,39 +239,6 @@ public class MainMenuState extends InteractiveState {
 		players.add(new Element<PlayerArray>("2", new PlayerArray(2)));
 		players.add(new Element<PlayerArray>("3", new PlayerArray(3)));
 		players.add(new Element<PlayerArray>("4", new PlayerArray(4)));
-	}
-
-	/**
-	 * Loads the {@link MainMenuState#mapFont} {@link VisualList#getSelected()} into
-	 * the {@link Game} and re-sizes the window of the {@link Game}.
-	 */
-	private void loadMap() throws SlickException {
-
-		Element<Map> mapElement = maps.getSelected();
-		Element<PlayerArray> playersElement = players.getSelected();
-
-		if (mapElement != null && playersElement != null) {
-
-			Map map = mapElement.get();
-			PlayerArray playersArray = playersElement.get();
-
-			// Check width
-			if (map.width <= 0) {
-				throw new IllegalArgumentException("Width must greater than zero.");
-			}
-
-			// Check height
-			if (map.height <= 0) {
-				throw new IllegalArgumentException("Height must be greater than zero.");
-			}
-
-			// Loads the game assets and move into the set up state
-			getGame().setPlayers(playersArray.players);
-			getGame().loadAssets(map.name, map.width, map.height);
-			getGame().autoDistributeCountries();
-			getGame().enterState(getGame().setup.getID());
-		}
-
 	}
 
 	/**

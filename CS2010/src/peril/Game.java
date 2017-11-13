@@ -113,11 +113,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	private List<Player> players;
 
 	/**
-	 * Whether all the assets are loaded or not.
-	 */
-	private volatile boolean isLoaded;
-
-	/**
 	 * The {@link Player} who's turn it is.
 	 */
 	private volatile int currentPlayerIndex;
@@ -166,13 +161,22 @@ public class Game extends StateBasedGame implements MusicListener {
 		// Assign the game to run.
 		this.endTurn = false;
 		this.run = true;
-		this.isLoaded = false;
 
 		// Construct the board.
 		this.board = new Board(this);
 
-		// Initialise the game states.
+		// Construct the container for the game as a Slick2D state based game. And parse
+		// the details of the map from the maps file.
+		try {
+			agc = new AppGameContainer(this);
+			agc.setDisplayMode(400, 250, false);
 
+		} catch (SlickException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+
+		// Initialise the game states.
 		this.setup = new SetupState(this, 1);
 		this.reinforcement = new ReinforcementState(this, 2);
 		this.combat = new CombatState(this, 3);
@@ -214,17 +218,6 @@ public class Game extends StateBasedGame implements MusicListener {
 		this.assetReader = new AssetReader(
 				new InteractiveState[] { mainMenu, combat, setup, reinforcement, movement, end },
 				ui_assestsPath.toString(), this);
-
-		// Construct the container for the game as a Slick2D state based game. And parse
-		// the details of the map from the maps file.
-		try {
-			agc = new AppGameContainer(this);
-			agc.setDisplayMode(400, 250, false);
-
-		} catch (SlickException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
 
 		// Add the path to the map's folder
 		game_assetsPath.append(File.separatorChar);
@@ -272,21 +265,20 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * 
 	 * @throws SlickException
 	 */
-	public void loadAssets(String mapName, int width, int height) throws SlickException {
+	public void loadBoard(String mapName, int width, int height) throws SlickException {
 
-		// If the assets are not already loaded
-		if (!isLoaded) {
+		agc.setDisplayMode(width, height, false);
+		// Initialise the map reader and the players array.
+		this.mapReader = new MapReader(mapsDirectory + mapName, board);
 
-			agc.setDisplayMode(width, height, false);
-			// Initialise the map reader and the players array.
-			this.mapReader = new MapReader(mapsDirectory + mapName, board);
+		mapReader.read();
 
-			mapReader.read();
-			assetReader.read();
-			challengeReader.read();
+		challengeReader.read();
 
-			isLoaded = true;
-		}
+	}
+
+	public void loadAssets() {
+		assetReader.read();
 	}
 
 	/**

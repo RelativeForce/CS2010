@@ -104,14 +104,6 @@ public class CombatState extends MultiSelectState {
 	}
 
 	/**
-	 * Processes a button press on this {@link CombatState}.
-	 */
-	@Override
-	public void parseButton(int key, char c) {
-		// Do nothing
-	}
-
-	/**
 	 * Retrieves the {@link Country} the
 	 * {@link CoreGameState#getHighlightedCountry()} will sent troops too when
 	 * attacking.

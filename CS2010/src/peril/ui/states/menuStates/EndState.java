@@ -142,14 +142,17 @@ public class EndState extends InteractiveState {
 		// Iterate through each player on the podium.
 		for (Player player : podium) {
 
+			// The text string that will be displayed
+			String text = position + ". " + player.toString();
+			
 			// If the current player is first use the winner font otherwise use the loser
 			// font.
 			if (position == 1) {
-				winnerFont.draw(g, position + ". " + player.toString(), (width / 3) - 20, y);
-				y += 60;
+				winnerFont.draw(g, text, (width / 2) - (winnerFont.getWidth(text) / 2), y);
+				y += winnerFont.getHeight();
 			} else {
-				loserFont.draw(g, position + ". " + player.toString(), width / 3, y);
-				y += 40;
+				loserFont.draw(g, text, (width / 2) - (loserFont.getWidth(text) / 2), y);
+				y += loserFont.getHeight();
 			}
 
 			position++;

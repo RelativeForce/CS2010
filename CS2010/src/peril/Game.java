@@ -194,7 +194,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		ui_assestsPath.append("ui_assets");
 
 		this.assetReader = new AssetReader(new InteractiveState[] { combat, setup, reinforcement, movement, end },
-				ui_assestsPath.toString());
+				ui_assestsPath.toString(), this);
 
 		// Create the map file path
 		StringBuilder game_assetsPath = new StringBuilder(baseDirectory);

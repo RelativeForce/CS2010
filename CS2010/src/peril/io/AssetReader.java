@@ -4,12 +4,8 @@ import java.io.File;
 
 import org.newdawn.slick.Image;
 
-import peril.CombatHandler;
 import peril.Game;
-import peril.Player;
 import peril.Point;
-import peril.board.Army;
-import peril.board.Country;
 import peril.multiThread.Action;
 import peril.ui.Button;
 import peril.ui.states.InteractiveState;
@@ -36,10 +32,7 @@ public class AssetReader {
 	 */
 	private String directoryPath;
 
-	/**
-	 * The {@link Game} this {@link AssetReader} is a part of.
-	 */
-	private Game game;
+	private FunctionHandler functionHandler;
 
 	/**
 	 * Constructs a new {@link AssetReader}.
@@ -61,7 +54,7 @@ public class AssetReader {
 			throw new NullPointerException("Game cannot be null.");
 		}
 
-		this.game = game;
+		this.functionHandler = new FunctionHandler(game);
 		this.directoryPath = directoryPath;
 		this.states = interactiveStates;
 	}
@@ -133,7 +126,7 @@ public class AssetReader {
 			throw new IllegalArgumentException(details[2] + " is not a valid function code");
 		}
 
-		Action<?> action = getActionByCode(functionCode);
+		Action<?> action = functionHandler.get(functionCode);
 
 		// Get the asset image
 		try {
@@ -191,195 +184,6 @@ public class AssetReader {
 		// Add the button to the state, cast to clickable so the correct method is used
 		state.addButton(newButton);
 
-	}
-
-	/**
-	 * Retrieves a predefined {@link Action} using a <code>int</code> code.
-	 * 
-	 * @param code
-	 *            <code>int</code> denoting the {@link Action}
-	 * @param state
-	 *            {@link CoreGameState} that the {@link Action} will be performed
-	 *            by.
-	 * @return {@link Action}
-	 */
-	private Action<?> getActionByCode(int code) {
-		switch (code) {
-
-		// Reinforce a country with one unit.
-		case 0:
-
-			return new Action<Game>(game, game -> {
-
-				// Holds the currently highlighted country
-				Country highlightedCountry = game.reinforcement.getHighlightedCountry();
-
-				// Holds the current player.
-				Player player = game.getCurrentPlayer();
-
-				// Holds the size of the army that the player has to distribute.
-				int armySize = player.getDistributableArmySize();
-
-				// If there is a country highlighted.
-				if (highlightedCountry != null) {
-
-					// If the player has any units to place
-					if (armySize > 0) {
-
-						Player ruler = highlightedCountry.getRuler();
-
-						// If the highlighted country has a ruler and it is that player
-						if (ruler != null && ruler.equals(player)) {
-
-							// Get that country's army and increase its size by one.
-							Army army = highlightedCountry.getArmy();
-							army.setSize(army.getSize() + 1);
-
-							// Remove the unit from the list of units to place.
-							player.setDistributableArmySize(armySize - 1);
-							player.setTotalArmySize(player.getTotalArmySize() + 1);
-							game.checkChallenges(player);
-
-						} else {
-							System.out.println(player.toString() + " does not rule this country");
-						}
-
-					} else {
-						System.out.println("No units to distribute.");
-					}
-
-				} else {
-					System.out.println("No country selected.");
-				}
-			});
-
-		// Enter combat state.
-		case 1:
-
-			return new Action<Game>(game, game -> {
-				game.reinforcement.unhighlightCountry(game.reinforcement.getHighlightedCountry());
-				game.reinforcement.highlightCountry(null);
-				game.enterState(game.combat.getID());
-			});
-
-		// Enter movement state.
-		case 2:
-			return new Action<Game>(game, game -> {
-				game.combat.unhighlightCountry(game.combat.getHighlightedCountry());
-				game.combat.highlightCountry(null);
-				game.enterState(game.movement.getID());
-			});
-
-		// Enter reinforcement state.
-		case 3:
-
-			return new Action<Game>(game, game -> {
-				game.movement.unhighlightCountry(game.movement.getHighlightedCountry());
-				game.movement.highlightCountry(null);
-				game.enterState(game.reinforcement.getID());
-				game.nextPlayer();
-			});
-		// Leave set up state
-		case 4:
-
-			return new Action<Game>(game, game -> {
-
-				game.setup.unhighlightCountry(game.setup.getHighlightedCountry());
-				game.setup.highlightCountry(null);
-
-				game.checkContinentRulership();
-
-				game.reinforce(game.getCurrentPlayer());
-				game.enterState(game.reinforcement.getID());
-			});
-		// Fortify another country by moving one troop to the new country.
-		case 5:
-
-			return new Action<Game>(game, game -> {
-
-				Country primary = game.movement.getHighlightedCountry();
-				Country target = game.movement.getTargetCountry();
-
-				// If there is two countries highlighted
-				if (primary != null && target != null) {
-
-					// If the army of the primary highlighted country is larger that 1 unit in size
-					if (primary.getArmy().getSize() > 1) {
-
-						// Holds the army of the primary country
-						Army primaryArmy = primary.getArmy();
-
-						// Holds the army of the target country
-						Army targetArmy = target.getArmy();
-
-						// Move the unit.
-						targetArmy.setSize(targetArmy.getSize() + 1);
-						primaryArmy.setSize(primaryArmy.getSize() - 1);
-
-					} else {
-						// DO NOTHING
-					}
-
-				} else {
-					// DO NOTHING
-				}
-			});
-		// Execute a combat turn.
-		case 6:
-
-			return new Action<Game>(game, game -> {
-
-				CombatHandler combathandler = game.getCombatHandler();
-
-				Country attacking = game.combat.getHighlightedCountry();
-				Country defending = game.combat.getEnemyCountry();
-
-				// If there is two countries highlighted
-				if (attacking != null && defending != null) {
-
-					Player attackingPlayer = attacking.getRuler();
-					Player defendingPlayer = defending.getRuler();
-
-					// If the army of the primary highlighted country is larger that 1 unit in size
-					if (attacking.getArmy().getSize() > 1) {
-
-						// Execute the combat
-						combathandler.fight(attacking, defending, 1);
-
-						// If the country has been conquered
-						if (attacking.getRuler().equals(defending.getRuler())) {
-
-							if (defendingPlayer != null) {
-
-								defendingPlayer.setCountriesRuled(defendingPlayer.getCountriesRuled() - 1);
-
-								if (defendingPlayer.getCountriesRuled() == 0) {
-									game.setLoser(defendingPlayer);
-									game.checkWinner();
-								}
-							}
-
-							attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
-
-							game.combat.setPostCombat();
-							game.combat.highlightCountry(defending);
-
-							game.checkContinentRulership();
-
-							game.checkChallenges(attackingPlayer);
-
-						}
-					}
-				}
-			});
-
-		case 7:
-			return new Action<Game>(game, game -> {
-				
-			});
-
-		}
-		return null;
 	}
 
 	/**

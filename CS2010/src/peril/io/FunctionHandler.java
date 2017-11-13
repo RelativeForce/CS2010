@@ -6,45 +6,59 @@ import peril.Player;
 import peril.board.Army;
 import peril.board.Country;
 import peril.multiThread.Action;
+import peril.ui.Button;
 
+/**
+ * 
+ * This hold the functionality of every {@link Button} in the {@link Game}.
+ * 
+ * @author Mohammad_ali_Sayed_Ackbar
+ *
+ */
 public class FunctionHandler {
 
+	/**
+	 * The {@link Game} this {@link FunctionHandler} is a part of.
+	 */
 	private Game game;
 
+	/**
+	 * 
+	 * Constructs a new {@link FunctionHandler}
+	 * 
+	 * @param game
+	 *            The {@link Game} this {@link FunctionHandler} is a part of.
+	 */
 	public FunctionHandler(Game game) {
 		this.game = game;
 	}
 
+	/**
+	 * Retrieves a predefined {@link Action} using a <code>int</code> code.
+	 * 
+	 * @param code
+	 *            <code>int</code> denoting the {@link Action}
+	 * @return {@link Action}
+	 */
 	public Action<?> get(int code) {
 		switch (code) {
 
 		case 0:
-
 			return reinforceCountry();
-
 		case 1:
-
 			return enterCombat();
-
 		case 2:
-
 			return enterMovement();
-
 		case 3:
-
 			return enterReinforment();
-
 		case 4:
-
 			return leaveSetUp();
-
 		case 5:
-
 			return fortifyCountry();
-
 		case 6:
-
 			return excuteCombat();
+		case 7:
+			return playGame();
 
 		}
 		return null;
@@ -216,5 +230,10 @@ public class FunctionHandler {
 		});
 	}
 
-	
+	private Action<?> playGame() {
+		return new Action<Game>(game, game -> {
+
+		});
+	}
+
 }

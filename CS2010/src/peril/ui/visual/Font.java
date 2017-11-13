@@ -61,7 +61,6 @@ public class Font {
 		g.setColor(color);
 		g.setFont(ttFont);
 
-
 		// Draw the text
 		g.drawString(text, x, y);
 
@@ -71,4 +70,22 @@ public class Font {
 
 	}
 
+	/**
+	 * Retrieves the <code>int</code> width of a specified string.
+	 * 
+	 * @param text
+	 * @return
+	 */
+	public int getWidth(String text) {
+		return ttFont.getWidth(text);
+	}
+
+	/**
+	 * Retrieves the line height of this {@link Font}.
+	 * 
+	 * @return
+	 */
+	public int getHeight() {
+		return ttFont.getHeight();
+	}
 }

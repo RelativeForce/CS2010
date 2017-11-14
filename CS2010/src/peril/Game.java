@@ -180,7 +180,6 @@ public class Game extends StateBasedGame implements MusicListener {
 			agc.setDisplayMode(220, 180, false);
 
 		} catch (SlickException e) {
-			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
 

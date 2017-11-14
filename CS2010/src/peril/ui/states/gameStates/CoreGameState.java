@@ -328,6 +328,28 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	/**
+	 * Retrieves the {@link Point} position that an {@link Army} will be displayed
+	 * at on the screen relative to the top left corner.
+	 * 
+	 * @param country
+	 * @return
+	 */
+	protected Point getArmyPosition(Country country) {
+
+		// Sets x and y as the central width and height of the current country.
+		int x = country.getPosition().x + country.getWidth() / 2;
+		int y = country.getPosition().y + country.getHeight() / 2;
+
+		Army army = country.getArmy();
+
+		// Move the (x,y) by the offset
+		x += army.getOffset().x;
+		y += army.getOffset().y;
+
+		return new Point(x, y);
+	}
+
+	/**
 	 * Causes the {@link Delay} to elapse in each value of
 	 * {@link CoreGameState#challenges}. If a {@link Delay} has elapsed its
 	 * associated {@link Challenge} is removed from the
@@ -364,16 +386,6 @@ public abstract class CoreGameState extends InteractiveState {
 		// Iterate across every country on the game board.
 		getGame().getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
 
-			// Sets x and y as the central width and height of the current country.
-			int x = country.getPosition().x + country.getWidth() / 2;
-			int y = country.getPosition().y + country.getHeight() / 2;
-
-			Army army = country.getArmy();
-
-			// Move the (x,y) by the offset
-			x += army.getOffset().x;
-			y += army.getOffset().y;
-
 			// Draw a background oval with the rulers colour. If no ruler found default to
 			// light grey.
 			if (country.getRuler() != null) {
@@ -382,14 +394,18 @@ public abstract class CoreGameState extends InteractiveState {
 				g.setColor(Color.lightGray);
 			}
 
-			int troopNumber = army.getSize();
+			// Holds the position that army will be drawn at
+			Point armyPosition = getArmyPosition(country);
+			
+			//Holds the size of the current countries army
+			int troopNumber = country.getArmy().getSize();
 
 			if (troopNumber > 99) {
-				g.fillOval(x - 9, y - 3, 45, 25);
+				g.fillOval(armyPosition.x - 9, armyPosition.y - 3, 45, 25);
 			} else if (troopNumber > 9) {
-				g.fillOval(x - 6, y - 3, 30, 25);
+				g.fillOval(armyPosition.x - 6, armyPosition.y - 3, 30, 25);
 			} else {
-				g.fillOval(x - 3, y - 3, 15, 25);
+				g.fillOval(armyPosition.x - 3, armyPosition.y - 3, 15, 25);
 			}
 
 			g.setColor(Color.black);
@@ -397,7 +413,7 @@ public abstract class CoreGameState extends InteractiveState {
 			// Draw a string representing the number of troops
 			// within that army at (x,y).
 
-			g.drawString(Integer.toString(troopNumber), x, y);
+			g.drawString(Integer.toString(troopNumber), armyPosition.x, armyPosition.y);
 
 		}));
 	}

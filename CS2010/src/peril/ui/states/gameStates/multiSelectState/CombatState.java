@@ -8,6 +8,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Player;
+import peril.Point;
 import peril.board.Country;
 import peril.ui.components.PauseMenu;
 import peril.ui.states.gameStates.CoreGameState;
@@ -90,6 +91,8 @@ public final class CombatState extends MultiSelectState {
 
 		super.render(gc, sbg, g);
 		super.drawPlayerName(g);
+		
+		this.drawValidTargets(g);
 
 	}
 
@@ -120,34 +123,37 @@ public final class CombatState extends MultiSelectState {
 
 		// If there is a primary friendly country and the target is not null and the
 		// ruler of the country is not the player.
-		if (getHighlightedCountry() != null && !player.equals(ruler)) {
+		if (getHighlightedCountry() != null) {
 
-			// if the country is a neighbour of the primary highlighted country then it is a
-			// valid target.
-			if (getHighlightedCountry().isNeighbour(country)) {
+			// if the country is a valid target of the primary country..
+			if (isValidTarget(super.getHighlightedCountry(), country)) {
 
-				System.out.println("A valid target");
+				super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
+				super.setSecondaryHighlightedCountry(country);
 
-				country.setImage(country.getRegion().getPosition(), country.getRegion().convert(Color.yellow));
+			}
+			// If the player owns the other country
+			else if (player.equals(ruler)) {
 
-				unhighlightCountry(super.getSecondaryHightlightedCounrty());
-
-				super.setSecondaryCountry(country);
-
-			} else {
-				// DO NOTHING
+				// Remove the highlight from the currently highlighted countries and highlight
+				// the clicked country.
+				super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
+				super.unhighlightCountry(super.getHighlightedCountry());
+				super.highlightCountry(country);
 			}
 
 		}
-		// If the country clicked is to be the new primary country but is not ruler by
-		// the player
+		// If the player does not ruler the country
 		else if (!player.equals(ruler)) {
 			// DO NOTHING
 		}
 		// If the country clicked is to be the new primary country and is owned by the
 		// player.
 		else {
-			unhighlightCountry(super.getSecondaryHightlightedCounrty());
+
+			// Remove the highlight from the currently highlighted countries and highlight
+			// the clicked country.
+			super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
 			super.unhighlightCountry(super.getHighlightedCountry());
 			super.highlightCountry(country);
 		}
@@ -176,7 +182,7 @@ public final class CombatState extends MultiSelectState {
 
 		} else {
 			super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
-			super.setSecondaryCountry(null);
+			super.setSecondaryHighlightedCountry(null);
 			super.unhighlightCountry(super.getHighlightedCountry());
 			super.highlightCountry(country);
 		}
@@ -192,10 +198,72 @@ public final class CombatState extends MultiSelectState {
 	private void highlightCountryPostCombat(Country country) {
 
 		super.unhighlightCountry(country);
-		super.setSecondaryCountry(null);
+		super.setSecondaryHighlightedCountry(null);
 		super.unhighlightCountry(getHighlightedCountry());
 		super.highlightCountry(null);
 
 		setPreCombat();
+	}
+
+	/**
+	 * Retrieves whether or not the secondary {@link Country} is a valid targets for
+	 * the primary {@link Country}.
+	 * 
+	 * @param primaryCountry
+	 *            is the primary {@link Country}
+	 * @param secondaryTarget
+	 *            is the second {@link Country}
+	 * @return <code>boolean</code> if it is a valid target.
+	 */
+	private boolean isValidTarget(Country primaryCountry, Country secondaryTarget) {
+
+		// If there is a primary friendly country and the target is not null and the
+		// ruler of the country is not the player.
+		if (!primaryCountry.getRuler().equals(secondaryTarget.getRuler())) {
+
+			// if the country is a neighbour of the primary highlighted country then it is a
+			// valid target.
+			if (primaryCountry.isNeighbour(secondaryTarget)) {
+
+				// If the army size of the primary country is greater than 1.
+				if (primaryCountry.getArmy().getSize() > 1) {
+					return true;
+				}
+
+			}
+
+		}
+
+		return false;
+	}
+
+	/**
+	 * Draws a line between the {@link CoreGameState#getHighlightedCountry()} and or
+	 * all its valid targets.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 */
+	private void drawValidTargets(Graphics g) {
+
+		// If there is a country highlighted.
+		if (super.getHighlightedCountry() != null) {
+
+			// Assign the line colour.
+			g.setColor(Color.green);
+
+			for (Country country : super.getHighlightedCountry().getNeighbours()) {
+
+				// if it is a valid target highlight the country and draw a line from the
+				// highlighted country to the neighbour country.
+				if (isValidTarget(super.getHighlightedCountry(), country)) {
+
+					Point enemy = super.getArmyPosition(country);
+					Point selected = super.getArmyPosition(super.getHighlightedCountry());
+					g.drawLine(enemy.x, enemy.y, selected.x, selected.y);
+				}
+			}
+
+		}
 	}
 }

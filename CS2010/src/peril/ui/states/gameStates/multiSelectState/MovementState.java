@@ -1,6 +1,5 @@
 package peril.ui.states.gameStates.multiSelectState;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -64,7 +63,7 @@ public final class MovementState extends MultiSelectState {
 
 		} else {
 			super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
-			super.setSecondaryCountry(null);
+			super.setSecondaryHighlightedCountry(null);
 			super.unhighlightCountry(super.getHighlightedCountry());
 			super.highlightCountry(country);
 		}
@@ -113,13 +112,8 @@ public final class MovementState extends MultiSelectState {
 			// valid target.
 			if (getHighlightedCountry().isNeighbour(country)) {
 
-				System.out.println("A valid target");
-
 				super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
-
-				country.setImage(country.getRegion().getPosition(), country.getRegion().convert(Color.yellow));
-
-				super.setSecondaryCountry(country);
+				super.setSecondaryHighlightedCountry(country);
 
 			} else {
 				// DO NOTHING

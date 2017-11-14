@@ -1,5 +1,7 @@
 package peril.ui.states.gameStates.multiSelectState;
 
+import org.newdawn.slick.Color;
+
 import peril.Game;
 import peril.Player;
 import peril.board.Country;
@@ -19,7 +21,7 @@ public abstract class MultiSelectState extends CoreGameState {
 	 * The secondary {@link Country} that can be selected based on conditions in the
 	 * sub-classes.
 	 */
-	private Country highlightedCounrty;
+	private Country highlightedCountry;
 
 	/**
 	 * Constructs a new {@link MultiSelectState}.
@@ -36,7 +38,7 @@ public abstract class MultiSelectState extends CoreGameState {
 	 */
 	public MultiSelectState(Game game, String stateName, int id, PauseMenu pauseMenu) {
 		super(game, stateName, id, pauseMenu);
-		highlightedCounrty = null;
+		highlightedCountry = null;
 	}
 
 	/**
@@ -49,33 +51,39 @@ public abstract class MultiSelectState extends CoreGameState {
 		// Unhighlight both highlighted countries when this method is called from a
 		// external class.
 		super.unhighlightCountry(getSecondaryHightlightedCounrty());
-		setSecondaryCountry(null);
+		setSecondaryHighlightedCountry(null);
 		super.unhighlightCountry(country);
 
 	}
 
 	/**
-	 * Sets the secondary {@link MultiSelectState#highlightedCounrty}
+	 * Sets the secondary {@link MultiSelectState#highlightedCountry}
 	 * 
 	 * @param country
 	 *            {@link Country}.
 	 */
-	protected void setSecondaryCountry(Country country) {
-		highlightedCounrty = country;
+	protected void setSecondaryHighlightedCountry(Country country) {
+		highlightedCountry = country;
+
+		if (highlightedCountry != null) {
+			// Highlight the country
+			highlightedCountry.setImage(highlightedCountry.getRegion().getPosition(),
+					highlightedCountry.getRegion().convert(Color.yellow));
+		}
 	}
 
 	/**
-	 * Retrieves the secondary {@link MultiSelectState#highlightedCounrty}.
+	 * Retrieves the secondary {@link MultiSelectState#highlightedCountry}.
 	 * 
 	 * @return Secondary {@link Country}
 	 */
 	protected Country getSecondaryHightlightedCounrty() {
-		return highlightedCounrty;
+		return highlightedCountry;
 	}
 
 	/**
 	 * Processes whether a {@link Country} is a valid
-	 * {@link MultiSelectState#highlightedCounrty} based on
+	 * {@link MultiSelectState#highlightedCountry} based on
 	 * {@link CoreGameState#getHighlightedCountry()}.
 	 * 
 	 * @param country

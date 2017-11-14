@@ -91,9 +91,8 @@ public final class CombatState extends MultiSelectState {
 
 		super.render(gc, sbg, g);
 		super.drawPlayerName(g);
-		
-		this.drawValidTargets(g);
 
+		this.drawValidTargets(g);
 	}
 
 	/**
@@ -105,6 +104,16 @@ public final class CombatState extends MultiSelectState {
 	 */
 	public Country getEnemyCountry() {
 		return super.getSecondaryHightlightedCounrty();
+	}
+
+	/**
+	 * Processes a click at a specified {@link Point} on this {@link CombatState}.
+	 */
+	@Override
+	public void parseClick(int button, Point click) {
+
+		super.parseClick(button, click);
+
 	}
 
 	/**

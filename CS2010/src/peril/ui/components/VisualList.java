@@ -3,6 +3,7 @@ package peril.ui.components;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import peril.Point;
@@ -186,6 +187,7 @@ public class VisualList<T> extends Clickable {
 
 		Region r = getRegion();
 
+		g.setColor(Color.white);
 		// Draws the background menu box.
 		g.fillRect(r.getPosition().x, r.getPosition().y, r.getWidth(), r.getHeight());
 

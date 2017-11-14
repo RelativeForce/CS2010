@@ -248,7 +248,7 @@ public class FunctionHandler {
 
 				// If the army of the primary highlighted country is larger that 1 unit in size
 				if (attacking.getArmy().getSize() > 1) {
-
+			
 					// Execute the combat
 					combathandler.fight(attacking, defending, 1);
 

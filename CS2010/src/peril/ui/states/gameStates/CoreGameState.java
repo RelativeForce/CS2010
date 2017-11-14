@@ -44,6 +44,9 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	private Map<Challenge, Delay> challenges;
 
+	/**
+	 * The {@link PauseMenu} for this {@link CoreGameState}.
+	 */
 	private PauseMenu pauseMenu;
 
 	/**
@@ -136,6 +139,12 @@ public abstract class CoreGameState extends InteractiveState {
 		pauseMenu.init();
 	}
 
+	@Override
+	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		super.leave(container, game);
+		challenges.clear();
+	}
+	
 	/**
 	 * Returns a the current highlighted {@link Country} in this state.
 	 * 
@@ -244,7 +253,7 @@ public abstract class CoreGameState extends InteractiveState {
 			throw new NullPointerException("Challenge cannot be null.");
 		}
 
-		challenges.put(challenge, new Delay(1000));
+		challenges.put(challenge, new Delay(600));
 	}
 
 	/**

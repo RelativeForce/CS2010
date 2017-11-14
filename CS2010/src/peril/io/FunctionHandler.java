@@ -64,6 +64,8 @@ public class FunctionHandler {
 			return reAssignCountries();
 		case 9:
 			return toggleWarMenu();
+		case 10:
+			return exitGame();
 		}
 		return null;
 	}
@@ -322,5 +324,14 @@ public class FunctionHandler {
 			game.autoDistributeCountries();
 		});
 
+	}
+
+	/**
+	 * Retrieves the {@link Action} that will exit the {@link Game}.
+	 * 
+	 * @return {@link Action}
+	 */
+	private Action<?> exitGame() {
+		return new Action<Game>(game, game -> game.getContainer().exit());
 	}
 }

@@ -59,18 +59,16 @@ public class PauseMenu extends Menu {
 	public void draw(Graphics g) {
 
 		if (visible) {
-			if (getRegion() != null) {
 
-				g.setColor(Color.black);
-				g.fillRect(getPosition().x, getPosition().y, getWidth(), getHeight());
+			g.setColor(Color.black);
+			super.draw(g);
 
-				String pause = "PAUSE";
-				String music = "Toggle Music:";
+			String pause = "PAUSE";
+			String music = "Toggle Music:";
 
-				textFont.draw(g, pause, getPosition().x - (textFont.getWidth(pause) / 2) + (getWidth() / 2),
-						getPosition().y + 10);
-				musicFont.draw(g, music, getPosition().x + (getWidth() / 2) - 90, getPosition().y + 50);
-			}
+			textFont.draw(g, pause, getPosition().x - (textFont.getWidth(pause) / 2) + (getWidth() / 2),
+					getPosition().y + 10);
+			musicFont.draw(g, music, getPosition().x + (getWidth() / 2) - 90, getPosition().y + 50);
 
 			g.setColor(Color.white);
 

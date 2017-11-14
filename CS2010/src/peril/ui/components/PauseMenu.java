@@ -27,11 +27,28 @@ public class PauseMenu extends Clickable implements ButtonContainer {
 	 */
 	private boolean isPaused;
 
+	/**
+	 * {@link VisualList} of buttons to toggle the Music on and off.
+	 * 
+	 */
 	private VisualList<Toggle> toggleMusic;
 
+	/**
+	 * {@link Font} for the text of the music option.
+	 * 
+	 */
 	private Font musicFont;
+	
+	/**
+	 * {@link Font} for the text of the {@link PauseMenu}.
+	 * 
+	 */
 	private Font textFont;
 
+	/**
+	 * The game the {@link PauseMenu} is associated with.
+	 * 
+	 */
 	private Game game;
 
 	/**
@@ -92,13 +109,14 @@ public class PauseMenu extends Clickable implements ButtonContainer {
 	}
 
 	/**
+	 * Parses the click on the toggle music buttons.
 	 * 
 	 * 
 	 * @param click
 	 * 
 	 * @return
 	 */
-	public void parseClick(Point click) { // Alt-Shift-R (Refactoring)
+	public void parseMusicClick(Point click) { // Alt-Shift-R (Refactoring)
 
 		if (!toggleMusic.click(click)) {
 			clickedButton(click);
@@ -117,10 +135,21 @@ public class PauseMenu extends Clickable implements ButtonContainer {
 		buttons.add(button);
 	}
 
+	/**
+	 * Sets the Pause value for the menu e.g. true or false
+	 * 
+	 * @param isPaused
+	 *            true if the menu is paused, false otherwise
+	 */
 	public void setPause(boolean isPaused) {
 		this.isPaused = isPaused;
 	}
 
+	/**
+	 * If the Menu is Paused or not
+	 * 
+	 * @return Returns true if the Menu is Pause, false otherwise
+	 */
 	public boolean IsPaused() {
 		return this.isPaused;
 	}
@@ -143,10 +172,20 @@ public class PauseMenu extends Clickable implements ButtonContainer {
 		return false;
 	}
 
+	/**
+	 * Gets the name of the {@link PauseMenu}
+	 * 
+	 */
 	public String getName() {
 		return NAME;
 	}
 
+	/**
+	 * Enumeration to hold "ON" and "OFF" Buttons for a toggle Music option
+	 * 
+	 * @author Ezekiel_Trinidad
+	 *
+	 */
 	private enum Toggle {
 		ON("On", true), OFF("Off", false);
 

@@ -4,6 +4,7 @@ import peril.CombatHandler;
 import peril.Game;
 import peril.Player;
 import peril.board.Army;
+import peril.board.Continent;
 import peril.board.Country;
 import peril.multiThread.Action;
 import peril.ui.Button;
@@ -64,6 +65,12 @@ public class FunctionHandler {
 		return null;
 	}
 
+	/**
+	 * Retrieves the {@link Action} that will add one unit to a {@link Country} and
+	 * remove one unit from the current {@link Player#getDistributableArmySize()}.
+	 * 
+	 * @return {@link Action}
+	 */
 	private Action<?> reinforceCountry() {
 		return new Action<Game>(game, game -> {
 
@@ -111,6 +118,12 @@ public class FunctionHandler {
 
 	}
 
+	/**
+	 * Retrieves the {@link Action} that will change the state of the {@link Game}
+	 * from {@link Game#reinforcement} to {@link Game#combat}.
+	 * 
+	 * @return {@link Action}
+	 */
 	private Action<?> enterCombat() {
 		return new Action<Game>(game, game -> {
 			game.reinforcement.unhighlightCountry(game.reinforcement.getHighlightedCountry());
@@ -119,6 +132,12 @@ public class FunctionHandler {
 		});
 	}
 
+	/**
+	 * Retrieves the {@link Action} that will change the state of the {@link Game}
+	 * from {@link Game#combat} to {@link Game#movement}.
+	 * 
+	 * @return {@link Action}
+	 */
 	private Action<?> enterMovement() {
 		return new Action<Game>(game, game -> {
 			game.combat.unhighlightCountry(game.combat.getHighlightedCountry());
@@ -127,6 +146,13 @@ public class FunctionHandler {
 		});
 	}
 
+	/**
+	 * Retrieves the {@link Action} that will change the state of the {@link Game}
+	 * from {@link Game#movement} to {@link Game#reinforcement}, moving tp the next
+	 * player in the process.
+	 * 
+	 * @return {@link Action}
+	 */
 	private Action<?> enterReinforment() {
 		return new Action<Game>(game, game -> {
 			game.movement.unhighlightCountry(game.movement.getHighlightedCountry());
@@ -136,19 +162,36 @@ public class FunctionHandler {
 		});
 	}
 
+	/**
+	 * Retrieves the {@link Action} that will change the state of the {@link Game}
+	 * from {@link Game#setup} to {@link Game#reinforcement}, checking the ownership
+	 * of {@link Continent}s in the process.
+	 * 
+	 * @return {@link Action}
+	 */
 	private Action<?> leaveSetUp() {
 		return new Action<Game>(game, game -> {
 
+			// Remove the highlighted country from the set up state
 			game.setup.unhighlightCountry(game.setup.getHighlightedCountry());
 			game.setup.highlightCountry(null);
 
+			// checks the ownership of the continents
 			game.checkContinentRulership();
 
+			// Change the state of the game to reinforcement and give player one their units
+			// based on the countries they own.
 			game.reinforce(game.getCurrentPlayer());
 			game.enterState(game.reinforcement.getID());
 		});
 	}
 
+	/**
+	 * Retrieves the {@link Action} that will move one unit from one country to
+	 * another as long as the countries are own by the same player.
+	 * 
+	 * @return {@link Action}
+	 */
 	private Action<?> fortifyCountry() {
 		return new Action<Game>(game, game -> {
 
@@ -181,6 +224,13 @@ public class FunctionHandler {
 		});
 	}
 
+	/**
+	 * Retrieves the {@link Action} that will perform one round of the
+	 * {@link CombatHandler#fight(Country, Country, int)} on the two countries
+	 * selected in the {@link Game#combat}.
+	 * 
+	 * @return {@link Action}
+	 */
 	private Action<?> excuteCombat() {
 		return new Action<Game>(game, game -> {
 
@@ -229,6 +279,13 @@ public class FunctionHandler {
 		});
 	}
 
+	/**
+	 * Retrieves the {@link Action} that will move the {@link Game} from the
+	 * {@link Game#mainMenu} to the {@link Game#setup} state and load the
+	 * {@link Board} specified by the {@link Game#mainMenu}.
+	 * 
+	 * @return {@link Action}
+	 */
 	private Action<?> playGame() {
 		return new Action<Game>(game, game -> {
 			try {

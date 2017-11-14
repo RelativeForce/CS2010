@@ -277,6 +277,9 @@ public class Game extends StateBasedGame implements MusicListener {
 
 	}
 
+	/**
+	 * Loads all the images is into the {@link Game} {@link InteractiveState}s.
+	 */
 	public void loadAssets() {
 		assetReader.read();
 	}

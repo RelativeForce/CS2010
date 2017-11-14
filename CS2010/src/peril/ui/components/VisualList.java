@@ -108,6 +108,12 @@ public class VisualList<T> extends Clickable {
 	 *            {@link Element}
 	 */
 	public void add(Element<T> element) {
+
+		// If this is the first element the set it as the selected.
+		if (elements.isEmpty()) {
+			selected = element;
+		}
+
 		elements.add(element);
 	}
 
@@ -190,9 +196,9 @@ public class VisualList<T> extends Clickable {
 		for (Element<T> element : elements) {
 
 			int index = elements.indexOf(element);
-			
+
 			if (index >= topElementIndex && index < topElementIndex + elementsInView) {
-				
+
 				element.setPosition(new Point(x, y));
 				element.draw(g, font, padding);
 				y += height;

@@ -48,8 +48,8 @@ public class PauseMenu extends Clickable implements ButtonContainer {
 		this.game = game;
 		setRegion(new Region(300, 300, position));
 		this.toggleMusic = new VisualList<>(position.x + 40 + (getWidth() / 2), position.y + 50, 30, 15, 2, 5);
-		this.toggleMusic.add(new Element<Toggle>("YES", Toggle.YES));
-		this.toggleMusic.add(new Element<Toggle>("NO", Toggle.NO));
+		this.toggleMusic.add(new Element<Toggle>(Toggle.ON.toString, Toggle.ON));
+		this.toggleMusic.add(new Element<Toggle>(Toggle.OFF.toString, Toggle.OFF));
 	}
 
 	/**
@@ -148,12 +148,15 @@ public class PauseMenu extends Clickable implements ButtonContainer {
 	}
 
 	private enum Toggle {
-		YES(true), NO(false);
+		ON("On", true), OFF("Off", false);
 
 		public final boolean toggle;
 
-		private Toggle(boolean toggle) {
+		public final String toString;
+
+		private Toggle(String toString, boolean toggle) {
 			this.toggle = toggle;
+			this.toString = toString;
 		}
 	}
 }

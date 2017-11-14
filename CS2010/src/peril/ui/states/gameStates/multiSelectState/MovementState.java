@@ -1,5 +1,6 @@
 package peril.ui.states.gameStates.multiSelectState;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -7,6 +8,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Player;
+import peril.Point;
 import peril.board.Country;
 import peril.ui.components.PauseMenu;
 import peril.ui.states.gameStates.CoreGameState;
@@ -77,6 +79,8 @@ public final class MovementState extends MultiSelectState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
 		super.drawPlayerName(g);
+
+		this.drawValidTargets(g);
 	}
 
 	/**
@@ -130,6 +134,68 @@ public final class MovementState extends MultiSelectState {
 		else {
 			super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
 			super.highlightCountry(country);
+		}
+	}
+
+	/**
+	 * Retrieves whether or not the secondary {@link Country} is a valid targets for
+	 * the primary {@link Country}.
+	 * 
+	 * @param primaryCountry
+	 *            is the primary {@link Country}
+	 * @param secondaryTarget
+	 *            is the second {@link Country}
+	 * @return <code>boolean</code> if it is a valid target.
+	 */
+	private boolean isValidTarget(Country primaryCountry, Country secondaryTarget) {
+
+		// If there is a primary friendly country and the target is not null and the
+		// ruler of the country is not the player.
+		if (primaryCountry.getRuler().equals(secondaryTarget.getRuler())) {
+
+			// if the country is a neighbour of the primary highlighted country then it is a
+			// valid target.
+			if (primaryCountry.isNeighbour(secondaryTarget)) {
+
+				// If the army size of the primary country is greater than 1.
+				if (primaryCountry.getArmy().getSize() > 1) {
+					return true;
+				}
+
+			}
+
+		}
+
+		return false;
+	}
+
+	/**
+	 * Draws a line between the {@link CoreGameState#getHighlightedCountry()} and or
+	 * all its valid targets.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 */
+	private void drawValidTargets(Graphics g) {
+
+		// If there is a country highlighted.
+		if (super.getHighlightedCountry() != null) {
+
+			// Assign the line colour.
+			g.setColor(Color.green);
+
+			for (Country country : super.getHighlightedCountry().getNeighbours()) {
+
+				// if it is a valid target highlight the country and draw a line from the
+				// highlighted country to the neighbour country.
+				if (isValidTarget(super.getHighlightedCountry(), country)) {
+
+					Point enemy = super.getArmyPosition(country);
+					Point selected = super.getArmyPosition(super.getHighlightedCountry());
+					g.drawLine(enemy.x, enemy.y, selected.x, selected.y);
+				}
+			}
+
 		}
 	}
 }

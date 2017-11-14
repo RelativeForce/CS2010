@@ -564,6 +564,20 @@ public class Game extends StateBasedGame implements MusicListener {
 	}
 
 	/**
+	 * Set the music on or off based on the specified boolean value.
+	 * 
+	 * @param state
+	 *            <code>boolean</code> on or off
+	 */
+	public void toggleMusic(boolean state) {
+		if (state) {
+			getContainer().setMusicVolume(1f);
+		} else {
+			getContainer().setMusicVolume(0f);
+		}
+	}
+
+	/**
 	 * Assigns a {@link Player} ruler to a {@link Country} using a parameter
 	 * {@link Random}.
 	 * 

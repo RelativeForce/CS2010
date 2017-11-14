@@ -83,8 +83,8 @@ public class MainMenuState extends InteractiveState {
 
 		super(game, STATE_NAME, id);
 		mapsFile = TextFileReader.scanFile(mapsFilePath, "maps.txt");
-		maps = new VisualList<>(15, 90, 90, 22, 2, 10);
-		players = new VisualList<>(120, 90, 20, 22, 2, 5);
+		maps = new VisualList<>(15, 90, 90, 22, 3, 10);
+		players = new VisualList<>(120, 90, 20, 22, 3, 5);
 		getMaps();
 		getPlayers();
 

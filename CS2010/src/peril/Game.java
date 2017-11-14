@@ -184,7 +184,7 @@ public class Game extends StateBasedGame implements MusicListener {
 			e.printStackTrace();
 		}
 
-		this.pauseMenu = new PauseMenu(new Point(100, 100));
+		this.pauseMenu = new PauseMenu(new Point(100, 100), this);
 
 		// Initialise the game states.
 		this.setup = new SetupState(this, 1, pauseMenu);

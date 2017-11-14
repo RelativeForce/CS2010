@@ -1,4 +1,4 @@
-package peril;
+package peril.ui.components.menus;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -8,6 +8,8 @@ import java.util.Random;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
+import peril.Player;
+import peril.Point;
 import peril.board.Army;
 import peril.board.Country;
 import peril.ui.Button;
@@ -38,22 +40,23 @@ public class WarMenu extends Clickable implements ButtonContainer {
 
 	private Font textFont;
 
-	private boolean show;
+	public boolean visible;
 
 	/**
 	 * Constructs a new {@link WarMenu}.
 	 * 
 	 */
 	public WarMenu(Point position) {
+		
 		random = new Random();
 		
-		squadSizes = new VisualList<>(200, 10, 20, 20, 3, 5);
+		squadSizes = new VisualList<>(position.x + 100, position.y + 10, 20, 20, 3, 5);
 		squadSizes.add(new Element<Integer>("1", 1));
 		squadSizes.add(new Element<Integer>("2", 2));
 		squadSizes.add(new Element<Integer>("3", 3));
 		
 		buttons = new LinkedList<>();
-		show = false;
+		visible = false;
 		
 		setRegion(new Region(300, 300, position));
 	}
@@ -156,10 +159,10 @@ public class WarMenu extends Clickable implements ButtonContainer {
 		textFont = new Font("Arial", Color.cyan, 20);
 		squadSizes.setFont(textFont);
 	}
-
+	
 	public void draw(Graphics g) {
 
-		if (show) {
+		if (visible) {
 			g.setColor(Color.black);
 			g.fillRect(getPosition().x, getPosition().y, getWidth(), getHeight());
 

@@ -1,6 +1,5 @@
 package peril.io;
 
-import peril.WarMenu;
 import peril.Game;
 import peril.Player;
 import peril.board.Army;
@@ -8,6 +7,7 @@ import peril.board.Continent;
 import peril.board.Country;
 import peril.multiThread.Action;
 import peril.ui.Button;
+import peril.ui.components.menus.WarMenu;
 
 /**
  * 
@@ -62,8 +62,16 @@ public class FunctionHandler {
 			return playGame();
 		case 8:
 			return reAssignCountries();
+		case 9:
+			return toggleWarMenu();
 		}
 		return null;
+	}
+
+	private Action<?> toggleWarMenu() {
+		return new Action<Game>(game, game -> {
+			game.combat.warMenu.visible = !game.combat.warMenu.visible;
+		});
 	}
 
 	/**
@@ -227,15 +235,15 @@ public class FunctionHandler {
 
 	/**
 	 * Retrieves the {@link Action} that will perform one round of the
-	 * {@link WarMenu#fight(Country, Country, int)} on the two countries
-	 * selected in the {@link Game#combat}.
+	 * {@link WarMenu#fight(Country, Country, int)} on the two countries selected in
+	 * the {@link Game#combat}.
 	 * 
 	 * @return {@link Action}
 	 */
 	private Action<?> excuteCombat() {
 		return new Action<Game>(game, game -> {
 
-			WarMenu combathandler = game.getCombatHandler();
+			WarMenu warMenu = game.combat.warMenu;
 
 			Country attacking = game.combat.getHighlightedCountry();
 			Country defending = game.combat.getEnemyCountry();
@@ -248,9 +256,9 @@ public class FunctionHandler {
 
 				// If the army of the primary highlighted country is larger that 1 unit in size
 				if (attacking.getArmy().getSize() > 1) {
-			
+
 					// Execute the combat
-					combathandler.fight(attacking, defending, 1);
+					warMenu.fight(attacking, defending, 1);
 
 					// If the country has been conquered
 					if (attacking.getRuler().equals(defending.getRuler())) {
@@ -305,11 +313,11 @@ public class FunctionHandler {
 	 */
 	private Action<?> reAssignCountries() {
 		return new Action<Game>(game, game -> {
-			
+
 			// Unhighlight the highlighted country
 			game.setup.unhighlightCountry(game.setup.getHighlightedCountry());
 			game.setup.highlightCountry(null);
-			
+
 			// Assign the countries
 			game.autoDistributeCountries();
 		});

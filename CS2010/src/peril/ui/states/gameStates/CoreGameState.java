@@ -21,8 +21,8 @@ import peril.Point;
 import peril.board.Army;
 import peril.board.Board;
 import peril.board.Country;
-import peril.ui.components.PauseMenu;
 import peril.ui.components.Region;
+import peril.ui.components.menus.PauseMenu;
 import peril.ui.states.InteractiveState;
 
 /**
@@ -122,9 +122,8 @@ public abstract class CoreGameState extends InteractiveState {
 
 		drawChallenges(g, 130, 15);
 
-		if (pauseMenu.IsPaused()) {
-			pauseMenu.draw(g);
-		}
+		pauseMenu.draw(g);
+
 	}
 
 	@Override
@@ -144,7 +143,7 @@ public abstract class CoreGameState extends InteractiveState {
 		super.leave(container, game);
 		challenges.clear();
 	}
-	
+
 	/**
 	 * Returns a the current highlighted {@link Country} in this state.
 	 * 
@@ -208,7 +207,7 @@ public abstract class CoreGameState extends InteractiveState {
 			getGame().getBoard().move(new Point(-increment, 0));
 			break;
 		case Input.KEY_ENTER:
-			pauseMenu.setPause(!pauseMenu.IsPaused());
+			pauseMenu.visible = !pauseMenu.visible;
 			break;
 		default:
 			break;
@@ -326,12 +325,12 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	protected boolean clickPauseMenu(Point click) {
-		if (pauseMenu.IsPaused()) {
+		if (pauseMenu.visible) {
 			if (pauseMenu.isClicked(click)) {
 				pauseMenu.parseClick(click);
 				return true;
 			}
-			pauseMenu.setPause(false);
+			pauseMenu.visible = false;
 		}
 		return false;
 	}
@@ -405,8 +404,8 @@ public abstract class CoreGameState extends InteractiveState {
 
 			// Holds the position that army will be drawn at
 			Point armyPosition = getArmyPosition(country);
-			
-			//Holds the size of the current countries army
+
+			// Holds the size of the current countries army
 			int troopNumber = country.getArmy().getSize();
 
 			if (troopNumber > 99) {

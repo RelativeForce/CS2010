@@ -9,7 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Player;
 import peril.board.Country;
-import peril.ui.components.PauseMenu;
+import peril.ui.components.menus.PauseMenu;
 
 /**
  * Encapsulates the behaviour of the Reinforcement {@link CoreGameState} where

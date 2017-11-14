@@ -23,7 +23,8 @@ import peril.io.MapReader;
 import peril.io.MusicReader;
 import peril.ui.ButtonContainer;
 import peril.ui.UIEventHandler;
-import peril.ui.components.PauseMenu;
+import peril.ui.components.menus.PauseMenu;
+import peril.ui.components.menus.WarMenu;
 import peril.ui.states.InteractiveState;
 import peril.ui.states.gameStates.*;
 import peril.ui.states.gameStates.multiSelectState.CombatState;
@@ -348,15 +349,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public int getRoundNumber() {
 		return currentRound;
-	}
-
-	/**
-	 * Retrieves the combat handler.
-	 * 
-	 * @return <code>CombatHandler</code>
-	 */
-	public WarMenu getCombatHandler() {
-		return combatHandler;
 	}
 
 	/**

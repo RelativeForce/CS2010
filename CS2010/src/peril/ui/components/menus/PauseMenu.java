@@ -19,14 +19,29 @@ public class PauseMenu extends Menu {
 
 	private final static String NAME = "Pause Menu";
 
+	/**
+	 * {@link VisualList} of buttons to toggle the Music on and off.
+	 * 
+	 */
 	private VisualList<Toggle> toggleMusic;
 
+	/**
+	 * {@link Font} for the text of the music option.
+	 */
 	private Font musicFont;
+
+	/**
+	 * {@link Font} for the text of the {@link PauseMenu}.
+	 */
 	private Font textFont;
 
 	/**
-	 * Constructs a {@link PauseMenu}
+	 * Constructs a new {@link PauseMenu}.
 	 * 
+	 * @param position
+	 *            {@link Point} position of the {@link PauseMenu}.
+	 * @param game
+	 *            The {@link Game} the {@link PauseMenu} is associated with.
 	 */
 	public PauseMenu(Point position, Game game) {
 		super(NAME, game, new Region(300, 300, position));
@@ -66,8 +81,7 @@ public class PauseMenu extends Menu {
 	}
 
 	/**
-	 * Initialises all the visual elements off {@link PauseMenu}
-	 * 
+	 * Initialises all the visual elements off {@link PauseMenu}.
 	 */
 	public void init() {
 		textFont = new Font("Calibri", Color.cyan, 20);
@@ -77,13 +91,9 @@ public class PauseMenu extends Menu {
 	}
 
 	/**
-	 * 
-	 * 
-	 * @param click
-	 * 
-	 * @return
+	 * Processed the click on the toggle music buttons.
 	 */
-	public void parseClick(Point click) { // Alt-Shift-R (Refactoring)
+	public void parseClick(Point click) {
 
 		if (!toggleMusic.click(click)) {
 			clickedButton(click);
@@ -92,7 +102,14 @@ public class PauseMenu extends Menu {
 		}
 	}
 
+	/**
+	 * Holds "ON" and "OFF" which has boolean value assigned to them.
+	 * 
+	 * @author Ezekiel_Trinidad, Joshua_Eddy
+	 *
+	 */
 	private enum Toggle {
+
 		ON("On", true), OFF("Off", false);
 
 		public final boolean toggle;

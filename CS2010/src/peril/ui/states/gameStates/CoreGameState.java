@@ -21,8 +21,8 @@ import peril.Point;
 import peril.board.Army;
 import peril.board.Board;
 import peril.board.Country;
-import peril.ui.components.PauseMenu;
 import peril.ui.components.Region;
+import peril.ui.components.menus.PauseMenu;
 import peril.ui.states.InteractiveState;
 
 /**
@@ -44,6 +44,9 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	private Map<Challenge, Delay> challenges;
 
+	/**
+	 * The {@link PauseMenu} for this {@link CoreGameState}.
+	 */
 	private PauseMenu pauseMenu;
 
 	/**
@@ -119,9 +122,8 @@ public abstract class CoreGameState extends InteractiveState {
 
 		drawChallenges(g, 130, 15);
 
-		if (pauseMenu.IsPaused()) {
-			pauseMenu.draw(g);
-		}
+		pauseMenu.draw(g);
+
 	}
 
 	@Override
@@ -134,6 +136,12 @@ public abstract class CoreGameState extends InteractiveState {
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
 		pauseMenu.init();
+	}
+
+	@Override
+	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		super.leave(container, game);
+		challenges.clear();
 	}
 
 	/**
@@ -199,7 +207,7 @@ public abstract class CoreGameState extends InteractiveState {
 			getGame().getBoard().move(new Point(-increment, 0));
 			break;
 		case Input.KEY_ENTER:
-			pauseMenu.setPause(!pauseMenu.IsPaused());
+			pauseMenu.visible = !pauseMenu.visible;
 			break;
 		default:
 			break;
@@ -244,7 +252,7 @@ public abstract class CoreGameState extends InteractiveState {
 			throw new NullPointerException("Challenge cannot be null.");
 		}
 
-		challenges.put(challenge, new Delay(1000));
+		challenges.put(challenge, new Delay(600));
 	}
 
 	/**
@@ -317,12 +325,12 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	protected boolean clickPauseMenu(Point click) {
-		if (pauseMenu.IsPaused()) {
+		if (pauseMenu.visible) {
 			if (pauseMenu.isClicked(click)) {
 				pauseMenu.parseClick(click);
 				return true;
 			}
-			pauseMenu.setPause(false);
+			pauseMenu.visible = false;
 		}
 		return false;
 	}
@@ -396,8 +404,8 @@ public abstract class CoreGameState extends InteractiveState {
 
 			// Holds the position that army will be drawn at
 			Point armyPosition = getArmyPosition(country);
-			
-			//Holds the size of the current countries army
+
+			// Holds the size of the current countries army
 			int troopNumber = country.getArmy().getSize();
 
 			if (troopNumber > 99) {

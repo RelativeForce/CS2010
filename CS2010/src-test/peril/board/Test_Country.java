@@ -7,6 +7,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import peril.Point;
+import peril.ui.components.Region;
+
 /**
  * This class tests {@link Country}.
  * 
@@ -31,7 +34,7 @@ public class Test_Country {
 	@Before
 	public void setUp() throws Exception {
 		testName = "France";
-		testCountry = new Country(testName);
+		testCountry = new Country(testName, new Region(50,50, new Point(100,100)));
 
 	}
 
@@ -49,7 +52,7 @@ public class Test_Country {
 	@Test
 	public void test_addNeighbour() {
 		// Creates a new country with the name of testName
-		Country newNeighbour = new Country(testName);
+		Country newNeighbour = new Country(testName, new Region(50,50, new Point(100,100)));
 
 		// Adds a country to the list of neighbours in the testCountry.
 		testCountry.addNeighbour(newNeighbour);

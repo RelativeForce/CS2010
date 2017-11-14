@@ -1,10 +1,22 @@
-package peril;
+package peril.ui.components.menus;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+
+import peril.Game;
+import peril.Player;
+import peril.Point;
 import peril.board.Army;
 import peril.board.Country;
+import peril.ui.Button;
+import peril.ui.components.Font;
+import peril.ui.components.Region;
+import peril.ui.components.VisualList;
 
 /**
  * Encapsulates all the game combat logic.
@@ -12,7 +24,7 @@ import peril.board.Country;
  * @author Joshua_Eddy, Ezekiel_Trinidad
  *
  */
-public class CombatHandler {
+public class WarMenu extends Menu {
 
 	/**
 	 * {@link Random} object for the random number generator
@@ -20,22 +32,29 @@ public class CombatHandler {
 	 */
 	private Random random;
 
-	/**
-	 * Constructs a new {@link CombatHandler}.
-	 * 
-	 */
-	public CombatHandler() {
-		random = new Random();
-	}
+	private VisualList<Integer> squadSizes;
+
+	private List<Button> buttons;
+
+	private Font textFont;
+
+	public boolean visible;
 
 	/**
-	 * Constructs a new {@link CombatHandler} with a SEED.
+	 * Constructs a new {@link WarMenu}.
 	 * 
-	 * @param SEED
-	 *            unique seed for the {@link Random} number generator
 	 */
-	public CombatHandler(long SEED) {
-		random = new Random(SEED);
+	public WarMenu(Point position, Game game) {
+		super("War", game, new Region(300, 300, position));
+		random = new Random();
+
+		squadSizes = new VisualList<>(position.x + 100, position.y + 10, 20, 20, 3, 5);
+		squadSizes.add("1", 1);
+		squadSizes.add("2", 2);
+		squadSizes.add("3", 3);
+
+		buttons = new LinkedList<>();
+		visible = false;
 	}
 
 	/**
@@ -82,7 +101,7 @@ public class CombatHandler {
 			 * defender's army and vice versa.
 			 */
 			if (attackerDiceRolls[i] > defenderDiceRolls[i]) {
-				
+
 				if (defendingArmy.getSize() == 1) {
 					defending.setRuler(attacker);
 					attacker.setTotalArmySize(attacker.getTotalArmySize() + 1);
@@ -92,7 +111,7 @@ public class CombatHandler {
 				defender.setTotalArmySize(defender.getTotalArmySize() - 1);
 
 			} else {
-				
+
 				if (attackingArmy.getSize() == 1) {
 					attacking.setRuler(defender);
 					defender.setTotalArmySize(defender.getTotalArmySize() + 1);
@@ -129,6 +148,55 @@ public class CombatHandler {
 		Arrays.sort(rolls);
 
 		return rolls;
+	}
+
+	public void init() {
+		squadSizes.init();
+		textFont = new Font("Arial", Color.cyan, 20);
+		squadSizes.setFont(textFont);
+	}
+
+	public void draw(Graphics g) {
+
+		if (visible) {
+			g.setColor(Color.black);
+			g.fillRect(getPosition().x, getPosition().y, getWidth(), getHeight());
+
+			squadSizes.draw(g);
+			textFont.draw(g, "ATTACK", getPosition().x, getPosition().y);
+		}
+	}
+
+	public void parseClick(Point click) {
+		if (!squadSizes.click(click)) {
+			clickedButton(click);
+		}
+	}
+
+	@Override
+	public void addButton(Button button) {
+		buttons.add(button);
+	}
+
+	@Override
+	public List<Button> getButtons() {
+		return buttons;
+	}
+
+	@Override
+	public boolean clickedButton(Point click) {
+		for (Button b : buttons) {
+			if (b.isClicked(click)) {
+				b.click();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public String getName() {
+		return "War";
 	}
 
 }

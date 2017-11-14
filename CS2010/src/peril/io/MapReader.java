@@ -206,15 +206,11 @@ public class MapReader {
 		Color color = new Color(r, g, b);
 
 		// Initialise the new country.
-		Country country = new Country(name);
+		Country country = new Country(name,
+				ImageReader.getColourRegion(directoryPath + File.separatorChar + "countries.png", color));
 
 		// Set the army offset.
 		country.getArmy().setOffset(new Point(xOffset, yOffset));
-
-		// Set the clickable region of the country
-
-		Region region = ImageReader.getColourRegion(directoryPath + File.separatorChar + "countries.png", color);
-		country.setRegion(region);
 
 		// Construct a new counrty and add the country to the list of countries.
 		countries.add(country);
@@ -239,12 +235,11 @@ public class MapReader {
 			// Holds the hazard the will be assigned to this continent.
 			EnvironmentalHazard hazard = EnvironmentalHazard.getByName(details[2]);
 
-			// Create the new continent.
-			Continent newContinent = new Continent(hazard, name);
+			// Holds the regions of each country that will be used to make the continent.
+			List<Region> toCombine = new LinkedList<>();
 
-			// Holds the regions of each country that will be used o make the continent.
-			List<Region> toAdd = new LinkedList<>();
-
+			// Holds countries the that will be added to the continent.
+			List<Country> toAdd = new LinkedList<>();
 			/**
 			 * Iterate through all the countries in the countries map and if a country is
 			 * denoted by a string in the map detail add it to the new continent.
@@ -257,15 +252,18 @@ public class MapReader {
 					// If the country's name is specified by the details file to be in this
 					// continent.
 					if (country.getName().equals(countryName)) {
-						newContinent.addCountry(country);
-						toAdd.add(country.getRegion());
+						toAdd.add(country);
+						toCombine.add(country.getRegion());
 						break;
 					}
 				}
 			}
 
-			// Combine this continent's country's regions to form the continent's region.
-			newContinent.setRegion(Region.combine(toAdd, normalMap.getWidth(), normalMap.getHeight()));
+			// Create the new continent.
+			Continent newContinent = new Continent(hazard, name,
+					Region.combine(toCombine, normalMap.getWidth(), normalMap.getHeight()));
+
+			toAdd.forEach(country -> newContinent.addCountry(country));
 
 			// Add the continent to the list of continents.
 			continents.add(newContinent);

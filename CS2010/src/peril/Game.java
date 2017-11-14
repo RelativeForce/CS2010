@@ -23,7 +23,8 @@ import peril.io.MapReader;
 import peril.io.MusicReader;
 import peril.ui.ButtonContainer;
 import peril.ui.UIEventHandler;
-import peril.ui.components.PauseMenu;
+import peril.ui.components.menus.PauseMenu;
+import peril.ui.components.menus.WarMenu;
 import peril.ui.states.InteractiveState;
 import peril.ui.states.gameStates.*;
 import peril.ui.states.gameStates.multiSelectState.CombatState;
@@ -52,7 +53,7 @@ public class Game extends StateBasedGame implements MusicListener {
 
 	/**
 	 * The state that displays combat to the user. This is heavily couples with
-	 * {@link CombatHandler}.
+	 * {@link WarMenu}.
 	 */
 	public final CombatState combat;
 
@@ -101,9 +102,9 @@ public class Game extends StateBasedGame implements MusicListener {
 	private final UIEventHandler eventHandler;
 
 	/**
-	 * The {@link CombatHandler} that processes all of the game's combat.
+	 * The {@link WarMenu} that processes all of the game's combat.
 	 */
-	private final CombatHandler combatHandler;
+	private final WarMenu combatHandler;
 
 	/**
 	 * The instance of the {@link Board} used for this game.
@@ -178,25 +179,25 @@ public class Game extends StateBasedGame implements MusicListener {
 		try {
 			agc = new AppGameContainer(this);
 			agc.setDisplayMode(220, 180, false);
-
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
 
+		// Initialise games Combat Handler
+		this.combatHandler = new WarMenu(new Point(100, 100), this);
+
+		// Initialise the pause menu all the states will use
 		this.pauseMenu = new PauseMenu(new Point(100, 100), this);
 
 		// Initialise the game states.
 		this.setup = new SetupState(this, 1, pauseMenu);
 		this.reinforcement = new ReinforcementState(this, 2, pauseMenu);
-		this.combat = new CombatState(this, 3, pauseMenu);
+		this.combat = new CombatState(this, 3, pauseMenu, combatHandler);
 		this.movement = new MovementState(this, 4, pauseMenu);
 		this.end = new EndState(this, 5);
 
 		// Initialise the event handler.
 		this.eventHandler = new UIEventHandler(this);
-
-		// Initialise games combatHandler
-		this.combatHandler = new CombatHandler();
 
 		// Holds the directory this game is operating in.
 		String baseDirectory = new File(System.getProperty("user.dir")).getPath();
@@ -348,15 +349,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public int getRoundNumber() {
 		return currentRound;
-	}
-
-	/**
-	 * Retrieves the combat handler.
-	 * 
-	 * @return <code>CombatHandler</code>
-	 */
-	public CombatHandler getCombatHandler() {
-		return combatHandler;
 	}
 
 	/**

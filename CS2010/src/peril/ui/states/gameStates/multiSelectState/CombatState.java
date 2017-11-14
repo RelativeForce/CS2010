@@ -10,7 +10,8 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Country;
-import peril.ui.components.PauseMenu;
+import peril.ui.components.menus.PauseMenu;
+import peril.ui.components.menus.WarMenu;
 import peril.ui.states.gameStates.CoreGameState;
 
 /**
@@ -33,6 +34,8 @@ public final class CombatState extends MultiSelectState {
 	 * been conquered.
 	 */
 	private boolean isPostCombat;
+	
+	public final WarMenu warMenu;
 
 	/**
 	 * Constructs a new {@link CombatState}.
@@ -44,9 +47,10 @@ public final class CombatState extends MultiSelectState {
 	 * @param pauseMenu
 	 *            The {@link PauseMenu} for this {@link CombatState}.
 	 */
-	public CombatState(Game game, int id, PauseMenu pauseMenu) {
+	public CombatState(Game game, int id, PauseMenu pauseMenu, WarMenu combatHandler) {
 		super(game, STATE_NAME, id, pauseMenu);
-		isPostCombat = false;
+		this.isPostCombat = false;
+		this.warMenu = combatHandler;
 	}
 
 	/**
@@ -91,9 +95,16 @@ public final class CombatState extends MultiSelectState {
 
 		super.render(gc, sbg, g);
 		super.drawPlayerName(g);
-		
-		this.drawValidTargets(g);
 
+		this.drawValidTargets(g);
+		
+		this.warMenu.draw(g);
+	}
+	
+	@Override
+	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		super.init(gc, sbg);
+		warMenu.init();
 	}
 
 	/**
@@ -105,6 +116,16 @@ public final class CombatState extends MultiSelectState {
 	 */
 	public Country getEnemyCountry() {
 		return super.getSecondaryHightlightedCounrty();
+	}
+
+	/**
+	 * Processes a click at a specified {@link Point} on this {@link CombatState}.
+	 */
+	@Override
+	public void parseClick(int button, Point click) {
+
+		super.parseClick(button, click);
+
 	}
 
 	/**

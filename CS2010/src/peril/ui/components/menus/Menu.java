@@ -10,6 +10,7 @@ import peril.Point;
 import peril.ui.Button;
 import peril.ui.ButtonContainer;
 import peril.ui.components.Clickable;
+import peril.ui.components.Region;
 
 public abstract class Menu extends Clickable implements ButtonContainer {
 
@@ -24,7 +25,8 @@ public abstract class Menu extends Clickable implements ButtonContainer {
 
 	public boolean visible;
 
-	public Menu(String name, Game game) {
+	public Menu(String name, Game game, Region region) {
+		super(region);
 		this.buttons = new LinkedList<>();
 		this.name = name;
 		this.game = game;

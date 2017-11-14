@@ -184,7 +184,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		}
 
 		// Initialise games Combat Handler
-		this.combatHandler = new WarMenu(new Point(100, 100));
+		this.combatHandler = new WarMenu(new Point(100, 100), this);
 
 		// Initialise the pause menu all the states will use
 		this.pauseMenu = new PauseMenu(new Point(100, 100), this);

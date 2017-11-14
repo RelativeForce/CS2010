@@ -5,7 +5,6 @@ import org.newdawn.slick.Graphics;
 
 import peril.Game;
 import peril.Point;
-import peril.ui.components.Element;
 import peril.ui.components.Font;
 import peril.ui.components.Region;
 import peril.ui.components.VisualList;
@@ -30,12 +29,10 @@ public class PauseMenu extends Menu {
 	 * 
 	 */
 	public PauseMenu(Point position, Game game) {
-		super(NAME, game);
-
-		setRegion(new Region(300, 300, position));
+		super(NAME, game, new Region(300, 300, position));
 		this.toggleMusic = new VisualList<>(position.x + 40 + (getWidth() / 2), position.y + 50, 30, 15, 2, 5);
-		this.toggleMusic.add(new Element<Toggle>(Toggle.ON.toString, Toggle.ON));
-		this.toggleMusic.add(new Element<Toggle>(Toggle.OFF.toString, Toggle.OFF));
+		this.toggleMusic.add(Toggle.ON.toString, Toggle.ON);
+		this.toggleMusic.add(Toggle.OFF.toString, Toggle.OFF);
 	}
 
 	/**
@@ -91,7 +88,7 @@ public class PauseMenu extends Menu {
 		if (!toggleMusic.click(click)) {
 			clickedButton(click);
 		} else {
-			getGame().toggleMusic(toggleMusic.getSelected().get().toggle);
+			getGame().toggleMusic(toggleMusic.getSelected().toggle);
 		}
 	}
 

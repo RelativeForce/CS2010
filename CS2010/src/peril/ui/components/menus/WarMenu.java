@@ -8,14 +8,12 @@ import java.util.Random;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
+import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Army;
 import peril.board.Country;
 import peril.ui.Button;
-import peril.ui.ButtonContainer;
-import peril.ui.components.Clickable;
-import peril.ui.components.Element;
 import peril.ui.components.Font;
 import peril.ui.components.Region;
 import peril.ui.components.VisualList;
@@ -26,7 +24,7 @@ import peril.ui.components.VisualList;
  * @author Joshua_Eddy, Ezekiel_Trinidad
  *
  */
-public class WarMenu extends Clickable implements ButtonContainer {
+public class WarMenu extends Menu {
 
 	/**
 	 * {@link Random} object for the random number generator
@@ -46,19 +44,17 @@ public class WarMenu extends Clickable implements ButtonContainer {
 	 * Constructs a new {@link WarMenu}.
 	 * 
 	 */
-	public WarMenu(Point position) {
-		
+	public WarMenu(Point position, Game game) {
+		super("War", game, new Region(300, 300, position));
 		random = new Random();
-		
+
 		squadSizes = new VisualList<>(position.x + 100, position.y + 10, 20, 20, 3, 5);
-		squadSizes.add(new Element<Integer>("1", 1));
-		squadSizes.add(new Element<Integer>("2", 2));
-		squadSizes.add(new Element<Integer>("3", 3));
-		
+		squadSizes.add("1", 1);
+		squadSizes.add("2", 2);
+		squadSizes.add("3", 3);
+
 		buttons = new LinkedList<>();
 		visible = false;
-		
-		setRegion(new Region(300, 300, position));
 	}
 
 	/**
@@ -159,7 +155,7 @@ public class WarMenu extends Clickable implements ButtonContainer {
 		textFont = new Font("Arial", Color.cyan, 20);
 		squadSizes.setFont(textFont);
 	}
-	
+
 	public void draw(Graphics g) {
 
 		if (visible) {

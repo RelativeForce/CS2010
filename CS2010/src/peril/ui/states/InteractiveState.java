@@ -13,6 +13,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Point;
 import peril.ui.Button;
+import peril.ui.ButtonContainer;
 import peril.ui.components.Clickable;
 import peril.ui.components.Viewable;
 
@@ -24,7 +25,7 @@ import peril.ui.components.Viewable;
  * @author Joshua_Eddy
  *
  */
-public abstract class InteractiveState extends BasicGameState {
+public abstract class InteractiveState extends BasicGameState implements ButtonContainer {
 
 	/**
 	 * Holds the name of a specific {@link InteractiveState}.
@@ -112,6 +113,7 @@ public abstract class InteractiveState extends BasicGameState {
 	 * Returns a list of {@link Clickable} elements present in this state.
 	 * 
 	 */
+	@Override
 	public List<Button> getButtons() {
 		return buttons;
 	}
@@ -119,13 +121,12 @@ public abstract class InteractiveState extends BasicGameState {
 	/*
 	 * Adds a {@link Button} to the list of buttons in this state.
 	 * 
-	 * @param element The {@link Button} element to be added to the list.
-	 * 
 	 */
-	public void addButton(Button element) {
+	@Override
+	public void addButton(Button button) {
 		// Check whether the region is valid.
-		if (element.hasRegion()) {
-			buttons.add(element);
+		if (button.hasRegion()) {
+			buttons.add(button);
 		} else {
 			throw new IllegalArgumentException("Clickable elemnent must have a valid region.");
 		}
@@ -247,7 +248,8 @@ public abstract class InteractiveState extends BasicGameState {
 	 *            {@link Point}
 	 * @return whether any {@link Button} was intersected by the {@link Point}.
 	 */
-	protected boolean clickButton(Point click) {
+	@Override
+	public boolean clickedButton(Point click) {
 
 		// Iterate through all the buttons in the current state.
 		for (Button button : getButtons()) {

@@ -108,7 +108,7 @@ public class MainMenuState extends InteractiveState {
 	@Override
 	public void parseClick(int button, Point click) {
 
-		if (!super.clickButton(click)) {
+		if (!super.clickedButton(click)) {
 			if (!maps.click(click)) {
 				players.click(click);
 			}

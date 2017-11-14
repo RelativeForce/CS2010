@@ -80,7 +80,7 @@ public class EndState extends InteractiveState {
 	 */
 	@Override
 	public void parseClick(int button, Point click) {
-		super.clickButton(click);
+		super.clickedButton(click);
 	}
 
 	/**

@@ -216,7 +216,7 @@ public abstract class CoreGameState extends InteractiveState {
 
 			// If the player hasn't clicked a UI Button in the state, they must've clicked
 			// board.
-			if (!clickButton(click)) {
+			if (!super.clickedButton(click)) {
 				clickBoard(click);
 			}
 		}

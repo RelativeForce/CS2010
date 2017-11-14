@@ -6,6 +6,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import peril.WarMenu;
 import peril.Game;
 import peril.Player;
 import peril.Point;
@@ -33,6 +34,8 @@ public final class CombatState extends MultiSelectState {
 	 * been conquered.
 	 */
 	private boolean isPostCombat;
+	
+	public final WarMenu warMenu;
 
 	/**
 	 * Constructs a new {@link CombatState}.
@@ -44,9 +47,10 @@ public final class CombatState extends MultiSelectState {
 	 * @param pauseMenu
 	 *            The {@link PauseMenu} for this {@link CombatState}.
 	 */
-	public CombatState(Game game, int id, PauseMenu pauseMenu) {
+	public CombatState(Game game, int id, PauseMenu pauseMenu, WarMenu combatHandler) {
 		super(game, STATE_NAME, id, pauseMenu);
-		isPostCombat = false;
+		this.isPostCombat = false;
+		this.warMenu = combatHandler;
 	}
 
 	/**
@@ -93,6 +97,14 @@ public final class CombatState extends MultiSelectState {
 		super.drawPlayerName(g);
 
 		this.drawValidTargets(g);
+		
+		this.warMenu.draw(g);
+	}
+	
+	@Override
+	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		super.init(gc, sbg);
+		warMenu.init();
 	}
 
 	/**

@@ -151,12 +151,12 @@ public class MainMenuState extends InteractiveState {
 		textFont = new Font("Arial", Color.blue, 15);
 
 		// Initialise the maps list and all its elements
-		maps.setFont(mapFont);
 		maps.init();
-
+		maps.setFont(mapFont);
+		
 		// Initialise the players list and all its elements
-		players.setFont(mapFont);
 		players.init();
+		players.setFont(mapFont);
 
 		// Start the music intro
 		getGame().musicHelper.read("HumanMusicIntro").play();

@@ -4,7 +4,7 @@ import peril.Point;
 
 /**
  * Encapsulates the behaviours of a collection of units. This will be aggregated
- * by the {@link CombatHandler} and composes the {@link Country}.
+ * by the {@link WarMenu} and composes the {@link Country}.
  * 
  * @author Joshua_Eddy
  *

@@ -175,6 +175,9 @@ public class VisualList<T> extends Clickable {
 			element.init(x, y, width, height);
 			y += height;
 		}
+
+		// Set the default font
+		font = new Font("Arial", Color.black, 20);
 	}
 
 	/**

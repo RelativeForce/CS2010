@@ -1,6 +1,6 @@
 package peril.io;
 
-import peril.CombatHandler;
+import peril.WarMenu;
 import peril.Game;
 import peril.Player;
 import peril.board.Army;
@@ -227,7 +227,7 @@ public class FunctionHandler {
 
 	/**
 	 * Retrieves the {@link Action} that will perform one round of the
-	 * {@link CombatHandler#fight(Country, Country, int)} on the two countries
+	 * {@link WarMenu#fight(Country, Country, int)} on the two countries
 	 * selected in the {@link Game#combat}.
 	 * 
 	 * @return {@link Action}
@@ -235,7 +235,7 @@ public class FunctionHandler {
 	private Action<?> excuteCombat() {
 		return new Action<Game>(game, game -> {
 
-			CombatHandler combathandler = game.getCombatHandler();
+			WarMenu combathandler = game.getCombatHandler();
 
 			Country attacking = game.combat.getHighlightedCountry();
 			Country defending = game.combat.getEnemyCountry();

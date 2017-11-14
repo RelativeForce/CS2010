@@ -15,6 +15,7 @@ import peril.ui.ButtonContainer;
 import peril.ui.components.Clickable;
 import peril.ui.components.Element;
 import peril.ui.components.Font;
+import peril.ui.components.Region;
 import peril.ui.components.VisualList;
 
 /**
@@ -23,7 +24,7 @@ import peril.ui.components.VisualList;
  * @author Joshua_Eddy, Ezekiel_Trinidad
  *
  */
-public class CombatHandler extends Clickable implements ButtonContainer {
+public class WarMenu extends Clickable implements ButtonContainer {
 
 	/**
 	 * {@link Random} object for the random number generator
@@ -37,17 +38,24 @@ public class CombatHandler extends Clickable implements ButtonContainer {
 
 	private Font textFont;
 
+	private boolean show;
+
 	/**
-	 * Constructs a new {@link CombatHandler}.
+	 * Constructs a new {@link WarMenu}.
 	 * 
 	 */
-	public CombatHandler() {
+	public WarMenu(Point position) {
 		random = new Random();
+		
 		squadSizes = new VisualList<>(200, 10, 20, 20, 3, 5);
 		squadSizes.add(new Element<Integer>("1", 1));
 		squadSizes.add(new Element<Integer>("2", 2));
 		squadSizes.add(new Element<Integer>("3", 3));
+		
 		buttons = new LinkedList<>();
+		show = false;
+		
+		setRegion(new Region(300, 300, position));
 	}
 
 	/**
@@ -146,21 +154,26 @@ public class CombatHandler extends Clickable implements ButtonContainer {
 	public void init() {
 		squadSizes.init();
 		textFont = new Font("Arial", Color.cyan, 20);
+		squadSizes.setFont(textFont);
 	}
 
 	public void draw(Graphics g) {
-		
-		g.fillRect(getPosition().x, getPosition().y, getWidth(), getHeight());
-		squadSizes.draw(g);
-		textFont.draw(g, "Moo", getPosition().x, getPosition().y);
+
+		if (show) {
+			g.setColor(Color.black);
+			g.fillRect(getPosition().x, getPosition().y, getWidth(), getHeight());
+
+			squadSizes.draw(g);
+			textFont.draw(g, "ATTACK", getPosition().x, getPosition().y);
+		}
 	}
 
 	public void parseClick(Point click) {
-		if(!squadSizes.click(click)) {
+		if (!squadSizes.click(click)) {
 			clickedButton(click);
 		}
 	}
-	
+
 	@Override
 	public void addButton(Button button) {
 		buttons.add(button);

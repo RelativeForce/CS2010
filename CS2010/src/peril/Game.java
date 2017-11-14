@@ -52,7 +52,7 @@ public class Game extends StateBasedGame implements MusicListener {
 
 	/**
 	 * The state that displays combat to the user. This is heavily couples with
-	 * {@link CombatHandler}.
+	 * {@link WarMenu}.
 	 */
 	public final CombatState combat;
 
@@ -101,9 +101,9 @@ public class Game extends StateBasedGame implements MusicListener {
 	private final UIEventHandler eventHandler;
 
 	/**
-	 * The {@link CombatHandler} that processes all of the game's combat.
+	 * The {@link WarMenu} that processes all of the game's combat.
 	 */
-	private final CombatHandler combatHandler;
+	private final WarMenu combatHandler;
 
 	/**
 	 * The instance of the {@link Board} used for this game.
@@ -178,25 +178,25 @@ public class Game extends StateBasedGame implements MusicListener {
 		try {
 			agc = new AppGameContainer(this);
 			agc.setDisplayMode(220, 180, false);
-
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
 
+		// Initialise games Combat Handler
+		this.combatHandler = new WarMenu(new Point(100, 100));
+
+		// Initialise the pause menu all the states will use
 		this.pauseMenu = new PauseMenu(new Point(100, 100), this);
 
 		// Initialise the game states.
 		this.setup = new SetupState(this, 1, pauseMenu);
 		this.reinforcement = new ReinforcementState(this, 2, pauseMenu);
-		this.combat = new CombatState(this, 3, pauseMenu);
+		this.combat = new CombatState(this, 3, pauseMenu, combatHandler);
 		this.movement = new MovementState(this, 4, pauseMenu);
 		this.end = new EndState(this, 5);
 
 		// Initialise the event handler.
 		this.eventHandler = new UIEventHandler(this);
-
-		// Initialise games combatHandler
-		this.combatHandler = new CombatHandler();
 
 		// Holds the directory this game is operating in.
 		String baseDirectory = new File(System.getProperty("user.dir")).getPath();
@@ -355,7 +355,7 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * 
 	 * @return <code>CombatHandler</code>
 	 */
-	public CombatHandler getCombatHandler() {
+	public WarMenu getCombatHandler() {
 		return combatHandler;
 	}
 

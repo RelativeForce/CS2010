@@ -6,7 +6,7 @@ import java.util.List;
 import org.newdawn.slick.Color;
 
 import peril.Player;
-import peril.ui.visual.Clickable;
+import peril.ui.components.Clickable;
 
 /**
  * Encapsulates the behaviour of a Country. Countries:

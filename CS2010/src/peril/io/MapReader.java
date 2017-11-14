@@ -12,7 +12,7 @@ import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
 import peril.board.EnvironmentalHazard;
-import peril.ui.visual.Region;
+import peril.ui.components.Region;
 
 /**
  * Reader the map from a specified file and uses that to construct the

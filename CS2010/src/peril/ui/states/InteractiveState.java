@@ -13,8 +13,8 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Point;
 import peril.ui.Button;
-import peril.ui.visual.Clickable;
-import peril.ui.visual.Viewable;
+import peril.ui.components.Clickable;
+import peril.ui.components.Viewable;
 
 /**
  * 

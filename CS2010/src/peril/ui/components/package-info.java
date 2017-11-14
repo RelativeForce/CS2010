@@ -5,4 +5,4 @@
  * @author Joshua
  *
  */
-package peril.ui.visual;
+package peril.ui.components;

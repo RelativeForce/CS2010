@@ -8,11 +8,11 @@ import org.newdawn.slick.Graphics;
 
 import peril.Point;
 import peril.ui.Button;
-import peril.ui.visual.Clickable;
-import peril.ui.visual.Element;
-import peril.ui.visual.Font;
-import peril.ui.visual.Region;
-import peril.ui.visual.VisualList;
+import peril.ui.components.Clickable;
+import peril.ui.components.Element;
+import peril.ui.components.Font;
+import peril.ui.components.Region;
+import peril.ui.components.VisualList;
 
 /**
  * Encapsulates the behaviour of a Pause Menu

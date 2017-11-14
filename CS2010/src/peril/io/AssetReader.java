@@ -8,9 +8,9 @@ import peril.Game;
 import peril.Point;
 import peril.multiThread.Action;
 import peril.ui.Button;
+import peril.ui.components.Clickable;
+import peril.ui.components.Viewable;
 import peril.ui.states.InteractiveState;
-import peril.ui.visual.Clickable;
-import peril.ui.visual.Viewable;
 
 /**
  * Reads all the {@link Viewable} and {@link Clickable} specified by the ui

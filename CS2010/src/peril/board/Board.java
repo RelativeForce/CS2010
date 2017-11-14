@@ -4,7 +4,7 @@ import java.util.List;
 
 import peril.Game;
 import peril.Point;
-import peril.ui.visual.Viewable;
+import peril.ui.components.Viewable;
 
 /**
  * Encapsulates the behaviour of the the game board in the {@link Game}. This

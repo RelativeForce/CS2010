@@ -15,10 +15,10 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.io.TextFileReader;
+import peril.ui.components.Element;
+import peril.ui.components.Font;
+import peril.ui.components.VisualList;
 import peril.ui.states.InteractiveState;
-import peril.ui.visual.Element;
-import peril.ui.visual.Font;
-import peril.ui.visual.VisualList;
 
 /**
  * Encapsulates the behaviour of the main menu.

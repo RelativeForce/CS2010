@@ -148,10 +148,11 @@ public abstract class InteractiveState extends BasicGameState {
 	 *            <code>int</code> key code
 	 * @param c
 	 *            <code>char</code> char on the button
-	 * 
-	 * @see org.newdawn.slick.Input
+	 * @param mousePosition
+	 *            The {@link Point} position of the mouse relative to the
+	 *            {@link GameContainer}.
 	 */
-	public abstract void parseButton(int key, char c);
+	public abstract void parseButton(int key, char c, Point mousePosition);
 
 	/**
 	 * Called when the state is entered, before slick2d's game loop commences.

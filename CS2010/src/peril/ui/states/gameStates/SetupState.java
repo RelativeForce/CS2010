@@ -8,6 +8,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Player;
+import peril.Point;
 import peril.board.Country;
 
 /**
@@ -54,7 +55,7 @@ public class SetupState extends CoreGameState {
 	}
 
 	@Override
-	public void parseButton(int key, char c) {
+	public void parseButton(int key, char c, Point mousePosition) {
 
 		Country highlighted = getHighlightedCountry();
 
@@ -88,7 +89,7 @@ public class SetupState extends CoreGameState {
 			}
 		}
 
-		super.parseButton(key, c);
+		super.parseButton(key, c, mousePosition);
 
 	}
 

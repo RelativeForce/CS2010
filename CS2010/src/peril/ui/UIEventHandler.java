@@ -83,7 +83,8 @@ public class UIEventHandler implements MouseListener, KeyListener {
 
 	@Override
 	public void keyPressed(int key, char c) {
-		game.getCurrentState().parseButton(key, c);
+		Input input = game.getContainer().getInput();
+		game.getCurrentState().parseButton(key, c, new Point(input.getAbsoluteMouseX(), input.getAbsoluteMouseY()));
 	}
 
 	@Override

@@ -180,7 +180,7 @@ public abstract class CoreGameState extends InteractiveState {
 	 * Processes a button click on a {@link CoreGameState}.
 	 */
 	@Override
-	public void parseButton(int key, char c) {
+	public void parseButton(int key, char c, Point mousePosition) {
 
 		// Movement increment
 		int increment = 50;

@@ -87,7 +87,7 @@ public class EndState extends InteractiveState {
 	 * Processes a button press on this {@link EndState}.
 	 */
 	@Override
-	public void parseButton(int key, char c) {
+	public void parseButton(int key, char c, Point mousePosition) {
 		// Do NOTHING
 	}
 

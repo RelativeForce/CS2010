@@ -17,7 +17,7 @@ import peril.ui.states.InteractiveState;
  * @param <T>
  *            The type of the {@link Element#get()}
  */
-public class VisualList<T> {
+public class VisualList<T> extends Clickable {
 
 	/**
 	 * The <code>int</code> x coordinate of the {@link VisualList}.
@@ -61,6 +61,8 @@ public class VisualList<T> {
 	 */
 	private Element<T> selected;
 
+	private int topElementIndex;
+
 	/**
 	 * The number of pixels that the {@link Element}s will be displayed from the
 	 * edge of the left wall.
@@ -95,6 +97,8 @@ public class VisualList<T> {
 		this.height = height;
 		this.elementsInView = elementsInView;
 		this.padding = padding;
+		this.topElementIndex = 0;
+		this.setRegion(new Region(width, height * elementsInView, new Point(x, y)));
 	}
 
 	/**
@@ -174,16 +178,38 @@ public class VisualList<T> {
 	 */
 	public void draw(Graphics g) {
 
+		Region r = getRegion();
+
 		// Draws the background menu box.
-		g.fillRect(x, y, width, (elementsInView * height));
+		g.fillRect(r.getPosition().x, r.getPosition().y, r.getWidth(), r.getHeight());
+
+		int x = this.x;
+		int y = this.y;
+
+		// Draw the map names in the game.
+		for (Element<T> element : elements) {
+
+			int index = elements.indexOf(element);
+			
+			if (index >= topElementIndex && index < topElementIndex + elementsInView) {
+				
+				element.setPosition(new Point(x, y));
+				element.draw(g, font, padding);
+				y += height;
+			}
+		}
 
 		// Highlights the selected map
 		if (selected != null) {
-			g.drawImage(selected.getImage(), selected.getPosition().x, selected.getPosition().y);
+
+			int selectedIndex = elements.indexOf(selected);
+
+			if (selectedIndex >= topElementIndex && selectedIndex < topElementIndex + elementsInView) {
+				g.drawImage(selected.getImage(), selected.getPosition().x, selected.getPosition().y);
+			}
+
 		}
 
-		// Draw the map names in the game.
-		elements.forEach(element -> element.draw(g, font, padding));
 	}
 
 	/**
@@ -200,7 +226,12 @@ public class VisualList<T> {
 
 			// If the selected is not at the top of the list select the element above it.
 			if (index > 0) {
-				selected = elements.get(index - 1);
+				index--;
+				selected = elements.get(index);
+			}
+
+			if (index < topElementIndex) {
+				topElementIndex--;
 			}
 		}
 	}
@@ -219,7 +250,12 @@ public class VisualList<T> {
 
 			// If the selected is not at the bottom of the list select the element below it.
 			if (index < elements.size() - 1) {
-				selected = elements.get(index + 1);
+				index++;
+				selected = elements.get(index);
+			}
+
+			if (index >= topElementIndex + elementsInView) {
+				topElementIndex++;
 			}
 		}
 	}

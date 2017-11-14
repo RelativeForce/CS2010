@@ -84,7 +84,7 @@ public class MainMenuState extends InteractiveState {
 		super(game, STATE_NAME, id);
 		mapsFile = TextFileReader.scanFile(mapsFilePath, "maps.txt");
 		maps = new VisualList<>(15, 90, 90, 22, 2, 10);
-		players = new VisualList<>(120, 90, 20, 22, 3, 5);
+		players = new VisualList<>(120, 90, 20, 22, 2, 5);
 		getMaps();
 		getPlayers();
 
@@ -107,7 +107,7 @@ public class MainMenuState extends InteractiveState {
 
 	@Override
 	public void parseClick(int button, Point click) {
-		
+
 		if (!super.clickButton(click)) {
 			if (!maps.click(click)) {
 				players.click(click);
@@ -116,7 +116,7 @@ public class MainMenuState extends InteractiveState {
 	}
 
 	@Override
-	public void parseButton(int key, char c) {
+	public void parseButton(int key, char c, Point mousePosition) {
 
 		if (key == Input.KEY_ENTER) {
 			// Attempt to load the map
@@ -124,6 +124,18 @@ public class MainMenuState extends InteractiveState {
 				loadMap();
 			} catch (SlickException e) {
 
+			}
+		} else if (key == Input.KEY_UP) {
+			if (maps.isClicked(mousePosition)) {
+				maps.up();
+			} else if (players.isClicked(mousePosition)) {
+				players.up();
+			}
+		} else if (key == Input.KEY_DOWN) {
+			if (maps.isClicked(mousePosition)) {
+				maps.down();
+			} else if (players.isClicked(mousePosition)) {
+				players.down();
 			}
 		}
 	}

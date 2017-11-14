@@ -60,7 +60,8 @@ public class FunctionHandler {
 			return excuteCombat();
 		case 7:
 			return playGame();
-
+		case 8:
+			return reAssignCountries();
 		}
 		return null;
 	}
@@ -296,4 +297,22 @@ public class FunctionHandler {
 		});
 	}
 
+	/**
+	 * Retrieves the {@link Action} that will re-assign the {@link Country}s to new
+	 * {@link Player}s.
+	 * 
+	 * @return {@link Action}
+	 */
+	private Action<?> reAssignCountries() {
+		return new Action<Game>(game, game -> {
+			
+			// Unhighlight the highlighted country
+			game.setup.unhighlightCountry(game.setup.getHighlightedCountry());
+			game.setup.highlightCountry(null);
+			
+			// Assign the countries
+			game.autoDistributeCountries();
+		});
+
+	}
 }

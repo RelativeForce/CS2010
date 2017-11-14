@@ -15,6 +15,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.board.Army;
 import peril.board.Board;
+import peril.board.Continent;
 import peril.board.Country;
 import peril.io.AssetReader;
 import peril.io.ChallengeReader;
@@ -267,12 +268,19 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public void loadBoard(String mapName, int width, int height) throws SlickException {
 
+		// Change the window to the specified size.
 		agc.setDisplayMode(width, height, false);
+
+		// Reset the board
+		board.reset();
+
 		// Initialise the map reader and the players array.
 		this.mapReader = new MapReader(mapsDirectory + mapName, board);
 
+		// Read the map from memory
 		mapReader.read();
 
+		// Read the challenges
 		challengeReader.read();
 
 	}
@@ -294,6 +302,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		// Reset the all players number of countries to zero.
 		for (Player player : players) {
 			player.setCountriesRuled(0);
+			player.setTotalArmySize(0);
 		}
 
 		// Iterate through each country on the board.
@@ -518,6 +527,10 @@ public class Game extends StateBasedGame implements MusicListener {
 		return false;
 	}
 
+	/**
+	 * Checks all the {@link Continent}s on the {@link Board} to see if they are
+	 * ruled. This is o(n^2) complexity
+	 */
 	public void checkContinentRulership() {
 
 		players.forEach(player -> player.setContinentsRuled(0));
@@ -591,6 +604,7 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	private void assignPlayer(Country country, Random rand) {
 
+		// Holds whether the country has assigned a player ruler.
 		boolean set = false;
 
 		while (!set) {
@@ -598,9 +612,32 @@ public class Game extends StateBasedGame implements MusicListener {
 			// Get the player at the random index.
 			Player player = players.get(rand.nextInt(players.size()));
 
+			// Holds the number of countries on the board.
+			int numberOfCountries = board.getNumberOfCountries();
+
+			// Holds the number of players in the game.
+			int numberOfPlayers = players.size();
+
+			// Holds the maximum countries this player can own so that all the players nd up
+			// with the same number of countries.
+			int maxCountries;
+
+			/*
+			 * If the number of countries on this board can be equally divided between the
+			 * players then set the max number of countries of that a player can own to the
+			 * equal amount for each player. Otherwise set the max number of countries of
+			 * that a player can own to one above the normal proportion so the to account
+			 * for the left over countries.
+			 */
+			if (numberOfCountries % numberOfPlayers == 0) {
+				maxCountries = numberOfCountries / numberOfPlayers;
+			} else {
+				maxCountries = numberOfCountries / numberOfPlayers + 1;
+			}
+
 			// If the player owns more that their fair share of the maps countries assign
 			// the player again.
-			if (player.getCountriesRuled() <= (board.getNumberOfCountries() / players.size())) {
+			if (player.getCountriesRuled() < maxCountries) {
 				set = true;
 				country.setRuler(player);
 				player.setCountriesRuled(player.getCountriesRuled() + 1);

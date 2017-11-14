@@ -121,10 +121,9 @@ public class FunctionHandler {
 
 	private Action<?> enterMovement() {
 		return new Action<Game>(game, game -> {
-			game.movement.unhighlightCountry(game.movement.getHighlightedCountry());
-			game.movement.highlightCountry(null);
-			game.enterState(game.reinforcement.getID());
-			game.nextPlayer();
+			game.combat.unhighlightCountry(game.combat.getHighlightedCountry());
+			game.combat.highlightCountry(null);
+			game.enterState(game.movement.getID());
 		});
 	}
 

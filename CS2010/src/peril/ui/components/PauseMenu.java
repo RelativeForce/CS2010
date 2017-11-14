@@ -1,4 +1,4 @@
-package peril.ui.states.menuStates;
+package peril.ui.components;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,11 +10,6 @@ import peril.Game;
 import peril.Point;
 import peril.ui.Button;
 import peril.ui.ButtonContainer;
-import peril.ui.components.Clickable;
-import peril.ui.components.Element;
-import peril.ui.components.Font;
-import peril.ui.components.Region;
-import peril.ui.components.VisualList;
 
 /**
  * Encapsulates the behaviour of a Pause Menu

@@ -21,9 +21,9 @@ import peril.Point;
 import peril.board.Army;
 import peril.board.Board;
 import peril.board.Country;
+import peril.ui.components.PauseMenu;
 import peril.ui.components.Region;
 import peril.ui.states.InteractiveState;
-import peril.ui.states.menuStates.PauseMenu;
 
 /**
  * A {@link InteractiveState} which displays the {@link Board} from the

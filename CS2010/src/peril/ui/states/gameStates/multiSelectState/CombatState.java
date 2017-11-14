@@ -9,8 +9,8 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Player;
 import peril.board.Country;
+import peril.ui.components.PauseMenu;
 import peril.ui.states.gameStates.CoreGameState;
-import peril.ui.states.menuStates.PauseMenu;
 
 /**
  * Encapsulates the behaviour of the 'Combat' state of the game. In this state

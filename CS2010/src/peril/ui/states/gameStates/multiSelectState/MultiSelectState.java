@@ -3,8 +3,8 @@ package peril.ui.states.gameStates.multiSelectState;
 import peril.Game;
 import peril.Player;
 import peril.board.Country;
+import peril.ui.components.PauseMenu;
 import peril.ui.states.gameStates.CoreGameState;
-import peril.ui.states.menuStates.PauseMenu;
 
 /**
  * Encapsulates the behaviours of a {@link CoreGameState} that can select two

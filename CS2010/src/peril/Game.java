@@ -23,13 +23,13 @@ import peril.io.MapReader;
 import peril.io.MusicReader;
 import peril.ui.ButtonContainer;
 import peril.ui.UIEventHandler;
+import peril.ui.components.PauseMenu;
 import peril.ui.states.InteractiveState;
 import peril.ui.states.gameStates.*;
 import peril.ui.states.gameStates.multiSelectState.CombatState;
 import peril.ui.states.gameStates.multiSelectState.MovementState;
 import peril.ui.states.menuStates.EndState;
 import peril.ui.states.menuStates.MainMenuState;
-import peril.ui.states.menuStates.PauseMenu;
 
 /**
  * Encapsulate the main game logic for Peril. This also extends

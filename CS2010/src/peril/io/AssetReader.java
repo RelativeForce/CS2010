@@ -8,6 +8,7 @@ import peril.Game;
 import peril.Point;
 import peril.multiThread.Action;
 import peril.ui.Button;
+import peril.ui.ButtonContainer;
 import peril.ui.components.Clickable;
 import peril.ui.components.Viewable;
 import peril.ui.states.InteractiveState;
@@ -25,7 +26,7 @@ public class AssetReader {
 	 * The {@link CoreGameState}s that will be populated when
 	 * {@link AssetReader#read()} is performed.
 	 */
-	private InteractiveState[] states;
+	private ButtonContainer[] containers;
 
 	/**
 	 * File path of the asset details file.
@@ -37,18 +38,18 @@ public class AssetReader {
 	/**
 	 * Constructs a new {@link AssetReader}.
 	 * 
-	 * @param interactiveStates
+	 * @param containers
 	 *            The {@link InteractiveState}s that will be populated when
 	 *            {@link AssetReader#read()} is performed.
 	 * @param directoryPath
 	 *            File path of the asset details file.
 	 */
-	public AssetReader(InteractiveState[] interactiveStates, String directoryPath, Game game) {
+	public AssetReader(ButtonContainer[] containers, String directoryPath, Game game) {
 
 		// Check params
 		if (directoryPath.isEmpty()) {
 			throw new NullPointerException("File path cannot be empty.");
-		} else if (interactiveStates.length == 0) {
+		} else if (containers.length == 0) {
 			throw new NullPointerException("CoreGameState array cannot be empty.");
 		} else if (game == null) {
 			throw new NullPointerException("Game cannot be null.");
@@ -56,11 +57,11 @@ public class AssetReader {
 
 		this.functionHandler = new FunctionHandler(game);
 		this.directoryPath = directoryPath;
-		this.states = interactiveStates;
+		this.containers = containers;
 	}
 
 	/**
-	 * Populates the {@link CoreGameState}s stored in {@link AssetReader#states}
+	 * Populates the {@link CoreGameState}s stored in {@link AssetReader#containers}
 	 * will {@link Viewable} and {@link Clickable} from the details file.
 	 * 
 	 * @see TextFileReader
@@ -117,7 +118,7 @@ public class AssetReader {
 		int y;
 
 		// Get the state by name
-		InteractiveState state = getGameStateByName(details[1]);
+		ButtonContainer container = getContainerByName(details[1]);
 
 		// Parse the function code
 		try {
@@ -182,7 +183,7 @@ public class AssetReader {
 		Button newButton = new Button(position, asset, action);
 
 		// Add the button to the state, cast to clickable so the correct method is used
-		state.addButton(newButton);
+		container.addButton(newButton);
 
 	}
 
@@ -193,14 +194,14 @@ public class AssetReader {
 	 *            {@link CoreGameState#getStateName()}
 	 * @return {@link CoreGameState} with the specified name.
 	 */
-	private InteractiveState getGameStateByName(String name) {
+	private ButtonContainer getContainerByName(String name) {
 
 		// Iterate through all game states in the reader.
-		for (InteractiveState state : states) {
+		for (ButtonContainer container : containers) {
 
 			// Return the state that has the specified name.
-			if (state.getStateName().equals(name)) {
-				return state;
+			if (container.getName().equals(name)) {
+				return container;
 			}
 		}
 

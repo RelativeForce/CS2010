@@ -4,6 +4,7 @@ import peril.Game;
 import peril.Player;
 import peril.board.Country;
 import peril.ui.states.gameStates.CoreGameState;
+import peril.ui.states.menuStates.PauseMenu;
 
 /**
  * Encapsulates the behaviours of a {@link CoreGameState} that can select two
@@ -29,10 +30,12 @@ public abstract class MultiSelectState extends CoreGameState {
 	 *            The ID of this {@link MultiSelectState}.
 	 * @param stateName
 	 *            The name of this {@link MultiSelectState}.
+	 * @param pauseMenu
+	 *            The {@link PauseMenu} for this {@link MultiSelectState}.
 	 * 
 	 */
-	public MultiSelectState(Game game, String stateName, int id) {
-		super(game, stateName, id);
+	public MultiSelectState(Game game, String stateName, int id, PauseMenu pauseMenu) {
+		super(game, stateName, id, pauseMenu);
 		highlightedCounrty = null;
 	}
 

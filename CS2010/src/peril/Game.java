@@ -21,6 +21,7 @@ import peril.io.AssetReader;
 import peril.io.ChallengeReader;
 import peril.io.MapReader;
 import peril.io.MusicReader;
+import peril.ui.ButtonContainer;
 import peril.ui.UIEventHandler;
 import peril.ui.states.InteractiveState;
 import peril.ui.states.gameStates.*;
@@ -28,6 +29,7 @@ import peril.ui.states.gameStates.multiSelectState.CombatState;
 import peril.ui.states.gameStates.multiSelectState.MovementState;
 import peril.ui.states.menuStates.EndState;
 import peril.ui.states.menuStates.MainMenuState;
+import peril.ui.states.menuStates.PauseMenu;
 
 /**
  * Encapsulate the main game logic for Peril. This also extends
@@ -81,6 +83,11 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * The {@link EndState} that displays the results of the {@link Game}.
 	 */
 	public final EndState end;
+
+	/**
+	 * The {@link PauseMenu} that will be used by all the {@link CoreGameState}s.
+	 */
+	public final PauseMenu pauseMenu;
 
 	/**
 	 * The {@link MusicReader} for this {@link Game}.
@@ -177,11 +184,13 @@ public class Game extends StateBasedGame implements MusicListener {
 			e.printStackTrace();
 		}
 
+		this.pauseMenu = new PauseMenu(new Point(100, 100));
+
 		// Initialise the game states.
-		this.setup = new SetupState(this, 1);
-		this.reinforcement = new ReinforcementState(this, 2);
-		this.combat = new CombatState(this, 3);
-		this.movement = new MovementState(this, 4);
+		this.setup = new SetupState(this, 1, pauseMenu);
+		this.reinforcement = new ReinforcementState(this, 2, pauseMenu);
+		this.combat = new CombatState(this, 3, pauseMenu);
+		this.movement = new MovementState(this, 4, pauseMenu);
 		this.end = new EndState(this, 5);
 
 		// Initialise the event handler.
@@ -217,7 +226,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		ui_assestsPath.append("ui_assets");
 
 		this.assetReader = new AssetReader(
-				new InteractiveState[] { mainMenu, combat, setup, reinforcement, movement, end },
+				new ButtonContainer[] { mainMenu, combat, setup, reinforcement, movement, end },
 				ui_assestsPath.toString(), this);
 
 		// Add the path to the map's folder
@@ -270,6 +279,11 @@ public class Game extends StateBasedGame implements MusicListener {
 
 		// Change the window to the specified size.
 		agc.setDisplayMode(width, height, false);
+
+		int pauseMenuX = (width / 2) - (pauseMenu.getWidth() / 2);
+		int pauseMenuY = (height / 2) - (pauseMenu.getHeight() / 2);
+
+		pauseMenu.setPosition(new Point(pauseMenuX, pauseMenuY));
 
 		// Reset the board
 		board.reset();

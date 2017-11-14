@@ -8,6 +8,7 @@ import org.newdawn.slick.Graphics;
 
 import peril.Point;
 import peril.ui.Button;
+import peril.ui.ButtonContainer;
 import peril.ui.components.Clickable;
 import peril.ui.components.Element;
 import peril.ui.components.Font;
@@ -20,11 +21,10 @@ import peril.ui.components.VisualList;
  * @author Ezekiel_Trinidad
  *
  */
-public class PauseMenu extends Clickable {
+public class PauseMenu extends Clickable implements ButtonContainer {
 
-	// click some button which opens the pause menu
-	// when button is clicked, game.getCurrenState().showPauseMenu()
-
+	private final static String NAME = "Pause Menu";
+	
 	/**
 	 * Whether the screen is paused or not
 	 * 
@@ -32,19 +32,6 @@ public class PauseMenu extends Clickable {
 	private boolean isPaused;
 
 	private VisualList<Toggle> toggleMusic;
-
-	private enum Toggle {
-		YES(true), NO(false);
-
-		public final boolean toggle;
-
-		private Toggle(boolean toggle) {
-			this.toggle = toggle;
-		}
-	}
-
-	private int x;
-	private int y;
 
 	private Font musicFont;
 	private Font textFont;
@@ -58,31 +45,37 @@ public class PauseMenu extends Clickable {
 	 * Constructs a {@link PauseMenu}
 	 * 
 	 */
-	public PauseMenu(int x, int y) {
+	public PauseMenu(Point position) {
 		buttons = new LinkedList<>();
-		this.x = x;
-		this.y = y;
-		toggleMusic = new VisualList<>(x + 125, y + 50, 50, 20, 2, 5);
+		toggleMusic = new VisualList<>(position.x + 125, position.y + 50, 50, 20, 2, 5);
 		toggleMusic.add(new Element<Toggle>("YES", Toggle.YES));
 		toggleMusic.add(new Element<Toggle>("NO", Toggle.NO));
-		Region r = new Region(300, 300, new Point(x, y));
+		Region r = new Region(300, 300, position);
 		setRegion(r);
 	}
 
 	/**
-	 * Draws something
+	 * Draws the {@link PauseMenu} on screen.
 	 * 
 	 * @param g
+	 *            {@link Graphics}
 	 */
 	public void draw(Graphics g) {
+		
 		Region r = getRegion();
+		
 		if (r != null) {
+			
+			Point position = r.getPosition();
+			
 			g.setColor(Color.black);
-			g.fillRect(r.getPosition().x, r.getPosition().y, r.getWidth(), r.getHeight());
+			g.fillRect(position.x, position.y, r.getWidth(), r.getHeight());
+			
 			String pause = "PAUSE";
-			String music = "Toggle: Music";
-			textFont.draw(g, pause, x - (textFont.getWidth(pause) / 2) + (r.getWidth() / 2), y + 10);
-			musicFont.draw(g, music, x + 30 - (musicFont.getWidth(music) / 2), y + 50);
+			String music = "Toggle Music:";
+			
+			textFont.draw(g, pause, position.x - (textFont.getWidth(pause) / 2) + (r.getWidth() / 2), position.y + 10);
+			musicFont.draw(g, music, position.x + 30 - (musicFont.getWidth(music) / 2), position.y + 50);
 		}
 
 		g.setColor(Color.white);
@@ -113,11 +106,7 @@ public class PauseMenu extends Clickable {
 	public void parseClick(Point click) { // Alt-Shift-R (Refactoring)
 
 		if (!toggleMusic.click(click)) {
-			for (Button b : buttons) {
-				if (b.isClicked(click)) {
-					b.click();
-				}
-			}
+			clickedButton(click);
 		}
 	}
 
@@ -139,4 +128,35 @@ public class PauseMenu extends Clickable {
 		return this.isPaused;
 	}
 
+	@Override
+	public List<Button> getButtons() {
+		return null;
+	}
+
+	@Override
+	public boolean clickedButton(Point click) {
+
+		// Iterate through every button on the
+		for (Button b : buttons) {
+			if (b.isClicked(click)) {
+				b.click();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public String getName() {
+		return NAME;
+	}
+
+	private enum Toggle {
+		YES(true), NO(false);
+
+		public final boolean toggle;
+
+		private Toggle(boolean toggle) {
+			this.toggle = toggle;
+		}
+	}
 }

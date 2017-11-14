@@ -110,6 +110,13 @@ public abstract class InteractiveState extends BasicGameState implements ButtonC
 	}
 
 	/**
+	 * Returns the {@link String} name of this state.
+	 */
+	public String getName() {
+		return getStateName();
+	}
+	
+	/**
 	 * Returns a list of {@link Clickable} elements present in this state.
 	 * 
 	 */

@@ -10,6 +10,7 @@ import peril.Game;
 import peril.Player;
 import peril.board.Country;
 import peril.ui.states.gameStates.CoreGameState;
+import peril.ui.states.menuStates.PauseMenu;
 
 /**
  * Encapsulates the behaviour of the 'Movement' state of the game. In this state
@@ -19,7 +20,7 @@ import peril.ui.states.gameStates.CoreGameState;
  * @author Joshua_Eddy, Joseph_Rolli
  *
  */
-public class MovementState extends MultiSelectState {
+public final class MovementState extends MultiSelectState {
 
 	/**
 	 * The name of a specific {@link MovementState}.
@@ -33,10 +34,12 @@ public class MovementState extends MultiSelectState {
 	 *            The {@link Game} that houses this {@link MovementState}.
 	 * @param id
 	 *            The ID of this {@link MovementState}.
+	 * @param pauseMenu
+	 *            The {@link PauseMenu} for this {@link MovementState}.
 	 * 
 	 */
-	public MovementState(Game game, int id) {
-		super(game, STATE_NAME, id);
+	public MovementState(Game game, int id, PauseMenu pauseMenu) {
+		super(game, STATE_NAME, id, pauseMenu);
 	}
 
 	/**
@@ -69,7 +72,7 @@ public class MovementState extends MultiSelectState {
 	}
 
 	/**
-	 * Render the {@link MovementState}. 
+	 * Render the {@link MovementState}.
 	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {

@@ -12,4 +12,5 @@ public interface ButtonContainer {
 	
 	public boolean clickedButton(Point click);
 
+	public String getName();
 }

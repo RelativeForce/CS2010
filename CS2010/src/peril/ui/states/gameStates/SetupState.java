@@ -10,6 +10,7 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Country;
+import peril.ui.states.menuStates.PauseMenu;
 
 /**
  * The state where the user selects which player gets what {@link Country}s.
@@ -19,7 +20,7 @@ import peril.board.Country;
  *         {@link CoreGameState}
  *
  */
-public class SetupState extends CoreGameState {
+public final class SetupState extends CoreGameState {
 
 	/**
 	 * The name of a specific {@link SetupState}.
@@ -33,9 +34,11 @@ public class SetupState extends CoreGameState {
 	 *            The {@link Game} this {@link SetupState} is a part of.
 	 * @param id
 	 *            The ID of this {@link SetupState}
+	 * @param pauseMenu
+	 *            The {@link PauseMenu} for this {@link SetupState}.
 	 */
-	public SetupState(Game game, int id) {
-		super(game, STATE_NAME, id);
+	public SetupState(Game game, int id, PauseMenu pauseMenu) {
+		super(game, STATE_NAME, id, pauseMenu);
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Player;
 import peril.board.Country;
+import peril.ui.states.menuStates.PauseMenu;
 
 /**
  * Encapsulates the behaviour of the Reinforcement {@link CoreGameState} where
@@ -18,7 +19,7 @@ import peril.board.Country;
  * @author Joseph_Rolli, Joshua_Eddy
  *
  */
-public class ReinforcementState extends CoreGameState {
+public final class ReinforcementState extends CoreGameState {
 
 	/**
 	 * The name of a specific {@link ReinforcementState}.
@@ -32,9 +33,11 @@ public class ReinforcementState extends CoreGameState {
 	 *            The {@link Game} this {@link ReinforcementState} is a part of.
 	 * @param id
 	 *            The ID of this {@link ReinforcementState}
+	 * @param pauseMenu
+	 *            The {@link PauseMenu} for this {@link ReinforcementState}.
 	 */
-	public ReinforcementState(Game game, int id) {
-		super(game, STATE_NAME, id);
+	public ReinforcementState(Game game, int id, PauseMenu pauseMenu) {
+		super(game, STATE_NAME, id, pauseMenu);
 	}
 
 	@Override

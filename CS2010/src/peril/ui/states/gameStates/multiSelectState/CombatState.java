@@ -10,6 +10,7 @@ import peril.Game;
 import peril.Player;
 import peril.board.Country;
 import peril.ui.states.gameStates.CoreGameState;
+import peril.ui.states.menuStates.PauseMenu;
 
 /**
  * Encapsulates the behaviour of the 'Combat' state of the game. In this state
@@ -19,7 +20,7 @@ import peril.ui.states.gameStates.CoreGameState;
  * @author Joseph_Rolli, Joshua_Eddy
  *
  */
-public class CombatState extends MultiSelectState {
+public final class CombatState extends MultiSelectState {
 
 	/**
 	 * The name of a specific {@link CombatState}.
@@ -39,9 +40,11 @@ public class CombatState extends MultiSelectState {
 	 *            The {@link Game} that houses this {@link CombatState}.
 	 * @param id
 	 *            The ID of this {@link CombatState}
+	 * @param pauseMenu
+	 *            The {@link PauseMenu} for this {@link CombatState}.
 	 */
-	public CombatState(Game game, int id) {
-		super(game, STATE_NAME, id);
+	public CombatState(Game game, int id, PauseMenu pauseMenu) {
+		super(game, STATE_NAME, id, pauseMenu);
 		isPostCombat = false;
 	}
 
@@ -100,7 +103,7 @@ public class CombatState extends MultiSelectState {
 	public Country getEnemyCountry() {
 		return super.getSecondaryHightlightedCounrty();
 	}
-	
+
 	/**
 	 * Processes whether a {@link Country} is a valid target for the
 	 * {@link CoreGameState#getHighlightedCountry()} to attack. This is based on the

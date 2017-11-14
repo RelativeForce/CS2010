@@ -150,7 +150,7 @@ public final class MovementState extends MultiSelectState {
 	private boolean isValidTarget(Country primaryCountry, Country secondaryTarget) {
 
 		// If there is a primary friendly country and the target is not null and the
-		// ruler of the country is not the player.
+		// ruler of the country is the player.
 		if (primaryCountry.getRuler().equals(secondaryTarget.getRuler())) {
 
 			// if the country is a neighbour of the primary highlighted country then it is a

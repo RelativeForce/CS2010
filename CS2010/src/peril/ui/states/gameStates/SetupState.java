@@ -10,6 +10,7 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Country;
+import peril.ui.components.menus.PauseMenu;
 
 /**
  * The state where the user selects which player gets what {@link Country}s.
@@ -19,7 +20,7 @@ import peril.board.Country;
  *         {@link CoreGameState}
  *
  */
-public class SetupState extends CoreGameState {
+public final class SetupState extends CoreGameState {
 
 	/**
 	 * The name of a specific {@link SetupState}.
@@ -33,22 +34,16 @@ public class SetupState extends CoreGameState {
 	 *            The {@link Game} this {@link SetupState} is a part of.
 	 * @param id
 	 *            The ID of this {@link SetupState}
+	 * @param pauseMenu
+	 *            The {@link PauseMenu} for this {@link SetupState}.
 	 */
-	public SetupState(Game game, int id) {
-		super(game, STATE_NAME, id);
+	public SetupState(Game game, int id, PauseMenu pauseMenu) {
+		super(game, STATE_NAME, id, pauseMenu);
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
-	}
-
-	@Override
-	public void parseClick(int button, Point click) {
-		// If the states buttons were not clicked click the board.
-		if (!clickButton(click)) {
-			clickBoard(click);
-		}
 	}
 
 	@Override
@@ -63,7 +58,7 @@ public class SetupState extends CoreGameState {
 	}
 
 	@Override
-	public void parseButton(int key, char c) {
+	public void parseButton(int key, char c, Point mousePosition) {
 
 		Country highlighted = getHighlightedCountry();
 
@@ -96,6 +91,8 @@ public class SetupState extends CoreGameState {
 
 			}
 		}
+
+		super.parseButton(key, c, mousePosition);
 
 	}
 

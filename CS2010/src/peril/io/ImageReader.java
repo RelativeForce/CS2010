@@ -4,7 +4,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
 import peril.board.Board;
-import peril.ui.visual.Region;
+import peril.ui.components.Region;
 
 /**
  * Reads an image using a specified file path.

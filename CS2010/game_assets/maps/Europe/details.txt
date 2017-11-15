@@ -28,7 +28,6 @@ Link,Great Britian,Germany
 Link,France,Germany
 Link,France,Spain
 Link,France,Italy
-Link,Germany,Russia
 Link,Germany,Italy
 Link,Germany,Sweden
 Link,Germany,Chump

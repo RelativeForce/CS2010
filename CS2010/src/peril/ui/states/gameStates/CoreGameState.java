@@ -21,8 +21,9 @@ import peril.Point;
 import peril.board.Army;
 import peril.board.Board;
 import peril.board.Country;
+import peril.ui.components.Region;
+import peril.ui.components.menus.PauseMenu;
 import peril.ui.states.InteractiveState;
-import peril.ui.visual.Region;
 
 /**
  * A {@link InteractiveState} which displays the {@link Board} from the
@@ -44,6 +45,11 @@ public abstract class CoreGameState extends InteractiveState {
 	private Map<Challenge, Delay> challenges;
 
 	/**
+	 * The {@link PauseMenu} for this {@link CoreGameState}.
+	 */
+	private PauseMenu pauseMenu;
+
+	/**
 	 * Constructs a new {@link CoreGameState}.
 	 * 
 	 * @param game
@@ -53,10 +59,11 @@ public abstract class CoreGameState extends InteractiveState {
 	 * @param id
 	 *            The id of this {@link CoreGameState}.
 	 */
-	protected CoreGameState(Game game, String stateName, int id) {
+	protected CoreGameState(Game game, String stateName, int id, PauseMenu pauseMenu) {
 		super(game, stateName, id);
 		this.highlightedCountry = null;
 		this.challenges = new IdentityHashMap<>();
+		this.pauseMenu = pauseMenu;
 	}
 
 	/**
@@ -106,20 +113,35 @@ public abstract class CoreGameState extends InteractiveState {
 			}
 		}
 
+		drawArmies(g);
+
 		// Draw all the clickable objects.
 		super.render(gc, sbg, g);
 
 		drawStateBox(g);
 
-		drawArmies(g);
-
 		drawChallenges(g, 130, 15);
+
+		pauseMenu.draw(g);
+
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		super.update(gc, sbg, delta);
 		elapseTime();
+	}
+
+	@Override
+	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		super.init(gc, sbg);
+		pauseMenu.init();
+	}
+
+	@Override
+	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		super.leave(container, game);
+		challenges.clear();
 	}
 
 	/**
@@ -166,7 +188,7 @@ public abstract class CoreGameState extends InteractiveState {
 	 * Processes a button click on a {@link CoreGameState}.
 	 */
 	@Override
-	public void parseButton(int key, char c) {
+	public void parseButton(int key, char c, Point mousePosition) {
 
 		// Movement increment
 		int increment = 50;
@@ -184,9 +206,27 @@ public abstract class CoreGameState extends InteractiveState {
 		case Input.KEY_RIGHT:
 			getGame().getBoard().move(new Point(-increment, 0));
 			break;
+		case Input.KEY_ENTER:
+			pauseMenu.visible = !pauseMenu.visible;
+			break;
 		default:
 			break;
 
+		}
+
+	}
+
+	@Override
+	public void parseClick(int button, Point click) {
+
+		// If the player hasn't clicked the pause menu
+		if (!clickPauseMenu(click)) {
+
+			// If the player hasn't clicked a UI Button in the state, they must've clicked
+			// board.
+			if (!super.clickedButton(click)) {
+				clickBoard(click);
+			}
 		}
 
 	}
@@ -212,7 +252,7 @@ public abstract class CoreGameState extends InteractiveState {
 			throw new NullPointerException("Challenge cannot be null.");
 		}
 
-		challenges.put(challenge, new Delay(1000));
+		challenges.put(challenge, new Delay(600));
 	}
 
 	/**
@@ -284,6 +324,39 @@ public abstract class CoreGameState extends InteractiveState {
 
 	}
 
+	protected boolean clickPauseMenu(Point click) {
+		if (pauseMenu.visible) {
+			if (pauseMenu.isClicked(click)) {
+				pauseMenu.parseClick(click);
+				return true;
+			}
+			pauseMenu.visible = false;
+		}
+		return false;
+	}
+
+	/**
+	 * Retrieves the {@link Point} position that an {@link Army} will be displayed
+	 * at on the screen relative to the top left corner.
+	 * 
+	 * @param country
+	 * @return
+	 */
+	protected Point getArmyPosition(Country country) {
+
+		// Sets x and y as the central width and height of the current country.
+		int x = country.getPosition().x + country.getWidth() / 2;
+		int y = country.getPosition().y + country.getHeight() / 2;
+
+		Army army = country.getArmy();
+
+		// Move the (x,y) by the offset
+		x += army.getOffset().x;
+		y += army.getOffset().y;
+
+		return new Point(x, y);
+	}
+
 	/**
 	 * Causes the {@link Delay} to elapse in each value of
 	 * {@link CoreGameState#challenges}. If a {@link Delay} has elapsed its
@@ -321,16 +394,6 @@ public abstract class CoreGameState extends InteractiveState {
 		// Iterate across every country on the game board.
 		getGame().getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
 
-			// Sets x and y as the central width and height of the current country.
-			int x = country.getPosition().x + country.getWidth() / 2;
-			int y = country.getPosition().y + country.getHeight() / 2;
-
-			Army army = country.getArmy();
-
-			// Move the (x,y) by the offset
-			x += army.getOffset().x;
-			y += army.getOffset().y;
-
 			// Draw a background oval with the rulers colour. If no ruler found default to
 			// light grey.
 			if (country.getRuler() != null) {
@@ -339,14 +402,18 @@ public abstract class CoreGameState extends InteractiveState {
 				g.setColor(Color.lightGray);
 			}
 
-			int troopNumber = army.getSize();
+			// Holds the position that army will be drawn at
+			Point armyPosition = getArmyPosition(country);
+
+			// Holds the size of the current countries army
+			int troopNumber = country.getArmy().getSize();
 
 			if (troopNumber > 99) {
-				g.fillOval(x - 9, y - 3, 45, 25);
+				g.fillOval(armyPosition.x - 9, armyPosition.y - 3, 45, 25);
 			} else if (troopNumber > 9) {
-				g.fillOval(x - 6, y - 3, 30, 25);
+				g.fillOval(armyPosition.x - 6, armyPosition.y - 3, 30, 25);
 			} else {
-				g.fillOval(x - 3, y - 3, 15, 25);
+				g.fillOval(armyPosition.x - 3, armyPosition.y - 3, 15, 25);
 			}
 
 			g.setColor(Color.black);
@@ -354,7 +421,7 @@ public abstract class CoreGameState extends InteractiveState {
 			// Draw a string representing the number of troops
 			// within that army at (x,y).
 
-			g.drawString(Integer.toString(troopNumber), x, y);
+			g.drawString(Integer.toString(troopNumber), armyPosition.x, armyPosition.y);
 
 		}));
 	}

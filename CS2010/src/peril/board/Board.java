@@ -4,7 +4,7 @@ import java.util.List;
 
 import peril.Game;
 import peril.Point;
-import peril.ui.visual.Viewable;
+import peril.ui.components.Viewable;
 
 /**
  * Encapsulates the behaviour of the the game board in the {@link Game}. This
@@ -176,12 +176,25 @@ public final class Board extends Viewable {
 
 	/**
 	 * Retrieves the number of {@link Country}s on this {@link Board}.
+	 * 
 	 * @return <code>int</code>
 	 */
 	public int getNumberOfCountries() {
 		return numberOfCountries;
 	}
-	
+
+	/**
+	 * Clear all the {@link Continent}s from the {@link Game} thus deleting all the
+	 * {@link Country}s and reseting the {@link Board} to its initial state.
+	 */
+	public void reset() {
+		
+		if(continents != null) {
+			continents.clear();
+		}
+		numberOfCountries = 0;
+	}
+
 	/**
 	 * Retrieves the a valid single dimension vector based on whether the specifed
 	 * vector will hit a boundary or not. If the specified vector will move the
@@ -228,4 +241,5 @@ public final class Board extends Viewable {
 			throw new IllegalStateException("There are no Continents on this board");
 		}
 	}
+
 }

@@ -15,12 +15,16 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.board.Army;
 import peril.board.Board;
+import peril.board.Continent;
 import peril.board.Country;
 import peril.io.AssetReader;
 import peril.io.ChallengeReader;
 import peril.io.MapReader;
 import peril.io.MusicReader;
+import peril.ui.ButtonContainer;
 import peril.ui.UIEventHandler;
+import peril.ui.components.menus.PauseMenu;
+import peril.ui.components.menus.WarMenu;
 import peril.ui.states.InteractiveState;
 import peril.ui.states.gameStates.*;
 import peril.ui.states.gameStates.multiSelectState.CombatState;
@@ -49,7 +53,7 @@ public class Game extends StateBasedGame implements MusicListener {
 
 	/**
 	 * The state that displays combat to the user. This is heavily couples with
-	 * {@link CombatHandler}.
+	 * {@link WarMenu}.
 	 */
 	public final CombatState combat;
 
@@ -82,6 +86,11 @@ public class Game extends StateBasedGame implements MusicListener {
 	public final EndState end;
 
 	/**
+	 * The {@link PauseMenu} that will be used by all the {@link CoreGameState}s.
+	 */
+	public final PauseMenu pauseMenu;
+
+	/**
 	 * The {@link MusicReader} for this {@link Game}.
 	 */
 	public final MusicReader musicHelper;
@@ -93,9 +102,9 @@ public class Game extends StateBasedGame implements MusicListener {
 	private final UIEventHandler eventHandler;
 
 	/**
-	 * The {@link CombatHandler} that processes all of the game's combat.
+	 * The {@link WarMenu} that processes all of the game's combat.
 	 */
-	private final CombatHandler combatHandler;
+	private final WarMenu combatHandler;
 
 	/**
 	 * The instance of the {@link Board} used for this game.
@@ -111,11 +120,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * Holds all the {@link Player}s in this {@link Game}.
 	 */
 	private List<Player> players;
-
-	/**
-	 * Whether all the assets are loaded or not.
-	 */
-	private volatile boolean isLoaded;
 
 	/**
 	 * The {@link Player} who's turn it is.
@@ -166,35 +170,37 @@ public class Game extends StateBasedGame implements MusicListener {
 		// Assign the game to run.
 		this.endTurn = false;
 		this.run = true;
-		this.isLoaded = false;
 
 		// Construct the board.
 		this.board = new Board(this);
 
-		// Initialise the game states.
+		// Construct the container for the game as a Slick2D state based game. And parse
+		// the details of the map from the maps file.
+		try {
+			agc = new AppGameContainer(this);
+			agc.setDisplayMode(220, 180, false);
+		} catch (SlickException e) {
+			e.printStackTrace();
+		}
 
-		this.setup = new SetupState(this, 1);
-		this.reinforcement = new ReinforcementState(this, 2);
-		this.combat = new CombatState(this, 3);
-		this.movement = new MovementState(this, 4);
+		// Initialise games Combat Handler
+		this.combatHandler = new WarMenu(new Point(100, 100), this);
+
+		// Initialise the pause menu all the states will use
+		this.pauseMenu = new PauseMenu(new Point(100, 100), this);
+
+		// Initialise the game states.
+		this.setup = new SetupState(this, 1, pauseMenu);
+		this.reinforcement = new ReinforcementState(this, 2, pauseMenu);
+		this.combat = new CombatState(this, 3, pauseMenu, combatHandler);
+		this.movement = new MovementState(this, 4, pauseMenu);
 		this.end = new EndState(this, 5);
 
 		// Initialise the event handler.
 		this.eventHandler = new UIEventHandler(this);
 
-		// Initialise games combatHandler
-		this.combatHandler = new CombatHandler();
-
 		// Holds the directory this game is operating in.
 		String baseDirectory = new File(System.getProperty("user.dir")).getPath();
-
-		// Create the ui_assets file path
-		StringBuilder ui_assestsPath = new StringBuilder(baseDirectory);
-		ui_assestsPath.append(File.separatorChar);
-		ui_assestsPath.append("ui_assets");
-
-		this.assetReader = new AssetReader(new InteractiveState[] { combat, setup, reinforcement, movement, end },
-				ui_assestsPath.toString(), this);
 
 		// Create the map file path
 		StringBuilder game_assetsPath = new StringBuilder(baseDirectory);
@@ -214,16 +220,14 @@ public class Game extends StateBasedGame implements MusicListener {
 
 		this.mainMenu = new MainMenuState(this, 0, game_assetsPath.toString());
 
-		// Construct the container for the game as a Slick2D state based game. And parse
-		// the details of the map from the maps file.
-		try {
-			agc = new AppGameContainer(this);
-			agc.setDisplayMode(400, 250, false);
+		// Create the ui_assets file path
+		StringBuilder ui_assestsPath = new StringBuilder(baseDirectory);
+		ui_assestsPath.append(File.separatorChar);
+		ui_assestsPath.append("ui_assets");
 
-		} catch (SlickException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
+		this.assetReader = new AssetReader(
+				new ButtonContainer[] { pauseMenu, mainMenu, combat, setup, reinforcement, movement, end },
+				ui_assestsPath.toString(), this);
 
 		// Add the path to the map's folder
 		game_assetsPath.append(File.separatorChar);
@@ -271,21 +275,35 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * 
 	 * @throws SlickException
 	 */
-	public void loadAssets(String mapName, int width, int height) throws SlickException {
+	public void loadBoard(String mapName, int width, int height) throws SlickException {
 
-		// If the assets are not already loaded
-		if (!isLoaded) {
+		// Change the window to the specified size.
+		agc.setDisplayMode(width, height, false);
 
-			agc.setDisplayMode(width, height, false);
-			// Initialise the map reader and the players array.
-			this.mapReader = new MapReader(mapsDirectory + mapName, board);
+		int pauseMenuX = (width / 2) - (pauseMenu.getWidth() / 2);
+		int pauseMenuY = (height / 2) - (pauseMenu.getHeight() / 2);
 
-			mapReader.read();
-			assetReader.read();
-			challengeReader.read();
+		pauseMenu.setPosition(new Point(pauseMenuX, pauseMenuY));
 
-			isLoaded = true;
-		}
+		// Reset the board
+		board.reset();
+
+		// Initialise the map reader and the players array.
+		this.mapReader = new MapReader(mapsDirectory + mapName, board);
+
+		// Read the map from memory
+		mapReader.read();
+
+		// Read the challenges
+		challengeReader.read();
+
+	}
+
+	/**
+	 * Loads all the images is into the {@link Game} {@link InteractiveState}s.
+	 */
+	public void loadAssets() {
+		assetReader.read();
 	}
 
 	/**
@@ -298,6 +316,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		// Reset the all players number of countries to zero.
 		for (Player player : players) {
 			player.setCountriesRuled(0);
+			player.setTotalArmySize(0);
 		}
 
 		// Iterate through each country on the board.
@@ -330,15 +349,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public int getRoundNumber() {
 		return currentRound;
-	}
-
-	/**
-	 * Retrieves the combat handler.
-	 * 
-	 * @return <code>CombatHandler</code>
-	 */
-	public CombatHandler getCombatHandler() {
-		return combatHandler;
 	}
 
 	/**
@@ -522,14 +532,18 @@ public class Game extends StateBasedGame implements MusicListener {
 		return false;
 	}
 
+	/**
+	 * Checks all the {@link Continent}s on the {@link Board} to see if they are
+	 * ruled. This is o(n^2) complexity
+	 */
 	public void checkContinentRulership() {
 
 		players.forEach(player -> player.setContinentsRuled(0));
 
 		board.getContinents().forEach(continent -> {
-			
+
 			continent.isRuled();
-			
+
 			if (continent.getRuler() != null) {
 				continent.getRuler().setContinentsRuled(continent.getRuler().getCountriesRuled() + 1);
 			}
@@ -571,6 +585,20 @@ public class Game extends StateBasedGame implements MusicListener {
 	}
 
 	/**
+	 * Set the music on or off based on the specified boolean value.
+	 * 
+	 * @param state
+	 *            <code>boolean</code> on or off
+	 */
+	public void toggleMusic(boolean state) {
+		if (state) {
+			getContainer().setMusicVolume(1f);
+		} else {
+			getContainer().setMusicVolume(0f);
+		}
+	}
+
+	/**
 	 * Assigns a {@link Player} ruler to a {@link Country} using a parameter
 	 * {@link Random}.
 	 * 
@@ -581,6 +609,7 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	private void assignPlayer(Country country, Random rand) {
 
+		// Holds whether the country has assigned a player ruler.
 		boolean set = false;
 
 		while (!set) {
@@ -588,9 +617,32 @@ public class Game extends StateBasedGame implements MusicListener {
 			// Get the player at the random index.
 			Player player = players.get(rand.nextInt(players.size()));
 
+			// Holds the number of countries on the board.
+			int numberOfCountries = board.getNumberOfCountries();
+
+			// Holds the number of players in the game.
+			int numberOfPlayers = players.size();
+
+			// Holds the maximum countries this player can own so that all the players nd up
+			// with the same number of countries.
+			int maxCountries;
+
+			/*
+			 * If the number of countries on this board can be equally divided between the
+			 * players then set the max number of countries of that a player can own to the
+			 * equal amount for each player. Otherwise set the max number of countries of
+			 * that a player can own to one above the normal proportion so the to account
+			 * for the left over countries.
+			 */
+			if (numberOfCountries % numberOfPlayers == 0) {
+				maxCountries = numberOfCountries / numberOfPlayers;
+			} else {
+				maxCountries = numberOfCountries / numberOfPlayers + 1;
+			}
+
 			// If the player owns more that their fair share of the maps countries assign
 			// the player again.
-			if (player.getCountriesRuled() <= (board.getNumberOfCountries() / players.size())) {
+			if (player.getCountriesRuled() < maxCountries) {
 				set = true;
 				country.setRuler(player);
 				player.setCountriesRuled(player.getCountriesRuled() + 1);

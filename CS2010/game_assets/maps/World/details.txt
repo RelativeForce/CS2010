@@ -1,33 +1,137 @@
-// type, name, rgb, x offset, y offset
-Country,Alaska,000000051,0,0
-Country,Canada,000000102,0,0
-Country,USA,000000153,0,0
-Country,Gulf,000000204,0,0
-Country,Latin America,000000255,0,0
-Country,Central South America,000051000,0,0
-Country,Southern South America,000102000,0,0
-Country,Arctic,000153000,0,0
-Country,Western Europe,000204000,0,0
-Country,Central Europe,000255000,0,0
-Country,Eastern Europe,051000000,0,0
-Country,Northern Europe,102000000,0,0
-Country,Russia,153000000,0,0
-Country,Middle East,204000000,0,0
-Country,Arabia,255000000,0,0
-Country,Central Asia,000051051,0,0
-Country,China and Japan,000051102,0,0
-Country,Southern Asia,000051153,0,0
-Country,Australia,000051204,0,0
-Country,Western Africa,000051255,0,0
-Country,Desert Africa,000102051,0,0
-Country,Central Africa,000102102,0,0
-Country,Southern Africa,000102153,0,0
-Continent,North America,Hurricane,Alaska-Canada-USA-Gulf-Arctic
-Continent,South America,Tornado,Latin America-Central South America-Southern South America
-Continent,Europe,Hurricane,Western Europe-Central Europe-Eastern Europe-Northern Europe
-Continent,Asia,Tornado,Russia-Central Asia-China and Japan-Arabia
-Continent,Austrilasia,Hurricane,Southern Asia-Australia
-Continent,Africa,Tornado,Middle East-Western Africa-Desert Africa-Central Africa-Southern Africa
-Link,Great Britian,France
-Link,France,Germany
-Link,Germany,Russia
+// Country, name, rgb, x offset, y offset
+Country,Alaska,000000050,0,0
+Country,NorthWestTerritory,000000100,0,0
+Country,Greenland,000000150,0,0
+Country,Alberta,000000200,0,0
+Country,Ontario,000000250,0,0
+Country,Quebec,000050000,0,0
+Country,WestUS,000050050,0,0
+Country,EastUS,000050100,0,0
+Country,CentralAmerica,000050150,0,0
+//
+Country,Venezuela,000050200,0,0
+Country,Brazil,000050250,0,0
+Country,Peru,000100000,0,0
+Country,Argentina,000100050,0,0
+//
+Country,Iceland,000100100,0,0
+Country,GreatBritain,000100150,0,0
+Country,Scandinavia,000100200,0,0
+Country,Ukraine,000100250,0,0
+Country,NorthEurope,000150000,0,0
+Country,WestEurope,000150050,0,0
+Country,SouthEurope,000150100,0,0
+//
+Country,NorthAfrica,000150150,0,0
+Country,Egypt,000150200,0,0
+Country,EastAfrica,000150250,0,0
+Country,Congo,000200000,0,0
+Country,SouthAfrica,000200050,0,0
+Country,Madagascar,000200100,0,0
+//
+Country,Ural,000200150,0,0
+Country,Siberia,000200200,0,0
+Country,Yakutsk,000200250,0,0
+Country,Kamchatka,000250000,0,0
+Country,Irkutsk,000250050,0,0
+Country,Mongolia,000250100,0,0
+Country,Japan,000250150,0,0
+Country,Afghanistan,000250200,0,0
+Country,China,000250250,0,0
+Country,MiddleEast,050000000,0,0
+Country,India,050000050,0,0
+Country,Siam,050000100,0,0
+//
+Country,Indonesia,050000150,0,0
+Country,NewGuinea,050000200,0,0
+Country,WestAustralia,050000250,0,0
+Country,EastAustralia,050050000,0,0
+
+// Continent, name, hazard, countries
+Continent,NorthAmerica,Tsunami,Alaska-NorthWestTerritory-Greenland-Alberta-Ontario-Quebec-WestUS-EastUS-CentralAmerica
+Continent,SouthAmerica,Tsunami,Venezuela-Brazil-Peru-Argentina
+Continent,Europe,Tsunami,Iceland-GreatBritain-Scandinavia-Ukraine-NorthEurope-WestEurope-SouthEurope
+Continent,Africa,Tsunami,NorthAfrica-Egypt-EastAfrica-Congo-SouthAfrica-Madagascar
+Continent,Asia,Tsunami,Ural-Siberia-Yakutsk-Kamchatka-Irkutsk-Mongolia-Japan-Afghanistan-China-MiddleEast-India-Siam
+Continent,Australia,Tsunami,Indonesia-NewGuinea-WestAustralia-EastAustralia
+
+// Link, country1, country2
+Link,Alaska,Kamchatka
+Link,Alaska,NorthWestTerritory
+Link,Alaska,Alberta
+Link,NorthWestTerritory,Alberta
+Link,NorthWestTerritory,Greenland
+Link,NorthWestTerritory,Ontario
+Link,Greenland,Ontario
+Link,Greenland,Iceland
+Link,Greenland,Quebec
+Link,Alberta,Ontario
+Link,Alberta,WestUS
+Link,Ontario,Quebec
+Link,Ontario,EastUS
+Link,Quebec,EastUS
+Link,WestUS,EastUS
+Link,WestUS,CentralAmerica
+Link,EastUS,CentralAmerica
+Link,CentralAmerica,Venezuela
+Link,Venezuela,Peru
+Link,Venezuela,Brazil
+Link,Peru,Argentina
+Link,Peru,Brazil
+Link,Argentina,Brazil
+Link,Brazil,NorthAmerica
+Link,NorthAfrica,WestEurope
+Link,NorthAfrica,SouthEurope
+Link,NorthAfrica,Egypt
+Link,NorthAfrica,EastAfrica
+Link,NorthAfrica,Congo
+Link,Congo,SouthAfrica
+Link,Congo,EastAfrica
+Link,Madagascar,SouthAfrica
+Link,Madagascar,EastAfrica
+Link,EastAfrica,MiddleEast
+Link,EastAfrica,Egypt
+Link,Egypt,MiddleEast
+Link,Egypt,SouthEurope
+Link,WestEurope,GreatBritain
+Link,WestEurope,SouthEurope
+Link,WestEurope,NorthEurope
+Link,GreatBritain,Iceland
+Link,GreatBritain,Scandinavia
+Link,GreatBritain,NorthEurope
+Link,Iceland,Scandinavia
+Link,Scandinavia,Ukraine
+Link,Scandinavia,NorthEurope
+Link,NorthEurope,SouthEurope
+Link,NorthEurope,Ukraine
+Link,SouthEurope,Ukraine
+Link,SouthEurope,MiddleEast
+Link,Ukraine,MiddleEast
+Link,Ukraine,Afghanistan
+Link,Ukraine,Ural
+Link,Ural,Siberia
+Link,Ural,China
+Link,Ural,Afghanistan
+Link,Siberia,Yakutsk
+Link,Siberia,Irkutsk
+Link,Siberia,Mongolia
+Link,Siberia,China
+Link,Yakutsk,Kamchatka
+Link,Yakutsk,Irkutsk
+Link,Kamchatka,Japan
+Link,Japan,Mongolia
+Link,Mongolia,China
+Link,Irkutsk,Mongolia
+Link,Afghanistan,China
+Link,Afghanistan,India
+Link,Afghanistan,MiddleEast
+Link,MiddleEast,India
+Link,India,China
+Link,India,Siam
+Link,China,Siam
+Link,Siam,Indonesia
+Link,Indonesia,NewGuinea
+Link,Indonesia,WestAustralia
+Link,WestAustralia,NewGuinea
+Link,WestAustralia,EastAustralia
+Link,NewGuinea,EastAustralia

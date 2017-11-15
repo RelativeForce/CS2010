@@ -13,8 +13,9 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Point;
 import peril.ui.Button;
-import peril.ui.visual.Clickable;
-import peril.ui.visual.Viewable;
+import peril.ui.ButtonContainer;
+import peril.ui.components.Clickable;
+import peril.ui.components.Viewable;
 
 /**
  * 
@@ -24,7 +25,7 @@ import peril.ui.visual.Viewable;
  * @author Joshua_Eddy
  *
  */
-public abstract class InteractiveState extends BasicGameState {
+public abstract class InteractiveState extends BasicGameState implements ButtonContainer {
 
 	/**
 	 * Holds the name of a specific {@link InteractiveState}.
@@ -109,9 +110,17 @@ public abstract class InteractiveState extends BasicGameState {
 	}
 
 	/**
+	 * Returns the {@link String} name of this state.
+	 */
+	public String getName() {
+		return getStateName();
+	}
+	
+	/**
 	 * Returns a list of {@link Clickable} elements present in this state.
 	 * 
 	 */
+	@Override
 	public List<Button> getButtons() {
 		return buttons;
 	}
@@ -119,13 +128,12 @@ public abstract class InteractiveState extends BasicGameState {
 	/*
 	 * Adds a {@link Button} to the list of buttons in this state.
 	 * 
-	 * @param element The {@link Button} element to be added to the list.
-	 * 
 	 */
-	public void addButton(Button element) {
+	@Override
+	public void addButton(Button button) {
 		// Check whether the region is valid.
-		if (element.hasRegion()) {
-			buttons.add(element);
+		if (button.hasRegion()) {
+			buttons.add(button);
 		} else {
 			throw new IllegalArgumentException("Clickable elemnent must have a valid region.");
 		}
@@ -148,10 +156,11 @@ public abstract class InteractiveState extends BasicGameState {
 	 *            <code>int</code> key code
 	 * @param c
 	 *            <code>char</code> char on the button
-	 * 
-	 * @see org.newdawn.slick.Input
+	 * @param mousePosition
+	 *            The {@link Point} position of the mouse relative to the
+	 *            {@link GameContainer}.
 	 */
-	public abstract void parseButton(int key, char c);
+	public abstract void parseButton(int key, char c, Point mousePosition);
 
 	/**
 	 * Called when the state is entered, before slick2d's game loop commences.
@@ -246,10 +255,11 @@ public abstract class InteractiveState extends BasicGameState {
 	 *            {@link Point}
 	 * @return whether any {@link Button} was intersected by the {@link Point}.
 	 */
-	protected boolean clickButton(Point click) {
+	@Override
+	public boolean clickedButton(Point click) {
 
 		// Iterate through all the buttons in the current state.
-		for (Button button : game.getCurrentState().getButtons()) {
+		for (Button button : getButtons()) {
 
 			// If the click is in the current element
 			if (button.isClicked(click)) {

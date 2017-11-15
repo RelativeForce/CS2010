@@ -1,4 +1,4 @@
-package peril.ui.visual;
+package peril.ui.components;
 
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.Color;

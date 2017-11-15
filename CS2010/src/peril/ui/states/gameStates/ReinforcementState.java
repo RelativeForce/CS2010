@@ -8,8 +8,8 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Player;
-import peril.Point;
 import peril.board.Country;
+import peril.ui.components.menus.PauseMenu;
 
 /**
  * Encapsulates the behaviour of the Reinforcement {@link CoreGameState} where
@@ -19,7 +19,7 @@ import peril.board.Country;
  * @author Joseph_Rolli, Joshua_Eddy
  *
  */
-public class ReinforcementState extends CoreGameState {
+public final class ReinforcementState extends CoreGameState {
 
 	/**
 	 * The name of a specific {@link ReinforcementState}.
@@ -33,9 +33,11 @@ public class ReinforcementState extends CoreGameState {
 	 *            The {@link Game} this {@link ReinforcementState} is a part of.
 	 * @param id
 	 *            The ID of this {@link ReinforcementState}
+	 * @param pauseMenu
+	 *            The {@link PauseMenu} for this {@link ReinforcementState}.
 	 */
-	public ReinforcementState(Game game, int id) {
-		super(game, STATE_NAME, id);
+	public ReinforcementState(Game game, int id, PauseMenu pauseMenu) {
+		super(game, STATE_NAME, id, pauseMenu);
 	}
 
 	@Override
@@ -74,20 +76,5 @@ public class ReinforcementState extends CoreGameState {
 
 		// Draw player name
 		g.drawString("Units: " + getGame().getCurrentPlayer().getDistributableArmySize(), 5, 35);
-	}
-
-	@Override
-	public void parseClick(int button, Point click) {
-
-		// If the states buttons were not clicked click the board.
-		if (!clickButton(click)) {
-			clickBoard(click);
-		}
-
-	}
-
-	@Override
-	public void parseButton(int key, char c) {
-
 	}
 }

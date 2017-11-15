@@ -1,6 +1,5 @@
 package peril.ui.states.gameStates.multiSelectState;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -8,8 +7,8 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Player;
-import peril.Point;
 import peril.board.Country;
+import peril.ui.components.menus.PauseMenu;
 import peril.ui.states.gameStates.CoreGameState;
 
 /**
@@ -20,7 +19,7 @@ import peril.ui.states.gameStates.CoreGameState;
  * @author Joshua_Eddy, Joseph_Rolli
  *
  */
-public class MovementState extends MultiSelectState {
+public final class MovementState extends MultiSelectState {
 
 	/**
 	 * The name of a specific {@link MovementState}.
@@ -34,10 +33,12 @@ public class MovementState extends MultiSelectState {
 	 *            The {@link Game} that houses this {@link MovementState}.
 	 * @param id
 	 *            The ID of this {@link MovementState}.
+	 * @param pauseMenu
+	 *            The {@link PauseMenu} for this {@link MovementState}.
 	 * 
 	 */
-	public MovementState(Game game, int id) {
-		super(game, STATE_NAME, id);
+	public MovementState(Game game, int id, PauseMenu pauseMenu) {
+		super(game, STATE_NAME, id, pauseMenu);
 	}
 
 	/**
@@ -62,7 +63,7 @@ public class MovementState extends MultiSelectState {
 
 		} else {
 			super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
-			super.setSecondaryCountry(null);
+			super.setSecondaryHighlightedCountry(null);
 			super.unhighlightCountry(super.getHighlightedCountry());
 			super.highlightCountry(country);
 		}
@@ -70,26 +71,7 @@ public class MovementState extends MultiSelectState {
 	}
 
 	/**
-	 * Parse a click at a {@link Point} on this {@link MovementState}.
-	 */
-	@Override
-	public void parseClick(int button, Point click) {
-		// If the states buttons were not clicked click the board.
-		if (!clickButton(click)) {
-			clickBoard(click);
-		}
-	}
-
-	/**
-	 * Parse a button press on this {@link MovementState}.
-	 */
-	@Override
-	public void parseButton(int key, char c) {
-		// DO NOTHING
-	}
-
-	/**
-	 * Render the {@link MovementState}. 
+	 * Render the {@link MovementState}.
 	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
@@ -130,13 +112,8 @@ public class MovementState extends MultiSelectState {
 			// valid target.
 			if (getHighlightedCountry().isNeighbour(country)) {
 
-				System.out.println("A valid target");
-
 				super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
-
-				country.setImage(country.getRegion().getPosition(), country.getRegion().convert(Color.yellow));
-
-				super.setSecondaryCountry(country);
+				super.setSecondaryHighlightedCountry(country);
 
 			} else {
 				// DO NOTHING

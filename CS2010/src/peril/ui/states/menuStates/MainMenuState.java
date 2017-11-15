@@ -15,10 +15,9 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.io.TextFileReader;
+import peril.ui.components.Font;
+import peril.ui.components.VisualList;
 import peril.ui.states.InteractiveState;
-import peril.ui.visual.Element;
-import peril.ui.visual.Font;
-import peril.ui.visual.VisualList;
 
 /**
  * Encapsulates the behaviour of the main menu.
@@ -83,8 +82,8 @@ public class MainMenuState extends InteractiveState {
 
 		super(game, STATE_NAME, id);
 		mapsFile = TextFileReader.scanFile(mapsFilePath, "maps.txt");
-		maps = new VisualList<>(15, 90, 90, 22, 2, 10);
-		players = new VisualList<>(200, 90, 20, 22, 3, 5);
+		maps = new VisualList<>(15, 90, 90, 22, 3, 10);
+		players = new VisualList<>(120, 90, 20, 22, 3, 5);
 		getMaps();
 		getPlayers();
 
@@ -97,7 +96,7 @@ public class MainMenuState extends InteractiveState {
 
 		super.render(gc, sbg, g);
 
-		textFont.draw(g, "Players: ", 200, 70);
+		textFont.draw(g, "Players: ", 120, 70);
 		textFont.draw(g, "Map: ", 15, 70);
 		headingFont.draw(g, "Peril", 10, 5);
 
@@ -107,7 +106,8 @@ public class MainMenuState extends InteractiveState {
 
 	@Override
 	public void parseClick(int button, Point click) {
-		if (!super.clickButton(click)) {
+
+		if (!super.clickedButton(click)) {
 			if (!maps.click(click)) {
 				players.click(click);
 			}
@@ -115,7 +115,7 @@ public class MainMenuState extends InteractiveState {
 	}
 
 	@Override
-	public void parseButton(int key, char c) {
+	public void parseButton(int key, char c, Point mousePosition) {
 
 		if (key == Input.KEY_ENTER) {
 			// Attempt to load the map
@@ -124,11 +124,25 @@ public class MainMenuState extends InteractiveState {
 			} catch (SlickException e) {
 
 			}
+		} else if (key == Input.KEY_UP) {
+			if (maps.isClicked(mousePosition)) {
+				maps.up();
+			} else if (players.isClicked(mousePosition)) {
+				players.up();
+			}
+		} else if (key == Input.KEY_DOWN) {
+			if (maps.isClicked(mousePosition)) {
+				maps.down();
+			} else if (players.isClicked(mousePosition)) {
+				players.down();
+			}
 		}
 	}
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+
+		getGame().loadAssets();
 
 		// Initialise the fonts;
 		mapFont = new Font("Arial", Color.green, 20);
@@ -136,12 +150,12 @@ public class MainMenuState extends InteractiveState {
 		textFont = new Font("Arial", Color.blue, 15);
 
 		// Initialise the maps list and all its elements
-		maps.setFont(mapFont);
 		maps.init();
+		maps.setFont(mapFont);
 
 		// Initialise the players list and all its elements
-		players.setFont(mapFont);
 		players.init();
+		players.setFont(mapFont);
 
 		// Start the music intro
 		getGame().musicHelper.read("HumanMusicIntro").play();
@@ -159,6 +173,33 @@ public class MainMenuState extends InteractiveState {
 	@Override
 	public Music getMusic() {
 		return background;
+	}
+
+	/**
+	 * Loads the {@link MainMenuState#mapFont} {@link VisualList#getSelected()} into
+	 * the {@link Game} and re-sizes the window of the {@link Game}.
+	 */
+	public void loadMap() throws SlickException {
+
+		Map map = maps.getSelected();
+		PlayerArray playersArray = players.getSelected();
+
+		// Check width
+		if (map.width <= 0) {
+			throw new IllegalArgumentException("Width must greater than zero.");
+		}
+
+		// Check height
+		if (map.height <= 0) {
+			throw new IllegalArgumentException("Height must be greater than zero.");
+		}
+
+		// Loads the game assets and move into the set up state
+		getGame().setPlayers(playersArray.players);
+		getGame().loadBoard(map.name, map.width, map.height);
+		getGame().autoDistributeCountries();
+		getGame().enterState(getGame().setup.getID());
+
 	}
 
 	/**
@@ -190,7 +231,7 @@ public class MainMenuState extends InteractiveState {
 					throw new IllegalArgumentException("Height must be an integer");
 				}
 
-				maps.add(new Element<Map>(mapDetails[0], new Map(mapDetails[0], width, height)));
+				maps.add(mapDetails[0], new Map(mapDetails[0], width, height));
 			}
 
 		}
@@ -201,42 +242,9 @@ public class MainMenuState extends InteractiveState {
 	 * The visual representation of the list of players on screen.
 	 */
 	private void getPlayers() {
-		players.add(new Element<PlayerArray>("2", new PlayerArray(2)));
-		players.add(new Element<PlayerArray>("3", new PlayerArray(3)));
-		players.add(new Element<PlayerArray>("4", new PlayerArray(4)));
-	}
-
-	/**
-	 * Loads the {@link MainMenuState#mapFont} {@link VisualList#getSelected()} into
-	 * the {@link Game} and re-sizes the window of the {@link Game}.
-	 */
-	private void loadMap() throws SlickException {
-
-		Element<Map> mapElement = maps.getSelected();
-		Element<PlayerArray> playersElement = players.getSelected();
-
-		if (mapElement != null && playersElement != null) {
-
-			Map map = mapElement.get();
-			PlayerArray playersArray = playersElement.get();
-
-			// Check width
-			if (map.width <= 0) {
-				throw new IllegalArgumentException("Width must greater than zero.");
-			}
-
-			// Check height
-			if (map.height <= 0) {
-				throw new IllegalArgumentException("Height must be greater than zero.");
-			}
-
-			// Loads the game assets and move into the set up state
-			getGame().setPlayers(playersArray.players);
-			getGame().loadAssets(map.name, map.width, map.height);
-			getGame().autoDistributeCountries();
-			getGame().enterState(getGame().setup.getID());
-		}
-
+		players.add("2", new PlayerArray(2));
+		players.add("3", new PlayerArray(3));
+		players.add("4", new PlayerArray(4));
 	}
 
 	/**
@@ -281,8 +289,7 @@ public class MainMenuState extends InteractiveState {
 	}
 
 	/**
-	 * Holds an array of {@link Player}s used as the payload for the
-	 * {@link Element}s in {@link MainMenuState#players}.
+	 * Holds an array of {@link Player}s in {@link MainMenuState#players}.
 	 * 
 	 * @author Joshua_Eddy
 	 *

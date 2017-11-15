@@ -1,4 +1,4 @@
-package peril.ui.visual;
+package peril.ui.components;
 
 import peril.Point;
 
@@ -18,6 +18,14 @@ public abstract class Clickable extends Viewable {
 	 */
 	private Region region;
 
+	public Clickable(Region region) {
+		if(region == null) {
+			throw new NullPointerException("Region cannot be null");
+		}
+		
+		this.region = region;
+	}
+	
 	/**
 	 * Whether or not a mouse click at a specified {@link Point} will be inside this
 	 * objects {@link Clickable#region}. If the {@link Region} is <code>null</code>

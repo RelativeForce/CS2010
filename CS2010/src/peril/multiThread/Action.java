@@ -2,19 +2,16 @@ package peril.multiThread;
 
 import java.util.function.Consumer;
 
-import peril.Game;
-
 /**
- * Encapsulates a task that is passed form the {@link Game} to the
- * background {@link Game} thread. This exists solely as a wrapper for a
- * task.
+ * Encapsulates a function and object pair that can be executed at a later time.
+ * This can be used as a for of pseudo functional programming architecture.
  * 
  * 
  * @author Joshua_Eddy
  *
  * @param <T>
  *            The type of element that the {@link Consumer} inside
- *            <code>this</code> action will perform its task on.
+ *            <code>this</code> {@link Action} will perform its task on.
  */
 public class Action<T> {
 

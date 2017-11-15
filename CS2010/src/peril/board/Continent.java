@@ -5,7 +5,8 @@ import java.util.List;
 
 import peril.Player;
 import peril.Point;
-import peril.ui.visual.Clickable;
+import peril.ui.components.Clickable;
+import peril.ui.components.Region;
 
 /**
  * Encapsulates the behaviour of a continent on the {@link Board}.
@@ -52,7 +53,8 @@ public final class Continent extends Clickable {
 	 * 
 	 * @param countries
 	 */
-	public Continent(EnvironmentalHazard hazard, String name) {
+	public Continent(EnvironmentalHazard hazard, String name, Region region) {
+		super(region);
 
 		this.countries = new LinkedList<Country>();
 		this.hazard = hazard;

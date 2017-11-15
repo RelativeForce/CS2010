@@ -1,8 +1,9 @@
-package peril.ui.visual;
+package peril.ui.components;
 
 import java.util.LinkedList;
 import java.util.List;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import peril.Point;
@@ -17,7 +18,7 @@ import peril.ui.states.InteractiveState;
  * @param <T>
  *            The type of the {@link Element#get()}
  */
-public class VisualList<T> {
+public class VisualList<T> extends Clickable {
 
 	/**
 	 * The <code>int</code> x coordinate of the {@link VisualList}.
@@ -54,12 +55,14 @@ public class VisualList<T> {
 	 * {@link List} of {@link Element}s that are displayed in this
 	 * {@link VisualList}.
 	 */
-	private List<Element<T>> elements;
+	private List<Element> elements;
 
 	/**
 	 * The {@link Element} that is currently selected in the {@link VisualList}.
 	 */
-	private Element<T> selected;
+	private Element selected;
+
+	private int topElementIndex;
 
 	/**
 	 * The number of pixels that the {@link Element}s will be displayed from the
@@ -86,7 +89,7 @@ public class VisualList<T> {
 	 *            from the edge of the left wall.
 	 */
 	public VisualList(int x, int y, int width, int height, int elementsInView, int padding) {
-
+		super(new Region(width, height * elementsInView, new Point(x, y)));
 		elements = new LinkedList<>();
 		selected = null;
 		this.x = x;
@@ -95,15 +98,24 @@ public class VisualList<T> {
 		this.height = height;
 		this.elementsInView = elementsInView;
 		this.padding = padding;
+		this.topElementIndex = 0;
 	}
 
 	/**
 	 * Add an {@link Element} to the {@link VisualList}.
 	 * 
-	 * @param element
+	 * @param payload
 	 *            {@link Element}
 	 */
-	public void add(Element<T> element) {
+	public void add(String text, T payload) {
+
+		Element element = new Element(text, payload, x, y + (elements.size() * height), width, height);
+
+		// If this is the first element the set it as the selected.
+		if (elements.isEmpty()) {
+			selected = element;
+		}
+
 		elements.add(element);
 	}
 
@@ -112,8 +124,8 @@ public class VisualList<T> {
 	 * 
 	 * @return {@link Element}
 	 */
-	public Element<T> getSelected() {
-		return selected;
+	public T getSelected() {
+		return selected.get();
 	}
 
 	/**
@@ -136,7 +148,7 @@ public class VisualList<T> {
 	public boolean click(Point click) {
 
 		// Iterate through all the elements in this list
-		for (Element<T> element : elements) {
+		for (Element element : elements) {
 
 			// If the current element is clicked selected and return true.
 			if (element.isClicked(click)) {
@@ -155,15 +167,10 @@ public class VisualList<T> {
 	 */
 	public void init() {
 
-		// Get the x and y of the list.
-		int y = this.y;
-		int x = this.x;
+		elements.forEach(element -> element.init());
 
-		// Assign all the elements to have a vertical list position.
-		for (Element<T> element : elements) {
-			element.init(x, y, width, height);
-			y += height;
-		}
+		// Set the default font
+		font = new Font("Arial", Color.black, 20);
 	}
 
 	/**
@@ -174,16 +181,39 @@ public class VisualList<T> {
 	 */
 	public void draw(Graphics g) {
 
+		Region r = getRegion();
+
+		g.setColor(Color.white);
 		// Draws the background menu box.
-		g.fillRect(x, y, width, (elementsInView * height));
+		g.fillRect(r.getPosition().x, r.getPosition().y, r.getWidth(), r.getHeight());
+
+		int x = this.x;
+		int y = this.y;
+
+		// Draw the map names in the game.
+		for (Element element : elements) {
+
+			int index = elements.indexOf(element);
+
+			if (index >= topElementIndex && index < topElementIndex + elementsInView) {
+
+				element.setPosition(new Point(x, y));
+				element.draw(g, font, padding);
+				y += height;
+			}
+		}
 
 		// Highlights the selected map
 		if (selected != null) {
-			g.drawImage(selected.getImage(), selected.getPosition().x, selected.getPosition().y);
+
+			int selectedIndex = elements.indexOf(selected);
+
+			if (selectedIndex >= topElementIndex && selectedIndex < topElementIndex + elementsInView) {
+				g.drawImage(selected.getImage(), selected.getPosition().x, selected.getPosition().y);
+			}
+
 		}
 
-		// Draw the map names in the game.
-		elements.forEach(element -> element.draw(g, font, padding));
 	}
 
 	/**
@@ -200,7 +230,12 @@ public class VisualList<T> {
 
 			// If the selected is not at the top of the list select the element above it.
 			if (index > 0) {
-				selected = elements.get(index - 1);
+				index--;
+				selected = elements.get(index);
+			}
+
+			if (index < topElementIndex) {
+				topElementIndex--;
 			}
 		}
 	}
@@ -219,8 +254,90 @@ public class VisualList<T> {
 
 			// If the selected is not at the bottom of the list select the element below it.
 			if (index < elements.size() - 1) {
-				selected = elements.get(index + 1);
+				index++;
+				selected = elements.get(index);
 			}
+
+			if (index >= topElementIndex + elementsInView) {
+				topElementIndex++;
+			}
+		}
+
+	}
+
+	/**
+	 * 
+	 * An element of the {@link VisualList} that can be displayed on screen using
+	 * {@link Element#draw(Graphics, Font)}.
+	 * 
+	 * @author Joshua_Eddy
+	 *
+	 */
+	private class Element extends Clickable {
+
+		/**
+		 * The {@link T} that will be returned if this {@link Element} is selected.
+		 */
+		private T payload;
+
+		/**
+		 * The text representation of the {@link Element}.
+		 */
+		private String text;
+
+		/**
+		 * Constructs a new {@link Element}.
+		 * 
+		 * @param payload
+		 *            The {@link T} that will be returned if this {@link Element} is
+		 *            selected.
+		 * @param text
+		 *            The text representation of the {@link Element}.
+		 */
+		public Element(String text, T payload, int x, int y, int width, int height) {
+			super(new Region(width, height, new Point(x, y)));
+			this.payload = payload;
+			this.text = text;
+		}
+
+		/**
+		 * Retrieves the {@link Element#payload}.
+		 * 
+		 * @return {@link T}
+		 */
+		public T get() {
+			return payload;
+		}
+
+		/**
+		 * Initialises the {@link Element}.
+		 * 
+		 * @param x
+		 *            <code>int</code> x coordinate of the {@link Element} on screen.
+		 * @param y
+		 *            <code>int</code> y coordinate of the {@link Element} on screen.
+		 * @param width
+		 *            <code>int</code> width of the {@link Element} on screen.
+		 * @param height
+		 *            <code>int</code> height of the {@link Element} on screen.
+		 */
+		public void init() {
+			setImage(getRegion().getPosition(), getRegion().convert(Color.yellow));
+		}
+
+		/**
+		 * Draws the name of the {@link Element} on screen.
+		 * 
+		 * @param g
+		 *            {@link Graphics}
+		 * @param font
+		 *            {@link Font}
+		 * @param padding
+		 *            The number of pixels to the left of this {@link Element}s
+		 *            {@link Point} position this will be displayed.
+		 */
+		public void draw(Graphics g, Font font, int padding) {
+			font.draw(g, text, getPosition().x + padding, getPosition().y);
 		}
 	}
 }

@@ -278,7 +278,12 @@ public class Game extends StateBasedGame implements MusicListener {
 	public void loadBoard(String mapName, int width, int height) throws SlickException {
 
 		// Change the window to the specified size.
-		agc.setDisplayMode(width, height, false);
+		if (width == agc.getScreenWidth() && height == agc.getScreenHeight()) {
+			agc.setDisplayMode(width, height, true);
+		} else {
+			
+			agc.setDisplayMode(width, height, false);
+		}
 
 		int pauseMenuX = (width / 2) - (pauseMenu.getWidth() / 2);
 		int pauseMenuY = (height / 2) - (pauseMenu.getHeight() / 2);

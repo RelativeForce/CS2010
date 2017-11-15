@@ -1,2 +1,3 @@
 Europe,620,496
 World,1600,1060
+Bad_World,1500,745

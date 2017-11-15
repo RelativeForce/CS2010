@@ -104,7 +104,7 @@ public class Game extends StateBasedGame implements MusicListener {
 	/**
 	 * The {@link WarMenu} that processes all of the game's combat.
 	 */
-	private final WarMenu combatHandler;
+	private final WarMenu warMenu;
 
 	/**
 	 * The instance of the {@link Board} used for this game.
@@ -184,7 +184,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		}
 
 		// Initialise games Combat Handler
-		this.combatHandler = new WarMenu(new Point(100, 100), this);
+		this.warMenu = new WarMenu(new Point(100, 100), this);
 
 		// Initialise the pause menu all the states will use
 		this.pauseMenu = new PauseMenu(new Point(100, 100), this);
@@ -192,7 +192,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		// Initialise the game states.
 		this.setup = new SetupState(this, 1, pauseMenu);
 		this.reinforcement = new ReinforcementState(this, 2, pauseMenu);
-		this.combat = new CombatState(this, 3, pauseMenu, combatHandler);
+		this.combat = new CombatState(this, 3, pauseMenu, warMenu);
 		this.movement = new MovementState(this, 4, pauseMenu);
 		this.end = new EndState(this, 5);
 
@@ -226,7 +226,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		ui_assestsPath.append("ui_assets");
 
 		this.assetReader = new AssetReader(
-				new ButtonContainer[] { pauseMenu, mainMenu, combat, setup, reinforcement, movement, end },
+				new ButtonContainer[] { pauseMenu, warMenu, mainMenu, combat, setup, reinforcement, movement, end },
 				ui_assestsPath.toString(), this);
 
 		// Add the path to the map's folder
@@ -281,7 +281,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		if (width == agc.getScreenWidth() && height == agc.getScreenHeight()) {
 			agc.setDisplayMode(width, height, true);
 		} else {
-			
+
 			agc.setDisplayMode(width, height, false);
 		}
 

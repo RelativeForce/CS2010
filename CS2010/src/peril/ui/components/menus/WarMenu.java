@@ -1,8 +1,6 @@
 package peril.ui.components.menus;
 
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 
 import org.newdawn.slick.Color;
@@ -13,7 +11,6 @@ import peril.Player;
 import peril.Point;
 import peril.board.Army;
 import peril.board.Country;
-import peril.ui.Button;
 import peril.ui.components.Font;
 import peril.ui.components.Region;
 import peril.ui.components.VisualList;
@@ -26,6 +23,8 @@ import peril.ui.components.VisualList;
  */
 public class WarMenu extends Menu {
 
+	private final static String NAME = "War Menu";
+	
 	/**
 	 * {@link Random} object for the random number generator
 	 * 
@@ -33,8 +32,6 @@ public class WarMenu extends Menu {
 	private Random random;
 
 	private VisualList<Integer> squadSizes;
-
-	private List<Button> buttons;
 
 	private Font textFont;
 
@@ -46,6 +43,7 @@ public class WarMenu extends Menu {
 	 */
 	public WarMenu(Point position, Game game) {
 		super("War", game, new Region(300, 300, position));
+
 		random = new Random();
 
 		squadSizes = new VisualList<>(position.x + 100, position.y + 10, 20, 20, 3, 5);
@@ -53,7 +51,6 @@ public class WarMenu extends Menu {
 		squadSizes.add("2", 2);
 		squadSizes.add("3", 3);
 
-		buttons = new LinkedList<>();
 		visible = false;
 	}
 
@@ -102,24 +99,22 @@ public class WarMenu extends Menu {
 			 */
 			if (attackerDiceRolls[i] > defenderDiceRolls[i]) {
 
+				// If the army of the defending country is of size on then this victory will
+				// conquer the country. Otherwise just kill one unit from the defending army.
 				if (defendingArmy.getSize() == 1) {
 					defending.setRuler(attacker);
 					attacker.setTotalArmySize(attacker.getTotalArmySize() + 1);
 				} else {
 					defendingArmy.setSize(defendingArmy.getSize() - 1);
 				}
+				
 				defender.setTotalArmySize(defender.getTotalArmySize() - 1);
 
-			} else {
-
-				if (attackingArmy.getSize() == 1) {
-					attacking.setRuler(defender);
-					defender.setTotalArmySize(defender.getTotalArmySize() + 1);
-				} else {
-					attackingArmy.setSize(attackingArmy.getSize() - 1);
-				}
+			}
+			// Attacker has lost the attack
+			else {
+				attackingArmy.setSize(attackingArmy.getSize() - 1);
 				attacker.setTotalArmySize(attacker.getTotalArmySize() - 1);
-
 			}
 
 		}
@@ -174,29 +169,8 @@ public class WarMenu extends Menu {
 	}
 
 	@Override
-	public void addButton(Button button) {
-		buttons.add(button);
-	}
-
-	@Override
-	public List<Button> getButtons() {
-		return buttons;
-	}
-
-	@Override
-	public boolean clickedButton(Point click) {
-		for (Button b : buttons) {
-			if (b.isClicked(click)) {
-				b.click();
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
 	public String getName() {
-		return "War";
+		return NAME;
 	}
 
 	@Override

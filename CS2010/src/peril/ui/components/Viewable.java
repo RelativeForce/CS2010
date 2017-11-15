@@ -5,23 +5,16 @@ import org.newdawn.slick.Image;
 import peril.Point;
 
 /**
- * Encapsulates the behaviour of an objects visual representation in the game.
- * VisualRepresentations:
- * <ul>
- * <li>Have and manage a 2D array of RGB values representing pixels.</li>
- * <li>Have a position.</li>
- * <li>Can be an overlay.</li>
- * <li>Can be displayed on-screen</li>
- * </ul>
+ * Encapsulates the behaviour of an {@link Image} in the game.
  * 
  * @author Joshua_Eddy, Joseph_Rolli
  * 
  *
  */
-public abstract class Viewable {
+public class Viewable {
 
 	/**
-	 * The image that represents this {@link Viewable} on the {@link UserInterface}.
+	 * The image that represents this {@link Viewable} on the screen.
 	 */
 	private Image image;
 
@@ -36,6 +29,19 @@ public abstract class Viewable {
 	public Viewable() {
 		this.image = null;
 		this.position = new Point(0, 0);
+	}
+
+	/**
+	 * Constructs a new {@link Viewable}.
+	 * 
+	 * @param image
+	 *            The image that represents this {@link Viewable} on the screen.
+	 * @param position
+	 *            The {@link Point} position of the {@link Viewable}.
+	 */
+	public Viewable(Image image, Point position) {
+		this.image = image;
+		this.position = position;
 	}
 
 	/**

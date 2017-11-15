@@ -19,13 +19,13 @@ import peril.board.Continent;
 import peril.board.Country;
 import peril.io.AssetReader;
 import peril.io.ChallengeReader;
-import peril.io.MapReader;
 import peril.io.MusicReader;
-import peril.ui.ButtonContainer;
+import peril.ui.Container;
 import peril.ui.UIEventHandler;
 import peril.ui.components.menus.PauseMenu;
 import peril.ui.components.menus.WarMenu;
 import peril.ui.states.InteractiveState;
+import peril.ui.states.LoadingScreen;
 import peril.ui.states.gameStates.*;
 import peril.ui.states.gameStates.multiSelectState.CombatState;
 import peril.ui.states.gameStates.multiSelectState.MovementState;
@@ -132,11 +132,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	private List<Challenge> challenges;
 
 	/**
-	 * The {@link MapReader} that reads the {@link Board} from external memory.
-	 */
-	private MapReader mapReader;
-
-	/**
 	 * The {@link AppGameContainer} that contains this {@link Game}.
 	 */
 	private AppGameContainer agc;
@@ -145,17 +140,19 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * The {@link AssetReader} that loads all the {@link CoreGameState} states
 	 * buttons into the game from memory.
 	 */
-	private AssetReader assetReader;
+	public final AssetReader assetReader;
 
 	/**
 	 * {@link ChallengeReader} that loads the {@link Challenge}s from memory.
 	 */
-	private ChallengeReader challengeReader;
+	public final ChallengeReader challengeReader;
 
 	/**
 	 * Holds the path to the directory containing the maps file.
 	 */
-	private String mapsDirectory;
+	public final String mapsDirectory;
+
+	public LoadingScreen loadingScreen;
 
 	/**
 	 * Constructs a new {@link Game}.
@@ -188,6 +185,8 @@ public class Game extends StateBasedGame implements MusicListener {
 
 		// Initialise the pause menu all the states will use
 		this.pauseMenu = new PauseMenu(new Point(100, 100), this);
+
+		this.loadingScreen = new LoadingScreen(this, 6);
 
 		// Initialise the game states.
 		this.setup = new SetupState(this, 1, pauseMenu);
@@ -225,9 +224,8 @@ public class Game extends StateBasedGame implements MusicListener {
 		ui_assestsPath.append(File.separatorChar);
 		ui_assestsPath.append("ui_assets");
 
-		this.assetReader = new AssetReader(
-				new ButtonContainer[] { pauseMenu, warMenu, mainMenu, combat, setup, reinforcement, movement, end },
-				ui_assestsPath.toString(), this);
+		this.assetReader = new AssetReader(new Container[] { pauseMenu, loadingScreen, warMenu, mainMenu, combat, setup,
+				reinforcement, movement, end }, ui_assestsPath.toString(), this);
 
 		// Add the path to the map's folder
 		game_assetsPath.append(File.separatorChar);
@@ -253,6 +251,8 @@ public class Game extends StateBasedGame implements MusicListener {
 
 		// Add starting state to the game container.
 		super.addState(mainMenu);
+		
+		super.addState(loadingScreen);
 
 		// Add all other states to game container.
 		super.addState(setup);
@@ -270,12 +270,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		container.setVSync(true);
 	}
 
-	/**
-	 * Starts the UI and reads the Board.
-	 * 
-	 * @throws SlickException
-	 */
-	public void loadBoard(String mapName, int width, int height) throws SlickException {
+	public void reSize(int width, int height) throws SlickException {
 
 		// Change the window to the specified size.
 		if (width == agc.getScreenWidth() && height == agc.getScreenHeight()) {
@@ -293,22 +288,6 @@ public class Game extends StateBasedGame implements MusicListener {
 		// Reset the board
 		board.reset();
 
-		// Initialise the map reader and the players array.
-		this.mapReader = new MapReader(mapsDirectory + mapName, board);
-
-		// Read the map from memory
-		mapReader.read();
-
-		// Read the challenges
-		challengeReader.read();
-
-	}
-
-	/**
-	 * Loads all the images is into the {@link Game} {@link InteractiveState}s.
-	 */
-	public void loadAssets() {
-		assetReader.read();
 	}
 
 	/**

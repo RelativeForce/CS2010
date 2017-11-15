@@ -8,25 +8,28 @@ import org.newdawn.slick.Graphics;
 import peril.Game;
 import peril.Point;
 import peril.ui.Button;
-import peril.ui.ButtonContainer;
+import peril.ui.Container;
 import peril.ui.components.Clickable;
 import peril.ui.components.Region;
+import peril.ui.components.Viewable;
 import peril.ui.states.InteractiveState;
 
 /**
  * Encapsulates the behaviour of a menu that can be displayed in a
- * {@link InteractiveState}. This also implements {@link ButtonContainer} and
- * extends {@link Clickable}.
+ * {@link InteractiveState}. This also implements {@link Container} and extends
+ * {@link Clickable}.
  * 
  * @author Joshua_Eddy, Ezekiel_Trinidad
  *
  */
-public abstract class Menu extends Clickable implements ButtonContainer {
+public abstract class Menu extends Clickable implements Container {
 
 	/**
 	 * A list of {@link Button}s on the {@link Menu}.
 	 */
 	private List<Button> buttons;
+
+	private List<Viewable> images;
 
 	/**
 	 * 
@@ -40,6 +43,7 @@ public abstract class Menu extends Clickable implements ButtonContainer {
 	public Menu(String name, Game game, Region region) {
 		super(region);
 		this.buttons = new LinkedList<>();
+		this.images = new LinkedList<>();
 		this.name = name;
 		this.game = game;
 		this.visible = false;
@@ -56,7 +60,9 @@ public abstract class Menu extends Clickable implements ButtonContainer {
 	public void draw(Graphics g) {
 
 		g.fillRect(getPosition().x, getPosition().y, getWidth(), getHeight());
+		images.forEach(image->g.drawImage(image.getImage(), image.getPosition().x, image.getPosition().y));
 		buttons.forEach(button -> g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y));
+		
 	}
 
 	@Override
@@ -67,7 +73,7 @@ public abstract class Menu extends Clickable implements ButtonContainer {
 		Point menuPosition = this.getPosition();
 
 		button.setPosition(new Point(current.x + menuPosition.x, current.y + menuPosition.y));
-		
+
 		buttons.add(button);
 	}
 
@@ -81,6 +87,8 @@ public abstract class Menu extends Clickable implements ButtonContainer {
 		moveComponents(vector);
 
 		moveButtons(vector);
+		
+		moveImages(vector);
 
 		super.setPosition(position);
 
@@ -89,8 +97,8 @@ public abstract class Menu extends Clickable implements ButtonContainer {
 	public abstract void moveComponents(Point vector);
 
 	@Override
-	public List<Button> getButtons() {
-		return buttons;
+	public void addImage(Viewable image) {
+		images.add(image);
 	}
 
 	@Override
@@ -108,6 +116,11 @@ public abstract class Menu extends Clickable implements ButtonContainer {
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	private void moveImages(Point vector) {
+		images.forEach(image -> image
+				.setPosition(new Point(image.getPosition().x + vector.x, image.getPosition().y + vector.y)));
 	}
 
 	private void moveButtons(Point vector) {

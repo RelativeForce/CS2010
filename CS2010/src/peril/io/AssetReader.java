@@ -8,7 +8,7 @@ import peril.Game;
 import peril.Point;
 import peril.multiThread.Action;
 import peril.ui.Button;
-import peril.ui.ButtonContainer;
+import peril.ui.Container;
 import peril.ui.components.Clickable;
 import peril.ui.components.Viewable;
 import peril.ui.states.InteractiveState;
@@ -20,18 +20,22 @@ import peril.ui.states.InteractiveState;
  * @author Joshua_Eddy
  *
  */
-public class AssetReader {
+public class AssetReader implements FileReader {
 
 	/**
 	 * The {@link CoreGameState}s that will be populated when
 	 * {@link AssetReader#read()} is performed.
 	 */
-	private ButtonContainer[] containers;
+	private Container[] containers;
 
 	/**
 	 * File path of the asset details file.
 	 */
 	private String directoryPath;
+
+	private String[] lines;
+
+	public int index;
 
 	private FunctionHandler functionHandler;
 
@@ -44,7 +48,7 @@ public class AssetReader {
 	 * @param directoryPath
 	 *            File path of the asset details file.
 	 */
-	public AssetReader(ButtonContainer[] containers, String directoryPath, Game game) {
+	public AssetReader(Container[] containers, String directoryPath, Game game) {
 
 		// Check params
 		if (directoryPath.isEmpty()) {
@@ -54,24 +58,11 @@ public class AssetReader {
 		} else if (game == null) {
 			throw new NullPointerException("Game cannot be null.");
 		}
-
+		this.lines = TextFileReader.scanFile(directoryPath, "assets.txt");
+		this.index = 0;
 		this.functionHandler = new FunctionHandler(game);
 		this.directoryPath = directoryPath;
 		this.containers = containers;
-	}
-
-	/**
-	 * Populates the {@link CoreGameState}s stored in {@link AssetReader#containers}
-	 * will {@link Viewable} and {@link Clickable} from the details file.
-	 * 
-	 * @see TextFileReader
-	 */
-	public void read() {
-
-		// Iterate through all the lines in the assets details file.
-		for (String line : TextFileReader.scanFile(directoryPath, "assets.txt")) {
-			parseLine(line);
-		}
 	}
 
 	/**
@@ -80,18 +71,78 @@ public class AssetReader {
 	 * @param line
 	 *            Line of the assets file to be parsed.
 	 */
-	private void parseLine(String line) {
+	@Override
+	public void parseLine() {
 
-		String[] details = line.split(",");
+		if (index != lines.length) {
 
-		switch (details[0]) {
-		case "button":
-			parseButton(details);
-			break;
-		default:
-			// Invalid line - do nothing
-			break;
+			String[] details = lines[index].split(",");
+
+			switch (details[0]) {
+			case "button":
+				parseButton(details);
+				break;
+			case "image":
+				parseImage(details);
+			default:
+				// Invalid line - do nothing
+				break;
+			}
 		}
+
+		index++;
+
+	}
+
+	@Override
+	public int getIndex() {
+		return index;
+	}
+
+	public boolean isFinished() {
+		return index == lines.length;
+	}
+
+	@Override
+	public int getLength() {
+		return lines.length;
+	}
+
+	private void parseImage(String[] details) {
+
+		int IMAGE_LENGTH = 7;
+
+		// Check there is the correct number of details
+		if (details.length != IMAGE_LENGTH) {
+			throw new IllegalArgumentException("Line " + index
+					+ " does not contain the correct number of elements, there should be " + IMAGE_LENGTH + "");
+		}
+
+		int x;
+		int y;
+
+		Image asset = parseAsset(details[2], details[3], details[4]);
+
+		// Get the state by name
+		Container container = getContainerByName(details[1]);
+
+		// Parse x coordinate.
+		try {
+			x = Integer.parseInt(details[5]);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(details[5] + " is not a valid x coordinate");
+		}
+
+		// Parse y coordinate
+		try {
+			y = Integer.parseInt(details[6]);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(details[6] + " is not a valid y coordinate");
+		}
+
+		Point position = new Point(x, y);
+
+		container.addImage(new Viewable(asset, position));
 
 	}
 
@@ -106,19 +157,16 @@ public class AssetReader {
 
 		// Check there is the corrent number of details
 		if (details.length != BUTTON_LENGTH) {
-			throw new IllegalArgumentException(
-					"The line does not contain the correct number of elements, there should be " + BUTTON_LENGTH + "");
+			throw new IllegalArgumentException("Line " + index
+					+ " does not contain the correct number of elements, there should be " + BUTTON_LENGTH + "");
 		}
 
 		int functionCode;
-		Image asset;
-		int width;
-		int height;
 		int x;
 		int y;
 
 		// Get the state by name
-		ButtonContainer container = getContainerByName(details[1]);
+		Container container = getContainerByName(details[1]);
 
 		// Parse the function code
 		try {
@@ -129,39 +177,7 @@ public class AssetReader {
 
 		Action<?> action = functionHandler.get(functionCode);
 
-		// Get the asset image
-		try {
-			asset = ImageReader.getImage(directoryPath + File.separatorChar + details[3]);
-		} catch (Exception e) {
-			throw new IllegalArgumentException(details[3] + " is not a valid name");
-		}
-
-		// Parse the desired width of the asset
-		try {
-			width = Integer.parseInt(details[4]);
-		} catch (Exception e) {
-			throw new IllegalArgumentException(details[4] + " is not a valid width");
-		}
-
-		// Check width
-		if (width <= 0) {
-			throw new IllegalArgumentException("Width cannot be <= zero");
-		}
-
-		// Parse the desired height of the asset
-		try {
-			height = Integer.parseInt(details[5]);
-		} catch (Exception e) {
-			throw new IllegalArgumentException(details[5] + " is not a valid height");
-		}
-
-		// Check height
-		if (height <= 0) {
-			throw new IllegalArgumentException("Height cannot be <= zero");
-		}
-
-		// Scale the assets to its desired dimensions.
-		asset = asset.getScaledCopy(width, height);
+		Image asset = parseAsset(details[3], details[4], details[5]);
 
 		// Parse x coordinate.
 		try {
@@ -187,6 +203,78 @@ public class AssetReader {
 
 	}
 
+	private Image parseAsset(String fileName, String widthStr, String heightStr) {
+
+		Image asset;
+		int width;
+		int height;
+
+		// Get the asset image
+		try {
+			asset = ImageReader.getImage(directoryPath + File.separatorChar + fileName);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(fileName + " is not a valid name");
+		}
+
+		if (!widthStr.equals("-")) {
+			width = parseWidth(widthStr);
+		} else {
+			width = 0;
+		}
+
+		if (!heightStr.equals("-")) {
+			height = parseHeight(heightStr);
+		} else {
+			height = 0;
+		}
+
+		if (width != 0 && height != 0) {
+			// Scale the assets to its desired dimensions.
+			asset = asset.getScaledCopy(width, height);
+		}
+
+		return asset;
+
+	}
+
+	private int parseWidth(String width) {
+
+		int validWidth;
+
+		// Parse the desired width of the asset
+		try {
+			validWidth = Integer.parseInt(width);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(width + " is not a valid width");
+		}
+
+		// Check width
+		if (validWidth <= 0) {
+			throw new IllegalArgumentException("Width cannot be <= zero");
+		}
+
+		return validWidth;
+	}
+
+	private int parseHeight(String height) {
+		int validHeight;
+
+		// Parse the desired height of the asset
+		try {
+			validHeight = Integer.parseInt(height);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(height + " is not a valid height");
+		}
+
+		// Check height
+		if (validHeight <= 0) {
+			throw new IllegalArgumentException("Height cannot be <= zero");
+		}
+
+		return validHeight;
+
+	}
+
 	/**
 	 * Retrieves a game state with a specified id.
 	 * 
@@ -194,10 +282,10 @@ public class AssetReader {
 	 *            {@link CoreGameState#getStateName()}
 	 * @return {@link CoreGameState} with the specified name.
 	 */
-	private ButtonContainer getContainerByName(String name) {
+	private Container getContainerByName(String name) {
 
 		// Iterate through all game states in the reader.
-		for (ButtonContainer container : containers) {
+		for (Container container : containers) {
 
 			// Return the state that has the specified name.
 			if (container.getName().equals(name)) {

@@ -21,7 +21,7 @@ import peril.ui.components.Region;
  * @author Joshua_Eddy
  *
  */
-public class MapReader {
+public class MapReader implements FileReader {
 
 	/**
 	 * The path to the directory with all the map assets in it.
@@ -54,6 +54,8 @@ public class MapReader {
 	 */
 	private Board board;
 
+	private int index;
+
 	/**
 	 * Constructs a new {@link MapReader}.
 	 * 
@@ -77,34 +79,10 @@ public class MapReader {
 		this.continents = new LinkedList<>();
 		this.countries = new LinkedList<>();
 		this.board = board;
-
-	}
-
-	/**
-	 * Populates the {@link MapReader#board}.
-	 */
-	public void read() {
+		this.index = 0;
 
 		normalMap = ImageReader.getImage(directoryPath + File.separatorChar + "normal.png");
-		parseDetails();
 
-		// Set the boards continents
-		board.setContinents(continents);
-
-		// Set the normal map as the visual image of the visual representation.
-		board.setImage(new Point(0, 0), normalMap);
-
-	}
-
-	/**
-	 * Reads the details of the current map from the details file.
-	 */
-	private void parseDetails() {
-
-		// Iterate through all the lines in the details file.
-		for (String line : detailsFile) {
-			parseLine(line);
-		}
 	}
 
 	/**
@@ -113,25 +91,37 @@ public class MapReader {
 	 * @param line
 	 *            <code>String</code> line of details.
 	 */
-	private void parseLine(String line) {
+	public void parseLine() {
 
-		// Split the line by ','
-		String[] details = line.split(",");
+		if (!isFinished()) {
+			// Split the line by ','
+			String[] details = detailsFile[index].split(",");
 
-		// The first section of the line denotes the type of instruction.
-		String type = details[0];
+			// The first section of the line denotes the type of instruction.
+			String type = details[0];
 
-		// Parse the line differently based on the type of instruction.
-		switch (type) {
-		case "Country":
-			parseCountry(details);
-			break;
-		case "Link":
-			parseLink(details);
-			break;
-		case "Continent":
-			parseContinent(details);
-			break;
+			// Parse the line differently based on the type of instruction.
+			switch (type) {
+			case "Country":
+				parseCountry(details);
+				break;
+			case "Link":
+				parseLink(details);
+				break;
+			case "Continent":
+				parseContinent(details);
+				break;
+			}
+
+			index++;
+
+			if (isFinished()) {
+				// Set the boards continents
+				board.setContinents(continents);
+
+				// Set the normal map as the visual image of the visual representation.
+				board.setImage(new Point(0, 0), normalMap);
+			}
 		}
 
 	}
@@ -319,5 +309,20 @@ public class MapReader {
 
 		}
 
+	}
+
+	@Override
+	public int getIndex() {
+		return index;
+	}
+
+	@Override
+	public int getLength() {
+		return detailsFile.length;
+	}
+
+	@Override
+	public boolean isFinished() {
+		return getIndex() == getLength();
 	}
 }

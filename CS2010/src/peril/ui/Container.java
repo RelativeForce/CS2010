@@ -1,16 +1,15 @@
 package peril.ui;
 
-import java.util.List;
-
 import peril.Point;
+import peril.ui.components.Viewable;
 
-public interface ButtonContainer {
-	
+public interface Container {
+
 	public void addButton(Button button);
-	
-	public List<Button> getButtons();
-	
+
 	public boolean clickedButton(Point click);
 
 	public String getName();
+
+	public void addImage(Viewable image);
 }

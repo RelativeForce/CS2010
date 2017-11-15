@@ -14,6 +14,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Player;
 import peril.Point;
+import peril.io.MapReader;
 import peril.io.TextFileReader;
 import peril.ui.components.Font;
 import peril.ui.components.VisualList;
@@ -142,7 +143,9 @@ public class MainMenuState extends InteractiveState {
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 
-		getGame().loadAssets();
+		while(!getGame().assetReader.isFinished()) {
+			getGame().assetReader.parseLine();
+		}
 
 		// Initialise the fonts;
 		listFont = new Font("Arial", Color.black, 18);
@@ -203,9 +206,10 @@ public class MainMenuState extends InteractiveState {
 		int width = (map.width > screenWidth) ? screenWidth : map.width;
 		int height = (map.height > screenHeight) ? screenHeight : map.height;
 		
-		getGame().loadBoard(map.name, width, height);
-		getGame().autoDistributeCountries();
-		getGame().enterState(getGame().setup.getID());
+		getGame().reSize(width, height);
+		getGame().loadingScreen.addReader(new MapReader(getGame().mapsDirectory + map.name, getGame().getBoard()));
+		getGame().loadingScreen.addReader(getGame().challengeReader);
+		getGame().enterState(getGame().loadingScreen.getID());
 
 	}
 

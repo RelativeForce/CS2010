@@ -15,7 +15,7 @@ import peril.board.Country;
  * Reads the challenges from an external file and uses then constructs the
  * challenges for the {@link Game}.
  */
-public class ChallengeReader {
+public class ChallengeReader implements FileReader {
 
 	/**
 	 * The lines of the challenges file which specifies all the challenges of the
@@ -33,6 +33,8 @@ public class ChallengeReader {
 	 */
 	private Game game;
 
+	private int index;
+
 	/**
 	 * Constructs a new {@link ChallengeReader}.
 	 * 
@@ -47,23 +49,7 @@ public class ChallengeReader {
 		this.challengesFile = TextFileReader.scanFile(directoryPath, "challenges.txt");
 		this.challenges = new LinkedList<>();
 		this.game = game;
-
-	}
-
-	/**
-	 * Reads the challenges of the current map from the challenges file.
-	 * 
-	 * @param levelNum
-	 *            The number of the level to be loaded.
-	 */
-	public void read() {
-
-		// Iterate through all the lines of the challenges file.
-		for (String line : challengesFile) {
-			parseLine(line);
-		}
-
-		game.setChallenges(challenges);
+		this.index = 0;
 
 	}
 
@@ -73,25 +59,34 @@ public class ChallengeReader {
 	 * @param line
 	 *            <code>String</code> line of details.
 	 */
-	private void parseLine(String line) {
+	public void parseLine() {
 
-		// Split the line by ','
-		String[] details = line.split(",");
+		if (!isFinished()) {
+			
+			// Split the line by ','
+			String[] details = challengesFile[index].split(",");
 
-		// The first section of the line denotes the type of instruction.
-		String type = details[0];
+			// The first section of the line denotes the type of instruction.
+			String type = details[0];
 
-		// Parse the line differently based on the type of instruction.
-		switch (type) {
-		case "ArmySize":
-			parseArmySize(details);
-			break;
-		case "CountriesOwned":
-			parseCountriesOwned(details);
-			break;
-		case "ContinentsOwned":
-			parseContinentsOwned(details);
-			break;
+			// Parse the line differently based on the type of instruction.
+			switch (type) {
+			case "ArmySize":
+				parseArmySize(details);
+				break;
+			case "CountriesOwned":
+				parseCountriesOwned(details);
+				break;
+			case "ContinentsOwned":
+				parseContinentsOwned(details);
+				break;
+			}
+			
+			index++;
+
+			if (isFinished()) {
+				game.setChallenges(challenges);
+			}
 		}
 
 	}
@@ -235,6 +230,21 @@ public class ChallengeReader {
 			throw new IllegalArgumentException("details not valid.");
 		}
 
+	}
+
+	@Override
+	public int getIndex() {
+		return index;
+	}
+
+	@Override
+	public int getLength() {
+		return challengesFile.length;
+	}
+
+	@Override
+	public boolean isFinished() {
+		return getIndex() == getLength();
 	}
 
 }

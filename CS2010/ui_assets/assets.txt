@@ -9,3 +9,6 @@ button,Combat,6,attackButton.png,50,30,10,80
 button,Main Menu,7,playButton.png,50,30,130,25
 button,Setup,8,playButton.png,50,30,10,80
 button,Pause Menu,10,endButton.png,50,30,240,260
+
+// asset_type,state_name,asset_file_name,width,height,x,y
+image,loading screen,perilLogo.png,-,-,0,0

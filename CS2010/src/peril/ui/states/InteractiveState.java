@@ -13,7 +13,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Point;
 import peril.ui.Button;
-import peril.ui.ButtonContainer;
+import peril.ui.Container;
 import peril.ui.components.Clickable;
 import peril.ui.components.Viewable;
 
@@ -25,7 +25,7 @@ import peril.ui.components.Viewable;
  * @author Joshua_Eddy
  *
  */
-public abstract class InteractiveState extends BasicGameState implements ButtonContainer {
+public abstract class InteractiveState extends BasicGameState implements Container {
 
 	/**
 	 * Holds the name of a specific {@link InteractiveState}.
@@ -48,7 +48,7 @@ public abstract class InteractiveState extends BasicGameState implements ButtonC
 	 * A {@link List} of {@link Viewable} elements that this
 	 * {@link InteractiveState} has.
 	 */
-	private List<Viewable> viewables;
+	private List<Viewable> images;
 
 	/**
 	 * The id of this {@link InteractiveState}.
@@ -77,7 +77,7 @@ public abstract class InteractiveState extends BasicGameState implements ButtonC
 		this.game = game;
 		this.stateName = stateName;
 		this.buttons = new LinkedList<>();
-		this.viewables = new LinkedList<>();
+		this.images = new LinkedList<>();
 	}
 
 	/**
@@ -89,7 +89,7 @@ public abstract class InteractiveState extends BasicGameState implements ButtonC
 	 * 
 	 */
 	public void addVisual(Viewable element) {
-		viewables.add(element);
+		images.add(element);
 	}
 
 	/**
@@ -114,15 +114,6 @@ public abstract class InteractiveState extends BasicGameState implements ButtonC
 	 */
 	public String getName() {
 		return getStateName();
-	}
-	
-	/**
-	 * Returns a list of {@link Clickable} elements present in this state.
-	 * 
-	 */
-	@Override
-	public List<Button> getButtons() {
-		return buttons;
 	}
 
 	/*
@@ -209,6 +200,7 @@ public abstract class InteractiveState extends BasicGameState implements ButtonC
 	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+		images.forEach(image -> g.drawImage(image.getImage(), image.getPosition().x, image.getPosition().y));
 		buttons.forEach(button -> g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y));
 	}
 
@@ -259,7 +251,7 @@ public abstract class InteractiveState extends BasicGameState implements ButtonC
 	public boolean clickedButton(Point click) {
 
 		// Iterate through all the buttons in the current state.
-		for (Button button : getButtons()) {
+		for (Button button : buttons) {
 
 			// If the click is in the current element
 			if (button.isClicked(click)) {
@@ -273,4 +265,8 @@ public abstract class InteractiveState extends BasicGameState implements ButtonC
 		return false;
 	}
 
+	@Override
+	public void addImage(Viewable image) {
+		images.add(image);
+	}
 }

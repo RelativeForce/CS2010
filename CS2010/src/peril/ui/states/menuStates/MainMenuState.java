@@ -53,7 +53,7 @@ public class MainMenuState extends InteractiveState {
 	/**
 	 * The {@link Font} used for displaying {@link MainMenuState#maps}.
 	 */
-	private Font mapFont;
+	private Font listFont;
 
 	/**
 	 * The {@link Font} for displaying the name of the game.
@@ -82,8 +82,8 @@ public class MainMenuState extends InteractiveState {
 
 		super(game, STATE_NAME, id);
 		mapsFile = TextFileReader.scanFile(mapsFilePath, "maps.txt");
-		maps = new VisualList<>(15, 90, 90, 22, 3, 10);
-		players = new VisualList<>(120, 90, 20, 22, 3, 5);
+		maps = new VisualList<>(15, 90, 110, 22, 3, 10);
+		players = new VisualList<>(150, 90, 20, 22, 3, 5);
 		getMaps();
 		getPlayers();
 
@@ -96,7 +96,7 @@ public class MainMenuState extends InteractiveState {
 
 		super.render(gc, sbg, g);
 
-		textFont.draw(g, "Players: ", 120, 70);
+		textFont.draw(g, "Players: ", 150, 70);
 		textFont.draw(g, "Map: ", 15, 70);
 		headingFont.draw(g, "Peril", 10, 5);
 
@@ -145,17 +145,17 @@ public class MainMenuState extends InteractiveState {
 		getGame().loadAssets();
 
 		// Initialise the fonts;
-		mapFont = new Font("Arial", Color.green, 20);
+		listFont = new Font("Arial", Color.black, 18);
 		headingFont = new Font("Arial", Color.red, 56);
 		textFont = new Font("Arial", Color.blue, 15);
 
 		// Initialise the maps list and all its elements
 		maps.init();
-		maps.setFont(mapFont);
+		maps.setFont(listFont);
 
 		// Initialise the players list and all its elements
 		players.init();
-		players.setFont(mapFont);
+		players.setFont(listFont);
 
 		// Start the music intro
 		getGame().musicHelper.read("HumanMusicIntro").play();
@@ -176,7 +176,7 @@ public class MainMenuState extends InteractiveState {
 	}
 
 	/**
-	 * Loads the {@link MainMenuState#mapFont} {@link VisualList#getSelected()} into
+	 * Loads the {@link MainMenuState#listFont} {@link VisualList#getSelected()} into
 	 * the {@link Game} and re-sizes the window of the {@link Game}.
 	 */
 	public void loadMap() throws SlickException {

@@ -21,16 +21,6 @@ import peril.ui.states.InteractiveState;
 public class VisualList<T> extends Clickable {
 
 	/**
-	 * The <code>int</code> x coordinate of the {@link VisualList}.
-	 */
-	private int x;
-
-	/**
-	 * The <code>int</code> y coordinate of the {@link VisualList}.
-	 */
-	private int y;
-
-	/**
 	 * The <code>int</code> width of the {@link VisualList}.
 	 */
 	private int width;
@@ -92,8 +82,6 @@ public class VisualList<T> extends Clickable {
 		super(new Region(width, height * elementsInView, new Point(x, y)));
 		elements = new LinkedList<>();
 		selected = null;
-		this.x = x;
-		this.y = y;
 		this.width = width;
 		this.height = height;
 		this.elementsInView = elementsInView;
@@ -109,7 +97,8 @@ public class VisualList<T> extends Clickable {
 	 */
 	public void add(String text, T payload) {
 
-		Element element = new Element(text, payload, x, y + (elements.size() * height), width, height);
+		Element element = new Element(text, payload, getPosition().x, getPosition().y + (elements.size() * height),
+				width, height);
 
 		// If this is the first element the set it as the selected.
 		if (elements.isEmpty()) {
@@ -117,6 +106,17 @@ public class VisualList<T> extends Clickable {
 		}
 
 		elements.add(element);
+	}
+
+	@Override
+	public void setPosition(Point position) {
+
+		Point change = new Point(position.x - this.getPosition().x, position.y - this.getPosition().y);
+
+		elements.forEach(element -> element
+				.setPosition(new Point(element.getPosition().x + change.x, element.getPosition().y + change.y)));
+
+		super.setPosition(position);
 	}
 
 	/**
@@ -181,14 +181,13 @@ public class VisualList<T> extends Clickable {
 	 */
 	public void draw(Graphics g) {
 
-		Region r = getRegion();
-
 		g.setColor(Color.white);
+		
+		int x = this.getPosition().x;
+		int y = this.getPosition().y;
+		
 		// Draws the background menu box.
-		g.fillRect(r.getPosition().x, r.getPosition().y, r.getWidth(), r.getHeight());
-
-		int x = this.x;
-		int y = this.y;
+		g.fillRect(x, y, getWidth(), getHeight());
 
 		// Draw the map names in the game.
 		for (Element element : elements) {
@@ -337,7 +336,7 @@ public class VisualList<T> extends Clickable {
 		 *            {@link Point} position this will be displayed.
 		 */
 		public void draw(Graphics g, Font font, int padding) {
-			font.draw(g, text, getPosition().x + padding, getPosition().y);
+			font.draw(g, text, this.getPosition().x + padding, this.getPosition().y);
 		}
 	}
 }

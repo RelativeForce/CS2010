@@ -61,10 +61,32 @@ public abstract class Menu extends Clickable implements ButtonContainer {
 
 	@Override
 	public void addButton(Button button) {
-		button.setPosition(new Point(button.getPosition().x + this.getPosition().x,
-				button.getPosition().y + this.getPosition().y));
+
+		Point current = button.getPosition();
+
+		Point menuPosition = this.getPosition();
+
+		button.setPosition(new Point(current.x + menuPosition.x, current.y + menuPosition.y));
+		
 		buttons.add(button);
 	}
+
+	@Override
+	public void setPosition(Point position) {
+
+		Point current = super.getPosition();
+
+		Point vector = new Point(position.x - current.x, position.y - current.y);
+
+		moveComponents(vector);
+
+		moveButtons(vector);
+
+		super.setPosition(position);
+
+	}
+
+	public abstract void moveComponents(Point vector);
 
 	@Override
 	public List<Button> getButtons() {
@@ -88,4 +110,8 @@ public abstract class Menu extends Clickable implements ButtonContainer {
 		return name;
 	}
 
+	private void moveButtons(Point vector) {
+		buttons.forEach(button -> button
+				.setPosition(new Point(button.getPosition().x + vector.x, button.getPosition().y + vector.y)));
+	}
 }

@@ -45,7 +45,7 @@ public class PauseMenu extends Menu {
 	 */
 	public PauseMenu(Point position, Game game) {
 		super(NAME, game, new Region(300, 300, position));
-		this.toggleMusic = new VisualList<>(position.x + 40 + (getWidth() / 2), position.y + 50, 30, 15, 2, 5);
+		this.toggleMusic = new VisualList<>(position.x + (getWidth() / 2), position.y + 50, 30, 15, 2, 5);
 		this.toggleMusic.add(Toggle.ON.toString, Toggle.ON);
 		this.toggleMusic.add(Toggle.OFF.toString, Toggle.OFF);
 	}
@@ -68,7 +68,9 @@ public class PauseMenu extends Menu {
 
 			textFont.draw(g, pause, getPosition().x - (textFont.getWidth(pause) / 2) + (getWidth() / 2),
 					getPosition().y + 10);
-			musicFont.draw(g, music, getPosition().x + (getWidth() / 2) - 90, getPosition().y + 50);
+
+			musicFont.draw(g, music, getPosition().x + (getWidth() / 2) - (textFont.getWidth(music) / 2) - 15,
+					getPosition().y + 50);
 
 			g.setColor(Color.white);
 
@@ -118,5 +120,13 @@ public class PauseMenu extends Menu {
 			this.toggle = toggle;
 			this.toString = toString;
 		}
+	}
+
+	@Override
+	public void moveComponents(Point vector) {
+
+		toggleMusic
+				.setPosition(new Point(toggleMusic.getPosition().x + vector.x, toggleMusic.getPosition().y + vector.y));
+
 	}
 }

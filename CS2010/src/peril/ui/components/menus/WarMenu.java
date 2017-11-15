@@ -199,4 +199,11 @@ public class WarMenu extends Menu {
 		return "War";
 	}
 
+	@Override
+	public void moveComponents(Point vector) {
+
+		squadSizes.setPosition(new Point(squadSizes.getPosition().x + vector.x, squadSizes.getPosition().y + vector.y));
+
+	}
+
 }

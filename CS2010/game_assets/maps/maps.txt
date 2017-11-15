@@ -1,3 +1,3 @@
 Europe,620,496
-World,1600,1060
-Bad_World,1500,745
+Earth,1600,1060
+Old_Earth,1500,745

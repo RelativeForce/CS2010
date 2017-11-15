@@ -91,6 +91,7 @@ Link,Madagascar,SouthAfrica
 Link,Madagascar,EastAfrica
 Link,EastAfrica,MiddleEast
 Link,EastAfrica,Egypt
+Link,EastAfrica,SouthAfrica
 Link,Egypt,MiddleEast
 Link,Egypt,SouthEurope
 Link,WestEurope,GreatBritain
@@ -119,6 +120,7 @@ Link,Siberia,China
 Link,Yakutsk,Kamchatka
 Link,Yakutsk,Irkutsk
 Link,Kamchatka,Japan
+Link,Kamchatka,Irkutsk
 Link,Japan,Mongolia
 Link,Mongolia,China
 Link,Irkutsk,Mongolia

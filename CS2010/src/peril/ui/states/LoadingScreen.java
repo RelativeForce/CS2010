@@ -12,6 +12,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Point;
 import peril.io.FileParser;
+import peril.ui.components.ProgressBar;
 import peril.ui.components.Viewable;
 import peril.ui.states.gameStates.SetupState;
 
@@ -42,17 +43,6 @@ public final class LoadingScreen extends InteractiveState {
 	private int index;
 
 	/**
-	 * The progress through the {@link FileParser}s in this {@link LoadingScreen}.
-	 */
-	private int progress;
-
-	/**
-	 * The total number of lines that all the {@link FileParser}s must parse if they
-	 * were combined.
-	 */
-	private int total;
-
-	/**
 	 * The background {@link Viewable} of the {@link LoadingScreen}.
 	 */
 	private Viewable background;
@@ -61,6 +51,11 @@ public final class LoadingScreen extends InteractiveState {
 	 * The {@link Music} that will be played during the loading state.
 	 */
 	private Music music;
+
+	/**
+	 * THe {@link ProgressBar} that will be displayed on this loading screen.
+	 */
+	private ProgressBar progressBar;
 
 	/**
 	 * Constructs a new {@link LoadingScreen}.
@@ -72,10 +67,9 @@ public final class LoadingScreen extends InteractiveState {
 	 */
 	public LoadingScreen(Game game, int id) {
 		super(game, NAME, id);
-		index = 0;
-		progress = 0;
-		total = 0;
-		readers = new ArrayList<>();
+		this.index = 0;
+		this.readers = new ArrayList<>();
+		this.progressBar = new ProgressBar();
 	}
 
 	/**
@@ -102,6 +96,8 @@ public final class LoadingScreen extends InteractiveState {
 		background.setImage(background.getPosition(),
 				background.getImage().getScaledCopy(gc.getWidth(), gc.getHeight()));
 
+		initProgressBar(gc.getWidth(), gc.getHeight());
+
 		super.enter(gc, sbg);
 	}
 
@@ -112,29 +108,8 @@ public final class LoadingScreen extends InteractiveState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
 
-		// Holds the window dimensions
-		int windowWidth = gc.getWidth();
-		int windowHeight = gc.getHeight();
-
-		// Holds the loading bar padding.
-		int windowPadding = (windowHeight / 10);
-
-		// Holds the position of the loading bar
-		Point barPosition = new Point(windowWidth / 20, windowHeight - windowPadding);
-
-		// Holds the width of the loading bar.
-		double barWidth = windowWidth - (windowHeight / 10) - windowPadding;
-
-		// Calculate the current progress on screen
-		int currentProgress = (int) (progress * (barWidth / total));
-
-		// Draw the empty bar
-		g.drawRect(barPosition.x, barPosition.y, (int) barWidth, 40);
-
-		// Draw the progress
-		if (currentProgress > 0) {
-			g.fillRect(barPosition.x, barPosition.y, currentProgress, 40);
-		}
+		progressBar.draw(g);
+		
 	}
 
 	/**
@@ -161,7 +136,7 @@ public final class LoadingScreen extends InteractiveState {
 			// If the reader is not finished parse its current line.
 			if (!reader.isFinished()) {
 				reader.parseLine();
-				progress++;
+				progressBar.increment();
 			}
 			// Otherwise move to the next reader.
 			else {
@@ -191,7 +166,7 @@ public final class LoadingScreen extends InteractiveState {
 		}
 
 		// Add the length of the reader to the total.
-		total += reader.getLength();
+		progressBar.increaseTotal(reader.getLength());
 		readers.add(reader);
 	}
 
@@ -219,4 +194,24 @@ public final class LoadingScreen extends InteractiveState {
 		return music;
 	}
 
+	/**
+	 * Initialise the {@link LoadingScreen#progressBar}.
+	 * 
+	 * @param windowWidth The width of the screen.
+	 * @param windowHeight The height of the screen.
+	 */
+	private void initProgressBar(int windowWidth, int windowHeight) {
+		
+		// Holds the loading bar padding.
+		int windowPadding = (windowHeight / 10);
+
+		// Holds the position of the loading bar
+		Point barPosition = new Point(windowWidth / 20, windowHeight - windowPadding);
+
+		// Holds the width of the loading bar.
+		int barWidth = windowWidth - (windowHeight / 10) - windowPadding;
+
+		progressBar.init(barPosition, barWidth, 40);
+	}
+	
 }

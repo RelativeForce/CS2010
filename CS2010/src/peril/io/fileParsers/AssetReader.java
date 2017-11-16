@@ -18,13 +18,14 @@ import peril.ui.components.Viewable;
 import peril.ui.states.InteractiveState;
 
 /**
- * Reads all the {@link Viewable} and {@link Clickable} specified by the ui
- * assets details file and puts them in their specified {@link CoreGameState}s.
+ * Reads all the {@link Viewable} and {@link Clickable} specified by the user
+ * interface assets details file and puts them in their specified
+ * {@link InteractiveState}s.
  * 
  * @author Joshua_Eddy
  *
  */
-public class AssetReader implements FileParser {
+public final class AssetReader implements FileParser {
 
 	/**
 	 * The {@link CoreGameState}s that will be populated when
@@ -37,20 +38,33 @@ public class AssetReader implements FileParser {
 	 */
 	private String directoryPath;
 
+	/**
+	 * Holds the lines of the assets file.
+	 */
 	private String[] lines;
 
+	/**
+	 * The index of the next line that will be parsed by
+	 * {@link FileParser#parseLine()}.
+	 */
 	public int index;
 
+	/**
+	 * Holds the {@link FunctionHandler} that contains the functions that buttons
+	 * will execute.
+	 */
 	private FunctionHandler functionHandler;
 
 	/**
 	 * Constructs a new {@link AssetReader}.
 	 * 
 	 * @param containers
-	 *            The {@link InteractiveState}s that will be populated when
+	 *            The {@link Container}s that will be populated when
 	 *            {@link AssetReader#read()} is performed.
 	 * @param directoryPath
 	 *            File path of the asset details file.
+	 * @param game
+	 *            The {@link Game} this {@link AssetReader} will be used by.
 	 */
 	public AssetReader(Container[] containers, String directoryPath, Game game) {
 
@@ -98,16 +112,29 @@ public class AssetReader implements FileParser {
 
 	}
 
+	/**
+	 * Retrieves the index that this {@link AssetReader} is in the assets file.
+	 */
 	@Override
 	public int getIndex() {
 		return index;
 	}
 
+	/**
+	 * Retrieves the length of the assets file.
+	 */
 	@Override
 	public int getLength() {
 		return lines.length;
 	}
 
+	/**
+	 * Parses an {@link Viewable} and adds it to the necessary {@link Container}.
+	 * 
+	 * @param details
+	 *            <code>String[]</code> containing the details that specify the
+	 *            {@link Image}.
+	 */
 	private void parseImage(String[] details) {
 
 		int IMAGE_LENGTH = 7;
@@ -118,30 +145,16 @@ public class AssetReader implements FileParser {
 					+ " does not contain the correct number of elements, there should be " + IMAGE_LENGTH + "");
 		}
 
-		int x;
-		int y;
-
+		// Holds the scaled image
 		Image asset = parseAsset(details[2], details[3], details[4]);
+
+		// Holds the position of the image on the screen.
+		Point position = parsePosition(details[5], details[6]);
 
 		// Get the state by name
 		Container container = getContainerByName(details[1]);
 
-		// Parse x coordinate.
-		try {
-			x = Integer.parseInt(details[5]);
-		} catch (Exception e) {
-			throw new IllegalArgumentException(details[5] + " is not a valid x coordinate");
-		}
-
-		// Parse y coordinate
-		try {
-			y = Integer.parseInt(details[6]);
-		} catch (Exception e) {
-			throw new IllegalArgumentException(details[6] + " is not a valid y coordinate");
-		}
-
-		Point position = new Point(x, y);
-
+		// Add the image to the container
 		container.addImage(new Viewable(asset, position));
 
 	}
@@ -155,54 +168,40 @@ public class AssetReader implements FileParser {
 
 		int BUTTON_LENGTH = 8;
 
-		// Check there is the corrent number of details
+		// Check there is the correct number of details
 		if (details.length != BUTTON_LENGTH) {
 			throw new IllegalArgumentException("Line " + index
 					+ " does not contain the correct number of elements, there should be " + BUTTON_LENGTH + "");
 		}
 
-		int functionCode;
-		int x;
-		int y;
-
-		// Get the state by name
+		// Holds the container that the button will be added to.
 		Container container = getContainerByName(details[1]);
 
-		// Parse the function code
-		try {
-			functionCode = Integer.parseInt(details[2]);
-		} catch (Exception e) {
-			throw new IllegalArgumentException(details[2] + " is not a valid function code");
-		}
+		// Holds the function of the button.
+		Action<?> function = parseFunction(details[2]);
 
-		Action<?> action = functionHandler.get(functionCode);
-
+		// Holds the image of the button
 		Image asset = parseAsset(details[3], details[4], details[5]);
 
-		// Parse x coordinate.
-		try {
-			x = Integer.parseInt(details[6]);
-		} catch (Exception e) {
-			throw new IllegalArgumentException(details[6] + " is not a valid x coordinate");
-		}
+		// Holds the image of the button.
+		Point position = parsePosition(details[6], details[7]);
 
-		// Parse y coordinate
-		try {
-			y = Integer.parseInt(details[7]);
-		} catch (Exception e) {
-			throw new IllegalArgumentException(details[7] + " is not a valid y coordinate");
-		}
-
-		Point position = new Point(x, y);
-
-		// Construct button
-		Button newButton = new Button(position, asset, action);
-
-		// Add the button to the state, cast to clickable so the correct method is used
-		container.addButton(newButton);
+		// Add the button to the container
+		container.addButton(new Button(position, asset, function));
 
 	}
 
+	/**
+	 * Parses a {@link Image} from a specified file and dimensions.
+	 * 
+	 * @param fileName
+	 *            The file name of the {@link Image} in the assets folder
+	 * @param widthStr
+	 *            The desired scaled width of the {@link Image}
+	 * @param heightStr
+	 *            The desired scaled height of the {@link Image}
+	 * @return {@link Image}
+	 */
 	private Image parseAsset(String fileName, String widthStr, String heightStr) {
 
 		Image asset;
@@ -216,20 +215,28 @@ public class AssetReader implements FileParser {
 			throw new IllegalArgumentException(fileName + " is not a valid name");
 		}
 
+		// If the width is a dash then don't scale the width
 		if (!widthStr.equals("-")) {
-			width = parseWidth(widthStr);
+			width = parseDimension(widthStr);
 		} else {
 			width = 0;
 		}
 
+		// If the width is a dash then don't scale the height
 		if (!heightStr.equals("-")) {
-			height = parseHeight(heightStr);
+			height = parseDimension(heightStr);
 		} else {
 			height = 0;
 		}
 
+		// If width and height are zero don't scale the image.
 		if (width != 0 && height != 0) {
-			// Scale the assets to its desired dimensions.
+
+			// Check both the width an height for the scaled assets
+			width = width == 0 ? asset.getWidth() : width;
+			height = height == 0 ? asset.getHeight() : height;
+
+			// Scale the assets to the desired dimensions.
 			asset = asset.getScaledCopy(width, height);
 		}
 
@@ -237,42 +244,83 @@ public class AssetReader implements FileParser {
 
 	}
 
-	private int parseWidth(String width) {
+	/**
+	 * Parses a {@link Point} from an x and y.
+	 * 
+	 * @param xStr
+	 *            x position
+	 * @param yStr
+	 *            y position
+	 * @return {@link Point} position on screen.
+	 */
+	private Point parsePosition(String xStr, String yStr) {
 
-		int validWidth;
+		int x;
+		int y;
 
-		// Parse the desired width of the asset
+		// Parse x coordinate.
 		try {
-			validWidth = Integer.parseInt(width);
+			x = Integer.parseInt(xStr);
 		} catch (Exception e) {
-			throw new IllegalArgumentException(width + " is not a valid width");
+			throw new IllegalArgumentException(xStr + " is not a valid x coordinate");
 		}
 
-		// Check width
-		if (validWidth <= 0) {
-			throw new IllegalArgumentException("Width cannot be <= zero");
+		// Parse y coordinate
+		try {
+			y = Integer.parseInt(yStr);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(yStr + " is not a valid y coordinate");
 		}
 
-		return validWidth;
+		return new Point(x, y);
+
 	}
 
-	private int parseHeight(String height) {
-		int validHeight;
+	/**
+	 * Parses a {@link Action} from a specified function code using
+	 * {@link FunctionHandler}.
+	 * 
+	 * @param functionCodeStr
+	 * @return {@link Action} associated with a code.
+	 */
+	private Action<?> parseFunction(String functionCodeStr) {
 
-		// Parse the desired height of the asset
+		int functionCode;
+
+		// Parse the function code
 		try {
-			validHeight = Integer.parseInt(height);
+			functionCode = Integer.parseInt(functionCodeStr);
 		} catch (Exception e) {
-			throw new IllegalArgumentException(height + " is not a valid height");
+			throw new IllegalArgumentException(functionCodeStr + " is not a valid function code");
 		}
 
-		// Check height
-		if (validHeight <= 0) {
-			throw new IllegalArgumentException("Height cannot be <= zero");
+		return functionHandler.get(functionCode);
+
+	}
+
+	/**
+	 * Parses a dimension of a scaled {@link Image}.
+	 * 
+	 * @param dimension
+	 * @return
+	 */
+	private int parseDimension(String dimensionStr) {
+
+		int dimension;
+
+		// Parse the desired dimension
+		try {
+			dimension = Integer.parseInt(dimensionStr);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(dimensionStr + " is not a valid scaled dimension.");
 		}
 
-		return validHeight;
+		// Check the dimension is valid.
+		if (dimension <= 0) {
+			throw new IllegalArgumentException("Dimension cannot be <= zero");
+		}
 
+		return dimension;
 	}
 
 	/**

@@ -107,9 +107,30 @@ public class Game extends StateBasedGame implements MusicListener {
 	private final WarMenu warMenu;
 
 	/**
+	 * The {@link AssetReader} that loads all the {@link CoreGameState} states
+	 * buttons into the game from memory.
+	 */
+	public final AssetReader assetReader;
+
+	/**
+	 * {@link ChallengeReader} that loads the {@link Challenge}s from memory.
+	 */
+	public final ChallengeReader challengeReader;
+
+	/**
+	 * Holds the path to the directory containing the maps file.
+	 */
+	public final String mapsDirectory;
+
+	/**
+	 * The {@link LoadingScreen} that will load the map specified files from memory.
+	 */
+	public final LoadingScreen loadingScreen;
+
+	/**
 	 * The instance of the {@link Board} used for this game.
 	 */
-	private Board board;
+	public final Board board;
 
 	/**
 	 * The current turn of the {@link Game}. Initially zero;
@@ -135,24 +156,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * The {@link AppGameContainer} that contains this {@link Game}.
 	 */
 	private AppGameContainer agc;
-
-	/**
-	 * The {@link AssetReader} that loads all the {@link CoreGameState} states
-	 * buttons into the game from memory.
-	 */
-	public final AssetReader assetReader;
-
-	/**
-	 * {@link ChallengeReader} that loads the {@link Challenge}s from memory.
-	 */
-	public final ChallengeReader challengeReader;
-
-	/**
-	 * Holds the path to the directory containing the maps file.
-	 */
-	public final String mapsDirectory;
-
-	public LoadingScreen loadingScreen;
 
 	/**
 	 * Constructs a new {@link Game}.
@@ -251,7 +254,7 @@ public class Game extends StateBasedGame implements MusicListener {
 
 		// Add starting state to the game container.
 		super.addState(mainMenu);
-		
+
 		super.addState(loadingScreen);
 
 		// Add all other states to game container.
@@ -270,6 +273,15 @@ public class Game extends StateBasedGame implements MusicListener {
 		container.setVSync(true);
 	}
 
+	/**
+	 * Changes the dimensions of the {@link Game#agc} to the dimensions specified.
+	 * If the new dimensions are larger than the displays dimensions then this will
+	 * cause the game to go full screen.
+	 * 
+	 * @param width <code>int</code> new width of the screen.
+	 * @param height <code>int</code> new height of the screen.
+	 * @throws SlickException
+	 */
 	public void reSize(int width, int height) throws SlickException {
 
 		// Change the window to the specified size.
@@ -333,15 +345,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public int getRoundNumber() {
 		return currentRound;
-	}
-
-	/**
-	 * Retrieves the {@link Board} in <code>this</code> {@link Game}.
-	 * 
-	 * @return {@link Board}.
-	 */
-	public Board getBoard() {
-		return board;
 	}
 
 	/**

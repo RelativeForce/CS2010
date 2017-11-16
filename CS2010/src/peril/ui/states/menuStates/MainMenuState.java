@@ -204,7 +204,7 @@ public class MainMenuState extends InteractiveState {
 		int height = (map.height > screenHeight) ? screenHeight : map.height;
 		
 		getGame().reSize(width, height);
-		getGame().loadingScreen.addReader(new MapReader(getGame().mapsDirectory + map.name, getGame().getBoard()));
+		getGame().loadingScreen.addReader(new MapReader(getGame().mapsDirectory + map.name, getGame().board));
 		getGame().loadingScreen.addReader(getGame().challengeReader);
 		getGame().enterState(getGame().loadingScreen.getID());
 

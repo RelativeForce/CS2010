@@ -85,12 +85,11 @@ public abstract class CoreGameState extends InteractiveState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
 		// If the board has a visual representation, render it in the graphics context.
-		if (getGame().getBoard().hasImage()) {
-			g.drawImage(getGame().getBoard().getImage(), getGame().getBoard().getPosition().x,
-					getGame().getBoard().getPosition().y);
+		if (getGame().board.hasImage()) {
+			g.drawImage(getGame().board.getImage(), getGame().board.getPosition().x, getGame().board.getPosition().y);
 		}
 		// For every country on the board.
-		getGame().getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
+		getGame().board.getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
 
 			// Holds the image of the country
 			Image image = country.getImage();
@@ -195,16 +194,16 @@ public abstract class CoreGameState extends InteractiveState {
 
 		switch (key) {
 		case Input.KEY_UP:
-			getGame().getBoard().move(new Point(0, +increment));
+			getGame().board.move(new Point(0, +increment));
 			break;
 		case Input.KEY_DOWN:
-			getGame().getBoard().move(new Point(0, -increment));
+			getGame().board.move(new Point(0, -increment));
 			break;
 		case Input.KEY_LEFT:
-			getGame().getBoard().move(new Point(+increment, 0));
+			getGame().board.move(new Point(+increment, 0));
 			break;
 		case Input.KEY_RIGHT:
-			getGame().getBoard().move(new Point(-increment, 0));
+			getGame().board.move(new Point(-increment, 0));
 			break;
 		case Input.KEY_ENTER:
 			pauseMenu.visible = !pauseMenu.visible;
@@ -277,7 +276,7 @@ public abstract class CoreGameState extends InteractiveState {
 	protected void clickBoard(Point click) {
 
 		// Holds the game board
-		Board board = getGame().getBoard();
+		Board board = getGame().board;
 
 		// If there is a game board
 		if (board != null) {
@@ -297,7 +296,7 @@ public abstract class CoreGameState extends InteractiveState {
 	protected void drawAllLinks(Graphics g) {
 
 		// Get all the countries from the board.
-		getGame().getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
+		getGame().board.getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
 
 			Army army = country.getArmy();
 
@@ -392,7 +391,7 @@ public abstract class CoreGameState extends InteractiveState {
 	private void drawArmies(Graphics g) {
 
 		// Iterate across every country on the game board.
-		getGame().getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
+		getGame().board.getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
 
 			// Draw a background oval with the rulers colour. If no ruler found default to
 			// light grey.

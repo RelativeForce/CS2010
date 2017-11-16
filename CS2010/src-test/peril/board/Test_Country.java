@@ -7,6 +7,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import peril.Player;
+
 /**
  * This class tests {@link Country}.
  * 
@@ -14,9 +16,9 @@ import org.junit.Test;
  *
  */
 public class Test_Country {
-	
+
 	/**
-	 * Hold the current {@link Country} that is being used for testing. 
+	 * Hold the current {@link Country} that is being used for testing.
 	 */
 	private Country testCountry;
 	/**
@@ -26,12 +28,24 @@ public class Test_Country {
 
 	/**
 	 * Constructs a new country with the given name.
+	 * 
 	 * @throws Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
 		testName = "France";
 		testCountry = new Country(testName);
+
+	}
+
+	@Test
+	public void test_ruler() {
+
+		Player newRuler = Player.PLAYERFOUR;
+
+		testCountry.setRuler(newRuler);
+
+		assertTrue(testCountry.getRuler().equals(newRuler));
 
 	}
 

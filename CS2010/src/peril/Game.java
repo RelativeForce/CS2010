@@ -17,14 +17,15 @@ import peril.board.Army;
 import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
-import peril.io.AssetReader;
-import peril.io.ChallengeReader;
-import peril.io.MapReader;
-import peril.io.MusicReader;
-import peril.ui.ButtonContainer;
+import peril.io.fileParsers.AssetReader;
+import peril.io.fileParsers.ChallengeReader;
+import peril.io.fileReaders.MusicReader;
+import peril.ui.Container;
 import peril.ui.UIEventHandler;
-import peril.ui.components.PauseMenu;
+import peril.ui.components.menus.PauseMenu;
+import peril.ui.components.menus.WarMenu;
 import peril.ui.states.InteractiveState;
+import peril.ui.states.LoadingScreen;
 import peril.ui.states.gameStates.*;
 import peril.ui.states.gameStates.multiSelectState.CombatState;
 import peril.ui.states.gameStates.multiSelectState.MovementState;
@@ -52,7 +53,7 @@ public class Game extends StateBasedGame implements MusicListener {
 
 	/**
 	 * The state that displays combat to the user. This is heavily couples with
-	 * {@link CombatHandler}.
+	 * {@link WarMenu}.
 	 */
 	public final CombatState combat;
 
@@ -101,14 +102,35 @@ public class Game extends StateBasedGame implements MusicListener {
 	private final UIEventHandler eventHandler;
 
 	/**
-	 * The {@link CombatHandler} that processes all of the game's combat.
+	 * The {@link WarMenu} that processes all of the game's combat.
 	 */
-	private final CombatHandler combatHandler;
+	private final WarMenu warMenu;
+
+	/**
+	 * The {@link AssetReader} that loads all the {@link CoreGameState} states
+	 * buttons into the game from memory.
+	 */
+	public final AssetReader assetReader;
+
+	/**
+	 * {@link ChallengeReader} that loads the {@link Challenge}s from memory.
+	 */
+	public final ChallengeReader challengeReader;
+
+	/**
+	 * Holds the path to the directory containing the maps file.
+	 */
+	public final String mapsDirectory;
+
+	/**
+	 * The {@link LoadingScreen} that will load the map specified files from memory.
+	 */
+	public final LoadingScreen loadingScreen;
 
 	/**
 	 * The instance of the {@link Board} used for this game.
 	 */
-	private Board board;
+	public final Board board;
 
 	/**
 	 * The current turn of the {@link Game}. Initially zero;
@@ -131,30 +153,9 @@ public class Game extends StateBasedGame implements MusicListener {
 	private List<Challenge> challenges;
 
 	/**
-	 * The {@link MapReader} that reads the {@link Board} from external memory.
-	 */
-	private MapReader mapReader;
-
-	/**
 	 * The {@link AppGameContainer} that contains this {@link Game}.
 	 */
 	private AppGameContainer agc;
-
-	/**
-	 * The {@link AssetReader} that loads all the {@link CoreGameState} states
-	 * buttons into the game from memory.
-	 */
-	private AssetReader assetReader;
-
-	/**
-	 * {@link ChallengeReader} that loads the {@link Challenge}s from memory.
-	 */
-	private ChallengeReader challengeReader;
-
-	/**
-	 * Holds the path to the directory containing the maps file.
-	 */
-	private String mapsDirectory;
 
 	/**
 	 * Constructs a new {@link Game}.
@@ -178,25 +179,27 @@ public class Game extends StateBasedGame implements MusicListener {
 		try {
 			agc = new AppGameContainer(this);
 			agc.setDisplayMode(220, 180, false);
-
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
 
+		// Initialise games Combat Handler
+		this.warMenu = new WarMenu(new Point(100, 100), this);
+
+		// Initialise the pause menu all the states will use
 		this.pauseMenu = new PauseMenu(new Point(100, 100), this);
+
+		this.loadingScreen = new LoadingScreen(this, 6);
 
 		// Initialise the game states.
 		this.setup = new SetupState(this, 1, pauseMenu);
 		this.reinforcement = new ReinforcementState(this, 2, pauseMenu);
-		this.combat = new CombatState(this, 3, pauseMenu);
+		this.combat = new CombatState(this, 3, pauseMenu, warMenu);
 		this.movement = new MovementState(this, 4, pauseMenu);
 		this.end = new EndState(this, 5);
 
 		// Initialise the event handler.
 		this.eventHandler = new UIEventHandler(this);
-
-		// Initialise games combatHandler
-		this.combatHandler = new CombatHandler();
 
 		// Holds the directory this game is operating in.
 		String baseDirectory = new File(System.getProperty("user.dir")).getPath();
@@ -224,9 +227,8 @@ public class Game extends StateBasedGame implements MusicListener {
 		ui_assestsPath.append(File.separatorChar);
 		ui_assestsPath.append("ui_assets");
 
-		this.assetReader = new AssetReader(
-				new ButtonContainer[] { mainMenu, combat, setup, reinforcement, movement, end },
-				ui_assestsPath.toString(), this);
+		this.assetReader = new AssetReader(new Container[] { pauseMenu, loadingScreen, warMenu, mainMenu, combat, setup,
+				reinforcement, movement, end }, ui_assestsPath.toString(), this);
 
 		// Add the path to the map's folder
 		game_assetsPath.append(File.separatorChar);
@@ -253,6 +255,8 @@ public class Game extends StateBasedGame implements MusicListener {
 		// Add starting state to the game container.
 		super.addState(mainMenu);
 
+		super.addState(loadingScreen);
+
 		// Add all other states to game container.
 		super.addState(setup);
 		super.addState(reinforcement);
@@ -270,14 +274,23 @@ public class Game extends StateBasedGame implements MusicListener {
 	}
 
 	/**
-	 * Starts the UI and reads the Board.
+	 * Changes the dimensions of the {@link Game#agc} to the dimensions specified.
+	 * If the new dimensions are larger than the displays dimensions then this will
+	 * cause the game to go full screen.
 	 * 
+	 * @param width <code>int</code> new width of the screen.
+	 * @param height <code>int</code> new height of the screen.
 	 * @throws SlickException
 	 */
-	public void loadBoard(String mapName, int width, int height) throws SlickException {
+	public void reSize(int width, int height) throws SlickException {
 
 		// Change the window to the specified size.
-		agc.setDisplayMode(width, height, false);
+		if (width == agc.getScreenWidth() && height == agc.getScreenHeight()) {
+			agc.setDisplayMode(width, height, true);
+		} else {
+
+			agc.setDisplayMode(width, height, false);
+		}
 
 		int pauseMenuX = (width / 2) - (pauseMenu.getWidth() / 2);
 		int pauseMenuY = (height / 2) - (pauseMenu.getHeight() / 2);
@@ -287,22 +300,6 @@ public class Game extends StateBasedGame implements MusicListener {
 		// Reset the board
 		board.reset();
 
-		// Initialise the map reader and the players array.
-		this.mapReader = new MapReader(mapsDirectory + mapName, board);
-
-		// Read the map from memory
-		mapReader.read();
-
-		// Read the challenges
-		challengeReader.read();
-
-	}
-
-	/**
-	 * Loads all the images is into the {@link Game} {@link InteractiveState}s.
-	 */
-	public void loadAssets() {
-		assetReader.read();
 	}
 
 	/**
@@ -348,24 +345,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public int getRoundNumber() {
 		return currentRound;
-	}
-
-	/**
-	 * Retrieves the combat handler.
-	 * 
-	 * @return <code>CombatHandler</code>
-	 */
-	public CombatHandler getCombatHandler() {
-		return combatHandler;
-	}
-
-	/**
-	 * Retrieves the {@link Board} in <code>this</code> {@link Game}.
-	 * 
-	 * @return {@link Board}.
-	 */
-	public Board getBoard() {
-		return board;
 	}
 
 	/**

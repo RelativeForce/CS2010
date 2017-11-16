@@ -36,7 +36,7 @@ public class Button extends Clickable {
 	 *            {@link Button#click()} is performed.
 	 */
 	public Button(Point position, Image image, Action<?> action) {
-		super();
+		super(new Region(image));
 
 		// Check the params
 		if (position == null) {
@@ -49,7 +49,6 @@ public class Button extends Clickable {
 
 		// Initialise the image and action.
 		this.setImage(position, image);
-		this.setRegion(new Region(image));
 		this.setPosition(position);
 		
 		this.action = action;

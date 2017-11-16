@@ -1,4 +1,4 @@
-package peril.io;
+package peril.io.fileParsers;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,28 +10,36 @@ import peril.board.Army;
 import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
+import peril.io.FileParser;
+import peril.io.fileReaders.TextFileReader;
 
 /**
  * Reads the challenges from an external file and uses then constructs the
  * challenges for the {@link Game}.
  */
-public class ChallengeReader {
+public final class ChallengeReader implements FileParser {
 
 	/**
 	 * The lines of the challenges file which specifies all the challenges of the
 	 * {@link Player}s on the specified map.
 	 */
-	private String[] challengesFile;
+	private final String[] challengesFile;
 
 	/**
 	 * The {@link Challenge}s read from the challenges file.
 	 */
-	private List<Challenge> challenges;
+	private final List<Challenge> challenges;
 
 	/**
 	 * The {@link Game} is using this {@link ChallengeReader}.
 	 */
-	private Game game;
+	private final Game game;
+
+	/**
+	 * The index of the next line that will be parsed by
+	 * {@link FileParser#parseLine()}.
+	 */
+	private int index;
 
 	/**
 	 * Constructs a new {@link ChallengeReader}.
@@ -47,23 +55,7 @@ public class ChallengeReader {
 		this.challengesFile = TextFileReader.scanFile(directoryPath, "challenges.txt");
 		this.challenges = new LinkedList<>();
 		this.game = game;
-
-	}
-
-	/**
-	 * Reads the challenges of the current map from the challenges file.
-	 * 
-	 * @param levelNum
-	 *            The number of the level to be loaded.
-	 */
-	public void read() {
-
-		// Iterate through all the lines of the challenges file.
-		for (String line : challengesFile) {
-			parseLine(line);
-		}
-
-		game.setChallenges(challenges);
+		this.index = 0;
 
 	}
 
@@ -73,27 +65,53 @@ public class ChallengeReader {
 	 * @param line
 	 *            <code>String</code> line of details.
 	 */
-	private void parseLine(String line) {
+	public void parseLine() {
 
-		// Split the line by ','
-		String[] details = line.split(",");
+		if (!isFinished()) {
 
-		// The first section of the line denotes the type of instruction.
-		String type = details[0];
+			// Split the line by ','
+			String[] details = challengesFile[index].split(",");
 
-		// Parse the line differently based on the type of instruction.
-		switch (type) {
-		case "ArmySize":
-			parseArmySize(details);
-			break;
-		case "CountriesOwned":
-			parseCountriesOwned(details);
-			break;
-		case "ContinentsOwned":
-			parseContinentsOwned(details);
-			break;
+			// The first section of the line denotes the type of instruction.
+			String type = details[0];
+
+			// Parse the line differently based on the type of instruction.
+			switch (type) {
+			case "ArmySize":
+				parseArmySize(details);
+				break;
+			case "CountriesOwned":
+				parseCountriesOwned(details);
+				break;
+			case "ContinentsOwned":
+				parseContinentsOwned(details);
+				break;
+			}
+
+			index++;
+
+			if (isFinished()) {
+				game.setChallenges(challenges);
+			}
 		}
 
+	}
+
+	/**
+	 * Retrieves the index that this {@link ChallengeReader} is in the challenges
+	 * file.
+	 */
+	@Override
+	public int getIndex() {
+		return index;
+	}
+
+	/**
+	 * Retrieves the length of the challenges file.
+	 */
+	@Override
+	public int getLength() {
+		return challengesFile.length;
 	}
 
 	/**

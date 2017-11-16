@@ -7,6 +7,7 @@ import org.newdawn.slick.Color;
 
 import peril.Player;
 import peril.ui.components.Clickable;
+import peril.ui.components.Region;
 
 /**
  * Encapsulates the behaviour of a Country. Countries:
@@ -55,7 +56,8 @@ public class Country extends Clickable {
 	 * @param name
 	 *            of the {@link Country}.
 	 */
-	public Country(String name) {
+	public Country(String name, Region region) {
+		super(region);
 		this.neighbours = new LinkedList<Country>();
 		this.ruler = null;
 		this.army = new Army(1);

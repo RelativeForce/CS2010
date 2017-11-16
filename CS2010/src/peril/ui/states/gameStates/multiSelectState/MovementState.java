@@ -10,7 +10,7 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Country;
-import peril.ui.components.PauseMenu;
+import peril.ui.components.menus.PauseMenu;
 import peril.ui.states.gameStates.CoreGameState;
 
 /**

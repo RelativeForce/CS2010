@@ -1,4 +1,4 @@
-package peril.io;
+package peril.io.fileParsers;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -12,6 +12,9 @@ import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
 import peril.board.EnvironmentalHazard;
+import peril.io.FileParser;
+import peril.io.fileReaders.ImageReader;
+import peril.io.fileReaders.TextFileReader;
 import peril.ui.components.Region;
 
 /**
@@ -21,38 +24,44 @@ import peril.ui.components.Region;
  * @author Joshua_Eddy
  *
  */
-public class MapReader {
+public final class MapReader implements FileParser {
 
 	/**
 	 * The path to the directory with all the map assets in it.
 	 */
-	private String directoryPath;
+	private final String directoryPath;
 
 	/**
 	 * The {@link List} of all the {@link Continent}s on the {@link Board}.
 	 */
-	private List<Continent> continents;
+	private final List<Continent> continents;
 
 	/**
 	 * The lines of the details file which specifies all the details about the map.
 	 */
-	private String[] detailsFile;
+	private final String[] detailsFile;
 
 	/**
 	 * The image of the {@link Board}.
 	 */
-	private Image normalMap;
+	private final Image normalMap;
 
 	/**
 	 * The {@link List} of all the {@link Country}s on the {@link Board}.
 	 */
-	private List<Country> countries;
+	private final List<Country> countries;
 
 	/**
 	 * Holds the board this {@link MapReader} will populate when
 	 * {@link MapReader#parseBoard(Board)} is performed.
 	 */
-	private Board board;
+	private final Board board;
+
+	/**
+	 * The index of the next line that will be parsed by
+	 * {@link FileParser#parseLine()}.
+	 */
+	private int index;
 
 	/**
 	 * Constructs a new {@link MapReader}.
@@ -77,61 +86,46 @@ public class MapReader {
 		this.continents = new LinkedList<>();
 		this.countries = new LinkedList<>();
 		this.board = board;
-
-	}
-
-	/**
-	 * Populates the {@link MapReader#board}.
-	 */
-	public void read() {
+		this.index = 0;
 
 		normalMap = ImageReader.getImage(directoryPath + File.separatorChar + "normal.png");
-		parseDetails();
 
-		// Set the boards continents
-		board.setContinents(continents);
-
-		// Set the normal map as the visual image of the visual representation.
-		board.setImage(new Point(0, 0), normalMap);
-
-	}
-
-	/**
-	 * Reads the details of the current map from the details file.
-	 */
-	private void parseDetails() {
-
-		// Iterate through all the lines in the details file.
-		for (String line : detailsFile) {
-			parseLine(line);
-		}
 	}
 
 	/**
 	 * Parses a line from a map details file.
-	 * 
-	 * @param line
-	 *            <code>String</code> line of details.
 	 */
-	private void parseLine(String line) {
+	public void parseLine() {
 
-		// Split the line by ','
-		String[] details = line.split(",");
+		if (!isFinished()) {
+			// Split the line by ','
+			String[] details = detailsFile[index].split(",");
 
-		// The first section of the line denotes the type of instruction.
-		String type = details[0];
+			// The first section of the line denotes the type of instruction.
+			String type = details[0];
 
-		// Parse the line differently based on the type of instruction.
-		switch (type) {
-		case "Country":
-			parseCountry(details);
-			break;
-		case "Link":
-			parseLink(details);
-			break;
-		case "Continent":
-			parseContinent(details);
-			break;
+			// Parse the line differently based on the type of instruction.
+			switch (type) {
+			case "Country":
+				parseCountry(details);
+				break;
+			case "Link":
+				parseLink(details);
+				break;
+			case "Continent":
+				parseContinent(details);
+				break;
+			}
+
+			index++;
+
+			if (isFinished()) {
+				// Set the boards continents
+				board.setContinents(continents);
+
+				// Set the normal map as the visual image of the visual representation.
+				board.setImage(new Point(0, 0), normalMap);
+			}
 		}
 
 	}
@@ -206,15 +200,11 @@ public class MapReader {
 		Color color = new Color(r, g, b);
 
 		// Initialise the new country.
-		Country country = new Country(name);
+		Country country = new Country(name,
+				ImageReader.getColourRegion(directoryPath + File.separatorChar + "countries.png", color));
 
 		// Set the army offset.
 		country.getArmy().setOffset(new Point(xOffset, yOffset));
-
-		// Set the clickable region of the country
-
-		Region region = ImageReader.getColourRegion(directoryPath + File.separatorChar + "countries.png", color);
-		country.setRegion(region);
 
 		// Construct a new counrty and add the country to the list of countries.
 		countries.add(country);
@@ -239,12 +229,11 @@ public class MapReader {
 			// Holds the hazard the will be assigned to this continent.
 			EnvironmentalHazard hazard = EnvironmentalHazard.getByName(details[2]);
 
-			// Create the new continent.
-			Continent newContinent = new Continent(hazard, name);
+			// Holds the regions of each country that will be used to make the continent.
+			List<Region> toCombine = new LinkedList<>();
 
-			// Holds the regions of each country that will be used o make the continent.
-			List<Region> toAdd = new LinkedList<>();
-
+			// Holds countries the that will be added to the continent.
+			List<Country> toAdd = new LinkedList<>();
 			/**
 			 * Iterate through all the countries in the countries map and if a country is
 			 * denoted by a string in the map detail add it to the new continent.
@@ -257,15 +246,18 @@ public class MapReader {
 					// If the country's name is specified by the details file to be in this
 					// continent.
 					if (country.getName().equals(countryName)) {
-						newContinent.addCountry(country);
-						toAdd.add(country.getRegion());
+						toAdd.add(country);
+						toCombine.add(country.getRegion());
 						break;
 					}
 				}
 			}
 
-			// Combine this continent's country's regions to form the continent's region.
-			newContinent.setRegion(Region.combine(toAdd, normalMap.getWidth(), normalMap.getHeight()));
+			// Create the new continent.
+			Continent newContinent = new Continent(hazard, name,
+					Region.combine(toCombine, normalMap.getWidth(), normalMap.getHeight()));
+
+			toAdd.forEach(country -> newContinent.addCountry(country));
 
 			// Add the continent to the list of continents.
 			continents.add(newContinent);
@@ -322,4 +314,22 @@ public class MapReader {
 		}
 
 	}
+
+	/**
+	 * Retrieves the index that this {@link MapReader} in the processing of the map
+	 * file..
+	 */
+	@Override
+	public int getIndex() {
+		return index;
+	}
+
+	/**
+	 * Retrieves the length of the mpas file.
+	 */
+	@Override
+	public int getLength() {
+		return detailsFile.length;
+	}
+
 }

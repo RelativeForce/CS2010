@@ -21,8 +21,8 @@ import peril.Point;
 import peril.board.Army;
 import peril.board.Board;
 import peril.board.Country;
-import peril.ui.components.PauseMenu;
 import peril.ui.components.Region;
+import peril.ui.components.menus.PauseMenu;
 import peril.ui.states.InteractiveState;
 
 /**
@@ -44,6 +44,9 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	private Map<Challenge, Delay> challenges;
 
+	/**
+	 * The {@link PauseMenu} for this {@link CoreGameState}.
+	 */
 	private PauseMenu pauseMenu;
 
 	/**
@@ -82,12 +85,11 @@ public abstract class CoreGameState extends InteractiveState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
 		// If the board has a visual representation, render it in the graphics context.
-		if (getGame().getBoard().hasImage()) {
-			g.drawImage(getGame().getBoard().getImage(), getGame().getBoard().getPosition().x,
-					getGame().getBoard().getPosition().y);
+		if (getGame().board.hasImage()) {
+			g.drawImage(getGame().board.getImage(), getGame().board.getPosition().x, getGame().board.getPosition().y);
 		}
 		// For every country on the board.
-		getGame().getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
+		getGame().board.getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
 
 			// Holds the image of the country
 			Image image = country.getImage();
@@ -119,9 +121,8 @@ public abstract class CoreGameState extends InteractiveState {
 
 		drawChallenges(g, 130, 15);
 
-		if (pauseMenu.IsPaused()) {
-			pauseMenu.draw(g);
-		}
+		pauseMenu.draw(g);
+
 	}
 
 	@Override
@@ -134,6 +135,12 @@ public abstract class CoreGameState extends InteractiveState {
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
 		pauseMenu.init();
+	}
+
+	@Override
+	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		super.leave(container, game);
+		challenges.clear();
 	}
 
 	/**
@@ -187,19 +194,19 @@ public abstract class CoreGameState extends InteractiveState {
 
 		switch (key) {
 		case Input.KEY_UP:
-			getGame().getBoard().move(new Point(0, +increment));
+			getGame().board.move(new Point(0, +increment));
 			break;
 		case Input.KEY_DOWN:
-			getGame().getBoard().move(new Point(0, -increment));
+			getGame().board.move(new Point(0, -increment));
 			break;
 		case Input.KEY_LEFT:
-			getGame().getBoard().move(new Point(+increment, 0));
+			getGame().board.move(new Point(+increment, 0));
 			break;
 		case Input.KEY_RIGHT:
-			getGame().getBoard().move(new Point(-increment, 0));
+			getGame().board.move(new Point(-increment, 0));
 			break;
 		case Input.KEY_ENTER:
-			pauseMenu.setPause(!pauseMenu.IsPaused());
+			pauseMenu.visible = !pauseMenu.visible;
 			break;
 		default:
 			break;
@@ -244,7 +251,7 @@ public abstract class CoreGameState extends InteractiveState {
 			throw new NullPointerException("Challenge cannot be null.");
 		}
 
-		challenges.put(challenge, new Delay(1000));
+		challenges.put(challenge, new Delay(600));
 	}
 
 	/**
@@ -269,7 +276,7 @@ public abstract class CoreGameState extends InteractiveState {
 	protected void clickBoard(Point click) {
 
 		// Holds the game board
-		Board board = getGame().getBoard();
+		Board board = getGame().board;
 
 		// If there is a game board
 		if (board != null) {
@@ -289,7 +296,7 @@ public abstract class CoreGameState extends InteractiveState {
 	protected void drawAllLinks(Graphics g) {
 
 		// Get all the countries from the board.
-		getGame().getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
+		getGame().board.getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
 
 			Army army = country.getArmy();
 
@@ -317,12 +324,12 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	protected boolean clickPauseMenu(Point click) {
-		if (pauseMenu.IsPaused()) {
+		if (pauseMenu.visible) {
 			if (pauseMenu.isClicked(click)) {
 				pauseMenu.parseClick(click);
 				return true;
 			}
-			pauseMenu.setPause(false);
+			pauseMenu.visible = false;
 		}
 		return false;
 	}
@@ -384,7 +391,7 @@ public abstract class CoreGameState extends InteractiveState {
 	private void drawArmies(Graphics g) {
 
 		// Iterate across every country on the game board.
-		getGame().getBoard().getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
+		getGame().board.getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
 
 			// Draw a background oval with the rulers colour. If no ruler found default to
 			// light grey.
@@ -396,8 +403,8 @@ public abstract class CoreGameState extends InteractiveState {
 
 			// Holds the position that army will be drawn at
 			Point armyPosition = getArmyPosition(country);
-			
-			//Holds the size of the current countries army
+
+			// Holds the size of the current countries army
 			int troopNumber = country.getArmy().getSize();
 
 			if (troopNumber > 99) {

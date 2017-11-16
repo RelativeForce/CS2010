@@ -324,8 +324,4 @@ public class MapReader implements FileParser {
 		return detailsFile.length;
 	}
 
-	@Override
-	public boolean isFinished() {
-		return getIndex() == getLength();
-	}
 }

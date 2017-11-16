@@ -103,10 +103,6 @@ public class AssetReader implements FileParser {
 		return index;
 	}
 
-	public boolean isFinished() {
-		return index == lines.length;
-	}
-
 	@Override
 	public int getLength() {
 		return lines.length;

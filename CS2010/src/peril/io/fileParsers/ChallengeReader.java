@@ -244,9 +244,4 @@ public class ChallengeReader implements FileParser {
 		return challengesFile.length;
 	}
 
-	@Override
-	public boolean isFinished() {
-		return getIndex() == getLength();
-	}
-
 }

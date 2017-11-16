@@ -17,24 +17,28 @@ import peril.io.fileReaders.TextFileReader;
  * Reads the challenges from an external file and uses then constructs the
  * challenges for the {@link Game}.
  */
-public class ChallengeReader implements FileParser {
+public final class ChallengeReader implements FileParser {
 
 	/**
 	 * The lines of the challenges file which specifies all the challenges of the
 	 * {@link Player}s on the specified map.
 	 */
-	private String[] challengesFile;
+	private final String[] challengesFile;
 
 	/**
 	 * The {@link Challenge}s read from the challenges file.
 	 */
-	private List<Challenge> challenges;
+	private final List<Challenge> challenges;
 
 	/**
 	 * The {@link Game} is using this {@link ChallengeReader}.
 	 */
-	private Game game;
+	private final Game game;
 
+	/**
+	 * The index of the next line that will be parsed by
+	 * {@link FileParser#parseLine()}.
+	 */
 	private int index;
 
 	/**
@@ -64,7 +68,7 @@ public class ChallengeReader implements FileParser {
 	public void parseLine() {
 
 		if (!isFinished()) {
-			
+
 			// Split the line by ','
 			String[] details = challengesFile[index].split(",");
 
@@ -83,7 +87,7 @@ public class ChallengeReader implements FileParser {
 				parseContinentsOwned(details);
 				break;
 			}
-			
+
 			index++;
 
 			if (isFinished()) {
@@ -91,6 +95,23 @@ public class ChallengeReader implements FileParser {
 			}
 		}
 
+	}
+
+	/**
+	 * Retrieves the index that this {@link ChallengeReader} is in the challenges
+	 * file.
+	 */
+	@Override
+	public int getIndex() {
+		return index;
+	}
+
+	/**
+	 * Retrieves the length of the challenges file.
+	 */
+	@Override
+	public int getLength() {
+		return challengesFile.length;
 	}
 
 	/**
@@ -232,16 +253,6 @@ public class ChallengeReader implements FileParser {
 			throw new IllegalArgumentException("details not valid.");
 		}
 
-	}
-
-	@Override
-	public int getIndex() {
-		return index;
-	}
-
-	@Override
-	public int getLength() {
-		return challengesFile.length;
 	}
 
 }

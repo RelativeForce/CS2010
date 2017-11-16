@@ -31,29 +31,29 @@ public final class AssetReader implements FileParser {
 	 * The {@link CoreGameState}s that will be populated when
 	 * {@link AssetReader#read()} is performed.
 	 */
-	private Container[] containers;
+	private final Container[] containers;
 
 	/**
 	 * File path of the asset details file.
 	 */
-	private String directoryPath;
+	private final String directoryPath;
 
 	/**
 	 * Holds the lines of the assets file.
 	 */
-	private String[] lines;
+	private final String[] lines;
+
+	/**
+	 * Holds the {@link FunctionHandler} that contains the functions that buttons
+	 * will execute.
+	 */
+	private final FunctionHandler functionHandler;
 
 	/**
 	 * The index of the next line that will be parsed by
 	 * {@link FileParser#parseLine()}.
 	 */
 	public int index;
-
-	/**
-	 * Holds the {@link FunctionHandler} that contains the functions that buttons
-	 * will execute.
-	 */
-	private FunctionHandler functionHandler;
 
 	/**
 	 * Constructs a new {@link AssetReader}.

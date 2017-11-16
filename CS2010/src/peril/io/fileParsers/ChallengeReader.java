@@ -1,4 +1,4 @@
-package peril.io;
+package peril.io.fileParsers;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,13 +10,14 @@ import peril.board.Army;
 import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
+import peril.io.FileParser;
 import peril.io.fileReaders.TextFileReader;
 
 /**
  * Reads the challenges from an external file and uses then constructs the
  * challenges for the {@link Game}.
  */
-public class ChallengeReader implements FileReader {
+public class ChallengeReader implements FileParser {
 
 	/**
 	 * The lines of the challenges file which specifies all the challenges of the

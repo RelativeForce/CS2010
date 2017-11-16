@@ -1,6 +1,6 @@
 package peril.io;
 
-public interface FileReader {
+public interface FileParser {
 
 	/**
 	 * Parses a line of the file and selects what action should be taken.

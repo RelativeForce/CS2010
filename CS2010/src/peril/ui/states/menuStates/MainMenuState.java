@@ -14,7 +14,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Player;
 import peril.Point;
-import peril.io.MapReader;
+import peril.io.fileParsers.MapReader;
 import peril.io.fileReaders.TextFileReader;
 import peril.ui.components.Font;
 import peril.ui.components.VisualList;

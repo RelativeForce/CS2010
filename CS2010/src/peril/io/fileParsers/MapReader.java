@@ -1,4 +1,4 @@
-package peril.io;
+package peril.io.fileParsers;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -12,6 +12,7 @@ import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
 import peril.board.EnvironmentalHazard;
+import peril.io.FileParser;
 import peril.io.fileReaders.ImageReader;
 import peril.io.fileReaders.TextFileReader;
 import peril.ui.components.Region;
@@ -23,7 +24,7 @@ import peril.ui.components.Region;
  * @author Joshua_Eddy
  *
  */
-public class MapReader implements FileReader {
+public class MapReader implements FileParser {
 
 	/**
 	 * The path to the directory with all the map assets in it.

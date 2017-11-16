@@ -1,4 +1,4 @@
-package peril.io;
+package peril.io.fileParsers;
 
 import java.io.File;
 
@@ -6,6 +6,8 @@ import org.newdawn.slick.Image;
 
 import peril.Game;
 import peril.Point;
+import peril.io.FileParser;
+import peril.io.FunctionHandler;
 import peril.io.fileReaders.ImageReader;
 import peril.io.fileReaders.TextFileReader;
 import peril.multiThread.Action;
@@ -22,7 +24,7 @@ import peril.ui.states.InteractiveState;
  * @author Joshua_Eddy
  *
  */
-public class AssetReader implements FileReader {
+public class AssetReader implements FileParser {
 
 	/**
 	 * The {@link CoreGameState}s that will be populated when

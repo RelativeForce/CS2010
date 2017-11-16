@@ -11,14 +11,14 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Point;
-import peril.io.FileReader;
+import peril.io.FileParser;
 import peril.ui.components.Viewable;
 
 public final class LoadingScreen extends InteractiveState {
 
 	private static String NAME = "loading screen";
 
-	private List<FileReader> readers;
+	private List<FileParser> readers;
 
 	private int index;
 
@@ -83,7 +83,7 @@ public final class LoadingScreen extends InteractiveState {
 			getGame().enterState(getGame().setup.getID());
 		} else {
 
-			FileReader reader = readers.get(index);
+			FileParser reader = readers.get(index);
 
 			if (!reader.isFinished()) {
 				reader.parseLine();
@@ -95,7 +95,7 @@ public final class LoadingScreen extends InteractiveState {
 
 	}
 
-	public void addReader(FileReader reader) {
+	public void addReader(FileParser reader) {
 
 		if (getGame().getCurrentState().getID() == this.getID()) {
 			throw new IllegalStateException("You cant add a file reader when the game is already loading.");

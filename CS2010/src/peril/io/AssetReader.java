@@ -6,6 +6,8 @@ import org.newdawn.slick.Image;
 
 import peril.Game;
 import peril.Point;
+import peril.io.fileReaders.ImageReader;
+import peril.io.fileReaders.TextFileReader;
 import peril.multiThread.Action;
 import peril.ui.Button;
 import peril.ui.Container;

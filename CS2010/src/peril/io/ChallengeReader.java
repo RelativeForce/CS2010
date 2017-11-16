@@ -10,6 +10,7 @@ import peril.board.Army;
 import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
+import peril.io.fileReaders.TextFileReader;
 
 /**
  * Reads the challenges from an external file and uses then constructs the

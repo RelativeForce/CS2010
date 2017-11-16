@@ -15,7 +15,7 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.io.MapReader;
-import peril.io.TextFileReader;
+import peril.io.fileReaders.TextFileReader;
 import peril.ui.components.Font;
 import peril.ui.components.VisualList;
 import peril.ui.states.InteractiveState;

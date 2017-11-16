@@ -19,7 +19,7 @@ import peril.board.Continent;
 import peril.board.Country;
 import peril.io.AssetReader;
 import peril.io.ChallengeReader;
-import peril.io.MusicReader;
+import peril.io.fileReaders.MusicReader;
 import peril.ui.Container;
 import peril.ui.UIEventHandler;
 import peril.ui.components.menus.PauseMenu;

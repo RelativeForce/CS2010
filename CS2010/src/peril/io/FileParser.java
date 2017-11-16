@@ -19,7 +19,7 @@ public interface FileParser {
 	public void parseLine();
 
 	/**
-	 * Retrieves the index that this {@link FileParser} in the processing of their.
+	 * Retrieves the index that this {@link FileParser} in the processing of their file.
 	 * 
 	 * @return <code>int</code>
 	 */
@@ -28,7 +28,7 @@ public interface FileParser {
 	/**
 	 * Retrieves the length of the file that this {@link FileParser} must parse.
 	 * 
-	 * @return
+	 * @return <code>int</code>
 	 */
 	public int getLength();
 

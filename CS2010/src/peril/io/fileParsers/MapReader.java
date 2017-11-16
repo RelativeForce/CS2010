@@ -24,39 +24,43 @@ import peril.ui.components.Region;
  * @author Joshua_Eddy
  *
  */
-public class MapReader implements FileParser {
+public final class MapReader implements FileParser {
 
 	/**
 	 * The path to the directory with all the map assets in it.
 	 */
-	private String directoryPath;
+	private final String directoryPath;
 
 	/**
 	 * The {@link List} of all the {@link Continent}s on the {@link Board}.
 	 */
-	private List<Continent> continents;
+	private final List<Continent> continents;
 
 	/**
 	 * The lines of the details file which specifies all the details about the map.
 	 */
-	private String[] detailsFile;
+	private final String[] detailsFile;
 
 	/**
 	 * The image of the {@link Board}.
 	 */
-	private Image normalMap;
+	private final Image normalMap;
 
 	/**
 	 * The {@link List} of all the {@link Country}s on the {@link Board}.
 	 */
-	private List<Country> countries;
+	private final List<Country> countries;
 
 	/**
 	 * Holds the board this {@link MapReader} will populate when
 	 * {@link MapReader#parseBoard(Board)} is performed.
 	 */
-	private Board board;
+	private final Board board;
 
+	/**
+	 * The index of the next line that will be parsed by
+	 * {@link FileParser#parseLine()}.
+	 */
 	private int index;
 
 	/**
@@ -90,9 +94,6 @@ public class MapReader implements FileParser {
 
 	/**
 	 * Parses a line from a map details file.
-	 * 
-	 * @param line
-	 *            <code>String</code> line of details.
 	 */
 	public void parseLine() {
 
@@ -314,11 +315,18 @@ public class MapReader implements FileParser {
 
 	}
 
+	/**
+	 * Retrieves the index that this {@link MapReader} in the processing of the map
+	 * file..
+	 */
 	@Override
 	public int getIndex() {
 		return index;
 	}
 
+	/**
+	 * Retrieves the length of the mpas file.
+	 */
 	@Override
 	public int getLength() {
 		return detailsFile.length;

@@ -28,6 +28,8 @@ public final class LoadingScreen extends InteractiveState {
 
 	private Viewable background;
 
+	private Music music;
+
 	public LoadingScreen(Game game, int id) {
 		super(game, NAME, id);
 		index = 0;
@@ -44,6 +46,7 @@ public final class LoadingScreen extends InteractiveState {
 
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
+		music = getGame().musicHelper.read("loading");
 		background.setImage(background.getPosition(),
 				background.getImage().getScaledCopy(gc.getWidth(), gc.getHeight()));
 		super.enter(gc, sbg);
@@ -115,7 +118,7 @@ public final class LoadingScreen extends InteractiveState {
 
 	@Override
 	public Music getMusic() {
-		return null;
+		return music;
 	}
 
 }

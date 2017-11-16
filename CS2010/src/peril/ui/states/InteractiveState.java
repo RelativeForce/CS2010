@@ -165,6 +165,14 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		System.out.println("Entering gamestate: " + stateName);
+		
+		gc.setMusicOn(false);
+		gc.setMusicOn(true);
+		
+		
+		if(getMusic() != null) {
+			getMusic().play();
+		}
 	}
 
 	/**

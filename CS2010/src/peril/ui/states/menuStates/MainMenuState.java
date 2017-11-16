@@ -160,10 +160,7 @@ public class MainMenuState extends InteractiveState {
 		players.init();
 		players.setFont(listFont);
 
-		// Start the music intro
-		getGame().musicHelper.read("HumanMusicIntro").play();
-
-		// Set the music that will be repeated when the intro finishes
+		// Set the music that will be repeated by this state
 		background = getGame().musicHelper.read("HumanMusic");
 
 	}

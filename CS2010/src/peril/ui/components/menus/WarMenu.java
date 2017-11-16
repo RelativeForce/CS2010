@@ -108,7 +108,10 @@ public class WarMenu extends Menu {
 					defendingArmy.setSize(defendingArmy.getSize() - 1);
 				}
 				
-				defender.setTotalArmySize(defender.getTotalArmySize() - 1);
+				if(defender != null) {
+					defender.setTotalArmySize(defender.getTotalArmySize() - 1);
+				}
+				
 
 			}
 			// Attacker has lost the attack

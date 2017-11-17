@@ -1,4 +1,4 @@
-package peril.io;
+package peril.io.fileParsers;
 
 import peril.io.fileReaders.TextFileReader;
 

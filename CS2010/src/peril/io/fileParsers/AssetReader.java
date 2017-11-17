@@ -6,7 +6,6 @@ import org.newdawn.slick.Image;
 
 import peril.Game;
 import peril.Point;
-import peril.io.FileParser;
 import peril.io.FunctionHandler;
 import peril.io.fileReaders.ImageReader;
 import peril.io.fileReaders.TextFileReader;

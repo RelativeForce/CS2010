@@ -479,7 +479,7 @@ public abstract class CoreGameState extends InteractiveState {
 				g.fillOval(armyPosition.x - 3, armyPosition.y - 3, 15, 25);
 			}
 
-			g.setColor(Color.black);
+			g.setColor(Color.white);
 
 			// Draw a string representing the number of troops
 			// within that army at (x,y).

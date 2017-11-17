@@ -12,7 +12,6 @@ import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
 import peril.board.EnvironmentalHazard;
-import peril.io.FileParser;
 import peril.io.fileReaders.ImageReader;
 import peril.io.fileReaders.TextFileReader;
 import peril.ui.components.Region;

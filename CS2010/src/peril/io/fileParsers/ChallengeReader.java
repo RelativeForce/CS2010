@@ -10,7 +10,6 @@ import peril.board.Army;
 import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
-import peril.io.FileParser;
 import peril.io.fileReaders.TextFileReader;
 
 /**

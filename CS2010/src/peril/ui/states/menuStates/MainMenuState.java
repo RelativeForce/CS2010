@@ -166,6 +166,12 @@ public class MainMenuState extends InteractiveState {
 	}
 
 	@Override
+	public void enter(GameContainer gc, StateBasedGame sbg) {
+		super.enter(gc, sbg);
+		changeMusic(gc);
+	}
+	
+	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 
 	}

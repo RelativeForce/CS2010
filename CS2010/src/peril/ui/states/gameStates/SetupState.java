@@ -42,6 +42,12 @@ public final class SetupState extends CoreGameState {
 	}
 
 	@Override
+	public void enter(GameContainer gc, StateBasedGame sbg) {
+		super.enter(gc, sbg);
+		changeMusic(gc);
+	}
+	
+	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
 	}

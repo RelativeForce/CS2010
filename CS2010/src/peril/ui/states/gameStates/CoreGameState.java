@@ -48,6 +48,8 @@ public abstract class CoreGameState extends InteractiveState {
 	 * The {@link PauseMenu} for this {@link CoreGameState}.
 	 */
 	private PauseMenu pauseMenu;
+	
+	private Music backgroundMusic;
 
 	/**
 	 * Constructs a new {@link CoreGameState}.
@@ -135,6 +137,7 @@ public abstract class CoreGameState extends InteractiveState {
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
 		pauseMenu.init();
+		backgroundMusic = getGame().musicHelper.read("game1");
 	}
 
 	@Override
@@ -235,7 +238,7 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	@Override
 	public Music getMusic() {
-		return getGame().musicHelper.read("HumanMusic");
+		return backgroundMusic;
 	}
 
 	/**

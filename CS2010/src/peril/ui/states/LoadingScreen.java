@@ -89,16 +89,28 @@ public final class LoadingScreen extends InteractiveState {
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 
-		// Set the music.
-		music = getGame().musicHelper.read("loading");
-
 		// Scale the background image to fill the screen.
 		background.setImage(background.getPosition(),
 				background.getImage().getScaledCopy(gc.getWidth(), gc.getHeight()));
 
+		changeMusic(gc);
+		
 		initProgressBar(gc.getWidth(), gc.getHeight());
 
 		super.enter(gc, sbg);
+	}
+
+	/**
+	 * Initialises this {@link LoadingScreen}.
+	 */
+	@Override
+	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		super.init(gc, sbg);
+
+		// Set the music.
+		music = getGame().musicHelper.read("loading");
+		
+
 	}
 
 	/**
@@ -109,7 +121,7 @@ public final class LoadingScreen extends InteractiveState {
 		super.render(gc, sbg, g);
 
 		progressBar.draw(g);
-		
+
 	}
 
 	/**
@@ -197,11 +209,13 @@ public final class LoadingScreen extends InteractiveState {
 	/**
 	 * Initialise the {@link LoadingScreen#progressBar}.
 	 * 
-	 * @param windowWidth The width of the screen.
-	 * @param windowHeight The height of the screen.
+	 * @param windowWidth
+	 *            The width of the screen.
+	 * @param windowHeight
+	 *            The height of the screen.
 	 */
 	private void initProgressBar(int windowWidth, int windowHeight) {
-		
+
 		// Holds the loading bar padding.
 		int windowPadding = (windowHeight / 10);
 
@@ -213,5 +227,5 @@ public final class LoadingScreen extends InteractiveState {
 
 		progressBar.init(barPosition, barWidth, 40);
 	}
-	
+
 }

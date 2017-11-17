@@ -10,20 +10,13 @@ import peril.board.Army;
 import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
-import peril.io.fileReaders.TextFileReader;
 
 /**
  * Reads the challenges from an external file and uses then constructs the
  * challenges for the {@link Game}. Must be executed after the {@link Board} has
  * be parsed by the {@link MapReader}.
  */
-public final class ChallengeReader implements FileParser {
-
-	/**
-	 * The lines of the challenges file which specifies all the challenges of the
-	 * {@link Player}s on the specified map.
-	 */
-	private final String[] challengesFile;
+public final class ChallengeReader extends FileParser {
 
 	/**
 	 * The {@link Challenge}s read from the challenges file.
@@ -36,12 +29,6 @@ public final class ChallengeReader implements FileParser {
 	private final Game game;
 
 	/**
-	 * The index of the next line that will be parsed by
-	 * {@link FileParser#parseLine()}.
-	 */
-	private int index;
-
-	/**
 	 * Constructs a new {@link ChallengeReader}.
 	 * 
 	 * @param game
@@ -51,11 +38,10 @@ public final class ChallengeReader implements FileParser {
 	 * 
 	 */
 	public ChallengeReader(Game game, String directoryPath) {
-
-		this.challengesFile = TextFileReader.scanFile(directoryPath, "challenges.txt");
+		super(directoryPath, "challenges.txt");
+		
 		this.challenges = new LinkedList<>();
 		this.game = game;
-		this.index = 0;
 
 	}
 
@@ -70,7 +56,7 @@ public final class ChallengeReader implements FileParser {
 		if (!isFinished()) {
 
 			// Split the line by ','
-			String[] details = challengesFile[index].split(",");
+			String[] details = lines[index].split(",");
 
 			// The first section of the line denotes the type of instruction.
 			String type = details[0];
@@ -95,23 +81,6 @@ public final class ChallengeReader implements FileParser {
 			}
 		}
 
-	}
-
-	/**
-	 * Retrieves the index that this {@link ChallengeReader} is in the challenges
-	 * file.
-	 */
-	@Override
-	public int getIndex() {
-		return index;
-	}
-
-	/**
-	 * Retrieves the length of the challenges file.
-	 */
-	@Override
-	public int getLength() {
-		return challengesFile.length;
 	}
 
 	/**

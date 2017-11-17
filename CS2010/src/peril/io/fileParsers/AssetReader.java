@@ -8,7 +8,6 @@ import peril.Game;
 import peril.Point;
 import peril.io.FunctionHandler;
 import peril.io.fileReaders.ImageReader;
-import peril.io.fileReaders.TextFileReader;
 import peril.multiThread.Action;
 import peril.ui.Button;
 import peril.ui.Container;
@@ -24,7 +23,7 @@ import peril.ui.states.InteractiveState;
  * @author Joshua_Eddy
  *
  */
-public final class AssetReader implements FileParser {
+public final class AssetReader extends FileParser {
 
 	/**
 	 * The {@link CoreGameState}s that will be populated when
@@ -33,26 +32,10 @@ public final class AssetReader implements FileParser {
 	private final Container[] containers;
 
 	/**
-	 * File path of the asset details file.
-	 */
-	private final String directoryPath;
-
-	/**
-	 * Holds the lines of the assets file.
-	 */
-	private final String[] lines;
-
-	/**
 	 * Holds the {@link FunctionHandler} that contains the functions that buttons
 	 * will execute.
 	 */
 	private final FunctionHandler functionHandler;
-
-	/**
-	 * The index of the next line that will be parsed by
-	 * {@link FileParser#parseLine()}.
-	 */
-	public int index;
 
 	/**
 	 * Constructs a new {@link AssetReader}.
@@ -66,19 +49,15 @@ public final class AssetReader implements FileParser {
 	 *            The {@link Game} this {@link AssetReader} will be used by.
 	 */
 	public AssetReader(Container[] containers, String directoryPath, Game game) {
-
+		super(directoryPath, "assets.txt");
+		
 		// Check params
-		if (directoryPath.isEmpty()) {
-			throw new NullPointerException("File path cannot be empty.");
-		} else if (containers.length == 0) {
+		if (containers.length == 0) {
 			throw new NullPointerException("CoreGameState array cannot be empty.");
 		} else if (game == null) {
 			throw new NullPointerException("Game cannot be null.");
 		}
-		this.lines = TextFileReader.scanFile(directoryPath, "assets.txt");
-		this.index = 0;
 		this.functionHandler = new FunctionHandler(game);
-		this.directoryPath = directoryPath;
 		this.containers = containers;
 	}
 
@@ -109,22 +88,6 @@ public final class AssetReader implements FileParser {
 
 		index++;
 
-	}
-
-	/**
-	 * Retrieves the index that this {@link AssetReader} is in the assets file.
-	 */
-	@Override
-	public int getIndex() {
-		return index;
-	}
-
-	/**
-	 * Retrieves the length of the assets file.
-	 */
-	@Override
-	public int getLength() {
-		return lines.length;
 	}
 
 	/**

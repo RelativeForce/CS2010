@@ -13,7 +13,6 @@ import peril.board.Continent;
 import peril.board.Country;
 import peril.board.EnvironmentalHazard;
 import peril.io.fileReaders.ImageReader;
-import peril.io.fileReaders.TextFileReader;
 import peril.ui.components.Region;
 
 /**
@@ -23,22 +22,12 @@ import peril.ui.components.Region;
  * @author Joshua_Eddy
  *
  */
-public final class MapReader implements FileParser {
-
-	/**
-	 * The path to the directory with all the map assets in it.
-	 */
-	private final String directoryPath;
+public final class MapReader extends FileParser {
 
 	/**
 	 * The {@link List} of all the {@link Continent}s on the {@link Board}.
 	 */
 	private final List<Continent> continents;
-
-	/**
-	 * The lines of the details file which specifies all the details about the map.
-	 */
-	private final String[] detailsFile;
 
 	/**
 	 * The image of the {@link Board}.
@@ -57,12 +46,6 @@ public final class MapReader implements FileParser {
 	private final Board board;
 
 	/**
-	 * The index of the next line that will be parsed by
-	 * {@link FileParser#parseLine()}.
-	 */
-	private int index;
-
-	/**
 	 * Constructs a new {@link MapReader}.
 	 * 
 	 * @param directoryPath
@@ -73,19 +56,15 @@ public final class MapReader implements FileParser {
 	 *            file from the directory path}.
 	 */
 	public MapReader(String directoryPath, Board board) {
+		super(directoryPath, "details.txt");
 
-		if (directoryPath.isEmpty()) {
-			throw new NullPointerException("Directory path cannot be null.");
-		} else if (board == null) {
+		if (board == null) {
 			throw new NullPointerException("Directory path cannot be null.");
 		}
 
-		this.directoryPath = directoryPath;
-		this.detailsFile = TextFileReader.scanFile(directoryPath, "details.txt");
 		this.continents = new LinkedList<>();
 		this.countries = new LinkedList<>();
 		this.board = board;
-		this.index = 0;
 
 		normalMap = ImageReader.getImage(directoryPath + File.separatorChar + "normal.png");
 
@@ -98,7 +77,7 @@ public final class MapReader implements FileParser {
 
 		if (!isFinished()) {
 			// Split the line by ','
-			String[] details = detailsFile[index].split(",");
+			String[] details = lines[index].split(",");
 
 			// The first section of the line denotes the type of instruction.
 			String type = details[0];
@@ -312,23 +291,6 @@ public final class MapReader implements FileParser {
 
 		}
 
-	}
-
-	/**
-	 * Retrieves the index that this {@link MapReader} in the processing of the map
-	 * file..
-	 */
-	@Override
-	public int getIndex() {
-		return index;
-	}
-
-	/**
-	 * Retrieves the length of the mpas file.
-	 */
-	@Override
-	public int getLength() {
-		return detailsFile.length;
 	}
 
 }

@@ -11,7 +11,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Point;
-import peril.io.FileParser;
+import peril.io.fileParsers.FileParser;
 import peril.ui.components.ProgressBar;
 import peril.ui.components.Viewable;
 import peril.ui.states.gameStates.SetupState;

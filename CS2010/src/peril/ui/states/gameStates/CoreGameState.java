@@ -34,6 +34,11 @@ import peril.ui.states.InteractiveState;
 public abstract class CoreGameState extends InteractiveState {
 
 	/**
+	 * The {@link Point} pan direction vector this state will pan at.
+	 */
+	private Point panDirection;
+
+	/**
 	 * The current {@link Country} that the player has highlighted.
 	 */
 	private Country highlightedCountry;
@@ -48,7 +53,11 @@ public abstract class CoreGameState extends InteractiveState {
 	 * The {@link PauseMenu} for this {@link CoreGameState}.
 	 */
 	private PauseMenu pauseMenu;
-	
+
+	/**
+	 * The {@link Music} that is played in the background of the
+	 * {@link CoreGameState}s.
+	 */
 	private Music backgroundMusic;
 
 	/**
@@ -66,6 +75,7 @@ public abstract class CoreGameState extends InteractiveState {
 		this.highlightedCountry = null;
 		this.challenges = new IdentityHashMap<>();
 		this.pauseMenu = pauseMenu;
+		this.panDirection = null;
 	}
 
 	/**
@@ -131,6 +141,11 @@ public abstract class CoreGameState extends InteractiveState {
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		super.update(gc, sbg, delta);
 		elapseTime();
+
+		if (panDirection != null) {
+			getGame().board.move(panDirection);
+		}
+
 	}
 
 	@Override
@@ -255,6 +270,52 @@ public abstract class CoreGameState extends InteractiveState {
 		}
 
 		challenges.put(challenge, new Delay(600));
+	}
+
+	/**
+	 * Assigns the pan direction of the {@link CoreGameState}.
+	 * 
+	 * @param mousePosition
+	 *            {@link Point} position of the mosue.
+	 */
+	public void pan(Point mousePosition) {
+
+		// Holds the dimensions of the game container.
+		int screenWidth = getGame().getContainer().getWidth();
+		int screenHeight = getGame().getContainer().getHeight();
+
+		// Set the padding of the window
+		int xPadding = screenWidth / 10;
+		int yPadding = screenHeight / 10;
+
+		// The pixels per frame the state will pan at.
+		int panSpeed = 4;
+
+		int x = 0;
+		int y = 0;
+
+		// If the x is within the padding pan left or right
+		if (mousePosition.x < xPadding) {
+			x = panSpeed;
+		} else if (mousePosition.x > screenWidth - xPadding) {
+			x = -panSpeed;
+		}
+
+		// If the y is within the padding pan up or down
+		if (mousePosition.y < yPadding) {
+			y = panSpeed;
+		} else if (mousePosition.y > screenHeight - yPadding) {
+			y = -panSpeed;
+		}
+
+		// If there is a pan direction set the pan direction as that vector. Otherwise
+		// set the pan direction as null.
+		if (x != 0 || y != 0) {
+			panDirection = new Point(x, y);
+		} else {
+			panDirection = null;
+		}
+
 	}
 
 	/**
@@ -418,7 +479,7 @@ public abstract class CoreGameState extends InteractiveState {
 				g.fillOval(armyPosition.x - 3, armyPosition.y - 3, 15, 25);
 			}
 
-			g.setColor(Color.black);
+			g.setColor(Color.white);
 
 			// Draw a string representing the number of troops
 			// within that army at (x,y).

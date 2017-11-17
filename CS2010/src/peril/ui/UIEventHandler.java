@@ -6,6 +6,8 @@ import org.newdawn.slick.MouseListener;
 
 import peril.Game;
 import peril.Point;
+import peril.ui.states.InteractiveState;
+import peril.ui.states.gameStates.CoreGameState;
 
 /**
  * Handles all the interactions that the user will cause using the
@@ -64,7 +66,12 @@ public class UIEventHandler implements MouseListener, KeyListener {
 
 	@Override
 	public void mouseMoved(int oldx, int oldy, int newx, int newy) {
-
+		
+		InteractiveState state = game.getCurrentState();
+		
+		if (state instanceof CoreGameState) {
+			((CoreGameState) state).pan(new Point(newx, newy));
+		}
 	}
 
 	@Override

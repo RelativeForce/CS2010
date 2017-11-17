@@ -161,7 +161,7 @@ public class MainMenuState extends InteractiveState {
 		players.setFont(listFont);
 
 		// Set the music that will be repeated by this state
-		background = getGame().musicHelper.read("HumanMusic");
+		background = getGame().musicHelper.read("menu");
 
 	}
 

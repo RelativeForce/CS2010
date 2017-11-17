@@ -25,6 +25,11 @@ public class Button extends Clickable {
 	private Action<?> action;
 
 	/**
+	 * Holds the id of this {@link Button} allowing it to be identified.
+	 */
+	private String id;
+
+	/**
 	 * Constructs a new {@link Button}.
 	 * 
 	 * @param position
@@ -34,8 +39,10 @@ public class Button extends Clickable {
 	 * @param action
 	 *            The {@link Action} this button will perform when
 	 *            {@link Button#click()} is performed.
+	 * @param id
+	 *            The id string that denotes this button.
 	 */
-	public Button(Point position, Image image, Action<?> action) {
+	public Button(Point position, Image image, Action<?> action, String id) {
 		super(new Region(image));
 
 		// Check the params
@@ -50,7 +57,7 @@ public class Button extends Clickable {
 		// Initialise the image and action.
 		this.setImage(position, image);
 		this.setPosition(position);
-		
+		this.id = id;
 		this.action = action;
 	}
 
@@ -59,5 +66,14 @@ public class Button extends Clickable {
 	 */
 	public void click() {
 		action.execute();
+	}
+
+	/**
+	 * Retrieves the id that uniquely identifies this {@link Button}.
+	 * 
+	 * @return <code>String</code> id number
+	 */
+	public String getId() {
+		return id;
 	}
 }

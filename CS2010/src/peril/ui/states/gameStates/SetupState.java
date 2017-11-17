@@ -50,6 +50,10 @@ public final class SetupState extends CoreGameState {
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
+		
+		drawImages(g);
+		drawButtons(g);
+		
 	}
 
 	@Override

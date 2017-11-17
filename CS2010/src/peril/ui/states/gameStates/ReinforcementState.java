@@ -70,6 +70,9 @@ public final class ReinforcementState extends CoreGameState {
 		super.render(gc, sbg, g);
 
 		super.drawPlayerName(g);
+		
+		drawImages(g);
+		drawButtons(g);
 
 		// Set the text color to magenta
 		g.setColor(Color.black);

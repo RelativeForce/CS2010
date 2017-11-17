@@ -126,9 +126,6 @@ public abstract class CoreGameState extends InteractiveState {
 
 		drawArmies(g);
 
-		// Draw all the clickable objects.
-		super.render(gc, sbg, g);
-
 		drawStateBox(g);
 
 		drawChallenges(g, 130, 15);

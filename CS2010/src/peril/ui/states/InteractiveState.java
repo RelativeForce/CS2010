@@ -199,10 +199,7 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 *            accelerated canvas provided by LWJGL.
 	 */
 	@Override
-	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		images.forEach(image -> g.drawImage(image.getImage(), image.getPosition().x, image.getPosition().y));
-		buttons.forEach(button -> g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y));
-	}
+	public abstract void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException;
 
 	/**
 	 * Called as part of slick2d's game loop. Update the state's logic based on the
@@ -270,6 +267,14 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 		images.add(image);
 	}
 
+	protected void drawButtons(Graphics g) {
+		buttons.forEach(button -> g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y));
+	}
+	
+	protected void drawImages(Graphics g) {
+		images.forEach(image -> g.drawImage(image.getImage(), image.getPosition().x, image.getPosition().y));
+	}
+	
 	protected void changeMusic(GameContainer gc) {
 		
 		gc.setMusicOn(false);

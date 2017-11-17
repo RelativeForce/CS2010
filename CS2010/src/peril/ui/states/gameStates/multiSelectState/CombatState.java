@@ -95,6 +95,9 @@ public final class CombatState extends MultiSelectState {
 
 		super.render(gc, sbg, g);
 		super.drawPlayerName(g);
+		
+		super.drawImages(g);
+		super.drawButtons(g);
 
 		this.drawValidTargets(g);
 		

@@ -1,14 +1,12 @@
 // asset_type,state_name,function_code,asset_file_name,width,height,x,y
 button,Reinforcement,0,reinforceButton.png,50,30,10,80,reinforce
 button,Reinforcement,1,endButton.png,50,30,10,110,end
-button,Combat,2,endButton.png,50,30,10,110,end
-button,Movement,3,endButton.png,50,30,10,110,end
-button,Setup,4,endButton.png,50,30,10,110,end
 button,Movement,5,fortifyButton.png,50,30,10,80,fortify
+button,Movement,3,endButton.png,50,30,10,110,end
+button,Combat,2,endButton.png,50,30,10,110,end
 button,Combat,6,attackButton.png,50,30,10,80,attack
-button,Main Menu,7,playButton.png,50,30,130,25,play
+button,Setup,4,endButton.png,50,30,10,110,end
 button,Setup,8,playButton.png,50,30,10,80,auto
 button,Pause Menu,10,endButton.png,50,30,240,260,pause
 
 // asset_type,state_name,asset_file_name,width,height,x,y
-image,loading screen,perilLogo.png,-,-,0,0

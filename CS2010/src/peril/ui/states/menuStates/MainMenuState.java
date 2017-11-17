@@ -145,10 +145,6 @@ public class MainMenuState extends InteractiveState {
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 
-		while(!getGame().assetReader.isFinished()) {
-			getGame().assetReader.parseLine();
-		}
-
 		// Initialise the fonts;
 		listFont = new Font("Arial", Color.black, 18);
 		headingFont = new Font("Arial", Color.red, 56);
@@ -176,6 +172,10 @@ public class MainMenuState extends InteractiveState {
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 
+		if(!getGame().mainMenuLoader.isFinished()) {
+			getGame().mainMenuLoader.parseLine();
+		}
+		
 	}
 
 	@Override
@@ -212,8 +212,9 @@ public class MainMenuState extends InteractiveState {
 		int height = (map.height > screenHeight) ? screenHeight : map.height;
 		
 		getGame().reSize(width, height);
+		getGame().loadingScreen.addReader(getGame().gameLoader);
 		getGame().loadingScreen.addReader(new MapReader(getGame().mapsDirectory + map.name, getGame().board));
-		getGame().loadingScreen.addReader(getGame().challengeReader);
+		getGame().loadingScreen.addReader(getGame().challengeLoader);
 		getGame().enterState(getGame().loadingScreen.getID());
 
 	}

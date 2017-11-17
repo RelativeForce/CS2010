@@ -1,0 +1,5 @@
+// asset_type,state_name,function_code,asset_file_name,width,height,x,y
+button,Main Menu,7,playButton.png,50,30,130,25,play
+
+// asset_type,state_name,asset_file_name,width,height,x,y
+image,loading screen,perilLogo.png,-,-,0,0

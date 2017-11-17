@@ -96,26 +96,17 @@ public class Game extends StateBasedGame implements MusicListener {
 	public final MusicReader musicHelper;
 
 	/**
-	 * The {@link UIEventHandler} that processes all of the user inputs and triggers
-	 * the appropriate operations.
-	 */
-	private final UIEventHandler eventHandler;
-
-	/**
-	 * The {@link WarMenu} that processes all of the game's combat.
-	 */
-	private final WarMenu warMenu;
-
-	/**
 	 * The {@link AssetReader} that loads all the {@link CoreGameState} states
 	 * buttons into the game from memory.
 	 */
-	public final AssetReader assetReader;
+	public final AssetReader gameLoader;
+
+	public final AssetReader mainMenuLoader;
 
 	/**
 	 * {@link ChallengeReader} that loads the {@link Challenge}s from memory.
 	 */
-	public final ChallengeReader challengeReader;
+	public final ChallengeReader challengeLoader;
 
 	/**
 	 * Holds the path to the directory containing the maps file.
@@ -131,6 +122,17 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * The instance of the {@link Board} used for this game.
 	 */
 	public final Board board;
+
+	/**
+	 * The {@link UIEventHandler} that processes all of the user inputs and triggers
+	 * the appropriate operations.
+	 */
+	private final UIEventHandler eventHandler;
+
+	/**
+	 * The {@link WarMenu} that processes all of the game's combat.
+	 */
+	private final WarMenu warMenu;
 
 	/**
 	 * The current turn of the {@link Game}. Initially zero;
@@ -209,7 +211,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		game_assetsPath.append(File.separatorChar);
 		game_assetsPath.append("game_assets");
 
-		this.challengeReader = new ChallengeReader(this, game_assetsPath.toString());
+		this.challengeLoader = new ChallengeReader(this, game_assetsPath.toString());
 
 		StringBuilder musicPath = new StringBuilder(game_assetsPath);
 		musicPath.append(File.separatorChar);
@@ -227,8 +229,12 @@ public class Game extends StateBasedGame implements MusicListener {
 		ui_assestsPath.append(File.separatorChar);
 		ui_assestsPath.append("ui_assets");
 
-		this.assetReader = new AssetReader(new Container[] { pauseMenu, loadingScreen, warMenu, mainMenu, combat, setup,
-				reinforcement, movement, end }, ui_assestsPath.toString(), this);
+		Container[] containers = new Container[] { pauseMenu, loadingScreen, warMenu, mainMenu, combat, setup,
+				reinforcement, movement, end };
+
+		this.gameLoader = new AssetReader(containers, ui_assestsPath.toString(), "game.txt", this);
+
+		this.mainMenuLoader = new AssetReader(containers, ui_assestsPath.toString(), "menu.txt", this);
 
 		// Add the path to the map's folder
 		game_assetsPath.append(File.separatorChar);
@@ -278,8 +284,10 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * If the new dimensions are larger than the displays dimensions then this will
 	 * cause the game to go full screen.
 	 * 
-	 * @param width <code>int</code> new width of the screen.
-	 * @param height <code>int</code> new height of the screen.
+	 * @param width
+	 *            <code>int</code> new width of the screen.
+	 * @param height
+	 *            <code>int</code> new height of the screen.
 	 * @throws SlickException
 	 */
 	public void reSize(int width, int height) throws SlickException {

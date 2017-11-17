@@ -47,10 +47,12 @@ public final class AssetReader extends FileParser {
 	 *            File path of the asset details file.
 	 * @param game
 	 *            The {@link Game} this {@link AssetReader} will be used by.
+	 * @param filename
+	 *            The file name of the assets file.
 	 */
-	public AssetReader(Container[] containers, String directoryPath, Game game) {
-		super(directoryPath, "assets.txt");
-		
+	public AssetReader(Container[] containers, String directoryPath, String filename, Game game) {
+		super(directoryPath, filename);
+
 		// Check params
 		if (containers.length == 0) {
 			throw new NullPointerException("CoreGameState array cannot be empty.");
@@ -147,7 +149,7 @@ public final class AssetReader extends FileParser {
 
 		// Holds the image of the button.
 		Point position = parsePosition(details[6], details[7]);
-		
+
 		String id = details[8];
 
 		// Add the button to the container

@@ -251,7 +251,7 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 		for (Button button : buttons) {
 
 			// If the click is in the current element
-			if (button.isClicked(click)) {
+			if (button.isClicked(click) && button.isVisible()) {
 
 				// Click the button
 				button.click();

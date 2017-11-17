@@ -124,15 +124,17 @@ public final class Board extends Viewable {
 	 * 
 	 * @param vector
 	 *            {@link Point}
+	 * 
+	 * @return {@link Point} vector that the {@link Board} moved.
 	 */
-	public void move(Point vector) {
+	public Point move(Point vector) {
 
-		// Param check
+		// Null check
 		if (vector == null) {
 			throw new NullPointerException("Vector cannot be null.");
 		}
 
-		// Hols the screen bounds in terms of x and y values.
+		// Holds the screen bounds in terms of x and y values.
 		int upperYBound = 0;
 		int lowerYBound = game.getContainer().getHeight() - getHeight();
 		int upperXBound = 0;
@@ -143,34 +145,35 @@ public final class Board extends Viewable {
 		int currentY = getPosition().y;
 
 		// Holds the new valid vector based on whether the board has hit a boundary.
-		int validX = getValidVector(vector.x, currentX, lowerXBound, upperXBound);
-		int validY = getValidVector(vector.y, currentY, lowerYBound, upperYBound);
+		Point valid = new Point(getValidVector(vector.x, currentX, lowerXBound, upperXBound),
+				getValidVector(vector.y, currentY, lowerYBound, upperYBound));
 
 		// If the valid vector specifies movement in x or y
-		if (validX != 0 || validY != 0) {
+		if (valid.x != 0 || valid.y != 0) {
 
 			// Move the Board along the valid vector.
-			setPosition(new Point(validX + currentX, validY + currentY));
+			this.setPosition(new Point(valid.x + currentX, valid.y + currentY));
 
 			// Iterate through all the continents on the board.
 			continents.forEach(continent -> {
 
 				// Move the current continent along the valid vector.
-				continent
-						.setPosition(new Point(continent.getPosition().x + validX, continent.getPosition().y + validY));
+				continent.setPosition(
+						new Point(continent.getPosition().x + valid.x, continent.getPosition().y + valid.y));
 
 				// Iterate through all the countries in the current continent.
 				continent.getCountries().forEach(country -> {
 
 					// Move the current country along the valid vector.
-					country.setPosition(new Point(country.getPosition().x + validX, country.getPosition().y + validY));
+					country.setPosition(
+							new Point(country.getPosition().x + valid.x, country.getPosition().y + valid.y));
 
 				});
 			});
 
 		}
 
-		// Do nothing
+		return valid;
 
 	}
 
@@ -188,8 +191,8 @@ public final class Board extends Viewable {
 	 * {@link Country}s and reseting the {@link Board} to its initial state.
 	 */
 	public void reset() {
-		
-		if(continents != null) {
+
+		if (continents != null) {
 			continents.clear();
 		}
 		numberOfCountries = 0;

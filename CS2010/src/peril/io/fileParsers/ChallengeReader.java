@@ -15,7 +15,8 @@ import peril.io.fileReaders.TextFileReader;
 
 /**
  * Reads the challenges from an external file and uses then constructs the
- * challenges for the {@link Game}.
+ * challenges for the {@link Game}. Must be executed after the {@link Board} has
+ * be parsed by the {@link MapReader}.
  */
 public final class ChallengeReader implements FileParser {
 
@@ -129,7 +130,7 @@ public final class ChallengeReader implements FileParser {
 
 			// Holds the number of continents that the player must own in order to complete
 			// this challenge.
-			int numberOfContinets = Integer.parseInt(details[1]);
+			int numberOfContinets = (Integer.parseInt(details[1]) * game.board.getNumberOfCountries()) / 10;
 
 			int reward = Integer.parseInt(details[2]);
 
@@ -177,7 +178,7 @@ public final class ChallengeReader implements FileParser {
 
 			// Holds the number of countries that the player must own in order to complete
 			// this challenge.
-			int numberOfCountries = Integer.parseInt(details[1]);
+			int numberOfCountries = (Integer.parseInt(details[1]) * game.board.getNumberOfCountries()) / 10;
 
 			int reward = Integer.parseInt(details[2]);
 
@@ -224,7 +225,7 @@ public final class ChallengeReader implements FileParser {
 
 			// Holds the number of continents that the player must own in order to complete
 			// this challenge.
-			int sizeOfArmy = Integer.parseInt(details[1]);
+			int sizeOfArmy = (Integer.parseInt(details[1]) * game.board.getNumberOfCountries()) / 10;
 
 			int reward = Integer.parseInt(details[2]);
 

@@ -267,16 +267,28 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 		images.add(image);
 	}
 
+	/**
+	 * Draws all the {@link Button}s in this {@link InteractiveState}.
+	 * @param g {@link Graphics}
+	 */
 	protected void drawButtons(Graphics g) {
-		buttons.forEach(button -> g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y));
+		buttons.forEach(button -> {
+			if (button.isVisible()) {
+				g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y);
+			}
+		});
 	}
-	
+
+	/**
+	 * Draws all the {@link Viewable}s in this {@link InteractiveState}.
+	 * @param g {@link Graphics}
+	 */
 	protected void drawImages(Graphics g) {
 		images.forEach(image -> g.drawImage(image.getImage(), image.getPosition().x, image.getPosition().y));
 	}
-	
+
 	protected void changeMusic(GameContainer gc) {
-		
+
 		gc.setMusicOn(false);
 		gc.setMusicOn(true);
 

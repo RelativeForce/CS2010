@@ -9,6 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Player;
 import peril.board.Country;
+import peril.ui.Button;
 import peril.ui.components.menus.PauseMenu;
 
 /**
@@ -40,6 +41,12 @@ public final class ReinforcementState extends CoreGameState {
 		super(game, STATE_NAME, id, pauseMenu);
 	}
 
+	@Override
+	public void addButton(Button button) {
+		// TODO Auto-generated method stub
+		super.addButton(button);
+	}
+	
 	@Override
 	public void highlightCountry(Country country) {
 

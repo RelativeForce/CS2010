@@ -180,7 +180,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		// the details of the map from the maps file.
 		try {
 			agc = new AppGameContainer(this);
-			agc.setDisplayMode(220, 180, false);
+			agc.setDisplayMode(400, 300, false);
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}

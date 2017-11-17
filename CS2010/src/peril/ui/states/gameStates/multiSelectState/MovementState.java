@@ -10,6 +10,7 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Country;
+import peril.ui.Button;
 import peril.ui.components.menus.PauseMenu;
 import peril.ui.states.gameStates.CoreGameState;
 
@@ -27,6 +28,11 @@ public final class MovementState extends MultiSelectState {
 	 * The name of a specific {@link MovementState}.
 	 */
 	private static final String STATE_NAME = "Movement";
+
+	/**
+	 * Holds the instance of the fortify {@link Button}.
+	 */
+	private Button fortifyButton;
 
 	/**
 	 * Constructs a new {@link MovementState}.
@@ -64,10 +70,37 @@ public final class MovementState extends MultiSelectState {
 			processCountry(country, player, ruler);
 
 		} else {
+			fortifyButton.hide();
 			super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
 			super.setSecondaryHighlightedCountry(null);
 			super.unhighlightCountry(super.getHighlightedCountry());
 			super.highlightCountry(country);
+		}
+
+	}
+
+	@Override
+	public void addButton(Button button) {
+		super.addButton(button);
+
+		if (button.getId().equals("fortify")) {
+			fortifyButton = button;
+			fortifyButton.hide();
+		}
+	}
+
+	/**
+	 * Pans this {@link MovementState}.
+	 */
+	@Override
+	protected void pan(Point panVector) {
+
+		Point old = fortifyButton.getPosition();
+
+		Point vector = getGame().board.move(panVector);
+
+		if (vector.x != 0 || vector.y != 0) {
+			fortifyButton.setPosition(new Point(old.x + vector.x, old.y + vector.y));
 		}
 
 	}
@@ -78,9 +111,9 @@ public final class MovementState extends MultiSelectState {
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
-		
+
 		super.drawPlayerName(g);
-		
+
 		super.drawImages(g);
 		super.drawButtons(g);
 
@@ -118,10 +151,12 @@ public final class MovementState extends MultiSelectState {
 
 			// if the country is a neighbour of the primary highlighted country then it is a
 			// valid target.
-			if (getHighlightedCountry().isNeighbour(country)) {
+			if (isValidTarget(getHighlightedCountry(), country)) {
 
 				super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
 				super.setSecondaryHighlightedCountry(country);
+				moveFortifyButton(getArmyPosition(getHighlightedCountry()), getArmyPosition(country));
+				fortifyButton.show();
 
 			} else {
 				// DO NOTHING
@@ -136,6 +171,7 @@ public final class MovementState extends MultiSelectState {
 		// If the country clicked is to be the new primary country and is owned by the
 		// player.
 		else {
+			fortifyButton.hide();
 			super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
 			super.highlightCountry(country);
 		}
@@ -201,5 +237,21 @@ public final class MovementState extends MultiSelectState {
 			}
 
 		}
+	}
+
+	/**
+	 * Moves the reinforce {@link Button} to be positioned at the top left of the
+	 * current country.
+	 * 
+	 * @param country
+	 *            {@link Country}
+	 */
+	private void moveFortifyButton(Point p1, Point p2) {
+
+		int x = ((p2.x - p1.x) / 2) + p1.x;
+		int y = ((p2.y - p1.y) / 2) + p1.y;
+
+		fortifyButton.setPosition(new Point(x, y));
+
 	}
 }

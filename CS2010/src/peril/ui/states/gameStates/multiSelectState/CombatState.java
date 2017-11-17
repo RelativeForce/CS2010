@@ -10,6 +10,7 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Country;
+import peril.ui.Button;
 import peril.ui.components.menus.PauseMenu;
 import peril.ui.components.menus.WarMenu;
 import peril.ui.states.gameStates.CoreGameState;
@@ -34,8 +35,16 @@ public final class CombatState extends MultiSelectState {
 	 * been conquered.
 	 */
 	private boolean isPostCombat;
-	
+
+	/**
+	 * The {@link WarMenu} that displays the combat of the game.
+	 */
 	public final WarMenu warMenu;
+
+	/**
+	 * Holds the instance of a attack {@link Button}.
+	 */
+	private Button attackButton;
 
 	/**
 	 * Constructs a new {@link CombatState}.
@@ -86,6 +95,32 @@ public final class CombatState extends MultiSelectState {
 	}
 
 	/**
+	 * Pans this {@link CombatState}.
+	 */
+	@Override
+	protected void pan(Point panVector) {
+
+		Point old = attackButton.getPosition();
+
+		Point vector = getGame().board.move(panVector);
+
+		if (vector.x != 0 || vector.y != 0) {
+			attackButton.setPosition(new Point(old.x + vector.x, old.y + vector.y));
+		}
+
+	}
+
+	@Override
+	public void addButton(Button button) {
+		super.addButton(button);
+
+		if (button.getId().equals("attack")) {
+			attackButton = button;
+			attackButton.hide();
+		}
+	}
+
+	/**
 	 * Displays
 	 * {@link CoreGameState#render(GameContainer, StateBasedGame, Graphics) } then
 	 * the current {@link Player}s name and then the enemy {@link Country}.
@@ -95,15 +130,15 @@ public final class CombatState extends MultiSelectState {
 
 		super.render(gc, sbg, g);
 		super.drawPlayerName(g);
-		
+
 		super.drawImages(g);
 		super.drawButtons(g);
 
 		this.drawValidTargets(g);
-		
+
 		this.warMenu.draw(g);
 	}
-	
+
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
@@ -154,6 +189,8 @@ public final class CombatState extends MultiSelectState {
 
 				super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
 				super.setSecondaryHighlightedCountry(country);
+				moveAttackButton(getArmyPosition(getHighlightedCountry()), getArmyPosition(country));
+				attackButton.show();
 
 			}
 			// If the player owns the other country
@@ -164,6 +201,7 @@ public final class CombatState extends MultiSelectState {
 				super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
 				super.unhighlightCountry(super.getHighlightedCountry());
 				super.highlightCountry(country);
+				attackButton.hide();
 			}
 
 		}
@@ -180,6 +218,7 @@ public final class CombatState extends MultiSelectState {
 			super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
 			super.unhighlightCountry(super.getHighlightedCountry());
 			super.highlightCountry(country);
+			attackButton.hide();
 		}
 	}
 
@@ -205,6 +244,7 @@ public final class CombatState extends MultiSelectState {
 			processCountry(country, player, ruler);
 
 		} else {
+			attackButton.hide();
 			super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
 			super.setSecondaryHighlightedCountry(null);
 			super.unhighlightCountry(super.getHighlightedCountry());
@@ -225,6 +265,7 @@ public final class CombatState extends MultiSelectState {
 		super.setSecondaryHighlightedCountry(null);
 		super.unhighlightCountry(getHighlightedCountry());
 		super.highlightCountry(null);
+		attackButton.hide();
 
 		setPreCombat();
 	}
@@ -289,5 +330,21 @@ public final class CombatState extends MultiSelectState {
 			}
 
 		}
+	}
+
+	/**
+	 * Moves the reinforce {@link Button} to be positioned at the top left of the
+	 * current country.
+	 * 
+	 * @param country
+	 *            {@link Country}
+	 */
+	private void moveAttackButton(Point p1, Point p2) {
+
+		int x = ((p2.x - p1.x) / 2) + p1.x;
+		int y = ((p2.y - p1.y) / 2) + p1.y;
+
+		attackButton.setPosition(new Point(x, y));
+
 	}
 }

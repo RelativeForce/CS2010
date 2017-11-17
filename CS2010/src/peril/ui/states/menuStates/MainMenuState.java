@@ -57,11 +57,6 @@ public class MainMenuState extends InteractiveState {
 	private Font listFont;
 
 	/**
-	 * The {@link Font} for displaying the name of the game.
-	 */
-	private Font headingFont;
-
-	/**
 	 * The {@link Font} of normal text on the {@link MainMenuState}.
 	 */
 	private Font textFont;
@@ -83,8 +78,8 @@ public class MainMenuState extends InteractiveState {
 
 		super(game, STATE_NAME, id);
 		mapsFile = TextFileReader.scanFile(mapsFilePath, "maps.txt");
-		maps = new VisualList<>(15, 90, 110, 22, 3, 10);
-		players = new VisualList<>(150, 90, 20, 22, 3, 5);
+		maps = new VisualList<>(15, 220, 110, 22, 3, 10);
+		players = new VisualList<>(150, 220, 20, 22, 3, 5);
 		getMaps();
 		getPlayers();
 
@@ -93,15 +88,14 @@ public class MainMenuState extends InteractiveState {
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
-		g.setBackground(Color.lightGray);
+		g.setBackground(Color.black);
 
 		drawImages(g);
 		
 		drawButtons(g);
 
-		textFont.draw(g, "Players: ", 150, 70);
-		textFont.draw(g, "Map: ", 15, 70);
-		headingFont.draw(g, "Peril", 10, 5);
+		textFont.draw(g, "Players: ", 150, 200);
+		textFont.draw(g, "Map: ", 15, 200);
 
 		maps.draw(g);
 		players.draw(g);
@@ -147,7 +141,6 @@ public class MainMenuState extends InteractiveState {
 
 		// Initialise the fonts;
 		listFont = new Font("Arial", Color.black, 18);
-		headingFont = new Font("Arial", Color.red, 56);
 		textFont = new Font("Arial", Color.blue, 15);
 
 		// Initialise the maps list and all its elements

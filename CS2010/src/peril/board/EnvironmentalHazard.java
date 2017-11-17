@@ -34,16 +34,9 @@ public enum EnvironmentalHazard {
 	TSUNAMI(40, 0.17, "Tsunami");
 
 	/**
-	 * The seed used by the {@link GENERATOR}.
-	 * 
-	 * @see Random
-	 */
-	private final int SEED = 5;
-
-	/**
 	 * The {@link Random} used to provide chance to {@link EnvironmentalHazard}s.
 	 */
-	private final Random GENERATOR = new Random(SEED);
+	private final Random generator;
 
 	/**
 	 * Holds the maximum percentage of the army stationed an {@link Country} that
@@ -77,6 +70,7 @@ public enum EnvironmentalHazard {
 		this.maxCasualties = maxCasualties;
 		this.chance = chance;
 		this.name = name;
+		generator = new Random();
 	}
 
 	/**
@@ -98,7 +92,7 @@ public enum EnvironmentalHazard {
 	public void act(Army army) {
 		// Kill a percentage of the army.
 
-		boolean occur = (chance * 100) < GENERATOR.nextInt(100);
+		boolean occur = (chance * 100) < generator.nextInt(100);
 
 		// If the environmental hazard occurs.
 		if (occur) {
@@ -110,7 +104,7 @@ public enum EnvironmentalHazard {
 			int minCasualties = maxCasualties / 4;
 
 			// Generate a random proportion of the army to kill.
-			int casualties = (currentSize * (minCasualties + GENERATOR.nextInt(maxCasualties - minCasualties))) / 100;
+			int casualties = (currentSize * (minCasualties + generator.nextInt(maxCasualties - minCasualties))) / 100;
 
 			if (currentSize - casualties < 1) {
 				army.setSize(1);

@@ -95,7 +95,9 @@ public class MainMenuState extends InteractiveState {
 
 		g.setBackground(Color.lightGray);
 
-		super.render(gc, sbg, g);
+		drawImages(g);
+		
+		drawButtons(g);
 
 		textFont.draw(g, "Players: ", 150, 70);
 		textFont.draw(g, "Map: ", 15, 70);

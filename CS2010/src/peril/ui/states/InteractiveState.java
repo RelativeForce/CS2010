@@ -199,10 +199,7 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 *            accelerated canvas provided by LWJGL.
 	 */
 	@Override
-	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		images.forEach(image -> g.drawImage(image.getImage(), image.getPosition().x, image.getPosition().y));
-		buttons.forEach(button -> g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y));
-	}
+	public abstract void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException;
 
 	/**
 	 * Called as part of slick2d's game loop. Update the state's logic based on the
@@ -254,7 +251,7 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 		for (Button button : buttons) {
 
 			// If the click is in the current element
-			if (button.isClicked(click)) {
+			if (button.isClicked(click) && button.isVisible()) {
 
 				// Click the button
 				button.click();
@@ -270,8 +267,28 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 		images.add(image);
 	}
 
+	/**
+	 * Draws all the {@link Button}s in this {@link InteractiveState}.
+	 * @param g {@link Graphics}
+	 */
+	protected void drawButtons(Graphics g) {
+		buttons.forEach(button -> {
+			if (button.isVisible()) {
+				g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y);
+			}
+		});
+	}
+
+	/**
+	 * Draws all the {@link Viewable}s in this {@link InteractiveState}.
+	 * @param g {@link Graphics}
+	 */
+	protected void drawImages(Graphics g) {
+		images.forEach(image -> g.drawImage(image.getImage(), image.getPosition().x, image.getPosition().y));
+	}
+
 	protected void changeMusic(GameContainer gc) {
-		
+
 		gc.setMusicOn(false);
 		gc.setMusicOn(true);
 

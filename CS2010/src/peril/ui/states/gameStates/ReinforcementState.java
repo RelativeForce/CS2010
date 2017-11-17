@@ -8,7 +8,9 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Player;
+import peril.Point;
 import peril.board.Country;
+import peril.ui.Button;
 import peril.ui.components.menus.PauseMenu;
 
 /**
@@ -27,6 +29,11 @@ public final class ReinforcementState extends CoreGameState {
 	private static final String STATE_NAME = "Reinforcement";
 
 	/**
+	 * Holds the instance of the reinforce {@link Button}.
+	 */
+	private Button reinforceButton;
+
+	/**
 	 * Constructs a new {@link ReinforcementState}.
 	 * 
 	 * @param game
@@ -38,6 +45,32 @@ public final class ReinforcementState extends CoreGameState {
 	 */
 	public ReinforcementState(Game game, int id, PauseMenu pauseMenu) {
 		super(game, STATE_NAME, id, pauseMenu);
+	}
+
+	@Override
+	public void addButton(Button button) {
+		super.addButton(button);
+
+		if (button.getId().equals("reinforce")) {
+			reinforceButton = button;
+			reinforceButton.hide();
+		}
+	}
+
+	/**
+	 * Pans this {@link ReinforcementState}.
+	 */
+	@Override
+	protected void pan(Point panVector) {
+
+		Point old = reinforceButton.getPosition();
+
+		Point vector = getGame().board.move(panVector);
+
+		if (vector.x != 0 || vector.y != 0) {
+			reinforceButton.setPosition(new Point(old.x + vector.x, old.y + vector.y));
+		}
+
 	}
 
 	@Override
@@ -56,11 +89,15 @@ public final class ReinforcementState extends CoreGameState {
 			Player ruler = country.getRuler();
 
 			if (player.equals(ruler)) {
+
+				moveReinforceButton(country);
+				reinforceButton.show();
 				super.highlightCountry(country);
 			}
 
 		} else {
 			super.highlightCountry(country);
+			reinforceButton.hide();
 		}
 
 	}
@@ -71,10 +108,31 @@ public final class ReinforcementState extends CoreGameState {
 
 		super.drawPlayerName(g);
 
+		drawImages(g);
+		drawButtons(g);
+
 		// Set the text color to magenta
 		g.setColor(Color.black);
 
 		// Draw player name
 		g.drawString("Units: " + getGame().getCurrentPlayer().getDistributableArmySize(), 5, 35);
+	}
+
+	/**
+	 * Moves the reinforce {@link Button} to be positioned at the top left of the
+	 * current country.
+	 * 
+	 * @param country
+	 *            {@link Country}
+	 */
+	public void moveReinforceButton(Country country) {
+
+		Point armyPosition = getArmyPosition(country);
+
+		int x = armyPosition.x;
+		int y = armyPosition.y + 25;
+
+		reinforceButton.setPosition(new Point(x, y));
+
 	}
 }

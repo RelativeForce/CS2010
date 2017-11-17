@@ -126,9 +126,6 @@ public abstract class CoreGameState extends InteractiveState {
 
 		drawArmies(g);
 
-		// Draw all the clickable objects.
-		super.render(gc, sbg, g);
-
 		drawStateBox(g);
 
 		drawChallenges(g, 130, 15);
@@ -143,7 +140,7 @@ public abstract class CoreGameState extends InteractiveState {
 		elapseTime();
 
 		if (panDirection != null) {
-			getGame().board.move(panDirection);
+			pan(panDirection);
 		}
 
 	}
@@ -278,7 +275,7 @@ public abstract class CoreGameState extends InteractiveState {
 	 * @param mousePosition
 	 *            {@link Point} position of the mosue.
 	 */
-	public void pan(Point mousePosition) {
+	public void checkPan(Point mousePosition) {
 
 		// Holds the dimensions of the game container.
 		int screenWidth = getGame().getContainer().getWidth();
@@ -387,6 +384,16 @@ public abstract class CoreGameState extends InteractiveState {
 
 	}
 
+	/**
+	 * Pans the {@link Game#board} according to the
+	 * {@link CoreGameState#panDirection}.
+	 * 
+	 * @param panVector
+	 */
+	protected void pan(Point panVector) {
+		getGame().board.move(panDirection);
+	}
+
 	protected boolean clickPauseMenu(Point click) {
 		if (pauseMenu.visible) {
 			if (pauseMenu.isClicked(click)) {
@@ -471,13 +478,7 @@ public abstract class CoreGameState extends InteractiveState {
 			// Holds the size of the current countries army
 			int troopNumber = country.getArmy().getSize();
 
-			if (troopNumber > 99) {
-				g.fillOval(armyPosition.x - 9, armyPosition.y - 3, 45, 25);
-			} else if (troopNumber > 9) {
-				g.fillOval(armyPosition.x - 6, armyPosition.y - 3, 30, 25);
-			} else {
-				g.fillOval(armyPosition.x - 3, armyPosition.y - 3, 15, 25);
-			}
+			drawArmyOval(armyPosition, troopNumber, g);
 
 			g.setColor(Color.white);
 
@@ -487,6 +488,18 @@ public abstract class CoreGameState extends InteractiveState {
 			g.drawString(Integer.toString(troopNumber), armyPosition.x, armyPosition.y);
 
 		}));
+	}
+
+	private void drawArmyOval(Point position, int size, Graphics g) {
+
+		int base = ((int) Math.log10(size)) + 1;
+
+		int width = base * 15;
+
+		int offset = base * 3;
+
+		g.fillOval(position.x - offset, position.y - 3, width, 25);
+
 	}
 
 	/**

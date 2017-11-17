@@ -25,6 +25,16 @@ public class Button extends Clickable {
 	private Action<?> action;
 
 	/**
+	 * Holds the id of this {@link Button} allowing it to be identified.
+	 */
+	private String id;
+
+	/**
+	 * Holds whether this {@link Button} should be displayed on screen or not.
+	 */
+	private boolean isVisible;
+
+	/**
 	 * Constructs a new {@link Button}.
 	 * 
 	 * @param position
@@ -34,8 +44,10 @@ public class Button extends Clickable {
 	 * @param action
 	 *            The {@link Action} this button will perform when
 	 *            {@link Button#click()} is performed.
+	 * @param id
+	 *            The id string that denotes this button.
 	 */
-	public Button(Point position, Image image, Action<?> action) {
+	public Button(Point position, Image image, Action<?> action, String id) {
 		super(new Region(image));
 
 		// Check the params
@@ -50,14 +62,50 @@ public class Button extends Clickable {
 		// Initialise the image and action.
 		this.setImage(position, image);
 		this.setPosition(position);
-		
+		this.id = id;
 		this.action = action;
+		this.isVisible = true;
 	}
 
 	/**
 	 * Performs the {@link Button#action} click in this {@link Button}.
 	 */
 	public void click() {
-		action.execute();
+		if (isVisible) {
+			action.execute();
+		}
+	}
+
+	/**
+	 * Retrieves the id that uniquely identifies this {@link Button}.
+	 * 
+	 * @return <code>String</code> id number
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * Sets this {@link Button} to hidden.
+	 */
+	public void hide() {
+		isVisible = false;
+	}
+
+	/**
+	 * Sets this {@link Button} to visible.
+	 */
+	public void show() {
+		isVisible = true;
+	}
+
+	/**
+	 * Retrieves whether this {@link Button} should be displayed on screen or not.
+	 * If this is not visible then {@link Button#click()} will do nothing.
+	 * 
+	 * @return <code>boolean</code>
+	 */
+	public boolean isVisible() {
+		return isVisible;
 	}
 }

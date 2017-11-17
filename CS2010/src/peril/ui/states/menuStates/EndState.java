@@ -96,7 +96,10 @@ public class EndState extends InteractiveState {
 	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		super.render(gc, sbg, g);
+		
+		drawImages(g);
+		drawButtons(g);
+
 		drawPodium(g, gc.getWidth(), gc.getHeight());
 	}
 
@@ -144,7 +147,7 @@ public class EndState extends InteractiveState {
 
 			// The text string that will be displayed
 			String text = position + ". " + player.toString();
-			
+
 			// If the current player is first use the winner font otherwise use the loser
 			// font.
 			if (position == 1) {

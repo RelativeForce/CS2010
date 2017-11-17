@@ -128,7 +128,7 @@ public final class AssetReader extends FileParser {
 	 */
 	private void parseButton(String[] details) {
 
-		int BUTTON_LENGTH = 8;
+		int BUTTON_LENGTH = 9;
 
 		// Check there is the correct number of details
 		if (details.length != BUTTON_LENGTH) {
@@ -147,9 +147,11 @@ public final class AssetReader extends FileParser {
 
 		// Holds the image of the button.
 		Point position = parsePosition(details[6], details[7]);
+		
+		String id = details[8];
 
 		// Add the button to the container
-		container.addButton(new Button(position, asset, function));
+		container.addButton(new Button(position, asset, function, id));
 
 	}
 

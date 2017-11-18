@@ -54,6 +54,8 @@ public final class SetupState extends CoreGameState {
 		drawImages(g);
 		drawButtons(g);
 		
+		drawPauseMenu(g);
+		
 	}
 
 	@Override

@@ -130,8 +130,6 @@ public abstract class CoreGameState extends InteractiveState {
 
 		drawChallenges(g, 130, 15);
 
-		pauseMenu.draw(g);
-
 	}
 
 	@Override
@@ -394,6 +392,10 @@ public abstract class CoreGameState extends InteractiveState {
 		getGame().board.move(panDirection);
 	}
 
+	protected void drawPauseMenu(Graphics g) {
+		pauseMenu.draw(g);
+	}
+	
 	protected boolean clickPauseMenu(Point click) {
 		if (pauseMenu.visible) {
 			if (pauseMenu.isClicked(click)) {

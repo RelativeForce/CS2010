@@ -120,6 +120,8 @@ public final class ReinforcementState extends CoreGameState {
 
 		// Draw player name
 		g.drawString("Units: " + getGame().getCurrentPlayer().getDistributableArmySize(), 5, 35);
+		
+		drawPauseMenu(g);
 	}
 
 	/**

@@ -113,6 +113,10 @@ public class FunctionHandler {
 						player.setDistributableArmySize(armySize - 1);
 						player.setTotalArmySize(player.getTotalArmySize() + 1);
 						game.checkChallenges(player);
+						
+						if(player.getDistributableArmySize() == 0) {
+							game.reinforcement.hideReinforceButton();
+						}
 
 					} else {
 						System.out.println(player.toString() + " does not rule this country");
@@ -225,6 +229,9 @@ public class FunctionHandler {
 					targetArmy.setSize(targetArmy.getSize() + 1);
 					primaryArmy.setSize(primaryArmy.getSize() - 1);
 
+					if (primaryArmy.getSize() == 1) {
+						game.movement.hideFortifyButton();
+					}
 				} else {
 					// DO NOTHING
 				}
@@ -265,10 +272,12 @@ public class FunctionHandler {
 					// If the country has been conquered
 					if (attacking.getRuler().equals(defending.getRuler())) {
 
+						// If there is a defending player
 						if (defendingPlayer != null) {
 
 							defendingPlayer.setCountriesRuled(defendingPlayer.getCountriesRuled() - 1);
 
+							// If the player has no countries they have lost.
 							if (defendingPlayer.getCountriesRuled() == 0) {
 								game.setLoser(defendingPlayer);
 								game.checkWinner();
@@ -284,9 +293,20 @@ public class FunctionHandler {
 
 						game.checkChallenges(attackingPlayer);
 
+					} else {
+
+						// If the attacking army is not large enough to attack again.
+						if (attacking.getArmy().getSize() == 1) {
+							game.combat.hideAttackButton();
+						}
 					}
+				} else {
+					game.combat.hideAttackButton();
 				}
+			} else {
+				game.combat.hideAttackButton();
 			}
+
 		});
 	}
 

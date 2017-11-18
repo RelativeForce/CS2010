@@ -132,6 +132,13 @@ public final class MovementState extends MultiSelectState {
 	}
 
 	/**
+	 * Hide the fortify {@link Button}.
+	 */
+	public void hideFortifyButton() {
+		fortifyButton.hide();
+	}
+
+	/**
 	 * Processes whether a {@link Country} is a valid target for the
 	 * {@link CoreGameState#getHighlightedCountry()} to attack. This is based on the
 	 * {@link Player} ruler and the {@link Player} ({@link Game#getCurrentPlayer()})

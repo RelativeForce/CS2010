@@ -167,6 +167,13 @@ public final class CombatState extends MultiSelectState {
 	}
 
 	/**
+	 * Hide the attack button.
+	 */
+	public void hideAttackButton() {
+		attackButton.hide();
+	}
+
+	/**
 	 * Processes whether a {@link Country} is a valid target for the
 	 * {@link CoreGameState#getHighlightedCountry()} to attack. This is based on the
 	 * {@link Player} ruler and the {@link Player} ({@link Game#getCurrentPlayer()})

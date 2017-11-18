@@ -73,6 +73,10 @@ public final class ReinforcementState extends CoreGameState {
 
 	}
 
+	public void hideReinforceButton() {
+		reinforceButton.hide();
+	}
+	
 	@Override
 	public void highlightCountry(Country country) {
 

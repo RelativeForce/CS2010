@@ -112,7 +112,7 @@ public class FunctionHandler {
 						// Remove the unit from the list of units to place.
 						player.setDistributableArmySize(armySize - 1);
 						player.setTotalArmySize(player.getTotalArmySize() + 1);
-						game.checkChallenges(player);
+						game.players.checkChallenges(player);
 						
 						if(player.getDistributableArmySize() == 0) {
 							game.states.reinforcement.hideReinforceButton();
@@ -281,7 +281,7 @@ public class FunctionHandler {
 
 						game.checkContinentRulership();
 
-						game.checkChallenges(attackingPlayer);
+						game.players.checkChallenges(attackingPlayer);
 
 					} else {
 

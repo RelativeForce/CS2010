@@ -77,7 +77,7 @@ public final class ChallengeReader extends FileParser {
 			index++;
 
 			if (isFinished()) {
-				game.setChallenges(challenges);
+				game.players.setChallenges(challenges);
 			}
 		}
 

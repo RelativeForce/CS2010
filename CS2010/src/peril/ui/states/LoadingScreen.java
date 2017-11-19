@@ -94,10 +94,8 @@ public final class LoadingScreen extends InteractiveState {
 				background.getImage().getScaledCopy(gc.getWidth(), gc.getHeight()));
 
 		changeMusic(gc);
-		
-		initProgressBar(gc.getWidth(), gc.getHeight());
 
-		super.enter(gc, sbg);
+		initProgressBar(gc.getWidth(), gc.getHeight());
 	}
 
 	/**
@@ -109,7 +107,6 @@ public final class LoadingScreen extends InteractiveState {
 
 		// Set the music.
 		music = getGame().io.musicHelper.read("loading");
-		
 
 	}
 
@@ -118,10 +115,10 @@ public final class LoadingScreen extends InteractiveState {
 	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		
+
 		drawImages(g);
 		drawButtons(g);
-		
+
 		progressBar.draw(g);
 
 	}
@@ -182,6 +179,16 @@ public final class LoadingScreen extends InteractiveState {
 		// Add the length of the reader to the total.
 		progressBar.increaseTotal(reader.getLength());
 		readers.add(reader);
+	}
+
+	/**
+	 * Performs the exit state operations specific to this {@link LoadingScreen}.
+	 */
+	@Override
+	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		readers.clear();
+		progressBar.reset();
+		index = 0;
 	}
 
 	/**

@@ -163,9 +163,14 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 *            The {@link StateBasedGame} this state is a part of.
 	 */
 	@Override
-	public void enter(GameContainer gc, StateBasedGame sbg) {
-		System.out.println("Entering gamestate: " + stateName);
-	}
+	public abstract void enter(GameContainer gc, StateBasedGame sbg);
+
+	/**
+	 * Called when this {@link InteractiveState} is being left this method should
+	 * perform all exit state operations.
+	 */
+	@Override
+	public abstract void leave(GameContainer container, StateBasedGame game) throws SlickException;
 
 	/**
 	 * Called when the state is first created, before slick2d's game loop commences.
@@ -269,7 +274,9 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 
 	/**
 	 * Draws all the {@link Button}s in this {@link InteractiveState}.
-	 * @param g {@link Graphics}
+	 * 
+	 * @param g
+	 *            {@link Graphics}
 	 */
 	protected void drawButtons(Graphics g) {
 		buttons.forEach(button -> {
@@ -281,7 +288,9 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 
 	/**
 	 * Draws all the {@link Viewable}s in this {@link InteractiveState}.
-	 * @param g {@link Graphics}
+	 * 
+	 * @param g
+	 *            {@link Graphics}
 	 */
 	protected void drawImages(Graphics g) {
 		images.forEach(image -> g.drawImage(image.getImage(), image.getPosition().x, image.getPosition().y));

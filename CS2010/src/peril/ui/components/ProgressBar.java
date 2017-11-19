@@ -64,6 +64,14 @@ public final class ProgressBar {
 	}
 
 	/**
+	 * Resets the {@link ProgressBar} to its starting state.
+	 */
+	public void reset() {
+		progress = 0;
+		total = 0;
+	}
+
+	/**
 	 * Increments the progress of the {@link ProgressBar}.
 	 */
 	public void increment() {
@@ -82,6 +90,7 @@ public final class ProgressBar {
 
 	/**
 	 * Draws the {@link ProgressBar} to screen.
+	 * 
 	 * @param g
 	 */
 	public void draw(Graphics g) {

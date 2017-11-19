@@ -41,39 +41,56 @@ public final class SetupState extends CoreGameState {
 		super(game, STATE_NAME, id, pauseMenu);
 	}
 
+	/**
+	 * Enters this {@link SetupState} which also ends the current music and starts
+	 * the game play music.
+	 */
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
 		changeMusic(gc);
 	}
-	
+
+	/**
+	 * Renders this {@link SetupState}.
+	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
-		
+
 		drawImages(g);
 		drawButtons(g);
-		
+
 		drawPauseMenu(g);
-		
+
 	}
 
+	/**
+	 * Handles highlighting a {@link Country} on the {@link SetupState}.
+	 */
 	@Override
 	public void highlightCountry(Country country) {
 
 		// Unhighlight the current country
 		super.unhighlightCountry(super.getHighlightedCountry());
 
-		// Hightlight the new country
+		// Highlight the new country
 		super.highlightCountry(country);
 
 	}
 
+	/**
+	 * Parses a button press on this {@link SetupState}.
+	 */
 	@Override
 	public void parseButton(int key, char c, Point mousePosition) {
 
 		Country highlighted = getHighlightedCountry();
 
+		/*
+		 * If the player has highlighted a county then parse the button presses that
+		 * change the owner ship of a country.
+		 */
 		if (highlighted != null) {
 
 			switch (key) {

@@ -96,7 +96,7 @@ public class EndState extends InteractiveState {
 	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		
+
 		drawImages(g);
 		drawButtons(g);
 
@@ -113,6 +113,26 @@ public class EndState extends InteractiveState {
 		// Initialise Fonts
 		winnerFont = new Font("Arial", Color.yellow, 50);
 		loserFont = new Font("Arial", Color.red, 30);
+	}
+
+	/**
+	 * Enters the {@link EndState}.
+	 */
+	@Override
+	public void enter(GameContainer gc, StateBasedGame sbg) {
+		if (podium.isEmpty()) {
+			throw new IllegalStateException("There must be at least one player on the podium for the game to end.");
+		}
+	}
+
+	/**
+	 * Performs the exit state operations specific to the {@link EndState}.
+	 */
+	@Override
+	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		
+		// Empty the podium
+		podium.clear();
 	}
 
 	/**

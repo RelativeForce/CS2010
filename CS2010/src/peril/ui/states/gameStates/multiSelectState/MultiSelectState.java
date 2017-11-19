@@ -1,6 +1,9 @@
 package peril.ui.states.gameStates.multiSelectState;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Player;
@@ -54,6 +57,18 @@ public abstract class MultiSelectState extends CoreGameState {
 		setSecondaryHighlightedCountry(null);
 		super.unhighlightCountry(country);
 
+	}
+
+	/**
+	 * Performs the exit state operations of this {@link MultiSelectState}.
+	 */
+	@Override
+	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		super.leave(container, game);
+
+		// Remove the highlight effect on the current highlighted country.
+		unhighlightCountry(highlightedCountry);
+		highlightedCountry = null;
 	}
 
 	/**

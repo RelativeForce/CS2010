@@ -93,6 +93,17 @@ public abstract class CoreGameState extends InteractiveState {
 
 	}
 
+	/**
+	 * Enters this {@link CoreGameState}.
+	 */
+	@Override
+	public void enter(GameContainer gc, StateBasedGame sbg) {
+		// DO NOTHING BY DEFAULT
+	}
+
+	/**
+	 * Renders this {@link CoreGameState}.
+	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
@@ -132,6 +143,9 @@ public abstract class CoreGameState extends InteractiveState {
 
 	}
 
+	/**
+	 * Updates this {@link CoreGameState} between frames.
+	 */
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		super.update(gc, sbg, delta);
@@ -143,6 +157,9 @@ public abstract class CoreGameState extends InteractiveState {
 
 	}
 
+	/**
+	 * Initialises the visual elements of this {@link CoreGameState}.
+	 */
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
@@ -150,10 +167,19 @@ public abstract class CoreGameState extends InteractiveState {
 		backgroundMusic = getGame().io.musicHelper.read("game1");
 	}
 
+	/**
+	 * Performs the exit operations of this {@link CoreGameState}.
+	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
-		super.leave(container, game);
 		challenges.clear();
+
+		// Remove the highlight effect on the currently highlighted country
+		unhighlightCountry(highlightedCountry);
+		highlightedCountry = null;
+		
+		// Stop the state from panning after it has been exited.
+		panDirection = null;
 	}
 
 	/**
@@ -392,10 +418,16 @@ public abstract class CoreGameState extends InteractiveState {
 		getGame().board.move(panDirection);
 	}
 
+	/**
+	 * Draws the {@link PauseMenu} on screen.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 */
 	protected void drawPauseMenu(Graphics g) {
 		pauseMenu.draw(g);
 	}
-	
+
 	protected boolean clickPauseMenu(Point click) {
 		if (pauseMenu.visible) {
 			if (pauseMenu.isClicked(click)) {

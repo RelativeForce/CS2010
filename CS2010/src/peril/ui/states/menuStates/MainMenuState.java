@@ -35,6 +35,10 @@ public class MainMenuState extends InteractiveState {
 	 */
 	private static final String STATE_NAME = "Main Menu";
 
+	private static final int WIDTH = 400;
+
+	private static final int HEIGHT = 300;
+
 	/**
 	 * Holds the contents of the maps.txt file.
 	 */
@@ -181,8 +185,12 @@ public class MainMenuState extends InteractiveState {
 	 */
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
-		super.enter(gc, sbg);
 		changeMusic(gc);
+		try {
+			getGame().reSize(WIDTH, HEIGHT);
+		} catch (SlickException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -196,6 +204,14 @@ public class MainMenuState extends InteractiveState {
 			getGame().io.mainMenuLoader.parseLine();
 		}
 
+	}
+
+	/**
+	 * Leaves this {@link MainMenuState}.
+	 */
+	@Override
+	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		// TODO depending on load implementation
 	}
 
 	/**
@@ -388,4 +404,5 @@ public class MainMenuState extends InteractiveState {
 	private class Load {
 		// TODO Implementation to hold saved games
 	}
+
 }

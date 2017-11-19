@@ -13,7 +13,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.board.Army;
 import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
@@ -21,6 +20,7 @@ import peril.io.fileParsers.AssetReader;
 import peril.io.fileParsers.ChallengeReader;
 import peril.io.fileReaders.MusicReader;
 import peril.ui.Container;
+import peril.ui.StateHelper;
 import peril.ui.UIEventHandler;
 import peril.ui.components.menus.PauseMenu;
 import peril.ui.components.menus.WarMenu;
@@ -52,40 +52,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	public volatile boolean endTurn;
 
 	/**
-	 * The state that displays combat to the user. This is heavily couples with
-	 * {@link WarMenu}.
-	 */
-	public final CombatState combat;
-
-	/**
-	 * The {@link MainMenuState} of the {@link Game}.
-	 */
-	public final MainMenuState mainMenu;
-
-	/**
-	 * The {@link SetupState} that will allow the user to set up which
-	 * {@link Player} owns which {@link Country}.
-	 */
-	public final SetupState setup;
-
-	/**
-	 * The {@link ReinforcementState} that allows the {@link Player} to distribute
-	 * their {@link Army} to the {@link Country}s they rule.
-	 */
-	public final ReinforcementState reinforcement;
-
-	/**
-	 * The {@link MovementState} which lets the user move {@link Army}s from one
-	 * {@link Country} to another.
-	 */
-	public final MovementState movement;
-
-	/**
-	 * The {@link EndState} that displays the results of the {@link Game}.
-	 */
-	public final EndState end;
-
-	/**
 	 * The {@link PauseMenu} that will be used by all the {@link CoreGameState}s.
 	 */
 	public final PauseMenu pauseMenu;
@@ -101,6 +67,9 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public final AssetReader gameLoader;
 
+	/**
+	 * The {@link AssetReader} that loads all the game visuals from memory.
+	 */
 	public final AssetReader mainMenuLoader;
 
 	/**
@@ -114,20 +83,14 @@ public class Game extends StateBasedGame implements MusicListener {
 	public final String mapsDirectory;
 
 	/**
-	 * The {@link LoadingScreen} that will load the map specified files from memory.
+	 * The {@link StateHelper} that holds all this {@link Game}'s states.
 	 */
-	public final LoadingScreen loadingScreen;
+	public final StateHelper states;
 
 	/**
 	 * The instance of the {@link Board} used for this game.
 	 */
 	public final Board board;
-
-	/**
-	 * The {@link UIEventHandler} that processes all of the user inputs and triggers
-	 * the appropriate operations.
-	 */
-	private final UIEventHandler eventHandler;
 
 	/**
 	 * The {@link WarMenu} that processes all of the game's combat.
@@ -191,17 +154,14 @@ public class Game extends StateBasedGame implements MusicListener {
 		// Initialise the pause menu all the states will use
 		this.pauseMenu = new PauseMenu(new Point(100, 100), this);
 
-		this.loadingScreen = new LoadingScreen(this, 6);
+		LoadingScreen loadingScreen = new LoadingScreen(this, 6);
 
 		// Initialise the game states.
-		this.setup = new SetupState(this, 1, pauseMenu);
-		this.reinforcement = new ReinforcementState(this, 2, pauseMenu);
-		this.combat = new CombatState(this, 3, pauseMenu, warMenu);
-		this.movement = new MovementState(this, 4, pauseMenu);
-		this.end = new EndState(this, 5);
-
-		// Initialise the event handler.
-		this.eventHandler = new UIEventHandler(this);
+		SetupState setup = new SetupState(this, 1, pauseMenu);
+		ReinforcementState reinforcement = new ReinforcementState(this, 2, pauseMenu);
+		CombatState combat = new CombatState(this, 3, pauseMenu, warMenu);
+		MovementState movement = new MovementState(this, 4, pauseMenu);
+		EndState end = new EndState(this, 5);
 
 		// Holds the directory this game is operating in.
 		String baseDirectory = new File(System.getProperty("user.dir")).getPath();
@@ -222,7 +182,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		game_assetsPath.append(File.separatorChar);
 		game_assetsPath.append("maps");
 
-		this.mainMenu = new MainMenuState(this, 0, game_assetsPath.toString());
+		MainMenuState mainMenu = new MainMenuState(this, 0, game_assetsPath.toString());
 
 		// Create the ui_assets file path
 		StringBuilder ui_assestsPath = new StringBuilder(baseDirectory);
@@ -239,6 +199,8 @@ public class Game extends StateBasedGame implements MusicListener {
 		// Add the path to the map's folder
 		game_assetsPath.append(File.separatorChar);
 		mapsDirectory = game_assetsPath.toString();
+
+		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen);
 
 		// Start the display.
 		try {
@@ -257,26 +219,7 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
-
-		// Add starting state to the game container.
-		super.addState(mainMenu);
-
-		super.addState(loadingScreen);
-
-		// Add all other states to game container.
-		super.addState(setup);
-		super.addState(reinforcement);
-		super.addState(combat);
-		super.addState(movement);
-		super.addState(end);
-
-		// Assign Key and Mouse Listener as the UIEventhandler
-		container.getInput().addKeyListener(eventHandler);
-		container.getInput().addMouseListener(eventHandler);
-
-		// Hide FPS counter
-		container.setShowFPS(false);
-		container.setVSync(true);
+		states.initGame(container, this, new UIEventHandler(this));
 	}
 
 	/**
@@ -563,7 +506,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		}
 
 		// Add the player to the podium and remove it from the players in play.
-		end.addPlayerToPodium(player);
+		states.end.addPlayerToPodium(player);
 		players.remove(player);
 
 	}
@@ -574,8 +517,8 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public void checkWinner() {
 		if (players.size() == 1) {
-			end.addPlayerToPodium(players.get(0));
-			enterState(end.getID());
+			states.end.addPlayerToPodium(players.get(0));
+			enterState(states.end.getID());
 		}
 	}
 

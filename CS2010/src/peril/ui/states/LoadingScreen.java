@@ -140,7 +140,7 @@ public final class LoadingScreen extends InteractiveState {
 
 			// Enter set up state
 			getGame().autoDistributeCountries();
-			getGame().enterState(getGame().setup.getID());
+			getGame().enterState(getGame().states.setup.getID());
 		}
 		// Otherwise reader the current readers line.
 		else {

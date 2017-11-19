@@ -72,7 +72,7 @@ public class FunctionHandler {
 
 	private Action<?> toggleWarMenu() {
 		return new Action<Game>(game, game -> {
-			game.combat.warMenu.visible = !game.combat.warMenu.visible;
+			game.states.combat.warMenu.visible = !game.states.combat.warMenu.visible;
 		});
 	}
 
@@ -86,7 +86,7 @@ public class FunctionHandler {
 		return new Action<Game>(game, game -> {
 
 			// Holds the currently highlighted country
-			Country highlightedCountry = game.reinforcement.getHighlightedCountry();
+			Country highlightedCountry = game.states.reinforcement.getHighlightedCountry();
 
 			// Holds the current player.
 			Player player = game.getCurrentPlayer();
@@ -115,7 +115,7 @@ public class FunctionHandler {
 						game.checkChallenges(player);
 						
 						if(player.getDistributableArmySize() == 0) {
-							game.reinforcement.hideReinforceButton();
+							game.states.reinforcement.hideReinforceButton();
 						}
 
 					} else {
@@ -141,9 +141,9 @@ public class FunctionHandler {
 	 */
 	private Action<?> enterCombat() {
 		return new Action<Game>(game, game -> {
-			game.reinforcement.unhighlightCountry(game.reinforcement.getHighlightedCountry());
-			game.reinforcement.highlightCountry(null);
-			game.enterState(game.combat.getID());
+			game.states.reinforcement.unhighlightCountry(game.states.reinforcement.getHighlightedCountry());
+			game.states.reinforcement.highlightCountry(null);
+			game.enterState(game.states.combat.getID());
 		});
 	}
 
@@ -155,9 +155,9 @@ public class FunctionHandler {
 	 */
 	private Action<?> enterMovement() {
 		return new Action<Game>(game, game -> {
-			game.combat.unhighlightCountry(game.combat.getHighlightedCountry());
-			game.combat.highlightCountry(null);
-			game.enterState(game.movement.getID());
+			game.states.combat.unhighlightCountry(game.states.combat.getHighlightedCountry());
+			game.states.combat.highlightCountry(null);
+			game.enterState(game.states.movement.getID());
 		});
 	}
 
@@ -170,9 +170,9 @@ public class FunctionHandler {
 	 */
 	private Action<?> enterReinforment() {
 		return new Action<Game>(game, game -> {
-			game.movement.unhighlightCountry(game.movement.getHighlightedCountry());
-			game.movement.highlightCountry(null);
-			game.enterState(game.reinforcement.getID());
+			game.states.movement.unhighlightCountry(game.states.movement.getHighlightedCountry());
+			game.states.movement.highlightCountry(null);
+			game.enterState(game.states.reinforcement.getID());
 			game.nextPlayer();
 		});
 	}
@@ -188,8 +188,8 @@ public class FunctionHandler {
 		return new Action<Game>(game, game -> {
 
 			// Remove the highlighted country from the set up state
-			game.setup.unhighlightCountry(game.setup.getHighlightedCountry());
-			game.setup.highlightCountry(null);
+			game.states.setup.unhighlightCountry(game.states.setup.getHighlightedCountry());
+			game.states.setup.highlightCountry(null);
 
 			// checks the ownership of the continents
 			game.checkContinentRulership();
@@ -197,7 +197,7 @@ public class FunctionHandler {
 			// Change the state of the game to reinforcement and give player one their units
 			// based on the countries they own.
 			game.reinforce(game.getCurrentPlayer());
-			game.enterState(game.reinforcement.getID());
+			game.enterState(game.states.reinforcement.getID());
 		});
 	}
 
@@ -210,8 +210,8 @@ public class FunctionHandler {
 	private Action<?> fortifyCountry() {
 		return new Action<Game>(game, game -> {
 
-			Country primary = game.movement.getHighlightedCountry();
-			Country target = game.movement.getTargetCountry();
+			Country primary = game.states.movement.getHighlightedCountry();
+			Country target = game.states.movement.getTargetCountry();
 
 			// If there is two countries highlighted
 			if (primary != null && target != null) {
@@ -230,7 +230,7 @@ public class FunctionHandler {
 					primaryArmy.setSize(primaryArmy.getSize() - 1);
 
 					if (primaryArmy.getSize() == 1) {
-						game.movement.hideFortifyButton();
+						game.states.movement.hideFortifyButton();
 					}
 				} else {
 					// DO NOTHING
@@ -252,10 +252,10 @@ public class FunctionHandler {
 	private Action<?> excuteCombat() {
 		return new Action<Game>(game, game -> {
 
-			WarMenu warMenu = game.combat.warMenu;
+			WarMenu warMenu = game.states.combat.warMenu;
 
-			Country attacking = game.combat.getHighlightedCountry();
-			Country defending = game.combat.getEnemyCountry();
+			Country attacking = game.states.combat.getHighlightedCountry();
+			Country defending = game.states.combat.getEnemyCountry();
 
 			// If there is two countries highlighted
 			if (attacking != null && defending != null) {
@@ -286,8 +286,8 @@ public class FunctionHandler {
 
 						attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
 
-						game.combat.setPostCombat();
-						game.combat.highlightCountry(defending);
+						game.states.combat.setPostCombat();
+						game.states.combat.highlightCountry(defending);
 
 						game.checkContinentRulership();
 
@@ -297,14 +297,14 @@ public class FunctionHandler {
 
 						// If the attacking army is not large enough to attack again.
 						if (attacking.getArmy().getSize() == 1) {
-							game.combat.hideAttackButton();
+							game.states.combat.hideAttackButton();
 						}
 					}
 				} else {
-					game.combat.hideAttackButton();
+					game.states.combat.hideAttackButton();
 				}
 			} else {
-				game.combat.hideAttackButton();
+				game.states.combat.hideAttackButton();
 			}
 
 		});
@@ -320,7 +320,7 @@ public class FunctionHandler {
 	private Action<?> playGame() {
 		return new Action<Game>(game, game -> {
 			try {
-				game.mainMenu.loadMap();
+				game.states.mainMenu.loadMap();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -337,8 +337,8 @@ public class FunctionHandler {
 		return new Action<Game>(game, game -> {
 
 			// Unhighlight the highlighted country
-			game.setup.unhighlightCountry(game.setup.getHighlightedCountry());
-			game.setup.highlightCountry(null);
+			game.states.setup.unhighlightCountry(game.states.setup.getHighlightedCountry());
+			game.states.setup.highlightCountry(null);
 
 			// Assign the countries
 			game.autoDistributeCountries();

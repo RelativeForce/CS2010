@@ -76,7 +76,7 @@ public final class ReinforcementState extends CoreGameState {
 	public void hideReinforceButton() {
 		reinforceButton.hide();
 	}
-	
+
 	@Override
 	public void highlightCountry(Country country) {
 
@@ -94,9 +94,14 @@ public final class ReinforcementState extends CoreGameState {
 
 			if (player.equals(ruler)) {
 
-				moveReinforceButton(country);
-				reinforceButton.show();
+				if (player.getDistributableArmySize() > 0) {
+					moveReinforceButton(country);
+					reinforceButton.show();
+				} else {
+					reinforceButton.hide();
+				}
 				super.highlightCountry(country);
+
 			}
 
 		} else {
@@ -120,7 +125,7 @@ public final class ReinforcementState extends CoreGameState {
 
 		// Draw player name
 		g.drawString("Units: " + getGame().getCurrentPlayer().getDistributableArmySize(), 5, 35);
-		
+
 		drawPauseMenu(g);
 	}
 

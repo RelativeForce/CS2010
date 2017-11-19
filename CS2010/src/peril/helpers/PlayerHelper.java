@@ -1,10 +1,13 @@
 package peril.helpers;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import peril.Challenge;
 import peril.Game;
 import peril.Player;
+import peril.ui.states.gameStates.CoreGameState;
 import peril.ui.states.menuStates.EndState;
 
 /**
@@ -25,6 +28,11 @@ public class PlayerHelper {
 	 * The {@link Player} who's turn it is.
 	 */
 	private int currentPlayerIndex;
+	
+	/**
+	 * Contains all the objectives that a {@link Player} can attain in the game.
+	 */
+	private List<Challenge> challenges;
 
 	/**
 	 * The {@link Game} this {@link PlayerHelper} helps.
@@ -61,6 +69,52 @@ public class PlayerHelper {
 		players.forEach(task);
 	}
 
+	/**
+	 * Set the {@link List} of {@link Challenge}s for this {@link Game}.
+	 * 
+	 * @param challenges
+	 *            {@link List} NOT NULL
+	 */
+	public void setChallenges(List<Challenge> challenges) {
+
+		if (challenges == null) {
+			throw new NullPointerException("Challenge list cannot be null.");
+		}
+
+		this.challenges = challenges;
+	}
+	
+	/**
+	 * Iterates thought all the available {@link Challenge}s to see if the specified
+	 * {@link Player} has completed them or not.
+	 * 
+	 * @param currentPlayer
+	 *            {@link Player}
+	 */
+	public void checkChallenges(Player currentPlayer) {
+
+		// Holds the completed challenges
+		List<Challenge> toRemove = new LinkedList<>();
+
+		// Iterate though all the objectives to see if the the current player has
+		// completed them.
+		for (Challenge challenge : challenges) {
+
+			// If the current player has completed the challenge remove it from the list of
+			// available challenges.
+			if (challenge.hasCompleted(currentPlayer, game.board)) {
+				toRemove.add(challenge);
+
+				if (game.getCurrentState() instanceof CoreGameState) {
+					((CoreGameState) game.getCurrentState()).show(challenge);
+				}
+			}
+		}
+
+		// Remove the completed challenges.
+		toRemove.forEach(challenge -> challenges.remove(challenge));
+	}
+	
 	/**
 	 * Sets a specified {@link Player} as a loser which removes it from the
 	 * {@link Game#players} and adds it to the podium in the {@link EndState}.
@@ -142,7 +196,7 @@ public class PlayerHelper {
 		currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
 
 		if (game.getRoundNumber() > 0) {
-			game.checkChallenges(getCurrent());
+			checkChallenges(getCurrent());
 		}
 
 		reinforce(getCurrent());

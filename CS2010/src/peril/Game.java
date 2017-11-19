@@ -1,8 +1,6 @@
 package peril;
 
 import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 
 import org.newdawn.slick.AppGameContainer;
@@ -70,22 +68,17 @@ public class Game extends StateBasedGame implements MusicListener {
 	/**
 	 * The {@link WarMenu} that processes all of the game's combat.
 	 */
-	private final WarMenu warMenu;
+	public final WarMenu warMenu;
 
 	/**
 	 * The current turn of the {@link Game}. Initially zero;
 	 */
-	private volatile int currentRound;
-
-	/**
-	 * Contains all the objectives that a {@link Player} can attain in the game.
-	 */
-	private List<Challenge> challenges;
+	private int currentRound;
 
 	/**
 	 * The {@link AppGameContainer} that contains this {@link Game}.
 	 */
-	private AppGameContainer agc;
+	private final AppGameContainer agc;
 
 	/**
 	 * Constructs a new {@link Game}.
@@ -97,15 +90,6 @@ public class Game extends StateBasedGame implements MusicListener {
 
 		// Construct the board.
 		this.board = new Board(this);
-
-		// Construct the container for the game as a Slick2D state based game. And parse
-		// the details of the map from the maps file.
-		try {
-			agc = new AppGameContainer(this);
-			agc.setDisplayMode(400, 300, false);
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
 
 		this.players = new PlayerHelper(this);
 
@@ -163,13 +147,17 @@ public class Game extends StateBasedGame implements MusicListener {
 
 		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen);
 		this.io = new IOHelper(gameLoader, musicHelper, mainMenuLoader, challengeLoader);
-		// Start the display.
+
+		// Construct the container for the game as a Slick2D state based game. And parse
+		// the details of the map from the maps file.
 		try {
+			agc = new AppGameContainer(this);
+			agc.setDisplayMode(400, 300, false);
 			agc.setTargetFrameRate(60);
 			agc.start();
 		} catch (SlickException e) {
-			System.out.println(e.getMessage());
 			e.printStackTrace();
+			throw new IllegalStateException("The game must have a game container.");
 		}
 
 	}
@@ -257,52 +245,6 @@ public class Game extends StateBasedGame implements MusicListener {
 			return (InteractiveState) state;
 		}
 		throw new IllegalStateException(state.getID() + " is not a valid state as it is not a InteractiveState.");
-	}
-
-	/**
-	 * Iterates thought all the available {@link Challenge}s to see if the specified
-	 * {@link Player} has completed them or not.
-	 * 
-	 * @param currentPlayer
-	 *            {@link Player}
-	 */
-	public void checkChallenges(Player currentPlayer) {
-
-		// Holds the completed challenges
-		List<Challenge> toRemove = new LinkedList<>();
-
-		// Iterate though all the objectives to see if the the current player has
-		// completed them.
-		for (Challenge challenge : challenges) {
-
-			// If the current player has completed the challenge remove it from the list of
-			// available challenges.
-			if (challenge.hasCompleted(currentPlayer, board)) {
-				toRemove.add(challenge);
-
-				if (getCurrentState() instanceof CoreGameState) {
-					((CoreGameState) getCurrentState()).show(challenge);
-				}
-			}
-		}
-
-		// Remove the completed challenges.
-		toRemove.forEach(challenge -> challenges.remove(challenge));
-	}
-
-	/**
-	 * Set the {@link List} of {@link Challenge}s for this {@link Game}.
-	 * 
-	 * @param challenges
-	 *            {@link List} NOT NULL
-	 */
-	public void setChallenges(List<Challenge> challenges) {
-
-		if (challenges == null) {
-			throw new NullPointerException("Challenge list cannot be null.");
-		}
-
-		this.challenges = challenges;
 	}
 
 	/**

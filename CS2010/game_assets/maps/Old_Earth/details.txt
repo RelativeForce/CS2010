@@ -1,27 +1,28 @@
 // type, name, rgb, x offset, y offset
-Country,Alaska,000000051,0,0
-Country,Canada,000000102,0,0
-Country,USA,000000153,0,0
-Country,Gulf,000000204,0,0
-Country,Latin America,000000255,0,0
-Country,Central South America,000051000,0,0
-Country,Southern South America,000102000,0,0
-Country,Arctic,000153000,0,0
-Country,Western Europe,000204000,0,0
-Country,Central Europe,000255000,0,0
-Country,Eastern Europe,051000000,0,0
-Country,Northern Europe,102000000,0,0
-Country,Russia,153000000,0,0
-Country,Middle East,204000000,0,0
-Country,Arabia,255000000,0,0
-Country,Central Asia,000051051,0,0
-Country,China and Japan,000051102,0,0
-Country,Southern Asia,000051153,0,0
-Country,Australia,000051204,0,0
-Country,Western Africa,000051255,0,0
-Country,Desert Africa,000102051,0,0
-Country,Central Africa,000102102,0,0
-Country,Southern Africa,000102153,0,0
+Country,Alaska,000000051,1,0,0
+Country,Canada,000000102,1,0,0
+Country,USA,000000153,1,0,0
+Country,Gulf,000000204,1,0,0
+Country,Latin America,000000255,1,0,0
+Country,Central South America,000051000,1,0,0
+Country,Southern South America,000102000,1,0,0
+Country,Arctic,000153000,1,0,0
+Country,Western Europe,000204000,1,0,0
+Country,Central Europe,000255000,1,0,0
+Country,Eastern Europe,051000000,1,0,0
+Country,Northern Europe,102000000,1,0,0
+Country,Russia,153000000,1,0,0
+Country,Middle East,204000000,1,0,0
+Country,Arabia,255000000,1,0,0
+Country,Central Asia,000051051,1,0,0
+Country,China and Japan,000051102,1,0,0
+Country,Southern Asia,000051153,1,0,0
+Country,Australia,000051204,1,0,0
+Country,Western Africa,000051255,1,0,0
+Country,Desert Africa,000102051,1,0,0
+Country,Central Africa,000102102,1,0,0
+Country,Southern Africa,000102153,1,0,0
+//
 Continent,North America,Hurricane,Alaska-Canada-USA-Gulf-Arctic
 Continent,South America,Tornado,Latin America-Central South America-Southern South America
 Continent,Europe,Hurricane,Western Europe-Central Europe-Eastern Europe-Northern Europe

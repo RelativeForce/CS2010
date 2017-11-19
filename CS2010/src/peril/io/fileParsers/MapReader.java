@@ -116,7 +116,7 @@ public final class MapReader extends FileParser {
 	 */
 	private void parseCountry(String[] details) {
 
-		int BUTTON_LENGTH = 5;
+		int BUTTON_LENGTH = 6;
 
 		if (details.length != BUTTON_LENGTH) {
 			throw new IllegalArgumentException(
@@ -161,17 +161,25 @@ public final class MapReader extends FileParser {
 
 		int xOffset;
 		int yOffset;
+		int armySize;
+		
 
 		try {
-			xOffset = Integer.parseInt(details[3]);
+			armySize = Integer.parseInt(details[3]);
 		} catch (Exception e) {
-			throw new IllegalArgumentException(details[3] + " is not a valid x coordinate.");
+			throw new IllegalArgumentException(details[3] + " is not a valid army size.");
+		}
+		
+		try {
+			xOffset = Integer.parseInt(details[4]);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(details[4] + " is not a valid x coordinate.");
 		}
 
 		try {
-			yOffset = Integer.parseInt(details[4]);
+			yOffset = Integer.parseInt(details[5]);
 		} catch (Exception e) {
-			throw new IllegalArgumentException(details[4] + " is not a valid x coordinate.");
+			throw new IllegalArgumentException(details[5] + " is not a valid x coordinate.");
 		}
 
 		// Initialise a new color using the rgb values.
@@ -181,6 +189,9 @@ public final class MapReader extends FileParser {
 		Country country = new Country(name,
 				ImageReader.getColourRegion(directoryPath + File.separatorChar + "countries.png", color));
 
+		// Set the army size
+		country.getArmy().setSize(armySize);
+		
 		// Set the army offset.
 		country.getArmy().setOffset(new Point(xOffset, yOffset));
 

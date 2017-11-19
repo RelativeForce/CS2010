@@ -162,14 +162,13 @@ public final class MapReader extends FileParser {
 		int xOffset;
 		int yOffset;
 		int armySize;
-		
 
 		try {
 			armySize = Integer.parseInt(details[3]);
 		} catch (Exception e) {
 			throw new IllegalArgumentException(details[3] + " is not a valid army size.");
 		}
-		
+
 		try {
 			xOffset = Integer.parseInt(details[4]);
 		} catch (Exception e) {
@@ -182,20 +181,22 @@ public final class MapReader extends FileParser {
 			throw new IllegalArgumentException(details[5] + " is not a valid x coordinate.");
 		}
 
-		// Initialise a new color using the rgb values.
+		// Initialise a new colour using the RGB values.
 		Color color = new Color(r, g, b);
 
+		// Gets the region by colour.
+		Region region = ImageReader.getColourRegion(directoryPath + File.separatorChar + "countries.png", color);
+
 		// Initialise the new country.
-		Country country = new Country(name,
-				ImageReader.getColourRegion(directoryPath + File.separatorChar + "countries.png", color));
+		Country country = new Country(name, region, color);
 
 		// Set the army size
 		country.getArmy().setSize(armySize);
-		
+
 		// Set the army offset.
 		country.getArmy().setOffset(new Point(xOffset, yOffset));
 
-		// Construct a new counrty and add the country to the list of countries.
+		// Construct a new country and add the country to the list of countries.
 		countries.add(country);
 
 	}

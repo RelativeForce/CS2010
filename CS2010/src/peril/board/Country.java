@@ -39,6 +39,11 @@ public class Country extends Clickable {
 	private List<Country> neighbours;
 
 	/**
+	 * The {@link Color} that denoted this {@link Country} in the map files.
+	 */
+	private final Color color;
+
+	/**
 	 * Holds the army occupying this {@link Country}.
 	 * 
 	 * @see Army {@link Army}
@@ -56,12 +61,23 @@ public class Country extends Clickable {
 	 * @param name
 	 *            of the {@link Country}.
 	 */
-	public Country(String name, Region region) {
+	public Country(String name, Region region, Color color) {
 		super(region);
 		this.neighbours = new LinkedList<Country>();
 		this.ruler = null;
 		this.army = new Army(1);
 		this.name = name;
+		this.color = color;
+	}
+
+	/**
+	 * Retrieves the {@link Color} that denoted this {@link Country} in the map
+	 * files.
+	 * 
+	 * @return {@link Color}
+	 */
+	public Color getColor() {
+		return color;
 	}
 
 	/**

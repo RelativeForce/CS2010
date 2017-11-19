@@ -72,6 +72,11 @@ public class Game extends StateBasedGame implements MusicListener {
 	public final IOHelper io;
 
 	/**
+	 * The {@link PlayerHelper} that holds all this {@link Game}s {@link Player}s.
+	 */
+	public final PlayerHelper players;
+
+	/**
 	 * The instance of the {@link Board} used for this game.
 	 */
 	public final Board board;
@@ -85,16 +90,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * The current turn of the {@link Game}. Initially zero;
 	 */
 	private volatile int currentRound;
-
-	/**
-	 * Holds all the {@link Player}s in this {@link Game}.
-	 */
-	private List<Player> players;
-
-	/**
-	 * The {@link Player} who's turn it is.
-	 */
-	private volatile int currentPlayerIndex;
 
 	/**
 	 * Contains all the objectives that a {@link Player} can attain in the game.
@@ -113,7 +108,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		super("PERIL: A Turn Based Strategy Game");
 
 		// Set the game indexes to there initial values.
-		this.currentPlayerIndex = 0;
+
 		this.currentRound = 0;
 
 		// Assign the game to run.
@@ -131,6 +126,8 @@ public class Game extends StateBasedGame implements MusicListener {
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
+
+		this.players = new PlayerHelper(this);
 
 		// Initialise games Combat Handler
 		this.warMenu = new WarMenu(new Point(100, 100), this);
@@ -244,11 +241,7 @@ public class Game extends StateBasedGame implements MusicListener {
 
 		Random rand = new Random();
 
-		// Reset the all players number of countries to zero.
-		for (Player player : players) {
-			player.setCountriesRuled(0);
-			player.setTotalArmySize(0);
-		}
+		players.reset();
 
 		// Iterate through each country on the board.
 		board.getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
@@ -260,60 +253,12 @@ public class Game extends StateBasedGame implements MusicListener {
 	}
 
 	/**
-	 * Retrieves the {@link Player} who's current turn it is.
-	 * 
-	 * @return {@link Player}
-	 */
-	public Player getCurrentPlayer() {
-
-		if (players == null) {
-			throw new NullPointerException("List of playing Players is null!");
-		}
-
-		return players.get(currentPlayerIndex);
-	}
-
-	/**
 	 * Retrieves the current turn number.
 	 * 
 	 * @return <code>int</code>
 	 */
 	public int getRoundNumber() {
 		return currentRound;
-	}
-
-	/**
-	 * Iterates to the next player.
-	 */
-	public void nextPlayer() {
-
-		currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-
-		if (getRoundNumber() > 0) {
-			checkChallenges(getCurrentPlayer());
-		}
-
-		reinforce(getCurrentPlayer());
-
-		if (currentPlayerIndex == 0) {
-			endRound();
-		}
-	}
-
-	/**
-	 * Gives the specified {@link Player} reinforcements based on the number of
-	 * countries they own.
-	 * 
-	 * @param player
-	 *            {@link Player}
-	 */
-	public void reinforce(Player player) {
-
-		if (player.getCountriesRuled() < 12) {
-			player.setDistributableArmySize(player.getDistributableArmySize() + 3);
-		} else {
-			player.setDistributableArmySize(player.getDistributableArmySize() + (player.getCountriesRuled() / 3));
-		}
 	}
 
 	/**
@@ -418,43 +363,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	}
 
 	/**
-	 * Assigns an array of {@link Player} to this {@link Game}.
-	 * 
-	 * @param players
-	 *            {@link Player}s in the {@link Game}. NOT EMPTY
-	 */
-	public void setPlayers(List<Player> players) {
-
-		if (players == null || players.isEmpty()) {
-			throw new IllegalArgumentException("players array cannot be empty");
-		}
-
-		this.players = players;
-		this.currentPlayerIndex = 0;
-	}
-
-	/**
-	 * Retrieves whether or not a specified player is in this {@link Game}.
-	 * 
-	 * @param player
-	 *            {@link Player}
-	 * @return <code>boolean</code>
-	 */
-	public boolean isPlaying(Player player) {
-
-		// Iterate through all the players in the game.
-		for (Player currentPlayer : players) {
-
-			// If the player is playing then return true.
-			if (currentPlayer.equals(player)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
 	 * Checks all the {@link Continent}s on the {@link Board} to see if they are
 	 * ruled. This is o(n^2) complexity
 	 */
@@ -470,28 +378,6 @@ public class Game extends StateBasedGame implements MusicListener {
 				continent.getRuler().setContinentsRuled(continent.getRuler().getCountriesRuled() + 1);
 			}
 		});
-
-	}
-
-	/**
-	 * Sets a specified {@link Player} as a loser which removes it from the
-	 * {@link Game#players} and adds it to the podium in the {@link EndState}.
-	 * 
-	 * @param player
-	 *            {@link Player} that has lost.
-	 */
-	public void setLoser(Player player) {
-
-		// If the loser player is before the current player in the list, reduce the
-		// player index to account for the player being removed and the list's size
-		// changing.
-		if (this.currentPlayerIndex > players.indexOf(player)) {
-			this.currentPlayerIndex--;
-		}
-
-		// Add the player to the podium and remove it from the players in play.
-		states.end.addPlayerToPodium(player);
-		players.remove(player);
 
 	}
 
@@ -518,6 +404,14 @@ public class Game extends StateBasedGame implements MusicListener {
 		} else {
 			getContainer().setMusicVolume(0f);
 		}
+	}
+
+	/**
+	 * Performs all the tasks that occur at the end of a round.
+	 */
+	public void endRound() {
+		board.endRound();
+		currentRound++;
 	}
 
 	/**
@@ -573,14 +467,6 @@ public class Game extends StateBasedGame implements MusicListener {
 
 		}
 
-	}
-
-	/**
-	 * Performs all the tasks that occur at the end of a round.
-	 */
-	private void endRound() {
-		board.endRound();
-		currentRound++;
 	}
 
 }

@@ -321,8 +321,8 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	protected void drawPlayerName(Graphics g) {
 		// Draw player name and set the text color to the player's color
-		g.setColor(getGame().getCurrentPlayer().getColor());
-		g.drawString(getGame().getCurrentPlayer().toString(), 5, 20);
+		g.setColor(getGame().players.getCurrent().getColor());
+		g.drawString(getGame().players.getCurrent().toString(), 5, 20);
 	}
 
 	/**

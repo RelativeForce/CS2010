@@ -204,7 +204,7 @@ public class MainMenuState extends InteractiveState {
 		}
 
 		// Loads the game assets and move into the set up state
-		getGame().setPlayers(playersArray.players);
+		getGame().players.set(playersArray.players);
 
 		int screenWidth = getGame().getContainer().getScreenWidth();
 		int screenHeight = getGame().getContainer().getScreenHeight();

@@ -78,22 +78,22 @@ public final class SetupState extends CoreGameState {
 
 			switch (key) {
 			case Input.KEY_1:
-				if (getGame().isPlaying(Player.ONE)) {
+				if (getGame().players.isPlaying(Player.ONE)) {
 					swapRuler(highlighted, Player.ONE);
 				}
 				break;
 			case Input.KEY_2:
-				if (getGame().isPlaying(Player.TWO)) {
+				if (getGame().players.isPlaying(Player.TWO)) {
 					swapRuler(highlighted, Player.TWO);
 				}
 				break;
 			case Input.KEY_3:
-				if (getGame().isPlaying(Player.THREE)) {
+				if (getGame().players.isPlaying(Player.THREE)) {
 					swapRuler(highlighted, Player.THREE);
 				}
 				break;
 			case Input.KEY_4:
-				if (getGame().isPlaying(Player.FOUR)) {
+				if (getGame().players.isPlaying(Player.FOUR)) {
 					swapRuler(highlighted, Player.FOUR);
 				}
 				break;

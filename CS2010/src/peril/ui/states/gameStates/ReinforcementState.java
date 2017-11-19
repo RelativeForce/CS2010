@@ -87,7 +87,7 @@ public final class ReinforcementState extends CoreGameState {
 		if (country != null) {
 
 			// Holds the current player
-			Player player = getGame().getCurrentPlayer();
+			Player player = getGame().players.getCurrent();
 
 			// Holds the ruler of the country
 			Player ruler = country.getRuler();
@@ -124,7 +124,7 @@ public final class ReinforcementState extends CoreGameState {
 		g.setColor(Color.black);
 
 		// Draw player name
-		g.drawString("Units: " + getGame().getCurrentPlayer().getDistributableArmySize(), 5, 35);
+		g.drawString("Units: " + getGame().players.getCurrent().getDistributableArmySize(), 5, 35);
 
 		drawPauseMenu(g);
 	}

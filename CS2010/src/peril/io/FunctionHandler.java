@@ -89,7 +89,7 @@ public class FunctionHandler {
 			Country highlightedCountry = game.states.reinforcement.getHighlightedCountry();
 
 			// Holds the current player.
-			Player player = game.getCurrentPlayer();
+			Player player = game.players.getCurrent();
 
 			// Holds the size of the army that the player has to distribute.
 			int armySize = player.getDistributableArmySize();
@@ -173,7 +173,7 @@ public class FunctionHandler {
 			game.states.movement.unhighlightCountry(game.states.movement.getHighlightedCountry());
 			game.states.movement.highlightCountry(null);
 			game.enterState(game.states.reinforcement.getID());
-			game.nextPlayer();
+			game.players.nextPlayer();
 		});
 	}
 
@@ -196,7 +196,7 @@ public class FunctionHandler {
 
 			// Change the state of the game to reinforcement and give player one their units
 			// based on the countries they own.
-			game.reinforce(game.getCurrentPlayer());
+			game.players.reinforce(game.players.getCurrent());
 			game.enterState(game.states.reinforcement.getID());
 		});
 	}
@@ -279,7 +279,7 @@ public class FunctionHandler {
 
 							// If the player has no countries they have lost.
 							if (defendingPlayer.getCountriesRuled() == 0) {
-								game.setLoser(defendingPlayer);
+								game.players.setLoser(defendingPlayer);
 								game.checkWinner();
 							}
 						}

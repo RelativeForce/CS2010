@@ -16,7 +16,7 @@ import peril.ui.states.gameStates.CoreGameState;
 
 /**
  * Encapsulates the behaviour of the 'Movement' state of the game. In this state
- * the {@link Game#getCurrentPlayer()} chooses which of their {@link Country}s
+ * the {@link Game#getCurrent()} chooses which of their {@link Country}s
  * they will move units to another {@link Country}.
  * 
  * @author Joshua_Eddy, Joseph_Rolli
@@ -62,7 +62,7 @@ public final class MovementState extends MultiSelectState {
 		if (country != null) {
 
 			// Holds the current player
-			Player player = getGame().getCurrentPlayer();
+			Player player = getGame().players.getCurrent();
 
 			// Holds the ruler of the country
 			Player ruler = country.getRuler();
@@ -143,7 +143,7 @@ public final class MovementState extends MultiSelectState {
 	/**
 	 * Processes whether a {@link Country} is a valid target for the
 	 * {@link CoreGameState#getHighlightedCountry()} to attack. This is based on the
-	 * {@link Player} ruler and the {@link Player} ({@link Game#getCurrentPlayer()})
+	 * {@link Player} ruler and the {@link Player} ({@link Game#getCurrent()})
 	 * 
 	 * @param country
 	 *            {@link Country}

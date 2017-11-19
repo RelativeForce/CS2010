@@ -17,7 +17,7 @@ import peril.ui.states.gameStates.CoreGameState;
 
 /**
  * Encapsulates the behaviour of the 'Combat' state of the game. In this state
- * the {@link Game#getCurrentPlayer()} chooses which of their {@link Country}s
+ * the {@link Game#getCurrent()} chooses which of their {@link Country}s
  * they will attack other {@link Country}s with.
  * 
  * @author Joseph_Rolli, Joshua_Eddy
@@ -178,7 +178,7 @@ public final class CombatState extends MultiSelectState {
 	/**
 	 * Processes whether a {@link Country} is a valid target for the
 	 * {@link CoreGameState#getHighlightedCountry()} to attack. This is based on the
-	 * {@link Player} ruler and the {@link Player} ({@link Game#getCurrentPlayer()})
+	 * {@link Player} ruler and the {@link Player} ({@link Game#getCurrent()})
 	 * 
 	 * @param country
 	 *            {@link Country}
@@ -245,7 +245,7 @@ public final class CombatState extends MultiSelectState {
 		if (country != null) {
 
 			// Holds the current player
-			Player player = getGame().getCurrentPlayer();
+			Player player = getGame().players.getCurrent();
 
 			// Holds the ruler of the country
 			Player ruler = country.getRuler();

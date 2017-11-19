@@ -17,8 +17,8 @@ import peril.ui.states.gameStates.CoreGameState;
 
 /**
  * Encapsulates the behaviour of the 'Combat' state of the game. In this state
- * the {@link Game#getCurrent()} chooses which of their {@link Country}s
- * they will attack other {@link Country}s with.
+ * the {@link Game#getCurrent()} chooses which of their {@link Country}s they
+ * will attack other {@link Country}s with.
  * 
  * @author Joseph_Rolli, Joshua_Eddy
  *
@@ -95,6 +95,15 @@ public final class CombatState extends MultiSelectState {
 	}
 
 	/**
+	 * Performs the exit state operations specific to this {@link CombatState}.
+	 */
+	@Override
+	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		super.leave(container, game);
+		attackButton.hide();
+	}
+
+	/**
 	 * Pans this {@link CombatState}.
 	 */
 	@Override
@@ -132,12 +141,12 @@ public final class CombatState extends MultiSelectState {
 		super.drawPlayerName(g);
 
 		this.drawValidTargets(g);
-		
+
 		super.drawImages(g);
 		super.drawButtons(g);
 
 		this.warMenu.draw(g);
-		
+
 		drawPauseMenu(g);
 	}
 

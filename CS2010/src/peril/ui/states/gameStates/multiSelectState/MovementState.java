@@ -16,8 +16,8 @@ import peril.ui.states.gameStates.CoreGameState;
 
 /**
  * Encapsulates the behaviour of the 'Movement' state of the game. In this state
- * the {@link Game#getCurrent()} chooses which of their {@link Country}s
- * they will move units to another {@link Country}.
+ * the {@link Game#getCurrent()} chooses which of their {@link Country}s they
+ * will move units to another {@link Country}.
  * 
  * @author Joshua_Eddy, Joseph_Rolli
  *
@@ -90,22 +90,6 @@ public final class MovementState extends MultiSelectState {
 	}
 
 	/**
-	 * Pans this {@link MovementState}.
-	 */
-	@Override
-	protected void pan(Point panVector) {
-
-		Point old = fortifyButton.getPosition();
-
-		Point vector = getGame().board.move(panVector);
-
-		if (vector.x != 0 || vector.y != 0) {
-			fortifyButton.setPosition(new Point(old.x + vector.x, old.y + vector.y));
-		}
-
-	}
-
-	/**
 	 * Render the {@link MovementState}.
 	 */
 	@Override
@@ -113,13 +97,22 @@ public final class MovementState extends MultiSelectState {
 		super.render(gc, sbg, g);
 
 		super.drawPlayerName(g);
-		
+
 		this.drawValidTargets(g);
-		
+
 		super.drawImages(g);
 		super.drawButtons(g);
 
 		drawPauseMenu(g);
+	}
+
+	/**
+	 * Performs the exit state operations specific to this {@link MovementState}
+	 */
+	@Override
+	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		super.leave(container, game);
+		fortifyButton.hide();
 	}
 
 	/**
@@ -140,6 +133,22 @@ public final class MovementState extends MultiSelectState {
 		fortifyButton.hide();
 	}
 
+	/**
+	 * Pans this {@link MovementState}.
+	 */
+	@Override
+	protected void pan(Point panVector) {
+
+		Point old = fortifyButton.getPosition();
+
+		Point vector = getGame().board.move(panVector);
+
+		if (vector.x != 0 || vector.y != 0) {
+			fortifyButton.setPosition(new Point(old.x + vector.x, old.y + vector.y));
+		}
+
+	}
+	
 	/**
 	 * Processes whether a {@link Country} is a valid target for the
 	 * {@link CoreGameState#getHighlightedCountry()} to attack. This is based on the

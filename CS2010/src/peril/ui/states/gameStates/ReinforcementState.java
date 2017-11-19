@@ -47,6 +47,11 @@ public final class ReinforcementState extends CoreGameState {
 		super(game, STATE_NAME, id, pauseMenu);
 	}
 
+	/**
+	 * Adds a {@link Button} to this {@link ReinforcementState}. The last
+	 * {@link Button} with the specified id will be used as the
+	 * {@link ReinforcementState#reinforceButton}.
+	 */
 	@Override
 	public void addButton(Button button) {
 		super.addButton(button);
@@ -58,25 +63,25 @@ public final class ReinforcementState extends CoreGameState {
 	}
 
 	/**
-	 * Pans this {@link ReinforcementState}.
+	 * Performs the exit state operations specific to this
+	 * {@link ReinforcementState}.
 	 */
 	@Override
-	protected void pan(Point panVector) {
-
-		Point old = reinforceButton.getPosition();
-
-		Point vector = getGame().board.move(panVector);
-
-		if (vector.x != 0 || vector.y != 0) {
-			reinforceButton.setPosition(new Point(old.x + vector.x, old.y + vector.y));
-		}
-
+	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		super.leave(container, game);
+		reinforceButton.hide();
 	}
 
+	/**
+	 * Hides the {@link ReinforcementState#reinforceButton}.
+	 */
 	public void hideReinforceButton() {
 		reinforceButton.hide();
 	}
 
+	/**
+	 * Highlights a {@link Country} in this {@link ReinforcementState}.
+	 */
 	@Override
 	public void highlightCountry(Country country) {
 
@@ -111,6 +116,9 @@ public final class ReinforcementState extends CoreGameState {
 
 	}
 
+	/**
+	 * Renders this {@link ReinforcementState} on screen.
+	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
@@ -144,6 +152,22 @@ public final class ReinforcementState extends CoreGameState {
 		int y = armyPosition.y + 25;
 
 		reinforceButton.setPosition(new Point(x, y));
+
+	}
+
+	/**
+	 * Pans this {@link ReinforcementState}.
+	 */
+	@Override
+	protected void pan(Point panVector) {
+
+		Point old = reinforceButton.getPosition();
+
+		Point vector = getGame().board.move(panVector);
+
+		if (vector.x != 0 || vector.y != 0) {
+			reinforceButton.setPosition(new Point(old.x + vector.x, old.y + vector.y));
+		}
 
 	}
 }

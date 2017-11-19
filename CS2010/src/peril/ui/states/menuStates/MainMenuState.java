@@ -50,6 +50,11 @@ public class MainMenuState extends InteractiveState {
 	 * {@link Game}.
 	 */
 	private VisualList<PlayerArray> players;
+	
+	/**
+	 * The {@link VisualList} of the saved games read from the saved file.
+	 */
+	private VisualList<Load> load;
 
 	/**
 	 * The {@link Font} used for displaying {@link MainMenuState#maps}.
@@ -79,7 +84,8 @@ public class MainMenuState extends InteractiveState {
 		super(game, STATE_NAME, id);
 		mapsFile = TextFileReader.scanFile(mapsFilePath, "maps.txt");
 		maps = new VisualList<>(15, 220, 110, 22, 3, 10);
-		players = new VisualList<>(150, 220, 20, 22, 3, 5);
+		players = new VisualList<>(160, 220, 20, 22, 3, 5);
+		load = new VisualList<>(220, 220, 65, 22, 3, 10);
 		getMaps();
 		getPlayers();
 
@@ -94,11 +100,13 @@ public class MainMenuState extends InteractiveState {
 		
 		drawButtons(g);
 
-		textFont.draw(g, "Players: ", 150, 200);
+		textFont.draw(g, "Players: ", 160, 200);
 		textFont.draw(g, "Map: ", 15, 200);
+		textFont.draw(g, "Load: ", 220, 200);
 
 		maps.draw(g);
 		players.draw(g);
+		load.draw(g);
 	}
 
 	@Override
@@ -346,5 +354,15 @@ public class MainMenuState extends InteractiveState {
 			}
 
 		}
+	}
+	
+	/**
+	 * 
+	 * Holds an array of saved games in {@link MainMenuState}
+	 * @author Mohammad ali Sayed Ackbar
+	 *
+	 */
+	private class Load{
+		//Implementation to hold saved games
 	}
 }

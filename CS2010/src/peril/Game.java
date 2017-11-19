@@ -20,7 +20,6 @@ import peril.io.fileParsers.AssetReader;
 import peril.io.fileParsers.ChallengeReader;
 import peril.io.fileReaders.MusicReader;
 import peril.ui.Container;
-import peril.ui.StateHelper;
 import peril.ui.UIEventHandler;
 import peril.ui.components.menus.PauseMenu;
 import peril.ui.components.menus.WarMenu;

@@ -141,8 +141,6 @@ public class FunctionHandler {
 	 */
 	private Action<?> enterCombat() {
 		return new Action<Game>(game, game -> {
-			game.states.reinforcement.unhighlightCountry(game.states.reinforcement.getHighlightedCountry());
-			game.states.reinforcement.highlightCountry(null);
 			game.enterState(game.states.combat.getID());
 		});
 	}
@@ -155,8 +153,6 @@ public class FunctionHandler {
 	 */
 	private Action<?> enterMovement() {
 		return new Action<Game>(game, game -> {
-			game.states.combat.unhighlightCountry(game.states.combat.getHighlightedCountry());
-			game.states.combat.highlightCountry(null);
 			game.enterState(game.states.movement.getID());
 		});
 	}
@@ -170,8 +166,6 @@ public class FunctionHandler {
 	 */
 	private Action<?> enterReinforment() {
 		return new Action<Game>(game, game -> {
-			game.states.movement.unhighlightCountry(game.states.movement.getHighlightedCountry());
-			game.states.movement.highlightCountry(null);
 			game.enterState(game.states.reinforcement.getID());
 			game.players.nextPlayer();
 		});
@@ -186,11 +180,7 @@ public class FunctionHandler {
 	 */
 	private Action<?> leaveSetUp() {
 		return new Action<Game>(game, game -> {
-
-			// Remove the highlighted country from the set up state
-			game.states.setup.unhighlightCountry(game.states.setup.getHighlightedCountry());
-			game.states.setup.highlightCountry(null);
-
+			
 			// checks the ownership of the continents
 			game.checkContinentRulership();
 

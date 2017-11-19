@@ -50,7 +50,7 @@ public class MainMenuState extends InteractiveState {
 	 * {@link Game}.
 	 */
 	private VisualList<PlayerArray> players;
-	
+
 	/**
 	 * The {@link VisualList} of the saved games read from the saved file.
 	 */
@@ -91,13 +91,16 @@ public class MainMenuState extends InteractiveState {
 
 	}
 
+	/**
+	 * Renders this {@link MainMenuState} on screen.
+	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
 		g.setBackground(Color.black);
 
 		drawImages(g);
-		
+
 		drawButtons(g);
 
 		textFont.draw(g, "Players: ", 160, 200);
@@ -109,6 +112,9 @@ public class MainMenuState extends InteractiveState {
 		load.draw(g);
 	}
 
+	/**
+	 * Processed a mouse click on this {@link MainMenuState}.
+	 */
 	@Override
 	public void parseClick(int button, Point click) {
 
@@ -119,6 +125,9 @@ public class MainMenuState extends InteractiveState {
 		}
 	}
 
+	/**
+	 * Processes a button press on this {@link MainMenuState}.
+	 */
 	@Override
 	public void parseButton(int key, char c, Point mousePosition) {
 
@@ -144,6 +153,9 @@ public class MainMenuState extends InteractiveState {
 		}
 	}
 
+	/**
+	 * Initialises the visual elements of this {@link MainMenuState}.
+	 */
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 
@@ -164,29 +176,39 @@ public class MainMenuState extends InteractiveState {
 
 	}
 
+	/**
+	 * Enters the {@link MainMenuState}.
+	 */
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
 		changeMusic(gc);
 	}
-	
+
+	/**
+	 * Updates this {@link MainMenuState}. When this state is first activated all
+	 * the visual assets of the main menu are loaded in from memory.
+	 */
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 
-		if(!getGame().io.mainMenuLoader.isFinished()) {
+		if (!getGame().io.mainMenuLoader.isFinished()) {
 			getGame().io.mainMenuLoader.parseLine();
 		}
-		
+
 	}
 
+	/**
+	 * Retrieves the {@link MainMenuState} {@link Music}.
+	 */
 	@Override
 	public Music getMusic() {
 		return background;
 	}
 
 	/**
-	 * Loads the {@link MainMenuState#listFont} {@link VisualList#getSelected()} into
-	 * the {@link Game} and re-sizes the window of the {@link Game}.
+	 * Loads the {@link MainMenuState#listFont} {@link VisualList#getSelected()}
+	 * into the {@link Game} and re-sizes the window of the {@link Game}.
 	 */
 	public void loadMap() throws SlickException {
 
@@ -211,7 +233,7 @@ public class MainMenuState extends InteractiveState {
 
 		int width = (map.width > screenWidth) ? screenWidth : map.width;
 		int height = (map.height > screenHeight) ? screenHeight : map.height;
-		
+
 		getGame().reSize(width, height);
 		getGame().states.loadingScreen.addReader(getGame().io.gameLoader);
 		getGame().states.loadingScreen.addReader(new MapReader(getGame().mapsDirectory + map.name, getGame().board));
@@ -355,14 +377,15 @@ public class MainMenuState extends InteractiveState {
 
 		}
 	}
-	
+
 	/**
 	 * 
 	 * Holds an array of saved games in {@link MainMenuState}
+	 * 
 	 * @author Mohammad ali Sayed Ackbar
 	 *
 	 */
-	private class Load{
-		//Implementation to hold saved games
+	private class Load {
+		// TODO Implementation to hold saved games
 	}
 }

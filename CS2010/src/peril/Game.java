@@ -16,23 +16,16 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
-import peril.helpers.IOHelper;
-import peril.helpers.PlayerHelper;
-import peril.helpers.StateHelper;
-import peril.io.fileParsers.AssetReader;
-import peril.io.fileParsers.ChallengeReader;
+import peril.helpers.*;
+import peril.io.fileParsers.*;
 import peril.io.fileReaders.MusicReader;
 import peril.ui.Container;
 import peril.ui.UIEventHandler;
-import peril.ui.components.menus.PauseMenu;
-import peril.ui.components.menus.WarMenu;
-import peril.ui.states.InteractiveState;
-import peril.ui.states.LoadingScreen;
+import peril.ui.components.menus.*;
+import peril.ui.states.*;
 import peril.ui.states.gameStates.*;
-import peril.ui.states.gameStates.multiSelectState.CombatState;
-import peril.ui.states.gameStates.multiSelectState.MovementState;
-import peril.ui.states.menuStates.EndState;
-import peril.ui.states.menuStates.MainMenuState;
+import peril.ui.states.gameStates.multiSelectState.*;
+import peril.ui.states.menuStates.*;
 
 /**
  * Encapsulate the main game logic for Peril. This also extends
@@ -42,16 +35,6 @@ import peril.ui.states.menuStates.MainMenuState;
  *
  */
 public class Game extends StateBasedGame implements MusicListener {
-
-	/**
-	 * Whether the game is running or not.
-	 */
-	public volatile boolean run;
-
-	/**
-	 * Whether or not the current users turn is over or not.
-	 */
-	public volatile boolean endTurn;
 
 	/**
 	 * The {@link PauseMenu} that will be used by all the {@link CoreGameState}s.
@@ -110,13 +93,7 @@ public class Game extends StateBasedGame implements MusicListener {
 	private Game() {
 		super("PERIL: A Turn Based Strategy Game");
 
-		// Set the game indexes to there initial values.
-
 		this.currentRound = 0;
-
-		// Assign the game to run.
-		this.endTurn = false;
-		this.run = true;
 
 		// Construct the board.
 		this.board = new Board(this);

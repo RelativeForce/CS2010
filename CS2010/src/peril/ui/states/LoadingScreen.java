@@ -108,7 +108,7 @@ public final class LoadingScreen extends InteractiveState {
 		super.init(gc, sbg);
 
 		// Set the music.
-		music = getGame().musicHelper.read("loading");
+		music = getGame().io.musicHelper.read("loading");
 		
 
 	}

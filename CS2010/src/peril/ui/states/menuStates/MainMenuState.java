@@ -160,7 +160,7 @@ public class MainMenuState extends InteractiveState {
 		players.setFont(listFont);
 
 		// Set the music that will be repeated by this state
-		background = getGame().musicHelper.read("menu");
+		background = getGame().io.musicHelper.read("menu");
 
 	}
 
@@ -173,8 +173,8 @@ public class MainMenuState extends InteractiveState {
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 
-		if(!getGame().mainMenuLoader.isFinished()) {
-			getGame().mainMenuLoader.parseLine();
+		if(!getGame().io.mainMenuLoader.isFinished()) {
+			getGame().io.mainMenuLoader.parseLine();
 		}
 		
 	}
@@ -213,9 +213,9 @@ public class MainMenuState extends InteractiveState {
 		int height = (map.height > screenHeight) ? screenHeight : map.height;
 		
 		getGame().reSize(width, height);
-		getGame().states.loadingScreen.addReader(getGame().gameLoader);
+		getGame().states.loadingScreen.addReader(getGame().io.gameLoader);
 		getGame().states.loadingScreen.addReader(new MapReader(getGame().mapsDirectory + map.name, getGame().board));
-		getGame().states.loadingScreen.addReader(getGame().challengeLoader);
+		getGame().states.loadingScreen.addReader(getGame().io.challengeLoader);
 		getGame().enterState(getGame().states.loadingScreen.getID());
 
 	}

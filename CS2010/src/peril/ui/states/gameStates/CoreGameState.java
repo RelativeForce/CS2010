@@ -147,7 +147,7 @@ public abstract class CoreGameState extends InteractiveState {
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
 		pauseMenu.init();
-		backgroundMusic = getGame().musicHelper.read("game1");
+		backgroundMusic = getGame().io.musicHelper.read("game1");
 	}
 
 	@Override

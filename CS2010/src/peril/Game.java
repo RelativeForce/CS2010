@@ -56,27 +56,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	public final PauseMenu pauseMenu;
 
 	/**
-	 * The {@link MusicReader} for this {@link Game}.
-	 */
-	public final MusicReader musicHelper;
-
-	/**
-	 * The {@link AssetReader} that loads all the {@link CoreGameState} states
-	 * buttons into the game from memory.
-	 */
-	public final AssetReader gameLoader;
-
-	/**
-	 * The {@link AssetReader} that loads all the game visuals from memory.
-	 */
-	public final AssetReader mainMenuLoader;
-
-	/**
-	 * {@link ChallengeReader} that loads the {@link Challenge}s from memory.
-	 */
-	public final ChallengeReader challengeLoader;
-
-	/**
 	 * Holds the path to the directory containing the maps file.
 	 */
 	public final String mapsDirectory;
@@ -85,6 +64,12 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * The {@link StateHelper} that holds all this {@link Game}'s states.
 	 */
 	public final StateHelper states;
+
+	/**
+	 * The {@link IOHelper} that holds the input out put objects of the
+	 * {@link Game}.
+	 */
+	public final IOHelper io;
 
 	/**
 	 * The instance of the {@link Board} used for this game.
@@ -170,13 +155,13 @@ public class Game extends StateBasedGame implements MusicListener {
 		game_assetsPath.append(File.separatorChar);
 		game_assetsPath.append("game_assets");
 
-		this.challengeLoader = new ChallengeReader(this, game_assetsPath.toString());
+		ChallengeReader challengeLoader = new ChallengeReader(this, game_assetsPath.toString());
 
 		StringBuilder musicPath = new StringBuilder(game_assetsPath);
 		musicPath.append(File.separatorChar);
 		musicPath.append("music");
 
-		this.musicHelper = new MusicReader(musicPath.toString(), this);
+		MusicReader musicHelper = new MusicReader(musicPath.toString(), this);
 
 		game_assetsPath.append(File.separatorChar);
 		game_assetsPath.append("maps");
@@ -191,16 +176,16 @@ public class Game extends StateBasedGame implements MusicListener {
 		Container[] containers = new Container[] { pauseMenu, loadingScreen, warMenu, mainMenu, combat, setup,
 				reinforcement, movement, end };
 
-		this.gameLoader = new AssetReader(containers, ui_assestsPath.toString(), "game.txt", this);
+		AssetReader gameLoader = new AssetReader(containers, ui_assestsPath.toString(), "game.txt", this);
 
-		this.mainMenuLoader = new AssetReader(containers, ui_assestsPath.toString(), "menu.txt", this);
+		AssetReader mainMenuLoader = new AssetReader(containers, ui_assestsPath.toString(), "menu.txt", this);
 
 		// Add the path to the map's folder
 		game_assetsPath.append(File.separatorChar);
 		mapsDirectory = game_assetsPath.toString();
 
 		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen);
-
+		this.io = new IOHelper(gameLoader, musicHelper, mainMenuLoader, challengeLoader);
 		// Start the display.
 		try {
 			agc.setTargetFrameRate(60);

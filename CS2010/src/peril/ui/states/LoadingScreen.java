@@ -226,13 +226,14 @@ public final class LoadingScreen extends InteractiveState {
 	private void initProgressBar(int windowWidth, int windowHeight) {
 
 		// Holds the loading bar padding.
-		int windowPadding = (windowHeight / 10);
+		int windowPaddingY = windowHeight / 10;
+		int windowPaddingX = windowWidth / 10;
 
 		// Holds the position of the loading bar
-		Point barPosition = new Point(windowWidth / 20, windowHeight - windowPadding);
+		Point barPosition = new Point(windowWidth / 20, windowHeight - windowPaddingY);
 
 		// Holds the width of the loading bar.
-		int barWidth = windowWidth - (windowHeight / 10) - windowPadding;
+		int barWidth = windowWidth - windowPaddingX;
 
 		progressBar.init(barPosition, barWidth, 40);
 	}

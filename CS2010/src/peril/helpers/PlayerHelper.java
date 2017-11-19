@@ -1,8 +1,10 @@
-package peril;
+package peril.helpers;
 
 import java.util.List;
 import java.util.function.Consumer;
 
+import peril.Game;
+import peril.Player;
 import peril.ui.states.menuStates.EndState;
 
 /**

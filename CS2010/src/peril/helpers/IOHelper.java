@@ -1,5 +1,7 @@
-package peril;
+package peril.helpers;
 
+import peril.Challenge;
+import peril.Game;
 import peril.io.fileParsers.AssetReader;
 import peril.io.fileParsers.ChallengeReader;
 import peril.io.fileReaders.MusicReader;

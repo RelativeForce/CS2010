@@ -10,17 +10,42 @@ import org.newdawn.slick.Graphics;
 
 import peril.Point;
 
+/**
+ * Encapsulates the behaviours of a list of tool tips that appear on screen for
+ * a set amount of time then disappear.
+ * 
+ * @author Joshua_Eddy
+ *
+ */
 public class ToolTipList {
-	
+
+	/**
+	 * Holds the text tool tip that will be displayed to the use and its assigned
+	 * delay until it is removed from the users view.
+	 */
 	private Map<String, Delay> toolTips;
 
+	/**
+	 * The {@link Point} position of this {@link ToolTipList}.
+	 */
 	private Point position;
 
+	/**
+	 * Constructs a new {@link ToolTipList}.
+	 * 
+	 * @param position
+	 */
 	public ToolTipList(Point position) {
 		this.toolTips = new IdentityHashMap<>();
 		this.position = position;
 	}
 
+	/**
+	 * Draws this {@link ToolTipList} on screen.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 */
 	public void draw(Graphics g) {
 
 		int x = position.x;
@@ -43,13 +68,19 @@ public class ToolTipList {
 
 	}
 
-	public void elapseTime() {
+	/**
+	 * Elapses the specified time for the {@link ToolTipList}.
+	 * 
+	 * @param delta
+	 *            Time passed in milliseconds
+	 */
+	public void elapseTime(int delta) {
 
 		// Holds the elements to be removed.
 		List<String> toRemove = new LinkedList<>();
 
 		toolTips.keySet().forEach(element -> {
-			if (toolTips.get(element).hasElapsed()) {
+			if (toolTips.get(element).hasElapsed(delta)) {
 				toRemove.add(element);
 			}
 		});
@@ -58,10 +89,22 @@ public class ToolTipList {
 		toRemove.forEach(challenge -> toolTips.remove(challenge));
 	}
 
+	/**
+	 * Adds a tool tip to this {@link ToolTipList}.
+	 * 
+	 * @param text
+	 *            The text that will be displayed to the user.
+	 * @param delay
+	 *            The amount of time in milliseconds that the new tool tip will be
+	 *            display for.
+	 */
 	public void add(String text, long delay) {
 		toolTips.put(text, new Delay(delay));
 	}
 
+	/**
+	 * Clears all the tool tips from the {@link ToolTipList}.
+	 */
 	public void clear() {
 		toolTips.clear();
 	}
@@ -75,8 +118,7 @@ public class ToolTipList {
 	private class Delay {
 
 		/**
-		 * The number of {@link Delay#hasElapsed()} executions before this {@link Delay}
-		 * has elapsed.
+		 * The time in milliseconds before this {@link Delay} has elapsed.
 		 */
 		private long time;
 
@@ -97,11 +139,14 @@ public class ToolTipList {
 		/**
 		 * Reduces {@link Delay#time} and retrieves whether it has elapsed or not.
 		 * 
+		 * @param delta
+		 *            The time that has passed in milliseconds
+		 * 
 		 * @return Whether this {@link Delay} has elapsed or not.
 		 */
-		public boolean hasElapsed() {
-			time--;
-			return time == 0;
+		public boolean hasElapsed(int delta) {
+			time -= delta;
+			return time <= 0;
 		}
 
 	}

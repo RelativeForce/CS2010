@@ -152,7 +152,7 @@ public abstract class CoreGameState extends InteractiveState {
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		super.update(gc, sbg, delta);
-		toolTipList.elapseTime();
+		toolTipList.elapseTime(delta);
 
 		if (panDirection != null) {
 			pan(panDirection);
@@ -296,7 +296,8 @@ public abstract class CoreGameState extends InteractiveState {
 			throw new NullPointerException("Popup cannot be null.");
 		}
 
-		toolTipList.add(toolTip, 600);
+		// Display the tool tip for 8 seconds
+		toolTipList.add(toolTip, 800000);
 
 	}
 

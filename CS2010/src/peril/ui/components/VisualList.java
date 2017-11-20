@@ -182,10 +182,10 @@ public class VisualList<T> extends Clickable {
 	public void draw(Graphics g) {
 
 		g.setColor(Color.white);
-		
+
 		int x = this.getPosition().x;
 		int y = this.getPosition().y;
-		
+
 		// Draws the background menu box.
 		g.fillRect(x, y, getWidth(), getHeight());
 
@@ -338,5 +338,13 @@ public class VisualList<T> extends Clickable {
 		public void draw(Graphics g, Font font, int padding) {
 			font.draw(g, text, this.getPosition().x + padding, this.getPosition().y);
 		}
+	}
+
+	/**
+	 * Clears the {@link VisualList} of all its elements.
+	 */
+	public void clear() {
+		elements.clear();
+		selected = null;
 	}
 }

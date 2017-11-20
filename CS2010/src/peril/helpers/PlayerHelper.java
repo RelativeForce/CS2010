@@ -1,5 +1,6 @@
 package peril.helpers;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -28,7 +29,7 @@ public class PlayerHelper {
 	 * The {@link Player} who's turn it is.
 	 */
 	private int currentPlayerIndex;
-	
+
 	/**
 	 * Contains all the objectives that a {@link Player} can attain in the game.
 	 */
@@ -48,6 +49,7 @@ public class PlayerHelper {
 	public PlayerHelper(Game game) {
 		this.game = game;
 		this.currentPlayerIndex = 0;
+		this.players = new ArrayList<>();
 	}
 
 	/**
@@ -83,7 +85,7 @@ public class PlayerHelper {
 
 		this.challenges = challenges;
 	}
-	
+
 	/**
 	 * Iterates thought all the available {@link Challenge}s to see if the specified
 	 * {@link Player} has completed them or not.
@@ -114,7 +116,7 @@ public class PlayerHelper {
 		// Remove the completed challenges.
 		toRemove.forEach(challenge -> challenges.remove(challenge));
 	}
-	
+
 	/**
 	 * Sets a specified {@link Player} as a loser which removes it from the
 	 * {@link Game#players} and adds it to the podium in the {@link EndState}.
@@ -175,6 +177,18 @@ public class PlayerHelper {
 	}
 
 	/**
+	 * Adds a {@link Player} to this {@link PlayerHelper}. Will do nothing if the
+	 * {@link Player} is already contained in the {@link PlayerHelper}.
+	 * 
+	 * @param player
+	 */
+	public void add(Player player) {
+		if (!players.contains(player)) {
+			players.add(player);
+		}
+	}
+
+	/**
 	 * Retrieves the {@link Player} who's current turn it is.
 	 * 
 	 * @return {@link Player}
@@ -219,7 +233,8 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * Resets all the countries owned and army size of all the {@link Player}s to zero;
+	 * Resets all the countries owned and army size of all the {@link Player}s to
+	 * zero;
 	 */
 	public void reset() {
 		// Reset the all players number of countries to zero.

@@ -1,5 +1,6 @@
 package peril.ui.states.menuStates;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class MainMenuState extends InteractiveState {
 	/**
 	 * The {@link VisualList} of the saved games read from the saved file.
 	 */
-	private VisualList<Load> load;
+	private VisualList<MapFiles> saves;
 
 	/**
 	 * The {@link Font} used for displaying {@link MainMenuState#maps}.
@@ -89,8 +90,8 @@ public class MainMenuState extends InteractiveState {
 		super(game, STATE_NAME, id);
 		mapsFile = TextFileReader.scanFile(mapsFilePath, "maps.txt");
 		maps = new VisualList<>(15, 220, 110, 22, 3, 10);
-		players = new VisualList<>(160, 220, 20, 22, 3, 5);
-		load = new VisualList<>(220, 220, 65, 22, 3, 10);
+		players = new VisualList<>(130, 220, 20, 22, 3, 5);
+		saves = new VisualList<>(190, 220, 80, 22, 3, 10);
 		getMaps();
 		getPlayers();
 
@@ -108,13 +109,18 @@ public class MainMenuState extends InteractiveState {
 
 		drawButtons(g);
 
-		textFont.draw(g, "Players: ", 160, 200);
+		if(saves.getSelected() == MapFiles.DEFAULT) {
+			textFont.draw(g, "Players: ", 130, 200);
+			players.draw(g);	
+		}
+		
+		
 		textFont.draw(g, "Map: ", 15, 200);
-		textFont.draw(g, "Load: ", 220, 200);
-
 		maps.draw(g);
-		players.draw(g);
-		load.draw(g);
+		
+		textFont.draw(g, "Load: ", 190, 200);
+		saves.draw(g);
+
 	}
 
 	/**
@@ -125,7 +131,11 @@ public class MainMenuState extends InteractiveState {
 
 		if (!super.clickedButton(click)) {
 			if (!maps.click(click)) {
-				players.click(click);
+				if(!saves.click(click)) {
+					players.click(click);
+				}
+			}else {
+				checkSaves();
 			}
 		}
 	}
@@ -175,9 +185,14 @@ public class MainMenuState extends InteractiveState {
 		// Initialise the players list and all its elements
 		players.init();
 		players.setFont(listFont);
+		
+		saves.init();
+		saves.setFont(listFont);
 
 		// Set the music that will be repeated by this state
 		background = getGame().io.musicHelper.read("menu");
+		
+		checkSaves();
 
 	}
 
@@ -243,7 +258,9 @@ public class MainMenuState extends InteractiveState {
 		}
 
 		// Loads the game assets and move into the set up state
-		getGame().players.set(playersArray.players);
+		if(saves.getSelected() == MapFiles.DEFAULT) {
+			getGame().players.set(playersArray.players);
+		}
 
 		int screenWidth = getGame().getContainer().getScreenWidth();
 		int screenHeight = getGame().getContainer().getScreenHeight();
@@ -254,7 +271,7 @@ public class MainMenuState extends InteractiveState {
 		getGame().reSize(width, height);
 		getGame().board.setName(map.name);
 		getGame().states.loadingScreen.addReader(getGame().io.gameLoader);
-		getGame().states.loadingScreen.addReader(new MapReader(getGame().mapsDirectory + map.name, getGame().board, MapFiles.DEFAULT));
+		getGame().states.loadingScreen.addReader(new MapReader(getGame().mapsDirectory + map.name, getGame(), saves.getSelected()));
 		getGame().states.loadingScreen.addReader(getGame().io.challengeLoader);
 		getGame().enterState(getGame().states.loadingScreen.getID());
 
@@ -305,6 +322,17 @@ public class MainMenuState extends InteractiveState {
 		players.add("4", new PlayerArray(4));
 	}
 
+	private void checkSaves() {
+		String mapName = maps.getSelected().name;
+		saves.clear();
+		for(MapFiles file : MapFiles.values()) {
+			if(file.existsIn(getGame().mapsDirectory + File.separatorChar + mapName)) {
+				saves.add(file.name, file);
+			}
+		}
+		saves.init();
+	} 
+	
 	/**
 	 * A wrapper for the details of a map in the {@link Game}.
 	 * 
@@ -394,17 +422,6 @@ public class MainMenuState extends InteractiveState {
 			}
 
 		}
-	}
-
-	/**
-	 * 
-	 * Holds an array of saved games in {@link MainMenuState}
-	 * 
-	 * @author Mohammad ali Sayed Ackbar
-	 *
-	 */
-	private class Load {
-		// TODO Implementation to hold saved games
 	}
 
 }

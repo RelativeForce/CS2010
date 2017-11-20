@@ -7,6 +7,7 @@ import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
+import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Board;
@@ -42,10 +43,10 @@ public final class MapReader extends FileParser {
 	private final List<Country> countries;
 
 	/**
-	 * Holds the board this {@link MapReader} will populate when
+	 * Holds the {@link Game} which contains the {@link Board} this {@link MapReader} will populate when
 	 * {@link MapReader#parseBoard(Board)} is performed.
 	 */
-	private final Board board;
+	private final Game game;
 
 	/**
 	 * Constructs a new {@link MapReader}.
@@ -59,16 +60,16 @@ public final class MapReader extends FileParser {
 	 * @param file
 	 *            The file that will contain this map.
 	 */
-	public MapReader(String directoryPath, Board board, MapFiles file) {
+	public MapReader(String directoryPath, Game game, MapFiles file) {
 		super(directoryPath, file.filename);
 
-		if (board == null) {
-			throw new NullPointerException("Directory path cannot be null.");
+		if (game == null) {
+			throw new NullPointerException("Game cannot be null.");
 		}
 
 		this.continents = new LinkedList<>();
 		this.countries = new LinkedList<>();
-		this.board = board;
+		this.game = game;
 
 		normalMap = ImageReader.getImage(directoryPath + File.separatorChar + "normal.png");
 
@@ -103,10 +104,10 @@ public final class MapReader extends FileParser {
 
 			if (isFinished()) {
 				// Set the boards continents
-				board.setContinents(continents);
+				game.board.setContinents(continents);
 
 				// Set the normal map as the visual image of the visual representation.
-				board.setImage(new Point(0, 0), normalMap);
+				game.board.setImage(new Point(0, 0), normalMap);
 			}
 		}
 
@@ -186,6 +187,11 @@ public final class MapReader extends FileParser {
 		}
 
 		Player ruler = Player.getByName(details[6]);
+		
+		// If there is an owner add it to the players list
+		if(ruler != null) {
+			game.players.add(ruler);
+		}
 
 		// Initialise a new colour using the RGB values.
 		Color color = new Color(r, g, b);

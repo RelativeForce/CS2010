@@ -42,7 +42,7 @@ public class MapWriter {
 	public MapWriter(Game game, String mapDiretory) {
 		this.savedLinks = new HashSet<>();
 		this.game = game;
-		writer = new TextFileWriter(mapDiretory + File.pathSeparatorChar + "save1.txt", false);
+		writer = new TextFileWriter(mapDiretory + File.separatorChar + "save1.txt", false);
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class MapWriter {
 		line.append(',');
 
 		// Hazard name
-		line.append(continent.hazard.name());
+		line.append(continent.hazard.toString());
 		line.append(',');
 
 		// Append countries
@@ -178,7 +178,7 @@ public class MapWriter {
 		line.append(',');
 
 		// Player ruler
-		line.append(country.getRuler().toString());
+		line.append(country.getRuler() != null ? country.getRuler().toString() : '-');
 
 		return line.toString();
 	}
@@ -193,6 +193,10 @@ public class MapWriter {
 
 		String str = "" + value;
 
+		if(value == 0) {
+			return "000";
+		}
+		
 		int preceedingZeros = 2 - (int) Math.log10((double) value);
 
 		for (int index = 0; index < preceedingZeros; index++) {

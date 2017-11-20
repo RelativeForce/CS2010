@@ -7,6 +7,7 @@ import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
+import peril.Player;
 import peril.Point;
 import peril.board.Board;
 import peril.board.Continent;
@@ -116,7 +117,7 @@ public final class MapReader extends FileParser {
 	 */
 	private void parseCountry(String[] details) {
 
-		int BUTTON_LENGTH = 6;
+		int BUTTON_LENGTH = 7;
 
 		if (details.length != BUTTON_LENGTH) {
 			throw new IllegalArgumentException(
@@ -181,6 +182,8 @@ public final class MapReader extends FileParser {
 			throw new IllegalArgumentException(details[5] + " is not a valid x coordinate.");
 		}
 
+		Player ruler = Player.getByName(details[6]);	
+		
 		// Initialise a new colour using the RGB values.
 		Color color = new Color(r, g, b);
 
@@ -195,11 +198,15 @@ public final class MapReader extends FileParser {
 
 		// Set the army offset.
 		country.getArmy().setOffset(new Point(xOffset, yOffset));
+		
+		// Set the ruler
+		country.setRuler(ruler);
 
 		// Construct a new country and add the country to the list of countries.
 		countries.add(country);
 
 	}
+
 
 	/**
 	 * Parses a <code>String</code> array of details into a new {@link Continent}.
@@ -305,4 +312,6 @@ public final class MapReader extends FileParser {
 
 	}
 
+	
+	
 }

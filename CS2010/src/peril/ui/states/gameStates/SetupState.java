@@ -117,6 +117,9 @@ public final class SetupState extends CoreGameState {
 			case Input.KEY_SPACE:
 				swapRuler(highlighted, null);
 				break;
+			case Input.KEY_S:
+				getGame().io.saveBoard(getGame());
+				break;
 
 			}
 		}

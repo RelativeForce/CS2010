@@ -189,4 +189,21 @@ public final class Player {
 	public String toString() {
 		return name;
 	}
+
+	public static Player getByName(String name) {
+
+		if (Player.ONE.toString().equals(name)) {
+			return Player.ONE;
+		} else if (Player.TWO.toString().equals(name)) {
+			return Player.TWO;
+		} else if (Player.THREE.toString().equals(name)) {
+			return Player.THREE;
+		} else if (Player.FOUR.toString().equals(name)) {
+			return Player.FOUR;
+		} else if (name.equals("-")) {
+			return null;
+		}
+
+		throw new NullPointerException(name + " is not a valid player");
+	}
 }

@@ -1,7 +1,10 @@
 package peril.helpers;
 
+import java.io.File;
+
 import peril.Challenge;
 import peril.Game;
+import peril.io.MapWriter;
 import peril.io.fileParsers.AssetReader;
 import peril.io.fileParsers.ChallengeReader;
 import peril.io.fileReaders.MusicReader;
@@ -37,6 +40,8 @@ public class IOHelper {
 	 */
 	public final ChallengeReader challengeLoader;
 
+	private final String mapsDirectory;
+
 	/**
 	 * Constructs a new {@link IOHelper}.
 	 * 
@@ -51,13 +56,20 @@ public class IOHelper {
 	 * @param challengeReader
 	 *            {@link ChallengeReader} that loads the {@link Challenge}s from
 	 *            memory.
+	 * @param mapsDirectory
+	 *            The directory containing all the map folders.
 	 */
-	public IOHelper(AssetReader gameLoader, MusicReader musicHelper, AssetReader mainMenuLoader,
+	public IOHelper(String mapsDirectory, AssetReader gameLoader, MusicReader musicHelper, AssetReader mainMenuLoader,
 			ChallengeReader challengeReader) {
 		this.challengeLoader = challengeReader;
 		this.mainMenuLoader = mainMenuLoader;
 		this.gameLoader = gameLoader;
 		this.musicHelper = musicHelper;
+		this.mapsDirectory = mapsDirectory;
+	}
+
+	public void saveBoard(Game game) {
+		new MapWriter(game, mapsDirectory + File.separatorChar + game.board.getName()).write();
 	}
 
 }

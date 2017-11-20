@@ -191,12 +191,12 @@ public final class CombatState extends MultiSelectState {
 	}
 
 	private boolean clickedWarMenu(Point click) {
-		if (warMenu.visible) {
+		if (warMenu.isVisible()) {
 			if (warMenu.isClicked(click)) {
 				warMenu.parseClick(click);
 				return true;
 			}
-			warMenu.visible = false;
+			warMenu.hide();
 		}
 		return false;
 	}

@@ -102,7 +102,7 @@ public class PauseMenu extends Menu {
 	 */
 	public void draw(Graphics g) {
 
-		if (visible) {
+		if (isVisible()) {
 
 			drawMenu(g);
 

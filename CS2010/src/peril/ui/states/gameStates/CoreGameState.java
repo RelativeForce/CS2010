@@ -251,7 +251,7 @@ public abstract class CoreGameState extends InteractiveState {
 			getGame().board.move(new Point(-increment, 0));
 			break;
 		case Input.KEY_ENTER:
-			pauseMenu.visible = !pauseMenu.visible;
+			pauseMenu.toggleVisibility();
 			break;
 		default:
 			break;
@@ -450,14 +450,14 @@ public abstract class CoreGameState extends InteractiveState {
 	protected boolean clickPauseMenu(Point click) {
 
 		// If the pause menu is invisible then it cannot be clicked.
-		if (pauseMenu.visible) {
+		if (pauseMenu.isVisible()) {
 
 			// If the pause menu was clicked then parse the click.
 			if (pauseMenu.isClicked(click)) {
 				pauseMenu.parseClick(click);
 				return true;
 			}
-			pauseMenu.visible = false;
+			pauseMenu.hide();
 		}
 		return false;
 	}

@@ -24,7 +24,7 @@ import peril.ui.components.VisualList;
 public class WarMenu extends Menu {
 
 	private final static String NAME = "War Menu";
-	
+
 	/**
 	 * {@link Random} object for the random number generator
 	 * 
@@ -34,10 +34,10 @@ public class WarMenu extends Menu {
 	private VisualList<Integer> squadSizes;
 
 	private Font headingFont;
-	
+
 	private Font textFont;
 
-	public boolean visible;
+	private Font countryFont;
 
 	/**
 	 * Constructs a new {@link WarMenu}.
@@ -48,12 +48,10 @@ public class WarMenu extends Menu {
 
 		random = new Random();
 
-		squadSizes = new VisualList<>(position.x + 100, position.y + 10, 20, 20, 3, 5);
+		squadSizes = new VisualList<>(position.x + (getWidth() / 4), position.y + 100, 20, 20, 3, 5);
 		squadSizes.add("1", 1);
 		squadSizes.add("2", 2);
 		squadSizes.add("3", 3);
-
-		visible = false;
 	}
 
 	/**
@@ -109,11 +107,10 @@ public class WarMenu extends Menu {
 				} else {
 					defendingArmy.setSize(defendingArmy.getSize() - 1);
 				}
-				
-				if(defender != null) {
+
+				if (defender != null) {
 					defender.setTotalArmySize(defender.getTotalArmySize() - 1);
 				}
-				
 
 			}
 			// Attacker has lost the attack
@@ -152,22 +149,24 @@ public class WarMenu extends Menu {
 
 	public void init() {
 		squadSizes.init();
-		headingFont = new Font("Arial", Color.cyan, 20);
-		textFont = new Font("Arial", Color.red, 20); //ET
+		headingFont = new Font("Arial", Color.red, 20);
+		textFont = new Font("Arial", Color.red, 40);
+		countryFont = new Font("Arial", Color.cyan, 20);
 		squadSizes.setFont(headingFont);
 	}
 
 	public void draw(Graphics g) {
-
-		if (visible) {
+		if (isVisible()) {
 			g.setColor(Color.black);
 			super.draw(g);
 
-			String attack = "ATTACK";
-			
+			Country attacker = getGame().states.combat.getHighlightedCountry();
+			Country enemy = getGame().states.combat.getEnemyCountry();
+
+			drawTitle(g, attacker, enemy);
+			drawArmySizes(g, attacker, enemy);
+
 			squadSizes.draw(g);
-			headingFont.draw(g, attack, getPosition().x + (getWidth()/2) - headingFont.getWidth(attack) , getPosition().y + 20);
-			textFont.draw(g, "WAR MENU", getPosition().x + 20, getPosition().y + 20);//ET
 		}
 	}
 
@@ -187,6 +186,35 @@ public class WarMenu extends Menu {
 
 		squadSizes.setPosition(new Point(squadSizes.getPosition().x + vector.x, squadSizes.getPosition().y + vector.y));
 
+	}
+
+	private void drawArmySizes(Graphics g, Country attacker, Country enemy) {
+
+		String attackingArmy = "" + attacker.getArmy().getSize();
+
+		textFont.draw(g, attackingArmy, getPosition().x + (getWidth() / 4) - (textFont.getWidth(attackingArmy) / 2),
+				getPosition().y + 50);
+
+		String enemyArmy = "" + enemy.getArmy().getSize();
+		textFont.draw(g, enemyArmy, getPosition().x + ((getWidth() * 3) / 4) - (textFont.getWidth(enemyArmy) / 2),
+				getPosition().y + 50);
+
+	}
+
+	private void drawTitle(Graphics g, Country attacker, Country enemy) {
+		String vs = "VS";
+		String attackerStr = attacker.getName();
+		String enemyStr = enemy.getName();
+
+		int centreX = getPosition().x + (getWidth() / 2);
+		int vsX = centreX - (headingFont.getWidth(vs) / 2);
+
+		int attackerX = centreX - (getWidth() / 4) - (countryFont.getWidth(attackerStr) / 2);
+		int enemyX = centreX + (getWidth() / 4) - (countryFont.getWidth(enemyStr) / 2);
+
+		headingFont.draw(g, vs, vsX, getPosition().y + 20);
+		countryFont.draw(g, attackerStr, attackerX, getPosition().y + 20);
+		countryFont.draw(g, enemyStr, enemyX, getPosition().y + 20);
 	}
 
 }

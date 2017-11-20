@@ -75,7 +75,7 @@ public class FunctionHandler {
 
 	private Action<?> toggleWarMenu() {
 		return new Action<Game>(game, game -> {
-			game.states.combat.warMenu.visible = !game.states.combat.warMenu.visible;
+			game.warMenu.toggleVisibility();
 		});
 	}
 

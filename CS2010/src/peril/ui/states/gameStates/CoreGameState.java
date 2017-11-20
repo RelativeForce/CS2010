@@ -99,7 +99,18 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
-		// DO NOTHING BY DEFAULT
+
+		// If the music has been turned off. Turn it on and play the current states
+		// music.
+		if (!gc.isMusicOn()) {
+
+			gc.setMusicOn(true);
+
+			// If there is music play it.
+			if (getMusic() != null) {
+				getMusic().play();
+			}
+		}
 	}
 
 	/**

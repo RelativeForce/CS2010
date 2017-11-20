@@ -203,6 +203,17 @@ public class PlayerHelper {
 	}
 
 	/**
+	 * Set the current {@link Player} in this {@link PlayerHelper}.
+	 * 
+	 * @param player
+	 *            {@link Player}
+	 */
+	public void setCurrent(Player player) {
+		int index = players.indexOf(player);
+		currentPlayerIndex = index != -1 ? index : currentPlayerIndex;
+	}
+
+	/**
 	 * Iterates to the next player.
 	 */
 	public void nextPlayer() {

@@ -102,6 +102,9 @@ public final class MapReader extends FileParser {
 			case "State":
 				parseState(details);
 				break;
+			case "Player":
+				parsePlayer(details);
+				break;
 			}
 
 			index++;
@@ -116,7 +119,7 @@ public final class MapReader extends FileParser {
 		}
 
 	}
-	
+
 	/**
 	 * Parses a <code>String</code> array of details into a new {@link Country}.
 	 * 
@@ -187,14 +190,15 @@ public final class MapReader extends FileParser {
 		try {
 			yOffset = Integer.parseInt(details[5]);
 		} catch (Exception e) {
-			throw new IllegalArgumentException(details[5] + " is not a valid x coordinate.");
+			throw new IllegalArgumentException(details[5] + " is not a valid y coordinate.");
 		}
 
 		Player ruler = Player.getByName(details[6]);
 
 		// If there is an owner add it to the players list
 		if (ruler != null) {
-			game.players.add(ruler);
+			ruler.setTotalArmySize(ruler.getTotalArmySize() + armySize);
+			ruler.setCountriesRuled(ruler.getCountriesRuled() + 1);
 		}
 
 		// Initialise a new colour using the RGB values.
@@ -324,9 +328,35 @@ public final class MapReader extends FileParser {
 
 	}
 
+	private void parsePlayer(String[] details) {
+
+		int STATE_LENGTH = 3;
+
+		// Check there is the correct number of details
+		if (details.length != STATE_LENGTH) {
+			throw new IllegalArgumentException("Line " + index
+					+ " does not contain the correct number of elements, there should be " + STATE_LENGTH + "");
+		}
+
+		Player player = Player.getByName(details[1]);
+
+		int armySize;
+
+		try {
+			armySize = Integer.parseInt(details[2]);
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Line " + index + " " + details[2] + " is not a valid army size");
+		}
+
+		player.setDistributableArmySize(armySize);
+
+		game.players.add(player);
+
+	}
+
 	private void parseState(String[] details) {
 
-		int STATE_LENGTH = 4;
+		int STATE_LENGTH = 3;
 
 		// Check there is the correct number of details
 		if (details.length != STATE_LENGTH) {
@@ -336,8 +366,7 @@ public final class MapReader extends FileParser {
 
 		game.states.loadingScreen.setFirstState(game.states.getSaveState(details[1]));
 		
-		
-		
+		game.players.setCurrent(Player.getByName(details[2]));
 
 	}
 }

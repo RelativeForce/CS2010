@@ -5,8 +5,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import peril.Game;
+import peril.Player;
 import peril.board.Continent;
 import peril.board.Country;
+import peril.ui.states.InteractiveState;
 
 /**
  * Used for writing the {@link Board} from the {@link Game} into memory.
@@ -55,6 +57,12 @@ public class MapWriter {
 		// Open the file
 		writer.open();
 
+		// Write player details
+		game.players.forEach(player -> writer.writeLine(parsePlayer(player)));
+
+		// Write the state the game will start in
+		writer.writeLine(parseState(game.getCurrentState()));
+
 		// Write all the countries to the file
 		game.board.forEachCountry(country -> writer.writeLine(parseCountry(country)));
 
@@ -66,6 +74,35 @@ public class MapWriter {
 
 		// Save the file
 		writer.save();
+	}
+
+	private String parseState(InteractiveState state) {
+
+		StringBuilder line = new StringBuilder();
+		line.append("State,");
+
+		line.append(state.getName());
+		line.append(',');
+
+		line.append(game.players.getCurrent().toString());
+
+		return line.toString();
+
+	}
+
+	private String parsePlayer(Player player) {
+
+		StringBuilder line = new StringBuilder();
+
+		line.append("Player,");
+
+		line.append(player.toString());
+		line.append(',');
+
+		line.append(player.getDistributableArmySize());
+
+		return line.toString();
+
 	}
 
 	/**

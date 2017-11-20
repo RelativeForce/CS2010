@@ -13,6 +13,7 @@ import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
 import peril.board.EnvironmentalHazard;
+import peril.io.MapFiles;
 import peril.io.fileReaders.ImageReader;
 import peril.ui.components.Region;
 
@@ -55,9 +56,11 @@ public final class MapReader extends FileParser {
 	 *            Holds the board this {@link MapReader} will populate when
 	 *            {@link MapReader#parseBoard(Board)} is performed using the details
 	 *            file from the directory path}.
+	 * @param file
+	 *            The file that will contain this map.
 	 */
-	public MapReader(String directoryPath, Board board) {
-		super(directoryPath, "details.txt");
+	public MapReader(String directoryPath, Board board, MapFiles file) {
+		super(directoryPath, file.filename);
 
 		if (board == null) {
 			throw new NullPointerException("Directory path cannot be null.");
@@ -182,8 +185,8 @@ public final class MapReader extends FileParser {
 			throw new IllegalArgumentException(details[5] + " is not a valid x coordinate.");
 		}
 
-		Player ruler = Player.getByName(details[6]);	
-		
+		Player ruler = Player.getByName(details[6]);
+
 		// Initialise a new colour using the RGB values.
 		Color color = new Color(r, g, b);
 
@@ -198,7 +201,7 @@ public final class MapReader extends FileParser {
 
 		// Set the army offset.
 		country.getArmy().setOffset(new Point(xOffset, yOffset));
-		
+
 		// Set the ruler
 		country.setRuler(ruler);
 
@@ -206,7 +209,6 @@ public final class MapReader extends FileParser {
 		countries.add(country);
 
 	}
-
 
 	/**
 	 * Parses a <code>String</code> array of details into a new {@link Continent}.
@@ -312,6 +314,4 @@ public final class MapReader extends FileParser {
 
 	}
 
-	
-	
 }

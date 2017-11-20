@@ -14,6 +14,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Player;
 import peril.Point;
+import peril.io.MapFiles;
 import peril.io.fileParsers.MapReader;
 import peril.io.fileReaders.TextFileReader;
 import peril.ui.components.Font;
@@ -253,7 +254,7 @@ public class MainMenuState extends InteractiveState {
 		getGame().reSize(width, height);
 		getGame().board.setName(map.name);
 		getGame().states.loadingScreen.addReader(getGame().io.gameLoader);
-		getGame().states.loadingScreen.addReader(new MapReader(getGame().mapsDirectory + map.name, getGame().board));
+		getGame().states.loadingScreen.addReader(new MapReader(getGame().mapsDirectory + map.name, getGame().board, MapFiles.DEFAULT));
 		getGame().states.loadingScreen.addReader(getGame().io.challengeLoader);
 		getGame().enterState(getGame().states.loadingScreen.getID());
 

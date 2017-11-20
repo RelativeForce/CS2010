@@ -7,10 +7,13 @@ import org.newdawn.slick.Graphics;
 
 import peril.Game;
 import peril.Point;
+import peril.io.MapWriter;
 import peril.io.SaveFile;
+import peril.ui.Button;
 import peril.ui.components.Font;
 import peril.ui.components.Region;
 import peril.ui.components.VisualList;
+import peril.ui.states.gameStates.CoreGameState;
 
 /**
  * Encapsulates the behaviour of a Pause Menu
@@ -42,6 +45,11 @@ public class PauseMenu extends Menu {
 	private boolean showSaveOption;
 
 	/**
+	 * Holds the instance of the save {@link Button}.
+	 */
+	private Button saveButton;
+
+	/**
 	 * The {@link Font} for the text of the text of the {@link PauseMenu}.
 	 */
 	private Font textFont;
@@ -71,6 +79,19 @@ public class PauseMenu extends Menu {
 
 		// Construct save file list
 		this.saveFiles = new VisualList<>(position.x + (getWidth() / 2), position.y + 100, 90, 15, 3, 5);
+	}
+
+	/**
+	 * Adds a button to this {@link PauseMenu}.
+	 */
+	@Override
+	public void addButton(Button button) {
+		super.addButton(button);
+
+		if (button.getId().equals("save")) {
+			saveButton = button;
+			saveButton.hide();
+		}
 	}
 
 	/**
@@ -155,10 +176,29 @@ public class PauseMenu extends Menu {
 	}
 
 	/**
+	 * Saves the current state of the {@link Game}.
+	 */
+	public void save() {
+
+		// Holds the path of the current map
+		String mapFolderPath = getGame().mapsDirectory + File.separatorChar + getGame().board.getName();
+
+		// Save the current state of the game
+		new MapWriter(getGame(), mapFolderPath, saveFiles.getSelected()).write();
+
+		// Display to the user that the game was saved.
+		((CoreGameState) getGame().getCurrentState()).show("Game Saved [" + saveFiles.getSelected().name + "]");
+
+		refreshSaveFiles();
+
+	}
+
+	/**
 	 * Shows the save option on the {@link PauseMenu}.
 	 */
 	public void showSaveOption() {
 		showSaveOption = true;
+		saveButton.show();
 	}
 
 	/**
@@ -166,6 +206,7 @@ public class PauseMenu extends Menu {
 	 */
 	public void hideSaveOption() {
 		showSaveOption = false;
+		saveButton.hide();
 	}
 
 	/**
@@ -244,10 +285,24 @@ public class PauseMenu extends Menu {
 
 		ON("On", true), OFF("Off", false);
 
+		/**
+		 * <code>boolean</code> state of the {@link Toggle}.
+		 */
 		public final boolean toggle;
 
+		/**
+		 * The string representation of the {@link Toggle}.
+		 */
 		public final String toString;
 
+		/**
+		 * Constructs a new {@link Toggle}.
+		 * 
+		 * @param toString
+		 *            The string representation of the {@link Toggle}.
+		 * @param toggle
+		 *            <code>boolean</code> state of the {@link Toggle}.
+		 */
 		private Toggle(String toString, boolean toggle) {
 			this.toggle = toggle;
 			this.toString = toString;

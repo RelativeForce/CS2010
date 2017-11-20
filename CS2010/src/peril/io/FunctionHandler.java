@@ -7,6 +7,7 @@ import peril.board.Continent;
 import peril.board.Country;
 import peril.multiThread.Action;
 import peril.ui.Button;
+import peril.ui.components.menus.PauseMenu;
 import peril.ui.components.menus.WarMenu;
 
 /**
@@ -66,8 +67,10 @@ public class FunctionHandler {
 			return toggleWarMenu();
 		case 10:
 			return exitGame();
+		case 11:
+			return saveGame();
 		}
-		return null;
+		throw new IllegalArgumentException(code + " is not a valid function code.");
 	}
 
 	private Action<?> toggleWarMenu() {
@@ -113,8 +116,8 @@ public class FunctionHandler {
 						player.setDistributableArmySize(armySize - 1);
 						player.setTotalArmySize(player.getTotalArmySize() + 1);
 						game.players.checkChallenges(player);
-						
-						if(player.getDistributableArmySize() == 0) {
+
+						if (player.getDistributableArmySize() == 0) {
 							game.states.reinforcement.hideReinforceButton();
 						}
 
@@ -180,7 +183,7 @@ public class FunctionHandler {
 	 */
 	private Action<?> leaveSetUp() {
 		return new Action<Game>(game, game -> {
-			
+
 			// checks the ownership of the continents
 			game.checkContinentRulership();
 
@@ -343,5 +346,15 @@ public class FunctionHandler {
 	 */
 	private Action<?> exitGame() {
 		return new Action<Game>(game, game -> game.getContainer().exit());
+	}
+
+	/**
+	 * Retrieves the {@link Action} that causes the {@link PauseMenu} to save the
+	 * current state of the game.
+	 * 
+	 * @return
+	 */
+	private Action<?> saveGame() {
+		return new Action<Game>(game, game -> game.pauseMenu.save());
 	}
 }

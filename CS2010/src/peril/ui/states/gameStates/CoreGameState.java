@@ -38,6 +38,9 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	private Country highlightedCountry;
 
+	/**
+	 * Holds the tool tip that will be displayed to the user.
+	 */
 	private ToolTipList toolTipList;
 
 	/**
@@ -436,8 +439,20 @@ public abstract class CoreGameState extends InteractiveState {
 		pauseMenu.draw(g);
 	}
 
+	/**
+	 * Performs a mouse click at a specified {@link Point} position on the
+	 * {@link PauseMenu}.
+	 * 
+	 * @param click
+	 *            {@link Point}
+	 * @return Whether or not the {@link PauseMenu} was clicked or not.
+	 */
 	protected boolean clickPauseMenu(Point click) {
+
+		// If the pause menu is invisible then it cannot be clicked.
 		if (pauseMenu.visible) {
+
+			// If the pause menu was clicked then parse the click.
 			if (pauseMenu.isClicked(click)) {
 				pauseMenu.parseClick(click);
 				return true;

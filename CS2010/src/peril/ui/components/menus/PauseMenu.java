@@ -20,6 +20,9 @@ import peril.ui.components.VisualList;
  */
 public class PauseMenu extends Menu {
 
+	/**
+	 * Holds the name of this {@link PauseMenu}.
+	 */
 	private final static String NAME = "Pause Menu";
 
 	/**
@@ -39,12 +42,12 @@ public class PauseMenu extends Menu {
 	private boolean showSaveOption;
 
 	/**
-	 * {@link Font} for the text of the music option.
+	 * The {@link Font} for the text of the text of the {@link PauseMenu}.
 	 */
 	private Font textFont;
 
 	/**
-	 * {@link Font} for the text of the {@link PauseMenu}.
+	 * The {@link Font} for the heading of the {@link PauseMenu}.
 	 */
 	private Font headingFont;
 
@@ -151,14 +154,26 @@ public class PauseMenu extends Menu {
 		saveFiles.setFont(new Font("Arial", Color.black, 10));
 	}
 
+	/**
+	 * Shows the save option on the {@link PauseMenu}.
+	 */
 	public void showSaveOption() {
 		showSaveOption = true;
 	}
 
+	/**
+	 * Hides the save option on the {@link PauseMenu}.
+	 */
 	public void hideSaveOption() {
 		showSaveOption = false;
 	}
 
+	/**
+	 * Draws the background and title of the {@link PauseMenu}.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 */
 	private void drawMenu(Graphics g) {
 
 		g.setColor(Color.black);
@@ -171,6 +186,12 @@ public class PauseMenu extends Menu {
 				getPosition().y + 10);
 	}
 
+	/**
+	 * Draws the music toggle on the {@link PauseMenu}.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 */
 	private void drawMusicToggle(Graphics g) {
 
 		String music = "Toggle Music:";
@@ -181,6 +202,12 @@ public class PauseMenu extends Menu {
 		toggleMusic.draw(g);
 	}
 
+	/**
+	 * Draws the save option menu on the {@link PauseMenu}.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 */
 	private void drawSaveOption(Graphics g) {
 
 		String save = "Save Game:";

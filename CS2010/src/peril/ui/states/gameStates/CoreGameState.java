@@ -21,6 +21,7 @@ import peril.Point;
 import peril.board.Army;
 import peril.board.Board;
 import peril.board.Country;
+import peril.io.MapFiles;
 import peril.ui.components.Region;
 import peril.ui.components.menus.PauseMenu;
 import peril.ui.states.InteractiveState;
@@ -177,7 +178,7 @@ public abstract class CoreGameState extends InteractiveState {
 		// Remove the highlight effect on the currently highlighted country
 		unhighlightCountry(highlightedCountry);
 		highlightedCountry = null;
-		
+
 		// Stop the state from panning after it has been exited.
 		panDirection = null;
 	}
@@ -246,6 +247,9 @@ public abstract class CoreGameState extends InteractiveState {
 			break;
 		case Input.KEY_ENTER:
 			pauseMenu.visible = !pauseMenu.visible;
+			break;
+		case Input.KEY_S:
+			getGame().io.saveBoard(getGame(), MapFiles.SAVE1);
 			break;
 		default:
 			break;

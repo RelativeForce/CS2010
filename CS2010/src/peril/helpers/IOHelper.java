@@ -4,6 +4,7 @@ import java.io.File;
 
 import peril.Challenge;
 import peril.Game;
+import peril.io.MapFiles;
 import peril.io.MapWriter;
 import peril.io.fileParsers.AssetReader;
 import peril.io.fileParsers.ChallengeReader;
@@ -68,8 +69,17 @@ public class IOHelper {
 		this.mapsDirectory = mapsDirectory;
 	}
 
-	public void saveBoard(Game game) {
-		new MapWriter(game, mapsDirectory + File.separatorChar + game.board.getName()).write();
+	/**
+	 * Saves the {@link Board} from the {@link Game} to a specified
+	 * {@link MapFiles}.
+	 * 
+	 * @param game
+	 *            {@link Game}
+	 * @param file
+	 *            {@link MapFiles}
+	 */
+	public void saveBoard(Game game, MapFiles file) {
+		new MapWriter(game, mapsDirectory + File.separatorChar + game.board.getName(), file).write();
 	}
 
 }

@@ -38,11 +38,13 @@ public class MapWriter {
 	 *            The {@link Game} that this {@link MapWriter} is a part of.
 	 * @param mapDiretory
 	 *            directory of the current map.
+	 * @param file
+	 *            The {@link MapFiles} that will be written to.
 	 */
-	public MapWriter(Game game, String mapDiretory) {
+	public MapWriter(Game game, String mapDiretory, MapFiles file) {
 		this.savedLinks = new HashSet<>();
 		this.game = game;
-		writer = new TextFileWriter(mapDiretory + File.separatorChar + "save1.txt", false);
+		this.writer = new TextFileWriter(mapDiretory + File.separatorChar + file.filename, false);
 	}
 
 	/**
@@ -193,10 +195,10 @@ public class MapWriter {
 
 		String str = "" + value;
 
-		if(value == 0) {
+		if (value == 0) {
 			return "000";
 		}
-		
+
 		int preceedingZeros = 2 - (int) Math.log10((double) value);
 
 		for (int index = 0; index < preceedingZeros; index++) {

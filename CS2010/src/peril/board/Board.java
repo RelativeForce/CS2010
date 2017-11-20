@@ -1,6 +1,7 @@
 package peril.board;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import peril.Game;
 import peril.Point;
@@ -32,12 +33,19 @@ public final class Board extends Viewable {
 	private int numberOfCountries;
 
 	/**
+	 * Holds the name of this {@link Borad}.
+	 */
+	private String name;
+
+	/**
 	 * Constructs a {@link Board}.
 	 * 
 	 * @param game
 	 *            The {@link Game} this {@link Board} is a part of.
+	 * @param name
+	 *            The name of the {@link Board}.
 	 */
-	public Board(Game game) {
+	public Board(Game game, String name) {
 
 		if (game == null) {
 			throw new NullPointerException("Continents is null.");
@@ -45,6 +53,7 @@ public final class Board extends Viewable {
 		this.continents = null;
 		this.game = game;
 		this.numberOfCountries = 0;
+		this.name = name;
 	}
 
 	/**
@@ -184,6 +193,36 @@ public final class Board extends Viewable {
 	 */
 	public int getNumberOfCountries() {
 		return numberOfCountries;
+	}
+
+	/**
+	 * Retrieves the name of this {@link Board}.
+	 * 
+	 * @return name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Performs a {@link Consumer} function on each {@link Country} on the
+	 * {@link Board}.
+	 * 
+	 * @param task
+	 *            {@link Consumer}
+	 */
+	public void forEachCountry(Consumer<Country> task) {
+		continents.forEach(continent -> continent.getCountries().forEach(task));
+	}
+
+	/**
+	 * Set the name of this {@link Board}.
+	 * 
+	 * @param name
+	 *            name of the {@link Board}.
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**

@@ -89,7 +89,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		this.currentRound = 0;
 
 		// Construct the board.
-		this.board = new Board(this);
+		this.board = new Board(this, "NOT ASSIGNED");
 
 		this.players = new PlayerHelper(this);
 

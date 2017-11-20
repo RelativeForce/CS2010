@@ -76,6 +76,15 @@ public class MapWriter {
 		writer.save();
 	}
 
+	/**
+	 * Parses the details of a {@link InteractiveState} its <code>String</code>
+	 * representation that will be used to store the {@link InteractiveState} in the
+	 * file.
+	 * 
+	 * @param state
+	 *            {@link InteractiveState}
+	 * @return <code>String</code>
+	 */
 	private String parseState(InteractiveState state) {
 
 		StringBuilder line = new StringBuilder();
@@ -90,6 +99,14 @@ public class MapWriter {
 
 	}
 
+	/**
+	 * Parses the details of a {@link Player} its <code>String</code> representation
+	 * that will be used to store the {@link Player} in the file.
+	 * 
+	 * @param player
+	 *            {@link Player}
+	 * @return <code>String</code>
+	 */
 	private String parsePlayer(Player player) {
 
 		StringBuilder line = new StringBuilder();

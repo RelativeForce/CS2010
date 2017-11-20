@@ -17,6 +17,7 @@ import peril.board.EnvironmentalHazard;
 import peril.io.SaveFile;
 import peril.io.fileReaders.ImageReader;
 import peril.ui.components.Region;
+import peril.ui.states.InteractiveState;
 
 /**
  * Reader the map from a specified file and uses that to construct the
@@ -288,7 +289,6 @@ public final class MapReader extends FileParser {
 	 * 
 	 * @param details
 	 *            The details about the link between two {@link Country}s.
-	 * @param details
 	 */
 	private void parseLink(String[] details) {
 
@@ -328,6 +328,12 @@ public final class MapReader extends FileParser {
 
 	}
 
+	/**
+	 * Parses a {@link Player} from a <code>String</code> array of details.
+	 * 
+	 * @param details
+	 *            <code>String</code> array of details about the {@link Player}.
+	 */
 	private void parsePlayer(String[] details) {
 
 		int STATE_LENGTH = 3;
@@ -354,6 +360,14 @@ public final class MapReader extends FileParser {
 
 	}
 
+	/**
+	 * Parses a {@link InteractiveState} from a <code>String</code> array of
+	 * details.
+	 * 
+	 * @param details
+	 *            <code>String</code> array of details about the
+	 *            {@link InteractiveState}.
+	 */
 	private void parseState(String[] details) {
 
 		int STATE_LENGTH = 3;
@@ -364,8 +378,10 @@ public final class MapReader extends FileParser {
 					+ " does not contain the correct number of elements, there should be " + STATE_LENGTH + "");
 		}
 
+		// Set the first state as the state read from the game.
 		game.states.loadingScreen.setFirstState(game.states.getSaveState(details[1]));
-		
+
+		// Set the current player of the as the player specified by the name.
 		game.players.setCurrent(Player.getByName(details[2]));
 
 	}

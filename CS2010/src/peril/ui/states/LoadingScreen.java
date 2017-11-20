@@ -14,6 +14,7 @@ import peril.Point;
 import peril.io.fileParsers.FileParser;
 import peril.ui.components.ProgressBar;
 import peril.ui.components.Viewable;
+import peril.ui.states.gameStates.CoreGameState;
 import peril.ui.states.gameStates.SetupState;
 
 /**
@@ -30,6 +31,12 @@ public final class LoadingScreen extends InteractiveState {
 	 * Holds the name of this {@link LoadingScreen}.
 	 */
 	private final static String NAME = "loading screen";
+
+	/**
+	 * Holds the first {@link CoreGameState} the game should load into if the map is
+	 * loaded from a save.
+	 */
+	private CoreGameState firstState;
 
 	/**
 	 * Holds the {@link List} of {@link FileParser}s this {@link LoadingScreen} will
@@ -70,6 +77,7 @@ public final class LoadingScreen extends InteractiveState {
 		this.index = 0;
 		this.readers = new ArrayList<>();
 		this.progressBar = new ProgressBar();
+		this.firstState = null;
 	}
 
 	/**
@@ -136,7 +144,7 @@ public final class LoadingScreen extends InteractiveState {
 		if (index == readers.size()) {
 
 			// Enter set up state
-			getGame().enterState(getGame().states.setup.getID());
+			getGame().enterState((firstState == null) ? getGame().states.setup.getID() : firstState.getID());
 		}
 		// Otherwise reader the current readers line.
 		else {
@@ -212,6 +220,17 @@ public final class LoadingScreen extends InteractiveState {
 	@Override
 	public Music getMusic() {
 		return music;
+	}
+
+	/**
+	 * Sets the {@link CoreGameState} that the game will go to once the game has
+	 * finished loading.
+	 * 
+	 * @param saveState
+	 *            {@link CoreGameState}
+	 */
+	public void setFirstState(CoreGameState saveState) {
+		firstState = saveState;
 	}
 
 	/**

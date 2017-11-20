@@ -43,8 +43,9 @@ public final class MapReader extends FileParser {
 	private final List<Country> countries;
 
 	/**
-	 * Holds the {@link Game} which contains the {@link Board} this {@link MapReader} will populate when
-	 * {@link MapReader#parseBoard(Board)} is performed.
+	 * Holds the {@link Game} which contains the {@link Board} this
+	 * {@link MapReader} will populate when {@link MapReader#parseBoard(Board)} is
+	 * performed.
 	 */
 	private final Game game;
 
@@ -98,6 +99,9 @@ public final class MapReader extends FileParser {
 			case "Continent":
 				parseContinent(details);
 				break;
+			case "State":
+				parseState(details);
+				break;
 			}
 
 			index++;
@@ -112,7 +116,7 @@ public final class MapReader extends FileParser {
 		}
 
 	}
-
+	
 	/**
 	 * Parses a <code>String</code> array of details into a new {@link Country}.
 	 * 
@@ -187,9 +191,9 @@ public final class MapReader extends FileParser {
 		}
 
 		Player ruler = Player.getByName(details[6]);
-		
+
 		// If there is an owner add it to the players list
-		if(ruler != null) {
+		if (ruler != null) {
 			game.players.add(ruler);
 		}
 
@@ -320,4 +324,20 @@ public final class MapReader extends FileParser {
 
 	}
 
+	private void parseState(String[] details) {
+
+		int STATE_LENGTH = 4;
+
+		// Check there is the correct number of details
+		if (details.length != STATE_LENGTH) {
+			throw new IllegalArgumentException("Line " + index
+					+ " does not contain the correct number of elements, there should be " + STATE_LENGTH + "");
+		}
+
+		game.states.loadingScreen.setFirstState(game.states.getSaveState(details[1]));
+		
+		
+		
+
+	}
 }

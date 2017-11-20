@@ -11,6 +11,7 @@ import peril.ui.UIEventHandler;
 import peril.ui.components.menus.WarMenu;
 import peril.ui.states.InteractiveState;
 import peril.ui.states.LoadingScreen;
+import peril.ui.states.gameStates.CoreGameState;
 import peril.ui.states.gameStates.ReinforcementState;
 import peril.ui.states.gameStates.SetupState;
 import peril.ui.states.gameStates.multiSelectState.CombatState;
@@ -135,4 +136,22 @@ public class StateHelper {
 		container.setVSync(true);
 	}
 
+	/**
+	 * Retrieves the {@link CoreGameState} game state that the game can be saved in by name.
+	 * 
+	 * @param name The name of the {@link CoreGameState}
+	 * @return {@link CoreGameState}.
+	 */
+	public CoreGameState getSaveState(String name) {
+
+		if (combat.getName().equals(name)) {
+			return combat;
+		} else if (movement.getName().equals(name)) {
+			return movement;
+		} else if (reinforcement.getName().equals(name)) {
+			return reinforcement;
+		}
+
+		throw new NullPointerException(name + " is not a valid game state.");
+	}
 }

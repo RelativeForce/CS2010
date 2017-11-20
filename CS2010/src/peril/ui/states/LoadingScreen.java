@@ -196,6 +196,9 @@ public final class LoadingScreen extends InteractiveState {
 		readers.clear();
 		progressBar.reset();
 		index = 0;
+		
+		// Turn off the loading music.
+		container.setMusicOn(false);
 	}
 
 	/**

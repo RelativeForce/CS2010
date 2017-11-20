@@ -33,6 +33,8 @@ public class WarMenu extends Menu {
 
 	private VisualList<Integer> squadSizes;
 
+	private Font headingFont;
+	
 	private Font textFont;
 
 	public boolean visible;
@@ -150,18 +152,22 @@ public class WarMenu extends Menu {
 
 	public void init() {
 		squadSizes.init();
-		textFont = new Font("Arial", Color.cyan, 20);
-		squadSizes.setFont(textFont);
+		headingFont = new Font("Arial", Color.cyan, 20);
+		textFont = new Font("Arial", Color.red, 20); //ET
+		squadSizes.setFont(headingFont);
 	}
 
 	public void draw(Graphics g) {
 
 		if (visible) {
 			g.setColor(Color.black);
-			g.fillRect(getPosition().x, getPosition().y, getWidth(), getHeight());
+			super.draw(g);
 
+			String attack = "ATTACK";
+			
 			squadSizes.draw(g);
-			textFont.draw(g, "ATTACK", getPosition().x, getPosition().y);
+			headingFont.draw(g, attack, getPosition().x + (getWidth()/2) - headingFont.getWidth(attack) , getPosition().y + 20);
+			textFont.draw(g, "WAR MENU", getPosition().x + 20, getPosition().y + 20);//ET
 		}
 	}
 

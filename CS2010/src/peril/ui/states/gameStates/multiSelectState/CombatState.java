@@ -151,6 +151,12 @@ public final class CombatState extends MultiSelectState {
 	}
 
 	@Override
+	public void enter(GameContainer gc, StateBasedGame sbg) {
+		warMenu.setPosition(new Point((gc.getWidth()/2) - (warMenu.getWidth()/2),(gc.getHeight()/2) - (warMenu.getHeight()/2)));
+		super.enter(gc, sbg);
+	}
+	
+	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
 		warMenu.init();
@@ -172,9 +178,21 @@ public final class CombatState extends MultiSelectState {
 	 */
 	@Override
 	public void parseClick(int button, Point click) {
-
-		super.parseClick(button, click);
-
+		if (!clickedWarMenu(click)) {
+			super.parseClick(button, click);
+		}
+		
+	}
+	
+	private boolean clickedWarMenu(Point click) {
+		if (warMenu.visible) {
+			if (warMenu.isClicked(click)) {
+				warMenu.parseClick(click);
+				return true;
+			}
+			warMenu.visible = false;
+		}
+		return false;
 	}
 
 	/**

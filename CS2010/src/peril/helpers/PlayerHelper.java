@@ -108,7 +108,7 @@ public class PlayerHelper {
 				toRemove.add(challenge);
 
 				if (game.getCurrentState() instanceof CoreGameState) {
-					((CoreGameState) game.getCurrentState()).show(challenge);
+					((CoreGameState) game.getCurrentState()).show(challenge.toString());
 				}
 			}
 		}

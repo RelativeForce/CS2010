@@ -1,10 +1,5 @@
 package peril.ui.states.gameStates;
 
-import java.util.IdentityHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -14,14 +9,13 @@ import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.Challenge;
 import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Army;
 import peril.board.Board;
 import peril.board.Country;
-import peril.io.MapFiles;
+import peril.ui.components.ToolTipList;
 import peril.ui.components.Region;
 import peril.ui.components.menus.PauseMenu;
 import peril.ui.states.InteractiveState;
@@ -44,11 +38,7 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	private Country highlightedCountry;
 
-	/**
-	 * A {@link Map} of all the {@link Challenge}s on screen and their associated
-	 * time {@link Delay}s.
-	 */
-	private Map<Challenge, Delay> challenges;
+	private ToolTipList toolTipList;
 
 	/**
 	 * The {@link PauseMenu} for this {@link CoreGameState}.
@@ -74,9 +64,10 @@ public abstract class CoreGameState extends InteractiveState {
 	protected CoreGameState(Game game, String stateName, int id, PauseMenu pauseMenu) {
 		super(game, stateName, id);
 		this.highlightedCountry = null;
-		this.challenges = new IdentityHashMap<>();
+
 		this.pauseMenu = pauseMenu;
 		this.panDirection = null;
+		this.toolTipList = new ToolTipList(new Point(130, 15));
 	}
 
 	/**
@@ -151,7 +142,7 @@ public abstract class CoreGameState extends InteractiveState {
 
 		drawStateBox(g);
 
-		drawChallenges(g, 130, 15);
+		toolTipList.draw(g);
 
 	}
 
@@ -161,7 +152,7 @@ public abstract class CoreGameState extends InteractiveState {
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		super.update(gc, sbg, delta);
-		elapseTime();
+		toolTipList.elapseTime();
 
 		if (panDirection != null) {
 			pan(panDirection);
@@ -184,7 +175,7 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
-		challenges.clear();
+		toolTipList.clear();
 
 		// Remove the highlight effect on the currently highlighted country
 		unhighlightCountry(highlightedCountry);
@@ -259,9 +250,6 @@ public abstract class CoreGameState extends InteractiveState {
 		case Input.KEY_ENTER:
 			pauseMenu.visible = !pauseMenu.visible;
 			break;
-		case Input.KEY_S:
-			getGame().io.saveBoard(getGame(), MapFiles.SAVE1);
-			break;
 		default:
 			break;
 
@@ -269,6 +257,9 @@ public abstract class CoreGameState extends InteractiveState {
 
 	}
 
+	/**
+	 * Processes a click at a specified {@link Point} on this {@link CoreGameState}.
+	 */
 	@Override
 	public void parseClick(int button, Point click) {
 
@@ -293,19 +284,20 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	/**
-	 * Adds a {@link Challenge} to this {@link CoreGameState} to be displayed to the
-	 * user.
+	 * Adds a String as a tool tip to this {@link CoreGameState} to be displayed to
+	 * the user.
 	 * 
-	 * @param challenge
-	 *            {@link Challenge} to be displayed.
+	 * @param toolTip
+	 *            <code>String</code>
 	 */
-	public void show(Challenge challenge) {
+	public void show(String toolTip) {
 
-		if (challenge == null) {
-			throw new NullPointerException("Challenge cannot be null.");
+		if (toolTip == null) {
+			throw new NullPointerException("Popup cannot be null.");
 		}
 
-		challenges.put(challenge, new Delay(600));
+		toolTipList.add(toolTip, 600);
+
 	}
 
 	/**
@@ -477,30 +469,6 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	/**
-	 * Causes the {@link Delay} to elapse in each value of
-	 * {@link CoreGameState#challenges}. If a {@link Delay} has elapsed its
-	 * associated {@link Challenge} is removed from the
-	 * {@link CoreGameState#challenges}.
-	 */
-	private void elapseTime() {
-
-		// Holds the challenges to be removed.
-		List<Challenge> toRemove = new LinkedList<>();
-
-		// Iterate through all the challenges and elapse time. If the delay has elapsed
-		// then remove it's challenge from the map.
-		for (Challenge challenge : challenges.keySet()) {
-
-			if (challenges.get(challenge).hasElapsed()) {
-				toRemove.add(challenge);
-			}
-		}
-
-		// Remove all the elapsed challenges.
-		toRemove.forEach(challenge -> challenges.remove(challenge));
-	}
-
-	/**
 	 * Draws the {@link army} in its current state over the {@link Country} it is
 	 * located.
 	 * 
@@ -539,6 +507,17 @@ public abstract class CoreGameState extends InteractiveState {
 		}));
 	}
 
+	/**
+	 * Draws the oval that is displayed behind the {@link Army} on a
+	 * {@link Country}.
+	 * 
+	 * @param position
+	 *            {@link Point}
+	 * @param size
+	 *            size of the {@link Army}
+	 * @param g
+	 *            {@link Graphics}
+	 */
 	private void drawArmyOval(Point position, int size, Graphics g) {
 
 		int base = ((int) Math.log10(size)) + 1;
@@ -569,72 +548,4 @@ public abstract class CoreGameState extends InteractiveState {
 
 	}
 
-	/**
-	 * Draws all the {@link Challenge}s on screen.
-	 * 
-	 * @param g
-	 *            {@link Graphics}
-	 * @param x
-	 *            position of the top {@link Challenge} pop up.
-	 * @param y
-	 *            position of the top {@link Challenge} pop up.
-	 */
-	private void drawChallenges(Graphics g, int x, int y) {
-
-		// Draw a box back drop
-		g.setColor(Color.lightGray);
-		g.fillRect(x, y, 400, challenges.size() * 20);
-
-		// Add padding
-		x += 2;
-		y += 2;
-
-		// Draw each challenge on screen.
-		g.setColor(Color.black);
-		for (Challenge challenge : challenges.keySet()) {
-			g.drawString(challenge.toString(), x, y);
-			y += 15;
-		}
-
-	}
-
-	/**
-	 * Encapsulates the behaviour of a time delay.
-	 * 
-	 * @author Joshua_Eddy
-	 *
-	 */
-	private class Delay {
-
-		/**
-		 * The number of {@link Delay#hasElapsed()} executions before this {@link Delay}
-		 * has elapsed.
-		 */
-		private long time;
-
-		/**
-		 * Constructs a new {@link Delay}.
-		 * 
-		 * @param time
-		 *            The number of {@link Delay#hasElapsed()} executions before this
-		 *            {@link Delay} has elapsed.
-		 */
-		public Delay(long time) {
-			if (time <= 0) {
-				throw new IllegalArgumentException("Delay time cannot be <= zero.");
-			}
-			this.time = time;
-		}
-
-		/**
-		 * Reduces {@link Delay#time} and retrieves whether it has elapsed or not.
-		 * 
-		 * @return Whether this {@link Delay} has elapsed or not.
-		 */
-		public boolean hasElapsed() {
-			time--;
-			return time == 0;
-		}
-
-	}
 }

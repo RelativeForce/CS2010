@@ -14,7 +14,7 @@ import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
 import peril.board.EnvironmentalHazard;
-import peril.io.MapFiles;
+import peril.io.SaveFile;
 import peril.io.fileReaders.ImageReader;
 import peril.ui.components.Region;
 
@@ -61,7 +61,7 @@ public final class MapReader extends FileParser {
 	 * @param file
 	 *            The file that will contain this map.
 	 */
-	public MapReader(String directoryPath, Game game, MapFiles file) {
+	public MapReader(String directoryPath, Game game, SaveFile file) {
 		super(directoryPath, file.filename);
 
 		if (game == null) {

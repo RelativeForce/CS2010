@@ -193,9 +193,14 @@ public final class LoadingScreen extends InteractiveState {
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		
 		readers.clear();
+		
 		progressBar.reset();
+		
 		index = 0;
+		
+		getGame().pauseMenu.refreshSaveFiles();
 		
 		// Turn off the loading music.
 		container.setMusicOn(false);

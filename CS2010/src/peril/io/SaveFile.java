@@ -9,36 +9,36 @@ import java.io.File;
  * @author Joshua_Eddy
  *
  */
-public enum MapFiles {
+public enum SaveFile {
 
-	DEFAULT("default.txt", "Default"), SAVE1("save1.txt", "Save 1"), SAVE2("save2.txt", "Save 2"), SAVE3("save3.txt",
+	DEFAULT("default.txt", "Default"), ONE("save1.txt", "Save 1"), TWO("save2.txt", "Save 2"), THREE("save3.txt",
 			"Save 2");
 
 	/**
-	 * Holds the file name of the {@link MapFiles}.
+	 * Holds the file name of the {@link SaveFile}.
 	 */
 	public final String filename;
 
 	/**
-	 * The text representation of the {@link MapFiles}.
+	 * The text representation of the {@link SaveFile}.
 	 */
 	public final String name;
 
 	/**
-	 * Constructs a new {@link MapFiles}.
+	 * Constructs a new {@link SaveFile}.
 	 * 
 	 * @param filename
-	 *            Holds the file name of the {@link MapFiles}.
+	 *            Holds the file name of the {@link SaveFile}.
 	 * @param name
-	 *            The text representation of the {@link MapFiles}.
+	 *            The text representation of the {@link SaveFile}.
 	 */
-	private MapFiles(String filename, String name) {
+	private SaveFile(String filename, String name) {
 		this.filename = filename;
 		this.name = name;
 	}
 
 	/**
-	 * Checks if this {@link MapFiles} exists in the specified map directory.
+	 * Checks if this {@link SaveFile} exists in the specified map directory.
 	 * 
 	 * @param mapDirectory
 	 * @return <code>boolean</code>

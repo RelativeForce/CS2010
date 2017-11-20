@@ -1,10 +1,13 @@
 package peril.ui.components.menus;
 
+import java.io.File;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import peril.Game;
 import peril.Point;
+import peril.io.SaveFile;
 import peril.ui.components.Font;
 import peril.ui.components.Region;
 import peril.ui.components.VisualList;
@@ -26,14 +29,24 @@ public class PauseMenu extends Menu {
 	private VisualList<Toggle> toggleMusic;
 
 	/**
+	 * Holds a list of all the save files that use can save the game into.
+	 */
+	private VisualList<SaveFile> saveFiles;
+
+	/**
+	 * Denotes whether or not the save option will be displayed to the user.
+	 */
+	private boolean showSaveOption;
+
+	/**
 	 * {@link Font} for the text of the music option.
 	 */
-	private Font musicFont;
+	private Font textFont;
 
 	/**
 	 * {@link Font} for the text of the {@link PauseMenu}.
 	 */
-	private Font textFont;
+	private Font headingFont;
 
 	/**
 	 * Constructs a new {@link PauseMenu}.
@@ -45,9 +58,16 @@ public class PauseMenu extends Menu {
 	 */
 	public PauseMenu(Point position, Game game) {
 		super(NAME, game, new Region(300, 300, position));
+
+		showSaveOption = false;
+
+		// Construct music toggle
 		this.toggleMusic = new VisualList<>(position.x + (getWidth() / 2), position.y + 50, 30, 15, 2, 5);
 		this.toggleMusic.add(Toggle.ON.toString, Toggle.ON);
 		this.toggleMusic.add(Toggle.OFF.toString, Toggle.OFF);
+
+		// Construct save file list
+		this.saveFiles = new VisualList<>(position.x + (getWidth() / 2), position.y + 100, 90, 15, 3, 5);
 	}
 
 	/**
@@ -60,22 +80,16 @@ public class PauseMenu extends Menu {
 
 		if (visible) {
 
-			g.setColor(Color.black);
-			super.draw(g);
-
-			String pause = "PAUSE";
-			String music = "Toggle Music:";
-
-			textFont.draw(g, pause, getPosition().x - (textFont.getWidth(pause) / 2) + (getWidth() / 2),
-					getPosition().y + 10);
-
-			musicFont.draw(g, music, getPosition().x + (getWidth() / 2) - (textFont.getWidth(music) / 2) - 15,
-					getPosition().y + 50);
+			drawMenu(g);
 
 			g.setColor(Color.white);
 
-			// draws the List
-			toggleMusic.draw(g);
+			if (showSaveOption) {
+				drawSaveOption(g);
+			}
+
+			drawMusicToggle(g);
+
 		}
 
 	}
@@ -84,10 +98,15 @@ public class PauseMenu extends Menu {
 	 * Initialises all the visual elements off {@link PauseMenu}.
 	 */
 	public void init() {
-		textFont = new Font("Calibri", Color.cyan, 20);
-		musicFont = new Font("Arial", Color.pink, 10);
+		headingFont = new Font("Calibri", Color.cyan, 20);
+		textFont = new Font("Arial", Color.pink, 10);
+
 		toggleMusic.init();
 		toggleMusic.setFont(new Font("Arial", Color.green, 10));
+
+		saveFiles.init();
+		saveFiles.setFont(new Font("Arial", Color.black, 10));
+
 	}
 
 	/**
@@ -96,10 +115,96 @@ public class PauseMenu extends Menu {
 	public void parseClick(Point click) {
 
 		if (!toggleMusic.click(click)) {
-			clickedButton(click);
+			if (!saveFiles.click(click)) {
+				clickedButton(click);
+			}
 		} else {
 			getGame().toggleMusic(toggleMusic.getSelected().toggle);
 		}
+	}
+
+	/**
+	 * Moves all the components in this {@link PauseMenu}.
+	 */
+	@Override
+	public void moveComponents(Point vector) {
+
+		toggleMusic
+				.setPosition(new Point(toggleMusic.getPosition().x + vector.x, toggleMusic.getPosition().y + vector.y));
+		saveFiles.setPosition(new Point(saveFiles.getPosition().x + vector.x, saveFiles.getPosition().y + vector.y));
+
+	}
+
+	/**
+	 * Checks to see if all the save file in this {@link PauseMenu} are correct for
+	 * the current map.
+	 */
+	public void refreshSaveFiles() {
+
+		saveFiles.clear();
+
+		addSaveFile(SaveFile.ONE);
+		addSaveFile(SaveFile.TWO);
+		addSaveFile(SaveFile.THREE);
+
+		saveFiles.init();
+		saveFiles.setFont(new Font("Arial", Color.black, 10));
+	}
+
+	public void showSaveOption() {
+		showSaveOption = true;
+	}
+
+	public void hideSaveOption() {
+		showSaveOption = false;
+	}
+
+	private void drawMenu(Graphics g) {
+
+		g.setColor(Color.black);
+
+		super.draw(g);
+
+		String pause = "PAUSE";
+
+		headingFont.draw(g, pause, getPosition().x - (headingFont.getWidth(pause) / 2) + (getWidth() / 2),
+				getPosition().y + 10);
+	}
+
+	private void drawMusicToggle(Graphics g) {
+
+		String music = "Toggle Music:";
+
+		textFont.draw(g, music, getPosition().x + (getWidth() / 2) - (headingFont.getWidth(music) / 2) - 15,
+				getPosition().y + 50);
+
+		toggleMusic.draw(g);
+	}
+
+	private void drawSaveOption(Graphics g) {
+
+		String save = "Save Game:";
+
+		textFont.draw(g, save, getPosition().x - (headingFont.getWidth(save) / 2) + (getWidth() / 2) - 15,
+				getPosition().y + 100);
+
+		saveFiles.draw(g);
+	}
+
+	/**
+	 * Adds a save file to {@link PauseMenu#saveFiles}.
+	 * 
+	 * @param file
+	 *            {@link SaveFile}
+	 */
+	private void addSaveFile(SaveFile file) {
+
+		// If the save file does not currently exist display to the user that it is
+		// empty
+		boolean exists = file.existsIn(getGame().mapsDirectory + File.separatorChar + getGame().board.getName());
+		String text = file.name + (exists ? "" : " - Empty");
+
+		saveFiles.add(text, file);
 	}
 
 	/**
@@ -120,13 +225,5 @@ public class PauseMenu extends Menu {
 			this.toggle = toggle;
 			this.toString = toString;
 		}
-	}
-
-	@Override
-	public void moveComponents(Point vector) {
-
-		toggleMusic
-				.setPosition(new Point(toggleMusic.getPosition().x + vector.x, toggleMusic.getPosition().y + vector.y));
-
 	}
 }

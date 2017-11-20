@@ -41,9 +41,9 @@ public class MapWriter {
 	 * @param mapDiretory
 	 *            directory of the current map.
 	 * @param file
-	 *            The {@link MapFiles} that will be written to.
+	 *            The {@link SaveFile} that will be written to.
 	 */
-	public MapWriter(Game game, String mapDiretory, MapFiles file) {
+	public MapWriter(Game game, String mapDiretory, SaveFile file) {
 		this.savedLinks = new HashSet<>();
 		this.game = game;
 		this.writer = new TextFileWriter(mapDiretory + File.separatorChar + file.filename, false);

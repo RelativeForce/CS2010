@@ -14,9 +14,10 @@ import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
 import peril.board.EnvironmentalHazard;
-import peril.io.MapFiles;
+import peril.io.SaveFile;
 import peril.io.fileReaders.ImageReader;
 import peril.ui.components.Region;
+import peril.ui.states.InteractiveState;
 
 /**
  * Reader the map from a specified file and uses that to construct the
@@ -61,7 +62,7 @@ public final class MapReader extends FileParser {
 	 * @param file
 	 *            The file that will contain this map.
 	 */
-	public MapReader(String directoryPath, Game game, MapFiles file) {
+	public MapReader(String directoryPath, Game game, SaveFile file) {
 		super(directoryPath, file.filename);
 
 		if (game == null) {
@@ -102,6 +103,9 @@ public final class MapReader extends FileParser {
 			case "State":
 				parseState(details);
 				break;
+			case "Player":
+				parsePlayer(details);
+				break;
 			}
 
 			index++;
@@ -116,7 +120,7 @@ public final class MapReader extends FileParser {
 		}
 
 	}
-	
+
 	/**
 	 * Parses a <code>String</code> array of details into a new {@link Country}.
 	 * 
@@ -187,14 +191,15 @@ public final class MapReader extends FileParser {
 		try {
 			yOffset = Integer.parseInt(details[5]);
 		} catch (Exception e) {
-			throw new IllegalArgumentException(details[5] + " is not a valid x coordinate.");
+			throw new IllegalArgumentException(details[5] + " is not a valid y coordinate.");
 		}
 
 		Player ruler = Player.getByName(details[6]);
 
 		// If there is an owner add it to the players list
 		if (ruler != null) {
-			game.players.add(ruler);
+			ruler.setTotalArmySize(ruler.getTotalArmySize() + armySize);
+			ruler.setCountriesRuled(ruler.getCountriesRuled() + 1);
 		}
 
 		// Initialise a new colour using the RGB values.
@@ -284,7 +289,6 @@ public final class MapReader extends FileParser {
 	 * 
 	 * @param details
 	 *            The details about the link between two {@link Country}s.
-	 * @param details
 	 */
 	private void parseLink(String[] details) {
 
@@ -324,9 +328,15 @@ public final class MapReader extends FileParser {
 
 	}
 
-	private void parseState(String[] details) {
+	/**
+	 * Parses a {@link Player} from a <code>String</code> array of details.
+	 * 
+	 * @param details
+	 *            <code>String</code> array of details about the {@link Player}.
+	 */
+	private void parsePlayer(String[] details) {
 
-		int STATE_LENGTH = 4;
+		int STATE_LENGTH = 3;
 
 		// Check there is the correct number of details
 		if (details.length != STATE_LENGTH) {
@@ -334,10 +344,45 @@ public final class MapReader extends FileParser {
 					+ " does not contain the correct number of elements, there should be " + STATE_LENGTH + "");
 		}
 
+		Player player = Player.getByName(details[1]);
+
+		int armySize;
+
+		try {
+			armySize = Integer.parseInt(details[2]);
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Line " + index + " " + details[2] + " is not a valid army size");
+		}
+
+		player.setDistributableArmySize(armySize);
+
+		game.players.add(player);
+
+	}
+
+	/**
+	 * Parses a {@link InteractiveState} from a <code>String</code> array of
+	 * details.
+	 * 
+	 * @param details
+	 *            <code>String</code> array of details about the
+	 *            {@link InteractiveState}.
+	 */
+	private void parseState(String[] details) {
+
+		int STATE_LENGTH = 3;
+
+		// Check there is the correct number of details
+		if (details.length != STATE_LENGTH) {
+			throw new IllegalArgumentException("Line " + index
+					+ " does not contain the correct number of elements, there should be " + STATE_LENGTH + "");
+		}
+
+		// Set the first state as the state read from the game.
 		game.states.loadingScreen.setFirstState(game.states.getSaveState(details[1]));
-		
-		
-		
+
+		// Set the current player of the as the player specified by the name.
+		game.players.setCurrent(Player.getByName(details[2]));
 
 	}
 }

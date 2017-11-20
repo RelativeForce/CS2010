@@ -7,7 +7,8 @@ button,Combat,2,endButton.png,90,40,10,80,end
 button,Combat,9,attackButton.png,90,40,10,800,attack
 button,Setup,4,endButton.png,90,40,10,120,end
 button,Setup,8,playButton.png,90,40,10,80,auto
-button,Pause Menu,10,endButton.png,90,40,200,250,pause
 button,War Menu,6,menuButton.png,90,40,100,100,war
+button,Pause Menu,10,endButton.png,90,40,200,250,exit
+button,Pause Menu,11,playButton.png,40,20,105,120,save
 
 // asset_type,state_name,asset_file_name,width,height,x,y

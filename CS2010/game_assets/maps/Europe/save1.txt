@@ -1,19 +1,22 @@
-Country,Great Britian,000000050,1,0,0,Player 1
+Player,Player 1,0
+Player,Player 2,0
+State,Reinforcement,Player 1
+Country,Great Britian,000000050,1,0,0,Player 2
 Country,France,000000100,1,0,0,Player 1
-Country,Germany,000000150,1,-10,0,Player 3
-Country,Spain,000100000,1,-20,0,Player 1
-Country,Greece,000050000,1,-15,0,Player 3
-Country,Poland,000000200,1,0,-10,Player 1
+Country,Germany,000000150,4,-10,0,Player 1
+Country,Spain,000100000,1,-20,0,Player 2
+Country,Greece,000050000,1,-15,0,Player 2
+Country,Poland,000000200,1,0,-10,Player 2
 Country,Italy,000000250,1,0,-15,Player 2
-Country,Chump,050200000,1,0,-10,Player 1
-Country,Mump,050250000,1,0,0,Player 2
-Country,Russia,000150000,1,0,0,Player 3
-Country,Umple,050100000,1,0,0,Player 3
+Country,Chump,050200000,1,0,-10,Player 2
+Country,Mump,050250000,1,0,0,Player 1
+Country,Russia,000150000,1,0,0,Player 2
+Country,Umple,050100000,1,0,0,Player 1
 Country,Flump,050150000,1,0,0,Player 2
 Country,Slump,100050000,1,0,0,Player 1
-Country,Sweden,000200000,1,-15,0,Player 2
-Country,Norway,000250000,1,-50,30,Player 2
-Country,Finland,050050000,1,0,0,Player 3
+Country,Sweden,000200000,1,-15,0,Player 1
+Country,Norway,000250000,1,-50,30,Player 1
+Country,Finland,050050000,1,0,0,Player 1
 Continent,West,Hurricane,Great Britian-France-Germany-Spain
 Continent,Center,Tornado,Greece-Poland-Italy-Chump-Mump
 Continent,East,Hurricane,Russia-Umple-Flump-Slump

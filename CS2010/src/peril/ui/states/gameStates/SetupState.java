@@ -42,16 +42,6 @@ public final class SetupState extends CoreGameState {
 	}
 
 	/**
-	 * Enters this {@link SetupState} which also ends the current music and starts
-	 * the game play music.
-	 */
-	@Override
-	public void enter(GameContainer gc, StateBasedGame sbg) {
-		super.enter(gc, sbg);
-		changeMusic(gc);
-	}
-
-	/**
 	 * Renders this {@link SetupState}.
 	 */
 	@Override

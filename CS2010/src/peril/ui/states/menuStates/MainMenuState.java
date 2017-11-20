@@ -15,7 +15,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Player;
 import peril.Point;
-import peril.io.MapFiles;
+import peril.io.SaveFile;
 import peril.io.fileParsers.MapReader;
 import peril.io.fileReaders.TextFileReader;
 import peril.ui.components.Font;
@@ -60,7 +60,7 @@ public class MainMenuState extends InteractiveState {
 	/**
 	 * The {@link VisualList} of the saved games read from the saved file.
 	 */
-	private VisualList<MapFiles> saves;
+	private VisualList<SaveFile> saves;
 
 	/**
 	 * The {@link Font} used for displaying {@link MainMenuState#maps}.
@@ -109,7 +109,7 @@ public class MainMenuState extends InteractiveState {
 
 		drawButtons(g);
 
-		if(saves.getSelected() == MapFiles.DEFAULT) {
+		if(saves.getSelected() == SaveFile.DEFAULT) {
 			textFont.draw(g, "Players: ", 130, 200);
 			players.draw(g);	
 		}
@@ -258,7 +258,7 @@ public class MainMenuState extends InteractiveState {
 		}
 
 		// Loads the game assets and move into the set up state
-		if(saves.getSelected() == MapFiles.DEFAULT) {
+		if(saves.getSelected() == SaveFile.DEFAULT) {
 			getGame().players.set(playersArray.players);
 		}
 
@@ -325,7 +325,7 @@ public class MainMenuState extends InteractiveState {
 	private void checkSaves() {
 		String mapName = maps.getSelected().name;
 		saves.clear();
-		for(MapFiles file : MapFiles.values()) {
+		for(SaveFile file : SaveFile.values()) {
 			if(file.existsIn(getGame().mapsDirectory + File.separatorChar + mapName)) {
 				saves.add(file.name, file);
 			}

@@ -101,6 +101,7 @@ public final class CombatState extends MultiSelectState {
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
 		super.leave(container, game);
 		attackButton.hide();
+		getGame().pauseMenu.hideSaveOption();
 	}
 
 	/**
@@ -150,12 +151,17 @@ public final class CombatState extends MultiSelectState {
 		drawPauseMenu(g);
 	}
 
+	/**
+	 * Enters this {@link CombatState}.
+	 */
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
-		warMenu.setPosition(new Point((gc.getWidth()/2) - (warMenu.getWidth()/2),(gc.getHeight()/2) - (warMenu.getHeight()/2)));
 		super.enter(gc, sbg);
+		warMenu.setPosition(new Point((gc.getWidth() / 2) - (warMenu.getWidth() / 2),
+				(gc.getHeight() / 2) - (warMenu.getHeight() / 2)));
+		getGame().pauseMenu.showSaveOption();
 	}
-	
+
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
@@ -181,9 +187,9 @@ public final class CombatState extends MultiSelectState {
 		if (!clickedWarMenu(click)) {
 			super.parseClick(button, click);
 		}
-		
+
 	}
-	
+
 	private boolean clickedWarMenu(Point click) {
 		if (warMenu.visible) {
 			if (warMenu.isClicked(click)) {

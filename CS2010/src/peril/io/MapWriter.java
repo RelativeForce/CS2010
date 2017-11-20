@@ -5,8 +5,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import peril.Game;
+import peril.Player;
 import peril.board.Continent;
 import peril.board.Country;
+import peril.ui.states.InteractiveState;
 
 /**
  * Used for writing the {@link Board} from the {@link Game} into memory.
@@ -39,9 +41,9 @@ public class MapWriter {
 	 * @param mapDiretory
 	 *            directory of the current map.
 	 * @param file
-	 *            The {@link MapFiles} that will be written to.
+	 *            The {@link SaveFile} that will be written to.
 	 */
-	public MapWriter(Game game, String mapDiretory, MapFiles file) {
+	public MapWriter(Game game, String mapDiretory, SaveFile file) {
 		this.savedLinks = new HashSet<>();
 		this.game = game;
 		this.writer = new TextFileWriter(mapDiretory + File.separatorChar + file.filename, false);
@@ -55,6 +57,12 @@ public class MapWriter {
 		// Open the file
 		writer.open();
 
+		// Write player details
+		game.players.forEach(player -> writer.writeLine(parsePlayer(player)));
+
+		// Write the state the game will start in
+		writer.writeLine(parseState(game.getCurrentState()));
+
 		// Write all the countries to the file
 		game.board.forEachCountry(country -> writer.writeLine(parseCountry(country)));
 
@@ -66,6 +74,52 @@ public class MapWriter {
 
 		// Save the file
 		writer.save();
+	}
+
+	/**
+	 * Parses the details of a {@link InteractiveState} its <code>String</code>
+	 * representation that will be used to store the {@link InteractiveState} in the
+	 * file.
+	 * 
+	 * @param state
+	 *            {@link InteractiveState}
+	 * @return <code>String</code>
+	 */
+	private String parseState(InteractiveState state) {
+
+		StringBuilder line = new StringBuilder();
+		line.append("State,");
+
+		line.append(state.getName());
+		line.append(',');
+
+		line.append(game.players.getCurrent().toString());
+
+		return line.toString();
+
+	}
+
+	/**
+	 * Parses the details of a {@link Player} its <code>String</code> representation
+	 * that will be used to store the {@link Player} in the file.
+	 * 
+	 * @param player
+	 *            {@link Player}
+	 * @return <code>String</code>
+	 */
+	private String parsePlayer(Player player) {
+
+		StringBuilder line = new StringBuilder();
+
+		line.append("Player,");
+
+		line.append(player.toString());
+		line.append(',');
+
+		line.append(player.getDistributableArmySize());
+
+		return line.toString();
+
 	}
 
 	/**

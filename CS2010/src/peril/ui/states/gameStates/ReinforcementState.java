@@ -48,6 +48,15 @@ public final class ReinforcementState extends CoreGameState {
 	}
 
 	/**
+	 * Enters this {@link ReinforcementState}.
+	 */
+	@Override
+	public void enter(GameContainer gc, StateBasedGame sbg) {
+		super.enter(gc, sbg);
+		getGame().pauseMenu.showSaveOption();
+	}
+	
+	/**
 	 * Adds a {@link Button} to this {@link ReinforcementState}. The last
 	 * {@link Button} with the specified id will be used as the
 	 * {@link ReinforcementState#reinforceButton}.
@@ -70,6 +79,7 @@ public final class ReinforcementState extends CoreGameState {
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
 		super.leave(container, game);
 		reinforceButton.hide();
+		getGame().pauseMenu.hideSaveOption();
 	}
 
 	/**

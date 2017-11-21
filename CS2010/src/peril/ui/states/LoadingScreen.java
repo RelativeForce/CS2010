@@ -204,6 +204,8 @@ public final class LoadingScreen extends InteractiveState {
 		
 		// Turn off the loading music.
 		container.setMusicOn(false);
+		
+		firstState = null;
 	}
 
 	/**

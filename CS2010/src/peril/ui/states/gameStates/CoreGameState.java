@@ -186,6 +186,8 @@ public abstract class CoreGameState extends InteractiveState {
 
 		// Stop the state from panning after it has been exited.
 		panDirection = null;
+		
+		pauseMenu.hide();
 	}
 
 	/**

@@ -285,6 +285,7 @@ public class WarMenu extends Menu {
 				if (defendingArmy.getSize() == 1) {
 					defending.setRuler(attacker);
 					attacker.setTotalArmySize(attacker.getTotalArmySize() + 1);
+					break;
 				} else {
 					defendingArmy.setSize(defendingArmy.getSize() - 1);
 				}

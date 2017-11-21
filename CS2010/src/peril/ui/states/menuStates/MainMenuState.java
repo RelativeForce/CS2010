@@ -156,14 +156,20 @@ public class MainMenuState extends InteractiveState {
 		} else if (key == Input.KEY_UP) {
 			if (maps.isClicked(mousePosition)) {
 				maps.up();
+				checkSaves();
 			} else if (players.isClicked(mousePosition)) {
 				players.up();
+			}else if(saves.isClicked(mousePosition)) {
+				saves.up();
 			}
 		} else if (key == Input.KEY_DOWN) {
 			if (maps.isClicked(mousePosition)) {
 				maps.down();
+				checkSaves();
 			} else if (players.isClicked(mousePosition)) {
 				players.down();
+			}else if(saves.isClicked(mousePosition)) {
+				saves.down();
 			}
 		}
 	}

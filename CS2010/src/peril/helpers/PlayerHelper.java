@@ -264,10 +264,14 @@ public class PlayerHelper {
 	 */
 	public void reinforce(Player player) {
 
+		// Scale reinforcements with round progression.
+		int roundScale = game.getRoundNumber() != 0 ? game.getRoundNumber() * 2 : 1;
+
 		if (player.getCountriesRuled() < 12) {
-			player.setDistributableArmySize(player.getDistributableArmySize() + 3);
+			player.setDistributableArmySize(player.getDistributableArmySize() + (3 * roundScale));
 		} else {
-			player.setDistributableArmySize(player.getDistributableArmySize() + (player.getCountriesRuled() / 3));
+			player.setDistributableArmySize(
+					player.getDistributableArmySize() + (player.getCountriesRuled() * roundScale / 3));
 		}
 	}
 

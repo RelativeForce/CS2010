@@ -38,7 +38,7 @@ public abstract class Menu extends Clickable implements Container {
 
 	private Game game;
 
-	public boolean visible;
+	private boolean visible;
 
 	public Menu(String name, Game game, Region region) {
 		super(region);
@@ -57,12 +57,37 @@ public abstract class Menu extends Clickable implements Container {
 
 	public abstract void parseClick(Point click);
 
-	public void draw(Graphics g) {
+	public boolean isVisible() {
+		return visible;
+	}
 
-		g.fillRect(getPosition().x, getPosition().y, getWidth(), getHeight());
-		images.forEach(image->g.drawImage(image.getImage(), image.getPosition().x, image.getPosition().y));
-		buttons.forEach(button -> g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y));
-		
+	public void toggleVisibility() {
+		if (isVisible()) {
+			hide();
+		} else {
+			show();
+		}
+	}
+
+	public void draw(Graphics g) {
+		if (visible) {
+			g.fillRect(getPosition().x, getPosition().y, getWidth(), getHeight());
+			images.forEach(image -> g.drawImage(image.getImage(), image.getPosition().x, image.getPosition().y));
+			buttons.forEach(button -> {
+				if(button.isVisible()) {
+				g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y);
+				}
+			});
+		}
+
+	}
+
+	public void show() {
+		visible = true;
+	}
+
+	public void hide() {
+		visible = false;
 	}
 
 	@Override
@@ -87,7 +112,7 @@ public abstract class Menu extends Clickable implements Container {
 		moveComponents(vector);
 
 		moveButtons(vector);
-		
+
 		moveImages(vector);
 
 		super.setPosition(position);

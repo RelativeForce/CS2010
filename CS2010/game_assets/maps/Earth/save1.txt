@@ -1,7 +1,7 @@
 Player,Player 1,0
 Player,Player 2,0
 Player,Player 3,0
-State,Reinforcement,Player 3
+State,Combat,Player 3
 Country,Alaska,000000050,1,-15,-30,Player 1
 Country,NorthWestTerritory,000000100,1,-30,15,Player 2
 Country,Greenland,000000150,1,0,-10,Player 2

@@ -129,6 +129,15 @@ public class WarMenu extends Menu {
 		attacker = getGame().states.combat.getHighlightedCountry();
 		enemy = getGame().states.combat.getEnemyCountry();
 
+		squadSizes.clear();
+
+		int maxSize = (attacker.getArmy().getSize() - 1 > 3 ? 3 : attacker.getArmy().getSize() - 1);
+
+		for (int index = 1; index <= maxSize; index++) {
+			squadSizes.add(Integer.toString(index), index);
+		}
+		squadSizes.init();
+
 		ruler = enemy.getRuler();
 		player = attacker.getRuler();
 	}
@@ -234,7 +243,7 @@ public class WarMenu extends Menu {
 
 		return rolls;
 	}
-	
+
 	/**
 	 * When a {@link Player} clicks on another {@link Country} to fight. This pits 2
 	 * {@link Army}'s against each other. This emulates 1 turn of combat between 2
@@ -304,7 +313,7 @@ public class WarMenu extends Menu {
 		}
 
 	}
-	
+
 	private void failedConquer(Graphics g) {
 		String failure = "has insufficient units to attack.";
 

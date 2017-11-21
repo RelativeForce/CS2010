@@ -69,6 +69,8 @@ public class FunctionHandler {
 			return exitGame();
 		case 11:
 			return saveGame();
+		case 12: 
+			return enterMainMenu();
 		}
 		throw new IllegalArgumentException(code + " is not a valid function code.");
 	}
@@ -282,6 +284,17 @@ public class FunctionHandler {
 
 	}
 
+	/**
+	 * Retrieves the {@link Action} that will move the {@link Game} from the
+	 * {@link Game#pauseMenu} to the {@link Game#mainMenu} state
+	 */
+	private Action<?> enterMainMenu() { 
+		return new Action<Game>(game, game -> {
+			
+			game.enterState(game.states.mainMenu.getID());
+	}) ;
+	}
+	
 	/**
 	 * Retrieves the {@link Action} that will exit the {@link Game}.
 	 * 

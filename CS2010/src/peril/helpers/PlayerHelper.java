@@ -249,7 +249,10 @@ public class PlayerHelper {
 	 */
 	public void reset() {
 		// Reset the all players number of countries to zero.
-		players.forEach(player -> player.reset());
+		Player.ONE.reset();
+		Player.TWO.reset();
+		Player.THREE.reset();
+		Player.FOUR.reset();
 	}
 
 	/**

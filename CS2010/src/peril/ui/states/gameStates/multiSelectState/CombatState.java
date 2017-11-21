@@ -120,6 +120,9 @@ public final class CombatState extends MultiSelectState {
 
 	}
 
+	/**
+	 * Adds a {@link Button} to this {@link CombatState}.
+	 */
 	@Override
 	public void addButton(Button button) {
 		super.addButton(button);
@@ -131,9 +134,8 @@ public final class CombatState extends MultiSelectState {
 	}
 
 	/**
-	 * Displays
-	 * {@link CoreGameState#render(GameContainer, StateBasedGame, Graphics) } then
-	 * the current {@link Player}s name and then the enemy {@link Country}.
+	 * Displays super classes render method then the current {@link Player}s name
+	 * and then the enemy {@link Country}.
 	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
@@ -145,6 +147,11 @@ public final class CombatState extends MultiSelectState {
 
 		super.drawImages(g);
 		super.drawButtons(g);
+
+		// Hide the war menu if the pause menu is over it.
+		if (getGame().pauseMenu.isVisible()) {
+			warMenu.hide();
+		}
 
 		this.warMenu.draw(g);
 
@@ -162,6 +169,9 @@ public final class CombatState extends MultiSelectState {
 		getGame().pauseMenu.showSaveOption();
 	}
 
+	/**
+	 * Initialises the visual elements of this {@link CombatState}.
+	 */
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
@@ -187,9 +197,16 @@ public final class CombatState extends MultiSelectState {
 		if (!clickedWarMenu(click)) {
 			super.parseClick(button, click);
 		}
-
 	}
 
+	/**
+	 * Parses a click on the {@link WarMenu} and retrieves whether the
+	 * {@link WarMenu} was clicked or not.
+	 * 
+	 * @param click
+	 *            {@link Point}
+	 * @return <code>boolean</code>
+	 */
 	private boolean clickedWarMenu(Point click) {
 		if (warMenu.isVisible()) {
 			if (warMenu.isClicked(click)) {

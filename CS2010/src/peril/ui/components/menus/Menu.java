@@ -57,10 +57,10 @@ public abstract class Menu extends Clickable implements Container {
 
 	public abstract void parseClick(Point click);
 
-	public boolean isVisible(){
+	public boolean isVisible() {
 		return visible;
 	}
-	
+
 	public void toggleVisibility() {
 		if (isVisible()) {
 			hide();
@@ -68,12 +68,16 @@ public abstract class Menu extends Clickable implements Container {
 			show();
 		}
 	}
-	
+
 	public void draw(Graphics g) {
 		if (visible) {
 			g.fillRect(getPosition().x, getPosition().y, getWidth(), getHeight());
 			images.forEach(image -> g.drawImage(image.getImage(), image.getPosition().x, image.getPosition().y));
-			buttons.forEach(button -> g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y));
+			buttons.forEach(button -> {
+				if(button.isVisible()) {
+				g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y);
+				}
+			});
 		}
 
 	}

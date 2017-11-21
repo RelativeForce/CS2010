@@ -11,6 +11,7 @@ import peril.Player;
 import peril.Point;
 import peril.board.Army;
 import peril.board.Country;
+import peril.ui.Button;
 import peril.ui.components.Font;
 import peril.ui.components.Region;
 import peril.ui.components.VisualList;
@@ -33,11 +34,33 @@ public class WarMenu extends Menu {
 
 	private VisualList<Integer> squadSizes;
 
+	private Button attackButton;
+	
 	private Font headingFont;
 
 	private Font textFont;
 
 	private Font countryFont;
+
+	private Font playerFont;
+
+	private Font resultFont;
+
+	private Country attacker;
+
+	private Country enemy;
+
+	/**
+	 * 
+	 * 
+	 */
+	private Player player;
+
+	/**
+	 * 
+	 * 
+	 */
+	private Player ruler;
 
 	/**
 	 * Constructs a new {@link WarMenu}.
@@ -48,7 +71,7 @@ public class WarMenu extends Menu {
 
 		random = new Random();
 
-		squadSizes = new VisualList<>(position.x + (getWidth() / 4), position.y + 100, 20, 20, 3, 5);
+		squadSizes = new VisualList<>(position.x + (getWidth() / 2), position.y + 200, 20, 20, 3, 5);
 		squadSizes.add("1", 1);
 		squadSizes.add("2", 2);
 		squadSizes.add("3", 3);
@@ -152,6 +175,8 @@ public class WarMenu extends Menu {
 		headingFont = new Font("Arial", Color.red, 20);
 		textFont = new Font("Arial", Color.red, 40);
 		countryFont = new Font("Arial", Color.cyan, 20);
+		playerFont = new Font("Arial", Color.black, 15);
+		resultFont = new Font("Arial", Color.white, 20);
 		squadSizes.setFont(headingFont);
 	}
 
@@ -160,14 +185,63 @@ public class WarMenu extends Menu {
 			g.setColor(Color.black);
 			super.draw(g);
 
-			Country attacker = getGame().states.combat.getHighlightedCountry();
-			Country enemy = getGame().states.combat.getEnemyCountry();
+			// Attacker has failed to conquer country
+			if (attacker.getArmy().getSize() == 1) {
+				String failure = "has insufficient units to attack.";
+				
+				countryFont.draw(g, attacker.getName(),
+						getPosition().x + (getWidth() / 2) - (resultFont.getWidth(attacker.getName()) / 2),
+						getPosition().y + (getHeight() / 2) - 30);
+				
+				resultFont.draw(g, failure, getPosition().x + (getWidth() / 2) - (resultFont.getWidth(failure) / 2),
+						getPosition().y + (getHeight() / 2));
+				
+				drawPlayer(g, ruler, (getWidth() / 4));
+				attackButton.hide();
+			}
+			// Attacker has conquered country
+			else if (attacker.getRuler().equals(enemy.getRuler())) {
+				String success = attacker.getName() + " has conquered " + enemy.getName();
+				
+				resultFont.draw(g, success, getPosition().x + (getWidth() / 2) - (resultFont.getWidth(success) / 2),
+						getPosition().y + (getHeight() / 2));
+				
+				drawPlayer(g, player, (getWidth() / 4));
+				attackButton.hide();
+			}
+			// Normal Combat
+			else {
+				squadSizes.draw(g);
+				drawPlayer(g, ruler, (getWidth() / 4));
+				String squadSize = "Attack squad size: ";
+				playerFont.draw(g, squadSize, getPosition().x + (getWidth()/2) - playerFont.getWidth(squadSize), getPosition().y + 200);
+			}
 
-			drawTitle(g, attacker, enemy);
-			drawArmySizes(g, attacker, enemy);
+			drawPlayer(g, player, -(getWidth() / 4));
 
-			squadSizes.draw(g);
+			drawTitle(g);
+			drawArmySizes(g);
 		}
+	}
+	
+	@Override
+	public void addButton(Button button) {
+		super.addButton(button);
+		if(button.getId().equals("war")) {
+			attackButton = button;
+		}
+	}
+
+	@Override
+	public void show() {
+		super.show();
+
+		attackButton.show();
+		attacker = getGame().states.combat.getHighlightedCountry();
+		enemy = getGame().states.combat.getEnemyCountry();
+
+		ruler = enemy.getRuler();
+		player = attacker.getRuler();
 	}
 
 	public void parseClick(Point click) {
@@ -188,20 +262,20 @@ public class WarMenu extends Menu {
 
 	}
 
-	private void drawArmySizes(Graphics g, Country attacker, Country enemy) {
+	private void drawArmySizes(Graphics g) {
 
 		String attackingArmy = "" + attacker.getArmy().getSize();
 
 		textFont.draw(g, attackingArmy, getPosition().x + (getWidth() / 4) - (textFont.getWidth(attackingArmy) / 2),
-				getPosition().y + 50);
+				getPosition().y + 60);
 
 		String enemyArmy = "" + enemy.getArmy().getSize();
 		textFont.draw(g, enemyArmy, getPosition().x + ((getWidth() * 3) / 4) - (textFont.getWidth(enemyArmy) / 2),
-				getPosition().y + 50);
+				getPosition().y + 60);
 
 	}
 
-	private void drawTitle(Graphics g, Country attacker, Country enemy) {
+	private void drawTitle(Graphics g) {
 		String vs = "VS";
 		String attackerStr = attacker.getName();
 		String enemyStr = enemy.getName();
@@ -215,6 +289,13 @@ public class WarMenu extends Menu {
 		headingFont.draw(g, vs, vsX, getPosition().y + 20);
 		countryFont.draw(g, attackerStr, attackerX, getPosition().y + 20);
 		countryFont.draw(g, enemyStr, enemyX, getPosition().y + 20);
+	}
+
+	private void drawPlayer(Graphics g, Player player, int offset) {
+		int centreX = getPosition().x + (getWidth() / 2);
+		int x = centreX + offset - (playerFont.getWidth(player.toString()) / 2);
+		playerFont.setColor(player.getColor());
+		playerFont.draw(g, player.toString(), x, getPosition().y + 40);
 	}
 
 }

@@ -88,4 +88,18 @@ public class Font {
 	public int getHeight() {
 		return ttFont.getHeight();
 	}
+
+	/**
+	 * Assigns new {@link Color} to this {@link Font}.
+	 * 
+	 * @param color
+	 *            {@link Color}
+	 */
+	public void setColor(Color color) {
+		if (color == null) {
+			throw new NullPointerException("Color cannot be null.");
+		}
+		this.color = color;
+	}
+
 }

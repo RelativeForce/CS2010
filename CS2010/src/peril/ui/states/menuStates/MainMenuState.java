@@ -19,7 +19,7 @@ import peril.io.SaveFile;
 import peril.io.fileParsers.MapReader;
 import peril.io.fileReaders.TextFileReader;
 import peril.ui.components.Font;
-import peril.ui.components.VisualList;
+import peril.ui.components.lists.VisualList;
 import peril.ui.states.InteractiveState;
 
 /**

@@ -15,8 +15,8 @@ import peril.Point;
 import peril.board.Army;
 import peril.board.Board;
 import peril.board.Country;
-import peril.ui.components.ToolTipList;
 import peril.ui.components.Region;
+import peril.ui.components.lists.ToolTipList;
 import peril.ui.components.menus.PauseMenu;
 import peril.ui.states.InteractiveState;
 

@@ -1,4 +1,4 @@
-package peril.ui.components;
+package peril.ui.components.lists;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -7,6 +7,9 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import peril.Point;
+import peril.ui.components.Clickable;
+import peril.ui.components.Font;
+import peril.ui.components.Region;
 import peril.ui.states.InteractiveState;
 
 /**

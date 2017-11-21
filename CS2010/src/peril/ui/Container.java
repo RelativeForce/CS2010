@@ -1,6 +1,7 @@
 package peril.ui;
 
 import peril.Point;
+import peril.ui.components.Button;
 import peril.ui.components.Viewable;
 
 /**

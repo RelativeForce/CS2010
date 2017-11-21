@@ -1,11 +1,9 @@
-package peril.ui;
+package peril.ui.components;
 
 import org.newdawn.slick.Image;
 
 import peril.Point;
 import peril.multiThread.Action;
-import peril.ui.components.Clickable;
-import peril.ui.components.Region;
 
 /**
  * Encapsulates the behaviour of a button on screen. This button can be clicked

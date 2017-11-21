@@ -11,10 +11,10 @@ import peril.Player;
 import peril.Point;
 import peril.board.Army;
 import peril.board.Country;
-import peril.ui.Button;
+import peril.ui.components.Button;
 import peril.ui.components.Font;
 import peril.ui.components.Region;
-import peril.ui.components.VisualList;
+import peril.ui.components.lists.VisualList;
 
 /**
  * Encapsulates all the game combat logic.

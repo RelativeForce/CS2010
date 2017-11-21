@@ -1,4 +1,4 @@
-package peril.ui.components;
+package peril.ui.components.lists;
 
 import java.util.IdentityHashMap;
 import java.util.LinkedList;

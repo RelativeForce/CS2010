@@ -7,8 +7,8 @@ import org.newdawn.slick.Graphics;
 
 import peril.Game;
 import peril.Point;
-import peril.ui.Button;
 import peril.ui.Container;
+import peril.ui.components.Button;
 import peril.ui.components.Clickable;
 import peril.ui.components.Region;
 import peril.ui.components.Viewable;

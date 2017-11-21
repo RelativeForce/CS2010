@@ -35,7 +35,7 @@ public class WarMenu extends Menu {
 	private VisualList<Integer> squadSizes;
 
 	private Button attackButton;
-	
+
 	private Font headingFont;
 
 	private Font textFont;
@@ -77,6 +77,164 @@ public class WarMenu extends Menu {
 		squadSizes.add("3", 3);
 	}
 
+	public void init() {
+		squadSizes.init();
+		headingFont = new Font("Arial", Color.red, 20);
+		textFont = new Font("Arial", Color.red, 40);
+		countryFont = new Font("Arial", Color.cyan, 20);
+		playerFont = new Font("Arial", Color.black, 15);
+		resultFont = new Font("Arial", Color.white, 20);
+		squadSizes.setFont(headingFont);
+	}
+
+	public void draw(Graphics g) {
+
+		if (isVisible()) {
+			g.setColor(Color.black);
+			super.draw(g);
+
+			// Attacker has failed to conquer country
+			if (attacker.getArmy().getSize() == 1) {
+				failedConquer(g);
+			}
+			// Attacker has conquered country
+			else if (attacker.getRuler().equals(enemy.getRuler())) {
+				succesfulConquer(g);
+			}
+			// Normal Combat
+			else {
+				normalCombat(g);
+			}
+
+			drawPlayer(g, player, -(getWidth() / 4));
+
+			drawTitle(g);
+			drawArmySizes(g);
+		}
+	}
+
+	@Override
+	public void addButton(Button button) {
+		super.addButton(button);
+		if (button.getId().equals("war")) {
+			attackButton = button;
+		}
+	}
+
+	@Override
+	public void show() {
+		super.show();
+
+		attackButton.show();
+		attacker = getGame().states.combat.getHighlightedCountry();
+		enemy = getGame().states.combat.getEnemyCountry();
+
+		ruler = enemy.getRuler();
+		player = attacker.getRuler();
+	}
+
+	public void parseClick(Point click) {
+		if (!squadSizes.click(click)) {
+			clickedButton(click);
+		}
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+	public void attack() {
+		// If there is two countries highlighted
+		if (attacker != null && enemy != null) {
+
+			Player attackingPlayer = attacker.getRuler();
+			Player defendingPlayer = enemy.getRuler();
+
+			// If the army of the primary highlighted country is larger that 1 unit in size
+			if (attacker.getArmy().getSize() > 1) {
+
+				int squadSize = squadSizes.getSelected();
+
+				// If the the attacking army is larger than or equal to the size of the
+				// specified squad then attack.
+				if (attacker.getArmy().getSize() >= squadSize) {
+
+					// Execute the combat
+					fight(attacker, enemy, squadSize);
+
+					// If the country has been conquered
+					if (attacker.getRuler().equals(enemy.getRuler())) {
+
+						// If there is a defending player
+						if (defendingPlayer != null) {
+
+							defendingPlayer.setCountriesRuled(defendingPlayer.getCountriesRuled() - 1);
+
+							// If the player has no countries they have lost.
+							if (defendingPlayer.getCountriesRuled() == 0) {
+								getGame().players.setLoser(defendingPlayer);
+								getGame().checkWinner();
+							}
+						}
+
+						attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
+
+						getGame().states.combat.setPostCombat();
+						getGame().states.combat.highlightCountry(enemy);
+
+						getGame().checkContinentRulership();
+
+						getGame().players.checkChallenges(attackingPlayer);
+
+					} else {
+
+						// If the attacking army is not large enough to attack again.
+						if (attacker.getArmy().getSize() == 1) {
+							getGame().states.combat.hideAttackButton();
+						}
+					}
+				}
+
+			} else {
+				getGame().states.combat.hideAttackButton();
+			}
+		} else {
+			getGame().states.combat.hideAttackButton();
+		}
+	}
+
+	@Override
+	public void moveComponents(Point vector) {
+
+		squadSizes.setPosition(new Point(squadSizes.getPosition().x + vector.x, squadSizes.getPosition().y + vector.y));
+
+	}
+
+	/**
+	 * Gets an <code>int[]</code> of {@link Random#nextInt(int)} with bounds of 1 -
+	 * 6
+	 * 
+	 * @param numberOfRolls
+	 *            <code>int</code> number of rolls
+	 * @return <code>int[]</code>
+	 */
+	private int[] getDiceRolls(int numberOfRolls) {
+
+		// Holds the dice roles.
+		int[] rolls = new int[numberOfRolls];
+
+		// initialise dice rolls for the attacking army
+		for (int rollIndex = 0; rollIndex < numberOfRolls; rollIndex++) {
+			rolls[rollIndex] = random.nextInt(6) + 1;
+		}
+
+		// Sort the dice roles into ascending order.
+		Arrays.sort(rolls);
+
+		return rolls;
+	}
+	
 	/**
 	 * When a {@link Player} clicks on another {@link Country} to fight. This pits 2
 	 * {@link Army}'s against each other. This emulates 1 turn of combat between 2
@@ -145,196 +303,47 @@ public class WarMenu extends Menu {
 		}
 
 	}
-
-	/**
-	 * Gets an <code>int[]</code> of {@link Random#nextInt(int)} with bounds of 1 -
-	 * 6
-	 * 
-	 * @param numberOfRolls
-	 *            <code>int</code> number of rolls
-	 * @return <code>int[]</code>
-	 */
-	private int[] getDiceRolls(int numberOfRolls) {
-
-		// Holds the dice roles.
-		int[] rolls = new int[numberOfRolls];
-
-		// initialise dice rolls for the attacking army
-		for (int rollIndex = 0; rollIndex < numberOfRolls; rollIndex++) {
-			rolls[rollIndex] = random.nextInt(6) + 1;
-		}
-
-		// Sort the dice roles into ascending order.
-		Arrays.sort(rolls);
-
-		return rolls;
-	}
-
-	public void init() {
-		squadSizes.init();
-		headingFont = new Font("Arial", Color.red, 20);
-		textFont = new Font("Arial", Color.red, 40);
-		countryFont = new Font("Arial", Color.cyan, 20);
-		playerFont = new Font("Arial", Color.black, 15);
-		resultFont = new Font("Arial", Color.white, 20);
-		squadSizes.setFont(headingFont);
-	}
-
-	public void draw(Graphics g) {
-		
-		if (isVisible()) {
-			g.setColor(Color.black);
-			super.draw(g);
-
-			// Attacker has failed to conquer country
-			if (attacker.getArmy().getSize() == 1) {
-				failedConquer(g);
-			}
-			// Attacker has conquered country
-			else if (attacker.getRuler().equals(enemy.getRuler())) {
-				succesfulConquer(g);
-			}
-			// Normal Combat
-			else {
-				normalCombat(g);
-			}
-
-			drawPlayer(g, player, -(getWidth() / 4));
-
-			drawTitle(g);
-			drawArmySizes(g);
-		}
-	}
 	
-	@Override
-	public void addButton(Button button) {
-		super.addButton(button);
-		if(button.getId().equals("war")) {
-			attackButton = button;
-		}
-	}
-
-	@Override
-	public void show() {
-		super.show();
-
-		attackButton.show();
-		attacker = getGame().states.combat.getHighlightedCountry();
-		enemy = getGame().states.combat.getEnemyCountry();
-
-		ruler = enemy.getRuler();
-		player = attacker.getRuler();
-	}
-
-	public void parseClick(Point click) {
-		if (!squadSizes.click(click)) {
-			clickedButton(click);
-		}
-	}
-
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	public void attack() {
-		// If there is two countries highlighted
-		if (attacker != null && enemy != null) {
-
-			Player attackingPlayer = attacker.getRuler();
-			Player defendingPlayer = enemy.getRuler();
-
-			// If the army of the primary highlighted country is larger that 1 unit in size
-			if (attacker.getArmy().getSize() > 1) {
-
-				// Execute the combat
-				fight(attacker, enemy, 1);
-
-				// If the country has been conquered
-				if (attacker.getRuler().equals(enemy.getRuler())) {
-
-					// If there is a defending player
-					if (defendingPlayer != null) {
-
-						defendingPlayer.setCountriesRuled(defendingPlayer.getCountriesRuled() - 1);
-
-						// If the player has no countries they have lost.
-						if (defendingPlayer.getCountriesRuled() == 0) {
-							getGame().players.setLoser(defendingPlayer);
-							getGame().checkWinner();
-						}
-					}
-
-					attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
-
-					getGame().states.combat.setPostCombat();
-					getGame().states.combat.highlightCountry(enemy);
-
-					getGame().checkContinentRulership();
-
-					getGame().players.checkChallenges(attackingPlayer);
-
-				} else {
-
-					// If the attacking army is not large enough to attack again.
-					if (attacker.getArmy().getSize() == 1) {
-						getGame().states.combat.hideAttackButton();
-					}
-				}
-			} else {
-				getGame().states.combat.hideAttackButton();
-			}
-		} else {
-			getGame().states.combat.hideAttackButton();
-		}
-	}
-	
-	@Override
-	public void moveComponents(Point vector) {
-
-		squadSizes.setPosition(new Point(squadSizes.getPosition().x + vector.x, squadSizes.getPosition().y + vector.y));
-
-	}
-
 	private void failedConquer(Graphics g) {
 		String failure = "has insufficient units to attack.";
-		
+
 		countryFont.draw(g, attacker.getName(),
 				getPosition().x + (getWidth() / 2) - (resultFont.getWidth(attacker.getName()) / 2),
 				getPosition().y + (getHeight() / 2) - 30);
-		
+
 		resultFont.draw(g, failure, getPosition().x + (getWidth() / 2) - (resultFont.getWidth(failure) / 2),
 				getPosition().y + (getHeight() / 2));
-		
+
 		drawPlayer(g, ruler, (getWidth() / 4));
 		attackButton.hide();
 	}
-	
+
 	private void succesfulConquer(Graphics g) {
 		String success = "has conquered";
 		countryFont.draw(g, attacker.getName(),
 				getPosition().x + (getWidth() / 2) - (resultFont.getWidth(attacker.getName()) / 2),
 				getPosition().y + (getHeight() / 2) - 30);
-		
+
 		resultFont.draw(g, success, getPosition().x + (getWidth() / 2) - (resultFont.getWidth(success) / 2),
 				getPosition().y + (getHeight() / 2));
-		
+
 		countryFont.draw(g, enemy.getName(),
 				getPosition().x + (getWidth() / 2) - (resultFont.getWidth(enemy.getName()) / 2),
 				getPosition().y + (getHeight() / 2) + 30);
-		
+
 		drawPlayer(g, player, (getWidth() / 4));
 		attackButton.hide();
 	}
-	
+
 	private void normalCombat(Graphics g) {
 		squadSizes.draw(g);
 		drawPlayer(g, ruler, (getWidth() / 4));
 		String squadSize = "Attack squad size: ";
 		playerFont.setColor(Color.white);
-		playerFont.draw(g, squadSize, getPosition().x + (getWidth()/2) - playerFont.getWidth(squadSize), getPosition().y + 200);
+		playerFont.draw(g, squadSize, getPosition().x + (getWidth() / 2) - playerFont.getWidth(squadSize),
+				getPosition().y + 200);
 	}
-	
+
 	private void drawArmySizes(Graphics g) {
 
 		String attackingArmy = "" + attacker.getArmy().getSize();

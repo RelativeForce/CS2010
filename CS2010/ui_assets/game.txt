@@ -6,10 +6,10 @@ button,Movement,3,endButton.png,90,40,10,80,end
 button,Combat,2,endButton.png,90,40,10,80,end
 button,Combat,9,attackButton.png,90,40,10,800,attack
 button,Setup,4,endButton.png,90,40,10,120,end
-button,Setup,8,playButton.png,90,40,10,80,auto
+button,Setup,8,autoButton.png,90,40,10,80,auto
 button,War Menu,6,attackButton.png,90,40,200,200,war
 button,Pause Menu,10,endButton.png,90,40,200,250,exit
-button,Pause Menu,11,playButton.png,40,20,105,120,save
+button,Pause Menu,11,saveButton.png,40,20,105,120,save
 button,Pause Menu,12,menuButton.png,90,40,110,250,menu
 
 // asset_type,state_name,asset_file_name,width,height,x,y

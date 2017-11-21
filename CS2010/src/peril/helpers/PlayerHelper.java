@@ -249,10 +249,7 @@ public class PlayerHelper {
 	 */
 	public void reset() {
 		// Reset the all players number of countries to zero.
-		players.forEach(player -> {
-			player.setCountriesRuled(0);
-			player.setTotalArmySize(0);
-		});
+		players.forEach(player -> player.reset());
 	}
 
 	/**

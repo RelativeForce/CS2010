@@ -71,10 +71,7 @@ public class WarMenu extends Menu {
 
 		random = new Random();
 
-		squadSizes = new VisualList<>(position.x + (getWidth() / 2), position.y + 200, 20, 20, 3, 5);
-		squadSizes.add("1", 1);
-		squadSizes.add("2", 2);
-		squadSizes.add("3", 3);
+		initSquadSizes();
 	}
 
 	public void init() {
@@ -126,17 +123,11 @@ public class WarMenu extends Menu {
 		super.show();
 
 		attackButton.show();
+
 		attacker = getGame().states.combat.getHighlightedCountry();
 		enemy = getGame().states.combat.getEnemyCountry();
 
-		squadSizes.clear();
-
-		int maxSize = (attacker.getArmy().getSize() - 1 > 3 ? 3 : attacker.getArmy().getSize() - 1);
-
-		for (int index = 1; index <= maxSize; index++) {
-			squadSizes.add(Integer.toString(index), index);
-		}
-		squadSizes.init();
+		initSquadSizes();
 
 		ruler = enemy.getRuler();
 		player = attacker.getRuler();
@@ -390,4 +381,35 @@ public class WarMenu extends Menu {
 		playerFont.draw(g, player.toString(), x, getPosition().y + 40);
 	}
 
+	private void initSquadSizes() {
+
+		// If there is no attacker then set the squad sizes list ot its original size.
+		if (attacker == null) {
+			squadSizes = new VisualList<>(getPosition().x + (getWidth() / 2), getPosition().y + 200, 20, 20, 3, 5);
+			squadSizes.add("1", 1);
+			squadSizes.add("2", 2);
+			squadSizes.add("3", 3);
+
+		}
+		// Otherwise assign the elements of the list based on the army size of the
+		// attacking player.
+		else {
+
+			// Holds the max size of the attacking squad (<= 3)
+			int maxSize = (attacker.getArmy().getSize() - 1 > 3 ? 3 : attacker.getArmy().getSize() - 1);
+			
+			// Constructs the list to hold that maz size
+			squadSizes = new VisualList<>(getPosition().x + (getWidth() / 2), getPosition().y + 200, 20, 20, maxSize,
+					5);
+
+			// Populate the list.
+			for (int index = 1; index <= maxSize; index++) {
+				squadSizes.add(Integer.toString(index), index);
+			}
+
+			squadSizes.init();
+			squadSizes.setFont(headingFont);
+		}
+
+	}
 }

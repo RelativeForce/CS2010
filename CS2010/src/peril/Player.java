@@ -185,11 +185,33 @@ public final class Player {
 		return continents;
 	}
 
+	/**
+	 * Gets the name of this {@link Player}.
+	 */
 	@Override
 	public String toString() {
 		return name;
 	}
 
+	/**
+	 * Resents this players fields back to their default values.
+	 */
+	public void reset() {
+
+		totalArmy.setSize(0);
+		distributableArmy.setSize(0);
+		countries = 0;
+		continents = 0;
+
+	}
+
+	/**
+	 * Retrieves a {@link Player} by its name.
+	 * 
+	 * @param name
+	 *            <code>String</code>
+	 * @return {@link Player}
+	 */
 	public static Player getByName(String name) {
 
 		if (Player.ONE.toString().equals(name)) {

@@ -243,64 +243,7 @@ public class FunctionHandler {
 	 * @return {@link Action}
 	 */
 	private Action<?> excuteCombat() {
-		return new Action<Game>(game, game -> {
-
-			WarMenu warMenu = game.states.combat.warMenu;
-
-			Country attacking = game.states.combat.getHighlightedCountry();
-			Country defending = game.states.combat.getEnemyCountry();
-
-			// If there is two countries highlighted
-			if (attacking != null && defending != null) {
-
-				Player attackingPlayer = attacking.getRuler();
-				Player defendingPlayer = defending.getRuler();
-
-				// If the army of the primary highlighted country is larger that 1 unit in size
-				if (attacking.getArmy().getSize() > 1) {
-
-					// Execute the combat
-					warMenu.fight(attacking, defending, 1);
-
-					// If the country has been conquered
-					if (attacking.getRuler().equals(defending.getRuler())) {
-
-						// If there is a defending player
-						if (defendingPlayer != null) {
-
-							defendingPlayer.setCountriesRuled(defendingPlayer.getCountriesRuled() - 1);
-
-							// If the player has no countries they have lost.
-							if (defendingPlayer.getCountriesRuled() == 0) {
-								game.players.setLoser(defendingPlayer);
-								game.checkWinner();
-							}
-						}
-
-						attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
-
-						game.states.combat.setPostCombat();
-						game.states.combat.highlightCountry(defending);
-
-						game.checkContinentRulership();
-
-						game.players.checkChallenges(attackingPlayer);
-
-					} else {
-
-						// If the attacking army is not large enough to attack again.
-						if (attacking.getArmy().getSize() == 1) {
-							game.states.combat.hideAttackButton();
-						}
-					}
-				} else {
-					game.states.combat.hideAttackButton();
-				}
-			} else {
-				game.states.combat.hideAttackButton();
-			}
-
-		});
+		return new Action<Game>(game, game -> game.states.combat.warMenu.attack());
 	}
 
 	/**

@@ -92,7 +92,7 @@ public class WarMenu extends Menu {
 	 *            Amount of units (dice) the attacking {@link Army} wants to pit
 	 *            against the defending {@link Army}
 	 */
-	public void fight(Country attacking, Country defending, int atkSquadSize) {
+	private void fight(Country attacking, Country defending, int atkSquadSize) {
 
 		Army attackingArmy = attacking.getArmy();
 		Army defendingArmy = defending.getArmy();
@@ -181,40 +181,22 @@ public class WarMenu extends Menu {
 	}
 
 	public void draw(Graphics g) {
+		
 		if (isVisible()) {
 			g.setColor(Color.black);
 			super.draw(g);
 
 			// Attacker has failed to conquer country
 			if (attacker.getArmy().getSize() == 1) {
-				String failure = "has insufficient units to attack.";
-				
-				countryFont.draw(g, attacker.getName(),
-						getPosition().x + (getWidth() / 2) - (resultFont.getWidth(attacker.getName()) / 2),
-						getPosition().y + (getHeight() / 2) - 30);
-				
-				resultFont.draw(g, failure, getPosition().x + (getWidth() / 2) - (resultFont.getWidth(failure) / 2),
-						getPosition().y + (getHeight() / 2));
-				
-				drawPlayer(g, ruler, (getWidth() / 4));
-				attackButton.hide();
+				failedConquer(g);
 			}
 			// Attacker has conquered country
 			else if (attacker.getRuler().equals(enemy.getRuler())) {
-				String success = attacker.getName() + " has conquered " + enemy.getName();
-				
-				resultFont.draw(g, success, getPosition().x + (getWidth() / 2) - (resultFont.getWidth(success) / 2),
-						getPosition().y + (getHeight() / 2));
-				
-				drawPlayer(g, player, (getWidth() / 4));
-				attackButton.hide();
+				succesfulConquer(g);
 			}
 			// Normal Combat
 			else {
-				squadSizes.draw(g);
-				drawPlayer(g, ruler, (getWidth() / 4));
-				String squadSize = "Attack squad size: ";
-				playerFont.draw(g, squadSize, getPosition().x + (getWidth()/2) - playerFont.getWidth(squadSize), getPosition().y + 200);
+				normalCombat(g);
 			}
 
 			drawPlayer(g, player, -(getWidth() / 4));
@@ -255,6 +237,58 @@ public class WarMenu extends Menu {
 		return NAME;
 	}
 
+	public void attack() {
+		// If there is two countries highlighted
+		if (attacker != null && enemy != null) {
+
+			Player attackingPlayer = attacker.getRuler();
+			Player defendingPlayer = enemy.getRuler();
+
+			// If the army of the primary highlighted country is larger that 1 unit in size
+			if (attacker.getArmy().getSize() > 1) {
+
+				// Execute the combat
+				fight(attacker, enemy, 1);
+
+				// If the country has been conquered
+				if (attacker.getRuler().equals(enemy.getRuler())) {
+
+					// If there is a defending player
+					if (defendingPlayer != null) {
+
+						defendingPlayer.setCountriesRuled(defendingPlayer.getCountriesRuled() - 1);
+
+						// If the player has no countries they have lost.
+						if (defendingPlayer.getCountriesRuled() == 0) {
+							getGame().players.setLoser(defendingPlayer);
+							getGame().checkWinner();
+						}
+					}
+
+					attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
+
+					getGame().states.combat.setPostCombat();
+					getGame().states.combat.highlightCountry(enemy);
+
+					getGame().checkContinentRulership();
+
+					getGame().players.checkChallenges(attackingPlayer);
+
+				} else {
+
+					// If the attacking army is not large enough to attack again.
+					if (attacker.getArmy().getSize() == 1) {
+						getGame().states.combat.hideAttackButton();
+					}
+				}
+			} else {
+				getGame().states.combat.hideAttackButton();
+			}
+		} else {
+			getGame().states.combat.hideAttackButton();
+		}
+	}
+	
 	@Override
 	public void moveComponents(Point vector) {
 
@@ -262,6 +296,45 @@ public class WarMenu extends Menu {
 
 	}
 
+	private void failedConquer(Graphics g) {
+		String failure = "has insufficient units to attack.";
+		
+		countryFont.draw(g, attacker.getName(),
+				getPosition().x + (getWidth() / 2) - (resultFont.getWidth(attacker.getName()) / 2),
+				getPosition().y + (getHeight() / 2) - 30);
+		
+		resultFont.draw(g, failure, getPosition().x + (getWidth() / 2) - (resultFont.getWidth(failure) / 2),
+				getPosition().y + (getHeight() / 2));
+		
+		drawPlayer(g, ruler, (getWidth() / 4));
+		attackButton.hide();
+	}
+	
+	private void succesfulConquer(Graphics g) {
+		String success = "has conquered";
+		countryFont.draw(g, attacker.getName(),
+				getPosition().x + (getWidth() / 2) - (resultFont.getWidth(attacker.getName()) / 2),
+				getPosition().y + (getHeight() / 2) - 30);
+		
+		resultFont.draw(g, success, getPosition().x + (getWidth() / 2) - (resultFont.getWidth(success) / 2),
+				getPosition().y + (getHeight() / 2));
+		
+		countryFont.draw(g, enemy.getName(),
+				getPosition().x + (getWidth() / 2) - (resultFont.getWidth(enemy.getName()) / 2),
+				getPosition().y + (getHeight() / 2) + 30);
+		
+		drawPlayer(g, player, (getWidth() / 4));
+		attackButton.hide();
+	}
+	
+	private void normalCombat(Graphics g) {
+		squadSizes.draw(g);
+		drawPlayer(g, ruler, (getWidth() / 4));
+		String squadSize = "Attack squad size: ";
+		playerFont.setColor(Color.white);
+		playerFont.draw(g, squadSize, getPosition().x + (getWidth()/2) - playerFont.getWidth(squadSize), getPosition().y + 200);
+	}
+	
 	private void drawArmySizes(Graphics g) {
 
 		String attackingArmy = "" + attacker.getArmy().getSize();

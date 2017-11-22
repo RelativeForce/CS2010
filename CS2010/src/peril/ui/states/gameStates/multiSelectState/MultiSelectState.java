@@ -2,11 +2,13 @@ package peril.ui.states.gameStates.multiSelectState;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Player;
+import peril.Point;
 import peril.board.Country;
 import peril.ui.components.menus.PauseMenu;
 import peril.ui.states.gameStates.CoreGameState;
@@ -57,6 +59,22 @@ public abstract class MultiSelectState extends CoreGameState {
 		setSecondaryHighlightedCountry(null);
 		super.unhighlightCountry(country);
 
+	}
+
+	/**
+	 * Processes a mouse click a {@link Point} on this {@link MultiSelectState}.
+	 */
+	@Override
+	public void parseClick(int button, Point click) {
+
+		if (button == Input.MOUSE_RIGHT_BUTTON) {
+			unhighlightCountry(highlightedCountry);
+			highlightedCountry = null;
+			unhighlightCountry(getHighlightedCountry());
+			super.highlightCountry(null);
+		}
+
+		super.parseClick(button, click);
 	}
 
 	/**

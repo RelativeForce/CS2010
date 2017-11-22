@@ -1,5 +1,11 @@
 package peril.ui.states.gameStates.multiSelectState;
 
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -9,6 +15,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Player;
 import peril.Point;
+import peril.board.Army;
 import peril.board.Country;
 import peril.ui.components.Button;
 import peril.ui.components.menus.PauseMenu;
@@ -34,6 +41,8 @@ public final class MovementState extends MultiSelectState {
 	 */
 	private Button fortifyButton;
 
+	private List<Country> path;
+
 	/**
 	 * Constructs a new {@link MovementState}.
 	 * 
@@ -47,6 +56,8 @@ public final class MovementState extends MultiSelectState {
 	 */
 	public MovementState(Game game, int id, PauseMenu pauseMenu) {
 		super(game, STATE_NAME, id, pauseMenu);
+
+		path = new LinkedList<>();
 	}
 
 	/**
@@ -75,6 +86,7 @@ public final class MovementState extends MultiSelectState {
 			super.setSecondaryHighlightedCountry(null);
 			super.unhighlightCountry(super.getHighlightedCountry());
 			super.highlightCountry(country);
+			path.clear();
 		}
 
 	}
@@ -87,7 +99,7 @@ public final class MovementState extends MultiSelectState {
 		super.enter(gc, sbg);
 		getGame().pauseMenu.showSaveOption();
 	}
-	
+
 	/**
 	 * Adds a {@link Button} to this {@link MovementState}.
 	 */
@@ -107,10 +119,16 @@ public final class MovementState extends MultiSelectState {
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
+		g.setLineWidth(3f);
 
 		super.drawPlayerName(g);
 
-		this.drawValidTargets(g);
+		if (path.isEmpty())
+			this.drawValidTargets(g);
+
+		this.drawPath(g);
+
+		super.drawArmies(g);
 
 		super.drawImages(g);
 		super.drawButtons(g);
@@ -122,8 +140,8 @@ public final class MovementState extends MultiSelectState {
 	 * Performs the exit state operations specific to this {@link MovementState}
 	 */
 	@Override
-	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
-		super.leave(container, game);
+	public void leave(GameContainer gc, StateBasedGame game) throws SlickException {
+		super.leave(gc, game);
 		fortifyButton.hide();
 		getGame().pauseMenu.hideSaveOption();
 	}
@@ -147,6 +165,127 @@ public final class MovementState extends MultiSelectState {
 	}
 
 	/**
+	 * Draws the path between the primary and secondary {@link Country}s.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 */
+	public void drawPath(Graphics g) {
+
+		Point previous = null;
+
+		g.setLineWidth(3f);
+		// Assign the line colour.
+		g.setColor(Color.white);
+
+		for (Country country : path) {
+
+			// Holds the x and y of the point the line will need to draw.
+			int currentX = country.getPosition().x + (country.getWidth() / 2) + country.getArmy().getOffset().x
+					+ (getOvalWidth(country.getArmy().getSize()) / 2);
+			int currentY = country.getPosition().y + (country.getHeight() / 2) + country.getArmy().getOffset().y + 10;
+
+			Point current = new Point(currentX, currentY);
+
+			if (previous != null) {
+				g.drawLine(previous.x, previous.y, current.x, current.y);
+			}
+
+			previous = current;
+		}
+
+	}
+
+	/**
+	 * Processes a mouse movement over this {@link MovementState}.
+	 */
+	@Override
+	public void parseMouse(Point mousePosition) {
+		this.checkPath(mousePosition);
+		super.parseMouse(mousePosition);
+	}
+
+	/**
+	 * Moves one unit from the primary {@link Country} to the secondary
+	 * {@link Country}.
+	 */
+	public void fortify() {
+
+		Country primary = getHighlightedCountry();
+		Country target = getTargetCountry();
+
+		// If there is two countries highlighted
+		if (primary != null && target != null) {
+
+			// If the army of the primary highlighted country is larger that 1 unit in size
+			if (primary.getArmy().getSize() > 1) {
+
+				// Holds the army of the primary country
+				Army primaryArmy = primary.getArmy();
+
+				// Holds the army of the target country
+				Army targetArmy = target.getArmy();
+
+				// Move the unit.
+				targetArmy.setSize(targetArmy.getSize() + 1);
+				primaryArmy.setSize(primaryArmy.getSize() - 1);
+
+				if (primaryArmy.getSize() == 1) {
+					hideFortifyButton();
+					path.clear();
+					super.unhighlightCountry(target);
+					super.setSecondaryHighlightedCountry(null);
+				}
+			} else {
+				// DO NOTHING
+			}
+
+		} else {
+			// DO NOTHING
+		}
+
+	}
+
+	/**
+	 * Checks if there is a path between the {@link Country} the mouse is hovering
+	 * over and the currently highlighted {@link Country}.
+	 * 
+	 * @param mousePosition
+	 *            {@link Point} position of the mouse.
+	 */
+	public void checkPath(Point mousePosition) {
+
+		// If there is a highlighted country.
+		if (getHighlightedCountry() != null && getHighlightedCountry().getArmy().getSize() > 1) {
+
+			// Holds the currently highlighted country
+			Country highligthed = getHighlightedCountry();
+
+			// Holds the country the user is hovering over.
+			Country target = getGame().board.getCountry(mousePosition);
+
+			// If the target belongs to the current player.
+			if (target != null && target.getRuler() == highligthed.getRuler()) {
+
+				// Holds the path from the friendly country to the target country.
+				Stack<Country> path = new Stack<Country>();
+
+				// Holds all the traversed countries
+				Set<Country> traversed = new HashSet<>();
+
+				// Clear the current path.
+				this.path.clear();
+
+				// If there is a path between the highlighted and the target add the points to
+				// the drawn path.
+				if (isPath(path, traversed, highligthed, target)) {
+					path.forEach(country -> this.path.add(country));
+				}
+			}
+		}
+	}
+
+	/**
 	 * Pans this {@link MovementState}.
 	 */
 	@Override
@@ -161,7 +300,7 @@ public final class MovementState extends MultiSelectState {
 		}
 
 	}
-	
+
 	/**
 	 * Processes whether a {@link Country} is a valid target for the
 	 * {@link CoreGameState#getHighlightedCountry()} to attack. This is based on the
@@ -182,11 +321,11 @@ public final class MovementState extends MultiSelectState {
 
 			// if the country is a neighbour of the primary highlighted country then it is a
 			// valid target.
-			if (isValidTarget(getHighlightedCountry(), country)) {
+			if (isValidTarget(getHighlightedCountry(), country) || (path.contains(country))) {
 
 				super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
 				super.setSecondaryHighlightedCountry(country);
-				moveFortifyButton(getArmyPosition(getHighlightedCountry()), getArmyPosition(country));
+				moveFortifyButton(country);
 				fortifyButton.show();
 
 			} else {
@@ -206,6 +345,74 @@ public final class MovementState extends MultiSelectState {
 			super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
 			super.highlightCountry(country);
 		}
+	}
+
+	/**
+	 * This method will using a set of traversed nodes recursively perform a depth
+	 * first search from one node to another. The children of each node are added to
+	 * the
+	 * 
+	 * @param travsersed
+	 *            {@link Set} of {@link Country} that have been traversed.
+	 * @param country
+	 *            {@link Country} currently being checked.
+	 * @param target
+	 *            {@link Country} the is to be reached.
+	 * @return Whether the current {@link Country} is on the path to the target
+	 *         {@link Country}.
+	 */
+	private boolean isPath(Stack<Country> path, Set<Country> travsersed, Country current, Country traget) {
+
+		// Add the current country to the path
+		path.push(current);
+
+		// Holds the children of the current country that have the same ruler.
+		Set<Country> validChildren = new HashSet<>();
+
+		// Iterate through all the neighbours that the current country has
+		for (Country country : current.getNeighbours()) {
+
+			/*
+			 * If the target country is neighbour of the current country add it to the path
+			 * then return true. This will result in all the parents of the current node to
+			 * return true also.
+			 */
+			if (country.equals(traget)) {
+				path.push(country);
+				return true;
+			}
+
+			// If the country has not already been traversed and has the same ruler.
+			if (!travsersed.contains(country) && current.getRuler() == country.getRuler()) {
+				validChildren.add(country);
+				travsersed.add(country);
+			}
+
+		}
+
+		/**
+		 * If there are no valid children then this path is a dead end. Due to this pop
+		 * the current country from the path and return false.
+		 */
+		if (validChildren.isEmpty()) {
+			path.pop();
+			return false;
+		}
+
+		/**
+		 * Iterate through each valid child and if the child is a part of the path
+		 * return true.
+		 */
+		for (Country child : validChildren) {
+			if (isPath(path, travsersed, child, traget)) {
+				return true;
+			}
+		}
+
+		// This will only be performed if the non of the children have valid reached the
+		// target. There for the current country is not on the path to the target.
+		path.pop();
+		return false;
 	}
 
 	/**
@@ -253,7 +460,7 @@ public final class MovementState extends MultiSelectState {
 		if (super.getHighlightedCountry() != null) {
 
 			// Assign the line colour.
-			g.setColor(Color.green);
+			g.setColor(Color.white);
 
 			for (Country country : super.getHighlightedCountry().getNeighbours()) {
 
@@ -263,7 +470,10 @@ public final class MovementState extends MultiSelectState {
 
 					Point enemy = super.getArmyPosition(country);
 					Point selected = super.getArmyPosition(super.getHighlightedCountry());
-					g.drawLine(enemy.x, enemy.y, selected.x, selected.y);
+
+					g.drawLine(enemy.x + (getOvalWidth(country.getArmy().getSize()) / 2), enemy.y + 10,
+							selected.x + (getOvalWidth(super.getHighlightedCountry().getArmy().getSize()) / 2),
+							selected.y + 10);
 				}
 			}
 
@@ -277,12 +487,15 @@ public final class MovementState extends MultiSelectState {
 	 * @param country
 	 *            {@link Country}
 	 */
-	private void moveFortifyButton(Point p1, Point p2) {
+	private void moveFortifyButton(Country country) {
 
-		int x = ((p2.x - p1.x) / 2) + p1.x;
-		int y = ((p2.y - p1.y) / 2) + p1.y;
+		Point armyPosition = getArmyPosition(country);
+
+		int x = armyPosition.x;
+		int y = armyPosition.y + 25;
 
 		fortifyButton.setPosition(new Point(x, y));
 
 	}
+
 }

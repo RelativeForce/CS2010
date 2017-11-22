@@ -141,6 +141,7 @@ public final class CombatState extends MultiSelectState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
 		super.render(gc, sbg, g);
+		g.setLineWidth(3f);
 		super.drawPlayerName(g);
 
 		this.drawValidTargets(g);
@@ -374,7 +375,7 @@ public final class CombatState extends MultiSelectState {
 		if (super.getHighlightedCountry() != null) {
 
 			// Assign the line colour.
-			g.setColor(Color.green);
+			g.setColor(Color.white);
 
 			for (Country country : super.getHighlightedCountry().getNeighbours()) {
 

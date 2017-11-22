@@ -70,7 +70,7 @@ public class UIEventHandler implements MouseListener, KeyListener {
 		InteractiveState state = game.getCurrentState();
 		
 		if (state instanceof CoreGameState) {
-			((CoreGameState) state).checkPan(new Point(newx, newy));
+			((CoreGameState) state).parseMouse(new Point(newx, newy));
 		}
 	}
 

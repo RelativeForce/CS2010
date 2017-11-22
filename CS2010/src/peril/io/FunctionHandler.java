@@ -204,36 +204,7 @@ public class FunctionHandler {
 	 */
 	private Action<?> fortifyCountry() {
 		return new Action<Game>(game, game -> {
-
-			Country primary = game.states.movement.getHighlightedCountry();
-			Country target = game.states.movement.getTargetCountry();
-
-			// If there is two countries highlighted
-			if (primary != null && target != null) {
-
-				// If the army of the primary highlighted country is larger that 1 unit in size
-				if (primary.getArmy().getSize() > 1) {
-
-					// Holds the army of the primary country
-					Army primaryArmy = primary.getArmy();
-
-					// Holds the army of the target country
-					Army targetArmy = target.getArmy();
-
-					// Move the unit.
-					targetArmy.setSize(targetArmy.getSize() + 1);
-					primaryArmy.setSize(primaryArmy.getSize() - 1);
-
-					if (primaryArmy.getSize() == 1) {
-						game.states.movement.hideFortifyButton();
-					}
-				} else {
-					// DO NOTHING
-				}
-
-			} else {
-				// DO NOTHING
-			}
+			game.states.movement.fortify();
 		});
 	}
 

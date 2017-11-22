@@ -26,4 +26,18 @@ public final class Point {
 		this.y = y;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+
+		if (o instanceof Point) {
+
+			Point other = (Point) o;
+			
+			if (other.x == this.x && other.y == this.y) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

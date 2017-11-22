@@ -172,7 +172,7 @@ public abstract class CoreGameState extends InteractiveState {
 
 		// Stop the state from panning after it has been exited.
 		panDirection = null;
-		
+
 		pauseMenu.hide();
 	}
 
@@ -298,7 +298,7 @@ public abstract class CoreGameState extends InteractiveState {
 	 * @param mousePosition
 	 *            {@link Point} position of the mosue.
 	 */
-	public void checkPan(Point mousePosition) {
+	public void parseMouse(Point mousePosition) {
 
 		// Holds the dimensions of the game container.
 		int screenWidth = getGame().getContainer().getWidth();
@@ -451,6 +451,18 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	/**
+	 * Retrieves the width of the oval that will be displayed behind the army of a
+	 * country.
+	 * 
+	 * @param armySize
+	 *            <code>int</code> size of the army
+	 * @return <code>int</code> width of oval in pixels.
+	 */
+	protected int getOvalWidth(int armySize) {
+		return (((int) Math.log10(armySize)) + 1) * 15;
+	}
+
+	/**
 	 * Retrieves the {@link Point} position that an {@link Army} will be displayed
 	 * at on the screen relative to the top left corner.
 	 * 
@@ -480,7 +492,7 @@ public abstract class CoreGameState extends InteractiveState {
 	 *            A graphics context that can be used to render primitives to the
 	 *            accelerated canvas provided by LWJGL.
 	 */
-	private void drawArmies(Graphics g) {
+	protected void drawArmies(Graphics g) {
 
 		// Iterate across every country on the game board.
 		getGame().board.getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
@@ -524,11 +536,9 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	private void drawArmyOval(Point position, int size, Graphics g) {
 
-		int base = ((int) Math.log10(size)) + 1;
+		int width = getOvalWidth(size);
 
-		int width = base * 15;
-
-		int offset = base * 3;
+		int offset = width / 5;
 
 		g.fillOval(position.x - offset, position.y - 3, width, 25);
 

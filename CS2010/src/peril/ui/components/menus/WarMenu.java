@@ -27,38 +27,68 @@ public class WarMenu extends Menu {
 	private final static String NAME = "War Menu";
 
 	/**
-	 * {@link Random} object for the random number generator
+	 * {@link Random} object for the random number generator.
 	 * 
 	 */
 	private Random random;
 
+	/**
+	 * A {@link VisualList} of Buttons to select the number of units to attack with.
+	 * 
+	 */
 	private VisualList<Integer> squadSizes;
 
+	/**
+	 * {@link Button} that will be clicked to attack enemy {@link Country} .
+	 * 
+	 */
 	private Button attackButton;
 
+	/**
+	 * The {@link Font} for the text of the heading.
+	 */
 	private Font headingFont;
 
+	/**
+	 * The {@link Font} for the text to display the {@link Army}s sizes.
+	 */
 	private Font textFont;
 
+	/**
+	 * The {@link Font} for the text to display the name of the {@link Country}s.
+	 */
 	private Font countryFont;
 
+	/**
+	 * The {@link Font} for the text to display the names of the attacking and
+	 * defending {@link Player}s.
+	 */
 	private Font playerFont;
 
+	/**
+	 * The {@link Font} for the text to display the results of the attack on a
+	 * neighbouring {@link Country}.
+	 * 
+	 */
 	private Font resultFont;
 
+	/**
+	 * The {@link Country} of the attacking {@link Player}.
+	 */
 	private Country attacker;
 
+	/**
+	 * The {@link Country} of the defeinding {@link Player}.
+	 */
 	private Country enemy;
 
 	/**
-	 * 
-	 * 
+	 * The {@link Player} that is ruling the attacking {@link Country}.
 	 */
 	private Player player;
 
 	/**
-	 * 
-	 * 
+	 * The {@link Player} that is ruling the defending {@link Country}.
 	 */
 	private Player ruler;
 
@@ -74,6 +104,9 @@ public class WarMenu extends Menu {
 		initSquadSizes();
 	}
 
+	/**
+	 * Initialises all the Visual Elements of {@link WarMenu}.
+	 */
 	public void init() {
 		squadSizes.init();
 		headingFont = new Font("Arial", Color.red, 20);
@@ -84,6 +117,9 @@ public class WarMenu extends Menu {
 		squadSizes.setFont(headingFont);
 	}
 
+	/**
+	 * Draws the {@link War Menu} on the screen.
+	 */
 	public void draw(Graphics g) {
 
 		if (isVisible()) {
@@ -110,6 +146,9 @@ public class WarMenu extends Menu {
 		}
 	}
 
+	/**
+	 * Adds a {@link Button} to this {@link WarMenu}.
+	 */
 	@Override
 	public void addButton(Button button) {
 		super.addButton(button);
@@ -118,6 +157,9 @@ public class WarMenu extends Menu {
 		}
 	}
 
+	/**
+	 * Makes this {@link WarMenu} visible along with its attack {@link Button}.
+	 */
 	@Override
 	public void show() {
 		super.show();
@@ -133,17 +175,28 @@ public class WarMenu extends Menu {
 		player = attacker.getRuler();
 	}
 
+	/**
+	 * Processes the clicks on the squad sizes on the {@link WarMenu}.
+	 * 
+	 */
 	public void parseClick(Point click) {
 		if (!squadSizes.click(click)) {
 			clickedButton(click);
 		}
 	}
 
+	/**
+	 * Returns the name of the {@link WarMenu}.
+	 */
 	@Override
 	public String getName() {
 		return NAME;
 	}
 
+	/**
+	 * Processes the attack between 2 highlighted {@link Country}s and see if they
+	 * are eligible to 'fight'.
+	 */
 	public void attack() {
 		// If there is two countries highlighted
 		if (attacker != null && enemy != null) {
@@ -204,6 +257,10 @@ public class WarMenu extends Menu {
 		}
 	}
 
+	/**
+	 * Moves all the visual components of the {@link WarMenu} along a specified
+	 * {@link Point} vector.
+	 */
 	@Override
 	public void moveComponents(Point vector) {
 
@@ -305,6 +362,13 @@ public class WarMenu extends Menu {
 
 	}
 
+	/**
+	 * Displays text when a {@link Player} fails to conquer a {@link Country} they
+	 * are attacking.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 */
 	private void failedConquer(Graphics g) {
 		String failure = "has insufficient units to attack.";
 
@@ -319,6 +383,13 @@ public class WarMenu extends Menu {
 		attackButton.hide();
 	}
 
+	/**
+	 * Displays text when a {@link Player} successfully conquers a {@link Country}
+	 * they are attacking.
+	 * 
+	 * @param g
+	 *            {@link Graphics}.
+	 */
 	private void succesfulConquer(Graphics g) {
 		String success = "has conquered";
 		countryFont.draw(g, attacker.getName(),
@@ -336,6 +407,13 @@ public class WarMenu extends Menu {
 		attackButton.hide();
 	}
 
+	/**
+	 * Displays text detailing the start of an instance of a normal combat phase
+	 * ({@link Country} attacking another {@link Country}).
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 */
 	private void normalCombat(Graphics g) {
 		squadSizes.draw(g);
 		drawPlayer(g, ruler, (getWidth() / 4));
@@ -345,6 +423,13 @@ public class WarMenu extends Menu {
 				getPosition().y + 200);
 	}
 
+	/**
+	 * Draws the army sizes for each {@link Army} belonging to the attacking and
+	 * defending {@link Country}s.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 */
 	private void drawArmySizes(Graphics g) {
 
 		String attackingArmy = "" + attacker.getArmy().getSize();
@@ -358,6 +443,13 @@ public class WarMenu extends Menu {
 
 	}
 
+	/**
+	 * Draws the names of the {@link Player}s whose {@link Country}s are attacking
+	 * and defending.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 */
 	private void drawTitle(Graphics g) {
 		String vs = "VS";
 		String attackerStr = attacker.getName();
@@ -374,6 +466,16 @@ public class WarMenu extends Menu {
 		countryFont.draw(g, enemyStr, enemyX, getPosition().y + 20);
 	}
 
+	/**
+	 * Draws the String representation of a {@link Player}.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 * @param player
+	 *            The {@link Player} you want to display
+	 * @param offset
+	 *            The string offset
+	 */
 	private void drawPlayer(Graphics g, Player player, int offset) {
 		int centreX = getPosition().x + (getWidth() / 2);
 		int x = centreX + offset - (playerFont.getWidth(player.toString()) / 2);
@@ -381,6 +483,10 @@ public class WarMenu extends Menu {
 		playerFont.draw(g, player.toString(), x, getPosition().y + 40);
 	}
 
+	/**
+	 * Initialises the {@link VisualList} of squad sizes (The number of units to
+	 * attack with)
+	 */
 	private void initSquadSizes() {
 
 		// If there is no attacker then set the squad sizes list ot its original size.
@@ -397,7 +503,7 @@ public class WarMenu extends Menu {
 
 			// Holds the max size of the attacking squad (<= 3)
 			int maxSize = (attacker.getArmy().getSize() - 1 > 3 ? 3 : attacker.getArmy().getSize() - 1);
-			
+
 			// Constructs the list to hold that maz size
 			squadSizes = new VisualList<>(getPosition().x + (getWidth() / 2), getPosition().y + 200, 20, 20, maxSize,
 					5);

@@ -43,11 +43,11 @@ Country,Indonesia,050000150,1,10,-10,Player 2
 Country,NewGuinea,050000200,1,0,0,Player 2
 Country,WestAustralia,050000250,1,0,0,Player 2
 Country,EastAustralia,050050000,1,30,0,Player 2
-Continent,NorthAmerica,Tsunami,Alaska-NorthWestTerritory-Greenland-Alberta-Ontario-Quebec-WestUS-EastUS-CentralAmerica
-Continent,SouthAmerica,Tsunami,Venezuela-Brazil-Peru-Argentina
+Continent,NorthAmerica,Hurricane,Alaska-NorthWestTerritory-Greenland-Alberta-Ontario-Quebec-WestUS-EastUS-CentralAmerica
+Continent,SouthAmerica,Tornado,Venezuela-Brazil-Peru-Argentina
 Continent,Europe,Tsunami,Iceland-GreatBritain-Scandinavia-Ukraine-NorthEurope-WestEurope-SouthEurope
-Continent,Africa,Tsunami,NorthAfrica-Egypt-EastAfrica-Congo-SouthAfrica-Madagascar
-Continent,Asia,Tsunami,Ural-Siberia-Yakutsk-Kamchatka-Irkutsk-Mongolia-Japan-Afghanistan-China-MiddleEast-India-Siam
+Continent,Africa,Hurricane,NorthAfrica-Egypt-EastAfrica-Congo-SouthAfrica-Madagascar
+Continent,Asia,Volcanic Eruption,Ural-Siberia-Yakutsk-Kamchatka-Irkutsk-Mongolia-Japan-Afghanistan-China-MiddleEast-India-Siam
 Continent,Australia,Tsunami,Indonesia-NewGuinea-WestAustralia-EastAustralia
 Link,Alaska,Kamchatka
 Link,Alaska,NorthWestTerritory

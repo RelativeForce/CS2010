@@ -79,14 +79,14 @@ public class ToolTipList {
 		// Holds the elements to be removed.
 		List<String> toRemove = new LinkedList<>();
 
-		toolTips.keySet().forEach(element -> {
-			if (toolTips.get(element).hasElapsed(delta)) {
-				toRemove.add(element);
+		toolTips.keySet().forEach(toolTip -> {
+			if (toolTips.get(toolTip).hasElapsed(delta)) {
+				toRemove.add(toolTip);
 			}
 		});
 
 		// Remove all the elapsed elements.
-		toRemove.forEach(challenge -> toolTips.remove(challenge));
+		toRemove.forEach(toolTip -> toolTips.remove(toolTip));
 	}
 
 	/**

@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Image;
 
 import peril.Player;
 import peril.ui.components.Clickable;
@@ -30,6 +31,12 @@ public class Country extends Clickable {
 	 * Holds the {@link Player} that rules this {@link Country}.
 	 */
 	private Player ruler;
+
+	/**
+	 * Holds the {@link Image} icon of the {@link EnvironmentalHazard} that has most
+	 * recently occurred on the {@link Country}.
+	 */
+	private Image hazardIcon;
 
 	/**
 	 * Holds the {@link Country}(s) that this country is linked to.
@@ -68,6 +75,7 @@ public class Country extends Clickable {
 		this.army = new Army(1);
 		this.name = name;
 		this.color = color;
+		this.hazardIcon = null;
 	}
 
 	/**
@@ -127,6 +135,24 @@ public class Country extends Clickable {
 	}
 
 	/**
+	 * Retrieves the {@link Image} icon of an {@link EnvironmentalHazard} that has
+	 * most recently occurred at this {@link Country}.
+	 */
+	public Image getHazard() {
+		return hazardIcon;
+	}
+
+	/**
+	 * Retrieves whether this {@link Country} has had an {@link EnvironmentalHazard}
+	 * occur.
+	 * 
+	 * @return <code>boolean</code>
+	 */
+	public boolean hasHazard() {
+		return hazardIcon != null;
+	}
+
+	/**
 	 * Retrieves the {@link Country#neighbours}.
 	 * 
 	 * @return {@link List} of type {@link Country}.
@@ -163,7 +189,7 @@ public class Country extends Clickable {
 	 * Performs the end round operation for this {@link Country}.
 	 */
 	public void endRound(EnvironmentalHazard hazard) {
-		hazard.act(army);
+		hazardIcon = hazard.act(army) ? hazard.getIcon() : null;
 	}
 
 	/**

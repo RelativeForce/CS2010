@@ -109,15 +109,14 @@ public class MainMenuState extends InteractiveState {
 
 		drawButtons(g);
 
-		if(saves.getSelected() == SaveFile.DEFAULT) {
+		if (saves.getSelected() == SaveFile.DEFAULT) {
 			textFont.draw(g, "Players: ", 130, 200);
-			players.draw(g);	
+			players.draw(g);
 		}
-		
-		
+
 		textFont.draw(g, "Map: ", 15, 200);
 		maps.draw(g);
-		
+
 		textFont.draw(g, "Load: ", 190, 200);
 		saves.draw(g);
 
@@ -131,10 +130,10 @@ public class MainMenuState extends InteractiveState {
 
 		if (!super.clickedButton(click)) {
 			if (!maps.click(click)) {
-				if(!saves.click(click)) {
+				if (!saves.click(click)) {
 					players.click(click);
 				}
-			}else {
+			} else {
 				checkSaves();
 			}
 		}
@@ -159,7 +158,7 @@ public class MainMenuState extends InteractiveState {
 				checkSaves();
 			} else if (players.isClicked(mousePosition)) {
 				players.up();
-			}else if(saves.isClicked(mousePosition)) {
+			} else if (saves.isClicked(mousePosition)) {
 				saves.up();
 			}
 		} else if (key == Input.KEY_DOWN) {
@@ -168,7 +167,7 @@ public class MainMenuState extends InteractiveState {
 				checkSaves();
 			} else if (players.isClicked(mousePosition)) {
 				players.down();
-			}else if(saves.isClicked(mousePosition)) {
+			} else if (saves.isClicked(mousePosition)) {
 				saves.down();
 			}
 		}
@@ -182,7 +181,7 @@ public class MainMenuState extends InteractiveState {
 
 		// Initialise the fonts;
 		listFont = new Font("Arial", Color.black, 18);
-		textFont = new Font("Arial", Color.blue, 15);
+		textFont = new Font("Calibri", Color.red, 18);
 
 		// Initialise the maps list and all its elements
 		maps.init();
@@ -191,13 +190,13 @@ public class MainMenuState extends InteractiveState {
 		// Initialise the players list and all its elements
 		players.init();
 		players.setFont(listFont);
-		
+
 		saves.init();
 		saves.setFont(listFont);
 
 		// Set the music that will be repeated by this state
 		background = getGame().io.musicHelper.read("menu");
-		
+
 		checkSaves();
 
 	}
@@ -207,6 +206,10 @@ public class MainMenuState extends InteractiveState {
 	 */
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
+
+		// If the music was muted in game start reset it back to being on.
+		gc.setMusicVolume(1f);
+
 		changeMusic(gc);
 		try {
 			getGame().reSize(WIDTH, HEIGHT);
@@ -264,7 +267,7 @@ public class MainMenuState extends InteractiveState {
 		}
 
 		// Loads the game assets and move into the set up state
-		if(saves.getSelected() == SaveFile.DEFAULT) {
+		if (saves.getSelected() == SaveFile.DEFAULT) {
 			getGame().players.set(playersArray.players);
 		}
 
@@ -277,7 +280,8 @@ public class MainMenuState extends InteractiveState {
 		getGame().reSize(width, height);
 		getGame().board.setName(map.name);
 		getGame().states.loadingScreen.addReader(getGame().io.gameLoader);
-		getGame().states.loadingScreen.addReader(new MapReader(getGame().mapsDirectory + map.name, getGame(), saves.getSelected()));
+		getGame().states.loadingScreen
+				.addReader(new MapReader(getGame().mapsDirectory + map.name, getGame(), saves.getSelected()));
 		getGame().states.loadingScreen.addReader(getGame().io.challengeLoader);
 		getGame().enterState(getGame().states.loadingScreen.getID());
 
@@ -331,14 +335,14 @@ public class MainMenuState extends InteractiveState {
 	private void checkSaves() {
 		String mapName = maps.getSelected().name;
 		saves.clear();
-		for(SaveFile file : SaveFile.values()) {
-			if(file.existsIn(getGame().mapsDirectory + File.separatorChar + mapName)) {
+		for (SaveFile file : SaveFile.values()) {
+			if (file.existsIn(getGame().mapsDirectory + File.separatorChar + mapName)) {
 				saves.add(file.name, file);
 			}
 		}
 		saves.init();
-	} 
-	
+	}
+
 	/**
 	 * A wrapper for the details of a map in the {@link Game}.
 	 * 

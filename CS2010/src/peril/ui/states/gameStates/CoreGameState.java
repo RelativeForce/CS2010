@@ -113,21 +113,7 @@ public abstract class CoreGameState extends InteractiveState {
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
-		// If the board has a visual representation, render it in the graphics context.
-		if (getGame().board.hasImage()) {
-			g.drawImage(getGame().board.getImage(), getGame().board.getPosition().x, getGame().board.getPosition().y);
-		}
-		// For every country on the board.
-		getGame().board.getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
-
-			// Holds the image of the country
-			Image image = country.getImage();
-
-			// Draw the image of the country on top of the board.
-			if (image != null) {
-				g.drawImage(image, country.getPosition().x, country.getPosition().y);
-			}
-		}));
+		getGame().board.draw(g);
 
 		// If there is a highlight country
 		if (highlightedCountry != null) {
@@ -302,7 +288,7 @@ public abstract class CoreGameState extends InteractiveState {
 		}
 
 		// Display the tool tip for 8 seconds
-		toolTipList.add(toolTip, 800000);
+		toolTipList.add(toolTip, 8000);
 
 	}
 

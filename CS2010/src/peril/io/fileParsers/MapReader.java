@@ -129,11 +129,11 @@ public final class MapReader extends FileParser {
 	 */
 	private void parseCountry(String[] details) {
 
-		int BUTTON_LENGTH = 7;
+		int COUNTRY_LENGTH = 7;
 
-		if (details.length != BUTTON_LENGTH) {
+		if (details.length != COUNTRY_LENGTH) {
 			throw new IllegalArgumentException(
-					"The line does not contain the correct number of elements, there should be " + BUTTON_LENGTH + "");
+					"The line does not contain the correct number of elements, there should be " + COUNTRY_LENGTH + "");
 		}
 
 		String name = details[1];

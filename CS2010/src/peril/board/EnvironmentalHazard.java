@@ -21,7 +21,7 @@ public enum EnvironmentalHazard {
 	 * A VOLCANIC_ERUPTION has a 10% chance of occurring and may kill up to 20% of
 	 * the units in an {@link Army}.
 	 */
-	VOLCANIC_ERUPTION(20, 0.1, "Volcanic Eruption") {
+	VOLCANIC_ERUPTION(20, 10, "Volcanic Eruption") {
 
 		/**
 		 * The {@link Image} icon of an {@link EnvironmentalHazard#VOLCANIC_ERUPTION}.
@@ -56,7 +56,7 @@ public enum EnvironmentalHazard {
 	 * A TORNADO has a 12% chance of occurring and may kill up to 30% of the units
 	 * in an {@link Army}.
 	 */
-	TORNADO(30, 0.12, "Tornado") {
+	TORNADO(30, 12, "Tornado") {
 
 		/**
 		 * The {@link Image} icon of an {@link EnvironmentalHazard#TORNADO}.
@@ -88,7 +88,7 @@ public enum EnvironmentalHazard {
 	 * A HURRICANE has a 20% chance of occurring and may kill up to 10% of the units
 	 * in an {@link Army}.
 	 */
-	HURRICANE(10, 0.2, "Hurricane") {
+	HURRICANE(10, 20, "Hurricane") {
 		/**
 		 * The {@link Image} icon of an {@link EnvironmentalHazard#HURRICANE}.
 		 */
@@ -119,7 +119,7 @@ public enum EnvironmentalHazard {
 	 * A TSUNAMI has a 17% chance of occurring and may kill up to 40% of the units
 	 * in an {@link Army}.
 	 */
-	TSUNAMI(40, 0.17, "Tsunami") {
+	TSUNAMI(40, 17, "Tsunami") {
 
 		/**
 		 * The {@link Image} icon of an {@link EnvironmentalHazard#TSUNAMI}.
@@ -154,8 +154,8 @@ public enum EnvironmentalHazard {
 	private final Random generator;
 
 	/**
-	 * Holds the maximum percentage of the army stationed an {@link Country} that
-	 * this {@link EnvironmentalHazard} will kill.
+	 * Holds the maximum percentage of a {@link Army} that this
+	 * {@link EnvironmentalHazard} will kill.
 	 */
 	private final int maxCasualties;
 
@@ -165,23 +165,24 @@ public enum EnvironmentalHazard {
 	private final String name;
 
 	/**
-	 * Holds the percentage chance that wit will occur in a given turn.
+	 * Holds the percentage chance that this {@link EnvironmentalHazard} will occur
+	 * on a give {@link Army}.
 	 */
-	private final double chance;
+	private final int chance;
 
 	/**
 	 * Constructs an {@link EnvironmentalHazard}.
 	 * 
 	 * @param maxCasualties
-	 *            The maximum percentage of the army stationed an {@link Country}
-	 *            that this {@link EnvironmentalHazard} will kill.
+	 *            The maximum percentage of a {@link Amry} that this
+	 *            {@link EnvironmentalHazard} will kill.
 	 * @param chance
 	 *            Percentage chance that wit will occur in a given turn.
 	 * @param name
 	 *            The <code>String</code> representation of the
 	 *            {@link EnvironmentalHazard}.
 	 */
-	private EnvironmentalHazard(int maxCasualties, double chance, String name) {
+	private EnvironmentalHazard(int maxCasualties, int chance, String name) {
 		this.maxCasualties = maxCasualties;
 		this.chance = chance;
 		this.name = name;
@@ -203,23 +204,25 @@ public enum EnvironmentalHazard {
 	 * @param army
 	 *            The {@link Army} that will be effected by the
 	 *            {@link EnvironmentalHazard}.
+	 * @return <code>boolean</code> whether or not this {@link EnvironmentalHazard}
+	 *         occurred on this army.
 	 */
 	public boolean act(Army army) {
-		// Kill a percentage of the army.
 
-		boolean occur = (chance * 100) < generator.nextInt(100);
+		// Calculate whether this hazard will occur.
+		boolean occur = chance > generator.nextInt(100);
 
 		// If the environmental hazard occurs.
 		if (occur) {
 
+			// Holds the current size of the army.
 			int currentSize = army.getSize();
 
-			// Holds the minimum casualties the hazard must cause. A quarter of
-			// the maximum
-			int minCasualties = maxCasualties / 4;
+			// Holds the max amount of units this hazard can kill
+			int maxCasualties = (this.maxCasualties * currentSize) / 100;
 
 			// Generate a random proportion of the army to kill.
-			int casualties = (currentSize * (minCasualties + generator.nextInt(maxCasualties - minCasualties))) / 100;
+			int casualties = maxCasualties == 0 ? 1 : generator.nextInt(maxCasualties - (maxCasualties / 4)) + 1;
 
 			if (currentSize - casualties < 1) {
 				army.setSize(1);
@@ -227,6 +230,9 @@ public enum EnvironmentalHazard {
 				// Remove the dead regiments.
 				army.setSize(currentSize - casualties);
 			}
+
+			if (currentSize > 30)
+				System.out.println(name + ": " + currentSize + " -> " + army.getSize());
 		}
 
 		return occur;

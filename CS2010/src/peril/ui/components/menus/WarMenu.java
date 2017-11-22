@@ -78,7 +78,7 @@ public class WarMenu extends Menu {
 	private Country attacker;
 
 	/**
-	 * The {@link Country} of the defeinding {@link Player}.
+	 * The {@link Country} of the defending {@link Player}.
 	 */
 	private Country enemy;
 

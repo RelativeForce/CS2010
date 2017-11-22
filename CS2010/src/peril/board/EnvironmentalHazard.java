@@ -224,15 +224,17 @@ public enum EnvironmentalHazard {
 			// Generate a random proportion of the army to kill.
 			int casualties = maxCasualties == 0 ? 1 : generator.nextInt(maxCasualties - (maxCasualties / 4)) + 1;
 
+			// Check whether the army will be below the minimum size.
 			if (currentSize - casualties < 1) {
+				
+				// Set the army to the minimum size.
 				army.setSize(1);
 			} else {
+				
 				// Remove the dead regiments.
 				army.setSize(currentSize - casualties);
 			}
 
-			if (currentSize > 30)
-				System.out.println(name + ": " + currentSize + " -> " + army.getSize());
 		}
 
 		return occur;

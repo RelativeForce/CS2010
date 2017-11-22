@@ -12,7 +12,7 @@ import java.io.File;
 public enum SaveFile {
 
 	DEFAULT("default.txt", "Default"), ONE("save1.txt", "Save 1"), TWO("save2.txt", "Save 2"), THREE("save3.txt",
-			"Save 2");
+			"Save 3");
 
 	/**
 	 * Holds the file name of the {@link SaveFile}.

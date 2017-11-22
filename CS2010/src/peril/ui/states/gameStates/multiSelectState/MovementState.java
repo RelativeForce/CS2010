@@ -41,6 +41,9 @@ public final class MovementState extends MultiSelectState {
 	 */
 	private Button fortifyButton;
 
+	/**
+	 * Hold the path between two {@link Country}s in the {@link MovementState}.
+	 */
 	private List<Country> path;
 
 	/**
@@ -373,9 +376,9 @@ public final class MovementState extends MultiSelectState {
 		for (Country country : current.getNeighbours()) {
 
 			/*
-			 * If the target country is neighbour of the current country add it to the path
-			 * then return true. This will result in all the parents of the current node to
-			 * return true also.
+			 * If the target country is a neighbour of the current country add it to the
+			 * path then return true. This will result in all the parents of the current
+			 * node to return true also.
 			 */
 			if (country.equals(traget)) {
 				path.push(country);
@@ -390,7 +393,7 @@ public final class MovementState extends MultiSelectState {
 
 		}
 
-		/**
+		/*
 		 * If there are no valid children then this path is a dead end. Due to this pop
 		 * the current country from the path and return false.
 		 */
@@ -399,7 +402,7 @@ public final class MovementState extends MultiSelectState {
 			return false;
 		}
 
-		/**
+		/*
 		 * Iterate through each valid child and if the child is a part of the path
 		 * return true.
 		 */
@@ -409,8 +412,10 @@ public final class MovementState extends MultiSelectState {
 			}
 		}
 
-		// This will only be performed if the non of the children have valid reached the
-		// target. There for the current country is not on the path to the target.
+		/*
+		 * This will only be performed if the non of the children have valid reached the
+		 * target. There for the current country is not on the path to the target.
+		 */
 		path.pop();
 		return false;
 	}

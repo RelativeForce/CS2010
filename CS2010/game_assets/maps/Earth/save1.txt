@@ -50,7 +50,6 @@ Continent,Europe,Tsunami,Iceland-GreatBritain-Scandinavia-Ukraine-NorthEurope-We
 Continent,Africa,Hurricane,NorthAfrica-Egypt-EastAfrica-Congo-SouthAfrica-Madagascar
 Continent,Asia,Volcanic Eruption,Ural-Siberia-Yakutsk-Kamchatka-Irkutsk-Mongolia-Japan-Afghanistan-China-MiddleEast-India-Siam
 Continent,Australia,Tsunami,Indonesia-NewGuinea-WestAustralia-EastAustralia
-Link,Alaska,Kamchatka
 Link,Alaska,NorthWestTerritory
 Link,Alaska,Alberta
 Link,NorthWestTerritory,Alberta

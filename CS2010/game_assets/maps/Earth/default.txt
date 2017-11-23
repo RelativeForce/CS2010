@@ -56,7 +56,6 @@ Continent,Asia,Volcanic Eruption,Ural-Siberia-Yakutsk-Kamchatka-Irkutsk-Mongolia
 Continent,Australia,Tsunami,Indonesia-NewGuinea-WestAustralia-EastAustralia
 
 // Link, country1, country2
-Link,Alaska,Kamchatka
 Link,Alaska,NorthWestTerritory
 Link,Alaska,Alberta
 Link,NorthWestTerritory,Alberta

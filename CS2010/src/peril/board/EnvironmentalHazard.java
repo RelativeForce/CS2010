@@ -1,6 +1,11 @@
 package peril.board;
 
+import java.io.File;
 import java.util.Random;
+
+import org.newdawn.slick.Image;
+
+import peril.io.fileReaders.ImageReader;
 
 /**
  * These may occur once a turn and will kill a random percentage of the army
@@ -16,38 +21,141 @@ public enum EnvironmentalHazard {
 	 * A VOLCANIC_ERUPTION has a 10% chance of occurring and may kill up to 20% of
 	 * the units in an {@link Army}.
 	 */
-	VOLCANIC_ERUPTION(20, 0.1, "Volcanic Eruption"),
+	VOLCANIC_ERUPTION(20, 10, "Volcanic Eruption") {
+
+		/**
+		 * The {@link Image} icon of an {@link EnvironmentalHazard#VOLCANIC_ERUPTION}.
+		 */
+		private Image icon;
+
+		/**
+		 * Retrieves the {@link Image} icon of an
+		 * {@link EnvironmentalHazard#VOLCANIC_ERUPTION}.
+		 */
+		@Override
+		public Image getIcon() {
+
+			if (icon == null) {
+
+				// Volcanic Eruption icon file path
+				StringBuilder volcanicEruptionPath = new StringBuilder(
+						new File(System.getProperty("user.dir")).getPath());
+				volcanicEruptionPath.append(File.separatorChar);
+				volcanicEruptionPath.append("ui_assets");
+				volcanicEruptionPath.append(File.separatorChar);
+				volcanicEruptionPath.append("tornadoIcon.png");
+
+				icon = ImageReader.getImage(volcanicEruptionPath.toString());
+			}
+
+			return icon;
+		}
+
+	},
 	/**
 	 * A TORNADO has a 12% chance of occurring and may kill up to 30% of the units
 	 * in an {@link Army}.
 	 */
-	TORNADO(30, 0.12, "Tornado"),
+	TORNADO(30, 12, "Tornado") {
+
+		/**
+		 * The {@link Image} icon of an {@link EnvironmentalHazard#TORNADO}.
+		 */
+		private Image icon;
+
+		/**
+		 * Retrieves the {@link Image} icon of an {@link EnvironmentalHazard#TORNADO}.
+		 */
+		@Override
+		public Image getIcon() {
+
+			if (icon == null) {
+
+				// Tornado icon file path
+				StringBuilder tornadoPath = new StringBuilder(new File(System.getProperty("user.dir")).getPath());
+				tornadoPath.append(File.separatorChar);
+				tornadoPath.append("ui_assets");
+				tornadoPath.append(File.separatorChar);
+				tornadoPath.append("tornadoIcon.png");
+
+				icon = ImageReader.getImage(tornadoPath.toString());
+			}
+
+			return icon;
+		}
+	},
 	/**
 	 * A HURRICANE has a 20% chance of occurring and may kill up to 10% of the units
 	 * in an {@link Army}.
 	 */
-	HURRICANE(10, 0.2, "Hurricane"),
+	HURRICANE(10, 20, "Hurricane") {
+		/**
+		 * The {@link Image} icon of an {@link EnvironmentalHazard#HURRICANE}.
+		 */
+		private Image icon;
+
+		/**
+		 * Retrieves the {@link Image} icon of an {@link EnvironmentalHazard#HURRICANE}.
+		 */
+		@Override
+		public Image getIcon() {
+
+			if (icon == null) {
+
+				// Hurricane icon file path
+				StringBuilder hurricanePath = new StringBuilder(new File(System.getProperty("user.dir")).getPath());
+				hurricanePath.append(File.separatorChar);
+				hurricanePath.append("ui_assets");
+				hurricanePath.append(File.separatorChar);
+				hurricanePath.append("hurricaneIcon.png");
+
+				icon = ImageReader.getImage(hurricanePath.toString());
+			}
+
+			return icon;
+		}
+	},
 	/**
 	 * A TSUNAMI has a 17% chance of occurring and may kill up to 40% of the units
 	 * in an {@link Army}.
 	 */
-	TSUNAMI(40, 0.17, "Tsunami");
+	TSUNAMI(40, 17, "Tsunami") {
 
-	/**
-	 * The seed used by the {@link GENERATOR}.
-	 * 
-	 * @see Random
-	 */
-	private final int SEED = 5;
+		/**
+		 * The {@link Image} icon of an {@link EnvironmentalHazard#TSUNAMI}.
+		 */
+		private Image icon;
+
+		/**
+		 * Retrieves the {@link Image} icon of an {@link EnvironmentalHazard#TSUNAMI}.
+		 */
+		@Override
+		public Image getIcon() {
+
+			if (icon == null) {
+
+				// Tsunami icon file path
+				StringBuilder tsunamiPath = new StringBuilder(new File(System.getProperty("user.dir")).getPath());
+				tsunamiPath.append(File.separatorChar);
+				tsunamiPath.append("ui_assets");
+				tsunamiPath.append(File.separatorChar);
+				tsunamiPath.append("tsunamiIcon.png");
+
+				icon = ImageReader.getImage(tsunamiPath.toString());
+			}
+
+			return icon;
+		}
+	};
 
 	/**
 	 * The {@link Random} used to provide chance to {@link EnvironmentalHazard}s.
 	 */
-	private final Random GENERATOR = new Random(SEED);
+	private final Random generator;
 
 	/**
-	 * Holds the maximum percentage of the army stationed an {@link Country} that
-	 * this {@link EnvironmentalHazard} will kill.
+	 * Holds the maximum percentage of a {@link Army} that this
+	 * {@link EnvironmentalHazard} will kill.
 	 */
 	private final int maxCasualties;
 
@@ -57,26 +165,28 @@ public enum EnvironmentalHazard {
 	private final String name;
 
 	/**
-	 * Holds the percentage chance that wit will occur in a given turn.
+	 * Holds the percentage chance that this {@link EnvironmentalHazard} will occur
+	 * on a give {@link Army}.
 	 */
-	private final double chance;
+	private final int chance;
 
 	/**
 	 * Constructs an {@link EnvironmentalHazard}.
 	 * 
 	 * @param maxCasualties
-	 *            The maximum percentage of the army stationed an {@link Country}
-	 *            that this {@link EnvironmentalHazard} will kill.
+	 *            The maximum percentage of a {@link Amry} that this
+	 *            {@link EnvironmentalHazard} will kill.
 	 * @param chance
 	 *            Percentage chance that wit will occur in a given turn.
 	 * @param name
 	 *            The <code>String</code> representation of the
 	 *            {@link EnvironmentalHazard}.
 	 */
-	private EnvironmentalHazard(int maxCasualties, double chance, String name) {
+	private EnvironmentalHazard(int maxCasualties, int chance, String name) {
 		this.maxCasualties = maxCasualties;
 		this.chance = chance;
 		this.name = name;
+		generator = new Random();
 	}
 
 	/**
@@ -94,32 +204,49 @@ public enum EnvironmentalHazard {
 	 * @param army
 	 *            The {@link Army} that will be effected by the
 	 *            {@link EnvironmentalHazard}.
+	 * @return <code>boolean</code> whether or not this {@link EnvironmentalHazard}
+	 *         occurred on this army.
 	 */
-	public void act(Army army) {
-		// Kill a percentage of the army.
+	public boolean act(Army army) {
 
-		boolean occur = (chance * 100) < GENERATOR.nextInt(100);
+		// Calculate whether this hazard will occur.
+		boolean occur = chance > generator.nextInt(100);
 
 		// If the environmental hazard occurs.
 		if (occur) {
 
+			// Holds the current size of the army.
 			int currentSize = army.getSize();
 
-			// Holds the minimum casualties the hazard must cause. A quarter of
-			// the maximum
-			int minCasualties = maxCasualties / 4;
+			// Holds the max amount of units this hazard can kill
+			int maxCasualties = (this.maxCasualties * currentSize) / 100;
 
 			// Generate a random proportion of the army to kill.
-			int casualties = (currentSize * (minCasualties + GENERATOR.nextInt(maxCasualties - minCasualties))) / 100;
+			int casualties = maxCasualties == 0 ? 1 : generator.nextInt(maxCasualties - (maxCasualties / 4)) + 1;
 
+			// Check whether the army will be below the minimum size.
 			if (currentSize - casualties < 1) {
+				
+				// Set the army to the minimum size.
 				army.setSize(1);
 			} else {
+				
 				// Remove the dead regiments.
 				army.setSize(currentSize - casualties);
 			}
+
 		}
+
+		return occur;
 	}
+
+	/**
+	 * Retrieves the {@link Image} icon that represents this
+	 * {@link EnvironmentalHazard}.
+	 * 
+	 * @return <code>boolean</code>
+	 */
+	public abstract Image getIcon();
 
 	/**
 	 * Retrieves the {@link EnvironmentalHazard} using the specified name. If there

@@ -6,6 +6,10 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.newdawn.slick.Color;
+
+import peril.Point;
+import peril.ui.components.Region;
 
 import peril.Player;
 
@@ -34,14 +38,14 @@ public class Test_Country {
 	@Before
 	public void setUp() throws Exception {
 		testName = "France";
-		testCountry = new Country(testName);
+		testCountry = new Country(testName, new Region(50, 50, new Point(100, 100)), new Color(22, 22, 22));
 
 	}
 
 	@Test
 	public void test_ruler() {
 
-		Player newRuler = Player.PLAYERFOUR;
+		Player newRuler = Player.FOUR;
 
 		testCountry.setRuler(newRuler);
 
@@ -63,7 +67,7 @@ public class Test_Country {
 	@Test
 	public void test_addNeighbour() {
 		// Creates a new country with the name of testName
-		Country newNeighbour = new Country(testName);
+		Country newNeighbour = new Country(testName, new Region(50, 50, new Point(100, 100)), new Color(22, 22, 22));
 
 		// Adds a country to the list of neighbours in the testCountry.
 		testCountry.addNeighbour(newNeighbour);

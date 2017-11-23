@@ -5,7 +5,8 @@ import java.util.List;
 
 import peril.Player;
 import peril.Point;
-import peril.ui.visual.Clickable;
+import peril.ui.components.Clickable;
+import peril.ui.components.Region;
 
 /**
  * Encapsulates the behaviour of a continent on the {@link Board}.
@@ -24,19 +25,19 @@ import peril.ui.visual.Clickable;
 public final class Continent extends Clickable {
 
 	/**
-	 * Holds the {@link Countries} that comprise this {@link Continent}.
-	 */
-	private List<Country> countries;
-
-	/**
 	 * The {@link EnvironmentalHazard} that may affect this {@link Continent}.
 	 */
-	private EnvironmentalHazard hazard;
+	public final EnvironmentalHazard hazard;
+	
+	/**
+	 * Holds the {@link Countries} that comprise this {@link Continent}.
+	 */
+	private final List<Country> countries;
 
 	/**
 	 * The {@link name} of the {@link Continent}.
 	 */
-	private String name;
+	private final String name;
 
 	/**
 	 * The current {@link Player} that rules all {@link Country}s in this
@@ -52,7 +53,8 @@ public final class Continent extends Clickable {
 	 * 
 	 * @param countries
 	 */
-	public Continent(EnvironmentalHazard hazard, String name) {
+	public Continent(EnvironmentalHazard hazard, String name, Region region) {
+		super(region);
 
 		this.countries = new LinkedList<Country>();
 		this.hazard = hazard;

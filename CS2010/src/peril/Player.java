@@ -18,25 +18,25 @@ public final class Player {
 	 * Static instance of the first {@link Player}.
 	 * 
 	 */
-	public static final Player PLAYERONE = new Player("Player 1", Color.red);
+	public static final Player ONE = new Player("Player 1", Color.red);
 
 	/**
 	 * Static instance of the second {@link Player}.
 	 * 
 	 */
-	public static final Player PLAYERTWO = new Player("Player 2", Color.blue);
+	public static final Player TWO = new Player("Player 2", Color.blue);
 
 	/**
 	 * Static instance of the third {@link Player}.
 	 * 
 	 */
-	public static final Player PLAYERTHREE = new Player("Player 3", Color.green);
+	public static final Player THREE = new Player("Player 3", Color.green);
 
 	/**
 	 * Static instance of the fourth {@link Player}.
 	 * 
 	 */
-	public static final Player PLAYERFOUR = new Player("Player 4", Color.pink.multiply(Color.pink));
+	public static final Player FOUR = new Player("Player 4", Color.pink.multiply(Color.pink));
 
 	/**
 	 * String Representation of the {@link Player}.
@@ -185,8 +185,47 @@ public final class Player {
 		return continents;
 	}
 
+	/**
+	 * Gets the name of this {@link Player}.
+	 */
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	/**
+	 * Resents this players fields back to their default values.
+	 */
+	public void reset() {
+
+		totalArmy.setSize(0);
+		distributableArmy.setSize(0);
+		countries = 0;
+		continents = 0;
+
+	}
+
+	/**
+	 * Retrieves a {@link Player} by its name.
+	 * 
+	 * @param name
+	 *            <code>String</code>
+	 * @return {@link Player}
+	 */
+	public static Player getByName(String name) {
+
+		if (Player.ONE.toString().equals(name)) {
+			return Player.ONE;
+		} else if (Player.TWO.toString().equals(name)) {
+			return Player.TWO;
+		} else if (Player.THREE.toString().equals(name)) {
+			return Player.THREE;
+		} else if (Player.FOUR.toString().equals(name)) {
+			return Player.FOUR;
+		} else if (name.equals("-")) {
+			return null;
+		}
+
+		throw new NullPointerException(name + " is not a valid player");
 	}
 }

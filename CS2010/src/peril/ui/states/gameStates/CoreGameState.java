@@ -75,6 +75,9 @@ public abstract class CoreGameState extends InteractiveState {
 		this.pauseMenu = pauseMenu;
 		this.panDirection = null;
 		this.toolTipList = new ToolTipList(new Point(130, 15));
+		
+		super.addComponent(pauseMenu);
+		super.addComponent(toolTipList);
 	}
 
 	/**
@@ -159,7 +162,6 @@ public abstract class CoreGameState extends InteractiveState {
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
-		pauseMenu.init();
 
 		int numberOfSongs = 3;
 

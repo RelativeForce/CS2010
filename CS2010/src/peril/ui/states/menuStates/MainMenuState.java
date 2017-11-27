@@ -63,11 +63,6 @@ public class MainMenuState extends InteractiveState {
 	private VisualList<SaveFile> saves;
 
 	/**
-	 * The {@link Font} used for displaying {@link MainMenuState#maps}.
-	 */
-	private Font listFont;
-
-	/**
 	 * The {@link Font} of normal text on the {@link MainMenuState}.
 	 */
 	private Font textFont;
@@ -94,6 +89,19 @@ public class MainMenuState extends InteractiveState {
 		saves = new VisualList<>(190, 220, 80, 22, 3, 10);
 		getMaps();
 		getPlayers();
+
+		// Initialise the fonts;
+		Font listFont = new Font("Arial", Color.black, 18);
+		textFont = new Font("Calibri", Color.red, 18);
+
+		// Assign list fonts
+		maps.setFont(listFont);
+		players.setFont(listFont);
+		saves.setFont(listFont);
+
+		super.addComponent(maps);
+		super.addComponent(players);
+		super.addComponent(saves);
 
 	}
 
@@ -178,27 +186,14 @@ public class MainMenuState extends InteractiveState {
 	 */
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-
-		// Initialise the fonts;
-		listFont = new Font("Arial", Color.black, 18);
-		textFont = new Font("Calibri", Color.red, 18);
-
-		// Initialise the maps list and all its elements
-		maps.init();
-		maps.setFont(listFont);
-
-		// Initialise the players list and all its elements
-		players.init();
-		players.setFont(listFont);
-
-		saves.init();
-		saves.setFont(listFont);
-
+		super.init(gc, sbg);
+		
+		textFont.init();
+		
 		// Set the music that will be repeated by this state
 		background = getGame().io.musicHelper.read("menu");
 
 		checkSaves();
-
 	}
 
 	/**

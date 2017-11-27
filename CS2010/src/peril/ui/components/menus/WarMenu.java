@@ -11,9 +11,9 @@ import peril.Player;
 import peril.Point;
 import peril.board.Army;
 import peril.board.Country;
+import peril.ui.Button;
 import peril.ui.Font;
 import peril.ui.Region;
-import peril.ui.components.Button;
 import peril.ui.components.lists.VisualList;
 
 /**

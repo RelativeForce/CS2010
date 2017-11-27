@@ -12,10 +12,11 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Point;
+import peril.ui.Button;
 import peril.ui.Clickable;
 import peril.ui.Container;
 import peril.ui.Viewable;
-import peril.ui.components.Button;
+import peril.ui.components.Component;
 
 /**
  * 
@@ -51,6 +52,12 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	private List<Viewable> images;
 
 	/**
+	 * Holds all the {@link Component}s that will be initialised when this
+	 * {@link InteractiveState} is initialised.
+	 */
+	private List<Component> components;
+
+	/**
 	 * The id of this {@link InteractiveState}.
 	 */
 	private final int id;
@@ -78,6 +85,7 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 		this.stateName = stateName;
 		this.buttons = new LinkedList<>();
 		this.images = new LinkedList<>();
+		this.components = new LinkedList<>();
 	}
 
 	/**
@@ -97,7 +105,7 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 * 
 	 * @return {@link Game}
 	 */
-	public Game getGame() {
+	public final Game getGame() {
 		return game;
 	}
 
@@ -105,14 +113,14 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 * Returns the name of the current state, as a String.
 	 * 
 	 */
-	public String getStateName() {
+	public final String getStateName() {
 		return stateName;
 	}
 
 	/**
 	 * Returns the {@link String} name of this state.
 	 */
-	public String getName() {
+	public final String getName() {
 		return getStateName();
 	}
 
@@ -173,22 +181,6 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	public abstract void leave(GameContainer container, StateBasedGame game) throws SlickException;
 
 	/**
-	 * Called when the state is first created, before slick2d's game loop commences.
-	 * Initialises the state and loads resources.
-	 * 
-	 * @param gc
-	 *            The game window.
-	 * 
-	 * @param sbg
-	 *            The {@link StateBasedGame} this state is a part of.
-	 * 
-	 */
-	@Override
-	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		gc.setUpdateOnlyWhenVisible(true);
-	}
-
-	/**
 	 * Called as part of slick2d's game loop. Renders this state to the game's
 	 * graphics context. Draws all the {@link Button}s then the {@link Viewable}
 	 * objects.
@@ -205,6 +197,23 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 */
 	@Override
 	public abstract void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException;
+
+	/**
+	 * Called when the state is first created, before slick2d's game loop commences.
+	 * Initialises the state and loads resources.
+	 * 
+	 * @param gc
+	 *            The game window.
+	 * 
+	 * @param sbg
+	 *            The {@link StateBasedGame} this state is a part of.
+	 * 
+	 */
+	@Override
+	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		gc.setUpdateOnlyWhenVisible(true);
+		components.forEach(c -> c.init());
+	}
 
 	/**
 	 * Called as part of slick2d's game loop. Update the state's logic based on the
@@ -267,6 +276,9 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 		return false;
 	}
 
+	/**
+	 * Adds an {@link Viewable} image to this {@link InteractiveState}.
+	 */
 	@Override
 	public void addImage(Viewable image) {
 		images.add(image);
@@ -287,6 +299,18 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	}
 
 	/**
+	 * Add {@link Component} to this {@link InteractiveState} so that it will be
+	 * initialises when the {@link InteractiveState} is. This method will not be
+	 * used once the {@link InteractiveState} is initialised.
+	 * 
+	 * @param component
+	 *            The {@link Component} to be added.
+	 */
+	protected void addComponent(Component component) {
+		components.add(component);
+	}
+	
+	/**
 	 * Draws all the {@link Viewable}s in this {@link InteractiveState}.
 	 * 
 	 * @param g
@@ -300,7 +324,8 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 * Changes the {@link Music} that is currently paying for the {@link Music} of
 	 * the {@link Game#getCurrentState()}.
 	 * 
-	 * @param gc {@link GameContainer}
+	 * @param gc
+	 *            {@link GameContainer}
 	 */
 	protected void changeMusic(GameContainer gc) {
 

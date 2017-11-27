@@ -10,7 +10,7 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Country;
-import peril.ui.components.Button;
+import peril.ui.Button;
 import peril.ui.components.menus.PauseMenu;
 import peril.ui.components.menus.WarMenu;
 import peril.ui.states.gameStates.CoreGameState;
@@ -56,10 +56,13 @@ public final class CombatState extends MultiSelectState {
 	 * @param pauseMenu
 	 *            The {@link PauseMenu} for this {@link CombatState}.
 	 */
-	public CombatState(Game game, int id, PauseMenu pauseMenu, WarMenu combatHandler) {
+	public CombatState(Game game, int id, PauseMenu pauseMenu, WarMenu warMenu) {
 		super(game, STATE_NAME, id, pauseMenu);
+		super.addComponent(warMenu);
+		
 		this.isPostCombat = false;
-		this.warMenu = combatHandler;
+		this.warMenu = warMenu;
+		
 	}
 
 	/**
@@ -168,15 +171,6 @@ public final class CombatState extends MultiSelectState {
 		warMenu.setPosition(new Point((gc.getWidth() / 2) - (warMenu.getWidth() / 2),
 				(gc.getHeight() / 2) - (warMenu.getHeight() / 2)));
 		getGame().pauseMenu.showSaveOption();
-	}
-
-	/**
-	 * Initialises the visual elements of this {@link CombatState}.
-	 */
-	@Override
-	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		super.init(gc, sbg);
-		warMenu.init();
 	}
 
 	/**

@@ -57,6 +57,8 @@ public class EndState extends InteractiveState {
 	public EndState(Game game, int id) {
 		super(game, STATE_NAME, id);
 		podium = new LinkedList<>();
+		winnerFont = new Font("Arial", Color.yellow, 50);
+		loserFont = new Font("Arial", Color.red, 30);
 	}
 
 	/**
@@ -111,8 +113,8 @@ public class EndState extends InteractiveState {
 		super.init(gc, sbg);
 
 		// Initialise Fonts
-		winnerFont = new Font("Arial", Color.yellow, 50);
-		loserFont = new Font("Arial", Color.red, 30);
+		winnerFont.init();
+		loserFont.init();
 	}
 
 	/**

@@ -7,11 +7,11 @@ import org.newdawn.slick.Graphics;
 
 import peril.Game;
 import peril.Point;
+import peril.ui.Button;
 import peril.ui.Clickable;
 import peril.ui.Container;
 import peril.ui.Region;
 import peril.ui.Viewable;
-import peril.ui.components.Button;
 import peril.ui.components.Component;
 import peril.ui.states.InteractiveState;
 

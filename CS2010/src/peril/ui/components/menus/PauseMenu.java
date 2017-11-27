@@ -9,9 +9,9 @@ import peril.Game;
 import peril.Point;
 import peril.io.MapWriter;
 import peril.io.SaveFile;
+import peril.ui.Button;
 import peril.ui.Font;
 import peril.ui.Region;
-import peril.ui.components.Button;
 import peril.ui.components.lists.VisualList;
 import peril.ui.states.gameStates.CoreGameState;
 
@@ -175,7 +175,7 @@ public class PauseMenu extends Menu {
 		addSaveFile(SaveFile.THREE);
 
 		saveFiles.init();
-		saveFiles.setFont(new Font("Arial", Color.black, 10));
+
 	}
 
 	/**

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import peril.Challenge;
 import peril.Game;
 import peril.Player;
 import peril.board.Continent;
@@ -71,6 +72,8 @@ public class MapWriter {
 
 		// Write all the links to the file
 		game.board.forEachCountry(country -> parseLinks(country));
+		
+	    game.players.getChallenges().forEach(challenge -> writer.writeLine(parseChallenge(challenge)));
 
 		// Save the file
 		writer.save();
@@ -263,6 +266,21 @@ public class MapWriter {
 		}
 
 		return str;
+
+	}
+
+	private String parseChallenge(Challenge challenge) {
+		StringBuilder line = new StringBuilder();
+
+		line.append(challenge.type);
+		line.append(',');
+
+		line.append(challenge.goal);
+		line.append(',');
+
+		line.append(challenge.reward);
+
+		return line.toString();
 
 	}
 }

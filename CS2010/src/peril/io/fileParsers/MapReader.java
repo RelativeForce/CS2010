@@ -427,16 +427,16 @@ public final class MapReader extends FileParser {
 
 			// Holds the number of continents that the player must own in order to complete
 			// this challenge.
-			int numberOfContinets = (Integer.parseInt(details[1]) * game.board.getNumberOfCountries()) / 10;
+			int numberOfContinets = Integer.parseInt(details[1]);
 
 			int reward = Integer.parseInt(details[2]);
 
-			challenges.add(new Challenge() {
+			challenges.add(new Challenge(details[0], numberOfContinets, reward) {
 
 				@Override
 				public boolean hasCompleted(Player player, Board board) {
 
-					if (player.getContinentsRuled() >= numberOfContinets) {
+					if (player.getContinentsRuled() >= goal) {
 						// Give the player a army of size 5 to distribute.
 						player.award(new Army(reward));
 
@@ -475,16 +475,16 @@ public final class MapReader extends FileParser {
 
 			// Holds the number of countries that the player must own in order to complete
 			// this challenge.
-			int numberOfCountries = (Integer.parseInt(details[1]) * game.board.getNumberOfCountries()) / 10;
+			int numberOfCountries = Integer.parseInt(details[1]);
 
 			int reward = Integer.parseInt(details[2]);
 
-			challenges.add(new Challenge() {
+			challenges.add(new Challenge(details[0], numberOfCountries, reward) {
 
 				@Override
 				public boolean hasCompleted(Player player, Board board) {
 
-					if (player.getCountriesRuled() >= numberOfCountries) {
+					if (player.getCountriesRuled() >= goal) {
 						// Give the player a reward army to distribute.
 						player.award(new Army(reward));
 
@@ -522,11 +522,11 @@ public final class MapReader extends FileParser {
 
 			// Holds the number of continents that the player must own in order to complete
 			// this challenge.
-			int sizeOfArmy = (Integer.parseInt(details[1]) * game.board.getNumberOfCountries()) / 10;
+			int sizeOfArmy = Integer.parseInt(details[1]);
 
 			int reward = Integer.parseInt(details[2]);
 
-			challenges.add(new Challenge() {
+			challenges.add(new Challenge(details[0], sizeOfArmy, reward) {
 
 				@Override
 				public boolean hasCompleted(Player player, Board board) {

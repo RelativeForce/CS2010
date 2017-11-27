@@ -247,7 +247,7 @@ public final class CombatState extends MultiSelectState {
 			// if the country is a valid target of the primary country..
 			if (isValidTarget(super.getHighlightedCountry(), country)) {
 
-				super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
+				super.removeHighlightFrom(super.getSecondaryHightlightedCounrty());
 				super.setSecondaryHighlightedCountry(country);
 				moveAttackButton(getArmyPosition(getHighlightedCountry()), getArmyPosition(country));
 				attackButton.show();
@@ -258,8 +258,8 @@ public final class CombatState extends MultiSelectState {
 
 				// Remove the highlight from the currently highlighted countries and highlight
 				// the clicked country.
-				super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
-				super.unhighlightCountry(super.getHighlightedCountry());
+				super.removeHighlightFrom(super.getSecondaryHightlightedCounrty());
+				super.removeHighlightFrom(super.getHighlightedCountry());
 				super.highlightCountry(country);
 				attackButton.hide();
 			}
@@ -275,8 +275,8 @@ public final class CombatState extends MultiSelectState {
 
 			// Remove the highlight from the currently highlighted countries and highlight
 			// the clicked country.
-			super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
-			super.unhighlightCountry(super.getHighlightedCountry());
+			super.removeHighlightFrom(super.getSecondaryHightlightedCounrty());
+			super.removeHighlightFrom(super.getHighlightedCountry());
 			super.highlightCountry(country);
 			attackButton.hide();
 		}
@@ -305,9 +305,9 @@ public final class CombatState extends MultiSelectState {
 
 		} else {
 			attackButton.hide();
-			super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
+			super.removeHighlightFrom(super.getSecondaryHightlightedCounrty());
 			super.setSecondaryHighlightedCountry(null);
-			super.unhighlightCountry(super.getHighlightedCountry());
+			super.removeHighlightFrom(super.getHighlightedCountry());
 			super.highlightCountry(country);
 		}
 	}
@@ -321,9 +321,9 @@ public final class CombatState extends MultiSelectState {
 	 */
 	private void highlightCountryPostCombat(Country country) {
 
-		super.unhighlightCountry(country);
+		super.removeHighlightFrom(country);
 		super.setSecondaryHighlightedCountry(null);
-		super.unhighlightCountry(getHighlightedCountry());
+		super.removeHighlightFrom(getHighlightedCountry());
 		super.highlightCountry(null);
 		attackButton.hide();
 

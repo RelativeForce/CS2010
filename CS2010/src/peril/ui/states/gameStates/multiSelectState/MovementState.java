@@ -85,9 +85,9 @@ public final class MovementState extends MultiSelectState {
 
 		} else {
 			fortifyButton.hide();
-			super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
+			super.removeHighlightFrom(super.getSecondaryHightlightedCounrty());
 			super.setSecondaryHighlightedCountry(null);
-			super.unhighlightCountry(super.getHighlightedCountry());
+			super.removeHighlightFrom(super.getHighlightedCountry());
 			super.highlightCountry(country);
 			path.clear();
 		}
@@ -236,7 +236,7 @@ public final class MovementState extends MultiSelectState {
 				if (primaryArmy.getSize() == 1) {
 					hideFortifyButton();
 					path.clear();
-					super.unhighlightCountry(target);
+					super.removeHighlightFrom(target);
 					super.setSecondaryHighlightedCountry(null);
 				}
 			} else {
@@ -326,7 +326,7 @@ public final class MovementState extends MultiSelectState {
 			// valid target.
 			if (isValidTarget(getHighlightedCountry(), country) || (path.contains(country))) {
 
-				super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
+				super.removeHighlightFrom(super.getSecondaryHightlightedCounrty());
 				super.setSecondaryHighlightedCountry(country);
 				moveFortifyButton(country);
 				fortifyButton.show();
@@ -345,7 +345,7 @@ public final class MovementState extends MultiSelectState {
 		// player.
 		else {
 			fortifyButton.hide();
-			super.unhighlightCountry(super.getSecondaryHightlightedCounrty());
+			super.removeHighlightFrom(super.getSecondaryHightlightedCounrty());
 			super.highlightCountry(country);
 		}
 	}

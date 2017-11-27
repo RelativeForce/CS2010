@@ -95,7 +95,7 @@ public final class ReinforcementState extends CoreGameState {
 	@Override
 	public void highlightCountry(Country country) {
 
-		super.unhighlightCountry(super.getHighlightedCountry());
+		super.removeHighlightFrom(super.getHighlightedCountry());
 
 		// If the country is null then set the primary highlighted as null and
 		// unhighlight the current enemy country.

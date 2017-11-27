@@ -217,17 +217,14 @@ public final class Board extends Viewable {
 		Map<Point, Image> hazards = new HashMap<>();
 
 		// For every country on the board.
-		getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
+		forEachCountry(country -> {
 
-			// Holds the image of the country
-			Image image = country.getImage();
-
-			int x = country.getPosition().x;
-			int y = country.getPosition().y;
+			final int x = country.getPosition().x;
+			final int y = country.getPosition().y;
 
 			// Draw the image of the country on top of the board.
-			if (image != null) {
-				g.drawImage(image, x, y);
+			if (country.hasImage()) {
+				g.drawImage(country.getImage(), x, y);
 			}
 
 			// If a hazard has occurred
@@ -237,13 +234,13 @@ public final class Board extends Viewable {
 				Image hazard = country.getHazard();
 				hazard = hazard.getScaledCopy(30, 30);
 				
-				int hazardX = x + (country.getWidth() / 2) + (hazard.getWidth() / 2) + country.getArmy().getOffset().x;
-				int hazardY = y + (country.getHeight() / 2) - hazard.getHeight() + country.getArmy().getOffset().y;
+				final int hazardX = x + (country.getWidth() / 2) + (hazard.getWidth() / 2) + country.getArmy().getOffset().x;
+				final int hazardY = y + (country.getHeight() / 2) - hazard.getHeight() + country.getArmy().getOffset().y;
 
 				// Add the hazard to the map to be drawn.
 				hazards.put(new Point(hazardX, hazardY), hazard);
 			}
-		}));
+		});
 
 		// Draw all the hazards on screen.
 		hazards.forEach((position, hazardIcon) -> {

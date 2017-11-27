@@ -51,13 +51,13 @@ public abstract class MultiSelectState extends CoreGameState {
 	 * {@link Country}s.
 	 */
 	@Override
-	public void unhighlightCountry(Country country) {
+	public void removeHighlightFrom(Country country) {
 
 		// Unhighlight both highlighted countries when this method is called from a
 		// external class.
-		super.unhighlightCountry(getSecondaryHightlightedCounrty());
+		super.removeHighlightFrom(getSecondaryHightlightedCounrty());
 		setSecondaryHighlightedCountry(null);
-		super.unhighlightCountry(country);
+		super.removeHighlightFrom(country);
 
 	}
 
@@ -68,9 +68,9 @@ public abstract class MultiSelectState extends CoreGameState {
 	public void parseClick(int button, Point click) {
 
 		if (button == Input.MOUSE_RIGHT_BUTTON) {
-			unhighlightCountry(highlightedCountry);
+			removeHighlightFrom(highlightedCountry);
 			highlightedCountry = null;
-			unhighlightCountry(getHighlightedCountry());
+			removeHighlightFrom(getHighlightedCountry());
 			super.highlightCountry(null);
 		}
 
@@ -85,7 +85,7 @@ public abstract class MultiSelectState extends CoreGameState {
 		super.leave(container, game);
 
 		// Remove the highlight effect on the current highlighted country.
-		unhighlightCountry(highlightedCountry);
+		removeHighlightFrom(highlightedCountry);
 		highlightedCountry = null;
 	}
 

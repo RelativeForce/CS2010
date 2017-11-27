@@ -178,7 +178,7 @@ public abstract class CoreGameState extends InteractiveState {
 		toolTipList.clear();
 
 		// Remove the highlight effect on the currently highlighted country
-		unhighlightCountry(highlightedCountry);
+		removeHighlightFrom(highlightedCountry);
 		highlightedCountry = null;
 
 		// Stop the state from panning after it has been exited.
@@ -202,7 +202,7 @@ public abstract class CoreGameState extends InteractiveState {
 	 * @param country
 	 *            {@link Country} to unhighlight.
 	 */
-	public void unhighlightCountry(Country country) {
+	public void removeHighlightFrom(Country country) {
 
 		// If there is a highlighted country
 		if (country != null) {
@@ -221,7 +221,7 @@ public abstract class CoreGameState extends InteractiveState {
 			if (ruler != null) {
 				country.setImage(position, region.convert(ruler.getColor()));
 			} else {
-				country.setImage(null, null);
+				country.setImage(position, region.convert(Color.white));
 			}
 		}
 

@@ -62,7 +62,7 @@ public final class SetupState extends CoreGameState {
 	public void highlightCountry(Country country) {
 
 		// Unhighlight the current country
-		super.unhighlightCountry(super.getHighlightedCountry());
+		super.removeHighlightFrom(super.getHighlightedCountry());
 
 		// Highlight the new country
 		super.highlightCountry(country);

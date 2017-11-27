@@ -246,7 +246,7 @@ public class FunctionHandler {
 		return new Action<Game>(game, game -> {
 
 			// Unhighlight the highlighted country
-			game.states.setup.unhighlightCountry(game.states.setup.getHighlightedCountry());
+			game.states.setup.removeHighlightFrom(game.states.setup.getHighlightedCountry());
 			game.states.setup.highlightCountry(null);
 
 			// Assign the countries

@@ -224,6 +224,20 @@ public final class Region {
 	 * @return {@link Image}
 	 */
 	public Image convert(Color color) {
+		return convert(color, 180);
+	}
+
+	/**
+	 * Converts this {@link Region} into a {@link Image} that is stored on
+	 * {@link Viewable#image}.
+	 * 
+	 * @param region
+	 *            {@link Region}
+	 * @param transparency
+	 *            The transparency of the image.
+	 * @return {@link Image}
+	 */
+	public Image convert(Color color, int transparency) {
 
 		if (color == null) {
 			throw new NullPointerException("Colour cannot be null");
@@ -242,7 +256,7 @@ public final class Region {
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				if (object[x][y]) {
-					imagebuffer.setRGBA(x, y, r, g, b, 180);
+					imagebuffer.setRGBA(x, y, r, g, b, transparency);
 				}
 			}
 		}

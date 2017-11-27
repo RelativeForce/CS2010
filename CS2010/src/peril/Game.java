@@ -116,8 +116,6 @@ public class Game extends StateBasedGame implements MusicListener {
 		game_assetsPath.append(File.separatorChar);
 		game_assetsPath.append("game_assets");
 
-		ChallengeReader challengeLoader = new ChallengeReader(this, game_assetsPath.toString());
-
 		StringBuilder musicPath = new StringBuilder(game_assetsPath);
 		musicPath.append(File.separatorChar);
 		musicPath.append("music");
@@ -146,7 +144,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		mapsDirectory = game_assetsPath.toString();
 
 		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen);
-		this.io = new IOHelper(game_assetsPath.toString(), gameLoader, musicHelper, mainMenuLoader, challengeLoader);
+		this.io = new IOHelper(game_assetsPath.toString(), gameLoader, musicHelper, mainMenuLoader);
 
 		// Construct the container for the game as a Slick2D state based game. And parse
 		// the details of the map from the maps file.
@@ -227,6 +225,15 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public int getRoundNumber() {
 		return currentRound;
+	}
+
+	/**
+	 * Assigns the current round number to this {@link Game}
+	 * 
+	 * @param roundNumber
+	 */
+	public void setRoundNumber(int roundNumber) {
+		this.currentRound = roundNumber;
 	}
 
 	/**

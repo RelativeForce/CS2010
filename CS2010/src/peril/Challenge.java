@@ -10,6 +10,16 @@ import peril.board.Board;
  */
 public abstract class Challenge {
 
+	public final String type;
+	public final int goal;
+	public final int reward;
+	
+	public Challenge(String type, int goal, int reward) {
+		this.type = type;
+		this.goal = goal;
+		this.reward = reward;
+	}
+	
 	/**
 	 * Checks if specified {@link Player} has completed an {@link Challenge} or not.
 	 * If the {@link Challenge} has been completed then the specified {@link Player}
@@ -27,5 +37,7 @@ public abstract class Challenge {
 	public String toString() {
 		return "Challenge Completed: ";
 	}
+	
+	
 
 }

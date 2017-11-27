@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import peril.Challenge;
 import peril.Game;
 import peril.Player;
 import peril.board.Continent;
@@ -61,7 +62,7 @@ public class MapWriter {
 		game.players.forEach(player -> writer.writeLine(parsePlayer(player)));
 
 		// Write the state the game will start in
-		writer.writeLine(parseState(game.getCurrentState()));
+		writer.writeLine(parseState(game.getCurrentState(), game.getRoundNumber()));
 
 		// Write all the countries to the file
 		game.board.forEachCountry(country -> writer.writeLine(parseCountry(country)));
@@ -71,6 +72,8 @@ public class MapWriter {
 
 		// Write all the links to the file
 		game.board.forEachCountry(country -> parseLinks(country));
+		
+	    game.players.getChallenges().forEach(challenge -> writer.writeLine(parseChallenge(challenge)));
 
 		// Save the file
 		writer.save();
@@ -85,7 +88,7 @@ public class MapWriter {
 	 *            {@link InteractiveState}
 	 * @return <code>String</code>
 	 */
-	private String parseState(InteractiveState state) {
+	private String parseState(InteractiveState state, int roundNumber) {
 
 		StringBuilder line = new StringBuilder();
 		line.append("State,");
@@ -94,6 +97,9 @@ public class MapWriter {
 		line.append(',');
 
 		line.append(game.players.getCurrent().toString());
+		line.append(',');
+
+		line.append(roundNumber);
 
 		return line.toString();
 
@@ -260,6 +266,21 @@ public class MapWriter {
 		}
 
 		return str;
+
+	}
+
+	private String parseChallenge(Challenge challenge) {
+		StringBuilder line = new StringBuilder();
+
+		line.append(challenge.type);
+		line.append(',');
+
+		line.append(challenge.goal);
+		line.append(',');
+
+		line.append(challenge.reward);
+
+		return line.toString();
 
 	}
 }

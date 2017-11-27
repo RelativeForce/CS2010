@@ -86,6 +86,10 @@ public class PlayerHelper {
 		this.challenges = challenges;
 	}
 
+	public List<Challenge> getChallenges() {
+		return challenges;
+	}
+
 	/**
 	 * Iterates thought all the available {@link Challenge}s to see if the specified
 	 * {@link Player} has completed them or not.

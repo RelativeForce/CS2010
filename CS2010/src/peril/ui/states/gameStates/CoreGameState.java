@@ -1,5 +1,9 @@
 package peril.ui.states.gameStates;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -52,7 +56,7 @@ public abstract class CoreGameState extends InteractiveState {
 	 * The {@link Music} that is played in the background of the
 	 * {@link CoreGameState}s.
 	 */
-	private Music backgroundMusic;
+	private List<Music> backgroundMusic;
 
 	/**
 	 * Constructs a new {@link CoreGameState}.
@@ -156,7 +160,14 @@ public abstract class CoreGameState extends InteractiveState {
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
 		pauseMenu.init();
-		backgroundMusic = getGame().io.musicHelper.read("game1");
+
+		int numberOfSongs = 3;
+
+		backgroundMusic = new ArrayList<>(numberOfSongs);
+
+		for (int songIndex = 1; songIndex <= numberOfSongs; songIndex++) {
+			backgroundMusic.add(getGame().io.musicHelper.read("game" + songIndex));
+		}
 	}
 
 	/**
@@ -271,7 +282,7 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	@Override
 	public Music getMusic() {
-		return backgroundMusic;
+		return backgroundMusic.get(new Random().nextInt(backgroundMusic.size()));
 	}
 
 	/**

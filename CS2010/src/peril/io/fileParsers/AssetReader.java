@@ -9,10 +9,10 @@ import peril.Point;
 import peril.io.FunctionHandler;
 import peril.io.fileReaders.ImageReader;
 import peril.multiThread.Action;
+import peril.ui.Clickable;
 import peril.ui.Container;
+import peril.ui.Viewable;
 import peril.ui.components.Button;
-import peril.ui.components.Clickable;
-import peril.ui.components.Viewable;
 import peril.ui.states.InteractiveState;
 
 /**

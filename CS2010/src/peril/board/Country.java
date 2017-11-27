@@ -7,8 +7,8 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
 import peril.Player;
-import peril.ui.components.Clickable;
-import peril.ui.components.Region;
+import peril.ui.Clickable;
+import peril.ui.Region;
 
 /**
  * Encapsulates the behaviour of a Country. Countries:

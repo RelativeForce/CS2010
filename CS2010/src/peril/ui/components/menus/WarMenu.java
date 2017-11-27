@@ -11,9 +11,9 @@ import peril.Player;
 import peril.Point;
 import peril.board.Army;
 import peril.board.Country;
+import peril.ui.Font;
+import peril.ui.Region;
 import peril.ui.components.Button;
-import peril.ui.components.Font;
-import peril.ui.components.Region;
 import peril.ui.components.lists.VisualList;
 
 /**
@@ -98,23 +98,30 @@ public class WarMenu extends Menu {
 	 */
 	public WarMenu(Point position, Game game) {
 		super("War", game, new Region(300, 300, position));
+		
+		this.random = new Random();
+		this.headingFont = new Font("Arial", Color.red, 20);
+		this.textFont = new Font("Arial", Color.red, 40);
+		this.countryFont = new Font("Arial", Color.cyan, 20);
+		this.playerFont = new Font("Arial", Color.black, 15);
+		this.resultFont = new Font("Arial", Color.white, 20);
 
-		random = new Random();
-
-		initSquadSizes();
+		this.defineSquadSizes();
 	}
 
 	/**
 	 * Initialises all the Visual Elements of {@link WarMenu}.
 	 */
 	public void init() {
+		
+		headingFont.init();
+		textFont.init();
+		countryFont.init();
+		playerFont.init();
+		resultFont.init();
+		
 		squadSizes.init();
-		headingFont = new Font("Arial", Color.red, 20);
-		textFont = new Font("Arial", Color.red, 40);
-		countryFont = new Font("Arial", Color.cyan, 20);
-		playerFont = new Font("Arial", Color.black, 15);
-		resultFont = new Font("Arial", Color.white, 20);
-		squadSizes.setFont(headingFont);
+		
 	}
 
 	/**
@@ -169,7 +176,7 @@ public class WarMenu extends Menu {
 		attacker = getGame().states.combat.getHighlightedCountry();
 		enemy = getGame().states.combat.getEnemyCountry();
 
-		initSquadSizes();
+		defineSquadSizes();
 
 		ruler = enemy.getRuler();
 		player = attacker.getRuler();
@@ -487,7 +494,7 @@ public class WarMenu extends Menu {
 	 * Initialises the {@link VisualList} of squad sizes (The number of units to
 	 * attack with)
 	 */
-	private void initSquadSizes() {
+	private void defineSquadSizes() {
 
 		// If there is no attacker then set the squad sizes list ot its original size.
 		if (attacker == null) {
@@ -516,6 +523,8 @@ public class WarMenu extends Menu {
 			squadSizes.init();
 			squadSizes.setFont(headingFont);
 		}
+		
+		squadSizes.setFont(headingFont);
 
 	}
 }

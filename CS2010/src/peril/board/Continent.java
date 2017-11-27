@@ -5,8 +5,8 @@ import java.util.List;
 
 import peril.Player;
 import peril.Point;
-import peril.ui.components.Clickable;
-import peril.ui.components.Region;
+import peril.ui.Clickable;
+import peril.ui.Region;
 
 /**
  * Encapsulates the behaviour of a continent on the {@link Board}.

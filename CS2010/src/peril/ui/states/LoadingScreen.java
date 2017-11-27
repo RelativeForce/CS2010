@@ -12,8 +12,8 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Point;
 import peril.io.fileParsers.FileParser;
+import peril.ui.Viewable;
 import peril.ui.components.ProgressBar;
-import peril.ui.components.Viewable;
 import peril.ui.states.gameStates.CoreGameState;
 import peril.ui.states.gameStates.SetupState;
 
@@ -76,7 +76,7 @@ public final class LoadingScreen extends InteractiveState {
 		super(game, NAME, id);
 		this.index = 0;
 		this.readers = new ArrayList<>();
-		this.progressBar = new ProgressBar();
+		this.progressBar = new ProgressBar(new Point(0, 0), 100, 20);
 		this.firstState = null;
 	}
 
@@ -193,18 +193,18 @@ public final class LoadingScreen extends InteractiveState {
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
-		
+
 		readers.clear();
-		
+
 		progressBar.reset();
-		
+
 		index = 0;
-		
+
 		getGame().pauseMenu.refreshSaveFiles();
-		
+
 		// Turn off the loading music.
 		container.setMusicOn(false);
-		
+
 		firstState = null;
 	}
 
@@ -263,7 +263,10 @@ public final class LoadingScreen extends InteractiveState {
 		// Holds the width of the loading bar.
 		int barWidth = windowWidth - windowPaddingX;
 
-		progressBar.init(barPosition, barWidth, 40);
+		progressBar.init();
+		progressBar.setPosition(barPosition);
+		progressBar.setWidth(barWidth);
+		progressBar.setHeight(40);
 	}
 
 }

@@ -9,9 +9,9 @@ import peril.Game;
 import peril.Point;
 import peril.io.MapWriter;
 import peril.io.SaveFile;
+import peril.ui.Font;
+import peril.ui.Region;
 import peril.ui.components.Button;
-import peril.ui.components.Font;
-import peril.ui.components.Region;
 import peril.ui.components.lists.VisualList;
 import peril.ui.states.gameStates.CoreGameState;
 
@@ -70,15 +70,20 @@ public class PauseMenu extends Menu {
 	public PauseMenu(Point position, Game game) {
 		super(NAME, game, new Region(300, 300, position));
 
-		showSaveOption = false;
+		this.showSaveOption = false;
 
 		// Construct music toggle
 		this.toggleMusic = new VisualList<>(position.x + (getWidth() / 2), position.y + 50, 30, 15, 2, 5);
 		this.toggleMusic.add(Toggle.ON.toString, Toggle.ON);
 		this.toggleMusic.add(Toggle.OFF.toString, Toggle.OFF);
+		this.toggleMusic.setFont(new Font("Arial", Color.green, 10));
+
+		this.headingFont = new Font("Calibri", Color.cyan, 20);
+		this.textFont = new Font("Arial", Color.pink, 10);
 
 		// Construct save file list
 		this.saveFiles = new VisualList<>(position.x + (getWidth() / 2), position.y + 100, 90, 15, 3, 5);
+		this.saveFiles.setFont(new Font("Arial", Color.black, 10));
 	}
 
 	/**
@@ -122,14 +127,12 @@ public class PauseMenu extends Menu {
 	 * Initialises all the visual elements off {@link PauseMenu}.
 	 */
 	public void init() {
-		headingFont = new Font("Calibri", Color.cyan, 20);
-		textFont = new Font("Arial", Color.pink, 10);
 
+		headingFont.init();
+		textFont.init();
+		
 		toggleMusic.init();
-		toggleMusic.setFont(new Font("Arial", Color.green, 10));
-
 		saveFiles.init();
-		saveFiles.setFont(new Font("Arial", Color.black, 10));
 
 	}
 

@@ -2,7 +2,6 @@ package peril.ui;
 
 import peril.Point;
 import peril.ui.components.Button;
-import peril.ui.components.Viewable;
 
 /**
  * Defines the behaviours of a object that can contain {@link Button}s and

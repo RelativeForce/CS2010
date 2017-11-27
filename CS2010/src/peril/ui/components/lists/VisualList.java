@@ -7,9 +7,10 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import peril.Point;
-import peril.ui.components.Clickable;
-import peril.ui.components.Font;
-import peril.ui.components.Region;
+import peril.ui.Clickable;
+import peril.ui.Font;
+import peril.ui.Region;
+import peril.ui.components.Component;
 import peril.ui.states.InteractiveState;
 
 /**
@@ -21,7 +22,7 @@ import peril.ui.states.InteractiveState;
  * @param <T>
  *            The type of the {@link Element#get()}
  */
-public class VisualList<T> extends Clickable {
+public class VisualList<T> extends Clickable implements Component{
 
 	/**
 	 * The <code>int</code> width of the {@link VisualList}.
@@ -55,6 +56,9 @@ public class VisualList<T> extends Clickable {
 	 */
 	private Element selected;
 
+	/**
+	 * The index of the element at the top of the {@link VisualList}.
+	 */
 	private int topElementIndex;
 
 	/**
@@ -111,6 +115,9 @@ public class VisualList<T> extends Clickable {
 		elements.add(element);
 	}
 
+	/**
+	 * Set the {@link Point} position of this {@link VisualList}.
+	 */
 	@Override
 	public void setPosition(Point position) {
 
@@ -172,8 +179,13 @@ public class VisualList<T> extends Clickable {
 
 		elements.forEach(element -> element.init());
 
-		// Set the default font
-		font = new Font("Arial", Color.black, 20);
+		if (font == null) {
+			// Set the default font
+			font = new Font("Arial", Color.black, 20);
+		}
+		
+		font.init();
+
 	}
 
 	/**

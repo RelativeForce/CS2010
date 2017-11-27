@@ -7,6 +7,9 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import peril.Point;
+import peril.ui.Clickable;
+import peril.ui.Font;
+import peril.ui.Region;
 
 /**
  * This object is a visual component that can be used to display a block of text
@@ -15,7 +18,7 @@ import peril.Point;
  * @author Joshua_Eddy
  *
  */
-public class TextField extends Clickable {
+public final class TextField extends Clickable implements Component {
 
 	/**
 	 * {@link List} of the lines in this {@link TextField}.
@@ -39,7 +42,7 @@ public class TextField extends Clickable {
 	 */
 	public TextField(int width, int height, Point position) {
 		super(new Region(width, height, position));
-
+		font = new Font("Arial", Color.black, 10);
 		lines = new ArrayList<>();
 	}
 
@@ -118,7 +121,7 @@ public class TextField extends Clickable {
 	 * Initialises this {@link TextField}.
 	 */
 	public void init() {
-		font = new Font("Arial", Color.black, 10);
+		font.init();
 	}
 
 	/**

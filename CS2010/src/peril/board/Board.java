@@ -10,7 +10,7 @@ import org.newdawn.slick.Image;
 
 import peril.Game;
 import peril.Point;
-import peril.ui.components.Viewable;
+import peril.ui.Viewable;
 
 /**
  * Encapsulates the behaviour of the the game board in the {@link Game}. This

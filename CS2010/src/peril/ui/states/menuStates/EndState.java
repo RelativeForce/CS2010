@@ -12,7 +12,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Player;
 import peril.Point;
-import peril.ui.components.Font;
+import peril.ui.Font;
 import peril.ui.states.InteractiveState;
 
 /**

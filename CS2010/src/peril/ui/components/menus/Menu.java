@@ -7,11 +7,12 @@ import org.newdawn.slick.Graphics;
 
 import peril.Game;
 import peril.Point;
+import peril.ui.Clickable;
 import peril.ui.Container;
+import peril.ui.Region;
+import peril.ui.Viewable;
 import peril.ui.components.Button;
-import peril.ui.components.Clickable;
-import peril.ui.components.Region;
-import peril.ui.components.Viewable;
+import peril.ui.components.Component;
 import peril.ui.states.InteractiveState;
 
 /**
@@ -22,7 +23,7 @@ import peril.ui.states.InteractiveState;
  * @author Joshua_Eddy, Ezekiel_Trinidad
  *
  */
-public abstract class Menu extends Clickable implements Container {
+public abstract class Menu extends Clickable implements Container, Component {
 
 	/**
 	 * A {@link List} of {@link Button}s on this {@link Menu}.

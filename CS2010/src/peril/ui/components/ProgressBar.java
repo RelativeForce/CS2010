@@ -5,13 +5,13 @@ import org.newdawn.slick.Graphics;
 import peril.Point;
 
 /**
- * Encapsulates the behaviours of a progress bar that can be desipayed on
+ * Encapsulates the behaviours of a progress bar that can be displayed on
  * screen.
  * 
  * @author Joshua_Eddy
  *
  */
-public final class ProgressBar {
+public final class ProgressBar implements Component {
 
 	/**
 	 * The progress of this {@link ProgressBar}.
@@ -41,14 +41,6 @@ public final class ProgressBar {
 
 	/**
 	 * Constructs a new {@link ProgressBar}.
-	 */
-	public ProgressBar() {
-		this.total = 0;
-		this.progress = 0;
-	}
-
-	/**
-	 * Initialise the {@link ProgressBar}.
 	 * 
 	 * @param position
 	 *            The {@link Point} position of the {@link ProgressBar}.
@@ -57,9 +49,51 @@ public final class ProgressBar {
 	 * @param height
 	 *            The pixel height of this {@link ProgressBar} on screen.
 	 */
-	public void init(Point position, int width, int height) {
+	public ProgressBar(Point position, int width, int height) {
+		this.total = 0;
+		this.progress = 0;
 		this.height = height;
 		this.width = width;
+		this.position = position;
+	}
+
+	/**
+	 * Initialise the {@link ProgressBar}.
+	 */
+	public void init() {
+		// DO NOTHING
+	}
+
+	/**
+	 * Assigns a new width to this {@link ProgressBar}. This may not be performed
+	 * after the {@link ProgressBar} has been drawn.
+	 * 
+	 * @param width
+	 *            of the {@link ProgressBar}
+	 */
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	/**
+	 * Assigns a new height to this {@link ProgressBar}. This may not be performed
+	 * after the {@link ProgressBar} has been drawn.
+	 * 
+	 * @param height
+	 *            of the {@link ProgressBar}
+	 */
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	/**
+	 * Assigns a new {@link Point} position to this {@link ProgressBar}. This may
+	 * not be performed after the {@link ProgressBar} has been drawn.
+	 * 
+	 * @param position
+	 *            of the {@link ProgressBar}
+	 */
+	public void setPosition(Point position) {
 		this.position = position;
 	}
 
@@ -90,8 +124,6 @@ public final class ProgressBar {
 
 	/**
 	 * Draws the {@link ProgressBar} to screen.
-	 * 
-	 * @param g
 	 */
 	public void draw(Graphics g) {
 

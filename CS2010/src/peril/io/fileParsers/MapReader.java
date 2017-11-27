@@ -16,7 +16,7 @@ import peril.board.Country;
 import peril.board.EnvironmentalHazard;
 import peril.io.SaveFile;
 import peril.io.fileReaders.ImageReader;
-import peril.ui.components.Region;
+import peril.ui.Region;
 import peril.ui.states.InteractiveState;
 
 /**

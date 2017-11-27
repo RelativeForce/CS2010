@@ -9,6 +9,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import peril.Point;
+import peril.ui.components.Component;
 
 /**
  * Encapsulates the behaviours of a list of tool tips that appear on screen for
@@ -17,7 +18,7 @@ import peril.Point;
  * @author Joshua_Eddy
  *
  */
-public class ToolTipList {
+public class ToolTipList implements Component{
 
 	/**
 	 * Holds the text tool tip that will be displayed to the use and its assigned
@@ -68,6 +69,14 @@ public class ToolTipList {
 
 	}
 
+	/**
+	 * Initialises this {@link ToolTipList}.
+	 */
+	@Override
+	public void init() {
+		// Do nothing as there are no fonts or etc.
+	}
+	
 	/**
 	 * Elapses the specified time for the {@link ToolTipList}.
 	 * 
@@ -150,5 +159,7 @@ public class ToolTipList {
 		}
 
 	}
+
+	
 
 }

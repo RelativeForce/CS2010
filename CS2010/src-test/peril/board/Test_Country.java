@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.newdawn.slick.Color;
 
 import peril.Point;
-import peril.ui.components.Region;
+import peril.ui.Region;
 
 /**
  * This class tests {@link Country}.

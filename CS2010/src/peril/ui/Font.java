@@ -1,4 +1,4 @@
-package peril.ui.components;
+package peril.ui;
 
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.Color;
@@ -10,7 +10,7 @@ import org.newdawn.slick.Graphics;
  * @author Joshua_Eddy
  *
  */
-public class Font {
+public class Font{
 
 	/**
 	 * The {@link TrueTypeFont} for this {@link Font}.
@@ -23,19 +23,38 @@ public class Font {
 	private Color color;
 
 	/**
+	 * Holds the font size of this {@link Font}.
+	 */
+	private final int fontSize;
+
+	/**
+	 * Holds the font name for this {@link Font}.
+	 */
+	private final String fontName;
+
+	/**
 	 * Constructs the new {@link Font}.
 	 * 
 	 * @param fontName
 	 *            The name of the {@link Font}.
 	 * @param color
 	 *            The {@link Color} of the {@link Font}.
-	 * @param size
+	 * @param fontSize
 	 *            The <code>int</code> size of the {@link Font}. Seems to break over
 	 *            56
 	 */
-	public Font(String fontName, Color color, int size) {
+	public Font(String fontName, Color color, int fontSize) {
 		this.color = color;
-		java.awt.Font font = new java.awt.Font(fontName, java.awt.Font.PLAIN, size);
+		this.fontName = fontName;
+		this.fontSize = fontSize;
+
+	}
+
+	/**
+	 * Initialises this {@link Font}.
+	 */
+	public void init() {
+		java.awt.Font font = new java.awt.Font(fontName, java.awt.Font.PLAIN, fontSize);
 		ttFont = new TrueTypeFont(font, false);
 	}
 

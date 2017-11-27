@@ -1,4 +1,4 @@
-package peril.ui.components;
+package peril.ui;
 
 import org.newdawn.slick.Image;
 

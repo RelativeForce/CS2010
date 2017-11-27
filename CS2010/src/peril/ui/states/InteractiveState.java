@@ -12,10 +12,10 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Point;
+import peril.ui.Clickable;
 import peril.ui.Container;
+import peril.ui.Viewable;
 import peril.ui.components.Button;
-import peril.ui.components.Clickable;
-import peril.ui.components.Viewable;
 
 /**
  * 

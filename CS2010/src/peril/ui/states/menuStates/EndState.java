@@ -28,7 +28,7 @@ public class EndState extends InteractiveState {
 	/**
 	 * The name of a specific {@link EndState}.
 	 */
-	private static final String STATE_NAME = "EndState";
+	private static final String STATE_NAME = "End";
 
 	/**
 	 * The {@link Font} that the winning {@link Player} will be displayed in.

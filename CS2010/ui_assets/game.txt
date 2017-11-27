@@ -11,5 +11,7 @@ button,War Menu,6,attackButton.png,90,40,200,200,war
 button,Pause Menu,10,endButton.png,90,40,200,250,exit
 button,Pause Menu,11,saveButton.png,60,30,85,115,save
 button,Pause Menu,12,menuButton.png,90,40,110,250,menu
+button,End,12,menuButton.png,90,40,100,100,menu
+button,End,10,endButton.png,90,40,200,100,exit
 
 // asset_type,state_name,asset_file_name,width,height,x,y

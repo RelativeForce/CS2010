@@ -18,14 +18,20 @@ public abstract class Clickable extends Viewable {
 	 */
 	private Region region;
 
+	/**
+	 * Constructs a new {@link Clickable}.
+	 * 
+	 * @param region
+	 *            {@link Region} that can be clicked.
+	 */
 	public Clickable(Region region) {
-		if(region == null) {
+		if (region == null) {
 			throw new NullPointerException("Region cannot be null");
 		}
-		
+
 		this.region = region;
 	}
-	
+
 	/**
 	 * Whether or not a mouse click at a specified {@link Point} will be inside this
 	 * objects {@link Clickable#region}. If the {@link Region} is <code>null</code>
@@ -40,20 +46,6 @@ public abstract class Clickable extends Viewable {
 			throw new NullPointerException("Region is null.");
 		}
 		return region.isInside(point);
-	}
-
-	/**
-	 * Assigns the {@link Region} to this.
-	 * 
-	 * @param region
-	 *            {@link Region}.
-	 */
-	public void setRegion(Region region) {
-		if (region == null) {
-			throw new IllegalArgumentException("The specified Region cannot be null.");
-		}
-
-		this.region = region;
 	}
 
 	/**

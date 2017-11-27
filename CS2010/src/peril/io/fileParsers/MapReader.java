@@ -389,7 +389,7 @@ public final class MapReader extends FileParser {
 	 */
 	private void parseState(String[] details) {
 
-		int STATE_LENGTH = 3;
+		int STATE_LENGTH = 4;
 
 		// Check there is the correct number of details
 		if (details.length != STATE_LENGTH) {
@@ -402,6 +402,13 @@ public final class MapReader extends FileParser {
 
 		// Set the current player of the as the player specified by the name.
 		game.players.setCurrent(Player.getByName(details[2]));
+
+		try {
+			game.setRoundNumber(Integer.parseInt(details[3]));
+
+		} catch (Exception e) {
+			throw new IllegalArgumentException(details[3] + " is not a valid round number");
+		}
 
 	}
 

@@ -228,6 +228,15 @@ public class Game extends StateBasedGame implements MusicListener {
 	}
 
 	/**
+	 * Assigns the current round number to this {@link Game}
+	 * 
+	 * @param roundNumber
+	 */
+	public void setRoundNumber(int roundNumber) {
+		this.currentRound = roundNumber;
+	}
+
+	/**
 	 * Retrieves the current {@link InteractiveState} of the {@link Game}. This will
 	 * throw {@link IllegalArgumentException} if the {@link GameState} is not a
 	 * {@link InteractiveState}.

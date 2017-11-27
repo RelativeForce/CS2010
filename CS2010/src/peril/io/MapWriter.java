@@ -61,7 +61,7 @@ public class MapWriter {
 		game.players.forEach(player -> writer.writeLine(parsePlayer(player)));
 
 		// Write the state the game will start in
-		writer.writeLine(parseState(game.getCurrentState()));
+		writer.writeLine(parseState(game.getCurrentState(), game.getRoundNumber()));
 
 		// Write all the countries to the file
 		game.board.forEachCountry(country -> writer.writeLine(parseCountry(country)));
@@ -85,7 +85,7 @@ public class MapWriter {
 	 *            {@link InteractiveState}
 	 * @return <code>String</code>
 	 */
-	private String parseState(InteractiveState state) {
+	private String parseState(InteractiveState state, int roundNumber) {
 
 		StringBuilder line = new StringBuilder();
 		line.append("State,");
@@ -94,6 +94,9 @@ public class MapWriter {
 		line.append(',');
 
 		line.append(game.players.getCurrent().toString());
+		line.append(',');
+
+		line.append(roundNumber);
 
 		return line.toString();
 

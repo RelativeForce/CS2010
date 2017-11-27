@@ -5,13 +5,16 @@ import org.newdawn.slick.Graphics;
 
 import peril.Game;
 import peril.Point;
+import peril.ui.Clickable;
+import peril.ui.Font;
+import peril.ui.Region;
 
 /**
  * Encapsulates the behaviour of a ScrollBar
  * 
  * @author Ezekiel_Trinidad
  */
-public class ScrollBar extends Clickable {
+public class ScrollBar extends Clickable implements Component{
 
 	/**
 	 * The {@link Game} this ScrollBar is part of.
@@ -54,6 +57,7 @@ public class ScrollBar extends Clickable {
 		this.game = game;
 		this.name = name;
 		this.visible = false;
+		this.textFont = new Font("Arial", Color.white, 12);
 	}
 
 	/**
@@ -79,7 +83,7 @@ public class ScrollBar extends Clickable {
 	 * Initialises all Visual Elements of the {@link ScrollBar}.
 	 */
 	public void init() {
-		textFont = new Font("Arial", Color.white, 12);
+		textFont.init();
 	}
 
 	/**

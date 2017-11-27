@@ -282,7 +282,6 @@ public class MainMenuState extends InteractiveState {
 		getGame().states.loadingScreen.addReader(getGame().io.gameLoader);
 		getGame().states.loadingScreen
 				.addReader(new MapReader(getGame().mapsDirectory + map.name, getGame(), saves.getSelected()));
-		getGame().states.loadingScreen.addReader(getGame().io.challengeLoader);
 		getGame().enterState(getGame().states.loadingScreen.getID());
 
 	}

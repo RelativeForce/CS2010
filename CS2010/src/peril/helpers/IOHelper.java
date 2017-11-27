@@ -2,12 +2,10 @@ package peril.helpers;
 
 import java.io.File;
 
-import peril.Challenge;
 import peril.Game;
 import peril.io.SaveFile;
 import peril.io.MapWriter;
 import peril.io.fileParsers.AssetReader;
-import peril.io.fileParsers.ChallengeReader;
 import peril.io.fileReaders.MusicReader;
 import peril.ui.states.gameStates.CoreGameState;
 
@@ -36,11 +34,6 @@ public class IOHelper {
 	 */
 	public final AssetReader mainMenuLoader;
 
-	/**
-	 * {@link ChallengeReader} that loads the {@link Challenge}s from memory.
-	 */
-	public final ChallengeReader challengeLoader;
-
 	private final String mapsDirectory;
 
 	/**
@@ -54,15 +47,10 @@ public class IOHelper {
 	 * @param mainMenuLoader
 	 *            The {@link AssetReader} that loads all the game visuals from
 	 *            memory.
-	 * @param challengeReader
-	 *            {@link ChallengeReader} that loads the {@link Challenge}s from
-	 *            memory.
 	 * @param mapsDirectory
 	 *            The directory containing all the map folders.
 	 */
-	public IOHelper(String mapsDirectory, AssetReader gameLoader, MusicReader musicHelper, AssetReader mainMenuLoader,
-			ChallengeReader challengeReader) {
-		this.challengeLoader = challengeReader;
+	public IOHelper(String mapsDirectory, AssetReader gameLoader, MusicReader musicHelper, AssetReader mainMenuLoader) {
 		this.mainMenuLoader = mainMenuLoader;
 		this.gameLoader = gameLoader;
 		this.musicHelper = musicHelper;

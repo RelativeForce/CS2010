@@ -138,7 +138,7 @@ public class PlayerHelper {
 		}
 
 		// Add the player to the podium and remove it from the players in play.
-		game.states.end.addPlayerToPodium(player);
+		game.states.end.addToTop(player);
 		players.remove(player);
 
 	}

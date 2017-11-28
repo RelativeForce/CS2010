@@ -146,7 +146,7 @@ public class FunctionHandler {
 	 */
 	private Action<?> enterCombat() {
 		return new Action<Game>(game, game -> {
-			game.enterState(game.states.combat.getID());
+			game.enterState(game.states.combat);
 		});
 	}
 
@@ -158,7 +158,7 @@ public class FunctionHandler {
 	 */
 	private Action<?> enterMovement() {
 		return new Action<Game>(game, game -> {
-			game.enterState(game.states.movement.getID());
+			game.enterState(game.states.movement);
 		});
 	}
 
@@ -171,7 +171,7 @@ public class FunctionHandler {
 	 */
 	private Action<?> enterReinforment() {
 		return new Action<Game>(game, game -> {
-			game.enterState(game.states.reinforcement.getID());
+			game.enterState(game.states.reinforcement);
 			game.players.nextPlayer();
 		});
 	}
@@ -192,7 +192,7 @@ public class FunctionHandler {
 			// Change the state of the game to reinforcement and give player one their units
 			// based on the countries they own.
 			game.players.reinforce(game.players.getCurrent());
-			game.enterState(game.states.reinforcement.getID());
+			game.enterState(game.states.reinforcement);
 		});
 	}
 
@@ -262,7 +262,7 @@ public class FunctionHandler {
 	private Action<?> enterMainMenu() {
 		return new Action<Game>(game, game -> {
 			game.players.reset();
-			game.enterState(game.states.mainMenu.getID());
+			game.enterState(game.states.mainMenu);
 		});
 	}
 

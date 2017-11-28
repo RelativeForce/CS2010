@@ -355,7 +355,7 @@ public final class MapReader extends FileParser {
 	 */
 	private void parsePlayer(String[] details) {
 
-		int STATE_LENGTH = 3;
+		int STATE_LENGTH = 4;
 
 		// Check there is the correct number of details
 		if (details.length != STATE_LENGTH) {
@@ -374,8 +374,21 @@ public final class MapReader extends FileParser {
 		}
 
 		player.setDistributableArmySize(armySize);
+		
+		boolean isActive;
+		try {
+			isActive = Boolean.parseBoolean(details[3]);
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Line " + index + " " + details[2] + " is not a valid army size");
+		}
 
-		game.players.add(player);
+		
+		
+		if(isActive) {
+			game.players.add(player);
+		}else {
+			game.states.end.addToTop(player);
+		}
 
 	}
 

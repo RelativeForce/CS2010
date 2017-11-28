@@ -255,6 +255,15 @@ public class Game extends StateBasedGame implements MusicListener {
 	}
 
 	/**
+	 * Enters the next {@link InteractiveState} of the {@link Game}.
+	 * 
+	 * @param nextState
+	 */
+	public void enterState(InteractiveState nextState) {
+		this.enterState(nextState.getID());
+	}
+
+	/**
 	 * Runs the game.
 	 * 
 	 * @param args
@@ -316,7 +325,7 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public void checkWinner() {
 		if (players.size() == 1) {
-			states.end.addPlayerToPodium(players.get(0));
+			states.end.addToTop(players.get(0));
 			enterState(states.end.getID());
 		}
 	}

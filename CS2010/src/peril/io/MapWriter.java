@@ -58,8 +58,11 @@ public class MapWriter {
 		// Open the file
 		writer.open();
 
-		// Write player details
-		game.players.forEach(player -> writer.writeLine(parsePlayer(player)));
+		// Write player details for the active players
+		game.players.forEach(player -> writer.writeLine(parsePlayer(player, true)));
+		
+		// Write the player details from the losers
+		game.states.end.getPodium().forEach(player -> writer.writeLine(parsePlayer(player, false)));
 
 		// Write the state the game will start in
 		writer.writeLine(parseState(game.getCurrentState(), game.getRoundNumber()));
@@ -111,9 +114,10 @@ public class MapWriter {
 	 * 
 	 * @param player
 	 *            {@link Player}
+	 * @param isActive 
 	 * @return <code>String</code>
 	 */
-	private String parsePlayer(Player player) {
+	private String parsePlayer(Player player, Boolean isActive) {
 
 		StringBuilder line = new StringBuilder();
 
@@ -123,6 +127,9 @@ public class MapWriter {
 		line.append(',');
 
 		line.append(player.getDistributableArmySize());
+		line.append(',');
+		
+		line.append(isActive);
 
 		return line.toString();
 

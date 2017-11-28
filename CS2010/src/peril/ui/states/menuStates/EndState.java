@@ -83,7 +83,7 @@ public class EndState extends InteractiveState {
 	 * @param player
 	 *            {@link Player}
 	 */
-	public void addPlayerToPodium(Player player) {
+	public void addToTop(Player player) {
 
 		if (player == null) {
 			throw new NullPointerException("Player cannot be null.");

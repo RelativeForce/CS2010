@@ -1,6 +1,8 @@
 package peril.ui.states.menuStates;
 
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -12,6 +14,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Player;
 import peril.Point;
+import peril.ui.Button;
 import peril.ui.Font;
 import peril.ui.states.InteractiveState;
 
@@ -39,12 +42,24 @@ public class EndState extends InteractiveState {
 	 * The ordered {@link Player}s finishing positions. {@link Player} at the front
 	 * of the {@link LinkedList} is 1st place.
 	 */
-	private LinkedList<Player> podium;
+	private Stack<Player> podium;
 
 	/**
 	 * The {@link Font} that the losing {@link Player}(s) will be displayed in.
 	 */
 	private Font loserFont;
+
+	/**
+	 * The {@link Button} that will cause the {@link EndState} to return the the
+	 * main menu.
+	 */
+	private Button menuButton;
+
+	/**
+	 * The {@link Button} that will cause the {@link EndState} to exit the
+	 * {@link Game}.
+	 */
+	private Button exitButton;
 
 	/**
 	 * Constructs a new {@link EndState}.
@@ -56,7 +71,7 @@ public class EndState extends InteractiveState {
 	 */
 	public EndState(Game game, int id) {
 		super(game, STATE_NAME, id);
-		podium = new LinkedList<>();
+		podium = new Stack<>();
 		winnerFont = new Font("Arial", Color.yellow, 50);
 		loserFont = new Font("Arial", Color.red, 30);
 	}
@@ -83,6 +98,31 @@ public class EndState extends InteractiveState {
 	@Override
 	public void parseClick(int button, Point click) {
 		super.clickedButton(click);
+	}
+
+	/**
+	 * Adds a {@link Button} to this {@link EndState}.
+	 */
+	@Override
+	public void addButton(Button button) {
+		super.addButton(button);
+
+		// Determine special buttons
+		if (button.getId().equals("menu")) {
+			menuButton = button;
+		} else if (button.getId().equals("exit")) {
+			exitButton = button;
+		}
+
+	}
+
+	/**
+	 * Retrieves the podium of this {@link EndState}.
+	 * 
+	 * @return {@link List} of {@link Player}s.
+	 */
+	public List<Player> getPodium() {
+		return podium;
 	}
 
 	/**
@@ -125,6 +165,11 @@ public class EndState extends InteractiveState {
 		if (podium.isEmpty()) {
 			throw new IllegalStateException("There must be at least one player on the podium for the game to end.");
 		}
+		int padding = 20;
+
+		menuButton.setPosition(new Point(gc.getWidth() - menuButton.getWidth() - padding,
+				gc.getHeight() - menuButton.getHeight() - padding));
+		exitButton.setPosition(new Point(padding, gc.getHeight() - exitButton.getHeight() - padding));
 	}
 
 	/**
@@ -132,7 +177,7 @@ public class EndState extends InteractiveState {
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
-		
+
 		// Empty the podium
 		podium.clear();
 	}

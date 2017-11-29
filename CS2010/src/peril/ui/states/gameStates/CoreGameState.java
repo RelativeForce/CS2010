@@ -136,8 +136,6 @@ public abstract class CoreGameState extends InteractiveState {
 
 		drawArmies(g);
 
-		drawStateBox(g);
-
 		toolTipList.draw(g);
 
 	}
@@ -150,7 +148,7 @@ public abstract class CoreGameState extends InteractiveState {
 		super.update(gc, sbg, delta);
 		toolTipList.elapseTime(delta);
 
-		if (panDirection != null) {
+		if (panDirection != null && !pauseMenu.isVisible()) {
 			pan(panDirection);
 		}
 
@@ -358,9 +356,8 @@ public abstract class CoreGameState extends InteractiveState {
 	 *            {@link Graphics}
 	 */
 	protected void drawPlayerName(Graphics g) {
-		// Draw player name and set the text color to the player's color
-		g.setColor(getGame().players.getCurrent().getColor());
-		g.drawString(getGame().players.getCurrent().toString(), 5, 20);
+		Player p = getGame().players.getCurrent();
+		g.drawImage(p.getImage(), p.getPosition().x, p.getPosition().y);
 	}
 
 	/**
@@ -554,24 +551,6 @@ public abstract class CoreGameState extends InteractiveState {
 		int offset = width / 5;
 
 		g.fillOval(position.x - offset, position.y - 3, width, 25);
-
-	}
-
-	/**
-	 * Draws the {@link Player} and {@link CoreGameState#stateName} on the screen.
-	 * 
-	 * @param g
-	 *            {@link Graphics}
-	 */
-	private void drawStateBox(Graphics g) {
-
-		// Draw the background box
-		g.setColor(Color.lightGray);
-		g.fillRect(0, 0, 130, 60);
-
-		// Draw state name
-		g.setColor(Color.black);
-		g.drawString(getStateName(), 5, 5);
 
 	}
 

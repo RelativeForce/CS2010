@@ -14,6 +14,7 @@ import peril.board.Country;
 import peril.ui.Button;
 import peril.ui.Font;
 import peril.ui.Region;
+import peril.ui.Viewable;
 import peril.ui.components.lists.VisualList;
 
 /**
@@ -92,13 +93,15 @@ public class WarMenu extends Menu {
 	 */
 	private Player ruler;
 
+	private Viewable background;
+
 	/**
 	 * Constructs a new {@link WarMenu}.
 	 * 
 	 */
 	public WarMenu(Point position, Game game) {
 		super("War", game, new Region(300, 300, position));
-		
+
 		this.random = new Random();
 		this.headingFont = new Font("Arial", Color.red, 20);
 		this.textFont = new Font("Arial", Color.red, 40);
@@ -113,15 +116,15 @@ public class WarMenu extends Menu {
 	 * Initialises all the Visual Elements of {@link WarMenu}.
 	 */
 	public void init() {
-		
+
 		headingFont.init();
 		textFont.init();
 		countryFont.init();
 		playerFont.init();
 		resultFont.init();
-		
+
 		squadSizes.init();
-		
+
 	}
 
 	/**
@@ -129,9 +132,9 @@ public class WarMenu extends Menu {
 	 */
 	public void draw(Graphics g) {
 
+		super.draw(g);
+		
 		if (isVisible()) {
-			g.setColor(Color.black);
-			super.draw(g);
 
 			// Attacker has failed to conquer country
 			if (attacker.getArmy().getSize() == 1) {
@@ -164,6 +167,13 @@ public class WarMenu extends Menu {
 		}
 	}
 
+	@Override
+	public void addImage(Viewable image) {
+		super.addImage(image);
+		background = image;
+		background.setImage(this.getPosition(), background.getImage().getScaledCopy(getWidth(), getWidth()));
+	}
+
 	/**
 	 * Makes this {@link WarMenu} visible along with its attack {@link Button}.
 	 */
@@ -180,6 +190,7 @@ public class WarMenu extends Menu {
 
 		ruler = enemy.getRuler();
 		player = attacker.getRuler();
+
 	}
 
 	/**
@@ -523,7 +534,7 @@ public class WarMenu extends Menu {
 			squadSizes.init();
 			squadSizes.setFont(headingFont);
 		}
-		
+
 		squadSizes.setFont(headingFont);
 
 	}

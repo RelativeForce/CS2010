@@ -91,8 +91,6 @@ public class Game extends StateBasedGame implements MusicListener {
 		// Construct the board.
 		this.board = new Board(this, "NOT ASSIGNED");
 
-		this.players = new PlayerHelper(this);
-
 		// Initialise games Combat Handler
 		this.warMenu = new WarMenu(new Point(100, 100), this);
 
@@ -137,6 +135,8 @@ public class Game extends StateBasedGame implements MusicListener {
 
 		AssetReader gameLoader = new AssetReader(containers, ui_assestsPath.toString(), "game.txt", this);
 
+		this.players = new PlayerHelper(this, ui_assestsPath.toString());
+		
 		AssetReader mainMenuLoader = new AssetReader(containers, ui_assestsPath.toString(), "menu.txt", this);
 
 		// Add the path to the map's folder

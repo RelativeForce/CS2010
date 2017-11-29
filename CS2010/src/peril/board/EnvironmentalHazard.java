@@ -43,7 +43,7 @@ public enum EnvironmentalHazard {
 				volcanicEruptionPath.append(File.separatorChar);
 				volcanicEruptionPath.append("ui_assets");
 				volcanicEruptionPath.append(File.separatorChar);
-				volcanicEruptionPath.append("tornadoIcon.png");
+				volcanicEruptionPath.append("volcanoIcon.png");
 
 				icon = ImageReader.getImage(volcanicEruptionPath.toString());
 			}

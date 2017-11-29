@@ -12,6 +12,7 @@ import peril.io.SaveFile;
 import peril.ui.Button;
 import peril.ui.Font;
 import peril.ui.Region;
+import peril.ui.Viewable;
 import peril.ui.components.lists.VisualList;
 import peril.ui.states.gameStates.CoreGameState;
 
@@ -54,10 +55,7 @@ public class PauseMenu extends Menu {
 	 */
 	private Font textFont;
 
-	/**
-	 * The {@link Font} for the heading of the {@link PauseMenu}.
-	 */
-	private Font headingFont;
+	private Viewable background;
 
 	/**
 	 * Constructs a new {@link PauseMenu}.
@@ -73,16 +71,15 @@ public class PauseMenu extends Menu {
 		this.showSaveOption = false;
 
 		// Construct music toggle
-		this.toggleMusic = new VisualList<>(position.x + (getWidth() / 2), position.y + 50, 30, 15, 2, 5);
+		this.toggleMusic = new VisualList<>(position.x + (getWidth() / 2), position.y + 70, 30, 15, 2, 5);
 		this.toggleMusic.add(Toggle.ON.toString, Toggle.ON);
 		this.toggleMusic.add(Toggle.OFF.toString, Toggle.OFF);
-		this.toggleMusic.setFont(new Font("Arial", Color.green, 10));
+		this.toggleMusic.setFont(new Font("Arial", Color.black, 10));
 
-		this.headingFont = new Font("Calibri", Color.cyan, 20);
-		this.textFont = new Font("Arial", Color.pink, 10);
+		this.textFont = new Font("Arial", Color.black, 10);
 
 		// Construct save file list
-		this.saveFiles = new VisualList<>(position.x + (getWidth() / 2), position.y + 100, 90, 15, 3, 5);
+		this.saveFiles = new VisualList<>(position.x + (getWidth() / 2), position.y + 120, 90, 15, 3, 5);
 		this.saveFiles.setFont(new Font("Arial", Color.black, 10));
 	}
 
@@ -107,9 +104,9 @@ public class PauseMenu extends Menu {
 	 */
 	public void draw(Graphics g) {
 
+		super.draw(g);
+		
 		if (isVisible()) {
-
-			drawMenu(g);
 
 			g.setColor(Color.white);
 
@@ -123,14 +120,21 @@ public class PauseMenu extends Menu {
 
 	}
 
+	@Override
+	public void addImage(Viewable image) {
+		super.addImage(image);
+		background = image;
+		background.setImage(background.getPosition(), background.getImage().getScaledCopy(getWidth(), getWidth()));
+
+	}
+
 	/**
 	 * Initialises all the visual elements off {@link PauseMenu}.
 	 */
 	public void init() {
 
-		headingFont.init();
 		textFont.init();
-		
+
 		toggleMusic.init();
 		saveFiles.init();
 
@@ -159,7 +163,6 @@ public class PauseMenu extends Menu {
 		toggleMusic
 				.setPosition(new Point(toggleMusic.getPosition().x + vector.x, toggleMusic.getPosition().y + vector.y));
 		saveFiles.setPosition(new Point(saveFiles.getPosition().x + vector.x, saveFiles.getPosition().y + vector.y));
-
 	}
 
 	/**
@@ -213,24 +216,6 @@ public class PauseMenu extends Menu {
 	}
 
 	/**
-	 * Draws the background and title of the {@link PauseMenu}.
-	 * 
-	 * @param g
-	 *            {@link Graphics}
-	 */
-	private void drawMenu(Graphics g) {
-
-		g.setColor(Color.black);
-
-		super.draw(g);
-
-		String pause = "PAUSE";
-
-		headingFont.draw(g, pause, getPosition().x - (headingFont.getWidth(pause) / 2) + (getWidth() / 2),
-				getPosition().y + 10);
-	}
-
-	/**
 	 * Draws the music toggle on the {@link PauseMenu}.
 	 * 
 	 * @param g
@@ -240,8 +225,8 @@ public class PauseMenu extends Menu {
 
 		String music = "Toggle Music:";
 
-		textFont.draw(g, music, getPosition().x + (getWidth() / 2) - (headingFont.getWidth(music) / 2) - 15,
-				getPosition().y + 50);
+		textFont.draw(g, music, getPosition().x + (getWidth() / 2) - textFont.getWidth(music) - 5,
+				getPosition().y + 70);
 
 		toggleMusic.draw(g);
 	}
@@ -256,8 +241,8 @@ public class PauseMenu extends Menu {
 
 		String save = "Save Game:";
 
-		textFont.draw(g, save, getPosition().x - (headingFont.getWidth(save) / 2) + (getWidth() / 2) - 15,
-				getPosition().y + 100);
+		textFont.draw(g, save, getPosition().x - textFont.getWidth(save) + (getWidth() / 2) - 5,
+				getPosition().y + 120);
 
 		saveFiles.draw(g);
 	}

@@ -1,8 +1,13 @@
 package peril;
 
+import java.io.File;
+
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Image;
 
 import peril.board.Army;
+import peril.io.fileReaders.ImageReader;
+import peril.ui.Viewable;
 
 /**
  * The internal representation of a user of the system. This object will hold
@@ -12,36 +17,36 @@ import peril.board.Army;
  * @author Joshua_Eddy, Ezekiel_Trinidad
  *
  */
-public final class Player {
+public final class Player extends Viewable {
 
 	/**
 	 * Static instance of the first {@link Player}.
 	 * 
 	 */
-	public static final Player ONE = new Player("Player 1", Color.red);
+	public static final Player ONE = new Player(1, Color.red);
 
 	/**
 	 * Static instance of the second {@link Player}.
 	 * 
 	 */
-	public static final Player TWO = new Player("Player 2", Color.blue);
+	public static final Player TWO = new Player(2, Color.blue);
 
 	/**
 	 * Static instance of the third {@link Player}.
 	 * 
 	 */
-	public static final Player THREE = new Player("Player 3", Color.green);
+	public static final Player THREE = new Player(3, Color.green);
 
 	/**
 	 * Static instance of the fourth {@link Player}.
 	 * 
 	 */
-	public static final Player FOUR = new Player("Player 4", Color.pink.multiply(Color.pink));
+	public static final Player FOUR = new Player(4, Color.pink.multiply(Color.pink));
 
 	/**
-	 * String Representation of the {@link Player}.
+	 * Numerical Representation of the {@link Player}.
 	 */
-	private final String name;
+	private final int number;
 
 	/**
 	 * The {@link Color} of this {@link Player}s overlay on the
@@ -75,16 +80,17 @@ public final class Player {
 	/**
 	 * Constructs a new {@link Player}.
 	 * 
-	 * @param name
-	 *            String Representation of the {@link Player}.
+	 * @param number
+	 *            The number of this player
 	 */
-	private Player(String name, Color color) {
-		this.name = name;
+	private Player(int number, Color color) {
 		this.countries = 0;
 		this.continents = 0;
 		this.color = color;
 		this.distributableArmy = new Army(0);
 		this.totalArmy = new Army(0);
+		this.number = number;
+		setPosition(new Point(10, 45));
 	}
 
 	/**
@@ -95,6 +101,24 @@ public final class Player {
 	 */
 	public void award(Army army) {
 		distributableArmy.setSize(distributableArmy.getSize() + army.getSize());
+	}
+
+	@Override
+	public Image getImage() {
+
+		if (!hasImage()) {
+
+			// Volcanic Eruption icon file path
+			StringBuilder playerPath = new StringBuilder(new File(System.getProperty("user.dir")).getPath());
+			playerPath.append(File.separatorChar);
+			playerPath.append("ui_assets");
+			playerPath.append(File.separatorChar);
+			playerPath.append("player" + number + "Icon.png");
+			setImage(getPosition(), ImageReader.getImage(playerPath.toString()).getScaledCopy(90, 40));
+
+		}
+
+		return super.getImage();
 	}
 
 	/**
@@ -190,7 +214,7 @@ public final class Player {
 	 */
 	@Override
 	public String toString() {
-		return name;
+		return "Player " + number;
 	}
 
 	/**

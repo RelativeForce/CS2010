@@ -370,7 +370,7 @@ public final class MapReader extends FileParser {
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Line " + index + " " + details[2] + " is not a valid army size");
 		}
-		
+
 		Player player = parsePlayer(details[1]);
 		player.distributableArmy.setSize(armySize);
 
@@ -562,6 +562,13 @@ public final class MapReader extends FileParser {
 
 	}
 
+	/**
+	 * Processes a string player number into a {@link Player}.
+	 * 
+	 * @param player
+	 *            String player number
+	 * @return {@link Player}
+	 */
 	private Player parsePlayer(String player) {
 
 		if (player.equals("-")) {

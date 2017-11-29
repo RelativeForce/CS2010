@@ -128,7 +128,7 @@ public final class ProgressBar implements Component {
 	public void draw(Graphics g) {
 
 		// Calculate the current progress on screen
-		int currentProgress = (int) (progress * (((double) width) / total));
+		int currentProgress = (progress * width) / total;
 
 		// Draw the empty bar
 		g.drawRect(position.x, position.y, width, height);

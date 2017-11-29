@@ -46,6 +46,12 @@ public class MainMenuState extends InteractiveState {
 	private static final int HEIGHT = 300;
 
 	/**
+	 * Whether or not the user interface elements have been loaded from memory or
+	 * not.
+	 */
+	private boolean uiLoaded;
+
+	/**
 	 * Holds the contents of the maps.txt file.
 	 */
 	private final String[] mapsFile;
@@ -86,13 +92,15 @@ public class MainMenuState extends InteractiveState {
 	 */
 	public MainMenuState(Game game, int id) {
 		super(game, STATE_NAME, id);
-		
+
+		uiLoaded = false;
+
 		mapsFile = TextFileReader.scanFile(game.assets.maps, "maps.txt");
-		
+
 		maps = new VisualList<>(15, 220, 110, 22, 3, 10);
 		players = new VisualList<>(130, 220, 20, 22, 3, 5);
 		saves = new VisualList<>(190, 220, 80, 22, 3, 10);
-		
+
 		getMaps();
 		getPlayers();
 
@@ -193,9 +201,9 @@ public class MainMenuState extends InteractiveState {
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
-		
+
 		textFont.init();
-		
+
 		// Set the music that will be repeated by this state
 		background = getGame().io.musicHelper.read("menu");
 
@@ -279,9 +287,17 @@ public class MainMenuState extends InteractiveState {
 
 		getGame().reSize(width, height);
 		getGame().board.setName(map.name);
-		getGame().states.loadingScreen.addReader(getGame().io.gameLoader);
-		getGame().states.loadingScreen
-				.addReader(new MapReader(getGame().assets.maps + File.separatorChar + map.name, getGame(), saves.getSelected()));
+
+		// Only load the ui elements for the game on the first load
+		if (!uiLoaded) {
+			getGame().states.loadingScreen.addReader(getGame().io.gameLoader);
+			uiLoaded = true;
+		}
+
+		MapReader mapLoader = new MapReader(getGame().assets.maps + File.separatorChar + map.name, getGame(),
+				saves.getSelected());
+
+		getGame().states.loadingScreen.addReader(mapLoader);
 		getGame().enterState(getGame().states.loadingScreen);
 
 	}

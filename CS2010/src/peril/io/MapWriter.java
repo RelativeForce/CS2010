@@ -99,7 +99,7 @@ public class MapWriter {
 		line.append(state.getName());
 		line.append(',');
 
-		line.append(game.players.getCurrent().toString());
+		line.append(game.players.getCurrent().number);
 		line.append(',');
 
 		line.append(roundNumber);

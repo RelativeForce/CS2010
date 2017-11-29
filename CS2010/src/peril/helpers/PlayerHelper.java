@@ -25,6 +25,9 @@ import peril.ui.states.menuStates.EndState;
  */
 public class PlayerHelper {
 
+	/**
+	 * The default set of {@link Player}s.
+	 */
 	private final Map<Integer, Player> defaultPlayers;
 
 	/**
@@ -213,6 +216,13 @@ public class PlayerHelper {
 		checkChallenges(game.states.reinforcement);
 	}
 
+	/**
+	 * Retrieves a {@link Player} using the number assigned to that {@link Player}
+	 * from the default set of players.
+	 * 
+	 * @param number
+	 * @return
+	 */
 	public Player get(int number) {
 		return defaultPlayers.get(number);
 	}
@@ -225,10 +235,13 @@ public class PlayerHelper {
 		defaultPlayers.forEach((number, player) -> player.reset());
 	}
 
+	/**
+	 * Empties the {@link List} of playing {@link Player}s.
+	 */
 	public void emptyPlaying() {
 		playing.clear();
 	}
-	
+
 	/**
 	 * Initialises all the {@link Player} images.
 	 * 
@@ -239,23 +252,41 @@ public class PlayerHelper {
 		defaultPlayers.forEach((number, player) -> player.init(game.assets.ui));
 	}
 
+	/**
+	 * Uses the set of default {@link Players} to populate the playing
+	 * {@link Player}s.
+	 * 
+	 * @param number
+	 *            The number of {@link Player}s to be added.
+	 */
 	public void defaultPlayers(int number) {
-		
+
 		playing.clear();
-		
-		for(int index = 1; index <= number; index++) {
+
+		for (int index = 1; index <= number; index++) {
 			setPlaying(index);
 		}
 	}
-	
+
+	/**
+	 * Retrieves a random {@link Player} that is currently playing.
+	 * 
+	 * @return
+	 */
 	public Player getRandom() {
 		return playing.get(new Random().nextInt(playing.size()));
 	}
-	
+
+	/**
+	 * Set a {@link Player} as playing using the number assigned to that player.
+	 * 
+	 * @param number
+	 *            assigned to a {@link Player}.
+	 */
 	public void setPlaying(int number) {
 
 		Player player = defaultPlayers.get(number);
-		
+
 		if (!playing.contains(player)) {
 			playing.add(player);
 		}

@@ -78,6 +78,7 @@ public final class LoadingScreen extends InteractiveState {
 		this.readers = new ArrayList<>();
 		this.progressBar = new ProgressBar(new Point(0, 0), 100, 20);
 		this.firstState = null;
+		super.addComponent(progressBar);
 	}
 
 	/**
@@ -103,7 +104,7 @@ public final class LoadingScreen extends InteractiveState {
 
 		changeMusic(gc);
 
-		initProgressBar(gc.getWidth(), gc.getHeight());
+		reSizeProgressBar(gc.getWidth(), gc.getHeight());
 	}
 
 	/**
@@ -251,7 +252,7 @@ public final class LoadingScreen extends InteractiveState {
 	 * @param windowHeight
 	 *            The height of the screen.
 	 */
-	private void initProgressBar(int windowWidth, int windowHeight) {
+	private void reSizeProgressBar(int windowWidth, int windowHeight) {
 
 		// Holds the loading bar padding.
 		int windowPaddingY = windowHeight / 10;
@@ -263,7 +264,6 @@ public final class LoadingScreen extends InteractiveState {
 		// Holds the width of the loading bar.
 		int barWidth = windowWidth - windowPaddingX;
 
-		progressBar.init();
 		progressBar.setPosition(barPosition);
 		progressBar.setWidth(barWidth);
 		progressBar.setHeight(40);

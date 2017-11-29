@@ -10,6 +10,7 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Country;
+import peril.ui.components.TextField;
 import peril.ui.components.menus.PauseMenu;
 
 /**
@@ -27,6 +28,10 @@ public final class SetupState extends CoreGameState {
 	 */
 	private static final String STATE_NAME = "Setup";
 
+	private final TextField about;
+
+	private boolean showAbout;
+
 	/**
 	 * Constructs a new {@link SetupState}.
 	 * 
@@ -39,6 +44,30 @@ public final class SetupState extends CoreGameState {
 	 */
 	public SetupState(Game game, int id, PauseMenu pauseMenu) {
 		super(game, STATE_NAME, id, pauseMenu);
+		about = new TextField(400, 240, new Point(130, 0));
+		super.addComponent(about);
+		showAbout = false;
+	}
+
+	/**
+	 * Enters this {@link SetupState}.
+	 */
+	@Override
+	public void enter(GameContainer gc, StateBasedGame sbg) {
+		super.enter(gc, sbg);
+
+		about.clear();
+
+		about.addText("This is the 'Set Up' state. In this phase of the "
+				+ "game the players select which players own which countries at the start of the game.");
+
+		about.addText("To set a player as the ruler of a country, simply click on the country then press "
+				+ "the number button that coresponds to the number of the player."
+				+ " For example: '1' corresponds to 'Player 1'. 'Space' makes the country neutral.");
+
+		about.addText("Click 'Auto' to randomly assign an equal number of countries to each player.");
+
+		about.addText("Once you have assigned the countries as you desire click 'Play' to start the game.");
 	}
 
 	/**
@@ -50,6 +79,9 @@ public final class SetupState extends CoreGameState {
 
 		drawImages(g);
 		drawButtons(g);
+
+		if (showAbout)
+			about.draw(g);
 
 		drawPauseMenu(g);
 
@@ -67,6 +99,14 @@ public final class SetupState extends CoreGameState {
 		// Highlight the new country
 		super.highlightCountry(country);
 
+	}
+
+	public void showAbout() {
+		showAbout = true;
+	}
+
+	public void hideAbout() {
+		showAbout = false;
 	}
 
 	/**
@@ -110,6 +150,13 @@ public final class SetupState extends CoreGameState {
 			}
 		}
 
+		if (key == Input.KEY_H) {
+			showAbout();
+		}
+		if (key == Input.KEY_ESCAPE) {
+			hideAbout();
+		}
+
 		super.parseButton(key, c, mousePosition);
 
 	}
@@ -146,4 +193,5 @@ public final class SetupState extends CoreGameState {
 		}
 
 	}
+
 }

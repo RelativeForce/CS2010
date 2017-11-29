@@ -5,7 +5,7 @@ button,Movement,5,fortifyButton.png,90,40,10,800,fortify
 button,Movement,3,endButton.png,90,40,10,80,end
 button,Combat,2,endButton.png,90,40,10,80,end
 button,Combat,9,attackButton.png,90,40,10,800,attack
-button,Setup,4,endButton.png,90,40,10,120,end
+button,Setup,4,playButton.png,90,40,10,120,play
 button,Setup,8,autoButton.png,90,40,10,80,auto
 button,War Menu,6,attackButton.png,90,40,200,200,war
 button,Pause Menu,10,endButton.png,90,40,200,250,exit

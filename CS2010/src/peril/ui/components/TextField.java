@@ -42,7 +42,7 @@ public final class TextField extends Clickable implements Component {
 	 */
 	public TextField(int width, int height, Point position) {
 		super(new Region(width, height, position));
-		font = new Font("Arial", Color.black, 10);
+		font = new Font("Arial", Color.black, 15);
 		lines = new ArrayList<>();
 	}
 
@@ -133,12 +133,13 @@ public final class TextField extends Clickable implements Component {
 	 */
 	public void draw(Graphics g) {
 
-		g.setColor(Color.gray);
+		g.setColor(Color.lightGray);
 		g.fillRect(getPosition().x, getPosition().y, getWidth(), getHeight());
 
-		int x = getPosition().x + 15;
-		int y = getPosition().y + 15;
-		int numberOfLines = (getHeight() - 30) / font.getHeight();
+		int padding = 15;
+		int x = getPosition().x + padding;
+		int y = getPosition().y + padding;
+		int numberOfLines = (getHeight() - padding) / font.getHeight();
 
 		for (int index = 0; index < (lines.size() > numberOfLines ? numberOfLines : lines.size()); index++) {
 			font.draw(g, lines.get(index), x, y);

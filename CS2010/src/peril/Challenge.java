@@ -10,8 +10,19 @@ import peril.board.Board;
  */
 public abstract class Challenge {
 
+	/**
+	 * The type of the {@link Challenge} stored, such as countries owned or troops accumulated 
+	 */
 	public final String type;
+	
+	/**
+	 * The goal of the {@link Challenge} to be reached by the players 
+	 */
 	public final int goal;
+	
+	/**
+	 * The extra troops received for completing the goal in the {@link Challenge}
+	 */
 	public final int reward;
 	
 	public Challenge(String type, int goal, int reward) {

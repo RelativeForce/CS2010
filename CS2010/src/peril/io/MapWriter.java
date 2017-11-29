@@ -276,6 +276,14 @@ public class MapWriter {
 
 	}
 
+	/**
+	 * Processes a {@link Challenge} into its <code>String</code> representation that
+	 * will be used to store the {@link Challenge} in the file.
+	 * 
+	 * @param challlenge
+	 *            {@link Challenge}
+	 * @return <code>String</code>
+	 */
 	private String parseChallenge(Challenge challenge) {
 		StringBuilder line = new StringBuilder();
 
@@ -291,3 +299,4 @@ public class MapWriter {
 
 	}
 }
+

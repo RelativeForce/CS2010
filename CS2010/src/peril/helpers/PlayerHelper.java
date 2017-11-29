@@ -99,28 +99,25 @@ public class PlayerHelper {
 	 * Iterates thought all the available {@link Challenge}s to see if the specified
 	 * {@link Player} has completed them or not.
 	 * 
-	 * @param currentPlayer
-	 *            {@link Player}
+	 * @param currentState
+	 *            The current {@link CoreGameState} of the {@link Game}.
 	 */
-	public void checkChallenges(Player currentPlayer) {
+	public void checkChallenges(CoreGameState currentState) {
 
 		// Holds the completed challenges
 		List<Challenge> toRemove = new LinkedList<>();
 
 		// Iterate though all the objectives to see if the the current player has
 		// completed them.
-		for (Challenge challenge : challenges) {
+		challenges.forEach(challenge -> {
 
 			// If the current player has completed the challenge remove it from the list of
 			// available challenges.
-			if (challenge.hasCompleted(currentPlayer, game.board)) {
+			if (challenge.hasCompleted(getCurrent(), game.board)) {
 				toRemove.add(challenge);
-
-				if (game.getCurrentState() instanceof CoreGameState) {
-					((CoreGameState) game.getCurrentState()).show(challenge.toString());
-				}
+				currentState.show(challenge.toString());
 			}
-		}
+		});
 
 		// Remove the completed challenges.
 		toRemove.forEach(challenge -> challenges.remove(challenge));
@@ -229,15 +226,14 @@ public class PlayerHelper {
 
 		currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
 
-		if (game.getRoundNumber() > 0) {
-			checkChallenges(getCurrent());
-		}
-
-		reinforce(getCurrent());
+		reinforce();
 
 		if (currentPlayerIndex == 0) {
 			game.endRound();
 		}
+
+		// Check the challenges going into the next round
+		checkChallenges(game.states.reinforcement);
 	}
 
 	/**
@@ -265,13 +261,15 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * Gives the specified {@link Player} reinforcements based on the number of
+	 * Gives the current {@link Player} reinforcements based on the number of
 	 * countries they own.
 	 * 
 	 * @param player
 	 *            {@link Player}
 	 */
-	public void reinforce(Player player) {
+	public void reinforce() {
+
+		Player player = getCurrent();
 
 		// Scale reinforcements with round progression.
 		int roundScale = game.getRoundNumber() != 0 ? game.getRoundNumber() * 2 : 1;

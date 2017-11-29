@@ -117,7 +117,7 @@ public class FunctionHandler {
 						// Remove the unit from the list of units to place.
 						player.setDistributableArmySize(armySize - 1);
 						player.setTotalArmySize(player.getTotalArmySize() + 1);
-						game.players.checkChallenges(player);
+						game.players.checkChallenges(game.states.movement);
 
 						if (player.getDistributableArmySize() == 0) {
 							game.states.reinforcement.hideReinforceButton();
@@ -191,7 +191,7 @@ public class FunctionHandler {
 
 			// Change the state of the game to reinforcement and give player one their units
 			// based on the countries they own.
-			game.players.reinforce(game.players.getCurrent());
+			game.players.reinforce();
 			game.enterState(game.states.reinforcement);
 		});
 	}

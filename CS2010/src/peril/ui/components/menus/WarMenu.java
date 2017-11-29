@@ -256,7 +256,7 @@ public class WarMenu extends Menu {
 
 						getGame().checkContinentRulership();
 
-						getGame().players.checkChallenges(attackingPlayer);
+						getGame().players.checkChallenges(getGame().states.combat);
 
 					} else {
 

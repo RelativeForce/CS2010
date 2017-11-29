@@ -244,7 +244,7 @@ public class WarMenu extends Menu {
 
 							// If the player has no countries they have lost.
 							if (defendingPlayer.getCountriesRuled() == 0) {
-								getGame().players.setLoser(defendingPlayer.number);
+								getGame().players.setLoser(defendingPlayer);
 								getGame().checkWinner();
 							}
 						}

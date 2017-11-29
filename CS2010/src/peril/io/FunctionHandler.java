@@ -143,7 +143,7 @@ public class FunctionHandler {
 
 			// Change the state of the game to reinforcement and give player one their units
 			// based on the countries they own.
-			game.players.reinforce();
+			game.players.reinforceCurrent();
 			game.enterState(game.states.reinforcement);
 		});
 	}

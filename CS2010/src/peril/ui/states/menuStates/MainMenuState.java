@@ -276,7 +276,7 @@ public class MainMenuState extends InteractiveState {
 
 		// Loads the game assets and move into the set up state
 		if (saves.getSelected() == SaveFile.DEFAULT) {
-			getGame().players.defaultPlayers(players.getSelected());
+			getGame().players.setInitialPlayers(players.getSelected());
 		}
 
 		int screenWidth = getGame().getContainer().getScreenWidth();

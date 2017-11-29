@@ -53,11 +53,6 @@ public final class MapReader extends FileParser {
 	private final Game game;
 
 	/**
-	 * The {@link Challenge}s read from the challenges file.
-	 */
-	private final List<Challenge> challenges;
-
-	/**
 	 * Constructs a new {@link MapReader}.
 	 * 
 	 * @param directoryPath
@@ -78,7 +73,6 @@ public final class MapReader extends FileParser {
 
 		this.continents = new LinkedList<>();
 		this.countries = new LinkedList<>();
-		this.challenges = new LinkedList<>();
 		this.game = game;
 
 		normalMap = ImageReader.getImage(directoryPath + File.separatorChar + "normal.png");
@@ -133,8 +127,6 @@ public final class MapReader extends FileParser {
 
 				// Set the normal map as the visual image of the visual representation.
 				game.board.setImage(new Point(0, 0), normalMap);
-
-				game.players.setChallenges(challenges);
 			}
 		}
 
@@ -382,7 +374,7 @@ public final class MapReader extends FileParser {
 		}
 
 		if (isActive) {
-			game.players.setPlaying(player.number);
+			game.players.setPlaying(player);
 		} else {
 			game.states.end.addToTop(player);
 		}
@@ -411,7 +403,7 @@ public final class MapReader extends FileParser {
 		game.states.loadingScreen.setFirstState(game.states.getSaveState(details[1]));
 
 		// Set the current player of the as the player specified by the name.
-		game.players.setCurrent(parsePlayer(details[2]).number);
+		game.players.setCurrent(parsePlayer(details[2]));
 
 		try {
 			game.setRoundNumber(Integer.parseInt(details[3]));
@@ -441,7 +433,7 @@ public final class MapReader extends FileParser {
 
 			int reward = Integer.parseInt(details[2]);
 
-			challenges.add(new Challenge(details[0], numberOfContinets, reward) {
+			game.players.addChallenge(new Challenge(details[0], numberOfContinets, reward) {
 
 				@Override
 				public boolean hasCompleted(Player player, Board board) {
@@ -488,7 +480,7 @@ public final class MapReader extends FileParser {
 
 			int reward = Integer.parseInt(details[2]);
 
-			challenges.add(new Challenge(details[0], numberOfCountries, reward) {
+			game.players.addChallenge(new Challenge(details[0], numberOfCountries, reward) {
 
 				@Override
 				public boolean hasCompleted(Player player, Board board) {
@@ -535,7 +527,7 @@ public final class MapReader extends FileParser {
 
 			int reward = Integer.parseInt(details[2]);
 
-			challenges.add(new Challenge(details[0], sizeOfArmy, reward) {
+			game.players.addChallenge(new Challenge(details[0], sizeOfArmy, reward) {
 
 				@Override
 				public boolean hasCompleted(Player player, Board board) {
@@ -583,6 +575,6 @@ public final class MapReader extends FileParser {
 			throw new IllegalArgumentException(player + " is not a valid player number.");
 		}
 
-		return game.players.get(playerNumber);
+		return game.players.getPlayer(playerNumber);
 	}
 }

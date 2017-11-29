@@ -144,7 +144,7 @@ public class Game extends StateBasedGame implements MusicListener {
 	public void initStatesList(GameContainer container) throws SlickException {
 		states.initGame(container, this, new UIEventHandler(this));
 		EnvironmentalHazard.initIcons(assets.ui);
-		players.initAll();
+		players.init();
 	}
 
 	/**
@@ -296,8 +296,8 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * that {@link Player} has won.
 	 */
 	public void checkWinner() {
-		if (players.size() == 1) {
-			states.end.addToTop(players.get(0));
+		if (players.numberOfPlayers() == 1) {
+			states.end.addToTop(players.getPlayer(0));
 			enterState(states.end.getID());
 		}
 	}
@@ -339,10 +339,10 @@ public class Game extends StateBasedGame implements MusicListener {
 		while (!set) {
 
 			// Holds the number of players in the game.
-			int numberOfPlayers = players.size();
+			int numberOfPlayers = players.numberOfPlayers();
 
 			// Get the player at the random index.
-			Player player = players.getRandom();
+			Player player = players.getRandomPlayer();
 
 			// Holds the number of countries on the board.
 			int numberOfCountries = board.getNumberOfCountries();

@@ -1,7 +1,7 @@
 package peril.helpers;
 
 import java.util.ArrayList;
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -26,14 +26,14 @@ import peril.ui.states.menuStates.EndState;
 public class PlayerHelper {
 
 	/**
+	 * Holds all the {@link Player}s in this {@link Game}.
+	 */
+	private final List<Player> playing;
+
+	/**
 	 * The default set of {@link Player}s.
 	 */
 	private final Map<Integer, Player> defaultPlayers;
-
-	/**
-	 * Holds all the {@link Player}s in this {@link Game}.
-	 */
-	private List<Player> playing;
 
 	/**
 	 * The {@link Player} who's turn it is.
@@ -43,12 +43,12 @@ public class PlayerHelper {
 	/**
 	 * Contains all the objectives that a {@link Player} can attain in the game.
 	 */
-	private List<Challenge> challenges;
+	private final List<Challenge> challenges;
 
 	/**
 	 * The {@link Game} this {@link PlayerHelper} helps.
 	 */
-	private Game game;
+	private final Game game;
 
 	/**
 	 * Constructs a new {@link PlayerHelper}.
@@ -60,12 +60,13 @@ public class PlayerHelper {
 		this.game = game;
 		this.currentPlayerIndex = 0;
 		this.playing = new ArrayList<>();
-
-		this.defaultPlayers = new IdentityHashMap<Integer, Player>();
-		defaultPlayers.put(1, new Player(1, Color.red));
-		defaultPlayers.put(2, new Player(2, Color.blue));
-		defaultPlayers.put(3, new Player(3, Color.green));
-		defaultPlayers.put(4, new Player(4, Color.pink.multiply(Color.pink)));
+		this.challenges = new LinkedList<>();
+		
+		this.defaultPlayers = new HashMap<Integer, Player>();
+		this.defaultPlayers.put(1, new Player(1, Color.red));
+		this.defaultPlayers.put(2, new Player(2, Color.blue));
+		this.defaultPlayers.put(3, new Player(3, Color.green));
+		this.defaultPlayers.put(4, new Player(4, Color.pink.multiply(Color.pink)));
 	}
 
 	/**
@@ -73,7 +74,7 @@ public class PlayerHelper {
 	 * 
 	 * @return <code>int</code>
 	 */
-	public int size() {
+	public int numberOfPlayers() {
 		return playing.size();
 	}
 
@@ -88,18 +89,18 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * Set the {@link List} of {@link Challenge}s for this {@link Game}.
+	 * Adds a {@link Challenge} for this {@link Game}.
 	 * 
-	 * @param challenges
-	 *            {@link List} NOT NULL
+	 * @param challenge
+	 *            NOT NULL
 	 */
-	public void setChallenges(List<Challenge> challenges) {
+	public void addChallenge(Challenge challenge) {
 
-		if (challenges == null) {
-			throw new NullPointerException("Challenge list cannot be null.");
+		if (challenge == null) {
+			throw new NullPointerException("Challenge cannot be null.");
 		}
 
-		this.challenges = challenges;
+		this.challenges.add(challenge);
 	}
 
 	/**
@@ -146,9 +147,7 @@ public class PlayerHelper {
 	 * @param player
 	 *            {@link Player} number that has lost.
 	 */
-	public void setLoser(int number) {
-
-		Player player = defaultPlayers.get(number);
+	public void setLoser(Player player) {
 
 		// If the loser player is before the current player in the list, reduce the
 		// player index to account for the player being removed and the list's size
@@ -175,6 +174,17 @@ public class PlayerHelper {
 	}
 
 	/**
+	 * Retrieves whether or not a specified player is in this {@link Game}.
+	 * 
+	 * @param player
+	 *            {@link Player}
+	 * @return <code>boolean</code>
+	 */
+	public boolean isPlaying(Player player) {
+		return playing.contains(player);
+	}
+
+	/**
 	 * Retrieves the {@link Player} who's current turn it is.
 	 * 
 	 * @return {@link Player}
@@ -194,8 +204,8 @@ public class PlayerHelper {
 	 * @param player
 	 *            {@link Player}
 	 */
-	public void setCurrent(int number) {
-		int index = playing.indexOf(defaultPlayers.get(number));
+	public void setCurrent(Player player) {
+		int index = playing.indexOf(player);
 		currentPlayerIndex = index != -1 ? index : currentPlayerIndex;
 	}
 
@@ -206,7 +216,7 @@ public class PlayerHelper {
 
 		currentPlayerIndex = (currentPlayerIndex + 1) % playing.size();
 
-		reinforce();
+		reinforceCurrent();
 
 		if (currentPlayerIndex == 0) {
 			game.endRound();
@@ -223,7 +233,7 @@ public class PlayerHelper {
 	 * @param number
 	 * @return
 	 */
-	public Player get(int number) {
+	public Player getPlayer(int number) {
 		return defaultPlayers.get(number);
 	}
 
@@ -248,7 +258,7 @@ public class PlayerHelper {
 	 * @param uiPath
 	 *            Path to the
 	 */
-	public void initAll() {
+	public void init() {
 		defaultPlayers.forEach((number, player) -> player.init(game.assets.ui));
 	}
 
@@ -256,15 +266,15 @@ public class PlayerHelper {
 	 * Uses the set of default {@link Players} to populate the playing
 	 * {@link Player}s.
 	 * 
-	 * @param number
+	 * @param numberOfPlayers
 	 *            The number of {@link Player}s to be added.
 	 */
-	public void defaultPlayers(int number) {
+	public void setInitialPlayers(int numberOfPlayers) {
 
 		playing.clear();
 
-		for (int index = 1; index <= number; index++) {
-			setPlaying(index);
+		for (int index = 1; index <= numberOfPlayers; index++) {
+			setPlaying(getPlayer(index));
 		}
 	}
 
@@ -273,20 +283,17 @@ public class PlayerHelper {
 	 * 
 	 * @return
 	 */
-	public Player getRandom() {
+	public Player getRandomPlayer() {
 		return playing.get(new Random().nextInt(playing.size()));
 	}
 
 	/**
 	 * Set a {@link Player} as playing using the number assigned to that player.
 	 * 
-	 * @param number
-	 *            assigned to a {@link Player}.
+	 * @param player
+	 *            {@link Player}.
 	 */
-	public void setPlaying(int number) {
-
-		Player player = defaultPlayers.get(number);
-
+	public void setPlaying(Player player) {
 		if (!playing.contains(player)) {
 			playing.add(player);
 		}
@@ -299,7 +306,7 @@ public class PlayerHelper {
 	 * @param player
 	 *            {@link Player}
 	 */
-	public void reinforce() {
+	public void reinforceCurrent() {
 
 		Player player = getCurrent();
 

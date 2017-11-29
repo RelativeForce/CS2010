@@ -103,24 +103,6 @@ public final class Player extends Viewable {
 		distributableArmy.setSize(distributableArmy.getSize() + army.getSize());
 	}
 
-	@Override
-	public Image getImage() {
-
-		if (!hasImage()) {
-
-			// Volcanic Eruption icon file path
-			StringBuilder playerPath = new StringBuilder(new File(System.getProperty("user.dir")).getPath());
-			playerPath.append(File.separatorChar);
-			playerPath.append("ui_assets");
-			playerPath.append(File.separatorChar);
-			playerPath.append("player" + number + "Icon.png");
-			setImage(getPosition(), ImageReader.getImage(playerPath.toString()).getScaledCopy(90, 40));
-
-		}
-
-		return super.getImage();
-	}
-
 	/**
 	 * Sets the size of the {@link Army} the {@link Player} will have to distribute
 	 * at the start of the next turn.
@@ -230,6 +212,21 @@ public final class Player extends Viewable {
 	}
 
 	/**
+	 * Initialises the {@link Image}s for each {@link Player}
+	 * 
+	 * @param uiPath
+	 *            The path to the folder with the icon image files in.
+	 */
+	public static void initPlayers(String uiPath) {
+
+		ONE.initPlayer(uiPath);
+		TWO.initPlayer(uiPath);
+		THREE.initPlayer(uiPath);
+		FOUR.initPlayer(uiPath);
+
+	}
+
+	/**
 	 * Retrieves a {@link Player} by its name.
 	 * 
 	 * @param name
@@ -251,5 +248,16 @@ public final class Player extends Viewable {
 		}
 
 		throw new NullPointerException(name + " is not a valid player");
+	}
+
+	/**
+	 * Initialises the images of a {@link Player}.
+	 * 
+	 * @param uiPath
+	 *            The path to the folder with the image files in.
+	 */
+	private void initPlayer(String uiPath) {
+		String path = uiPath + File.separatorChar + "player" + number + "Icon.png";
+		setImage(getPosition(), ImageReader.getImage(path).getScaledCopy(90, 40));
 	}
 }

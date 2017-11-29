@@ -37,8 +37,14 @@ public class MainMenuState extends InteractiveState {
 	 */
 	private static final String STATE_NAME = "Main Menu";
 
+	/**
+	 * The width of the main menu
+	 */
 	private static final int WIDTH = 400;
 
+	/**
+	 * The height of the main menu
+	 */
 	private static final int HEIGHT = 300;
 
 	/**
@@ -276,7 +282,7 @@ public class MainMenuState extends InteractiveState {
 		getGame().board.setName(map.name);
 		getGame().states.loadingScreen.addReader(getGame().io.gameLoader);
 		getGame().states.loadingScreen
-				.addReader(new MapReader(getGame().mapsDirectory + map.name, getGame(), saves.getSelected()));
+				.addReader(new MapReader(getGame().mapsDirectory + File.separatorChar + map.name, getGame(), saves.getSelected()));
 		getGame().enterState(getGame().states.loadingScreen.getID());
 
 	}

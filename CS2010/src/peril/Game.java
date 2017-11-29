@@ -14,6 +14,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
+import peril.board.EnvironmentalHazard;
 import peril.helpers.*;
 import peril.io.fileParsers.*;
 import peril.io.fileReaders.MusicReader;
@@ -38,11 +39,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * The {@link PauseMenu} that will be used by all the {@link CoreGameState}s.
 	 */
 	public final PauseMenu pauseMenu;
-
-	/**
-	 * Holds the path to the directory containing the maps file.
-	 */
-	public final String mapsDirectory;
 
 	/**
 	 * The {@link StateHelper} that holds all this {@link Game}'s states.
@@ -70,6 +66,10 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public final WarMenu warMenu;
 
+	public final String uiDirectory;
+	public final String mapsDirectory;
+	public final String musicDirectory;
+
 	/**
 	 * The current turn of the {@link Game}. Initially zero;
 	 */
@@ -84,11 +84,21 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * Constructs a new {@link Game}.
 	 */
 	private Game() {
-		super("PERIL: A Turn Based Strategy Game");
+		super("PERIL");
 
+		// Holds the path of the peril assets
+		StringBuilder assetsPath = new StringBuilder(new File(System.getProperty("user.dir")).getPath())
+				.append(File.separatorChar).append("assets");
+
+		// Set the directory paths for the different types of game assets.
+		mapsDirectory = new StringBuilder(assetsPath).append(File.separatorChar).append("maps").toString();
+		musicDirectory = new StringBuilder(assetsPath).append(File.separatorChar).append("music").toString();
+		uiDirectory = new StringBuilder(assetsPath).append(File.separatorChar).append("ui").toString();
+
+		// Set the initial round to zero
 		this.currentRound = 0;
 
-		// Construct the board.
+		// Construct the board with the initial name.
 		this.board = new Board(this, "NOT ASSIGNED");
 
 		// Initialise games Combat Handler
@@ -97,57 +107,27 @@ public class Game extends StateBasedGame implements MusicListener {
 		// Initialise the pause menu all the states will use
 		this.pauseMenu = new PauseMenu(new Point(100, 100), this);
 
-		LoadingScreen loadingScreen = new LoadingScreen(this, 6);
-
 		// Initialise the game states.
+		MainMenuState mainMenu = new MainMenuState(this, 0, mapsDirectory);
 		SetupState setup = new SetupState(this, 1, pauseMenu);
 		ReinforcementState reinforcement = new ReinforcementState(this, 2, pauseMenu);
 		CombatState combat = new CombatState(this, 3, pauseMenu, warMenu);
 		MovementState movement = new MovementState(this, 4, pauseMenu);
 		EndState end = new EndState(this, 5);
+		LoadingScreen loadingScreen = new LoadingScreen(this, 6);
 
-		// Holds the directory this game is operating in.
-		String baseDirectory = new File(System.getProperty("user.dir")).getPath();
-
-		// Create the map file path
-		StringBuilder game_assetsPath = new StringBuilder(baseDirectory);
-		game_assetsPath.append(File.separatorChar);
-		game_assetsPath.append("game_assets");
-
-		StringBuilder musicPath = new StringBuilder(game_assetsPath);
-		musicPath.append(File.separatorChar);
-		musicPath.append("music");
-
-		MusicReader musicHelper = new MusicReader(musicPath.toString(), this);
-
-		game_assetsPath.append(File.separatorChar);
-		game_assetsPath.append("maps");
-
-		MainMenuState mainMenu = new MainMenuState(this, 0, game_assetsPath.toString());
-
-		// Create the ui_assets file path
-		StringBuilder ui_assestsPath = new StringBuilder(baseDirectory);
-		ui_assestsPath.append(File.separatorChar);
-		ui_assestsPath.append("ui_assets");
-
+		// Set the containers that ui elements will be loaded into.
 		Container[] containers = new Container[] { pauseMenu, loadingScreen, warMenu, mainMenu, combat, setup,
 				reinforcement, movement, end };
 
-		AssetReader gameLoader = new AssetReader(containers, ui_assestsPath.toString(), "game.txt", this);
-
-		this.players = new PlayerHelper(this, ui_assestsPath.toString());
-		
-		AssetReader mainMenuLoader = new AssetReader(containers, ui_assestsPath.toString(), "menu.txt", this);
-
-		// Add the path to the map's folder
-		game_assetsPath.append(File.separatorChar);
-		mapsDirectory = game_assetsPath.toString();
-
 		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen);
-		this.io = new IOHelper(game_assetsPath.toString(), gameLoader, musicHelper, mainMenuLoader);
+		
+		this.io = new IOHelper(mapsDirectory, new AssetReader(containers, uiDirectory, "game.txt", this),
+				new MusicReader(musicDirectory, this), new AssetReader(containers, uiDirectory, "menu.txt", this));
+		
+		this.players = new PlayerHelper(this, uiDirectory);
 
-		// Construct the container for the game as a Slick2D state based game. And parse
-		// the details of the map from the maps file.
+		// Construct the container for the game as a Slick2D state based game.
 		try {
 			agc = new AppGameContainer(this);
 			agc.setDisplayMode(400, 300, false);
@@ -167,6 +147,8 @@ public class Game extends StateBasedGame implements MusicListener {
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
 		states.initGame(container, this, new UIEventHandler(this));
+		EnvironmentalHazard.initIcons(uiDirectory);
+		Player.initPlayers(uiDirectory);
 	}
 
 	/**

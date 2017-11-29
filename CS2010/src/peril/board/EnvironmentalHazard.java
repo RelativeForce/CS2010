@@ -36,19 +36,18 @@ public enum EnvironmentalHazard {
 		public Image getIcon() {
 
 			if (icon == null) {
-
-				// Volcanic Eruption icon file path
-				StringBuilder volcanicEruptionPath = new StringBuilder(
-						new File(System.getProperty("user.dir")).getPath());
-				volcanicEruptionPath.append(File.separatorChar);
-				volcanicEruptionPath.append("ui_assets");
-				volcanicEruptionPath.append(File.separatorChar);
-				volcanicEruptionPath.append("volcanoIcon.png");
-
-				icon = ImageReader.getImage(volcanicEruptionPath.toString());
+				throw new IllegalStateException(this.name() + "Icon has not been initialised.");
 			}
 
 			return icon;
+		}
+
+		/**
+		 * Initialises the {@link EnvironmentalHazard#VOLCANIC_ERUPTION} icon.
+		 */
+		@Override
+		protected void initIcon(String uiPath) {
+			icon = ImageReader.getImage(uiPath + File.separatorChar + "volcanoIcon.png");
 		}
 
 	},
@@ -70,18 +69,18 @@ public enum EnvironmentalHazard {
 		public Image getIcon() {
 
 			if (icon == null) {
-
-				// Tornado icon file path
-				StringBuilder tornadoPath = new StringBuilder(new File(System.getProperty("user.dir")).getPath());
-				tornadoPath.append(File.separatorChar);
-				tornadoPath.append("ui_assets");
-				tornadoPath.append(File.separatorChar);
-				tornadoPath.append("tornadoIcon.png");
-
-				icon = ImageReader.getImage(tornadoPath.toString());
+				throw new IllegalStateException(this.name() + "Icon has not been initialised.");
 			}
 
 			return icon;
+		}
+
+		/**
+		 * Initialises the {@link EnvironmentalHazard#TORNADO} icon.
+		 */
+		@Override
+		protected void initIcon(String uiPath) {
+			icon = ImageReader.getImage(uiPath + File.separatorChar + "tornadoIcon.png");
 		}
 	},
 	/**
@@ -101,18 +100,18 @@ public enum EnvironmentalHazard {
 		public Image getIcon() {
 
 			if (icon == null) {
-
-				// Hurricane icon file path
-				StringBuilder hurricanePath = new StringBuilder(new File(System.getProperty("user.dir")).getPath());
-				hurricanePath.append(File.separatorChar);
-				hurricanePath.append("ui_assets");
-				hurricanePath.append(File.separatorChar);
-				hurricanePath.append("hurricaneIcon.png");
-
-				icon = ImageReader.getImage(hurricanePath.toString());
+				throw new IllegalStateException(this.name() + "Icon has not been initialised.");
 			}
 
 			return icon;
+		}
+
+		/**
+		 * Initialises the {@link EnvironmentalHazard#HURRICANE} icon.
+		 */
+		@Override
+		protected void initIcon(String uiPath) {
+			icon = ImageReader.getImage(uiPath + File.separatorChar + "hurricaneIcon.png");
 		}
 	},
 	/**
@@ -133,18 +132,18 @@ public enum EnvironmentalHazard {
 		public Image getIcon() {
 
 			if (icon == null) {
-
-				// Tsunami icon file path
-				StringBuilder tsunamiPath = new StringBuilder(new File(System.getProperty("user.dir")).getPath());
-				tsunamiPath.append(File.separatorChar);
-				tsunamiPath.append("ui_assets");
-				tsunamiPath.append(File.separatorChar);
-				tsunamiPath.append("tsunamiIcon.png");
-
-				icon = ImageReader.getImage(tsunamiPath.toString());
+				throw new IllegalStateException(this.name() + "Icon has not been initialised.");
 			}
 
 			return icon;
+		}
+
+		/**
+		 * Initialises the {@link EnvironmentalHazard#TSUNAMI} icon.
+		 */
+		@Override
+		protected void initIcon(String uiPath) {
+			icon = ImageReader.getImage(uiPath + File.separatorChar + "tsunamiIcon.png");
 		}
 	};
 
@@ -226,11 +225,11 @@ public enum EnvironmentalHazard {
 
 			// Check whether the army will be below the minimum size.
 			if (currentSize - casualties < 1) {
-				
+
 				// Set the army to the minimum size.
 				army.setSize(1);
 			} else {
-				
+
 				// Remove the dead regiments.
 				army.setSize(currentSize - casualties);
 			}
@@ -272,4 +271,26 @@ public enum EnvironmentalHazard {
 
 		return null;
 	}
+
+	/**
+	 * Initialises all the {@link Image} icons of the {@link EnvironmentalHazard}s.
+	 * 
+	 * @param uiPath
+	 *            The path to the folder with the icon image files in.
+	 */
+	public static void initIcons(String uiPath) {
+
+		for (EnvironmentalHazard hazard : EnvironmentalHazard.values()) {
+			hazard.initIcon(uiPath);
+		}
+
+	}
+
+	/**
+	 * Initialises the {@link Image} icon for an {@link EnvironmentalHazard}.
+	 * 
+	 * @param uiPath
+	 *            The path to the folder with the icon image files in.
+	 */
+	protected abstract void initIcon(String uiPath);
 }

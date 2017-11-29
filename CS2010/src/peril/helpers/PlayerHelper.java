@@ -86,6 +86,11 @@ public class PlayerHelper {
 		this.challenges = challenges;
 	}
 
+	/**
+	 * Get the {@link Challenge} at the specified {@link List}.
+	 * 
+	 * @return {@link challenges}
+	 */
 	public List<Challenge> getChallenges() {
 		return challenges;
 	}

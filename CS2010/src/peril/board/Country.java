@@ -106,7 +106,7 @@ public class Country extends Clickable {
 	public void setRuler(Player ruler) {
 		this.ruler = ruler;
 		if (ruler != null) {
-			this.setImage(getRegion().getPosition(), getRegion().convert(ruler.getColor()));
+			this.setImage(getRegion().getPosition(), getRegion().convert(ruler.color));
 		} else {
 			this.setImage(getRegion().getPosition(), getRegion().convert(Color.white));
 		}

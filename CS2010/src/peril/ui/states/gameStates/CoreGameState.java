@@ -219,7 +219,7 @@ public abstract class CoreGameState extends InteractiveState {
 			// If there is a ruler then return the colour of the country to that of the
 			// ruler. Otherwise remove the highlight effect.
 			if (ruler != null) {
-				country.setImage(position, region.convert(ruler.getColor()));
+				country.setImage(position, region.convert(ruler.color));
 			} else {
 				country.setImage(position, region.convert(Color.white));
 			}
@@ -510,7 +510,7 @@ public abstract class CoreGameState extends InteractiveState {
 			// Draw a background oval with the rulers colour. If no ruler found default to
 			// light grey.
 			if (country.getRuler() != null) {
-				g.setColor(country.getRuler().getColor());
+				g.setColor(country.getRuler().color);
 			} else {
 				g.setColor(Color.lightGray);
 			}

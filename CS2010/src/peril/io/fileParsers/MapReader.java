@@ -213,11 +213,11 @@ public final class MapReader extends FileParser {
 			throw new IllegalArgumentException(details[5] + " is not a valid y coordinate.");
 		}
 
-		Player ruler = Player.getByName(details[6]);
+		Player ruler = parsePlayer(details[6]);
 
 		// If there is an owner add it to the players list
 		if (ruler != null) {
-			ruler.setTotalArmySize(ruler.getTotalArmySize() + armySize);
+			ruler.totalArmy.add(armySize);
 			ruler.setCountriesRuled(ruler.getCountriesRuled() + 1);
 		}
 
@@ -363,8 +363,6 @@ public final class MapReader extends FileParser {
 					+ " does not contain the correct number of elements, there should be " + STATE_LENGTH + "");
 		}
 
-		Player player = Player.getByName(details[1]);
-
 		int armySize;
 
 		try {
@@ -372,9 +370,10 @@ public final class MapReader extends FileParser {
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Line " + index + " " + details[2] + " is not a valid army size");
 		}
-
-		player.setDistributableArmySize(armySize);
 		
+		Player player = parsePlayer(details[1]);
+		player.distributableArmy.setSize(armySize);
+
 		boolean isActive;
 		try {
 			isActive = Boolean.parseBoolean(details[3]);
@@ -382,11 +381,9 @@ public final class MapReader extends FileParser {
 			throw new IllegalArgumentException("Line " + index + " " + details[2] + " is not a valid army size");
 		}
 
-		
-		
-		if(isActive) {
-			game.players.add(player);
-		}else {
+		if (isActive) {
+			game.players.setPlaying(player.number);
+		} else {
 			game.states.end.addToTop(player);
 		}
 
@@ -414,7 +411,7 @@ public final class MapReader extends FileParser {
 		game.states.loadingScreen.setFirstState(game.states.getSaveState(details[1]));
 
 		// Set the current player of the as the player specified by the name.
-		game.players.setCurrent(Player.getByName(details[2]));
+		game.players.setCurrent(parsePlayer(details[2]).number);
 
 		try {
 			game.setRoundNumber(Integer.parseInt(details[3]));
@@ -451,8 +448,7 @@ public final class MapReader extends FileParser {
 
 					if (player.getContinentsRuled() >= goal) {
 						// Give the player a army of size 5 to distribute.
-						player.award(new Army(reward));
-
+						player.distributableArmy.add(reward);
 						return true;
 					}
 
@@ -499,7 +495,7 @@ public final class MapReader extends FileParser {
 
 					if (player.getCountriesRuled() >= goal) {
 						// Give the player a reward army to distribute.
-						player.award(new Army(reward));
+						player.distributableArmy.add(reward);
 
 						return true;
 					}
@@ -544,9 +540,9 @@ public final class MapReader extends FileParser {
 				@Override
 				public boolean hasCompleted(Player player, Board board) {
 
-					if (player.getTotalArmySize() >= sizeOfArmy) {
+					if (player.totalArmy.getSize() >= sizeOfArmy) {
 						// Give the player a army of size 5 to distribute.
-						player.award(new Army(reward));
+						player.distributableArmy.add(reward);
 						return true;
 					}
 
@@ -566,4 +562,20 @@ public final class MapReader extends FileParser {
 
 	}
 
+	private Player parsePlayer(String player) {
+
+		if (player.equals("-")) {
+			return null;
+		}
+
+		int playerNumber;
+
+		try {
+			playerNumber = Integer.parseInt(player);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(player + " is not a valid player number.");
+		}
+
+		return game.players.get(playerNumber);
+	}
 }

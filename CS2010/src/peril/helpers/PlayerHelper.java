@@ -1,9 +1,14 @@
 package peril.helpers;
 
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.function.Consumer;
+
+import org.newdawn.slick.Color;
 
 import peril.Challenge;
 import peril.Game;
@@ -20,10 +25,12 @@ import peril.ui.states.menuStates.EndState;
  */
 public class PlayerHelper {
 
+	private final Map<Integer, Player> defaultPlayers;
+
 	/**
 	 * Holds all the {@link Player}s in this {@link Game}.
 	 */
-	private List<Player> players;
+	private List<Player> playing;
 
 	/**
 	 * The {@link Player} who's turn it is.
@@ -49,7 +56,13 @@ public class PlayerHelper {
 	public PlayerHelper(Game game) {
 		this.game = game;
 		this.currentPlayerIndex = 0;
-		this.players = new ArrayList<>();
+		this.playing = new ArrayList<>();
+
+		this.defaultPlayers = new IdentityHashMap<Integer, Player>();
+		defaultPlayers.put(1, new Player(1, Color.red));
+		defaultPlayers.put(2, new Player(2, Color.blue));
+		defaultPlayers.put(3, new Player(3, Color.green));
+		defaultPlayers.put(4, new Player(4, Color.pink.multiply(Color.pink)));
 	}
 
 	/**
@@ -58,7 +71,7 @@ public class PlayerHelper {
 	 * @return <code>int</code>
 	 */
 	public int size() {
-		return players.size();
+		return playing.size();
 	}
 
 	/**
@@ -68,7 +81,7 @@ public class PlayerHelper {
 	 *            {@link Consumer}
 	 */
 	public void forEach(Consumer<Player> task) {
-		players.forEach(task);
+		playing.forEach(task);
 	}
 
 	/**
@@ -128,20 +141,22 @@ public class PlayerHelper {
 	 * {@link Game#players} and adds it to the podium in the {@link EndState}.
 	 * 
 	 * @param player
-	 *            {@link Player} that has lost.
+	 *            {@link Player} number that has lost.
 	 */
-	public void setLoser(Player player) {
+	public void setLoser(int number) {
+
+		Player player = defaultPlayers.get(number);
 
 		// If the loser player is before the current player in the list, reduce the
 		// player index to account for the player being removed and the list's size
 		// changing.
-		if (this.currentPlayerIndex > players.indexOf(player)) {
+		if (this.currentPlayerIndex > playing.indexOf(player)) {
 			this.currentPlayerIndex--;
 		}
 
 		// Add the player to the podium and remove it from the players in play.
 		game.states.end.addToTop(player);
-		players.remove(player);
+		playing.remove(player);
 
 	}
 
@@ -149,49 +164,11 @@ public class PlayerHelper {
 	 * Retrieves whether or not a specified player is in this {@link Game}.
 	 * 
 	 * @param player
-	 *            {@link Player}
+	 *            {@link Player} number
 	 * @return <code>boolean</code>
 	 */
-	public boolean isPlaying(Player player) {
-
-		// Iterate through all the players in the game.
-		for (Player currentPlayer : players) {
-
-			// If the player is playing then return true.
-			if (currentPlayer.equals(player)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Assigns an array of {@link Player} to this {@link Game}.
-	 * 
-	 * @param players
-	 *            {@link Player}s in the {@link Game}. NOT EMPTY
-	 */
-	public void set(List<Player> players) {
-
-		if (players == null || players.isEmpty()) {
-			throw new IllegalArgumentException("players array cannot be empty");
-		}
-
-		this.players = players;
-		this.currentPlayerIndex = 0;
-	}
-
-	/**
-	 * Adds a {@link Player} to this {@link PlayerHelper}. Will do nothing if the
-	 * {@link Player} is already contained in the {@link PlayerHelper}.
-	 * 
-	 * @param player
-	 */
-	public void add(Player player) {
-		if (!players.contains(player)) {
-			players.add(player);
-		}
+	public boolean isPlaying(int number) {
+		return playing.contains(defaultPlayers.get(number));
 	}
 
 	/**
@@ -201,11 +178,11 @@ public class PlayerHelper {
 	 */
 	public Player getCurrent() {
 
-		if (players == null) {
+		if (playing == null) {
 			throw new NullPointerException("List of playing Players is null!");
 		}
 
-		return players.get(currentPlayerIndex);
+		return playing.get(currentPlayerIndex);
 	}
 
 	/**
@@ -214,8 +191,8 @@ public class PlayerHelper {
 	 * @param player
 	 *            {@link Player}
 	 */
-	public void setCurrent(Player player) {
-		int index = players.indexOf(player);
+	public void setCurrent(int number) {
+		int index = playing.indexOf(defaultPlayers.get(number));
 		currentPlayerIndex = index != -1 ? index : currentPlayerIndex;
 	}
 
@@ -224,7 +201,7 @@ public class PlayerHelper {
 	 */
 	public void nextPlayer() {
 
-		currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+		currentPlayerIndex = (currentPlayerIndex + 1) % playing.size();
 
 		reinforce();
 
@@ -236,28 +213,52 @@ public class PlayerHelper {
 		checkChallenges(game.states.reinforcement);
 	}
 
-	/**
-	 * Get the {@link Player} at the specified index from the {@link List} of
-	 * {@link Player}s.
-	 * 
-	 * @param index
-	 *            <code>int</code>
-	 * @return {@link Player}
-	 */
-	public Player get(int index) {
-		return players.get(index);
+	public Player get(int number) {
+		return defaultPlayers.get(number);
 	}
 
 	/**
 	 * Resets all the countries owned and army size of all the {@link Player}s to
 	 * zero;
 	 */
-	public void reset() {
-		// Reset the all players number of countries to zero.
-		Player.ONE.reset();
-		Player.TWO.reset();
-		Player.THREE.reset();
-		Player.FOUR.reset();
+	public void resetAll() {
+		defaultPlayers.forEach((number, player) -> player.reset());
+	}
+
+	public void emptyPlaying() {
+		playing.clear();
+	}
+	
+	/**
+	 * Initialises all the {@link Player} images.
+	 * 
+	 * @param uiPath
+	 *            Path to the
+	 */
+	public void initAll() {
+		defaultPlayers.forEach((number, player) -> player.init(game.assets.ui));
+	}
+
+	public void defaultPlayers(int number) {
+		
+		playing.clear();
+		
+		for(int index = 1; index <= number; index++) {
+			setPlaying(index);
+		}
+	}
+	
+	public Player getRandom() {
+		return playing.get(new Random().nextInt(playing.size()));
+	}
+	
+	public void setPlaying(int number) {
+
+		Player player = defaultPlayers.get(number);
+		
+		if (!playing.contains(player)) {
+			playing.add(player);
+		}
 	}
 
 	/**
@@ -275,10 +276,9 @@ public class PlayerHelper {
 		int roundScale = game.getRoundNumber() != 0 ? game.getRoundNumber() * 2 : 1;
 
 		if (player.getCountriesRuled() < 12) {
-			player.setDistributableArmySize(player.getDistributableArmySize() + (3 * roundScale));
+			player.distributableArmy.add(3 * roundScale);
 		} else {
-			player.setDistributableArmySize(
-					player.getDistributableArmySize() + (player.getCountriesRuled() * roundScale / 3));
+			player.distributableArmy.add((player.getCountriesRuled() * roundScale) / 3);
 		}
 	}
 

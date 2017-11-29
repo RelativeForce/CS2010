@@ -500,58 +500,6 @@ public final class MovementState extends MultiSelectState {
 
 	}
 
-	/**
-	 * Moves one unit from one {@link Country} to another as long as the
-	 * {@link Country}s are own by the same {@link Player} and there is a chain of
-	 * that {@link Player}'s {@link Country}s conecting them.
-	 */
-	public void moveUnit() {
-
-		// Holds the currently highlighted country
-		Country highlightedCountry = getHighlightedCountry();
-
-		// Holds the current player.
-		Player player = getGame().players.getCurrent();
-
-		// Holds the size of the army that the player has to distribute.
-		int armySize = player.getDistributableArmySize();
-
-		// If there is a country highlighted.
-		if (highlightedCountry != null) {
-
-			// If the player has any units to place
-			if (armySize > 0) {
-
-				Player ruler = highlightedCountry.getRuler();
-
-				// If the highlighted country has a ruler and it is that player
-				if (ruler != null && ruler.equals(player)) {
-
-					// Get that country's army and increase its size by one.
-					Army army = highlightedCountry.getArmy();
-					army.setSize(army.getSize() + 1);
-
-					// Remove the unit from the list of units to place.
-					player.setDistributableArmySize(armySize - 1);
-					player.setTotalArmySize(player.getTotalArmySize() + 1);
-					getGame().players.checkChallenges(getGame().states.movement);
-
-					if (player.getDistributableArmySize() == 0) {
-						getGame().states.reinforcement.hideReinforceButton();
-					}
-
-				} else {
-					System.out.println(player.toString() + " does not rule this country");
-				}
-
-			} else {
-				System.out.println("No units to distribute.");
-			}
-
-		} else {
-			System.out.println("No country selected.");
-		}
-
-	}
+	
 
 }

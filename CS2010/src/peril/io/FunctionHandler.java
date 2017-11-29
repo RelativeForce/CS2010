@@ -91,7 +91,7 @@ public class FunctionHandler {
 	 * @return {@link Action}
 	 */
 	private Action<?> reinforceCountry() {
-		return new Action<Game>(game, game -> game.states.movement.moveUnit());
+		return new Action<Game>(game, game -> game.states.reinforcement.reinfoce());
 	}
 
 	/**
@@ -211,7 +211,7 @@ public class FunctionHandler {
 	 */
 	private Action<?> enterMainMenu() {
 		return new Action<Game>(game, game -> {
-			game.players.reset();
+			game.players.resetAll();
 			game.enterState(game.states.mainMenu);
 		});
 	}

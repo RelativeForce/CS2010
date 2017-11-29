@@ -1,8 +1,6 @@
 package peril.ui.states.menuStates;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -61,7 +59,7 @@ public class MainMenuState extends InteractiveState {
 	 * The {@link VisualList} of the number of {@link Player}s that can be in the
 	 * {@link Game}.
 	 */
-	private VisualList<PlayerArray> players;
+	private VisualList<Integer> players;
 
 	/**
 	 * The {@link VisualList} of the saved games read from the saved file.
@@ -257,7 +255,6 @@ public class MainMenuState extends InteractiveState {
 	public void loadMap() throws SlickException {
 
 		Map map = maps.getSelected();
-		PlayerArray playersArray = players.getSelected();
 
 		// Check width
 		if (map.width <= 0) {
@@ -271,7 +268,7 @@ public class MainMenuState extends InteractiveState {
 
 		// Loads the game assets and move into the set up state
 		if (saves.getSelected() == SaveFile.DEFAULT) {
-			getGame().players.set(playersArray.players);
+			getGame().players.defaultPlayers(players.getSelected());
 		}
 
 		int screenWidth = getGame().getContainer().getScreenWidth();
@@ -285,7 +282,7 @@ public class MainMenuState extends InteractiveState {
 		getGame().states.loadingScreen.addReader(getGame().io.gameLoader);
 		getGame().states.loadingScreen
 				.addReader(new MapReader(getGame().assets.maps + File.separatorChar + map.name, getGame(), saves.getSelected()));
-		getGame().enterState(getGame().states.loadingScreen.getID());
+		getGame().enterState(getGame().states.loadingScreen);
 
 	}
 
@@ -329,9 +326,9 @@ public class MainMenuState extends InteractiveState {
 	 * The visual representation of the list of players on screen.
 	 */
 	private void getPlayers() {
-		players.add("2", new PlayerArray(2));
-		players.add("3", new PlayerArray(3));
-		players.add("4", new PlayerArray(4));
+		players.add("2", 2);
+		players.add("3", 3);
+		players.add("4", 4);
 	}
 
 	private void checkSaves() {
@@ -385,55 +382,4 @@ public class MainMenuState extends InteractiveState {
 		}
 
 	}
-
-	/**
-	 * Holds an array of {@link Player}s in {@link MainMenuState#players}.
-	 * 
-	 * @author Joshua_Eddy
-	 *
-	 */
-	private class PlayerArray {
-
-		/**
-		 * An array of {@link players}.
-		 */
-		public final List<Player> players;
-
-		/**
-		 * Constructs a new {@link PlayerArray}.
-		 * 
-		 * @param numberOfPlayers
-		 *            The number of {@link Player}s in the {@link PlayerArray}.
-		 */
-		public PlayerArray(int numberOfPlayers) {
-
-			players = new ArrayList<Player>();
-
-			switch (numberOfPlayers) {
-			case 1:
-				players.add(Player.ONE);
-				break;
-			case 2:
-				players.add(Player.ONE);
-				players.add(Player.TWO);
-				break;
-			case 3:
-				players.add(Player.ONE);
-				players.add(Player.TWO);
-				players.add(Player.THREE);
-				break;
-			case 4:
-				players.add(Player.ONE);
-				players.add(Player.TWO);
-				players.add(Player.THREE);
-				players.add(Player.FOUR);
-				break;
-			default:
-				throw new IllegalArgumentException(
-						numberOfPlayers + " is not a valid number of players, it should be 1 to 4. ");
-			}
-
-		}
-	}
-
 }

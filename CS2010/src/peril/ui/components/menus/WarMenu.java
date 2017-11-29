@@ -244,7 +244,7 @@ public class WarMenu extends Menu {
 
 							// If the player has no countries they have lost.
 							if (defendingPlayer.getCountriesRuled() == 0) {
-								getGame().players.setLoser(defendingPlayer);
+								getGame().players.setLoser(defendingPlayer.number);
 								getGame().checkWinner();
 							}
 						}
@@ -359,21 +359,21 @@ public class WarMenu extends Menu {
 				// conquer the country. Otherwise just kill one unit from the defending army.
 				if (defendingArmy.getSize() == 1) {
 					defending.setRuler(attacker);
-					attacker.setTotalArmySize(attacker.getTotalArmySize() + 1);
+					attacker.totalArmy.add(1);
 					break;
 				} else {
-					defendingArmy.setSize(defendingArmy.getSize() - 1);
+					defendingArmy.remove(1);
 				}
 
 				if (defender != null) {
-					defender.setTotalArmySize(defender.getTotalArmySize() - 1);
+					defender.totalArmy.remove(1);
 				}
 
 			}
 			// Attacker has lost the attack
 			else {
-				attackingArmy.setSize(attackingArmy.getSize() - 1);
-				attacker.setTotalArmySize(attacker.getTotalArmySize() - 1);
+				attackingArmy.remove(1);
+				attacker.totalArmy.remove(1);
 			}
 
 		}
@@ -497,7 +497,7 @@ public class WarMenu extends Menu {
 	private void drawPlayer(Graphics g, Player player, int offset) {
 		int centreX = getPosition().x + (getWidth() / 2);
 		int x = centreX + offset - (playerFont.getWidth(player.toString()) / 2);
-		playerFont.setColor(player.getColor());
+		playerFont.setColor(player.color);
 		playerFont.draw(g, player.toString(), x, getPosition().y + 40);
 	}
 

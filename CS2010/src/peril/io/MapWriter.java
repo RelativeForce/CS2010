@@ -123,10 +123,10 @@ public class MapWriter {
 
 		line.append("Player,");
 
-		line.append(player.toString());
+		line.append(player.number);
 		line.append(',');
 
-		line.append(player.getDistributableArmySize());
+		line.append(player.distributableArmy.getSize());
 		line.append(',');
 		
 		line.append(isActive);
@@ -247,7 +247,7 @@ public class MapWriter {
 		line.append(',');
 
 		// Player ruler
-		line.append(country.getRuler() != null ? country.getRuler().toString() : '-');
+		line.append(country.getRuler() != null ? country.getRuler().number : '-');
 
 		return line.toString();
 	}

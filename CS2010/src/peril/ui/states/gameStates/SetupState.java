@@ -122,23 +122,23 @@ public final class SetupState extends CoreGameState {
 
 			switch (key) {
 			case Input.KEY_1:
-				if (getGame().players.isPlaying(Player.ONE)) {
-					swapRuler(highlighted, Player.ONE);
+				if (getGame().players.isPlaying(1)) {
+					swapRuler(highlighted, getGame().players.get(1));
 				}
 				break;
 			case Input.KEY_2:
-				if (getGame().players.isPlaying(Player.TWO)) {
-					swapRuler(highlighted, Player.TWO);
+				if (getGame().players.isPlaying(2)) {
+					swapRuler(highlighted, getGame().players.get(2));
 				}
 				break;
 			case Input.KEY_3:
-				if (getGame().players.isPlaying(Player.THREE)) {
-					swapRuler(highlighted, Player.THREE);
+				if (getGame().players.isPlaying(3)) {
+					swapRuler(highlighted, getGame().players.get(3));
 				}
 				break;
 			case Input.KEY_4:
-				if (getGame().players.isPlaying(Player.FOUR)) {
-					swapRuler(highlighted, Player.FOUR);
+				if (getGame().players.isPlaying(4)) {
+					swapRuler(highlighted, getGame().players.get(4));
 				}
 				break;
 			case Input.KEY_SPACE:
@@ -176,7 +176,7 @@ public final class SetupState extends CoreGameState {
 		// one.
 		if (oldRuler != null) {
 			oldRuler.setCountriesRuled(oldRuler.getCountriesRuled() - 1);
-			oldRuler.setTotalArmySize(oldRuler.getTotalArmySize() - 1);
+			oldRuler.totalArmy.remove(1);
 		}
 
 		// Reassign the ruler of the country.
@@ -186,7 +186,7 @@ public final class SetupState extends CoreGameState {
 		// owns by one.
 		if (newRuler != null) {
 			newRuler.setCountriesRuled(newRuler.getCountriesRuled() + 1);
-			newRuler.setTotalArmySize(newRuler.getTotalArmySize() + 1);
+			newRuler.totalArmy.add(1);
 		}
 
 	}

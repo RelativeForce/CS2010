@@ -73,13 +73,24 @@ public final class Army {
 		return size;
 	}
 
+	public void add(int amount) {
+		size += amount;
+	}
+
+	public void remove(int amount) {
+		if (size - amount < 0) {
+			throw new IllegalStateException("Army size cannot be less than zero");
+		}
+		size -= amount;
+	}
+
 	public void setOffset(Point offset) {
-		
-		if(offset == null) {
+
+		if (offset == null) {
 			throw new NullPointerException("Offset cannot be null.");
 		}
-		
+
 		this.offset = offset;
-		
+
 	}
 }

@@ -52,7 +52,7 @@ public final class ReinforcementState extends CoreGameState {
 		super.enter(gc, sbg);
 		getGame().pauseMenu.showSaveOption();
 	}
-	
+
 	/**
 	 * Adds a {@link Button} to this {@link ReinforcementState}. The last
 	 * {@link Button} with the specified id will be used as the
@@ -106,7 +106,7 @@ public final class ReinforcementState extends CoreGameState {
 
 			if (player.equals(ruler)) {
 
-				if (player.getDistributableArmySize() > 0) {
+				if (player.distributableArmy.getSize() > 0) {
 					moveReinforceButton(country);
 					reinforceButton.show();
 				} else {
@@ -129,18 +129,18 @@ public final class ReinforcementState extends CoreGameState {
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
-		
+
 		super.drawImages(g);
-		
+
 		super.drawPlayerName(g);
-		
+
 		super.drawButtons(g);
 
-		// Set the text color to magenta
+		// Set the text color to black
 		g.setColor(Color.black);
 
 		// Draw player name
-		g.drawString("Units: " + getGame().players.getCurrent().getDistributableArmySize(), 5, 35);
+		g.drawString("Units: " + getGame().players.getCurrent().distributableArmy.getSize(), 5, 35);
 
 		super.drawPauseMenu(g);
 	}
@@ -175,6 +175,54 @@ public final class ReinforcementState extends CoreGameState {
 
 		if (vector.x != 0 || vector.y != 0) {
 			reinforceButton.setPosition(new Point(old.x + vector.x, old.y + vector.y));
+		}
+
+	}
+
+	/**
+	 * Reinforces the selected {@link Country}.
+	 */
+	public void reinfoce() {
+
+		// Holds the currently highlighted country
+		Country highlightedCountry = getHighlightedCountry();
+
+		// Holds the current player.
+		Player player = getGame().players.getCurrent();
+
+		// If there is a country highlighted.
+		if (highlightedCountry != null) {
+
+			// If the player has any units to place
+			if (player.distributableArmy.getSize() > 0) {
+
+				Player ruler = highlightedCountry.getRuler();
+
+				// If the highlighted country has a ruler and it is that player
+				if (ruler != null && ruler.equals(player)) {
+
+					// Get that country's army and increase its size by one.
+					highlightedCountry.getArmy().add(1);
+
+					// Remove the unit from the list of units to place.
+					player.distributableArmy.remove(1);
+					player.totalArmy.add(1);
+					getGame().players.checkChallenges(getGame().states.reinforcement);
+
+					if (player.distributableArmy.getSize() == 0) {
+						getGame().states.reinforcement.hideReinforceButton();
+					}
+
+				} else {
+					System.out.println(player.toString() + " does not rule this country");
+				}
+
+			} else {
+				System.out.println("No units to distribute.");
+			}
+
+		} else {
+			System.out.println("No country selected.");
 		}
 
 	}

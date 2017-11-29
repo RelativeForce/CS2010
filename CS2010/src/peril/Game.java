@@ -144,7 +144,7 @@ public class Game extends StateBasedGame implements MusicListener {
 	public void initStatesList(GameContainer container) throws SlickException {
 		states.initGame(container, this, new UIEventHandler(this));
 		EnvironmentalHazard.initIcons(assets.ui);
-		Player.initPlayers(assets.ui);
+		players.initAll();
 	}
 
 	/**
@@ -183,16 +183,10 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public void autoDistributeCountries() {
 
-		Random rand = new Random();
-
-		players.reset();
+		players.resetAll();
 
 		// Iterate through each country on the board.
-		board.getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
-
-			assignPlayer(country, rand);
-
-		}));
+		board.forEachCountry(country -> assignPlayer(country));
 
 	}
 
@@ -336,24 +330,22 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * 
 	 * @param country
 	 *            {@link Country} that is to be ruled.
-	 * @param rand
-	 *            {@link Random}
 	 */
-	private void assignPlayer(Country country, Random rand) {
+	private void assignPlayer(Country country) {
 
 		// Holds whether the country has assigned a player ruler.
 		boolean set = false;
 
 		while (!set) {
 
+			// Holds the number of players in the game.
+			int numberOfPlayers = players.size();
+
 			// Get the player at the random index.
-			Player player = players.get(rand.nextInt(players.size()));
+			Player player = players.getRandom();
 
 			// Holds the number of countries on the board.
 			int numberOfCountries = board.getNumberOfCountries();
-
-			// Holds the number of players in the game.
-			int numberOfPlayers = players.size();
 
 			// Holds the maximum countries this player can own so that all the players nd up
 			// with the same number of countries.
@@ -378,7 +370,7 @@ public class Game extends StateBasedGame implements MusicListener {
 				set = true;
 				country.setRuler(player);
 				player.setCountriesRuled(player.getCountriesRuled() + 1);
-				player.setTotalArmySize(player.getTotalArmySize() + 1);
+				player.totalArmy.add(1);
 			}
 
 		}

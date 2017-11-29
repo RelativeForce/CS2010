@@ -1,3 +1,4 @@
 Europe,620,496
 Earth,1600,1060
+Tamriel,1600,1060
 Old_Earth,1500,745

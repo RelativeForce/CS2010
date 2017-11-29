@@ -2,7 +2,6 @@ package peril.io;
 
 import peril.Game;
 import peril.Player;
-import peril.board.Army;
 import peril.board.Continent;
 import peril.board.Country;
 import peril.multiThread.Action;
@@ -75,10 +74,14 @@ public class FunctionHandler {
 		throw new IllegalArgumentException(code + " is not a valid function code.");
 	}
 
+	/**
+	 * Retrieves a function that toggles the {@link WarMenu} between visible and
+	 * invisible.
+	 * 
+	 * @return {@link Action}
+	 */
 	private Action<?> toggleWarMenu() {
-		return new Action<Game>(game, game -> {
-			game.warMenu.toggleVisibility();
-		});
+		return new Action<Game>(game, game -> game.warMenu.toggleVisibility());
 	}
 
 	/**
@@ -88,54 +91,7 @@ public class FunctionHandler {
 	 * @return {@link Action}
 	 */
 	private Action<?> reinforceCountry() {
-		return new Action<Game>(game, game -> {
-
-			// Holds the currently highlighted country
-			Country highlightedCountry = game.states.reinforcement.getHighlightedCountry();
-
-			// Holds the current player.
-			Player player = game.players.getCurrent();
-
-			// Holds the size of the army that the player has to distribute.
-			int armySize = player.getDistributableArmySize();
-
-			// If there is a country highlighted.
-			if (highlightedCountry != null) {
-
-				// If the player has any units to place
-				if (armySize > 0) {
-
-					Player ruler = highlightedCountry.getRuler();
-
-					// If the highlighted country has a ruler and it is that player
-					if (ruler != null && ruler.equals(player)) {
-
-						// Get that country's army and increase its size by one.
-						Army army = highlightedCountry.getArmy();
-						army.setSize(army.getSize() + 1);
-
-						// Remove the unit from the list of units to place.
-						player.setDistributableArmySize(armySize - 1);
-						player.setTotalArmySize(player.getTotalArmySize() + 1);
-						game.players.checkChallenges(game.states.movement);
-
-						if (player.getDistributableArmySize() == 0) {
-							game.states.reinforcement.hideReinforceButton();
-						}
-
-					} else {
-						System.out.println(player.toString() + " does not rule this country");
-					}
-
-				} else {
-					System.out.println("No units to distribute.");
-				}
-
-			} else {
-				System.out.println("No country selected.");
-			}
-		});
-
+		return new Action<Game>(game, game -> game.states.movement.moveUnit());
 	}
 
 	/**
@@ -145,9 +101,7 @@ public class FunctionHandler {
 	 * @return {@link Action}
 	 */
 	private Action<?> enterCombat() {
-		return new Action<Game>(game, game -> {
-			game.enterState(game.states.combat);
-		});
+		return new Action<Game>(game, game -> game.enterState(game.states.combat));
 	}
 
 	/**
@@ -157,9 +111,7 @@ public class FunctionHandler {
 	 * @return {@link Action}
 	 */
 	private Action<?> enterMovement() {
-		return new Action<Game>(game, game -> {
-			game.enterState(game.states.movement);
-		});
+		return new Action<Game>(game, game -> game.enterState(game.states.movement));
 	}
 
 	/**
@@ -203,9 +155,7 @@ public class FunctionHandler {
 	 * @return {@link Action}
 	 */
 	private Action<?> fortifyCountry() {
-		return new Action<Game>(game, game -> {
-			game.states.movement.fortify();
-		});
+		return new Action<Game>(game, game -> game.states.movement.fortify());
 	}
 
 	/**

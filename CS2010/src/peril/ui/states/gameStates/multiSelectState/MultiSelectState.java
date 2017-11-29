@@ -10,7 +10,6 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Country;
-import peril.ui.components.menus.PauseMenu;
 import peril.ui.states.gameStates.CoreGameState;
 
 /**
@@ -37,12 +36,10 @@ public abstract class MultiSelectState extends CoreGameState {
 	 *            The ID of this {@link MultiSelectState}.
 	 * @param stateName
 	 *            The name of this {@link MultiSelectState}.
-	 * @param pauseMenu
-	 *            The {@link PauseMenu} for this {@link MultiSelectState}.
 	 * 
 	 */
-	public MultiSelectState(Game game, String stateName, int id, PauseMenu pauseMenu) {
-		super(game, stateName, id, pauseMenu);
+	public MultiSelectState(Game game, String stateName, int id) {
+		super(game, stateName, id);
 		highlightedCountry = null;
 	}
 

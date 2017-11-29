@@ -11,7 +11,6 @@ import peril.Player;
 import peril.Point;
 import peril.board.Country;
 import peril.ui.components.TextField;
-import peril.ui.components.menus.PauseMenu;
 
 /**
  * The state where the user selects which player gets what {@link Country}s.
@@ -39,11 +38,9 @@ public final class SetupState extends CoreGameState {
 	 *            The {@link Game} this {@link SetupState} is a part of.
 	 * @param id
 	 *            The ID of this {@link SetupState}
-	 * @param pauseMenu
-	 *            The {@link PauseMenu} for this {@link SetupState}.
 	 */
-	public SetupState(Game game, int id, PauseMenu pauseMenu) {
-		super(game, STATE_NAME, id, pauseMenu);
+	public SetupState(Game game, int id) {
+		super(game, STATE_NAME, id);
 		about = new TextField(400, 240, new Point(130, 0));
 		super.addComponent(about);
 		showAbout = false;

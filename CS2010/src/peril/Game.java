@@ -16,8 +16,6 @@ import peril.board.Continent;
 import peril.board.Country;
 import peril.board.EnvironmentalHazard;
 import peril.helpers.*;
-import peril.io.fileParsers.*;
-import peril.io.fileReaders.MusicReader;
 import peril.ui.Container;
 import peril.ui.UIEventHandler;
 import peril.ui.components.menus.*;
@@ -66,9 +64,11 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public final WarMenu warMenu;
 
-	public final String uiDirectory;
-	public final String mapsDirectory;
-	public final String musicDirectory;
+	/**
+	 * The {@link DirectoryHelper} that holds all the sub directories of the assets
+	 * folder.
+	 */
+	public final DirectoryHelper assets;
 
 	/**
 	 * The current turn of the {@link Game}. Initially zero;
@@ -90,10 +90,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		StringBuilder assetsPath = new StringBuilder(new File(System.getProperty("user.dir")).getPath())
 				.append(File.separatorChar).append("assets");
 
-		// Set the directory paths for the different types of game assets.
-		mapsDirectory = new StringBuilder(assetsPath).append(File.separatorChar).append("maps").toString();
-		musicDirectory = new StringBuilder(assetsPath).append(File.separatorChar).append("music").toString();
-		uiDirectory = new StringBuilder(assetsPath).append(File.separatorChar).append("ui").toString();
+		this.assets = new DirectoryHelper(assetsPath.toString());
 
 		// Set the initial round to zero
 		this.currentRound = 0;
@@ -108,11 +105,11 @@ public class Game extends StateBasedGame implements MusicListener {
 		this.pauseMenu = new PauseMenu(new Point(100, 100), this);
 
 		// Initialise the game states.
-		MainMenuState mainMenu = new MainMenuState(this, 0, mapsDirectory);
-		SetupState setup = new SetupState(this, 1, pauseMenu);
-		ReinforcementState reinforcement = new ReinforcementState(this, 2, pauseMenu);
-		CombatState combat = new CombatState(this, 3, pauseMenu, warMenu);
-		MovementState movement = new MovementState(this, 4, pauseMenu);
+		MainMenuState mainMenu = new MainMenuState(this, 0);
+		SetupState setup = new SetupState(this, 1);
+		ReinforcementState reinforcement = new ReinforcementState(this, 2);
+		CombatState combat = new CombatState(this, 3);
+		MovementState movement = new MovementState(this, 4);
 		EndState end = new EndState(this, 5);
 		LoadingScreen loadingScreen = new LoadingScreen(this, 6);
 
@@ -121,11 +118,10 @@ public class Game extends StateBasedGame implements MusicListener {
 				reinforcement, movement, end };
 
 		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen);
-		
-		this.io = new IOHelper(mapsDirectory, new AssetReader(containers, uiDirectory, "game.txt", this),
-				new MusicReader(musicDirectory, this), new AssetReader(containers, uiDirectory, "menu.txt", this));
-		
-		this.players = new PlayerHelper(this, uiDirectory);
+
+		this.io = new IOHelper(this, containers);
+
+		this.players = new PlayerHelper(this);
 
 		// Construct the container for the game as a Slick2D state based game.
 		try {
@@ -147,8 +143,8 @@ public class Game extends StateBasedGame implements MusicListener {
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
 		states.initGame(container, this, new UIEventHandler(this));
-		EnvironmentalHazard.initIcons(uiDirectory);
-		Player.initPlayers(uiDirectory);
+		EnvironmentalHazard.initIcons(assets.ui);
+		Player.initPlayers(assets.ui);
 	}
 
 	/**

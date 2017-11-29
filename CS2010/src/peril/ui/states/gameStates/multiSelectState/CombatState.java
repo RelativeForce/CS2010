@@ -11,7 +11,6 @@ import peril.Player;
 import peril.Point;
 import peril.board.Country;
 import peril.ui.Button;
-import peril.ui.components.menus.PauseMenu;
 import peril.ui.components.menus.WarMenu;
 import peril.ui.states.gameStates.CoreGameState;
 
@@ -53,16 +52,14 @@ public final class CombatState extends MultiSelectState {
 	 *            The {@link Game} that houses this {@link CombatState}.
 	 * @param id
 	 *            The ID of this {@link CombatState}
-	 * @param pauseMenu
-	 *            The {@link PauseMenu} for this {@link CombatState}.
 	 */
-	public CombatState(Game game, int id, PauseMenu pauseMenu, WarMenu warMenu) {
-		super(game, STATE_NAME, id, pauseMenu);
-		super.addComponent(warMenu);
+	public CombatState(Game game, int id) {
+		super(game, STATE_NAME, id);
+		
 		
 		this.isPostCombat = false;
-		this.warMenu = warMenu;
-		
+		this.warMenu = game.warMenu;
+		super.addComponent(warMenu);
 	}
 
 	/**

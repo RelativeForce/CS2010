@@ -6,7 +6,9 @@ import peril.Game;
 import peril.io.SaveFile;
 import peril.io.MapWriter;
 import peril.io.fileParsers.AssetReader;
+import peril.io.fileParsers.FileParser;
 import peril.io.fileReaders.MusicReader;
+import peril.ui.Container;
 import peril.ui.states.gameStates.CoreGameState;
 
 /**
@@ -34,27 +36,19 @@ public class IOHelper {
 	 */
 	public final AssetReader mainMenuLoader;
 
-	private final String mapsDirectory;
-
 	/**
 	 * Constructs a new {@link IOHelper}.
 	 * 
-	 * @param gameLoader
-	 *            The {@link AssetReader} that loads all the {@link CoreGameState}
-	 *            states buttons into the game from memory.
-	 * @param musicHelper
-	 *            The {@link MusicReader} for this {@link Game}.
-	 * @param mainMenuLoader
-	 *            The {@link AssetReader} that loads all the game visuals from
-	 *            memory.
-	 * @param mapsDirectory
-	 *            The directory containing all the map folders.
+	 * @param game
+	 *            The instance of {@link Game} that this {@link IOHelper} helps.
+	 * @param containers
+	 *            {@link Container}s that the {@link FileParser}s may add elements
+	 *            to.
 	 */
-	public IOHelper(String mapsDirectory, AssetReader gameLoader, MusicReader musicHelper, AssetReader mainMenuLoader) {
-		this.mainMenuLoader = mainMenuLoader;
-		this.gameLoader = gameLoader;
-		this.musicHelper = musicHelper;
-		this.mapsDirectory = mapsDirectory;
+	public IOHelper(Game game, Container[] containers) {
+		this.mainMenuLoader = new AssetReader(containers, "menu.txt", game);
+		this.gameLoader = new AssetReader(containers, "game.txt", game);
+		this.musicHelper = new MusicReader(game);
 	}
 
 	/**
@@ -67,7 +61,7 @@ public class IOHelper {
 	 *            {@link SaveFile}
 	 */
 	public void saveBoard(Game game, SaveFile file) {
-		new MapWriter(game, mapsDirectory + File.separatorChar + game.board.getName(), file).write();
+		new MapWriter(game, game.assets.maps + File.separatorChar + game.board.getName(), file).write();
 	}
 
 }

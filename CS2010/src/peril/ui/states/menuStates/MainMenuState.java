@@ -86,13 +86,15 @@ public class MainMenuState extends InteractiveState {
 	 * @param id
 	 *            The ID of this {@link MainMenuState}.
 	 */
-	public MainMenuState(Game game, int id, String mapsFilePath) {
-
+	public MainMenuState(Game game, int id) {
 		super(game, STATE_NAME, id);
-		mapsFile = TextFileReader.scanFile(mapsFilePath, "maps.txt");
+		
+		mapsFile = TextFileReader.scanFile(game.assets.maps, "maps.txt");
+		
 		maps = new VisualList<>(15, 220, 110, 22, 3, 10);
 		players = new VisualList<>(130, 220, 20, 22, 3, 5);
 		saves = new VisualList<>(190, 220, 80, 22, 3, 10);
+		
 		getMaps();
 		getPlayers();
 
@@ -282,7 +284,7 @@ public class MainMenuState extends InteractiveState {
 		getGame().board.setName(map.name);
 		getGame().states.loadingScreen.addReader(getGame().io.gameLoader);
 		getGame().states.loadingScreen
-				.addReader(new MapReader(getGame().mapsDirectory + File.separatorChar + map.name, getGame(), saves.getSelected()));
+				.addReader(new MapReader(getGame().assets.maps + File.separatorChar + map.name, getGame(), saves.getSelected()));
 		getGame().enterState(getGame().states.loadingScreen.getID());
 
 	}
@@ -336,7 +338,7 @@ public class MainMenuState extends InteractiveState {
 		String mapName = maps.getSelected().name;
 		saves.clear();
 		for (SaveFile file : SaveFile.values()) {
-			if (file.existsIn(getGame().mapsDirectory + File.separatorChar + mapName)) {
+			if (file.existsIn(getGame().assets.maps + File.separatorChar + mapName)) {
 				saves.add(file.name, file);
 			}
 		}

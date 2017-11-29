@@ -11,7 +11,6 @@ import peril.Player;
 import peril.Point;
 import peril.board.Country;
 import peril.ui.Button;
-import peril.ui.components.menus.PauseMenu;
 
 /**
  * Encapsulates the behaviour of the Reinforcement {@link CoreGameState} where
@@ -40,11 +39,9 @@ public final class ReinforcementState extends CoreGameState {
 	 *            The {@link Game} this {@link ReinforcementState} is a part of.
 	 * @param id
 	 *            The ID of this {@link ReinforcementState}
-	 * @param pauseMenu
-	 *            The {@link PauseMenu} for this {@link ReinforcementState}.
 	 */
-	public ReinforcementState(Game game, int id, PauseMenu pauseMenu) {
-		super(game, STATE_NAME, id, pauseMenu);
+	public ReinforcementState(Game game, int id) {
+		super(game, STATE_NAME, id);
 	}
 
 	/**

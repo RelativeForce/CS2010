@@ -45,9 +45,8 @@ public class PlayerHelper {
 	 * 
 	 * @param game
 	 *            The {@link Game} this {@link PlayerHelper} helps.
-	 * @param assetsPath The path to the assets 
 	 */
-	public PlayerHelper(Game game, String assetsPath) {
+	public PlayerHelper(Game game) {
 		this.game = game;
 		this.currentPlayerIndex = 0;
 		this.players = new ArrayList<>();

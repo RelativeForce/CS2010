@@ -43,22 +43,19 @@ public final class AssetReader extends FileParser {
 	 * @param containers
 	 *            The {@link Container}s that will be populated when
 	 *            {@link AssetReader#read()} is performed.
-	 * @param directoryPath
-	 *            File path of the asset details file.
 	 * @param game
 	 *            The {@link Game} this {@link AssetReader} will be used by.
 	 * @param filename
 	 *            The file name of the assets file.
 	 */
-	public AssetReader(Container[] containers, String directoryPath, String filename, Game game) {
-		super(directoryPath, filename);
+	public AssetReader(Container[] containers, String filename, Game game) {
+		super(game.assets.ui, filename);
 
 		// Check params
 		if (containers.length == 0) {
 			throw new NullPointerException("CoreGameState array cannot be empty.");
-		} else if (game == null) {
-			throw new NullPointerException("Game cannot be null.");
 		}
+		
 		this.functionHandler = new FunctionHandler(game);
 		this.containers = containers;
 	}

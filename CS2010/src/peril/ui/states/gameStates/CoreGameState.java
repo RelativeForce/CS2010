@@ -68,11 +68,11 @@ public abstract class CoreGameState extends InteractiveState {
 	 * @param id
 	 *            The id of this {@link CoreGameState}.
 	 */
-	protected CoreGameState(Game game, String stateName, int id, PauseMenu pauseMenu) {
+	protected CoreGameState(Game game, String stateName, int id) {
 		super(game, stateName, id);
 		this.highlightedCountry = null;
 
-		this.pauseMenu = pauseMenu;
+		this.pauseMenu = game.pauseMenu;
 		this.panDirection = null;
 		this.toolTipList = new ToolTipList(new Point(130, 15));
 		

@@ -187,7 +187,7 @@ public class PauseMenu extends Menu {
 	public void save() {
 
 		// Holds the path of the current map
-		String mapFolderPath = getGame().mapsDirectory + File.separatorChar + getGame().board.getName();
+		String mapFolderPath = getGame().assets.maps + File.separatorChar + getGame().board.getName();
 
 		// Save the current state of the game
 		new MapWriter(getGame(), mapFolderPath, saveFiles.getSelected()).write();
@@ -257,7 +257,7 @@ public class PauseMenu extends Menu {
 
 		// If the save file does not currently exist display to the user that it is
 		// empty
-		boolean exists = file.existsIn(getGame().mapsDirectory + File.separatorChar + getGame().board.getName());
+		boolean exists = file.existsIn(getGame().assets.maps + File.separatorChar + getGame().board.getName());
 		String text = file.name + (exists ? "" : " - Empty");
 
 		saveFiles.add(text, file);

@@ -29,13 +29,11 @@ public class MusicReader {
 	/**
 	 * Constructs a new {@link MusicReader}.
 	 * 
-	 * @param musicDirectory
-	 *            The path to the music directory.
 	 * @param game
 	 *            The {@link Game} this {@link MusicReader} is a part of.
 	 */
-	public MusicReader(String musicDirectory, Game game) {
-		this.musicDirectory = musicDirectory;
+	public MusicReader(Game game) {
+		this.musicDirectory = game.assets.music;
 		this.game = game;
 	}
 

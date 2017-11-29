@@ -18,7 +18,6 @@ import peril.Point;
 import peril.board.Army;
 import peril.board.Country;
 import peril.ui.Button;
-import peril.ui.components.menus.PauseMenu;
 import peril.ui.states.gameStates.CoreGameState;
 
 /**
@@ -53,12 +52,10 @@ public final class MovementState extends MultiSelectState {
 	 *            The {@link Game} that houses this {@link MovementState}.
 	 * @param id
 	 *            The ID of this {@link MovementState}.
-	 * @param pauseMenu
-	 *            The {@link PauseMenu} for this {@link MovementState}.
 	 * 
 	 */
-	public MovementState(Game game, int id, PauseMenu pauseMenu) {
-		super(game, STATE_NAME, id, pauseMenu);
+	public MovementState(Game game, int id) {
+		super(game, STATE_NAME, id);
 
 		path = new LinkedList<>();
 	}

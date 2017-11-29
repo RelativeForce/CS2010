@@ -51,11 +51,10 @@ Link,Flump,Umple
 Link,Slump,Russia
 Link,Russia,Finland
 
-// All the reward sizes are (size * numberOfCountries) / 10
-
-ArmySize,10,5
-ArmySize,15,5
-CountriesOwned,7,5
-CountriesOwned,8,5
+// Type, goal, reward
+ArmySize,20,5
+ArmySize,35,10
+CountriesOwned,12,5
+CountriesOwned,14,10
 //ContinentsOwned,2,5
 //ContinentsOwned,3,5

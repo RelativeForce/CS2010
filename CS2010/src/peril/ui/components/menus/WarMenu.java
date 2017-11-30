@@ -20,6 +20,7 @@ import peril.ui.Button;
 import peril.ui.Font;
 import peril.ui.Region;
 import peril.ui.Viewable;
+import peril.ui.components.Component;
 import peril.ui.components.lists.VisualList;
 
 /**
@@ -30,23 +31,43 @@ import peril.ui.components.lists.VisualList;
  */
 public class WarMenu extends Menu {
 
+	/**
+	 * The name of this {@link Menu}.
+	 */
 	private final static String NAME = "War Menu";
+
+	/**
+	 * The {@link Dice} displaying dice interactions on screen.
+	 */
+	private final Dice dice;
 
 	/**
 	 * {@link Random} object for the random number generator.
 	 * 
 	 */
-	private Random random;
+	private final Random random;
 
 	/**
-	 * Holds the dice that will be displayed on screen.
+	 * The {@link Font} for the text of the heading.
 	 */
-	private Map<Point, Image> displayDice;
+	private final Font headingFont;
 
 	/**
-	 * Holds the default set of dice images.
+	 * The {@link Font} for the text to display the {@link Army}s sizes.
 	 */
-	private final Map<Integer, Image> defaultDice;
+	private final Font textFont;
+
+	/**
+	 * The {@link Font} for the text to display the name of the {@link Country}s.
+	 */
+	private final Font countryFont;
+
+	/**
+	 * The {@link Font} for the text to display the results of the attack on a
+	 * neighbouring {@link Country}.
+	 * 
+	 */
+	private final Font resultFont;
 
 	/**
 	 * A {@link VisualList} of Buttons to select the number of units to attack with.
@@ -59,28 +80,6 @@ public class WarMenu extends Menu {
 	 * 
 	 */
 	private Button attackButton;
-
-	/**
-	 * The {@link Font} for the text of the heading.
-	 */
-	private Font headingFont;
-
-	/**
-	 * The {@link Font} for the text to display the {@link Army}s sizes.
-	 */
-	private Font textFont;
-
-	/**
-	 * The {@link Font} for the text to display the name of the {@link Country}s.
-	 */
-	private Font countryFont;
-
-	/**
-	 * The {@link Font} for the text to display the results of the attack on a
-	 * neighbouring {@link Country}.
-	 * 
-	 */
-	private Font resultFont;
 
 	/**
 	 * The {@link Country} of the attacking {@link Player}.
@@ -119,11 +118,10 @@ public class WarMenu extends Menu {
 		this.textFont = new Font("Arial", Color.red, 40);
 		this.countryFont = new Font("Arial", Color.cyan, 20);
 		this.resultFont = new Font("Arial", Color.white, 15);
+		this.dice = new Dice();
 
-		this.defaultDice = new HashMap<>();
-
-		this.displayDice = new HashMap<>();
 		this.checkSquadSizes();
+
 	}
 
 	/**
@@ -135,13 +133,8 @@ public class WarMenu extends Menu {
 		textFont.init();
 		countryFont.init();
 		resultFont.init();
-
+		dice.init();
 		squadSizes.init();
-
-		for (int i = 1; i <= 6; i++) {
-			this.defaultDice.put(i,
-					ImageReader.getImage(getGame().assets.ui + "dice" + i + ".png").getScaledCopy(28, 28));
-		}
 
 	}
 
@@ -173,7 +166,6 @@ public class WarMenu extends Menu {
 
 			drawArmySizes(g);
 
-			displayDice.forEach((position, dice) -> g.drawImage(dice, position.x, position.y));
 		}
 	}
 
@@ -224,7 +216,7 @@ public class WarMenu extends Menu {
 	public void hide() {
 		super.hide();
 
-		displayDice.clear();
+		dice.clear();
 	}
 
 	/**
@@ -369,18 +361,18 @@ public class WarMenu extends Menu {
 
 		// Get the dice rolls for the attackers and defenders.
 		Integer[] attackerDiceRolls = getDiceRolls(attackSquadSize);
-		Integer[] defenderDiceRolls = getDiceRolls(defending.getArmy().getSize() > 1 && attackSquadSize > 1 ? 2 : 1);
+		Integer[] defenderDiceRolls = getDiceRolls(defending.getArmy().getSize() > 1 ? 2 : 1);
 
 		// The position of the top attacker dice
 		int attackX = squadSizes.getPosition().x + squadSizes.getWidth() + 5;
 		int attackY = squadSizes.getPosition().y;
 
 		// The position of the top defender dice
-		int defendX = this.getPosition().x + ((this.getWidth() * 3) / 4) - 35;
+		int defendX = this.getPosition().x + ((this.getWidth() * 3) / 4);
 		int defendY = squadSizes.getPosition().y;
 
 		// Display the dice that we rolled
-		displayDice(attackerDiceRolls, defenderDiceRolls, new Point(attackX, attackY), new Point(defendX, defendY));
+		dice.set(attackerDiceRolls, defenderDiceRolls, new Point(attackX, attackY), new Point(defendX, defendY));
 
 		// Compare the dice that were rolled.
 		compareDiceRolls(attackerDiceRolls, defenderDiceRolls, attacking, defending);
@@ -416,16 +408,20 @@ public class WarMenu extends Menu {
 	 *            {@link Graphics}.
 	 */
 	private void succesfulConquer(Graphics g) {
-		String success = "has conquered";
+
+		// Draw the attacking country's name
 		countryFont.draw(g, attacker.getName(),
-				getPosition().x + (getWidth() / 2) - (resultFont.getWidth(attacker.getName()) / 2),
+				getPosition().x + (getWidth() / 2) - (countryFont.getWidth(attacker.getName()) / 2),
 				getPosition().y + (getHeight() / 2) - 30);
 
+		// Draw text
+		String success = "has conquered";
 		resultFont.draw(g, success, getPosition().x + (getWidth() / 2) - (resultFont.getWidth(success) / 2),
 				getPosition().y + (getHeight() / 2));
 
+		// Draw the defending country's name
 		countryFont.draw(g, enemy.getName(),
-				getPosition().x + (getWidth() / 2) - (resultFont.getWidth(enemy.getName()) / 2),
+				getPosition().x + (getWidth() / 2) - (countryFont.getWidth(enemy.getName()) / 2),
 				getPosition().y + (getHeight() / 2) + 30);
 
 		drawPlayer(g, player, (getWidth() / 4));
@@ -442,6 +438,7 @@ public class WarMenu extends Menu {
 	private void normalCombat(Graphics g) {
 		squadSizes.draw(g);
 		drawPlayer(g, ruler, (getWidth() / 4));
+		dice.draw(g);
 	}
 
 	/**
@@ -545,40 +542,6 @@ public class WarMenu extends Menu {
 	}
 
 	/**
-	 * Adds dice to {@link WarMenu#displayDice} with there designated {@link Point}
-	 * position.
-	 * 
-	 * @param attackerDiceRolls
-	 * @param defenderDiceRolls
-	 * @param attackTop
-	 *            {@link Point} of the top dice for the attacker.
-	 * @param defendTop
-	 *            {@link Point} of the top dice for the defender.
-	 */
-	private void displayDice(Integer[] attackerDiceRolls, Integer[] defenderDiceRolls, Point attackTop,
-			Point defendTop) {
-
-		int defendX = defendTop.x;
-		int defendY = defendTop.y;
-
-		int attackX = attackTop.x;
-		int attackY = attackTop.y;
-
-		displayDice.clear();
-
-		for (Integer roll : attackerDiceRolls) {
-			displayDice.put(new Point(attackX, attackY), defaultDice.get(roll));
-			attackY += 30;
-		}
-
-		for (Integer roll : defenderDiceRolls) {
-			displayDice.put(new Point(defendX, defendY), defaultDice.get(roll));
-			defendY += 30;
-		}
-
-	}
-
-	/**
 	 * Compares the attackers dice roles from the defenders rolls and removes units
 	 * from the attacking country and defending country appropriately.
 	 * 
@@ -637,4 +600,128 @@ public class WarMenu extends Menu {
 		}
 
 	}
+
+	/**
+	 * Handles displaying the dice on the screen.
+	 * 
+	 * @author Joshua_Eddy
+	 *
+	 */
+	private class Dice implements Component {
+
+		/**
+		 * The width of the dice.
+		 */
+		private static final int diceWidth = 28;
+
+		/**
+		 * The height of the dice.
+		 */
+		private static final int diceHeight = 28;
+
+		/**
+		 * Holds the dice that will be displayed on screen.
+		 */
+		private final Map<Point, Image> display;
+
+		/**
+		 * Holds the default set of dice images.
+		 */
+		private final Map<Integer, Image> defaultDice;
+
+		/**
+		 * Constructs a new {@link Dice}.
+		 */
+		public Dice() {
+			this.defaultDice = new HashMap<>();
+			this.display = new HashMap<>();
+		}
+
+		/**
+		 * Adds dice to {@link WarMenu#display} with there designated {@link Point}
+		 * position.
+		 * 
+		 * @param attackerDiceRolls
+		 * @param defenderDiceRolls
+		 * @param attackTop
+		 *            {@link Point} of the top dice for the attacker.
+		 * @param defendTop
+		 *            {@link Point} of the top dice for the defender.
+		 */
+		public void set(Integer[] attackerDiceRolls, Integer[] defenderDiceRolls, Point attackTop, Point defendTop) {
+
+			int defendX = defendTop.x;
+			int defendY = defendTop.y;
+
+			int attackX = attackTop.x;
+			int attackY = attackTop.y;
+
+			clear();
+
+			for (Integer roll : attackerDiceRolls) {
+				display.put(new Point(attackX, attackY), defaultDice.get(roll));
+				attackY += diceHeight + 2;
+			}
+
+			for (Integer roll : defenderDiceRolls) {
+				display.put(new Point(defendX, defendY), defaultDice.get(roll));
+				defendY += diceHeight + 2;
+			}
+
+			int boxWidth = 10;
+
+			Region box = new Region(boxWidth, diceHeight, new Point(0, 0));
+
+			Image redBox = box.convert(Color.red, 255);
+
+			Image greenBox = box.convert(Color.green, 255);
+
+			// Get the size of the smaller set of dice.
+			int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length
+					: attackerDiceRolls.length;
+
+			// Compare each attacking dice roll against the defending dice roll
+			for (int i = 0; i < diceToCheck; i++) {
+
+				boolean attackerWon = attackerDiceRolls[i] > defenderDiceRolls[i];
+
+				// Display defender box
+				Point defend = new Point(defendTop.x - boxWidth - 3, defendTop.y + (i * (diceWidth + 2)));
+				display.put(defend, attackerWon ? redBox : greenBox);
+
+				// Display attacker box
+				Point attack = new Point(attackTop.x + diceWidth + 3, attackTop.y + (i * (diceWidth + 2)));
+				display.put(attack, attackerWon ? greenBox : redBox);
+			}
+
+		}
+
+		/**
+		 * Initialises this {@link Dice}.
+		 */
+		@Override
+		public void init() {
+			for (int i = 1; i <= 6; i++) {
+				this.defaultDice.put(i, ImageReader.getImage(getGame().assets.ui + "dice" + i + ".png")
+						.getScaledCopy(diceWidth, diceHeight));
+			}
+		}
+
+		/**
+		 * Draws this {@link Dice}.
+		 */
+		@Override
+		public void draw(Graphics g) {
+			display.forEach((position, dice) -> g.drawImage(dice, position.x, position.y));
+		}
+
+		/**
+		 * Clears the dice in this {@link Dice}
+		 */
+		public void clear() {
+			display.clear();
+		}
+
+	}
+
 }

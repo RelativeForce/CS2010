@@ -19,7 +19,7 @@ button,Setup,8,autoButton.png,90,40,15,80,auto
 image,Setup,setUpStateBox.png,200,130,5,5
 
 // War Menu
-button,War Menu,6,attackButton.png,90,40,105,300,war
+button,War Menu,6,attackButton.png,90,40,55,300,war
 image,War Menu,warMenu.png,300,400,0,0
 
 // Pause Menu

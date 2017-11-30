@@ -1,26 +1,26 @@
 // Reinforcement State
 button,Reinforcement,0,reinforceButton.png,90,40,10,800,reinforce
-button,Reinforcement,1,endButton.png,90,40,15,110,end
+button,Reinforcement,1,endButton.png,90,40,15,80,end
 image,Reinforcement,reinforceStateBox.png,200,130,5,5
 
 // Movement State
 button,Movement,5,fortifyButton.png,90,40,10,800,fortify
-button,Movement,3,endButton.png,90,40,15,110,end
+button,Movement,3,endButton.png,90,40,15,80,end
 image,Movement,movementStateBox.png,200,130,5,5
 
 // Combat State
-button,Combat,2,endButton.png,90,40,15,110,end
+button,Combat,2,endButton.png,90,40,15,80,end
 button,Combat,9,attackButton.png,90,40,10,800,attack
 image,Combat,combatStateBox.png,200,130,5,5
 
 // Setup State
-button,Setup,4,playButton.png,90,40,105,110,play
-button,Setup,8,autoButton.png,90,40,15,110,auto
+button,Setup,4,playButton.png,90,40,105,80,play
+button,Setup,8,autoButton.png,90,40,15,80,auto
 image,Setup,setUpStateBox.png,200,130,5,5
 
 // War Menu
-button,War Menu,6,attackButton.png,90,40,200,200,war
-image,War Menu,warMenu.png,300,300,0,0
+button,War Menu,6,attackButton.png,90,40,105,300,war
+image,War Menu,warMenu.png,300,400,0,0
 
 // Pause Menu
 button,Pause Menu,10,endButton.png,90,40,180,215,exit

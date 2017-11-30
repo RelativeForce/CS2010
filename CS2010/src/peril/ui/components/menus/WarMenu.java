@@ -100,16 +100,16 @@ public class WarMenu extends Menu {
 	 * 
 	 */
 	public WarMenu(Point position, Game game) {
-		super("War", game, new Region(300, 300, position));
+		super("War", game, new Region(300, 400, position));
 
 		this.random = new Random();
-		this.headingFont = new Font("Arial", Color.red, 20);
+		this.headingFont = new Font("Arial", Color.red, 28);
 		this.textFont = new Font("Arial", Color.red, 40);
 		this.countryFont = new Font("Arial", Color.cyan, 20);
 		this.playerFont = new Font("Arial", Color.black, 15);
 		this.resultFont = new Font("Arial", Color.white, 20);
 
-		this.defineSquadSizes();
+		this.checkSquadSizes();
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class WarMenu extends Menu {
 	public void draw(Graphics g) {
 
 		super.draw(g);
-		
+
 		if (isVisible()) {
 
 			// Attacker has failed to conquer country
@@ -167,11 +167,14 @@ public class WarMenu extends Menu {
 		}
 	}
 
+	/**
+	 * Adds an {@link Viewable} image to this {@link WarMenu}
+	 */
 	@Override
 	public void addImage(Viewable image) {
 		super.addImage(image);
 		background = image;
-		background.setImage(this.getPosition(), background.getImage().getScaledCopy(getWidth(), getWidth()));
+		background.setImage(this.getPosition(), background.getImage().getScaledCopy(getWidth(), getHeight()));
 	}
 
 	/**
@@ -186,7 +189,7 @@ public class WarMenu extends Menu {
 		attacker = getGame().states.combat.getHighlightedCountry();
 		enemy = getGame().states.combat.getEnemyCountry();
 
-		defineSquadSizes();
+		checkSquadSizes();
 
 		ruler = enemy.getRuler();
 		player = attacker.getRuler();
@@ -374,10 +377,12 @@ public class WarMenu extends Menu {
 			else {
 				attackingArmy.remove(1);
 				attacker.totalArmy.remove(1);
+
+				if (attackingArmy.getSize() < 4) {
+					checkSquadSizes();
+				}
 			}
-
 		}
-
 	}
 
 	/**
@@ -435,10 +440,6 @@ public class WarMenu extends Menu {
 	private void normalCombat(Graphics g) {
 		squadSizes.draw(g);
 		drawPlayer(g, ruler, (getWidth() / 4));
-		String squadSize = "Attack squad size: ";
-		playerFont.setColor(Color.white);
-		playerFont.draw(g, squadSize, getPosition().x + (getWidth() / 2) - playerFont.getWidth(squadSize),
-				getPosition().y + 200);
 	}
 
 	/**
@@ -453,11 +454,11 @@ public class WarMenu extends Menu {
 		String attackingArmy = "" + attacker.getArmy().getSize();
 
 		textFont.draw(g, attackingArmy, getPosition().x + (getWidth() / 4) - (textFont.getWidth(attackingArmy) / 2),
-				getPosition().y + 60);
+				getPosition().y + 120);
 
 		String enemyArmy = "" + enemy.getArmy().getSize();
 		textFont.draw(g, enemyArmy, getPosition().x + ((getWidth() * 3) / 4) - (textFont.getWidth(enemyArmy) / 2),
-				getPosition().y + 60);
+				getPosition().y + 120);
 
 	}
 
@@ -479,9 +480,9 @@ public class WarMenu extends Menu {
 		int attackerX = centreX - (getWidth() / 4) - (countryFont.getWidth(attackerStr) / 2);
 		int enemyX = centreX + (getWidth() / 4) - (countryFont.getWidth(enemyStr) / 2);
 
-		headingFont.draw(g, vs, vsX, getPosition().y + 20);
-		countryFont.draw(g, attackerStr, attackerX, getPosition().y + 20);
-		countryFont.draw(g, enemyStr, enemyX, getPosition().y + 20);
+		headingFont.draw(g, vs, vsX, getPosition().y + 100);
+		countryFont.draw(g, attackerStr, attackerX, getPosition().y + 100);
+		countryFont.draw(g, enemyStr, enemyX, getPosition().y + 100);
 	}
 
 	/**
@@ -496,20 +497,26 @@ public class WarMenu extends Menu {
 	 */
 	private void drawPlayer(Graphics g, Player player, int offset) {
 		int centreX = getPosition().x + (getWidth() / 2);
-		int x = centreX + offset - (playerFont.getWidth(player.toString()) / 2);
-		playerFont.setColor(player.color);
-		playerFont.draw(g, player.toString(), x, getPosition().y + 40);
+		int x = centreX + offset - (player.getWidth() / 2);
+		g.drawImage(player.getImage(), x, this.getPosition().y + 55);
 	}
 
 	/**
 	 * Initialises the {@link VisualList} of squad sizes (The number of units to
 	 * attack with)
 	 */
-	private void defineSquadSizes() {
+	private void checkSquadSizes() {
 
-		// If there is no attacker then set the squad sizes list ot its original size.
+		int width = 30;
+		int height = 30;
+		int x = this.getPosition().x + (this.getWidth() / 4) - (width / 2);
+		int y = this.getPosition().y + 200;
+		
+		
+		
+		// If there is no attacker then set the squad sizes list to its original size.
 		if (attacker == null) {
-			squadSizes = new VisualList<>(getPosition().x + (getWidth() / 2), getPosition().y + 200, 20, 20, 3, 5);
+			squadSizes = new VisualList<>(x, y, width, height, 3, 7);
 			squadSizes.add("1", 1);
 			squadSizes.add("2", 2);
 			squadSizes.add("3", 3);
@@ -523,8 +530,7 @@ public class WarMenu extends Menu {
 			int maxSize = (attacker.getArmy().getSize() - 1 > 3 ? 3 : attacker.getArmy().getSize() - 1);
 
 			// Constructs the list to hold that maz size
-			squadSizes = new VisualList<>(getPosition().x + (getWidth() / 2), getPosition().y + 200, 20, 20, maxSize,
-					5);
+			squadSizes = new VisualList<>(x, y, width, height, maxSize, 7);
 
 			// Populate the list.
 			for (int index = 1; index <= maxSize; index++) {
@@ -532,7 +538,6 @@ public class WarMenu extends Menu {
 			}
 
 			squadSizes.init();
-			squadSizes.setFont(headingFont);
 		}
 
 		squadSizes.setFont(headingFont);

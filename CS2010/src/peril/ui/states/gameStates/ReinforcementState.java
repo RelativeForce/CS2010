@@ -12,6 +12,7 @@ import peril.Point;
 import peril.board.Country;
 import peril.ui.Button;
 import peril.ui.Font;
+import peril.ui.components.Help;
 
 /**
  * Encapsulates the behaviour of the Reinforcement {@link CoreGameState} where
@@ -49,6 +50,12 @@ public final class ReinforcementState extends CoreGameState {
 		super(game, STATE_NAME, id);
 		unitFont = new Font("Arial", Color.white, 50);
 		textFont = new Font("Arial", Color.white, 20);
+	}
+	
+	@Override
+	public Help getHelp() {
+		// TODO Make help
+		return null;
 	}
 
 	/**

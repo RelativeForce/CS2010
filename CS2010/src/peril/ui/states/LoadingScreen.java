@@ -13,6 +13,7 @@ import peril.Game;
 import peril.Point;
 import peril.io.fileParsers.FileParser;
 import peril.ui.Viewable;
+import peril.ui.components.Help;
 import peril.ui.components.ProgressBar;
 import peril.ui.states.gameStates.CoreGameState;
 import peril.ui.states.gameStates.SetupState;
@@ -90,6 +91,14 @@ public final class LoadingScreen extends InteractiveState {
 	public void addImage(Viewable image) {
 		background = image;
 		super.addImage(image);
+	}
+
+	/**
+	 * Retrieve the {@link Help} window for the {@link LoadingScreen}.
+	 */
+	@Override
+	public Help getHelp() {
+		return null;
 	}
 
 	/**
@@ -194,6 +203,7 @@ public final class LoadingScreen extends InteractiveState {
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		super.leave(container, game);
 
 		readers.clear();
 
@@ -205,7 +215,7 @@ public final class LoadingScreen extends InteractiveState {
 		container.setMusicOn(false);
 
 		firstState = null;
-		
+
 		getGame().pauseMenu.refreshSaveFiles();
 	}
 

@@ -16,6 +16,7 @@ import peril.Player;
 import peril.Point;
 import peril.ui.Button;
 import peril.ui.Font;
+import peril.ui.components.Help;
 import peril.ui.states.InteractiveState;
 
 /**
@@ -100,6 +101,12 @@ public class EndState extends InteractiveState {
 		super.clickedButton(click);
 	}
 
+	@Override
+	public Help getHelp() {
+		// TODO Make help
+		return null;
+	}
+	
 	/**
 	 * Adds a {@link Button} to this {@link EndState}.
 	 */
@@ -177,7 +184,8 @@ public class EndState extends InteractiveState {
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
-
+		super.leave(container, game);
+		
 		// Empty the podium
 		podium.clear();
 	}

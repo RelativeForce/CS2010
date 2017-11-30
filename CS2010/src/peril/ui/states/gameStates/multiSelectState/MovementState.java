@@ -18,6 +18,7 @@ import peril.Point;
 import peril.board.Army;
 import peril.board.Country;
 import peril.ui.Button;
+import peril.ui.components.Help;
 import peril.ui.states.gameStates.CoreGameState;
 
 /**
@@ -89,6 +90,12 @@ public final class MovementState extends MultiSelectState {
 			path.clear();
 		}
 
+	}
+	
+	@Override
+	public Help getHelp() {
+		// TODO Hake help
+		return null;
 	}
 
 	/**

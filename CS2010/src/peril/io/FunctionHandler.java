@@ -6,6 +6,7 @@ import peril.board.Continent;
 import peril.board.Country;
 import peril.multiThread.Action;
 import peril.ui.Button;
+import peril.ui.components.Help;
 import peril.ui.components.menus.PauseMenu;
 import peril.ui.components.menus.WarMenu;
 
@@ -70,6 +71,8 @@ public class FunctionHandler {
 			return saveGame();
 		case 12:
 			return enterMainMenu();
+		case 13:
+			return openHelp();
 		}
 		throw new IllegalArgumentException(code + " is not a valid function code.");
 	}
@@ -233,5 +236,23 @@ public class FunctionHandler {
 	 */
 	private Action<?> saveGame() {
 		return new Action<Game>(game, game -> game.pauseMenu.save());
+	}
+
+	/**
+	 * Retrieves the {@link Action} that opens the current state's {@link Help}
+	 * window.
+	 * 
+	 * @return
+	 */
+	private Action<?> openHelp() {
+		return new Action<Game>(game, game -> {
+
+			Help help = game.getCurrentState().getHelp();
+
+			// If there is a help window show it.
+			if (help != null) {
+				help.show();
+			}
+		});
 	}
 }

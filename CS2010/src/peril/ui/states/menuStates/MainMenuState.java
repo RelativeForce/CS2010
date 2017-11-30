@@ -15,6 +15,7 @@ import peril.io.SaveFile;
 import peril.io.fileParsers.MapReader;
 import peril.io.fileReaders.TextFileReader;
 import peril.ui.Font;
+import peril.ui.components.Help;
 import peril.ui.components.lists.VisualList;
 import peril.ui.states.InteractiveState;
 
@@ -159,6 +160,12 @@ public class MainMenuState extends InteractiveState {
 		}
 	}
 
+	@Override
+	public Help getHelp() {
+		// TODO Make help
+		return null;
+	}
+	
 	/**
 	 * Processes a button press on this {@link MainMenuState}.
 	 */
@@ -239,14 +246,6 @@ public class MainMenuState extends InteractiveState {
 			getGame().io.mainMenuLoader.parseLine();
 		}
 
-	}
-
-	/**
-	 * Leaves this {@link MainMenuState}.
-	 */
-	@Override
-	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
-		// Do nothing
 	}
 
 	/**

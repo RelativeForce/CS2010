@@ -17,6 +17,7 @@ import peril.ui.Clickable;
 import peril.ui.Container;
 import peril.ui.Viewable;
 import peril.ui.components.Component;
+import peril.ui.components.Help;
 
 /**
  * 
@@ -31,31 +32,31 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	/**
 	 * Holds the name of a specific {@link InteractiveState}.
 	 */
-	private String stateName;
+	private final String stateName;
 
 	/**
 	 * Holds the the current {@link Game} this {@link InteractiveState} is
 	 * associated with.
 	 */
-	private Game game;
+	private final Game game;
 
 	/**
 	 * A {@link List} of {@link Button} elements that this {@link InteractiveState}
 	 * has.
 	 */
-	private List<Button> buttons;
+	private final List<Button> buttons;
 
 	/**
 	 * A {@link List} of {@link Viewable} elements that this
 	 * {@link InteractiveState} has.
 	 */
-	private List<Viewable> images;
+	private final List<Viewable> images;
 
 	/**
 	 * Holds all the {@link Component}s that will be initialised when this
 	 * {@link InteractiveState} is initialised.
 	 */
-	private List<Component> components;
+	private final List<Component> components;
 
 	/**
 	 * The id of this {@link InteractiveState}.
@@ -178,7 +179,10 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 * perform all exit state operations.
 	 */
 	@Override
-	public abstract void leave(GameContainer container, StateBasedGame game) throws SlickException;
+	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		if (getHelp() != null)
+			getHelp().hide();
+	};
 
 	/**
 	 * Called as part of slick2d's game loop. Renders this state to the game's
@@ -232,6 +236,13 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 
 	}
+
+	/**
+	 * Retrieve the {@link Help} window for this {@link InteractiveState}.
+	 * 
+	 * @return {@link Help}
+	 */
+	public abstract Help getHelp();
 
 	/**
 	 * Retrieves the the <code>int</code> id of this {@link InteractiveState}.
@@ -309,7 +320,7 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	protected void addComponent(Component component) {
 		components.add(component);
 	}
-	
+
 	/**
 	 * Draws all the {@link Viewable}s in this {@link InteractiveState}.
 	 * 

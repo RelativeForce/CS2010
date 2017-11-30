@@ -31,7 +31,7 @@ import peril.ui.states.InteractiveState;
  * @author Joseph_Rolli, Joshua_Eddy
  */
 public abstract class CoreGameState extends InteractiveState {
-
+	
 	/**
 	 * The {@link Point} pan direction vector this state will pan at.
 	 */
@@ -75,7 +75,7 @@ public abstract class CoreGameState extends InteractiveState {
 		this.pauseMenu = game.pauseMenu;
 		this.panDirection = null;
 		this.toolTipList = new ToolTipList(new Point(130, 15));
-
+		
 		super.addComponent(pauseMenu);
 		super.addComponent(toolTipList);
 	}
@@ -173,6 +173,8 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		super.leave(container, game);
+		
 		toolTipList.clear();
 
 		// Remove the highlight effect on the currently highlighted country
@@ -282,7 +284,7 @@ public abstract class CoreGameState extends InteractiveState {
 	public Music getMusic() {
 		return backgroundMusic.get(new Random().nextInt(backgroundMusic.size()));
 	}
-
+	
 	/**
 	 * Adds a String as a tool tip to this {@link CoreGameState} to be displayed to
 	 * the user.

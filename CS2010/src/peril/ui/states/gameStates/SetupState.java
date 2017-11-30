@@ -23,14 +23,14 @@ import peril.ui.components.Help;
 public final class SetupState extends CoreGameState {
 
 	/**
-	 * Holds the {@link Help} that explains the {@link SetupState} to the user.
-	 */
-	public final Help about;
-
-	/**
 	 * The name of a specific {@link SetupState}.
 	 */
 	private static final String STATE_NAME = "Setup";
+
+	/**
+	 * Holds the {@link Help} that explains the {@link SetupState} to the user.
+	 */
+	private final Help help;
 
 	/**
 	 * Constructs a new {@link SetupState}.
@@ -42,19 +42,27 @@ public final class SetupState extends CoreGameState {
 	 */
 	public SetupState(Game game, int id) {
 		super(game, STATE_NAME, id);
-		about = new Help(game, new Point(220, 5), 400, 350);
-		super.addComponent(about);
+		help = new Help(game, new Point(220, 5), 400, 350);
+		super.addComponent(help);
 
-		about.addText(STATE_NAME + " help");
-		about.addText("-----------------------------------------------------------");
-		about.addText("In this phase of the game the players select which players own"
+		help.addText(STATE_NAME + " help");
+		help.addText("-----------------------------------------------------------");
+		help.addText("In this phase of the game the players select which players own"
 				+ " which countries at the start of the game.");
-		about.addText("To set a player as the ruler of a country, simply click on the country then press "
+		help.addText("To set a player as the ruler of a country, simply click on the country then press "
 				+ "the number button that coresponds to the number of the player."
 				+ " For example: '1' corresponds to 'Player 1'. 'Space' makes the country neutral.");
-		about.addText("Click 'Auto' to randomly assign an equal number of countries to each player.");
-		about.addText("Once you have assigned the countries as you desire click 'Play' to start the game.");
+		help.addText("Click 'Auto' to randomly assign an equal number of countries to each player.");
+		help.addText("Once you have assigned the countries as you desire click 'Play' to start the game.");
 
+	}
+
+	/**
+	 * Retrieve the {@link Help} window for the {@link SetupState}.
+	 */
+	@Override
+	public Help getHelp() {
+		return help;
 	}
 
 	/**
@@ -63,8 +71,8 @@ public final class SetupState extends CoreGameState {
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
-		about.setPosition(new Point((gc.getWidth() / 2) - (about.getWidth() / 2),
-				(gc.getHeight() / 2) - (about.getHeight() / 2)));
+		help.setPosition(new Point((gc.getWidth() / 2) - (help.getWidth() / 2),
+				(gc.getHeight() / 2) - (help.getHeight() / 2)));
 	}
 
 	/**
@@ -78,7 +86,7 @@ public final class SetupState extends CoreGameState {
 		drawImages(g);
 		drawButtons(g);
 
-		about.draw(g);
+		help.draw(g);
 
 		drawPauseMenu(g);
 
@@ -93,7 +101,7 @@ public final class SetupState extends CoreGameState {
 
 		// Hide the about widow if the pause menu is visible
 		if (getGame().pauseMenu.isVisible()) {
-			about.hide();
+			help.hide();
 		}
 	}
 
@@ -153,7 +161,7 @@ public final class SetupState extends CoreGameState {
 		}
 
 		if (key == Input.KEY_H) {
-			about.toggleVisibility();
+			help.toggleVisibility();
 		}
 
 		super.parseButton(key, c, mousePosition);

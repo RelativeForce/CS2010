@@ -11,6 +11,7 @@ import peril.Player;
 import peril.Point;
 import peril.board.Country;
 import peril.ui.Button;
+import peril.ui.components.Help;
 import peril.ui.components.menus.WarMenu;
 import peril.ui.states.gameStates.CoreGameState;
 
@@ -61,6 +62,12 @@ public final class CombatState extends MultiSelectState {
 		super.addComponent(warMenu);
 	}
 
+	@Override
+	public Help getHelp() {
+		// TODO Make help
+		return null;
+	}
+	
 	/**
 	 * Sets the state if this {@link CombatState} to after a {@link Country} has
 	 * been conquered.

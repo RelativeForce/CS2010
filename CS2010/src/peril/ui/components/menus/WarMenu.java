@@ -1,16 +1,20 @@
 package peril.ui.components.menus;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 
 import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Army;
 import peril.board.Country;
+import peril.io.fileReaders.ImageReader;
 import peril.ui.Button;
 import peril.ui.Font;
 import peril.ui.Region;
@@ -32,6 +36,16 @@ public class WarMenu extends Menu {
 	 * 
 	 */
 	private Random random;
+
+	/**
+	 * Holds the dice that will be displayed on screen.
+	 */
+	private Map<Point, Image> displayDice;
+
+	/**
+	 * Holds the default set of dice images.
+	 */
+	private final Map<Integer, Image> defaultDice;
 
 	/**
 	 * A {@link VisualList} of Buttons to select the number of units to attack with.
@@ -109,6 +123,15 @@ public class WarMenu extends Menu {
 		this.playerFont = new Font("Arial", Color.black, 15);
 		this.resultFont = new Font("Arial", Color.white, 20);
 
+		this.defaultDice = new HashMap<>();
+		this.defaultDice.put(1, ImageReader.getImage(game.assets.ui + "dice1.png"));
+		this.defaultDice.put(2, ImageReader.getImage(game.assets.ui + "dice2.png"));
+		this.defaultDice.put(3, ImageReader.getImage(game.assets.ui + "dice3.png"));
+		this.defaultDice.put(4, ImageReader.getImage(game.assets.ui + "dice1.png"));
+		this.defaultDice.put(5, ImageReader.getImage(game.assets.ui + "dice2.png"));
+		this.defaultDice.put(6, ImageReader.getImage(game.assets.ui + "dice3.png"));
+
+		this.displayDice = new HashMap<>();
 		this.checkSquadSizes();
 	}
 
@@ -511,9 +534,7 @@ public class WarMenu extends Menu {
 		int height = 30;
 		int x = this.getPosition().x + (this.getWidth() / 4) - (width / 2);
 		int y = this.getPosition().y + 200;
-		
-		
-		
+
 		// If there is no attacker then set the squad sizes list to its original size.
 		if (attacker == null) {
 			squadSizes = new VisualList<>(x, y, width, height, 3, 7);

@@ -1,6 +1,7 @@
 package peril.ui.components.menus;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 import org.newdawn.slick.Color;
@@ -297,18 +298,18 @@ public class WarMenu extends Menu {
 	 *            <code>int</code> number of rolls
 	 * @return <code>int[]</code>
 	 */
-	private int[] getDiceRolls(int numberOfRolls) {
+	private Integer[] getDiceRolls(int numberOfRolls) {
 
 		// Holds the dice roles.
-		int[] rolls = new int[numberOfRolls];
+		Integer[] rolls = new Integer[numberOfRolls];
 
 		// initialise dice rolls for the attacking army
 		for (int rollIndex = 0; rollIndex < numberOfRolls; rollIndex++) {
 			rolls[rollIndex] = random.nextInt(6) + 1;
 		}
-
-		// Sort the dice roles into ascending order.
-		Arrays.sort(rolls);
+		
+		// Sort the dice roles into descending order.
+		Arrays.sort(rolls, Collections.reverseOrder());
 
 		return rolls;
 	}
@@ -343,8 +344,8 @@ public class WarMenu extends Menu {
 		}
 
 		// Get the dice rolls for the attackers and defenders.
-		int[] attackerDiceRolls = getDiceRolls(atkSquadSize);
-		int[] defenderDiceRolls = getDiceRolls(defendingArmy.getSize() > 1 ? 2 : 1);
+		Integer[] attackerDiceRolls = getDiceRolls(atkSquadSize);
+		Integer[] defenderDiceRolls = getDiceRolls(defendingArmy.getSize() > 1 ? 2 : 1);
 
 		// Get the size of the smaller set of dice.
 		int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length

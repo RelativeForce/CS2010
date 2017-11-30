@@ -7,9 +7,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import peril.Point;
-import peril.ui.Clickable;
 import peril.ui.Font;
-import peril.ui.Region;
 
 /**
  * This object is a visual component that can be used to display a block of text
@@ -18,7 +16,7 @@ import peril.ui.Region;
  * @author Joshua_Eddy
  *
  */
-public final class TextField extends Clickable implements Component {
+public final class TextField implements Component {
 
 	/**
 	 * {@link List} of the lines in this {@link TextField}.
@@ -31,6 +29,21 @@ public final class TextField extends Clickable implements Component {
 	private Font font;
 
 	/**
+	 * The {@link Font} of this {@link TextField}.
+	 */
+	private Point position;
+
+	/**
+	 * The width of this {@link TextField}
+	 */
+	private int width;
+
+	/**
+	 * THe height of the {@link TextField}.
+	 */
+	private int height;
+
+	/**
 	 * Constructs a new {@link TextField}.
 	 * 
 	 * @param width
@@ -41,9 +54,11 @@ public final class TextField extends Clickable implements Component {
 	 *            {@link Point} of the {@link TextField}.
 	 */
 	public TextField(int width, int height, Point position) {
-		super(new Region(width, height, position));
-		font = new Font("Arial", Color.black, 15);
-		lines = new ArrayList<>();
+		this.position = position;
+		this.width = width;
+		this.height = height;
+		this.font = new Font("Arial", Color.black, 15);
+		this.lines = new ArrayList<>();
 	}
 
 	/**
@@ -76,7 +91,7 @@ public final class TextField extends Clickable implements Component {
 		final String[] words = text.split(lineWrap);
 
 		// The maximum width of a line in the text field
-		final int maxWidth = this.getWidth() - 30;
+		final int maxWidth = width - 30;
 
 		// Holds the line currently being created.
 		StringBuilder line = new StringBuilder();
@@ -93,7 +108,6 @@ public final class TextField extends Clickable implements Component {
 			if (font.getWidth(testLine) >= maxWidth) {
 
 				lines.add(line.toString());
-
 				line = new StringBuilder();
 
 			}
@@ -134,12 +148,12 @@ public final class TextField extends Clickable implements Component {
 	public void draw(Graphics g) {
 
 		g.setColor(Color.lightGray);
-		g.fillRect(getPosition().x, getPosition().y, getWidth(), getHeight());
+		g.fillRect(position.x, position.y, width, height);
 
 		int padding = 15;
-		int x = getPosition().x + padding;
-		int y = getPosition().y + padding;
-		int numberOfLines = (getHeight() - padding) / font.getHeight();
+		int x = position.x + padding;
+		int y = position.y + padding;
+		int numberOfLines = (height - padding) / font.getHeight();
 
 		for (int index = 0; index < (lines.size() > numberOfLines ? numberOfLines : lines.size()); index++) {
 			font.draw(g, lines.get(index), x, y);
@@ -167,6 +181,16 @@ public final class TextField extends Clickable implements Component {
 	 */
 	public void parseMouseDrag(Point oldPosition, Point newPosition) {
 
+	}
+
+	/**
+	 * Assigns the new {@link Point} position of this {@link TextField}.
+	 * 
+	 * @param position
+	 *            {@link Point}
+	 */
+	public void setPosition(Point position) {
+		this.position = position;
 	}
 
 }

@@ -10,7 +10,7 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Country;
-import peril.ui.components.TextField;
+import peril.ui.components.Help;
 
 /**
  * The state where the user selects which player gets what {@link Country}s.
@@ -23,13 +23,14 @@ import peril.ui.components.TextField;
 public final class SetupState extends CoreGameState {
 
 	/**
+	 * Holds the {@link Help} that explains the {@link SetupState} to the user.
+	 */
+	public final Help about;
+
+	/**
 	 * The name of a specific {@link SetupState}.
 	 */
 	private static final String STATE_NAME = "Setup";
-
-	private final TextField about;
-
-	private boolean showAbout;
 
 	/**
 	 * Constructs a new {@link SetupState}.
@@ -41,9 +42,19 @@ public final class SetupState extends CoreGameState {
 	 */
 	public SetupState(Game game, int id) {
 		super(game, STATE_NAME, id);
-		about = new TextField(400, 240, new Point(130, 0));
+		about = new Help(game, new Point(220, 5), 400, 350);
 		super.addComponent(about);
-		showAbout = false;
+
+		about.addText(STATE_NAME + " help");
+		about.addText("-----------------------------------------------------------");
+		about.addText("In this phase of the game the players select which players own"
+				+ " which countries at the start of the game.");
+		about.addText("To set a player as the ruler of a country, simply click on the country then press "
+				+ "the number button that coresponds to the number of the player."
+				+ " For example: '1' corresponds to 'Player 1'. 'Space' makes the country neutral.");
+		about.addText("Click 'Auto' to randomly assign an equal number of countries to each player.");
+		about.addText("Once you have assigned the countries as you desire click 'Play' to start the game.");
+
 	}
 
 	/**
@@ -52,19 +63,8 @@ public final class SetupState extends CoreGameState {
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
-
-		about.clear();
-
-		about.addText("This is the 'Set Up' state. In this phase of the "
-				+ "game the players select which players own which countries at the start of the game.");
-
-		about.addText("To set a player as the ruler of a country, simply click on the country then press "
-				+ "the number button that coresponds to the number of the player."
-				+ " For example: '1' corresponds to 'Player 1'. 'Space' makes the country neutral.");
-
-		about.addText("Click 'Auto' to randomly assign an equal number of countries to each player.");
-
-		about.addText("Once you have assigned the countries as you desire click 'Play' to start the game.");
+		about.setPosition(new Point((gc.getWidth() / 2) - (about.getWidth() / 2),
+				(gc.getHeight() / 2) - (about.getHeight() / 2)));
 	}
 
 	/**
@@ -77,11 +77,23 @@ public final class SetupState extends CoreGameState {
 		drawImages(g);
 		drawButtons(g);
 
-		if (showAbout)
-			about.draw(g);
+		about.draw(g);
 
 		drawPauseMenu(g);
 
+	}
+
+	/**
+	 * Updates this {@link SetupState}.
+	 */
+	@Override
+	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+		super.update(gc, sbg, delta);
+
+		// Hide the about widow if the pause menu is visible
+		if (getGame().pauseMenu.isVisible()) {
+			about.hide();
+		}
 	}
 
 	/**
@@ -96,14 +108,6 @@ public final class SetupState extends CoreGameState {
 		// Highlight the new country
 		super.highlightCountry(country);
 
-	}
-
-	public void showAbout() {
-		showAbout = true;
-	}
-
-	public void hideAbout() {
-		showAbout = false;
 	}
 
 	/**
@@ -148,10 +152,7 @@ public final class SetupState extends CoreGameState {
 		}
 
 		if (key == Input.KEY_H) {
-			showAbout();
-		}
-		if (key == Input.KEY_ESCAPE) {
-			hideAbout();
+			about.toggleVisibility();
 		}
 
 		super.parseButton(key, c, mousePosition);

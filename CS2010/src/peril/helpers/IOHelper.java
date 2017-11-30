@@ -1,7 +1,5 @@
 package peril.helpers;
 
-import java.io.File;
-
 import peril.Game;
 import peril.io.SaveFile;
 import peril.io.MapWriter;
@@ -61,7 +59,7 @@ public class IOHelper {
 	 *            {@link SaveFile}
 	 */
 	public void saveBoard(Game game, SaveFile file) {
-		new MapWriter(game, game.assets.maps + File.separatorChar + game.board.getName(), file).write();
+		new MapWriter(game, game.assets.maps + game.board.getName(), file).write();
 	}
 
 }

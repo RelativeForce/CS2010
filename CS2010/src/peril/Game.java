@@ -297,7 +297,7 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public void checkWinner() {
 		if (players.numberOfPlayers() == 1) {
-			states.end.addToTop(players.getPlayer(0));
+			states.end.addToTop(players.getCurrent());
 			enterState(states.end.getID());
 		}
 	}

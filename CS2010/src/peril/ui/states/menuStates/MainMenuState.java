@@ -1,7 +1,5 @@
 package peril.ui.states.menuStates;
 
-import java.io.File;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -299,7 +297,7 @@ public class MainMenuState extends InteractiveState {
 			uiLoaded = true;
 		}
 
-		MapReader mapLoader = new MapReader(getGame().assets.maps + File.separatorChar + map.name, getGame(),
+		MapReader mapLoader = new MapReader(getGame().assets.maps + map.name, getGame(),
 				saves.getSelected());
 
 		getGame().states.loadingScreen.addReader(mapLoader);
@@ -362,7 +360,7 @@ public class MainMenuState extends InteractiveState {
 		saves.clear();
 
 		for (SaveFile file : SaveFile.values()) {
-			if (file.existsIn(getGame().assets.maps + File.separatorChar + mapName)) {
+			if (file.existsIn(getGame().assets.maps + mapName)) {
 				saves.add(file.name, file);
 			}
 		}

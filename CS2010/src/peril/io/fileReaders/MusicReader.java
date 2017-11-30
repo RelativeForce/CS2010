@@ -1,7 +1,5 @@
 package peril.io.fileReaders;
 
-import java.io.File;
-
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 
@@ -17,11 +15,6 @@ import peril.Game;
 public class MusicReader {
 
 	/**
-	 * The path to the music directory.
-	 */
-	private String musicDirectory;
-
-	/**
 	 * The {@link Game} this {@link MusicReader} is a part of.
 	 */
 	private Game game;
@@ -33,7 +26,6 @@ public class MusicReader {
 	 *            The {@link Game} this {@link MusicReader} is a part of.
 	 */
 	public MusicReader(Game game) {
-		this.musicDirectory = game.assets.music;
 		this.game = game;
 	}
 
@@ -49,7 +41,7 @@ public class MusicReader {
 		Music music = null;
 		// Attempt to read the music file.
 		try {
-			music = new Music(musicDirectory + File.separatorChar + fileName + ".ogg");
+			music = new Music(game.assets.music + fileName + ".ogg");
 			music.addListener(game);
 		} catch (SlickException e) {
 			e.printStackTrace();

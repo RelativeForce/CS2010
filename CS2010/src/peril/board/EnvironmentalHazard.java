@@ -1,6 +1,5 @@
 package peril.board;
 
-import java.io.File;
 import java.util.Random;
 
 import org.newdawn.slick.Image;
@@ -47,7 +46,7 @@ public enum EnvironmentalHazard {
 		 */
 		@Override
 		protected void initIcon(String uiPath) {
-			icon = ImageReader.getImage(uiPath + File.separatorChar + "volcanoIcon.png");
+			icon = ImageReader.getImage(uiPath + "volcanoIcon.png");
 		}
 
 	},
@@ -80,7 +79,7 @@ public enum EnvironmentalHazard {
 		 */
 		@Override
 		protected void initIcon(String uiPath) {
-			icon = ImageReader.getImage(uiPath + File.separatorChar + "tornadoIcon.png");
+			icon = ImageReader.getImage(uiPath + "tornadoIcon.png");
 		}
 	},
 	/**
@@ -111,7 +110,7 @@ public enum EnvironmentalHazard {
 		 */
 		@Override
 		protected void initIcon(String uiPath) {
-			icon = ImageReader.getImage(uiPath + File.separatorChar + "hurricaneIcon.png");
+			icon = ImageReader.getImage(uiPath + "hurricaneIcon.png");
 		}
 	},
 	/**
@@ -143,7 +142,7 @@ public enum EnvironmentalHazard {
 		 */
 		@Override
 		protected void initIcon(String uiPath) {
-			icon = ImageReader.getImage(uiPath + File.separatorChar + "tsunamiIcon.png");
+			icon = ImageReader.getImage(uiPath + "tsunamiIcon.png");
 		}
 	};
 

@@ -3,6 +3,7 @@ package peril.ui.components.menus;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Collections;
 import java.util.Random;
 
 import org.newdawn.slick.Color;
@@ -114,22 +115,16 @@ public class WarMenu extends Menu {
 	 * 
 	 */
 	public WarMenu(Point position, Game game) {
-		super("War", game, new Region(300, 400, position));
+		super("War", game, new Region(400, 400, position));
 
 		this.random = new Random();
 		this.headingFont = new Font("Arial", Color.red, 28);
 		this.textFont = new Font("Arial", Color.red, 40);
 		this.countryFont = new Font("Arial", Color.cyan, 20);
 		this.playerFont = new Font("Arial", Color.black, 15);
-		this.resultFont = new Font("Arial", Color.white, 20);
+		this.resultFont = new Font("Arial", Color.white, 15);
 
 		this.defaultDice = new HashMap<>();
-		this.defaultDice.put(1, ImageReader.getImage(game.assets.ui + "dice1.png"));
-		this.defaultDice.put(2, ImageReader.getImage(game.assets.ui + "dice2.png"));
-		this.defaultDice.put(3, ImageReader.getImage(game.assets.ui + "dice3.png"));
-		this.defaultDice.put(4, ImageReader.getImage(game.assets.ui + "dice1.png"));
-		this.defaultDice.put(5, ImageReader.getImage(game.assets.ui + "dice2.png"));
-		this.defaultDice.put(6, ImageReader.getImage(game.assets.ui + "dice3.png"));
 
 		this.displayDice = new HashMap<>();
 		this.checkSquadSizes();
@@ -147,6 +142,11 @@ public class WarMenu extends Menu {
 		resultFont.init();
 
 		squadSizes.init();
+
+		for (int i = 1; i <= 6; i++) {
+			this.defaultDice.put(i,
+					ImageReader.getImage(getGame().assets.ui + "dice" + i + ".png").getScaledCopy(28, 28));
+		}
 
 	}
 
@@ -176,6 +176,8 @@ public class WarMenu extends Menu {
 
 			drawTitle(g);
 			drawArmySizes(g);
+
+			displayDice.forEach((position, dice) -> g.drawImage(dice, position.x, position.y));
 		}
 	}
 
@@ -217,6 +219,13 @@ public class WarMenu extends Menu {
 		ruler = enemy.getRuler();
 		player = attacker.getRuler();
 
+	}
+
+	@Override
+	public void hide() {
+		super.hide();
+
+		displayDice.clear();
 	}
 
 	/**
@@ -320,18 +329,18 @@ public class WarMenu extends Menu {
 	 *            <code>int</code> number of rolls
 	 * @return <code>int[]</code>
 	 */
-	private int[] getDiceRolls(int numberOfRolls) {
+	private Integer[] getDiceRolls(int numberOfRolls) {
 
 		// Holds the dice roles.
-		int[] rolls = new int[numberOfRolls];
+		Integer[] rolls = new Integer[numberOfRolls];
 
 		// initialise dice rolls for the attacking army
 		for (int rollIndex = 0; rollIndex < numberOfRolls; rollIndex++) {
 			rolls[rollIndex] = random.nextInt(6) + 1;
 		}
 
-		// Sort the dice roles into ascending order.
-		Arrays.sort(rolls);
+		// Sort the dice roles into descending order.
+		Arrays.sort(rolls, Collections.reverseOrder());
 
 		return rolls;
 	}
@@ -366,8 +375,26 @@ public class WarMenu extends Menu {
 		}
 
 		// Get the dice rolls for the attackers and defenders.
-		int[] attackerDiceRolls = getDiceRolls(atkSquadSize);
-		int[] defenderDiceRolls = getDiceRolls(defendingArmy.getSize() > 1 ? 2 : 1);
+		Integer[] attackerDiceRolls = getDiceRolls(atkSquadSize);
+		Integer[] defenderDiceRolls = getDiceRolls(defendingArmy.getSize() > 1 ? 2 : 1);
+
+		int attackX = squadSizes.getPosition().x + squadSizes.getWidth() + 5;
+		int attackY = squadSizes.getPosition().y;
+
+		int defendX = this.getPosition().x + ((this.getWidth() * 3) / 4) - 35;
+		int defendY = squadSizes.getPosition().y;
+
+		displayDice.clear();
+
+		for (Integer roll : attackerDiceRolls) {
+			displayDice.put(new Point(attackX, attackY), defaultDice.get(roll));
+			attackY += 30;
+		}
+
+		for (Integer roll : defenderDiceRolls) {
+			displayDice.put(new Point(defendX, defendY), defaultDice.get(roll));
+			defendY += 30;
+		}
 
 		// Get the size of the smaller set of dice.
 		int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length

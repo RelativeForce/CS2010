@@ -35,9 +35,9 @@ public class DirectoryHelper {
 	public DirectoryHelper(String assetsPath) {
 
 		// Set the directory paths for the different types of game assets.
-		maps = new StringBuilder(assetsPath).append(File.separatorChar).append("maps").toString();
-		music = new StringBuilder(assetsPath).append(File.separatorChar).append("music").toString();
-		ui = new StringBuilder(assetsPath).append(File.separatorChar).append("ui").toString();
+		maps = new StringBuilder(assetsPath).append(File.separatorChar).append("maps").append(File.separatorChar).toString();
+		music = new StringBuilder(assetsPath).append(File.separatorChar).append("music").append(File.separatorChar).toString();
+		ui = new StringBuilder(assetsPath).append(File.separatorChar).append("ui").append(File.separatorChar).toString();
 
 	}
 

@@ -1,6 +1,5 @@
 package peril.ui.components;
 
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -128,7 +127,7 @@ public class Help extends Clickable implements Component {
 	@Override
 	public void init() {
 
-		super.setImage(getPosition(), ImageReader.getImage(game.assets.ui + File.separatorChar + "toolTipBox.png")
+		super.setImage(getPosition(), ImageReader.getImage(game.assets.ui + "toolTipBox.png")
 				.getScaledCopy(getWidth(), getHeight()));
 
 		isInitialised = true;

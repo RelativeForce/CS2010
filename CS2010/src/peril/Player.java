@@ -1,7 +1,5 @@
 package peril;
 
-import java.io.File;
-
 import org.newdawn.slick.Color;
 
 import peril.board.Army;
@@ -133,7 +131,7 @@ public final class Player extends Viewable {
 	 *            The path to the folder with the image files in.
 	 */
 	public void init(String uiPath) {
-		String path = uiPath + File.separatorChar + "player" + number + "Icon.png";
+		String path = uiPath + "player" + number + "Icon.png";
 		setImage(getPosition(), ImageReader.getImage(path).getScaledCopy(90, 40));
 	}
 }

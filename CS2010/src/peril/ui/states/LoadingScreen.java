@@ -201,12 +201,12 @@ public final class LoadingScreen extends InteractiveState {
 
 		index = 0;
 
-		getGame().pauseMenu.refreshSaveFiles();
-
 		// Turn off the loading music.
 		container.setMusicOn(false);
 
 		firstState = null;
+		
+		getGame().pauseMenu.refreshSaveFiles();
 	}
 
 	/**

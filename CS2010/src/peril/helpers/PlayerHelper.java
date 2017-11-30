@@ -61,7 +61,7 @@ public class PlayerHelper {
 		this.currentPlayerIndex = 0;
 		this.playing = new ArrayList<>();
 		this.challenges = new LinkedList<>();
-		
+
 		this.defaultPlayers = new HashMap<Integer, Player>();
 		this.defaultPlayers.put(1, new Player(1, Color.red));
 		this.defaultPlayers.put(2, new Player(2, Color.blue));
@@ -243,6 +243,7 @@ public class PlayerHelper {
 	 */
 	public void resetAll() {
 		defaultPlayers.forEach((number, player) -> player.reset());
+		currentPlayerIndex = 0;
 	}
 
 	/**
@@ -272,6 +273,7 @@ public class PlayerHelper {
 	public void setInitialPlayers(int numberOfPlayers) {
 
 		playing.clear();
+		currentPlayerIndex = 0;
 
 		for (int index = 1; index <= numberOfPlayers; index++) {
 			setPlaying(getPlayer(index));

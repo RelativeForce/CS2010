@@ -219,7 +219,10 @@ public class MainMenuState extends InteractiveState {
 		// If the music was muted in game start reset it back to being on.
 		gc.setMusicVolume(1f);
 
+		checkSaves();
+
 		changeMusic(gc);
+
 		try {
 			getGame().reSize(WIDTH, HEIGHT);
 		} catch (SlickException e) {
@@ -245,7 +248,7 @@ public class MainMenuState extends InteractiveState {
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
-		// TODO depending on load implementation
+		// Do nothing
 	}
 
 	/**
@@ -277,6 +280,8 @@ public class MainMenuState extends InteractiveState {
 		// Loads the game assets and move into the set up state
 		if (saves.getSelected() == SaveFile.DEFAULT) {
 			getGame().players.setInitialPlayers(players.getSelected());
+			getGame().setRoundNumber(0);
+			getGame().players.resetAll();
 		}
 
 		int screenWidth = getGame().getContainer().getScreenWidth();
@@ -347,9 +352,15 @@ public class MainMenuState extends InteractiveState {
 		players.add("4", 4);
 	}
 
+	/**
+	 * Checks for present saves for the currently selected map.
+	 */
 	private void checkSaves() {
+
 		String mapName = maps.getSelected().name;
+
 		saves.clear();
+
 		for (SaveFile file : SaveFile.values()) {
 			if (file.existsIn(getGame().assets.maps + File.separatorChar + mapName)) {
 				saves.add(file.name, file);

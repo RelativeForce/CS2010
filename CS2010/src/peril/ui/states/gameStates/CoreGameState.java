@@ -75,7 +75,7 @@ public abstract class CoreGameState extends InteractiveState {
 		this.pauseMenu = game.pauseMenu;
 		this.panDirection = null;
 		this.toolTipList = new ToolTipList(new Point(130, 15));
-		
+
 		super.addComponent(pauseMenu);
 		super.addComponent(toolTipList);
 	}
@@ -133,8 +133,6 @@ public abstract class CoreGameState extends InteractiveState {
 				g.drawImage(highlightImage, highlightedCountry.getPosition().x, highlightedCountry.getPosition().y);
 			}
 		}
-
-		drawArmies(g);
 
 		toolTipList.draw(g);
 
@@ -490,6 +488,25 @@ public abstract class CoreGameState extends InteractiveState {
 		// Move the (x,y) by the offset
 		x += army.getOffset().x;
 		y += army.getOffset().y;
+
+		return new Point(x, y);
+	}
+
+	/**
+	 * Retrieves the centre of the oval behind the {@link Amry} of a specified
+	 * {@link Country}.
+	 * 
+	 * @param country
+	 *            {@link Country}
+	 * @return {@link Point} position
+	 */
+	protected Point getCenterArmyPosition(Country country) {
+
+		Point armyPos = getArmyPosition(country);
+
+		// Add the distance to the centre of the oval.
+		int x = armyPos.x + (getOvalWidth((country.getArmy().getSize()) * 4) / 5);
+		int y = armyPos.y + 12;
 
 		return new Point(x, y);
 	}

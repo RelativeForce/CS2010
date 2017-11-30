@@ -183,12 +183,7 @@ public final class MovementState extends MultiSelectState {
 
 		for (Country country : path) {
 
-			// Holds the x and y of the point the line will need to draw.
-			int currentX = country.getPosition().x + (country.getWidth() / 2) + country.getArmy().getOffset().x
-					+ (getOvalWidth(country.getArmy().getSize()) / 2);
-			int currentY = country.getPosition().y + (country.getHeight() / 2) + country.getArmy().getOffset().y + 10;
-
-			Point current = new Point(currentX, currentY);
+			Point current = super.getCenterArmyPosition(country);
 
 			if (previous != null) {
 				g.drawLine(previous.x, previous.y, current.x, current.y);
@@ -318,13 +313,15 @@ public final class MovementState extends MultiSelectState {
 	 */
 	protected void processCountry(Country country, Player player, Player ruler) {
 
+		Country highlighted = getHighlightedCountry();
+		
 		// If there is a primary friendly country and the target is not null and the
 		// ruler of the country is not the player.
-		if (getHighlightedCountry() != null && player.equals(ruler)) {
+		if (highlighted != null && player.equals(ruler)) {
 
 			// if the country is a neighbour of the primary highlighted country then it is a
 			// valid target.
-			if (isValidTarget(getHighlightedCountry(), country) || (path.contains(country))) {
+			if (isValidTarget(highlighted, country) || ((path.contains(country)) && highlighted != country)) {
 
 				super.removeHighlightFrom(super.getSecondaryHightlightedCounrty());
 				super.setSecondaryHighlightedCountry(country);

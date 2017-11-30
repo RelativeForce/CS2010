@@ -124,7 +124,7 @@ public class MainMenuState extends InteractiveState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
 		g.setBackground(Color.black);
-
+		g.setLineWidth(3f);
 		drawImages(g);
 
 		drawButtons(g);

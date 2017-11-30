@@ -144,11 +144,13 @@ public final class ReinforcementState extends CoreGameState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
 
+		super.drawArmies(g);
+		
 		super.drawImages(g);
 
-		super.drawPlayerName(g);
-
 		super.drawButtons(g);
+		
+		super.drawPlayerName(g);
 
 		String units = Integer.toString(getGame().players.getCurrent().distributableArmy.getSize());
 

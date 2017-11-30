@@ -140,10 +140,14 @@ public final class CombatState extends MultiSelectState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
 		super.render(gc, sbg, g);
+
 		g.setLineWidth(3f);
-		super.drawPlayerName(g);
 
 		this.drawValidTargets(g);
+
+		super.drawArmies(g);
+
+		super.drawPlayerName(g);
 
 		super.drawImages(g);
 		super.drawButtons(g);
@@ -370,20 +374,23 @@ public final class CombatState extends MultiSelectState {
 	 */
 	private void drawValidTargets(Graphics g) {
 
+		Country highlighted = super.getHighlightedCountry();
+
 		// If there is a country highlighted.
-		if (super.getHighlightedCountry() != null) {
+		if (highlighted != null) {
 
 			// Assign the line colour.
 			g.setColor(Color.white);
 
-			for (Country country : super.getHighlightedCountry().getNeighbours()) {
+			for (Country country : highlighted.getNeighbours()) {
 
 				// if it is a valid target highlight the country and draw a line from the
 				// highlighted country to the neighbour country.
-				if (isValidTarget(super.getHighlightedCountry(), country)) {
+				if (isValidTarget(highlighted, country)) {
 
-					Point enemy = super.getArmyPosition(country);
-					Point selected = super.getArmyPosition(super.getHighlightedCountry());
+					Point enemy = super.getCenterArmyPosition(country);
+					Point selected = super.getCenterArmyPosition(highlighted);
+
 					g.drawLine(enemy.x, enemy.y, selected.x, selected.y);
 				}
 			}

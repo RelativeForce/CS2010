@@ -3,7 +3,6 @@ package peril.ui.components;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-import peril.Game;
 import peril.Point;
 import peril.ui.Clickable;
 import peril.ui.Font;
@@ -12,7 +11,7 @@ import peril.ui.Region;
 /**
  * Encapsulates the behaviour of a ScrollBar
  * 
- * @author Ezekiel_Trinidad
+ * @author Ezekiel_Trinidad, Joshua_Eddy
  */
 public class ScrollBar extends Clickable implements Component {
 
@@ -50,8 +49,8 @@ public class ScrollBar extends Clickable implements Component {
 		this.textFont = new Font("Arial", Color.white, 12);
 		this.maxValue = maxValue;
 		index = 0;
-		spacing = getWidth() / (maxValue - 1);
-		slider = new Slider(new Point(position.x - (spacing / 2), position.y), spacing, height);
+		spacing = getWidth() / (maxValue);
+		slider = new Slider(new Point(position.x, position.y), spacing, height);
 	}
 
 	/**
@@ -77,18 +76,20 @@ public class ScrollBar extends Clickable implements Component {
 	}
 
 	/**
-	 * 
+	 * Moves the slider when the mouse is dragged.
 	 * 
 	 * @param oldPosition
+	 *            {@link Point} old position of the mouse.
 	 * @param newPosition
+	 * 
 	 */
-	public void processMouseDrag(Point oldPosition, Point newPosition) {
+	public void processMouseDrag(Point newPosition) {
 		// check that when starting to drag it starts at the oldPosition
-		if (slider.isClicked(oldPosition)) {
-			//Test if its being clicked or not
-			System.out.println("THE SLIDER IS BEING CLICKED");
-			
-			int change = (oldPosition.x - newPosition.x)/slider.getWidth();
+		if (isClicked(newPosition)) {
+			// Test if its being clicked or not
+			System.out.println("THE SLIDER IS BEING Dragged");
+
+			int change = (newPosition.x - slider.getPosition().x) / slider.getWidth();
 			moveSlider(change);
 		}
 	}
@@ -117,15 +118,14 @@ public class ScrollBar extends Clickable implements Component {
 		// moves to the left
 		else if (change < 0) {
 
-			if ((index - change) >= 0) {
+			if ((index - change) > 0) {
 				index -= change;
 				slider.setPosition(
-						new Point(slider.getPosition().x - (slider.getWidth() * change), slider.getPosition().y));
+						new Point(slider.getPosition().x + (slider.getWidth() * change), slider.getPosition().y));
 
 			} else {
 				index = 0;
-				slider.setPosition(
-						new Point(getPosition().x, slider.getPosition().y));
+				slider.setPosition(new Point(this.getPosition().x, slider.getPosition().y));
 			}
 		}
 		// set new position of slider
@@ -155,7 +155,7 @@ public class ScrollBar extends Clickable implements Component {
 	private class Slider extends Clickable {
 
 		private Slider(Point position, int width, int height) {
-			
+
 			super(new Region(width, height, position));
 		}
 

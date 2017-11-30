@@ -76,12 +76,6 @@ public class WarMenu extends Menu {
 	private Font countryFont;
 
 	/**
-	 * The {@link Font} for the text to display the names of the attacking and
-	 * defending {@link Player}s.
-	 */
-	private Font playerFont;
-
-	/**
 	 * The {@link Font} for the text to display the results of the attack on a
 	 * neighbouring {@link Country}.
 	 * 
@@ -108,6 +102,9 @@ public class WarMenu extends Menu {
 	 */
 	private Player ruler;
 
+	/**
+	 * The {@link Viewable} background of this {@link WarMenu}.
+	 */
 	private Viewable background;
 
 	/**
@@ -121,7 +118,6 @@ public class WarMenu extends Menu {
 		this.headingFont = new Font("Arial", Color.red, 28);
 		this.textFont = new Font("Arial", Color.red, 40);
 		this.countryFont = new Font("Arial", Color.cyan, 20);
-		this.playerFont = new Font("Arial", Color.black, 15);
 		this.resultFont = new Font("Arial", Color.white, 15);
 
 		this.defaultDice = new HashMap<>();
@@ -138,7 +134,6 @@ public class WarMenu extends Menu {
 		headingFont.init();
 		textFont.init();
 		countryFont.init();
-		playerFont.init();
 		resultFont.init();
 
 		squadSizes.init();
@@ -175,6 +170,7 @@ public class WarMenu extends Menu {
 			drawPlayer(g, player, -(getWidth() / 4));
 
 			drawTitle(g);
+
 			drawArmySizes(g);
 
 			displayDice.forEach((position, dice) -> g.drawImage(dice, position.x, position.y));
@@ -221,6 +217,9 @@ public class WarMenu extends Menu {
 
 	}
 
+	/**
+	 * Hides this {@link WarMenu}.
+	 */
 	@Override
 	public void hide() {
 		super.hide();
@@ -356,83 +355,36 @@ public class WarMenu extends Menu {
 	 * @param defending
 	 *            This is the {@link Country} that defend against the
 	 *            {@link Player}'s attacking {@link Army}.
-	 * @param atkSquadSize
+	 * @param attackSquadSize
 	 *            Amount of units (dice) the attacking {@link Army} wants to pit
 	 *            against the defending {@link Army}
 	 */
-	private void fight(Country attacking, Country defending, int atkSquadSize) {
-
-		Army attackingArmy = attacking.getArmy();
-		Army defendingArmy = defending.getArmy();
-
-		Player defender = defending.getRuler();
-		Player attacker = attacking.getRuler();
+	private void fight(Country attacking, Country defending, int attackSquadSize) {
 
 		// Check parameter
-		if (atkSquadSize > 3 || atkSquadSize < 0) {
+		if (attackSquadSize > 3 || attackSquadSize < 0) {
 			throw new IllegalArgumentException(
 					"The attacker cannot attact with more that 3 or less than 3 units at a time.");
 		}
 
 		// Get the dice rolls for the attackers and defenders.
-		Integer[] attackerDiceRolls = getDiceRolls(atkSquadSize);
-		Integer[] defenderDiceRolls = getDiceRolls(defendingArmy.getSize() > 1 ? 2 : 1);
+		Integer[] attackerDiceRolls = getDiceRolls(attackSquadSize);
+		Integer[] defenderDiceRolls = getDiceRolls(defending.getArmy().getSize() > 1 && attackSquadSize > 1 ? 2 : 1);
 
+		// The position of the top attacker dice
 		int attackX = squadSizes.getPosition().x + squadSizes.getWidth() + 5;
 		int attackY = squadSizes.getPosition().y;
 
+		// The position of the top defender dice
 		int defendX = this.getPosition().x + ((this.getWidth() * 3) / 4) - 35;
 		int defendY = squadSizes.getPosition().y;
 
-		displayDice.clear();
+		// Display the dice that we rolled
+		displayDice(attackerDiceRolls, defenderDiceRolls, new Point(attackX, attackY), new Point(defendX, defendY));
 
-		for (Integer roll : attackerDiceRolls) {
-			displayDice.put(new Point(attackX, attackY), defaultDice.get(roll));
-			attackY += 30;
-		}
+		// Compare the dice that were rolled.
+		compareDiceRolls(attackerDiceRolls, defenderDiceRolls, attacking, defending);
 
-		for (Integer roll : defenderDiceRolls) {
-			displayDice.put(new Point(defendX, defendY), defaultDice.get(roll));
-			defendY += 30;
-		}
-
-		// Get the size of the smaller set of dice.
-		int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length
-				: attackerDiceRolls.length;
-
-		// Compare each attacking dice roll against the defending dice roll
-		for (int i = 0; i < diceToCheck; i++) {
-			/*
-			 * If the attackers dice is higher than the deffender's remove one unit from the
-			 * defender's army and vice versa.
-			 */
-			if (attackerDiceRolls[i] > defenderDiceRolls[i]) {
-
-				// If the army of the defending country is of size on then this victory will
-				// conquer the country. Otherwise just kill one unit from the defending army.
-				if (defendingArmy.getSize() == 1) {
-					defending.setRuler(attacker);
-					attacker.totalArmy.add(1);
-					break;
-				} else {
-					defendingArmy.remove(1);
-				}
-
-				if (defender != null) {
-					defender.totalArmy.remove(1);
-				}
-
-			}
-			// Attacker has lost the attack
-			else {
-				attackingArmy.remove(1);
-				attacker.totalArmy.remove(1);
-
-				if (attackingArmy.getSize() < 4) {
-					checkSquadSizes();
-				}
-			}
-		}
 	}
 
 	/**
@@ -589,6 +541,100 @@ public class WarMenu extends Menu {
 		}
 
 		squadSizes.setFont(headingFont);
+
+	}
+
+	/**
+	 * Adds dice to {@link WarMenu#displayDice} with there designated {@link Point}
+	 * position.
+	 * 
+	 * @param attackerDiceRolls
+	 * @param defenderDiceRolls
+	 * @param attackTop
+	 *            {@link Point} of the top dice for the attacker.
+	 * @param defendTop
+	 *            {@link Point} of the top dice for the defender.
+	 */
+	private void displayDice(Integer[] attackerDiceRolls, Integer[] defenderDiceRolls, Point attackTop,
+			Point defendTop) {
+
+		int defendX = defendTop.x;
+		int defendY = defendTop.y;
+
+		int attackX = attackTop.x;
+		int attackY = attackTop.y;
+
+		displayDice.clear();
+
+		for (Integer roll : attackerDiceRolls) {
+			displayDice.put(new Point(attackX, attackY), defaultDice.get(roll));
+			attackY += 30;
+		}
+
+		for (Integer roll : defenderDiceRolls) {
+			displayDice.put(new Point(defendX, defendY), defaultDice.get(roll));
+			defendY += 30;
+		}
+
+	}
+
+	/**
+	 * Compares the attackers dice roles from the defenders rolls and removes units
+	 * from the attacking country and defending country appropriately.
+	 * 
+	 * @param attackerDiceRolls
+	 * @param defenderDiceRolls
+	 * @param attacking
+	 *            {@link Counrty}
+	 * @param defending
+	 *            {@link Counrty}
+	 */
+	private void compareDiceRolls(Integer[] attackerDiceRolls, Integer[] defenderDiceRolls, Country attacking,
+			Country defending) {
+
+		Army attackingArmy = attacking.getArmy();
+		Army defendingArmy = defending.getArmy();
+
+		Player defender = defending.getRuler();
+		Player attacker = attacking.getRuler();
+
+		// Get the size of the smaller set of dice.
+		int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length
+				: attackerDiceRolls.length;
+
+		// Compare each attacking dice roll against the defending dice roll
+		for (int i = 0; i < diceToCheck; i++) {
+			/*
+			 * If the attackers dice is higher than the deffender's remove one unit from the
+			 * defender's army and vice versa.
+			 */
+			if (attackerDiceRolls[i] > defenderDiceRolls[i]) {
+
+				// If the army of the defending country is of size on then this victory will
+				// conquer the country. Otherwise just kill one unit from the defending army.
+				if (defendingArmy.getSize() == 1) {
+					defending.setRuler(attacker);
+					attacker.totalArmy.add(1);
+					break;
+				} else {
+					defendingArmy.remove(1);
+				}
+
+				if (defender != null) {
+					defender.totalArmy.remove(1);
+				}
+
+			}
+			// Attacker has lost the attack
+			else {
+				attackingArmy.remove(1);
+				attacker.totalArmy.remove(1);
+
+				if (attackingArmy.getSize() < 4) {
+					checkSquadSizes();
+				}
+			}
+		}
 
 	}
 }

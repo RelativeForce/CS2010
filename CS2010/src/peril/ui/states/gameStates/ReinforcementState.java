@@ -11,6 +11,7 @@ import peril.Player;
 import peril.Point;
 import peril.board.Country;
 import peril.ui.Button;
+import peril.ui.Font;
 
 /**
  * Encapsulates the behaviour of the Reinforcement {@link CoreGameState} where
@@ -27,6 +28,10 @@ public final class ReinforcementState extends CoreGameState {
 	 */
 	private static final String STATE_NAME = "Reinforcement";
 
+	private final Font unitFont;
+
+	private final Font textFont;
+
 	/**
 	 * Holds the instance of the reinforce {@link Button}.
 	 */
@@ -42,6 +47,8 @@ public final class ReinforcementState extends CoreGameState {
 	 */
 	public ReinforcementState(Game game, int id) {
 		super(game, STATE_NAME, id);
+		unitFont = new Font("Arial", Color.white, 50);
+		textFont = new Font("Arial", Color.white, 20);
 	}
 
 	/**
@@ -66,6 +73,13 @@ public final class ReinforcementState extends CoreGameState {
 			reinforceButton = button;
 			reinforceButton.hide();
 		}
+	}
+
+	@Override
+	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		super.init(gc, sbg);
+		unitFont.init();
+		textFont.init();
 	}
 
 	/**
@@ -136,11 +150,11 @@ public final class ReinforcementState extends CoreGameState {
 
 		super.drawButtons(g);
 
-		// Set the text color to black
-		g.setColor(Color.black);
+		String units = Integer.toString(getGame().players.getCurrent().distributableArmy.getSize());
 
-		// Draw player name
-		g.drawString("Units: " + getGame().players.getCurrent().distributableArmy.getSize(), 5, 35);
+		unitFont.draw(g, units, 150 - (unitFont.getWidth(units) / 2), 45);
+
+		textFont.draw(g, "UNITS", 150 - (textFont.getWidth("UNITS") / 2), 95);
 
 		super.drawPauseMenu(g);
 	}

@@ -65,7 +65,7 @@ public final class Player extends Viewable {
 		this.distributableArmy = new Army(0);
 		this.totalArmy = new Army(0);
 		this.number = number;
-		setPosition(new Point(10, 45));
+		setPosition(new Point(15, 45));
 	}
 
 	/**

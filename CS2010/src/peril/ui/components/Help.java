@@ -8,6 +8,8 @@ import org.newdawn.slick.Graphics;
 import peril.Game;
 import peril.Point;
 import peril.io.fileReaders.ImageReader;
+import peril.multiThread.Action;
+import peril.ui.Button;
 import peril.ui.Clickable;
 import peril.ui.Region;
 
@@ -38,6 +40,11 @@ public class Help extends Clickable implements Component {
 	 * Holds the {@link Game} this {@link Help} is a part of.
 	 */
 	private final Game game;
+
+	/**
+	 * The button that exits this {@link Help}.
+	 */
+	private Button exit;
 
 	/**
 	 * The padding in the horizontal direction between the edge of the {@link Help}
@@ -127,8 +134,12 @@ public class Help extends Clickable implements Component {
 	@Override
 	public void init() {
 
-		super.setImage(getPosition(), ImageReader.getImage(game.assets.ui + "toolTipBox.png")
-				.getScaledCopy(getWidth(), getHeight()));
+		super.setImage(getPosition(),
+				ImageReader.getImage(game.assets.ui + "toolTipBox.png").getScaledCopy(getWidth(), getHeight()));
+
+		exit = new Button(new Point(this.getPosition().x + this.getWidth() - 50, this.getPosition().y),
+				ImageReader.getImage(game.assets.ui + "xButton.png").getScaledCopy(50, 50),
+				new Action<Help>(this, help -> help.hide()), "help");
 
 		isInitialised = true;
 		text.init();
@@ -143,6 +154,7 @@ public class Help extends Clickable implements Component {
 	public void setPosition(Point position) {
 		super.setPosition(position);
 		text.setPosition(new Point(position.x + paddingX, position.y + paddingY));
+		exit.setPosition(new Point(this.getPosition().x + this.getWidth() - 50, this.getPosition().y));
 	}
 
 	/**
@@ -156,6 +168,29 @@ public class Help extends Clickable implements Component {
 
 		g.drawImage(getImage(), getPosition().x, getPosition().y);
 		text.draw(g);
+		g.drawImage(exit.getImage(), exit.getPosition().x, exit.getPosition().y);
+
+	}
+
+	/**
+	 * Retrieve whether or not this {@link Help} is visible or not.
+	 * 
+	 * @return
+	 */
+	public boolean isVisible() {
+		return visible;
+	}
+
+	/**
+	 * Processes a click at a {@link Point} position on this {@link Button}.
+	 * 
+	 * @param click
+	 *            {@link Point}
+	 */
+	public void parseClick(Point click) {
+		if (exit.isClicked(click)) {
+			exit.click();
+		}
 	}
 
 }

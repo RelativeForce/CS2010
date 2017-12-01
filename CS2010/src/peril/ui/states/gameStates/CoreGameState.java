@@ -20,6 +20,7 @@ import peril.board.Army;
 import peril.board.Board;
 import peril.board.Country;
 import peril.ui.Region;
+import peril.ui.components.Help;
 import peril.ui.components.lists.ToolTipList;
 import peril.ui.components.menus.PauseMenu;
 import peril.ui.states.InteractiveState;
@@ -31,7 +32,7 @@ import peril.ui.states.InteractiveState;
  * @author Joseph_Rolli, Joshua_Eddy
  */
 public abstract class CoreGameState extends InteractiveState {
-	
+
 	/**
 	 * The {@link Point} pan direction vector this state will pan at.
 	 */
@@ -75,7 +76,7 @@ public abstract class CoreGameState extends InteractiveState {
 		this.pauseMenu = game.pauseMenu;
 		this.panDirection = null;
 		this.toolTipList = new ToolTipList(new Point(130, 15));
-		
+
 		super.addComponent(pauseMenu);
 		super.addComponent(toolTipList);
 	}
@@ -174,7 +175,7 @@ public abstract class CoreGameState extends InteractiveState {
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
 		super.leave(container, game);
-		
+
 		toolTipList.clear();
 
 		// Remove the highlight effect on the currently highlighted country
@@ -266,7 +267,7 @@ public abstract class CoreGameState extends InteractiveState {
 	public void parseClick(int button, Point click) {
 
 		// If the player hasn't clicked the pause menu
-		if (!clickPauseMenu(click)) {
+		if (!clickPauseMenu(click) && !clickedHelp(click)) {
 
 			// If the player hasn't clicked a UI Button in the state, they must've clicked
 			// board.
@@ -284,7 +285,7 @@ public abstract class CoreGameState extends InteractiveState {
 	public Music getMusic() {
 		return backgroundMusic.get(new Random().nextInt(backgroundMusic.size()));
 	}
-	
+
 	/**
 	 * Adds a String as a tool tip to this {@link CoreGameState} to be displayed to
 	 * the user.
@@ -438,29 +439,6 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	/**
-	 * Performs a mouse click at a specified {@link Point} position on the
-	 * {@link PauseMenu}.
-	 * 
-	 * @param click
-	 *            {@link Point}
-	 * @return Whether or not the {@link PauseMenu} was clicked or not.
-	 */
-	protected boolean clickPauseMenu(Point click) {
-
-		// If the pause menu is invisible then it cannot be clicked.
-		if (pauseMenu.isVisible()) {
-
-			// If the pause menu was clicked then parse the click.
-			if (pauseMenu.isClicked(click)) {
-				pauseMenu.parseClick(click);
-				return true;
-			}
-			pauseMenu.hide();
-		}
-		return false;
-	}
-
-	/**
 	 * Retrieves the width of the oval that will be displayed behind the army of a
 	 * country.
 	 * 
@@ -514,6 +492,29 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	/**
+	 * Performs a mouse click at a specified {@link Point} position on the
+	 * {@link PauseMenu}.
+	 * 
+	 * @param click
+	 *            {@link Point}
+	 * @return Whether or not the {@link PauseMenu} was clicked or not.
+	 */
+	private boolean clickPauseMenu(Point click) {
+
+		// If the pause menu is invisible then it cannot be clicked.
+		if (pauseMenu.isVisible()) {
+
+			// If the pause menu was clicked then parse the click.
+			if (pauseMenu.isClicked(click)) {
+				pauseMenu.parseClick(click);
+				return true;
+			}
+			pauseMenu.hide();
+		}
+		return false;
+	}
+
+	/**
 	 * Draws the {@link army} in its current state over the {@link Country} it is
 	 * located.
 	 * 
@@ -550,6 +551,35 @@ public abstract class CoreGameState extends InteractiveState {
 			g.drawString(Integer.toString(troopNumber), armyPosition.x, armyPosition.y);
 
 		}));
+	}
+
+	/**
+	 * Retrieves whether or not the {@link Help} window was clicked or not.
+	 * 
+	 * @param click
+	 *            {@link Point}
+	 * @return
+	 */
+	private boolean clickedHelp(Point click) {
+
+		if (getHelp() == null)
+			return false;
+
+		Help help = getHelp();
+
+		// If the pause menu is invisible then it cannot be clicked.
+		if (help.isVisible()) {
+
+			// If the pause menu was clicked then parse the click.
+			if (help.isClicked(click)) {
+				help.parseClick(click);
+				return true;
+			}
+
+			help.hide();
+		}
+
+		return false;
 	}
 
 	/**

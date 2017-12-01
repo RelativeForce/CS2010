@@ -63,7 +63,7 @@ public class WarMenu extends Menu {
 	private final Font countryFont;
 
 	/**
-	 * The {@link Font} for the text to display the results of the attack on a
+	 * The {@link Font} for the text to display the results of the attack on a;
 	 * neighbouring {@link Country}.
 	 * 
 	 */
@@ -111,13 +111,13 @@ public class WarMenu extends Menu {
 	 * 
 	 */
 	public WarMenu(Point position, Game game) {
-		super("War", game, new Region(400, 400, position));
+		super(NAME, game, new Region(400, 400, position));
 
 		this.random = new Random();
 		this.headingFont = new Font("Arial", Color.red, 28);
 		this.textFont = new Font("Arial", Color.red, 40);
-		this.countryFont = new Font("Arial", Color.cyan, 20);
-		this.resultFont = new Font("Arial", Color.white, 15);
+		this.countryFont = new Font("Arial", Color.black, 20);
+		this.resultFont = new Font("Arial", Color.black, 15);
 		this.dice = new Dice();
 
 		this.checkSquadSizes();
@@ -227,14 +227,6 @@ public class WarMenu extends Menu {
 		if (!squadSizes.click(click)) {
 			clickedButton(click);
 		}
-	}
-
-	/**
-	 * Returns the name of the {@link WarMenu}.
-	 */
-	@Override
-	public String getName() {
-		return NAME;
 	}
 
 	/**
@@ -390,7 +382,7 @@ public class WarMenu extends Menu {
 		String failure = "has insufficient units to attack.";
 
 		countryFont.draw(g, attacker.getName(),
-				getPosition().x + (getWidth() / 2) - (resultFont.getWidth(attacker.getName()) / 2),
+				getPosition().x + (getWidth() / 2) - (countryFont.getWidth(attacker.getName()) / 2),
 				getPosition().y + (getHeight() / 2) - 30);
 
 		resultFont.draw(g, failure, getPosition().x + (getWidth() / 2) - (resultFont.getWidth(failure) / 2),

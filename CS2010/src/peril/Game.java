@@ -161,15 +161,15 @@ public class Game extends StateBasedGame implements MusicListener {
 	public void reSize(int width, int height) throws SlickException {
 
 		// Change the window to the specified size.
-		if (width == agc.getScreenWidth() && height == agc.getScreenHeight()) {
-			agc.setDisplayMode(width, height, true);
+		if (width >= agc.getScreenWidth() && height >= agc.getScreenHeight()) {
+			agc.setDisplayMode(agc.getScreenWidth(), agc.getScreenHeight(), true);
 		} else {
 
 			agc.setDisplayMode(width, height, false);
 		}
 
-		int pauseMenuX = (width / 2) - (pauseMenu.getWidth() / 2);
-		int pauseMenuY = (height / 2) - (pauseMenu.getHeight() / 2);
+		int pauseMenuX = (agc.getWidth() / 2) - (pauseMenu.getWidth() / 2);
+		int pauseMenuY = (agc.getHeight() / 2) - (pauseMenu.getHeight() / 2);
 
 		pauseMenu.setPosition(new Point(pauseMenuX, pauseMenuY));
 

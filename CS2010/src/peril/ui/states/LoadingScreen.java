@@ -63,7 +63,7 @@ public final class LoadingScreen extends InteractiveState {
 	/**
 	 * THe {@link ProgressBar} that will be displayed on this loading screen.
 	 */
-	private ProgressBar progressBar;
+	private final ProgressBar progressBar;
 
 	/**
 	 * Constructs a new {@link LoadingScreen}.
@@ -154,7 +154,7 @@ public final class LoadingScreen extends InteractiveState {
 		if (index == readers.size()) {
 
 			// Enter set up state
-			getGame().enterState((firstState == null) ? getGame().states.setup : firstState);
+			getGame().enterState(firstState);
 		}
 		// Otherwise reader the current readers line.
 		else {
@@ -214,7 +214,7 @@ public final class LoadingScreen extends InteractiveState {
 		// Turn off the loading music.
 		container.setMusicOn(false);
 
-		firstState = null;
+		firstState = getGame().states.setup;
 
 		getGame().pauseMenu.refreshSaveFiles();
 	}

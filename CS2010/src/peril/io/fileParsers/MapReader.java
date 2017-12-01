@@ -41,6 +41,11 @@ public final class MapReader extends FileParser {
 	private final Image normalMap;
 
 	/**
+	 * Holds the {@link Image} which denotes the shapes of the {@link Country}s.
+	 */
+	private final Image countryMap;
+
+	/**
 	 * The {@link List} of all the {@link Country}s on the {@link Board}.
 	 */
 	private final List<Country> countries;
@@ -75,7 +80,8 @@ public final class MapReader extends FileParser {
 		this.countries = new LinkedList<>();
 		this.game = game;
 
-		normalMap = ImageReader.getImage(directoryPath + File.separatorChar + "normal.png");
+		this.normalMap = ImageReader.getImage(directoryPath + File.separatorChar + "normal.png");
+		this.countryMap = ImageReader.getImage(directoryPath + File.separatorChar + "countries.png");
 
 	}
 
@@ -217,7 +223,7 @@ public final class MapReader extends FileParser {
 		Color color = new Color(r, g, b);
 
 		// Gets the region by colour.
-		Region region = ImageReader.getColourRegion(directoryPath + File.separatorChar + "countries.png", color);
+		Region region = new Region(countryMap, color);
 
 		// Initialise the new country.
 		Country country = new Country(name, region, color);

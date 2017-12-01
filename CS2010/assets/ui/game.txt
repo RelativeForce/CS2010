@@ -24,8 +24,8 @@ button,War Menu,6,attackButton.png,90,40,55,300,war
 image,War Menu,warMenu.png,300,400,0,0
 
 // Pause Menu
-button,Pause Menu,10,endButton.png,90,40,180,215,exit
-button,Pause Menu,12,menuButton.png,90,40,30,215,menu
+button,Pause Menu,10,exitGameButton.png,90,40,180,215,exit
+button,Pause Menu,12,mainMenuButton.png,90,40,30,215,menu
 button,Pause Menu,11,saveButton.png,60,30,85,135,save
 image,Pause Menu,pauseMenu.png,300,300,0,0
 

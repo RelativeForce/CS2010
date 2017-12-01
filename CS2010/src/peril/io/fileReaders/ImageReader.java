@@ -52,8 +52,11 @@ public class ImageReader {
 
 	/**
 	 * Retrieves a {@link Region} of the {@link Board} denoted by a {@link Color}.
-	 * @param path <code>String</code> path of the {@link Image} file.
-	 * @param colour {@link Color} that denotes this region on the board.
+	 * 
+	 * @param path
+	 *            <code>String</code> path of the {@link Image} file.
+	 * @param colour
+	 *            {@link Color} that denotes this region on the board.
 	 * @return {@link Region}.
 	 */
 	public static Region getColourRegion(String path, Color colour) {
@@ -69,11 +72,10 @@ public class ImageReader {
 	 * @return <code>Integer[][]</code>
 	 */
 	public static Image getImage(String path) {
-		
+
 		// Holds the raw image retrieved from the image reader.
 		return new ImageReader(path).readImage();
 
-		
 	}
 
 }

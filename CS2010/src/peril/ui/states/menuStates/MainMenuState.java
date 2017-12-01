@@ -165,7 +165,7 @@ public class MainMenuState extends InteractiveState {
 		// TODO Make help
 		return null;
 	}
-	
+
 	/**
 	 * Processes a button press on this {@link MainMenuState}.
 	 */
@@ -277,17 +277,13 @@ public class MainMenuState extends InteractiveState {
 		// Loads the game assets and move into the set up state
 		if (saves.getSelected() == SaveFile.DEFAULT) {
 			getGame().players.setInitialPlayers(players.getSelected());
-			getGame().setRoundNumber(0);
-			getGame().players.resetAll();
 		}
 
-		int screenWidth = getGame().getContainer().getScreenWidth();
-		int screenHeight = getGame().getContainer().getScreenHeight();
+		getGame().setRoundNumber(0);
+		getGame().players.resetAll();
+		getGame().players.getChallenges().clear();
 
-		int width = (map.width > screenWidth) ? screenWidth : map.width;
-		int height = (map.height > screenHeight) ? screenHeight : map.height;
-
-		getGame().reSize(width, height);
+		getGame().reSize(map.width, map.height);
 		getGame().board.setName(map.name);
 
 		// Only load the ui elements for the game on the first load
@@ -296,8 +292,7 @@ public class MainMenuState extends InteractiveState {
 			uiLoaded = true;
 		}
 
-		MapReader mapLoader = new MapReader(getGame().assets.maps + map.name, getGame(),
-				saves.getSelected());
+		MapReader mapLoader = new MapReader(getGame().assets.maps + map.name, getGame(), saves.getSelected());
 
 		getGame().states.loadingScreen.addReader(mapLoader);
 		getGame().enterState(getGame().states.loadingScreen);

@@ -10,6 +10,7 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Country;
+import peril.board.EnvironmentalHazard;
 import peril.ui.Button;
 import peril.ui.Font;
 import peril.ui.components.Help;
@@ -29,9 +30,21 @@ public final class ReinforcementState extends CoreGameState {
 	 */
 	private static final String STATE_NAME = "Reinforcement";
 
+	/**
+	 * The {@link Font} for displaying the {@link Player's} available units to
+	 * distribute.
+	 */
 	private final Font unitFont;
 
+	/**
+	 * The {@link Font} used to display "UNITS"
+	 */
 	private final Font textFont;
+
+	/**
+	 * The {@link Help} window for this {@link ReinforcementState}.
+	 */
+	private final Help help;
 
 	/**
 	 * Holds the instance of the reinforce {@link Button}.
@@ -48,14 +61,29 @@ public final class ReinforcementState extends CoreGameState {
 	 */
 	public ReinforcementState(Game game, int id) {
 		super(game, STATE_NAME, id);
-		unitFont = new Font("Arial", Color.white, 50);
-		textFont = new Font("Arial", Color.white, 20);
+		this.unitFont = new Font("Arial", Color.white, 50);
+		this.textFont = new Font("Arial", Color.white, 20);
+
+		this.help = new Help(game, new Point(100, 100), 400, 350);
+		super.addComponent(help);
+
+		help.addText(STATE_NAME + " help");
+		help.addText("-----------------------------------------------------------");
+
+		// Environmental Hazards
+		help.addText(">> Environmental Hazards");
+		help.addText("After the first round environmental hazards may occur in any country. "
+				+ "These hazards will kill a random percentage of the army stationed at "
+				+ "the country the hazard occured up to a maximum value.");
+		for (EnvironmentalHazard hazard : EnvironmentalHazard.values()) {
+			help.addText(hazard.name + ": " + hazard.maxCasualties + "% at " + hazard.chance + "% chance");
+		}
+
 	}
-	
+
 	@Override
 	public Help getHelp() {
-		// TODO Make help
-		return null;
+		return help;
 	}
 
 	/**
@@ -65,6 +93,8 @@ public final class ReinforcementState extends CoreGameState {
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
 		getGame().pauseMenu.showSaveOption();
+		help.setPosition(
+				new Point((gc.getWidth() / 2) - (help.getWidth() / 2), (gc.getHeight() / 2) - (help.getHeight() / 2)));
 	}
 
 	/**
@@ -152,11 +182,11 @@ public final class ReinforcementState extends CoreGameState {
 		super.render(gc, sbg, g);
 
 		super.drawArmies(g);
-		
+
 		super.drawImages(g);
 
 		super.drawButtons(g);
-		
+
 		super.drawPlayerName(g);
 
 		String units = Integer.toString(getGame().players.getCurrent().distributableArmy.getSize());
@@ -164,6 +194,8 @@ public final class ReinforcementState extends CoreGameState {
 		unitFont.draw(g, units, 150 - (unitFont.getWidth(units) / 2), 45);
 
 		textFont.draw(g, "UNITS", 150 - (textFont.getWidth("UNITS") / 2), 95);
+
+		help.draw(g);
 
 		super.drawPauseMenu(g);
 	}

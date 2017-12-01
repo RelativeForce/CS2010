@@ -151,6 +151,11 @@ public abstract class CoreGameState extends InteractiveState {
 			pan(panDirection);
 		}
 
+		// Hide the about widow if the pause menu is visible
+		if (pauseMenu.isVisible() && getHelp() != null) {
+			getHelp().hide();
+		}
+
 	}
 
 	/**

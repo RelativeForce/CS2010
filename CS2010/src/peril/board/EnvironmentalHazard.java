@@ -147,26 +147,26 @@ public enum EnvironmentalHazard {
 	};
 
 	/**
-	 * The {@link Random} used to provide chance to {@link EnvironmentalHazard}s.
-	 */
-	private final Random generator;
-
-	/**
 	 * Holds the maximum percentage of a {@link Army} that this
 	 * {@link EnvironmentalHazard} will kill.
 	 */
-	private final int maxCasualties;
+	public final int maxCasualties;
 
 	/**
 	 * The <code>String</code> representation of the {@link EnvironmentalHazard}.
 	 */
-	private final String name;
+	public final String name;
 
 	/**
 	 * Holds the percentage chance that this {@link EnvironmentalHazard} will occur
 	 * on a give {@link Army}.
 	 */
-	private final int chance;
+	public final int chance;
+
+	/**
+	 * The {@link Random} used to provide chance to {@link EnvironmentalHazard}s.
+	 */
+	private final Random generator;
 
 	/**
 	 * Constructs an {@link EnvironmentalHazard}.

@@ -1,6 +1,7 @@
 // Reinforcement State
 button,Reinforcement,0,reinforceButton.png,90,40,10,800,reinforce
 button,Reinforcement,1,endButton.png,90,40,15,80,end
+button,Reinforcement,13,helpButton.png,40,40,210,5,help
 image,Reinforcement,reinforceStateBox.png,200,130,5,5
 
 // Movement State

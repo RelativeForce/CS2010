@@ -93,19 +93,6 @@ public final class SetupState extends CoreGameState {
 	}
 
 	/**
-	 * Updates this {@link SetupState}.
-	 */
-	@Override
-	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-		super.update(gc, sbg, delta);
-
-		// Hide the about widow if the pause menu is visible
-		if (getGame().pauseMenu.isVisible()) {
-			help.hide();
-		}
-	}
-
-	/**
 	 * Handles highlighting a {@link Country} on the {@link SetupState}.
 	 */
 	@Override

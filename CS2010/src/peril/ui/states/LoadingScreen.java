@@ -78,7 +78,6 @@ public final class LoadingScreen extends InteractiveState {
 		this.index = 0;
 		this.readers = new ArrayList<>();
 		this.progressBar = new ProgressBar(new Point(0, 0), 100, 20);
-		this.firstState = null;
 		super.addComponent(progressBar);
 	}
 
@@ -122,7 +121,8 @@ public final class LoadingScreen extends InteractiveState {
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
-
+		
+		this.firstState = getGame().states.setup;
 		// Set the music.
 		music = getGame().io.musicHelper.read("loading");
 

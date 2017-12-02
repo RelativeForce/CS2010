@@ -13,7 +13,7 @@ import peril.board.Country;
 import peril.board.EnvironmentalHazard;
 import peril.ui.Button;
 import peril.ui.Font;
-import peril.ui.components.Help;
+import peril.ui.components.menus.Help;
 
 /**
  * Encapsulates the behaviour of the Reinforcement {@link CoreGameState} where
@@ -81,8 +81,11 @@ public final class ReinforcementState extends CoreGameState {
 
 	}
 
+	/**
+	 * Retrieves the {@link Help} for this {@link ReinforcementState}.
+	 */
 	@Override
-	public Help getHelp() {
+	public final Help getHelp() {
 		return help;
 	}
 
@@ -112,6 +115,9 @@ public final class ReinforcementState extends CoreGameState {
 		}
 	}
 
+	/**
+	 * Initialises this {@link ReinforcementState}.
+	 */
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);

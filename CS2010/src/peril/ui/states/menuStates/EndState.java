@@ -16,7 +16,7 @@ import peril.Player;
 import peril.Point;
 import peril.ui.Button;
 import peril.ui.Font;
-import peril.ui.components.Help;
+import peril.ui.components.menus.Help;
 import peril.ui.states.InteractiveState;
 
 /**

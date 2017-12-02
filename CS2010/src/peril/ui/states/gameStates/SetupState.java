@@ -10,7 +10,7 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Country;
-import peril.ui.components.Help;
+import peril.ui.components.menus.Help;
 
 /**
  * The state where the user selects which player gets what {@link Country}s.

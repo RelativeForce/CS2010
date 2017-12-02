@@ -114,7 +114,7 @@ public abstract class Menu extends Clickable implements Container, Component {
 	 */
 	public void draw(Graphics g) {
 		if (visible) {
-			
+
 			images.forEach(image -> g.drawImage(image.getImage(), image.getPosition().x, image.getPosition().y));
 			buttons.forEach(button -> {
 				if (button.isVisible()) {
@@ -165,13 +165,13 @@ public abstract class Menu extends Clickable implements Container, Component {
 
 		Point vector = new Point(position.x - current.x, position.y - current.y);
 
+		super.setPosition(position);
+
 		moveComponents(vector);
 
 		moveButtons(vector);
 
 		moveImages(vector);
-
-		super.setPosition(position);
 
 	}
 
@@ -189,13 +189,13 @@ public abstract class Menu extends Clickable implements Container, Component {
 	 */
 	@Override
 	public void addImage(Viewable image) {
-		
+
 		Point current = image.getPosition();
 
 		Point menuPosition = this.getPosition();
 
 		image.setPosition(new Point(current.x + menuPosition.x, current.y + menuPosition.y));
-		
+
 		images.add(image);
 	}
 

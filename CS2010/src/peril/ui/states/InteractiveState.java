@@ -17,7 +17,7 @@ import peril.ui.Clickable;
 import peril.ui.Container;
 import peril.ui.Viewable;
 import peril.ui.components.Component;
-import peril.ui.components.Help;
+import peril.ui.components.menus.Help;
 
 /**
  * 

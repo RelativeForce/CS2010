@@ -1,4 +1,4 @@
-package peril.ui.components;
+package peril.ui.components.menus;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,8 +10,9 @@ import peril.Point;
 import peril.io.fileReaders.ImageReader;
 import peril.multiThread.Action;
 import peril.ui.Button;
-import peril.ui.Clickable;
 import peril.ui.Region;
+import peril.ui.Viewable;
+import peril.ui.components.TextField;
 
 /**
  * Encapsulates the behaviour of a help window that displays information to the
@@ -21,7 +22,7 @@ import peril.ui.Region;
  * @author Joshua_Eddy
  *
  */
-public class Help extends Clickable implements Component {
+public class Help extends Menu {
 
 	/**
 	 * The {@link TextField} that will display the text to the user.
@@ -35,16 +36,6 @@ public class Help extends Clickable implements Component {
 	 * added to the {@link TextField}.
 	 */
 	private final List<String> temp;
-
-	/**
-	 * Holds the {@link Game} this {@link Help} is a part of.
-	 */
-	private final Game game;
-
-	/**
-	 * The button that exits this {@link Help}.
-	 */
-	private Button exit;
 
 	/**
 	 * The padding in the horizontal direction between the edge of the {@link Help}
@@ -64,11 +55,6 @@ public class Help extends Clickable implements Component {
 	private boolean isInitialised;
 
 	/**
-	 * Whether or not this {@link Help is visible.}
-	 */
-	private boolean visible;
-
-	/**
 	 * Constructs a new {@link Help}.
 	 * 
 	 * @param game
@@ -81,14 +67,12 @@ public class Help extends Clickable implements Component {
 	 *            of {@link Help}}
 	 */
 	public Help(Game game, Point position, int width, int height) {
-		super(new Region(width, height, position));
+		super("Help", game, new Region(width, height, position));
 
-		this.game = game;
 		this.isInitialised = false;
 		this.paddingY = height / 10;
 		this.paddingX = width / 12;
 		this.temp = new LinkedList<>();
-		this.visible = false;
 		this.text = new TextField(width - (paddingX * 2), height - (paddingY * 2),
 				new Point(position.x + paddingX, position.y + paddingY));
 	}
@@ -108,38 +92,18 @@ public class Help extends Clickable implements Component {
 	}
 
 	/**
-	 * Hides this {@link Help}.
-	 */
-	public void hide() {
-		visible = false;
-	}
-
-	/**
-	 * Toggles the visibility of this {@link Help}.
-	 */
-	public void toggleVisibility() {
-		visible = !visible;
-	}
-
-	/**
-	 * Shows this {@link Help}.
-	 */
-	public void show() {
-		visible = true;
-	}
-
-	/**
 	 * Initialises this {@link Help}.
 	 */
 	@Override
 	public void init() {
 
-		super.setImage(getPosition(),
-				ImageReader.getImage(game.assets.ui + "toolTipBox.png").getScaledCopy(getWidth(), getHeight()));
+		super.addImage(new Viewable(
+				ImageReader.getImage(getGame().assets.ui + "toolTipBox.png").getScaledCopy(getWidth(), getHeight()),
+				new Point(0, 0)));
 
-		exit = new Button(new Point(this.getPosition().x + this.getWidth() - 50, this.getPosition().y),
-				ImageReader.getImage(game.assets.ui + "xButton.png").getScaledCopy(50, 50),
-				new Action<Help>(this, help -> help.hide()), "help");
+		super.addButton(new Button(new Point(this.getWidth() - 50, 0),
+				ImageReader.getImage(getGame().assets.ui + "xButton.png").getScaledCopy(50, 50),
+				new Action<Help>(this, help -> help.hide()), "help"));
 
 		isInitialised = true;
 		text.init();
@@ -148,37 +112,17 @@ public class Help extends Clickable implements Component {
 	}
 
 	/**
-	 * Assigns a new {@link Point} position of this {@link Help}.
-	 */
-	@Override
-	public void setPosition(Point position) {
-		super.setPosition(position);
-		text.setPosition(new Point(position.x + paddingX, position.y + paddingY));
-		exit.setPosition(new Point(this.getPosition().x + this.getWidth() - 50, this.getPosition().y));
-	}
-
-	/**
 	 * Draws thus {@link Help} on screen. If this {@link Help} is hidden, this with
 	 * do nothing.
 	 */
 	@Override
 	public void draw(Graphics g) {
-		if (!visible)
+		if (!isVisible())
 			return;
 
-		g.drawImage(getImage(), getPosition().x, getPosition().y);
+		super.draw(g);
 		text.draw(g);
-		g.drawImage(exit.getImage(), exit.getPosition().x, exit.getPosition().y);
 
-	}
-
-	/**
-	 * Retrieve whether or not this {@link Help} is visible or not.
-	 * 
-	 * @return
-	 */
-	public boolean isVisible() {
-		return visible;
 	}
 
 	/**
@@ -188,9 +132,19 @@ public class Help extends Clickable implements Component {
 	 *            {@link Point}
 	 */
 	public void parseClick(Point click) {
-		if (exit.isClicked(click)) {
-			exit.click();
-		}
+		super.clickedButton(click);
+	}
+
+	/**
+	 * Moves the {@link Button} and {@link Viewable}s of the {@link Help}.
+	 */
+	@Override
+	public void moveComponents(Point vector) {
+
+		Point textCurrent = text.getPosition();
+
+		text.setPosition(new Point(textCurrent.x + vector.x, textCurrent.y + vector.y));
+
 	}
 
 }

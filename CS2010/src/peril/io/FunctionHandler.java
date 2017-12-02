@@ -6,7 +6,7 @@ import peril.board.Continent;
 import peril.board.Country;
 import peril.multiThread.Action;
 import peril.ui.Button;
-import peril.ui.components.Help;
+import peril.ui.components.menus.Help;
 import peril.ui.components.menus.PauseMenu;
 import peril.ui.components.menus.WarMenu;
 

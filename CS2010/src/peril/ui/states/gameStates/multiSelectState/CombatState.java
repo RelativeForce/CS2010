@@ -11,7 +11,7 @@ import peril.Player;
 import peril.Point;
 import peril.board.Country;
 import peril.ui.Button;
-import peril.ui.components.Help;
+import peril.ui.components.menus.Help;
 import peril.ui.components.menus.WarMenu;
 import peril.ui.states.gameStates.CoreGameState;
 

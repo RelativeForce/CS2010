@@ -13,8 +13,8 @@ import peril.Game;
 import peril.Point;
 import peril.io.fileParsers.FileParser;
 import peril.ui.Viewable;
-import peril.ui.components.Help;
 import peril.ui.components.ProgressBar;
+import peril.ui.components.menus.Help;
 import peril.ui.states.gameStates.CoreGameState;
 import peril.ui.states.gameStates.SetupState;
 

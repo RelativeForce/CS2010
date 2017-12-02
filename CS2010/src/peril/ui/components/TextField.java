@@ -34,7 +34,7 @@ public final class TextField implements Component {
 	private Point position;
 
 	/**
-	 * The width of this {@link TextField}
+	 * The width of this {@link TextField}.
 	 */
 	private int width;
 
@@ -193,4 +193,12 @@ public final class TextField implements Component {
 		this.position = position;
 	}
 
+	/**
+	 * Retrieves the {@link Point} position of this {@link TextField}.
+	 * 
+	 * @return
+	 */
+	public Point getPosition() {
+		return position;
+	}
 }

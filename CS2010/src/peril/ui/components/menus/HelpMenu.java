@@ -22,7 +22,7 @@ import peril.ui.components.TextField;
  * @author Joshua_Eddy
  *
  */
-public class Help extends Menu {
+public class HelpMenu extends Menu {
 
 	/**
 	 * The {@link TextField} that will display the text to the user.
@@ -30,43 +30,43 @@ public class Help extends Menu {
 	private final TextField text;
 
 	/**
-	 * Holds the lines of text that have been give to this {@link Help} before this
-	 * {@link Help} has be initialised using {@link Help#init()}. When this
-	 * {@link Help} is initialised all the elements of this {@link List} will be
+	 * Holds the lines of text that have been give to this {@link HelpMenu} before this
+	 * {@link HelpMenu} has be initialised using {@link HelpMenu#init()}. When this
+	 * {@link HelpMenu} is initialised all the elements of this {@link List} will be
 	 * added to the {@link TextField}.
 	 */
 	private final List<String> temp;
 
 	/**
-	 * The padding in the horizontal direction between the edge of the {@link Help}
+	 * The padding in the horizontal direction between the edge of the {@link HelpMenu}
 	 * and the edge of the {@link TextField}.
 	 */
 	private final int paddingX;
 
 	/**
-	 * The padding in the vertical direction between the edge of the {@link Help}
+	 * The padding in the vertical direction between the edge of the {@link HelpMenu}
 	 * and the edge of the {@link TextField}.
 	 */
 	private final int paddingY;
 
 	/**
-	 * Whether or not this {@link Help} has been initialised or not.
+	 * Whether or not this {@link HelpMenu} has been initialised or not.
 	 */
 	private boolean isInitialised;
 
 	/**
-	 * Constructs a new {@link Help}.
+	 * Constructs a new {@link HelpMenu}.
 	 * 
 	 * @param game
 	 *            {@link Game}
 	 * @param position
-	 *            {@link Point} position of the {@link Help}
+	 *            {@link Point} position of the {@link HelpMenu}
 	 * @param width
-	 *            of the {@link Help}
+	 *            of the {@link HelpMenu}
 	 * @param height
-	 *            of {@link Help}}
+	 *            of {@link HelpMenu}}
 	 */
-	public Help(Game game, Point position, int width, int height) {
+	public HelpMenu(Game game, Point position, int width, int height) {
 		super("Help", game, new Region(width, height, position));
 
 		this.isInitialised = false;
@@ -78,7 +78,7 @@ public class Help extends Menu {
 	}
 
 	/**
-	 * Adds a line of text to this {@link Help}. This will wrap to the next line if
+	 * Adds a line of text to this {@link HelpMenu}. This will wrap to the next line if
 	 * it is too long.
 	 * 
 	 * @param text
@@ -92,7 +92,7 @@ public class Help extends Menu {
 	}
 
 	/**
-	 * Initialises this {@link Help}.
+	 * Initialises this {@link HelpMenu}.
 	 */
 	@Override
 	public void init() {
@@ -103,7 +103,7 @@ public class Help extends Menu {
 
 		super.addButton(new Button(new Point(this.getWidth() - 50, 0),
 				ImageReader.getImage(getGame().assets.ui + "xButton.png").getScaledCopy(50, 50),
-				new Action<Help>(this, help -> help.hide()), "help"));
+				new Action<HelpMenu>(this, help -> help.hide()), "help"));
 
 		isInitialised = true;
 		text.init();
@@ -112,7 +112,7 @@ public class Help extends Menu {
 	}
 
 	/**
-	 * Draws thus {@link Help} on screen. If this {@link Help} is hidden, this with
+	 * Draws thus {@link HelpMenu} on screen. If this {@link HelpMenu} is hidden, this with
 	 * do nothing.
 	 */
 	@Override
@@ -136,7 +136,7 @@ public class Help extends Menu {
 	}
 
 	/**
-	 * Moves the {@link Button} and {@link Viewable}s of the {@link Help}.
+	 * Moves the {@link Button} and {@link Viewable}s of the {@link HelpMenu}.
 	 */
 	@Override
 	public void moveComponents(Point vector) {

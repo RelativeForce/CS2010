@@ -17,7 +17,7 @@ import peril.ui.Clickable;
 import peril.ui.Container;
 import peril.ui.Viewable;
 import peril.ui.components.Component;
-import peril.ui.components.menus.Help;
+import peril.ui.components.menus.HelpMenu;
 
 /**
  * 
@@ -238,11 +238,11 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	}
 
 	/**
-	 * Retrieve the {@link Help} window for this {@link InteractiveState}.
+	 * Retrieve the {@link HelpMenu} window for this {@link InteractiveState}.
 	 * 
-	 * @return {@link Help}
+	 * @return {@link HelpMenu}
 	 */
-	public abstract Help getHelp();
+	public abstract HelpMenu getHelp();
 
 	/**
 	 * Retrieves the the <code>int</code> id of this {@link InteractiveState}.

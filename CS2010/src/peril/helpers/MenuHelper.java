@@ -23,9 +23,9 @@ public final class MenuHelper {
 	public final WarMenu warMenu;
 
 	/**
-	 * The {@link Help} that holds the help information for the {@link Game}.
+	 * The {@link HelpMenu} that holds the help information for the {@link Game}.
 	 */
-	public final Help helpMenu;
+	public final HelpMenu helpMenu;
 
 	/**
 	 * Constructs a new {@link MenuHelper}.
@@ -35,10 +35,10 @@ public final class MenuHelper {
 	 * @param warMenu
 	 *            The {@link WarMenu} that processes all of the game's combat.
 	 * @param helpMenu
-	 *            The {@link Help} that holds the help information for the
+	 *            The {@link HelpMenu} that holds the help information for the
 	 *            {@link Game}.
 	 */
-	public MenuHelper(PauseMenu pauseMenu, WarMenu warMenu, Help helpMenu) {
+	public MenuHelper(PauseMenu pauseMenu, WarMenu warMenu, HelpMenu helpMenu) {
 		this.helpMenu = helpMenu;
 		this.warMenu = warMenu;
 		this.pauseMenu = pauseMenu;

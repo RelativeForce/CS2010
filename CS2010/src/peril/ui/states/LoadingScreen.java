@@ -14,7 +14,7 @@ import peril.Point;
 import peril.io.fileParsers.FileParser;
 import peril.ui.Viewable;
 import peril.ui.components.ProgressBar;
-import peril.ui.components.menus.Help;
+import peril.ui.components.menus.HelpMenu;
 import peril.ui.states.gameStates.CoreGameState;
 import peril.ui.states.gameStates.SetupState;
 
@@ -93,10 +93,10 @@ public final class LoadingScreen extends InteractiveState {
 	}
 
 	/**
-	 * Retrieve the {@link Help} window for the {@link LoadingScreen}.
+	 * Retrieve the {@link HelpMenu} window for the {@link LoadingScreen}.
 	 */
 	@Override
-	public Help getHelp() {
+	public HelpMenu getHelp() {
 		return null;
 	}
 

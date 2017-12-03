@@ -10,7 +10,7 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Country;
-import peril.ui.components.menus.Help;
+import peril.ui.components.menus.HelpMenu;
 
 /**
  * The state where the user selects which player gets what {@link Country}s.
@@ -28,9 +28,9 @@ public final class SetupState extends CoreGameState {
 	private static final String STATE_NAME = "Setup";
 
 	/**
-	 * Holds the {@link Help} that explains the {@link SetupState} to the user.
+	 * Holds the {@link HelpMenu} that explains the {@link SetupState} to the user.
 	 */
-	private final Help help;
+	private final HelpMenu help;
 
 	/**
 	 * Constructs a new {@link SetupState}.
@@ -42,7 +42,7 @@ public final class SetupState extends CoreGameState {
 	 */
 	public SetupState(Game game, int id) {
 		super(game, STATE_NAME, id);
-		help = new Help(game, new Point(220, 5), 400, 350);
+		help = new HelpMenu(game, new Point(220, 5), 400, 350);
 		super.addComponent(help);
 
 		help.addText(STATE_NAME + " help");
@@ -58,10 +58,10 @@ public final class SetupState extends CoreGameState {
 	}
 
 	/**
-	 * Retrieve the {@link Help} window for the {@link SetupState}.
+	 * Retrieve the {@link HelpMenu} window for the {@link SetupState}.
 	 */
 	@Override
-	public Help getHelp() {
+	public HelpMenu getHelp() {
 		return help;
 	}
 

@@ -13,7 +13,7 @@ import peril.board.Country;
 import peril.board.EnvironmentalHazard;
 import peril.ui.Button;
 import peril.ui.Font;
-import peril.ui.components.menus.Help;
+import peril.ui.components.menus.HelpMenu;
 
 /**
  * Encapsulates the behaviour of the Reinforcement {@link CoreGameState} where
@@ -42,9 +42,9 @@ public final class ReinforcementState extends CoreGameState {
 	private final Font textFont;
 
 	/**
-	 * The {@link Help} window for this {@link ReinforcementState}.
+	 * The {@link HelpMenu} window for this {@link ReinforcementState}.
 	 */
-	private final Help help;
+	private final HelpMenu help;
 
 	/**
 	 * Holds the instance of the reinforce {@link Button}.
@@ -64,7 +64,7 @@ public final class ReinforcementState extends CoreGameState {
 		this.unitFont = new Font("Arial", Color.white, 50);
 		this.textFont = new Font("Arial", Color.white, 20);
 
-		this.help = new Help(game, new Point(100, 100), 400, 350);
+		this.help = new HelpMenu(game, new Point(100, 100), 400, 350);
 		super.addComponent(help);
 
 		help.addText(STATE_NAME + " help");
@@ -82,10 +82,10 @@ public final class ReinforcementState extends CoreGameState {
 	}
 
 	/**
-	 * Retrieves the {@link Help} for this {@link ReinforcementState}.
+	 * Retrieves the {@link HelpMenu} for this {@link ReinforcementState}.
 	 */
 	@Override
-	public final Help getHelp() {
+	public final HelpMenu getHelp() {
 		return help;
 	}
 

@@ -93,7 +93,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		// Initialise games overlay menus
 		WarMenu warMenu = new WarMenu(new Point(100, 100), this);
 		PauseMenu pauseMenu = new PauseMenu(new Point(100, 100), this);
-		Help helpMenu = new Help(this, new Point(100, 100), 300, 300);
+		HelpMenu helpMenu = new HelpMenu(this, new Point(100, 100), 300, 300);
 
 		this.menus = new MenuHelper(pauseMenu, warMenu, helpMenu);
 

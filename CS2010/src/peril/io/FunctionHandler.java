@@ -6,7 +6,7 @@ import peril.board.Continent;
 import peril.board.Country;
 import peril.multiThread.Action;
 import peril.ui.Button;
-import peril.ui.components.menus.Help;
+import peril.ui.components.menus.HelpMenu;
 import peril.ui.components.menus.PauseMenu;
 import peril.ui.components.menus.WarMenu;
 
@@ -84,7 +84,7 @@ public class FunctionHandler {
 	 * @return {@link Action}
 	 */
 	private Action<?> toggleWarMenu() {
-		return new Action<Game>(game, game -> game.warMenu.toggleVisibility());
+		return new Action<Game>(game, game -> game.menus.warMenu.toggleVisibility());
 	}
 
 	/**
@@ -235,11 +235,11 @@ public class FunctionHandler {
 	 * @return
 	 */
 	private Action<?> saveGame() {
-		return new Action<Game>(game, game -> game.pauseMenu.save());
+		return new Action<Game>(game, game -> game.menus.pauseMenu.save());
 	}
 
 	/**
-	 * Retrieves the {@link Action} that opens the current state's {@link Help}
+	 * Retrieves the {@link Action} that opens the current state's {@link HelpMenu}
 	 * window.
 	 * 
 	 * @return
@@ -247,7 +247,7 @@ public class FunctionHandler {
 	private Action<?> openHelp() {
 		return new Action<Game>(game, game -> {
 
-			Help help = game.getCurrentState().getHelp();
+			HelpMenu help = game.getCurrentState().getHelp();
 
 			// If there is a help window show it.
 			if (help != null) {

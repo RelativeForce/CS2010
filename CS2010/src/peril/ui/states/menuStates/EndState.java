@@ -16,7 +16,7 @@ import peril.Player;
 import peril.Point;
 import peril.ui.Button;
 import peril.ui.Font;
-import peril.ui.components.menus.Help;
+import peril.ui.components.menus.HelpMenu;
 import peril.ui.states.InteractiveState;
 
 /**
@@ -102,7 +102,7 @@ public class EndState extends InteractiveState {
 	}
 
 	@Override
-	public Help getHelp() {
+	public HelpMenu getHelp() {
 		// TODO Make help
 		return null;
 	}

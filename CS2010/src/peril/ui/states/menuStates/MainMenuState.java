@@ -16,7 +16,7 @@ import peril.io.fileParsers.MapReader;
 import peril.io.fileReaders.TextFileReader;
 import peril.ui.Font;
 import peril.ui.components.lists.VisualList;
-import peril.ui.components.menus.Help;
+import peril.ui.components.menus.HelpMenu;
 import peril.ui.states.InteractiveState;
 
 /**
@@ -161,7 +161,7 @@ public class MainMenuState extends InteractiveState {
 	}
 
 	@Override
-	public Help getHelp() {
+	public HelpMenu getHelp() {
 		// TODO Make help
 		return null;
 	}

@@ -21,7 +21,7 @@ import peril.board.Board;
 import peril.board.Country;
 import peril.ui.Region;
 import peril.ui.components.lists.ToolTipList;
-import peril.ui.components.menus.Help;
+import peril.ui.components.menus.HelpMenu;
 import peril.ui.components.menus.PauseMenu;
 import peril.ui.states.InteractiveState;
 
@@ -559,7 +559,7 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	/**
-	 * Retrieves whether or not the {@link Help} window was clicked or not.
+	 * Retrieves whether or not the {@link HelpMenu} window was clicked or not.
 	 * 
 	 * @param click
 	 *            {@link Point}
@@ -570,7 +570,7 @@ public abstract class CoreGameState extends InteractiveState {
 		if (getHelp() == null)
 			return false;
 
-		Help help = getHelp();
+		HelpMenu help = getHelp();
 
 		// If the pause menu is invisible then it cannot be clicked.
 		if (help.isVisible()) {

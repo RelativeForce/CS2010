@@ -321,7 +321,7 @@ public class HelpMenu extends Menu {
 		 */
 		private final TextField text;
 
-		private String title;
+		private final String title;
 
 		/**
 		 * Holds the lines of text that have been give to this {@link HelpMenu} before
@@ -332,12 +332,18 @@ public class HelpMenu extends Menu {
 		private final List<String> temp;
 
 		/**
+		 * Constructs a new {@link HelpPage}.
 		 * 
 		 * @param text
+		 *            The {@link TextField} that will be displayed by the
+		 *            {@link HelpPage}.
 		 * @param next
+		 *            The uniquely identifying ID number of the next {@link HelpPage}.
 		 * @param previous
+		 *            The uniquely identifying ID number of the previous
+		 *            {@link HelpPage}.
 		 * @param title
-		 *            Tthe title of the {@link HelpPage}
+		 *            The title of the {@link HelpPage}
 		 */
 		public HelpPage(TextField text, int next, int previous, String title) {
 
@@ -346,7 +352,7 @@ public class HelpMenu extends Menu {
 			this.title = title;
 			this.temp = new LinkedList<>();
 			this.text = text;
-			this.title = "Help";
+
 		}
 
 		/**

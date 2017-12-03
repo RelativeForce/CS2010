@@ -57,7 +57,16 @@ public final class MenuHelper {
 		helpMenu.setPosition(new Point(centerX - (helpMenu.getWidth() / 2), centerY - (helpMenu.getHeight() / 2)));
 		warMenu.setPosition(new Point(centerX - (warMenu.getWidth() / 2), centerY - (warMenu.getHeight() / 2)));
 	}
-	
+
+	/**
+	 * Initialises all the {@link Menu}s in this {@link MenuHelper}.
+	 */
+	public void initMenus() {
+		helpMenu.init();
+		pauseMenu.init();
+		warMenu.init();
+	}
+
 	/**
 	 * Creates the {@link HelpMenu}'s pages.
 	 * 
@@ -81,14 +90,14 @@ public final class MenuHelper {
 		int warPage = 31;
 
 		helpMenu.addPage(movementPage, HelpMenu.NULL_PAGE, HelpMenu.NULL_PAGE, "Help: Movement");
-		
+
 		// Setup state
 		helpMenu.addPage(setupPage, HelpMenu.NULL_PAGE, HelpMenu.NULL_PAGE, "Help: Setup");
-		
+
 		// Reinforcement state pages
 		helpMenu.addPage(reinforcementPage, hazardPage, HelpMenu.NULL_PAGE, "Help: Reinforcment");
 		helpMenu.addPage(hazardPage, HelpMenu.NULL_PAGE, reinforcementPage, "Help: Environmental Hazards");
-		
+
 		// Combat state pages
 		helpMenu.addPage(combatPage, warPage, HelpMenu.NULL_PAGE, "Help: Combat");
 		helpMenu.addPage(warPage, HelpMenu.NULL_PAGE, combatPage, "Help: War");

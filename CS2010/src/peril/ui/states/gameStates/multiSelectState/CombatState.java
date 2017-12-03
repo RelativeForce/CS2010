@@ -58,7 +58,6 @@ public final class CombatState extends MultiSelectState {
 
 		this.isPostCombat = false;
 		this.warMenu = game.menus.warMenu;
-		super.addComponent(warMenu);
 	}
 	
 	/**

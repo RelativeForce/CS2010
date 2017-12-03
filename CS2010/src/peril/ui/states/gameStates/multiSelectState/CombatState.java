@@ -104,22 +104,6 @@ public final class CombatState extends MultiSelectState {
 	}
 
 	/**
-	 * Pans this {@link CombatState}.
-	 */
-	@Override
-	protected void pan(Point panVector) {
-
-		Point old = attackButton.getPosition();
-
-		Point vector = getGame().board.move(panVector);
-
-		if (vector.x != 0 || vector.y != 0) {
-			attackButton.setPosition(new Point(old.x + vector.x, old.y + vector.y));
-		}
-
-	}
-
-	/**
 	 * Adds a {@link Button} to this {@link CombatState}.
 	 */
 	@Override
@@ -150,12 +134,16 @@ public final class CombatState extends MultiSelectState {
 		super.drawPlayerName(g);
 
 		super.drawImages(g);
+		
 		super.drawButtons(g);
+		
 		super.drawPlayerName(g);
 
 		this.warMenu.draw(g);
+		
+		super.drawHelp(g);
 
-		drawPauseMenu(g);
+		super.drawPauseMenu(g);
 	}
 
 	/**
@@ -202,31 +190,28 @@ public final class CombatState extends MultiSelectState {
 	}
 
 	/**
-	 * Parses a click on the {@link WarMenu} and retrieves whether the
-	 * {@link WarMenu} was clicked or not.
-	 * 
-	 * @param click
-	 *            {@link Point}
-	 * @return <code>boolean</code>
-	 */
-	private boolean clickedWarMenu(Point click) {
-		if (warMenu.isVisible()) {
-			if (warMenu.isClicked(click)) {
-				warMenu.parseClick(click);
-				return true;
-			}
-			warMenu.hide();
-		}
-		return false;
-	}
-
-	/**
 	 * Hide the attack button.
 	 */
 	public void hideAttackButton() {
 		attackButton.hide();
 	}
+	
+	/**
+	 * Pans this {@link CombatState}.
+	 */
+	@Override
+	protected void pan(Point panVector) {
 
+		Point old = attackButton.getPosition();
+
+		Point vector = getGame().board.move(panVector);
+
+		if (vector.x != 0 || vector.y != 0) {
+			attackButton.setPosition(new Point(old.x + vector.x, old.y + vector.y));
+		}
+
+	}
+	
 	/**
 	 * Processes whether a {@link Country} is a valid target for the
 	 * {@link CoreGameState#getHighlightedCountry()} to attack. This is based on the
@@ -283,6 +268,25 @@ public final class CombatState extends MultiSelectState {
 		}
 	}
 
+	/**
+	 * Parses a click on the {@link WarMenu} and retrieves whether the
+	 * {@link WarMenu} was clicked or not.
+	 * 
+	 * @param click
+	 *            {@link Point}
+	 * @return <code>boolean</code>
+	 */
+	private boolean clickedWarMenu(Point click) {
+		if (warMenu.isVisible()) {
+			if (warMenu.isClicked(click)) {
+				warMenu.parseClick(click);
+				return true;
+			}
+			warMenu.hide();
+		}
+		return false;
+	}
+	
 	/**
 	 * If a {@link Player} has not conquered a new {@link Country} since they last
 	 * clicked a {@link Country}.

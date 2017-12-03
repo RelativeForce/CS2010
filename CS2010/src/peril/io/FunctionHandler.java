@@ -64,7 +64,7 @@ public class FunctionHandler {
 		case 8:
 			return reAssignCountries();
 		case 9:
-			return toggleWarMenu();
+			return showWarMenu();
 		case 10:
 			return exitGame();
 		case 11:
@@ -79,8 +79,41 @@ public class FunctionHandler {
 			return nextHelpPage();
 		case 16:
 			return previousHelpPage();
+		case 17:
+			return showPauseMenu();
+		case 18:
+			return hidePauseMenu();
+		case 19:
+			return hideWarMenu();
 		}
 		throw new IllegalArgumentException(code + " is not a valid function code.");
+	}
+
+	/**
+	 * Retrieves the {@link Action} that hides the war menu.
+	 * 
+	 * @return
+	 */
+	private Action<?> hideWarMenu() {
+		return new Action<Game>(game, game -> game.menus.warMenu.hide());
+	}
+
+	/**
+	 * Retrieves the {@link Action} that hides the pause menu.
+	 * 
+	 * @return
+	 */
+	private Action<?> hidePauseMenu() {
+		return new Action<Game>(game, game -> game.menus.pauseMenu.hide());
+	}
+
+	/**
+	 * Retrieves the {@link Action} that shows the pause menu.
+	 * 
+	 * @return
+	 */
+	private Action<?> showPauseMenu() {
+		return new Action<Game>(game, game -> game.menus.pauseMenu.show());
 	}
 
 	/**
@@ -104,13 +137,13 @@ public class FunctionHandler {
 	}
 
 	/**
-	 * Retrieves a function that toggles the {@link WarMenu} between visible and
+	 * Retrieves a function that show the {@link WarMenu} between visible and
 	 * invisible.
 	 * 
 	 * @return {@link Action}
 	 */
-	private Action<?> toggleWarMenu() {
-		return new Action<Game>(game, game -> game.menus.warMenu.toggleVisibility());
+	private Action<?> showWarMenu() {
+		return new Action<Game>(game, game -> game.menus.warMenu.show());
 	}
 
 	/**

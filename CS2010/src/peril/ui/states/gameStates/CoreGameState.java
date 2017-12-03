@@ -21,6 +21,7 @@ import peril.board.Board;
 import peril.board.Country;
 import peril.ui.Region;
 import peril.ui.components.lists.ToolTipList;
+import peril.ui.components.menus.ChallengeMenu;
 import peril.ui.components.menus.HelpMenu;
 import peril.ui.components.menus.PauseMenu;
 import peril.ui.states.InteractiveState;
@@ -46,18 +47,23 @@ public abstract class CoreGameState extends InteractiveState {
 	/**
 	 * Holds the tool tip that will be displayed to the user.
 	 */
-	private ToolTipList toolTipList;
+	private final ToolTipList toolTipList;
+
+	/**
+	 * Displays the challenges to the user.
+	 */
+	private final ChallengeMenu challengeMenu;
 
 	/**
 	 * The {@link PauseMenu} for this {@link CoreGameState}.
 	 */
-	private PauseMenu pauseMenu;
+	private final PauseMenu pauseMenu;
 
 	/**
 	 * The {@link Music} that is played in the background of the
 	 * {@link CoreGameState}s.
 	 */
-	private List<Music> backgroundMusic;
+	private final List<Music> backgroundMusic;
 
 	/**
 	 * Constructs a new {@link CoreGameState}.
@@ -76,8 +82,11 @@ public abstract class CoreGameState extends InteractiveState {
 		this.highlightedCountry = null;
 
 		this.pauseMenu = game.menus.pauseMenu;
+		this.challengeMenu = game.menus.challengeMenu;
 		this.panDirection = null;
-		this.toolTipList = new ToolTipList(new Point(130, 15));
+		this.toolTipList = new ToolTipList(new Point(210, 60));
+		this.backgroundMusic = new ArrayList<>();
+
 		super.addComponent(toolTipList);
 	}
 
@@ -103,7 +112,7 @@ public abstract class CoreGameState extends InteractiveState {
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 
 		getGame().menus.helpMenu.changePage(getID());
-		
+
 		// If the music has been turned off. Turn it on and play the current states
 		// music.
 		if (!gc.isMusicOn()) {
@@ -137,8 +146,6 @@ public abstract class CoreGameState extends InteractiveState {
 			}
 		}
 
-		toolTipList.draw(g);
-
 	}
 
 	/**
@@ -168,8 +175,6 @@ public abstract class CoreGameState extends InteractiveState {
 		super.init(gc, sbg);
 
 		int numberOfSongs = 3;
-
-		backgroundMusic = new ArrayList<>(numberOfSongs);
 
 		for (int songIndex = 1; songIndex <= numberOfSongs; songIndex++) {
 			backgroundMusic.add(getGame().io.musicHelper.read("game" + songIndex));
@@ -274,7 +279,7 @@ public abstract class CoreGameState extends InteractiveState {
 	public void parseClick(int button, Point click) {
 
 		// If the player hasn't clicked the pause menu
-		if (!clickPauseMenu(click) && !clickedHelp(click)) {
+		if (!clickedChallenges(click) && !clickPauseMenu(click) && !clickedHelp(click)) {
 
 			// If the player hasn't clicked a UI Button in the state, they must've clicked
 			// board.
@@ -369,6 +374,16 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	/**
+	 * Draws the {@link ChallengeMenu} on screen.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 */
+	protected void drawChallengeMenu(Graphics g) {
+		challengeMenu.draw(g);
+	}
+
+	/**
 	 * Simulates a click at a {@link Point} on the {@link Board} and highlights the
 	 * {@link Country} that clicked.
 	 * 
@@ -433,6 +448,16 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	protected void pan(Point panVector) {
 		getGame().board.move(panDirection);
+	}
+
+	/**
+	 * Draws the {@link ToolTipList} containing the pop ups of the
+	 * {@link CoreGameState} on screen.
+	 * 
+	 * @param g
+	 */
+	protected void drawPopups(Graphics g) {
+		toolTipList.draw(g);
 	}
 
 	/**
@@ -579,6 +604,30 @@ public abstract class CoreGameState extends InteractiveState {
 			}
 
 			getGame().menus.helpMenu.hide();
+		}
+
+		return false;
+	}
+
+	/**
+	 * Retrieves whether or not the {@link HelpMenu} window was clicked or not.
+	 * 
+	 * @param click
+	 *            {@link Point}
+	 * @return
+	 */
+	private boolean clickedChallenges(Point click) {
+
+		// If the pause menu is invisible then it cannot be clicked.
+		if (getGame().menus.challengeMenu.isVisible()) {
+
+			// If the pause menu was clicked then parse the click.
+			if (getGame().menus.challengeMenu.isClicked(click)) {
+				getGame().menus.challengeMenu.parseClick(click);
+				return true;
+			}
+
+			getGame().menus.challengeMenu.hide();
 		}
 
 		return false;

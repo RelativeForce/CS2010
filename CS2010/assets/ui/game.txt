@@ -36,6 +36,7 @@ button,Pause Menu,10,exitGameButton.png,90,40,180,215,exit
 button,Pause Menu,12,mainMenuButton.png,90,40,30,215,menu
 button,Pause Menu,11,saveButton.png,60,30,85,135,save
 button,Pause Menu,18,xButton.png,30,30,245,10,close
+button,Pause Menu,20,exitButton.png,90,40,180,180,challenges
 image,Pause Menu,pauseMenu.png,300,300,0,0
 
 // End Screen
@@ -47,3 +48,7 @@ image,Help,toolTipBox.png,400,400,0,0
 button,Help,14,xButton.png,30,30,340,10,close
 button,Help,15,xButton.png,30,30,365,200,next
 button,Help,16,xButton.png,30,30,5,200,previous
+
+// Challenge Menu
+button,Challenge Menu,21,xButton.png,30,30,245,5,close
+image,Challenge Menu,toolTipBox.png,300,300,0,0

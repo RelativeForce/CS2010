@@ -56,11 +56,11 @@ public abstract class Challenge {
 	public abstract boolean hasCompleted(Player player, Board board);
 
 	/**
-	 * The string representation of the {@link Challenge}.
+	 * The string representation of the {@link Challenge} when it has been
+	 * completed.
 	 */
-	@Override
-	public String toString() {
-		return "Challenge Completed: ";
+	public String completed() {
+		return "Challenge Completed: " + this.toString();
 	}
 
 }

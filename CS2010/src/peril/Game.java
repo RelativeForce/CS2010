@@ -60,6 +60,10 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public final DirectoryHelper assets;
 
+	/**
+	 * The {@link MenuHelper} that holds all the {@link Menu}s for this
+	 * {@link Game}.
+	 */
 	public final MenuHelper menus;
 
 	/**
@@ -89,13 +93,16 @@ public class Game extends StateBasedGame implements MusicListener {
 
 		// Construct the board with the initial name.
 		this.board = new Board(this, "NOT ASSIGNED");
+		
+		this.players = new PlayerHelper(this);
 
 		// Initialise games overlay menus
 		WarMenu warMenu = new WarMenu(new Point(100, 100), this);
 		PauseMenu pauseMenu = new PauseMenu(new Point(100, 100), this);
 		HelpMenu helpMenu = new HelpMenu(new Point(100, 100), this);
+		ChallengeMenu challengeMenu = new ChallengeMenu(new Point(100, 100), this);
 
-		this.menus = new MenuHelper(pauseMenu, warMenu, helpMenu);
+		this.menus = new MenuHelper(pauseMenu, warMenu, helpMenu, challengeMenu);
 
 		// Initialise the game states.
 		MainMenuState mainMenu = new MainMenuState(this, 0);
@@ -109,12 +116,10 @@ public class Game extends StateBasedGame implements MusicListener {
 		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen);
 
 		// Set the containers that ui elements will be loaded into.
-		Container[] containers = new Container[] { helpMenu, pauseMenu, loadingScreen, warMenu, mainMenu, combat, setup,
-				reinforcement, movement, end };
+		Container[] containers = new Container[] { challengeMenu, helpMenu, pauseMenu, loadingScreen, warMenu, mainMenu,
+				combat, setup, reinforcement, movement, end };
 
 		this.io = new IOHelper(this, containers);
-
-		this.players = new PlayerHelper(this);
 
 		this.menus.createHelpPages(this);
 

@@ -22,7 +22,7 @@ public class FunctionHandler {
 	/**
 	 * The {@link Game} this {@link FunctionHandler} is a part of.
 	 */
-	private Game game;
+	private final Game game;
 
 	/**
 	 * 
@@ -85,8 +85,20 @@ public class FunctionHandler {
 			return hidePauseMenu();
 		case 19:
 			return hideWarMenu();
+		case 20:
+			return showChallengeMenu();
+		case 21:
+			return hideChallengeMenu();
 		}
 		throw new IllegalArgumentException(code + " is not a valid function code.");
+	}
+
+	private Action<?> hideChallengeMenu() {
+		return new Action<Game>(game, game -> game.menus.challengeMenu.hide());
+	}
+
+	private Action<?> showChallengeMenu() {
+		return new Action<Game>(game, game -> game.menus.challengeMenu.show());
 	}
 
 	/**

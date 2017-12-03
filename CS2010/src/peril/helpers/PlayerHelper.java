@@ -26,6 +26,11 @@ import peril.ui.states.menuStates.EndState;
 public class PlayerHelper {
 
 	/**
+	 * Contains all the objectives that a {@link Player} can attain in the game.
+	 */
+	public final List<Challenge> challenges;
+
+	/**
 	 * Holds all the {@link Player}s in this {@link Game}.
 	 */
 	private final List<Player> playing;
@@ -36,19 +41,14 @@ public class PlayerHelper {
 	private final Map<Integer, Player> defaultPlayers;
 
 	/**
-	 * The {@link Player} who's turn it is.
-	 */
-	private int currentPlayerIndex;
-
-	/**
-	 * Contains all the objectives that a {@link Player} can attain in the game.
-	 */
-	private final List<Challenge> challenges;
-
-	/**
 	 * The {@link Game} this {@link PlayerHelper} helps.
 	 */
 	private final Game game;
+	
+	/**
+	 * The {@link Player} who's turn it is.
+	 */
+	private int currentPlayerIndex;
 
 	/**
 	 * Constructs a new {@link PlayerHelper}.
@@ -59,6 +59,7 @@ public class PlayerHelper {
 	public PlayerHelper(Game game) {
 		this.game = game;
 		this.currentPlayerIndex = 0;
+		
 		this.playing = new ArrayList<>();
 		this.challenges = new LinkedList<>();
 
@@ -101,15 +102,7 @@ public class PlayerHelper {
 		}
 
 		this.challenges.add(challenge);
-	}
-
-	/**
-	 * Get the {@link Challenge} at the specified {@link List}.
-	 * 
-	 * @return {@link challenges}
-	 */
-	public List<Challenge> getChallenges() {
-		return challenges;
+		game.menus.challengeMenu.refreshChallenges();
 	}
 
 	/**
@@ -132,12 +125,15 @@ public class PlayerHelper {
 			// available challenges.
 			if (challenge.hasCompleted(getCurrent(), game.board)) {
 				toRemove.add(challenge);
-				currentState.show(challenge.toString());
+				currentState.show(challenge.completed());
 			}
 		});
 
 		// Remove the completed challenges.
 		toRemove.forEach(challenge -> challenges.remove(challenge));
+		
+		// Refresh the challenge view
+		game.menus.challengeMenu.refreshChallenges();
 	}
 
 	/**

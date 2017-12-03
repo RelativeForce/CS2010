@@ -277,7 +277,7 @@ public class MainMenuState extends InteractiveState {
 
 		getGame().setRoundNumber(0);
 		getGame().players.resetAll();
-		getGame().players.getChallenges().clear();
+		getGame().players.challenges.clear();
 
 		getGame().reSize(map.width, map.height);
 		getGame().board.setName(map.name);

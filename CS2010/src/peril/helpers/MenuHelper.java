@@ -1,5 +1,6 @@
 package peril.helpers;
 
+import peril.Challenge;
 import peril.Game;
 import peril.Point;
 import peril.board.EnvironmentalHazard;
@@ -29,6 +30,11 @@ public final class MenuHelper {
 	public final HelpMenu helpMenu;
 
 	/**
+	 * The {@link ChallengeMenu} that displays the {@link Challenge}s to the user.
+	 */
+	public final ChallengeMenu challengeMenu;
+
+	/**
 	 * Constructs a new {@link MenuHelper}.
 	 * 
 	 * @param pauseMenu
@@ -38,11 +44,15 @@ public final class MenuHelper {
 	 * @param helpMenu
 	 *            The {@link HelpMenu} that holds the help information for the
 	 *            {@link Game}.
+	 * @param challengeMenu
+	 *            The {@link ChallengeMenu} that displays the {@link Challenge}s to
+	 *            the user.
 	 */
-	public MenuHelper(PauseMenu pauseMenu, WarMenu warMenu, HelpMenu helpMenu) {
+	public MenuHelper(PauseMenu pauseMenu, WarMenu warMenu, HelpMenu helpMenu, ChallengeMenu challengeMenu) {
 		this.helpMenu = helpMenu;
 		this.warMenu = warMenu;
 		this.pauseMenu = pauseMenu;
+		this.challengeMenu = challengeMenu;
 	}
 
 	/**
@@ -56,6 +66,8 @@ public final class MenuHelper {
 		pauseMenu.setPosition(new Point(centerX - (pauseMenu.getWidth() / 2), centerY - (pauseMenu.getHeight() / 2)));
 		helpMenu.setPosition(new Point(centerX - (helpMenu.getWidth() / 2), centerY - (helpMenu.getHeight() / 2)));
 		warMenu.setPosition(new Point(centerX - (warMenu.getWidth() / 2), centerY - (warMenu.getHeight() / 2)));
+		challengeMenu.setPosition(
+				new Point(centerX - (challengeMenu.getWidth() / 2), centerY - (challengeMenu.getHeight() / 2)));
 	}
 
 	/**
@@ -65,6 +77,7 @@ public final class MenuHelper {
 		helpMenu.init();
 		pauseMenu.init();
 		warMenu.init();
+		challengeMenu.init();
 	}
 
 	/**

@@ -123,9 +123,9 @@ public final class CombatState extends MultiSelectState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
 		super.render(gc, sbg, g);
-
+		
 		g.setLineWidth(3f);
-
+		
 		this.drawValidTargets(g);
 
 		super.drawArmies(g);
@@ -138,11 +138,15 @@ public final class CombatState extends MultiSelectState {
 		
 		super.drawPlayerName(g);
 
+		super.drawPopups(g);
+		
 		this.warMenu.draw(g);
 		
 		super.drawHelp(g);
 
 		super.drawPauseMenu(g);
+		
+		super.drawChallengeMenu(g);
 	}
 
 	/**

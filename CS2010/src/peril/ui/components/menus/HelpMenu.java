@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import peril.Game;
@@ -321,6 +322,9 @@ public class HelpMenu extends Menu {
 		 */
 		private final TextField text;
 
+		/**
+		 * The string title of this {@link HelpPage}.
+		 */
 		private final String title;
 
 		/**
@@ -392,7 +396,7 @@ public class HelpMenu extends Menu {
 		 */
 		@Override
 		public void draw(Graphics g) {
-
+			g.setColor(Color.white);
 			g.drawString(title, text.getPosition().x, text.getPosition().y - 25);
 			text.draw(g);
 		}

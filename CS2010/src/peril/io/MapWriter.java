@@ -76,7 +76,7 @@ public class MapWriter {
 		// Write all the links to the file
 		game.board.forEachCountry(country -> parseLinks(country));
 		
-	    game.players.getChallenges().forEach(challenge -> writer.writeLine(parseChallenge(challenge)));
+	    game.players.challenges.forEach(challenge -> writer.writeLine(parseChallenge(challenge)));
 
 		// Save the file
 		writer.save();

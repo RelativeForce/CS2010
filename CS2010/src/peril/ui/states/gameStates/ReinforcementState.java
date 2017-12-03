@@ -168,9 +168,13 @@ public final class ReinforcementState extends CoreGameState {
 
 		textFont.draw(g, "UNITS", 150 - (textFont.getWidth("UNITS") / 2), 95);
 
+		super.drawPopups(g);
+		
 		super.drawHelp(g);
 
 		super.drawPauseMenu(g);
+		
+		super.drawChallengeMenu(g);
 	}
 
 	/**

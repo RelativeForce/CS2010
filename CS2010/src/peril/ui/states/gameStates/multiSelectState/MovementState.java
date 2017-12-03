@@ -136,9 +136,13 @@ public final class MovementState extends MultiSelectState {
 		
 		super.drawPlayerName(g);
 
+		super.drawPopups(g);
+		
 		super.drawHelp(g);
 		
 		super.drawPauseMenu(g);
+		
+		super.drawChallengeMenu(g);
 	}
 
 	/**

@@ -44,14 +44,14 @@ public final class SetupState extends CoreGameState {
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
+		
 		super.drawArmies(g);
-
 		super.drawImages(g);
 		super.drawButtons(g);
-
+		super.drawPopups(g);
 		super.drawHelp(g);
-
 		super.drawPauseMenu(g);
+		super.drawChallengeMenu(g);
 
 	}
 

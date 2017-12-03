@@ -129,23 +129,27 @@ public class HelpMenu extends Menu {
 	}
 
 	public void changePage(int pageId) {
-		if (!pages.containsKey(pageId)) {
-			throw new IllegalArgumentException("Page: " + pageId + " does not exist.");
+		
+		if (pages.containsKey(pageId)) {
+			
+			if (pages.get(pageId).next != NULL_PAGE) {
+				next.show();
+			} else {
+				next.hide();
+			}
+
+			if (pages.get(pageId).previous != NULL_PAGE) {
+				previous.show();
+			} else {
+				previous.hide();
+			}
+		} else {
+			next.hide();
+			previous.hide();
 		}
 
 		this.currentPage = pageId;
 
-		if (pages.get(currentPage).next != NULL_PAGE) {
-			next.show();
-		} else {
-			next.hide();
-		}
-
-		if (pages.get(currentPage).previous != NULL_PAGE) {
-			previous.show();
-		} else {
-			previous.hide();
-		}
 	}
 
 	public void nextPage() {

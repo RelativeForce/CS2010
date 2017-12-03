@@ -7,13 +7,13 @@ image,Reinforcement,reinforceStateBox.png,200,130,5,5
 // Movement State
 button,Movement,5,fortifyButton.png,90,40,10,800,fortify
 button,Movement,3,endButton.png,90,40,15,80,end
-button,Reinforcement,13,helpButton.png,40,40,210,5,help
+button,Movement,13,helpButton.png,40,40,210,5,help
 image,Movement,movementStateBox.png,200,130,5,5
 
 // Combat State
 button,Combat,2,endButton.png,90,40,15,80,end
 button,Combat,9,attackButton.png,90,40,10,800,attack
-button,Reinforcement,13,helpButton.png,40,40,210,5,help
+button,Combat,13,helpButton.png,40,40,210,5,help
 image,Combat,combatStateBox.png,200,130,5,5
 
 // Setup State

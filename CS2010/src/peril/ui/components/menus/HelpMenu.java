@@ -17,20 +17,33 @@ import peril.ui.components.TextField;
 
 /**
  * Encapsulates the behaviour of a help window that displays information to the
- * user. This wraps the {@link TextField} as this class cannot support adding
- * text pre-initialisation.
+ * user. This window uses pages that resemble a doubly linked list nodes that
+ * point to the next page and previous page using the IDs of those pages.
  * 
  * @author Joshua_Eddy
  *
  */
 public class HelpMenu extends Menu {
 
+	/**
+	 * The id of a null page. If this assigned to the next or previous page of a
+	 * page the current page will not link to anything.
+	 */
 	public static final int NULL_PAGE = -1;
 
+	/**
+	 * The width of the {@link HelpMenu}
+	 */
 	private static final int WIDTH = 400;
 
+	/**
+	 * The height of the {@link HelpMenu}.
+	 */
 	private static final int HEIGHT = 400;
 
+	/**
+	 * The uniquely identifying string name of the {@link HelpMenu}.
+	 */
 	private static final String NAME = "Help";
 
 	/**
@@ -50,12 +63,27 @@ public class HelpMenu extends Menu {
 	 */
 	private boolean isInitialised;
 
+	/**
+	 * The id of the current {@link HelpPage} being displayed on the
+	 * {@link HelpMenu}.
+	 */
 	private int currentPage;
 
+	/**
+	 * The {@link Map} of IDs and their associated {@link HelpPage}s.
+	 */
 	private final Map<Integer, HelpPage> pages;
 
+	/**
+	 * The {@link Button} that moves this {@link HelpMenu} to the next
+	 * {@link HelpPage}.
+	 */
 	private Button next;
 
+	/**
+	 * The {@link Button} that moves this {@link HelpMenu} to the previous
+	 * {@link HelpPage}.
+	 */
 	private Button previous;
 
 	/**
@@ -89,6 +117,9 @@ public class HelpMenu extends Menu {
 		pages.forEach((id, page) -> page.init());
 	}
 
+	/**
+	 * Adds a {@link Button} to this {@link HelpMenu}.
+	 */
 	@Override
 	public void addButton(Button button) {
 		super.addButton(button);
@@ -102,6 +133,20 @@ public class HelpMenu extends Menu {
 
 	}
 
+	/**
+	 * Adds a {@link HelpPage} to this {@link HelpMenu}.
+	 * 
+	 * @param id
+	 *            The uniquely identifying ID number of the new {@link HelpPage}.
+	 * @param nextPage
+	 *            The uniquely identifying ID number of the next {@link HelpPage}
+	 *            after the new {@link HelpPage}.
+	 * @param previousPage
+	 *            The uniquely identifying ID number of the previous
+	 *            {@link HelpPage} after the new {@link HelpPage}.
+	 * @param title
+	 *            The title of the new {@link HelpPage}.
+	 */
 	public void addPage(int id, int nextPage, int previousPage, String title) {
 
 		// Check if the page id already exists. There can be no duplicate pages.
@@ -114,9 +159,7 @@ public class HelpMenu extends Menu {
 				new Point(this.getPosition().x + PADDING_X, this.getPosition().y + PADDING_Y));
 
 		// Construct the help page
-		HelpPage newPage = new HelpPage(text, nextPage, previousPage);
-
-		newPage.setTitle(title);
+		HelpPage newPage = new HelpPage(text, nextPage, previousPage, title);
 
 		// Add the help page to the as its new page.
 		pages.put(id, newPage);
@@ -128,10 +171,16 @@ public class HelpMenu extends Menu {
 
 	}
 
+	/**
+	 * Changes the currently displayed {@link HelpPage} of the {@link HelpMenu}.
+	 * 
+	 * @param pageId
+	 *            The uniquely identifying ID number of the new {@link HelpPage}.
+	 */
 	public void changePage(int pageId) {
-		
+
 		if (pages.containsKey(pageId)) {
-			
+
 			if (pages.get(pageId).next != NULL_PAGE) {
 				next.show();
 			} else {
@@ -152,6 +201,10 @@ public class HelpMenu extends Menu {
 
 	}
 
+	/**
+	 * Changes the {@link HelpPage} being displayed by the {@link HelpMenu} to the
+	 * next {@link HelpPage} denoted by the current {@link HelpPage}.
+	 */
 	public void nextPage() {
 		int next = pages.get(currentPage).next;
 
@@ -161,6 +214,13 @@ public class HelpMenu extends Menu {
 
 	}
 
+	/**
+	 * Clears the text from the {@link HelpPage} denoted by the specified page id.
+	 * 
+	 * @param pageId
+	 *            The uniquely identifying ID number of the {@link HelpPage} to be
+	 *            cleared.
+	 */
 	public void clearPage(int pageId) {
 		if (!pages.containsKey(pageId)) {
 			throw new IllegalArgumentException("Page: " + pageId + " does not exist.");
@@ -170,6 +230,10 @@ public class HelpMenu extends Menu {
 
 	}
 
+	/**
+	 * Changes the {@link HelpPage} being displayed by the {@link HelpMenu} to the
+	 * previous {@link HelpPage} denoted by the current {@link HelpPage}.
+	 */
 	public void previousPage() {
 		int previous = pages.get(currentPage).previous;
 
@@ -178,6 +242,13 @@ public class HelpMenu extends Menu {
 		}
 	}
 
+	/**
+	 * Adds text to the {@link HelpPage} denoted by the specified id.
+	 * 
+	 * @param pageId
+	 *            The uniquely identifying ID number of the {@link HelpPage}.
+	 * @param text
+	 */
 	public void addText(int pageId, String text) {
 		if (!pages.containsKey(pageId)) {
 			throw new IllegalArgumentException("Page: " + pageId + " does not exist.");
@@ -225,10 +296,24 @@ public class HelpMenu extends Menu {
 
 	}
 
+	/**
+	 * A page on the {@link HelpMenu} that links to a next and previous
+	 * {@link HelpPage}. Also wraps {@link TextField} allowing for
+	 * pre-initialisation text addition.
+	 * 
+	 * @author Joshua_Eddy
+	 *
+	 */
 	private class HelpPage implements Component {
 
+		/**
+		 * The uniquely identifying ID number of the next {@link HelpPage}.
+		 */
 		public final int next;
 
+		/**
+		 * The uniquely identifying ID number of the previous {@link HelpPage}.
+		 */
 		public final int previous;
 
 		/**
@@ -246,11 +331,19 @@ public class HelpMenu extends Menu {
 		 */
 		private final List<String> temp;
 
-		public HelpPage(TextField text, int next, int previous) {
+		/**
+		 * 
+		 * @param text
+		 * @param next
+		 * @param previous
+		 * @param title
+		 *            Tthe title of the {@link HelpPage}
+		 */
+		public HelpPage(TextField text, int next, int previous, String title) {
 
 			this.next = next;
 			this.previous = previous;
-
+			this.title = title;
 			this.temp = new LinkedList<>();
 			this.text = text;
 			this.title = "Help";
@@ -270,15 +363,17 @@ public class HelpMenu extends Menu {
 			}
 		}
 
-		public void setTitle(String title) {
-			this.title = title;
-		}
-
+		/**
+		 * Clears the text from the {@link HelpPage}.
+		 */
 		public void clear() {
 			text.clear();
 			temp.clear();
 		}
 
+		/**
+		 * Initialises this {@link HelpPage}.
+		 */
 		@Override
 		public void init() {
 			text.init();
@@ -286,6 +381,9 @@ public class HelpMenu extends Menu {
 			temp.clear();
 		}
 
+		/**
+		 * Draws this {@link HelpPage}.
+		 */
 		@Override
 		public void draw(Graphics g) {
 
@@ -293,11 +391,17 @@ public class HelpMenu extends Menu {
 			text.draw(g);
 		}
 
+		/**
+		 * Sets the {@link Point} position of the {@link HelpPage}.
+		 */
 		@Override
 		public void setPosition(Point position) {
 			text.setPosition(position);
 		}
 
+		/**
+		 * Retrieves the {@link Point} position of the {@link HelpPage}.
+		 */
 		@Override
 		public Point getPosition() {
 			return text.getPosition();

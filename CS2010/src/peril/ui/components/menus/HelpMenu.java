@@ -71,6 +71,16 @@ public class HelpMenu extends Menu {
 	private int currentPage;
 
 	/**
+	 * Denotes the current number of the current page in a successive chain.
+	 */
+	private int pageNumber;
+
+	/**
+	 * Denotes the number of pages in one successive chain.
+	 */
+	private int numberOfPages;
+
+	/**
 	 * The {@link Map} of IDs and their associated {@link HelpPage}s.
 	 */
 	private final Map<Integer, HelpPage> pages;
@@ -104,6 +114,8 @@ public class HelpMenu extends Menu {
 		this.pages = new HashMap<>();
 		this.currentPage = 0;
 		this.isInitialised = false;
+		this.pageNumber = 0;
+		this.numberOfPages = 0;
 	}
 
 	/**
@@ -153,6 +165,12 @@ public class HelpMenu extends Menu {
 		// Check if the page id already exists. There can be no duplicate pages.
 		if (pages.containsKey(id)) {
 			throw new IllegalStateException("Page: " + id + " already exists.");
+		} else if (id < NULL_PAGE) {
+			throw new IllegalStateException(id + " is an invalid page ID.");
+		} else if (nextPage < NULL_PAGE) {
+			throw new IllegalStateException(nextPage + " is an invalid page ID.");
+		} else if (previousPage < NULL_PAGE) {
+			throw new IllegalStateException(previousPage + " is an invalid page ID.");
 		}
 
 		// Construct the text feild that will show this page.
@@ -180,6 +198,8 @@ public class HelpMenu extends Menu {
 	 */
 	public void changePage(int pageId) {
 
+		numberOfPages = 0;
+
 		if (pages.containsKey(pageId)) {
 
 			if (pages.get(pageId).next != NULL_PAGE) {
@@ -193,12 +213,13 @@ public class HelpMenu extends Menu {
 			} else {
 				previous.hide();
 			}
+			this.currentPage = pageId;
+			determinePageNumber();
 		} else {
 			next.hide();
 			previous.hide();
+			this.currentPage = pageId;
 		}
-
-		this.currentPage = pageId;
 
 	}
 
@@ -274,6 +295,11 @@ public class HelpMenu extends Menu {
 			pages.get(currentPage).draw(g);
 		}
 
+		if (numberOfPages != 0) {
+			g.drawString(pageNumber + "/" + numberOfPages, getPosition().x + PADDING_X,
+					getPosition().y + getHeight() - PADDING_Y);
+		}
+
 	}
 
 	/**
@@ -294,6 +320,35 @@ public class HelpMenu extends Menu {
 
 		pages.forEach((id, page) -> page
 				.setPosition(new Point(page.getPosition().x + vector.x, page.getPosition().y + vector.y)));
+
+	}
+
+	/**
+	 * Determines the number of {@link HelpPage} in the current chain of
+	 * {@link HelpPage}s.
+	 */
+	private void determinePageNumber() {
+
+		HelpPage current = pages.get(this.currentPage);
+
+		// Go to the first page in the chain
+		while (current.previous != NULL_PAGE) {
+			current = pages.get(current.previous);
+		}
+
+		numberOfPages = 1;
+		pageNumber = 1;
+
+		// Iterate through the chain and mark determine the current pages number and the
+		// number of pages.
+		while (current.next != NULL_PAGE) {
+			current = pages.get(current.next);
+			numberOfPages++;
+
+			if (current.equals(pages.get(this.currentPage))) {
+				pageNumber = numberOfPages;
+			}
+		}
 
 	}
 

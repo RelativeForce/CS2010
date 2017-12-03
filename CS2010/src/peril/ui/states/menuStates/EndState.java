@@ -2,7 +2,6 @@ package peril.ui.states.menuStates;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -43,7 +42,7 @@ public class EndState extends InteractiveState {
 	 * The ordered {@link Player}s finishing positions. {@link Player} at the front
 	 * of the {@link LinkedList} is 1st place.
 	 */
-	private Stack<Player> podium;
+	private LinkedList<Player> podium;
 
 	/**
 	 * The {@link Font} that the losing {@link Player}(s) will be displayed in.
@@ -72,7 +71,7 @@ public class EndState extends InteractiveState {
 	 */
 	public EndState(Game game, int id) {
 		super(game, STATE_NAME, id, HelpMenu.NULL_PAGE);
-		podium = new Stack<>();
+		podium = new LinkedList<>();
 		winnerFont = new Font("Arial", Color.yellow, 50);
 		loserFont = new Font("Arial", Color.red, 30);
 	}

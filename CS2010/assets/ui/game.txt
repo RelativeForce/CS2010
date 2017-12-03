@@ -40,8 +40,8 @@ button,Pause Menu,20,exitButton.png,90,40,180,180,challenges
 image,Pause Menu,pauseMenu.png,300,300,0,0
 
 // End Screen
-button,End,12,menuButton.png,90,40,100,100,menu
-button,End,10,endButton.png,90,40,200,100,exit
+button,End,12,mainMenuButton.png,90,40,100,100,menu
+button,End,10,exitGameButton.png,90,40,200,100,exit
 
 // Help Menu
 image,Help,toolTipBox.png,400,400,0,0

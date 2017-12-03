@@ -486,6 +486,11 @@ public class WarMenu extends Menu {
 	 *            The string offset
 	 */
 	private void drawPlayer(Graphics g, Player player, int offset) {
+		
+		if(player == null) {
+			return;
+		}
+		
 		int centreX = getPosition().x + (getWidth() / 2);
 		int x = centreX + offset - (player.getWidth() / 2);
 		g.drawImage(player.getImage(), x, this.getPosition().y + 55);

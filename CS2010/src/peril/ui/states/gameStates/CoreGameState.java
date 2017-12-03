@@ -284,7 +284,7 @@ public abstract class CoreGameState extends InteractiveState {
 			// If the player hasn't clicked a UI Button in the state, they must've clicked
 			// board.
 			if (!super.clickedButton(click)) {
-				clickBoard(click);
+				clickBoard(button, click);
 			}
 		}
 
@@ -389,8 +389,10 @@ public abstract class CoreGameState extends InteractiveState {
 	 * 
 	 * @param click
 	 *            {@link Point}
+	 * @param button
+	 *            The mouse button that was clicked.
 	 */
-	protected void clickBoard(Point click) {
+	protected void clickBoard(int button, Point click) {
 
 		// Holds the game board
 		Board board = getGame().board;
@@ -399,7 +401,16 @@ public abstract class CoreGameState extends InteractiveState {
 		if (board != null) {
 
 			// Get the country that is clicked.
-			highlightCountry(board.getCountry(click));
+			Country clicked = board.getCountry(click);
+
+			// If the board was clicked with the left mouse then highlight the clicked
+			// country, otherwise de-selected the highlighted country.
+			if (button == Input.MOUSE_LEFT_BUTTON) {
+				highlightCountry(clicked);
+			} else {
+				removeHighlightFrom(highlightedCountry);
+				highlightCountry(null);
+			}
 
 		}
 	}

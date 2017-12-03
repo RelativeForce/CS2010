@@ -201,6 +201,9 @@ public class MainMenuState extends InteractiveState {
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
 
+		getGame().menus.helpMenu.init();
+		getGame().menus.pauseMenu.init();
+		
 		textFont.init();
 
 		// Set the music that will be repeated by this state

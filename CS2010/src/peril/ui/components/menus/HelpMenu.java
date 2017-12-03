@@ -9,8 +9,6 @@ import org.newdawn.slick.Graphics;
 
 import peril.Game;
 import peril.Point;
-import peril.io.fileReaders.ImageReader;
-import peril.multiThread.Action;
 import peril.ui.Button;
 import peril.ui.Region;
 import peril.ui.Viewable;
@@ -27,8 +25,8 @@ import peril.ui.components.TextField;
  */
 public class HelpMenu extends Menu {
 
-	public static final int NULL_PAGE = -1; 
-	
+	public static final int NULL_PAGE = -1;
+
 	private static final int WIDTH = 400;
 
 	private static final int HEIGHT = 400;
@@ -47,9 +45,18 @@ public class HelpMenu extends Menu {
 	 */
 	private static final int PADDING_Y = HEIGHT / 10;
 
+	/**
+	 * Whether or not this {@link HelpMenu} has been initialised or not.
+	 */
+	private boolean isInitialised;
+
 	private int currentPage;
 
 	private final Map<Integer, HelpPage> pages;
+
+	private Button next;
+
+	private Button previous;
 
 	/**
 	 * Constructs a new {@link HelpMenu}.
@@ -67,6 +74,7 @@ public class HelpMenu extends Menu {
 		super(NAME, game, new Region(WIDTH, HEIGHT, position));
 		this.pages = new HashMap<>();
 		this.currentPage = 0;
+		this.isInitialised = false;
 	}
 
 	/**
@@ -75,34 +83,48 @@ public class HelpMenu extends Menu {
 	@Override
 	public void init() {
 
-		super.addImage(new Viewable(
-				ImageReader.getImage(getGame().assets.ui + "toolTipBox.png").getScaledCopy(getWidth(), getHeight()),
-				new Point(0, 0)));
-
-		super.addButton(new Button(new Point(this.getWidth() - 50, 0),
-				ImageReader.getImage(getGame().assets.ui + "xButton.png").getScaledCopy(50, 50),
-				new Action<HelpMenu>(this, help -> help.hide()), "help"));
+		isInitialised = true;
 
 		// Initialise all the pages
 		pages.forEach((id, page) -> page.init());
+	}
+
+	@Override
+	public void addButton(Button button) {
+		super.addButton(button);
+		if (button.getId().equals("next")) {
+			next = button;
+			next.hide();
+		} else if (button.getId().equals("previous")) {
+			previous = button;
+			previous.hide();
+		}
 
 	}
 
 	public void addPage(int id, int nextPage, int previousPage, String title) {
-		
+
 		// Check if the page id already exists. There can be no duplicate pages.
 		if (pages.containsKey(id)) {
 			throw new IllegalStateException("Page: " + id + " already exists.");
 		}
 
 		// Construct the text feild that will show this page.
-		TextField text = new TextField(WIDTH - (PADDING_X *2), HEIGHT - (PADDING_Y * 2), new Point(PADDING_X, PADDING_Y));
-		
+		TextField text = new TextField(WIDTH - (PADDING_X * 2), HEIGHT - (PADDING_Y * 2),
+				new Point(this.getPosition().x + PADDING_X, this.getPosition().y + PADDING_Y));
+
 		// Construct the help page
 		HelpPage newPage = new HelpPage(text, nextPage, previousPage);
-		
+
+		newPage.setTitle(title);
+
 		// Add the help page to the as its new page.
 		pages.put(id, newPage);
+
+		// If the menu is all ready initialised then initialise the page.
+		if (isInitialised) {
+			newPage.init();
+		}
 
 	}
 
@@ -112,25 +134,46 @@ public class HelpMenu extends Menu {
 		}
 
 		this.currentPage = pageId;
+
+		if (pages.get(currentPage).next != NULL_PAGE) {
+			next.show();
+		} else {
+			next.hide();
+		}
+
+		if (pages.get(currentPage).previous != NULL_PAGE) {
+			previous.show();
+		} else {
+			previous.hide();
+		}
 	}
 
 	public void nextPage() {
 		int next = pages.get(currentPage).next;
-		
-		if(next != NULL_PAGE) {
-			currentPage = next;
+
+		if (next != NULL_PAGE) {
+			changePage(next);
 		}
-		
+
 	}
-	
+
+	public void clearPage(int pageId) {
+		if (!pages.containsKey(pageId)) {
+			throw new IllegalArgumentException("Page: " + pageId + " does not exist.");
+		}
+
+		pages.get(pageId).clear();
+
+	}
+
 	public void previousPage() {
 		int previous = pages.get(currentPage).previous;
-		
-		if(previous != NULL_PAGE) {
-			currentPage = previous;
+
+		if (previous != NULL_PAGE) {
+			changePage(previous);
 		}
 	}
-	
+
 	public void addText(int pageId, String text) {
 		if (!pages.containsKey(pageId)) {
 			throw new IllegalArgumentException("Page: " + pageId + " does not exist.");
@@ -192,11 +235,6 @@ public class HelpMenu extends Menu {
 		private String title;
 
 		/**
-		 * Whether or not this {@link HelpMenu} has been initialised or not.
-		 */
-		private boolean isInitialised;
-
-		/**
 		 * Holds the lines of text that have been give to this {@link HelpMenu} before
 		 * this {@link HelpMenu} has be initialised using {@link HelpMenu#init()}. When
 		 * this {@link HelpMenu} is initialised all the elements of this {@link List}
@@ -208,7 +246,7 @@ public class HelpMenu extends Menu {
 
 			this.next = next;
 			this.previous = previous;
-			this.isInitialised = false;
+
 			this.temp = new LinkedList<>();
 			this.text = text;
 			this.title = "Help";
@@ -239,7 +277,6 @@ public class HelpMenu extends Menu {
 
 		@Override
 		public void init() {
-			isInitialised = true;
 			text.init();
 			temp.forEach(line -> text.addText(line));
 			temp.clear();
@@ -248,7 +285,7 @@ public class HelpMenu extends Menu {
 		@Override
 		public void draw(Graphics g) {
 
-			g.drawString(title, text.getPosition().x, text.getPosition().y - 10);
+			g.drawString(title, text.getPosition().x, text.getPosition().y - 25);
 			text.draw(g);
 		}
 

@@ -78,8 +78,6 @@ public abstract class CoreGameState extends InteractiveState {
 		this.pauseMenu = game.menus.pauseMenu;
 		this.panDirection = null;
 		this.toolTipList = new ToolTipList(new Point(130, 15));
-
-		super.addComponent(pauseMenu);
 		super.addComponent(toolTipList);
 	}
 
@@ -104,6 +102,8 @@ public abstract class CoreGameState extends InteractiveState {
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 
+		getGame().menus.helpMenu.changePage(getID());
+		
 		// If the music has been turned off. Turn it on and play the current states
 		// music.
 		if (!gc.isMusicOn()) {

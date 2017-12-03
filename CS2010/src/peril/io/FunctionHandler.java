@@ -72,9 +72,35 @@ public class FunctionHandler {
 		case 12:
 			return enterMainMenu();
 		case 13:
-			return openHelp();
+			return showHelp();
+		case 14:
+			return hideHelp();
+		case 15:
+			return nextHelpPage();
+		case 16:
+			return previousHelpPage();
 		}
 		throw new IllegalArgumentException(code + " is not a valid function code.");
+	}
+
+	/**
+	 * Retrieves the {@link Action} that moves the {@link HelpMenu} to the previous
+	 * page.
+	 * 
+	 * @return
+	 */
+	private Action<?> previousHelpPage() {
+		return new Action<Game>(game, game -> game.menus.helpMenu.previousPage());
+	}
+
+	/**
+	 * Retrieves the {@link Action} that moves the {@link HelpMenu} to the next
+	 * page.
+	 * 
+	 * @return
+	 */
+	private Action<?> nextHelpPage() {
+		return new Action<Game>(game, game -> game.menus.helpMenu.nextPage());
 	}
 
 	/**
@@ -239,20 +265,20 @@ public class FunctionHandler {
 	}
 
 	/**
-	 * Retrieves the {@link Action} that opens the current state's {@link HelpMenu}
-	 * window.
+	 * Retrieves the {@link Action} that opens the {@link HelpMenu} window.
 	 * 
 	 * @return
 	 */
-	private Action<?> openHelp() {
-		return new Action<Game>(game, game -> {
+	private Action<?> showHelp() {
+		return new Action<Game>(game, game -> game.menus.helpMenu.show());
+	}
 
-			HelpMenu help = game.getCurrentState().getHelp();
-
-			// If there is a help window show it.
-			if (help != null) {
-				help.show();
-			}
-		});
+	/**
+	 * Retrieves the {@link Action} that closes the {@link HelpMenu} window.
+	 * 
+	 * @return
+	 */
+	private Action<?> hideHelp() {
+		return new Action<Game>(game, game -> game.menus.helpMenu.hide());
 	}
 }

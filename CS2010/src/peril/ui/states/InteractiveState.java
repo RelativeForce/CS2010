@@ -94,8 +94,6 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 		this.buttons = new LinkedList<>();
 		this.images = new LinkedList<>();
 		this.components = new LinkedList<>();
-
-		this.addComponent(game.menus.helpMenu);
 	}
 
 	/**

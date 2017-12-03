@@ -49,7 +49,6 @@ public final class MenuHelper {
 		
 		int setupPage = game.states.setup.getID();
 		
-		// Reinforcement state help page id
 		int reinforcementPage =  game.states.reinforcement.getID();
 		
 		int combatPage = game.states.combat.getID();

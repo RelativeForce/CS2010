@@ -104,7 +104,7 @@ public final class MovementState extends MultiSelectState {
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
-		getGame().pauseMenu.showSaveOption();
+		getGame().menus.pauseMenu.showSaveOption();
 	}
 
 	/**
@@ -153,7 +153,7 @@ public final class MovementState extends MultiSelectState {
 	public void leave(GameContainer gc, StateBasedGame game) throws SlickException {
 		super.leave(gc, game);
 		fortifyButton.hide();
-		getGame().pauseMenu.hideSaveOption();
+		getGame().menus.pauseMenu.hideSaveOption();
 	}
 
 	/**

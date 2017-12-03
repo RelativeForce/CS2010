@@ -216,7 +216,7 @@ public final class LoadingScreen extends InteractiveState {
 
 		firstState = getGame().states.setup;
 
-		getGame().pauseMenu.refreshSaveFiles();
+		getGame().menus.pauseMenu.refreshSaveFiles();
 	}
 
 	/**

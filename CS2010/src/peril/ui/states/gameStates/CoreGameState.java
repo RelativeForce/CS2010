@@ -73,7 +73,7 @@ public abstract class CoreGameState extends InteractiveState {
 		super(game, stateName, id);
 		this.highlightedCountry = null;
 
-		this.pauseMenu = game.pauseMenu;
+		this.pauseMenu = game.menus.pauseMenu;
 		this.panDirection = null;
 		this.toolTipList = new ToolTipList(new Point(130, 15));
 

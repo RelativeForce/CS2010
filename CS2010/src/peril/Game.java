@@ -34,11 +34,6 @@ import peril.ui.states.menuStates.*;
 public class Game extends StateBasedGame implements MusicListener {
 
 	/**
-	 * The {@link PauseMenu} that will be used by all the {@link CoreGameState}s.
-	 */
-	public final PauseMenu pauseMenu;
-
-	/**
 	 * The {@link StateHelper} that holds all this {@link Game}'s states.
 	 */
 	public final StateHelper states;
@@ -60,16 +55,13 @@ public class Game extends StateBasedGame implements MusicListener {
 	public final Board board;
 
 	/**
-	 * The {@link WarMenu} that processes all of the game's combat.
-	 */
-	public final WarMenu warMenu;
-
-	/**
 	 * The {@link DirectoryHelper} that holds all the sub directories of the assets
 	 * folder.
 	 */
 	public final DirectoryHelper assets;
 
+	public final MenuHelper menus;
+	
 	/**
 	 * The current turn of the {@link Game}. Initially zero;
 	 */
@@ -98,11 +90,12 @@ public class Game extends StateBasedGame implements MusicListener {
 		// Construct the board with the initial name.
 		this.board = new Board(this, "NOT ASSIGNED");
 
-		// Initialise games Combat Handler
-		this.warMenu = new WarMenu(new Point(100, 100), this);
+		// Initialise games overlay menus
+		WarMenu warMenu = new WarMenu(new Point(100, 100), this);
+		PauseMenu pauseMenu = new PauseMenu(new Point(100, 100), this);
+		Help helpMenu = new Help(this, new Point(100, 100), 300, 300);
 
-		// Initialise the pause menu all the states will use
-		this.pauseMenu = new PauseMenu(new Point(100, 100), this);
+		this.menus = new MenuHelper(pauseMenu, warMenu, helpMenu);
 
 		// Initialise the game states.
 		MainMenuState mainMenu = new MainMenuState(this, 0);
@@ -114,7 +107,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		LoadingScreen loadingScreen = new LoadingScreen(this, 6);
 
 		// Set the containers that ui elements will be loaded into.
-		Container[] containers = new Container[] { pauseMenu, loadingScreen, warMenu, mainMenu, combat, setup,
+		Container[] containers = new Container[] { helpMenu, pauseMenu, loadingScreen, warMenu, mainMenu, combat, setup,
 				reinforcement, movement, end };
 
 		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen);
@@ -168,10 +161,7 @@ public class Game extends StateBasedGame implements MusicListener {
 			agc.setDisplayMode(width, height, false);
 		}
 
-		int pauseMenuX = (agc.getWidth() / 2) - (pauseMenu.getWidth() / 2);
-		int pauseMenuY = (agc.getHeight() / 2) - (pauseMenu.getHeight() / 2);
-
-		pauseMenu.setPosition(new Point(pauseMenuX, pauseMenuY));
+		menus.center(agc.getWidth() / 2, agc.getHeight() / 2);
 
 		// Reset the board
 		board.reset();

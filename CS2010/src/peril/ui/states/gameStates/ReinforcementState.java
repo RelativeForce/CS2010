@@ -95,7 +95,7 @@ public final class ReinforcementState extends CoreGameState {
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
-		getGame().pauseMenu.showSaveOption();
+		getGame().menus.pauseMenu.showSaveOption();
 		help.setPosition(
 				new Point((gc.getWidth() / 2) - (help.getWidth() / 2), (gc.getHeight() / 2) - (help.getHeight() / 2)));
 	}
@@ -133,7 +133,7 @@ public final class ReinforcementState extends CoreGameState {
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
 		super.leave(container, game);
 		reinforceButton.hide();
-		getGame().pauseMenu.hideSaveOption();
+		getGame().menus.pauseMenu.hideSaveOption();
 	}
 
 	/**

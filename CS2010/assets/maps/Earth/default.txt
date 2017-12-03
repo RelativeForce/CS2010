@@ -1,13 +1,13 @@
 // Country, name, rgb, x offset, y offset
 Country,Alaska,000000050,1,-15,-30,-
-Country,NW Canada,000000100,1,-30,15,-
+Country,NorthWestTerritory,000000100,1,-30,15,-
 Country,Greenland,000000150,1,0,-10,-
 Country,Alberta,000000200,1,0,0,-
 Country,Ontario,000000250,1,0,0,-
 Country,Quebec,000050000,1,-20,-20,-
-Country,W USA,000050050,1,0,0,-
-Country,E USA,000050100,1,0,0,-
-Country,C USA,000050150,1,0,-30,-
+Country,WestUS,000050050,1,0,0,-
+Country,EastUS,000050100,1,0,0,-
+Country,CentralAmerica,000050150,1,0,-30,-
 //
 Country,Venezuela,000050200,1,-20,-10,-
 Country,Brazil,000050250,1,0,0,-
@@ -15,18 +15,18 @@ Country,Peru,000100000,1,10,0,-
 Country,Argentina,000100050,1,-20,-30,-
 //
 Country,Iceland,000100100,1,-10,-10,-
-Country,Great Britain,000100150,1,5,0,-
+Country,GreatBritain,000100150,1,5,0,-
 Country,Scandinavia,000100200,1,-30,0,-
 Country,Ukraine,000100250,1,0,0,-
-Country,N Europe,000150000,1,0,0,-
-Country,W Europe,000150050,1,0,0,-
-Country,S Europe,000150100,1,0,-20,-
+Country,NorthEurope,000150000,1,0,0,-
+Country,WestEurope,000150050,1,0,0,-
+Country,SouthEurope,000150100,1,0,-20,-
 //
-Country,N Africa,000150150,1,0,0,-
+Country,NorthAfrica,000150150,1,0,0,-
 Country,Egypt,000150200,1,0,0,-
-Country,E Africa,000150250,1,0,0,-
+Country,EastAfrica,000150250,1,0,0,-
 Country,Congo,000200000,1,0,0,-
-Country,S Africa,000200050,1,-10,0,-
+Country,SouthAfrica,000200050,1,-10,0,-
 Country,Madagascar,000200100,1,-10,-10,-
 //
 Country,Ural,000200150,1,-20,20,-
@@ -43,9 +43,9 @@ Country,India,050000050,1,0,0,-
 Country,Siam,050000100,1,-10,-30,-
 //
 Country,Indonesia,050000150,1,10,-10,-
-Country,New Guinea,050000200,1,0,0,-
-Country,W Australia,050000250,1,0,0,-
-Country,E Australia,050050000,1,30,0,-
+Country,NewGuinea,050000200,1,0,0,-
+Country,WestAustralia,050000250,1,0,0,-
+Country,EastAustralia,050050000,1,30,0,-
 
 // Continent, name, hazard, countries
 Continent,NorthAmerica,Hurricane,Alaska-NorthWestTerritory-Greenland-Alberta-Ontario-Quebec-WestUS-EastUS-CentralAmerica

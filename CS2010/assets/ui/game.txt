@@ -46,9 +46,9 @@ button,End,10,endButton.png,90,40,200,100,exit
 // Help Menu
 image,Help,toolTipBox.png,400,400,0,0
 button,Help,14,xButton.png,30,30,340,10,close
-button,Help,15,xButton.png,30,30,365,200,next
-button,Help,16,xButton.png,30,30,5,200,previous
+button,Help,15,xButton.png,25,100,370,140,next
+button,Help,16,xButton.png,25,100,5,140,previous
 
 // Challenge Menu
-button,Challenge Menu,21,xButton.png,30,30,245,5,close
-image,Challenge Menu,toolTipBox.png,300,300,0,0
+button,Challenge Menu,21,xButton.png,30,30,295,5,close
+image,Challenge Menu,toolTipBox.png,350,300,0,0

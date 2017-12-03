@@ -456,7 +456,7 @@ public final class MapReader extends FileParser {
 
 				@Override
 				public String toString() {
-					return "Own " + numberOfContinets + " Continents.";
+					return "Own " + numberOfContinets + " Continents";
 				}
 
 			});
@@ -503,7 +503,7 @@ public final class MapReader extends FileParser {
 
 				@Override
 				public String toString() {
-					return "Own " + numberOfCountries + " Countries.";
+					return "Own " + numberOfCountries + " Countries";
 				}
 
 			});
@@ -550,7 +550,7 @@ public final class MapReader extends FileParser {
 				@Override
 				public String toString() {
 
-					return "Lead " + sizeOfArmy + " Units.";
+					return "Lead " + sizeOfArmy + " Units";
 				}
 			});
 

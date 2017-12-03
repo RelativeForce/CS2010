@@ -1,13 +1,13 @@
 // Country, name, rgb, x offset, y offset
 Country,Alaska,000000050,1,-15,-30,-
-Country,NorthWestTerritory,000000100,1,-30,15,-
+Country,NW Canada,000000100,1,-30,15,-
 Country,Greenland,000000150,1,0,-10,-
 Country,Alberta,000000200,1,0,0,-
 Country,Ontario,000000250,1,0,0,-
 Country,Quebec,000050000,1,-20,-20,-
-Country,WestUS,000050050,1,0,0,-
-Country,EastUS,000050100,1,0,0,-
-Country,CentralAmerica,000050150,1,0,-30,-
+Country,W USA,000050050,1,0,0,-
+Country,E USA,000050100,1,0,0,-
+Country,C America,000050150,1,0,-30,-
 //
 Country,Venezuela,000050200,1,-20,-10,-
 Country,Brazil,000050250,1,0,0,-
@@ -15,16 +15,16 @@ Country,Peru,000100000,1,10,0,-
 Country,Argentina,000100050,1,-20,-30,-
 //
 Country,Iceland,000100100,1,-10,-10,-
-Country,GreatBritain,000100150,1,5,0,-
+Country,Great Britain,000100150,1,5,0,-
 Country,Scandinavia,000100200,1,-30,0,-
 Country,Ukraine,000100250,1,0,0,-
-Country,NorthEurope,000150000,1,0,0,-
-Country,WestEurope,000150050,1,0,0,-
-Country,SouthEurope,000150100,1,0,-20,-
+Country,N Europe,000150000,1,0,0,-
+Country,W Europe,000150050,1,0,0,-
+Country,S Europe,000150100,1,0,-20,-
 //
-Country,NorthAfrica,000150150,1,0,0,-
+Country,N Africa,000150150,1,0,0,-
 Country,Egypt,000150200,1,0,0,-
-Country,EastAfrica,000150250,1,0,0,-
+Country,E Africa,000150250,1,0,0,-
 Country,Congo,000200000,1,0,0,-
 Country,SouthAfrica,000200050,1,-10,0,-
 Country,Madagascar,000200100,1,-10,-10,-
@@ -38,76 +38,76 @@ Country,Mongolia,000250100,1,0,0,-
 Country,Japan,000250150,1,10,0,-
 Country,Afghanistan,000250200,1,0,0,-
 Country,China,000250250,1,0,0,-
-Country,MiddleEast,050000000,1,0,0,-
+Country,Middle East,050000000,1,0,0,-
 Country,India,050000050,1,0,0,-
 Country,Siam,050000100,1,-10,-30,-
 //
 Country,Indonesia,050000150,1,10,-10,-
-Country,NewGuinea,050000200,1,0,0,-
-Country,WestAustralia,050000250,1,0,0,-
-Country,EastAustralia,050050000,1,30,0,-
+Country,New Guinea,050000200,1,0,0,-
+Country,W Australia,050000250,1,0,0,-
+Country,E Australia,050050000,1,30,0,-
 
 // Continent, name, hazard, countries
-Continent,NorthAmerica,Hurricane,Alaska-NorthWestTerritory-Greenland-Alberta-Ontario-Quebec-WestUS-EastUS-CentralAmerica
+Continent,NorthAmerica,Hurricane,Alaska-NW Canada-Greenland-Alberta-Ontario-Quebec-W USA-E USA-C America
 Continent,SouthAmerica,Tornado,Venezuela-Brazil-Peru-Argentina
-Continent,Europe,Tsunami,Iceland-GreatBritain-Scandinavia-Ukraine-NorthEurope-WestEurope-SouthEurope
-Continent,Africa,Hurricane,NorthAfrica-Egypt-EastAfrica-Congo-SouthAfrica-Madagascar
-Continent,Asia,Volcanic Eruption,Ural-Siberia-Yakutsk-Kamchatka-Irkutsk-Mongolia-Japan-Afghanistan-China-MiddleEast-India-Siam
-Continent,Australia,Tsunami,Indonesia-NewGuinea-WestAustralia-EastAustralia
+Continent,Europe,Tsunami,Iceland-Great Britain-Scandinavia-Ukraine-N Europe-W Europe-S Europe
+Continent,Africa,Hurricane,N Africa-Egypt-E Africa-Congo-SouthAfrica-Madagascar
+Continent,Asia,Volcanic Eruption,Ural-Siberia-Yakutsk-Kamchatka-Irkutsk-Mongolia-Japan-Afghanistan-China-Middle East-India-Siam
+Continent,Australia,Tsunami,Indonesia-New Guinea-W Australia-E Australia
 
 // Link, country1, country2
-Link,Alaska,NorthWestTerritory
+Link,Alaska,NW Canada
 Link,Alaska,Alberta
-Link,NorthWestTerritory,Alberta
-Link,NorthWestTerritory,Greenland
-Link,NorthWestTerritory,Ontario
+Link,NW Canada,Alberta
+Link,NW Canada,Greenland
+Link,NW Canada,Ontario
 Link,Greenland,Ontario
 Link,Greenland,Iceland
 Link,Greenland,Quebec
 Link,Alberta,Ontario
-Link,Alberta,WestUS
+Link,Alberta,W USA
 Link,Ontario,Quebec
-Link,Ontario,EastUS
-Link,Quebec,EastUS
-Link,WestUS,EastUS
-Link,WestUS,CentralAmerica
-Link,EastUS,CentralAmerica
-Link,CentralAmerica,Venezuela
+Link,Ontario,E USA
+Link,Quebec,E USA
+Link,W USA,E USA
+Link,W USA,C America
+Link,E USA,C America
+Link,C America,Venezuela
 Link,Venezuela,Peru
 Link,Venezuela,Brazil
 Link,Peru,Argentina
 Link,Peru,Brazil
 Link,Argentina,Brazil
 Link,Brazil,NorthAmerica
-Link,Brazil,NorthAfrica
-Link,NorthAfrica,WestEurope
-Link,NorthAfrica,SouthEurope
-Link,NorthAfrica,Egypt
-Link,NorthAfrica,EastAfrica
-Link,NorthAfrica,Congo
+Link,Brazil,N Africa
+Link,N Africa,W Europe
+Link,N Africa,S Europe
+Link,N Africa,Egypt
+Link,N Africa,E Africa
+Link,N Africa,Congo
 Link,Congo,SouthAfrica
-Link,Congo,EastAfrica
+Link,Congo,E Africa
 Link,Madagascar,SouthAfrica
-Link,Madagascar,EastAfrica
-Link,EastAfrica,MiddleEast
-Link,EastAfrica,Egypt
-Link,EastAfrica,SouthAfrica
-Link,Egypt,MiddleEast
-Link,Egypt,SouthEurope
-Link,WestEurope,GreatBritain
-Link,WestEurope,SouthEurope
-Link,WestEurope,NorthEurope
-Link,GreatBritain,Iceland
-Link,GreatBritain,Scandinavia
-Link,GreatBritain,NorthEurope
+Link,Madagascar,E Africa
+Link,E Africa,Middle East
+Link,E Africa,Egypt
+Link,E Africa,SouthAfrica
+Link,Egypt,Middle East
+Link,Egypt,S Europe
+Link,W Europe,Great Britain
+Link,W Europe,S Europe
+Link,W Europe,N Europe
+Link,Great Britain,Iceland
+Link,Great Britain,Scandinavia
+Link,Great Britain,N Europe
 Link,Iceland,Scandinavia
 Link,Scandinavia,Ukraine
-Link,Scandinavia,NorthEurope
-Link,NorthEurope,SouthEurope
-Link,NorthEurope,Ukraine
-Link,SouthEurope,Ukraine
-Link,SouthEurope,MiddleEast
-Link,Ukraine,MiddleEast
+Link,Scandinavia,N Europe
+Link,N Europe,S Europe
+Link,N Europe,Ukraine
+Link,S Europe,Ukraine
+Link,S Europe,Middle East
+Link,Ukraine,Middle East
 Link,Ukraine,Afghanistan
 Link,Ukraine,Ural
 Link,Ural,Siberia
@@ -127,17 +127,17 @@ Link,Mongolia,China
 Link,Irkutsk,Mongolia
 Link,Afghanistan,China
 Link,Afghanistan,India
-Link,Afghanistan,MiddleEast
-Link,MiddleEast,India
+Link,Afghanistan,Middle East
+Link,Middle East,India
 Link,India,China
 Link,India,Siam
 Link,China,Siam
 Link,Siam,Indonesia
-Link,Indonesia,NewGuinea
-Link,Indonesia,WestAustralia
-Link,WestAustralia,NewGuinea
-Link,WestAustralia,EastAustralia
-Link,NewGuinea,EastAustralia
+Link,Indonesia,New Guinea
+Link,Indonesia,W Australia
+Link,W Australia,New Guinea
+Link,W Australia,E Australia
+Link,New Guinea,E Australia
 
 // Type, Goal, Reward
 ArmySize,60,5

@@ -18,7 +18,7 @@ import peril.ui.components.Component;
  * @author Joshua_Eddy
  *
  */
-public class ToolTipList implements Component{
+public class ToolTipList implements Component {
 
 	/**
 	 * Holds the text tool tip that will be displayed to the use and its assigned
@@ -76,7 +76,7 @@ public class ToolTipList implements Component{
 	public void init() {
 		// Do nothing as there are no fonts or etc.
 	}
-	
+
 	/**
 	 * Elapses the specified time for the {@link ToolTipList}.
 	 * 
@@ -116,6 +116,23 @@ public class ToolTipList implements Component{
 	 */
 	public void clear() {
 		toolTips.clear();
+	}
+
+	/**
+	 * Sets the {@link Point} position of this {@link ToolTipList}.
+	 */
+	@Override
+	public void setPosition(Point position) {
+		this.position = position;
+
+	}
+
+	/**
+	 * Retrieves the {@link Point} position of this {@link ToolTipList}.
+	 */
+	@Override
+	public Point getPosition() {
+		return position;
 	}
 
 	/**
@@ -159,7 +176,5 @@ public class ToolTipList implements Component{
 		}
 
 	}
-
-	
 
 }

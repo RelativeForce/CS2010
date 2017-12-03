@@ -10,10 +10,8 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Country;
-import peril.board.EnvironmentalHazard;
 import peril.ui.Button;
 import peril.ui.Font;
-import peril.ui.components.menus.HelpMenu;
 
 /**
  * Encapsulates the behaviour of the Reinforcement {@link CoreGameState} where
@@ -42,11 +40,6 @@ public final class ReinforcementState extends CoreGameState {
 	private final Font textFont;
 
 	/**
-	 * The {@link HelpMenu} window for this {@link ReinforcementState}.
-	 */
-	private final HelpMenu help;
-
-	/**
 	 * Holds the instance of the reinforce {@link Button}.
 	 */
 	private Button reinforceButton;
@@ -63,30 +56,6 @@ public final class ReinforcementState extends CoreGameState {
 		super(game, STATE_NAME, id);
 		this.unitFont = new Font("Arial", Color.white, 50);
 		this.textFont = new Font("Arial", Color.white, 20);
-
-		this.help = new HelpMenu(game, new Point(100, 100), 400, 350);
-		super.addComponent(help);
-
-		help.addText(STATE_NAME + " help");
-		help.addText("-----------------------------------------------------------");
-
-		// Environmental Hazards
-		help.addText(">> Environmental Hazards");
-		help.addText("After the first round environmental hazards may occur in any country. "
-				+ "These hazards will kill a random percentage of the army stationed at "
-				+ "the country the hazard occured up to a maximum value.");
-		for (EnvironmentalHazard hazard : EnvironmentalHazard.values()) {
-			help.addText(hazard.name + ": " + hazard.maxCasualties + "% at " + hazard.chance + "% chance");
-		}
-
-	}
-
-	/**
-	 * Retrieves the {@link HelpMenu} for this {@link ReinforcementState}.
-	 */
-	@Override
-	public final HelpMenu getHelp() {
-		return help;
 	}
 
 	/**
@@ -96,8 +65,6 @@ public final class ReinforcementState extends CoreGameState {
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
 		getGame().menus.pauseMenu.showSaveOption();
-		help.setPosition(
-				new Point((gc.getWidth() / 2) - (help.getWidth() / 2), (gc.getHeight() / 2) - (help.getHeight() / 2)));
 	}
 
 	/**
@@ -201,7 +168,7 @@ public final class ReinforcementState extends CoreGameState {
 
 		textFont.draw(g, "UNITS", 150 - (textFont.getWidth("UNITS") / 2), 95);
 
-		help.draw(g);
+		super.drawHelp(g);
 
 		super.drawPauseMenu(g);
 	}
@@ -287,4 +254,5 @@ public final class ReinforcementState extends CoreGameState {
 		}
 
 	}
+
 }

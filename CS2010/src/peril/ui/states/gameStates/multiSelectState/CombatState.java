@@ -11,7 +11,6 @@ import peril.Player;
 import peril.Point;
 import peril.board.Country;
 import peril.ui.Button;
-import peril.ui.components.menus.HelpMenu;
 import peril.ui.components.menus.WarMenu;
 import peril.ui.states.gameStates.CoreGameState;
 
@@ -60,11 +59,6 @@ public final class CombatState extends MultiSelectState {
 		this.isPostCombat = false;
 		this.warMenu = game.menus.warMenu;
 		super.addComponent(warMenu);
-	}
-
-	@Override
-	public HelpMenu getHelp() {
-		return null;
 	}
 	
 	/**

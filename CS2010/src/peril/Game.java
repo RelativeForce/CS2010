@@ -61,7 +61,7 @@ public class Game extends StateBasedGame implements MusicListener {
 	public final DirectoryHelper assets;
 
 	public final MenuHelper menus;
-	
+
 	/**
 	 * The current turn of the {@link Game}. Initially zero;
 	 */
@@ -90,13 +90,6 @@ public class Game extends StateBasedGame implements MusicListener {
 		// Construct the board with the initial name.
 		this.board = new Board(this, "NOT ASSIGNED");
 
-		// Initialise games overlay menus
-		WarMenu warMenu = new WarMenu(new Point(100, 100), this);
-		PauseMenu pauseMenu = new PauseMenu(new Point(100, 100), this);
-		HelpMenu helpMenu = new HelpMenu(this, new Point(100, 100), 300, 300);
-
-		this.menus = new MenuHelper(pauseMenu, warMenu, helpMenu);
-
 		// Initialise the game states.
 		MainMenuState mainMenu = new MainMenuState(this, 0);
 		SetupState setup = new SetupState(this, 1);
@@ -106,16 +99,25 @@ public class Game extends StateBasedGame implements MusicListener {
 		EndState end = new EndState(this, 5);
 		LoadingScreen loadingScreen = new LoadingScreen(this, 6);
 
+		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen);
+
+		// Initialise games overlay menus
+		WarMenu warMenu = new WarMenu(new Point(100, 100), this);
+		PauseMenu pauseMenu = new PauseMenu(new Point(100, 100), this);
+		HelpMenu helpMenu = new HelpMenu(new Point(100, 100), this);
+
+		this.menus = new MenuHelper(pauseMenu, warMenu, helpMenu);
+
 		// Set the containers that ui elements will be loaded into.
 		Container[] containers = new Container[] { helpMenu, pauseMenu, loadingScreen, warMenu, mainMenu, combat, setup,
 				reinforcement, movement, end };
-
-		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen);
 
 		this.io = new IOHelper(this, containers);
 
 		this.players = new PlayerHelper(this);
 
+		this.menus.createHelpPages(this);
+		
 		// Construct the container for the game as a Slick2D state based game.
 		try {
 			agc = new AppGameContainer(this);

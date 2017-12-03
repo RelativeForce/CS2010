@@ -64,6 +64,12 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	private final int id;
 
 	/**
+	 * Holds the id of the {@link HelpMenu} page that explains this
+	 * {@link InteractiveState}.
+	 */
+	private final int helpId;
+
+	/**
 	 * Constructs a new {@link InteractiveState}.
 	 * 
 	 * @param game
@@ -73,7 +79,7 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 * @param id
 	 *            The id of this {@link InteractiveState}.
 	 */
-	public InteractiveState(Game game, String stateName, int id) {
+	public InteractiveState(Game game, String stateName, int id, int helpId) {
 
 		if (game == null) {
 			throw new NullPointerException("Game cannot be null.");
@@ -81,12 +87,15 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 			throw new NullPointerException("StateName cannot be empty.");
 		}
 
+		this.helpId = helpId;
 		this.id = id;
 		this.game = game;
 		this.stateName = stateName;
 		this.buttons = new LinkedList<>();
 		this.images = new LinkedList<>();
 		this.components = new LinkedList<>();
+
+		this.addComponent(game.menus.helpMenu);
 	}
 
 	/**
@@ -172,7 +181,9 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 *            The {@link StateBasedGame} this state is a part of.
 	 */
 	@Override
-	public abstract void enter(GameContainer gc, StateBasedGame sbg);
+	public void enter(GameContainer gc, StateBasedGame sbg) {
+		game.menus.helpMenu.changePage(helpId);
+	}
 
 	/**
 	 * Called when this {@link InteractiveState} is being left this method should
@@ -180,8 +191,7 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
-		if (getHelp() != null)
-			getHelp().hide();
+
 	};
 
 	/**
@@ -236,13 +246,6 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 
 	}
-
-	/**
-	 * Retrieve the {@link HelpMenu} window for this {@link InteractiveState}.
-	 * 
-	 * @return {@link HelpMenu}
-	 */
-	public abstract HelpMenu getHelp();
 
 	/**
 	 * Retrieves the the <code>int</code> id of this {@link InteractiveState}.
@@ -319,6 +322,16 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 */
 	protected void addComponent(Component component) {
 		components.add(component);
+	}
+
+	/**
+	 * Draws this {@link Game}'s {@link HelpMenu} on screen.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 */
+	protected void drawHelp(Graphics g) {
+		game.menus.helpMenu.draw(g);
 	}
 
 	/**

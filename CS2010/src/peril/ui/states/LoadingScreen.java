@@ -74,7 +74,7 @@ public final class LoadingScreen extends InteractiveState {
 	 *            The is of this {@link LoadingScreen}.
 	 */
 	public LoadingScreen(Game game, int id) {
-		super(game, NAME, id);
+		super(game, NAME, id, HelpMenu.NULL_PAGE);
 		this.index = 0;
 		this.readers = new ArrayList<>();
 		this.progressBar = new ProgressBar(new Point(0, 0), 100, 20);
@@ -90,14 +90,6 @@ public final class LoadingScreen extends InteractiveState {
 	public void addImage(Viewable image) {
 		background = image;
 		super.addImage(image);
-	}
-
-	/**
-	 * Retrieve the {@link HelpMenu} window for the {@link LoadingScreen}.
-	 */
-	@Override
-	public HelpMenu getHelp() {
-		return null;
 	}
 
 	/**

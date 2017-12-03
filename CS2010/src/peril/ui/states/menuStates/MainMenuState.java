@@ -90,7 +90,7 @@ public class MainMenuState extends InteractiveState {
 	 *            The ID of this {@link MainMenuState}.
 	 */
 	public MainMenuState(Game game, int id) {
-		super(game, STATE_NAME, id);
+		super(game, STATE_NAME, id, HelpMenu.NULL_PAGE);
 
 		uiLoaded = false;
 
@@ -158,12 +158,6 @@ public class MainMenuState extends InteractiveState {
 				checkSaves();
 			}
 		}
-	}
-
-	@Override
-	public HelpMenu getHelp() {
-		// TODO Make help
-		return null;
 	}
 
 	/**

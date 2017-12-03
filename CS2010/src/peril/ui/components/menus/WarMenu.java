@@ -20,7 +20,6 @@ import peril.ui.Button;
 import peril.ui.Font;
 import peril.ui.Region;
 import peril.ui.Viewable;
-import peril.ui.components.Component;
 import peril.ui.components.lists.VisualList;
 
 /**
@@ -599,7 +598,7 @@ public class WarMenu extends Menu {
 	 * @author Joshua_Eddy
 	 *
 	 */
-	private class Dice implements Component {
+	private class Dice {
 
 		/**
 		 * The width of the dice.
@@ -691,7 +690,6 @@ public class WarMenu extends Menu {
 		/**
 		 * Initialises this {@link Dice}.
 		 */
-		@Override
 		public void init() {
 			for (int i = 1; i <= 6; i++) {
 				this.defaultDice.put(i, ImageReader.getImage(getGame().assets.ui + "dice" + i + ".png")
@@ -702,7 +700,6 @@ public class WarMenu extends Menu {
 		/**
 		 * Draws this {@link Dice}.
 		 */
-		@Override
 		public void draw(Graphics g) {
 			display.forEach((position, dice) -> g.drawImage(dice, position.x, position.y));
 		}

@@ -71,7 +71,7 @@ public class EndState extends InteractiveState {
 	 *            The id of this {@link EndState}.
 	 */
 	public EndState(Game game, int id) {
-		super(game, STATE_NAME, id);
+		super(game, STATE_NAME, id, HelpMenu.NULL_PAGE);
 		podium = new Stack<>();
 		winnerFont = new Font("Arial", Color.yellow, 50);
 		loserFont = new Font("Arial", Color.red, 30);
@@ -99,12 +99,6 @@ public class EndState extends InteractiveState {
 	@Override
 	public void parseClick(int button, Point click) {
 		super.clickedButton(click);
-	}
-
-	@Override
-	public HelpMenu getHelp() {
-		// TODO Make help
-		return null;
 	}
 	
 	/**

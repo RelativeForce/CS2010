@@ -70,7 +70,9 @@ public abstract class CoreGameState extends InteractiveState {
 	 *            The id of this {@link CoreGameState}.
 	 */
 	protected CoreGameState(Game game, String stateName, int id) {
-		super(game, stateName, id);
+
+		// The id of the state is used as the id for the help page
+		super(game, stateName, id, id);
 		this.highlightedCountry = null;
 
 		this.pauseMenu = game.menus.pauseMenu;
@@ -152,8 +154,8 @@ public abstract class CoreGameState extends InteractiveState {
 		}
 
 		// Hide the about widow if the pause menu is visible
-		if (pauseMenu.isVisible() && getHelp() != null) {
-			getHelp().hide();
+		if (pauseMenu.isVisible()) {
+			getGame().menus.helpMenu.hide();
 		}
 
 	}
@@ -567,21 +569,16 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	private boolean clickedHelp(Point click) {
 
-		if (getHelp() == null)
-			return false;
-
-		HelpMenu help = getHelp();
-
 		// If the pause menu is invisible then it cannot be clicked.
-		if (help.isVisible()) {
+		if (getGame().menus.helpMenu.isVisible()) {
 
 			// If the pause menu was clicked then parse the click.
-			if (help.isClicked(click)) {
-				help.parseClick(click);
+			if (getGame().menus.helpMenu.isClicked(click)) {
+				getGame().menus.helpMenu.parseClick(click);
 				return true;
 			}
 
-			help.hide();
+			getGame().menus.helpMenu.hide();
 		}
 
 		return false;

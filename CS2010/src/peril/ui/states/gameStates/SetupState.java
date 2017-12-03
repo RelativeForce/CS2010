@@ -10,7 +10,6 @@ import peril.Game;
 import peril.Player;
 import peril.Point;
 import peril.board.Country;
-import peril.ui.components.menus.HelpMenu;
 
 /**
  * The state where the user selects which player gets what {@link Country}s.
@@ -28,11 +27,6 @@ public final class SetupState extends CoreGameState {
 	private static final String STATE_NAME = "Setup";
 
 	/**
-	 * Holds the {@link HelpMenu} that explains the {@link SetupState} to the user.
-	 */
-	private final HelpMenu help;
-
-	/**
 	 * Constructs a new {@link SetupState}.
 	 * 
 	 * @param game
@@ -42,37 +36,6 @@ public final class SetupState extends CoreGameState {
 	 */
 	public SetupState(Game game, int id) {
 		super(game, STATE_NAME, id);
-		help = new HelpMenu(game, new Point(220, 5), 400, 350);
-		super.addComponent(help);
-
-		help.addText(STATE_NAME + " help");
-		help.addText("-----------------------------------------------------------");
-		help.addText("In this phase of the game the players select which players own"
-				+ " which countries at the start of the game.");
-		help.addText("To set a player as the ruler of a country, simply click on the country then press "
-				+ "the number button that coresponds to the number of the player."
-				+ " For example: '1' corresponds to 'Player 1'. 'Space' makes the country neutral.");
-		help.addText("Click 'Auto' to randomly assign an equal number of countries to each player.");
-		help.addText("Once you have assigned the countries as you desire click 'Play' to start the game.");
-
-	}
-
-	/**
-	 * Retrieve the {@link HelpMenu} window for the {@link SetupState}.
-	 */
-	@Override
-	public HelpMenu getHelp() {
-		return help;
-	}
-
-	/**
-	 * Enters this {@link SetupState}.
-	 */
-	@Override
-	public void enter(GameContainer gc, StateBasedGame sbg) {
-		super.enter(gc, sbg);
-		help.setPosition(new Point((gc.getWidth() / 2) - (help.getWidth() / 2),
-				(gc.getHeight() / 2) - (help.getHeight() / 2)));
 	}
 
 	/**
@@ -83,12 +46,12 @@ public final class SetupState extends CoreGameState {
 		super.render(gc, sbg, g);
 		super.drawArmies(g);
 
-		drawImages(g);
-		drawButtons(g);
+		super.drawImages(g);
+		super.drawButtons(g);
 
-		help.draw(g);
+		super.drawHelp(g);
 
-		drawPauseMenu(g);
+		super.drawPauseMenu(g);
 
 	}
 
@@ -145,10 +108,6 @@ public final class SetupState extends CoreGameState {
 				swapRuler(highlighted, null);
 				break;
 			}
-		}
-
-		if (key == Input.KEY_H) {
-			help.toggleVisibility();
 		}
 
 		super.parseButton(key, c, mousePosition);

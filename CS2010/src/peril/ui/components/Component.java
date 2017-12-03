@@ -2,6 +2,7 @@ package peril.ui.components;
 
 import org.newdawn.slick.Graphics;
 
+import peril.Point;
 import peril.ui.states.InteractiveState;
 
 /**
@@ -27,4 +28,19 @@ public interface Component {
 	 */
 	void draw(Graphics g);
 
+	/**
+	 * Changes the {@link Point} position of the {@link Component} to the one
+	 * specified.
+	 * 
+	 * @param position
+	 *            {@link Point}
+	 */
+	void setPosition(Point position);
+
+	/**
+	 * Retrieves the {@link Point} position of this {@link Component}.
+	 * 
+	 * @return {@link Point}
+	 */
+	Point getPosition();
 }

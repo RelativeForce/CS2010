@@ -140,4 +140,12 @@ public final class ProgressBar implements Component {
 
 	}
 
+	/**
+	 * Retrieves the {@link Point} position of this {@link ProgressBar}.
+	 */
+	@Override
+	public Point getPosition() {
+		return position;
+	}
+
 }

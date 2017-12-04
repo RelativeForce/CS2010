@@ -46,7 +46,7 @@ public class Button extends Clickable {
 	 *            The id string that denotes this button.
 	 */
 	public Button(Point position, Image image, Action<?> action, String id) {
-		super(new Region(image));
+		super(new Region(image), image);
 
 		// Check the params
 		if (position == null) {
@@ -56,10 +56,7 @@ public class Button extends Clickable {
 		} else if (action == null) {
 			throw new NullPointerException("The action of this button cannot be null.");
 		}
-
-		// Initialise the image and action.
-		this.setImage(position, image);
-		this.setPosition(position);
+		setPosition(position);
 		this.id = id;
 		this.action = action;
 		this.isVisible = true;

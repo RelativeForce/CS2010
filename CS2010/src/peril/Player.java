@@ -57,13 +57,13 @@ public final class Player extends Viewable {
 	 *            The number of this player
 	 */
 	public Player(int number, Color color) {
+		super(new Point(15, 45));
 		this.countries = 0;
 		this.continents = 0;
 		this.color = color;
 		this.distributableArmy = new Army(0);
 		this.totalArmy = new Army(0);
 		this.number = number;
-		setPosition(new Point(15, 45));
 	}
 
 	/**

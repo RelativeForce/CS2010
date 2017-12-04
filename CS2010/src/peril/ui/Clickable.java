@@ -1,5 +1,7 @@
 package peril.ui;
 
+import org.newdawn.slick.Image;
+
 import peril.Point;
 
 /**
@@ -23,12 +25,26 @@ public abstract class Clickable extends Viewable {
 	 * 
 	 * @param region
 	 *            {@link Region} that can be clicked.
+	 * @param position
+	 *            The {@link Point} position of the {@link Clickable}.
 	 */
-	public Clickable(Region region) {
-		if (region == null) {
-			throw new NullPointerException("Region cannot be null");
-		}
+	public Clickable(Region region) {		
+		super(region.getPosition());
+		this.region = region;
+	}
 
+	/**
+	 * Constructs a new {@link Clickable}.
+	 * 
+	 * @param region
+	 *            {@link Region} that can be clicked.
+	 * @param position
+	 *            The {@link Point} position of the {@link Clickable}.
+	 * @param image
+	 *            The {@link Image} of this {@link Clickable}
+	 */
+	public Clickable(Region region, Image image) {
+		super(image, region.getPosition());
 		this.region = region;
 	}
 
@@ -42,9 +58,6 @@ public abstract class Clickable extends Viewable {
 	 * @return Clicked or not.
 	 */
 	public boolean isClicked(Point point) {
-		if (!hasRegion()) {
-			throw new NullPointerException("Region is null.");
-		}
 		return region.isInside(point);
 	}
 
@@ -58,27 +71,13 @@ public abstract class Clickable extends Viewable {
 	}
 
 	/**
-	 * Whether or not this {@link Clickable} has a {@link Region} or not.
-	 * 
-	 * @return <code>boolean</code>
-	 */
-	public boolean hasRegion() {
-		return region != null;
-	}
-
-	/**
 	 * Retrieves the {@link Point} position of this {@link Clickable}. If the
 	 * {@link Region} of this {@link Clickable} is not null retrieve the
 	 * {@link Point} position of the {@link Region}.
 	 */
 	@Override
 	public Point getPosition() {
-
-		// If there is a region in this clickable then use that position.
-		if (hasRegion()) {
-			return region.getPosition();
-		}
-		return super.getPosition();
+		return region.getPosition();
 	}
 
 	/**
@@ -88,12 +87,8 @@ public abstract class Clickable extends Viewable {
 	 *            {@link Point}
 	 */
 	public void setPosition(Point position) {
-
 		super.setPosition(position);
-
-		if (hasRegion()) {
-			region.setPosition(position);
-		}
+		region.setPosition(position);
 	}
 
 	/**
@@ -103,12 +98,7 @@ public abstract class Clickable extends Viewable {
 	 * @return <code>int</code>
 	 */
 	public int getWidth() {
-
-		// If there is a region in this clickable then use that width.
-		if (hasRegion()) {
-			return region.getWidth();
-		}
-		return super.getWidth();
+		return region.getWidth();
 	}
 
 	/**
@@ -118,12 +108,7 @@ public abstract class Clickable extends Viewable {
 	 * @return <code>int</code>
 	 */
 	public int getHeight() {
-
-		// If there is a region in this clickable then use that height.
-		if (hasRegion()) {
-			return region.getHeight();
-		}
-		return super.getHeight();
+		return region.getHeight();
 	}
 
 }

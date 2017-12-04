@@ -486,11 +486,11 @@ public class WarMenu extends Menu {
 	 *            The string offset
 	 */
 	private void drawPlayer(Graphics g, Player player, int offset) {
-		
-		if(player == null) {
+
+		if (player == null) {
 			return;
 		}
-		
+
 		int centreX = getPosition().x + (getWidth() / 2);
 		int x = centreX + offset - (player.getWidth() / 2);
 		g.drawImage(player.getImage(), x, this.getPosition().y + 55);
@@ -504,12 +504,12 @@ public class WarMenu extends Menu {
 
 		int width = 30;
 		int height = 30;
-		int x = this.getPosition().x + (this.getWidth() / 4) - (width / 2);
-		int y = this.getPosition().y + 200;
+		Point position = new Point(this.getPosition().x + (this.getWidth() / 4) - (width / 2),
+				this.getPosition().y + 200);
 
 		// If there is no attacker then set the squad sizes list to its original size.
 		if (attacker == null) {
-			squadSizes = new VisualList<>(x, y, width, height, 3, 7);
+			squadSizes = new VisualList<>(position, width, height, 3, 7);
 			squadSizes.add("1", 1);
 			squadSizes.add("2", 2);
 			squadSizes.add("3", 3);
@@ -523,7 +523,7 @@ public class WarMenu extends Menu {
 			int maxSize = (attacker.getArmy().getSize() - 1 > 3 ? 3 : attacker.getArmy().getSize() - 1);
 
 			// Constructs the list to hold that maz size
-			squadSizes = new VisualList<>(x, y, width, height, maxSize, 7);
+			squadSizes = new VisualList<>(position, width, height, maxSize, 7);
 
 			// Populate the list.
 			for (int index = 1; index <= maxSize; index++) {

@@ -69,7 +69,7 @@ public class PauseMenu extends Menu {
 		this.showSaveOption = false;
 
 		// Construct music toggle
-		this.toggleMusic = new VisualList<>(position.x + (getWidth() / 2), position.y + 70, 30, 15, 2, 5);
+		this.toggleMusic = new VisualList<>(new Point(position.x + (getWidth() / 2), position.y + 70), 30, 15, 2, 5);
 		this.toggleMusic.add(Toggle.ON.toString, Toggle.ON);
 		this.toggleMusic.add(Toggle.OFF.toString, Toggle.OFF);
 		this.toggleMusic.setFont(new Font("Arial", Color.black, 10));
@@ -77,7 +77,7 @@ public class PauseMenu extends Menu {
 		this.textFont = new Font("Arial", Color.black, 10);
 
 		// Construct save file list
-		this.saveFiles = new VisualList<>(position.x + (getWidth() / 2), position.y + 120, 90, 15, 3, 5);
+		this.saveFiles = new VisualList<>(new Point(position.x + (getWidth() / 2), position.y + 120), 90, 15, 3, 5);
 		this.saveFiles.setFont(new Font("Arial", Color.black, 10));
 	}
 
@@ -103,7 +103,7 @@ public class PauseMenu extends Menu {
 	public void draw(Graphics g) {
 
 		super.draw(g);
-		
+
 		if (isVisible()) {
 
 			g.setColor(Color.white);
@@ -239,8 +239,7 @@ public class PauseMenu extends Menu {
 
 		String save = "Save Game:";
 
-		textFont.draw(g, save, getPosition().x - textFont.getWidth(save) + (getWidth() / 2) - 5,
-				getPosition().y + 120);
+		textFont.draw(g, save, getPosition().x - textFont.getWidth(save) + (getWidth() / 2) - 5, getPosition().y + 120);
 
 		saveFiles.draw(g);
 	}

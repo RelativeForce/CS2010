@@ -24,11 +24,18 @@ public class Viewable {
 	private Point position;
 
 	/**
-	 * Constructs a new {@link Viewable}.
+	 * Constructs a new {@link Viewable} with no image.
+	 * 
+	 * @param position
+	 *            The {@link Point} position of the {@link Viewable}.
 	 */
-	public Viewable() {
+	public Viewable(Point position) {
 		this.image = null;
-		this.position = new Point(0, 0);
+		
+		if (position == null) {
+			throw new NullPointerException("Position cannot be null");
+		}
+		this.position = position;
 	}
 
 	/**

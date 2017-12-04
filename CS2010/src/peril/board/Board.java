@@ -51,7 +51,7 @@ public final class Board extends Viewable {
 	 *            The name of the {@link Board}.
 	 */
 	public Board(Game game, String name) {
-
+		super(new Point(0, 0));
 		if (game == null) {
 			throw new NullPointerException("Continents is null.");
 		}
@@ -233,9 +233,11 @@ public final class Board extends Viewable {
 				// Define the hazards visual details
 				Image hazard = country.getHazard();
 				hazard = hazard.getScaledCopy(30, 30);
-				
-				final int hazardX = x + (country.getWidth() / 2) + (hazard.getWidth() / 2) + country.getArmy().getOffset().x;
-				final int hazardY = y + (country.getHeight() / 2) - hazard.getHeight() + country.getArmy().getOffset().y;
+
+				final int hazardX = x + (country.getWidth() / 2) + (hazard.getWidth() / 2)
+						+ country.getArmy().getOffset().x;
+				final int hazardY = y + (country.getHeight() / 2) - hazard.getHeight()
+						+ country.getArmy().getOffset().y;
 
 				// Add the hazard to the map to be drawn.
 				hazards.put(new Point(hazardX, hazardY), hazard);

@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 /**
  * Encapsulates a function and object pair that can be executed at a later time.
- * This can be used as a for of pseudo functional programming architecture.
+ * This can be used as a form of pseudo functional programming architecture.
  * 
  * 
  * @author Joshua_Eddy
@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 public class Action<T> {
 
 	/**
-	 * Whether the action is complete or not.
+	 * Whether the {@link Action} is complete or not.
 	 */
 	private volatile boolean done;
 

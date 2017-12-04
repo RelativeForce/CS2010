@@ -22,7 +22,7 @@ import peril.ui.states.InteractiveState;
  * @param <T>
  *            The type of the {@link Element#get()}
  */
-public class VisualList<T> extends Clickable implements Component{
+public class VisualList<T> extends Clickable implements Component {
 
 	/**
 	 * The <code>int</code> width of the {@link VisualList}.
@@ -70,10 +70,8 @@ public class VisualList<T> extends Clickable implements Component{
 	/**
 	 * Constructs a new {@link VisualList}.
 	 * 
-	 * @param x
-	 *            The <code>int</code> x coordinate of the {@link VisualList}.
-	 * @param y
-	 *            The <code>int</code> y coordinate of the {@link VisualList}.
+	 * @param position
+	 *            The {@link Point} position of the {@link VisualList}.
 	 * @param width
 	 *            The <code>int</code> width of the {@link VisualList}.
 	 * @param height
@@ -85,8 +83,8 @@ public class VisualList<T> extends Clickable implements Component{
 	 *            The number of pixels that the {@link Element}s will be displayed
 	 *            from the edge of the left wall.
 	 */
-	public VisualList(int x, int y, int width, int height, int elementsInView, int padding) {
-		super(new Region(width, height * elementsInView, new Point(x, y)));
+	public VisualList(Point position, int width, int height, int elementsInView, int padding) {
+		super(new Region(width, height * elementsInView, position));
 		elements = new LinkedList<>();
 		selected = null;
 		this.width = width;
@@ -104,8 +102,8 @@ public class VisualList<T> extends Clickable implements Component{
 	 */
 	public void add(String text, T payload) {
 
-		Element element = new Element(text, payload, getPosition().x, getPosition().y + (elements.size() * height),
-				width, height);
+		Element element = new Element(text, payload,
+				new Point(getPosition().x, getPosition().y + (elements.size() * height)), width, height);
 
 		// If this is the first element the set it as the selected.
 		if (elements.isEmpty()) {
@@ -183,7 +181,7 @@ public class VisualList<T> extends Clickable implements Component{
 			// Set the default font
 			font = new Font("Arial", Color.black, 20);
 		}
-		
+
 		font.init();
 
 	}
@@ -280,6 +278,14 @@ public class VisualList<T> extends Clickable implements Component{
 	}
 
 	/**
+	 * Clears the {@link VisualList} of all its elements.
+	 */
+	public void clear() {
+		elements.clear();
+		selected = null;
+	}
+
+	/**
 	 * 
 	 * An element of the {@link VisualList} that can be displayed on screen using
 	 * {@link Element#draw(Graphics, Font)}.
@@ -308,8 +314,8 @@ public class VisualList<T> extends Clickable implements Component{
 		 * @param text
 		 *            The text representation of the {@link Element}.
 		 */
-		public Element(String text, T payload, int x, int y, int width, int height) {
-			super(new Region(width, height, new Point(x, y)));
+		public Element(String text, T payload, Point position, int width, int height) {
+			super(new Region(width, height, position));
 			this.payload = payload;
 			this.text = text;
 		}
@@ -355,11 +361,4 @@ public class VisualList<T> extends Clickable implements Component{
 		}
 	}
 
-	/**
-	 * Clears the {@link VisualList} of all its elements.
-	 */
-	public void clear() {
-		elements.clear();
-		selected = null;
-	}
 }

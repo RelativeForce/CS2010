@@ -138,12 +138,7 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 */
 	@Override
 	public void addButton(Button button) {
-		// Check whether the region is valid.
-		if (button.hasRegion()) {
-			buttons.add(button);
-		} else {
-			throw new IllegalArgumentException("Clickable elemnent must have a valid region.");
-		}
+		buttons.add(button);
 	}
 
 	/**

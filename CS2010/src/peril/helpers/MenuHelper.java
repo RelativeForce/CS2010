@@ -118,6 +118,9 @@ public final class MenuHelper {
 		reinforcementPage(reinforcementPage);
 		setupPage(setupPage);
 		environmentalHazardPage(hazardPage);
+		movementPage(movementPage);
+		combatPage(combatPage);
+		warPage(warPage);
 	}
 
 	/**
@@ -128,8 +131,15 @@ public final class MenuHelper {
 	 */
 	private void reinforcementPage(int id) {
 
-		helpMenu.addText(id, "In this phase the current player should distribte"
-				+ " their avaiable units to any of their countries.");
+		helpMenu.addText(id, "In this phase the current player should distribute"
+				+ " their available units to any of their countries.");
+		helpMenu.addText(id, "The available units to be distributed are shown in the top left corner, above units.");
+		helpMenu.addText(id, "");
+		helpMenu.addText(id, "How to:");
+		helpMenu.addText(id, "1. Select the country you wish to reinforce.");
+		helpMenu.addText(id, "2. Click the rienforment button.");
+		helpMenu.addText(id, "*- 1 one unit would be given to the selected country");
+		helpMenu.addText(id, "*- The amount of clicks equals the amount of units to be given."); 
 
 	}
 
@@ -170,6 +180,69 @@ public final class MenuHelper {
 		for (EnvironmentalHazard hazard : EnvironmentalHazard.values()) {
 			helpMenu.addText(id, hazard.name + ": " + hazard.maxCasualties + "% at " + hazard.chance + "% chance");
 		}
+
+	}
+	
+	/**
+	 * Add the text of the movement page.
+	 * 
+	 * @param id
+	 *            The id of the movement page.
+	 */
+	private void movementPage(int id) {
+
+		helpMenu.addText(id, "In this phase, the current player can move"
+				+ " units from all countries they own to any of their countries which are connected."
+				+ " Countries are connected by a link or through many owned lands connected to each other.");
+				helpMenu.addText(id, "");
+				helpMenu.addText(id, "A valid re-distributuion of the troops will be shown by a line linking the selected countries.");
+				helpMenu.addText(id, "How to:");
+				helpMenu.addText(id, "1. Select the country with 1< of units you wish to move.");
+				helpMenu.addText(id, "2. Select the country you want the units to move to.");
+				helpMenu.addText(id, "*- A link will be shown, should this is be a valid movement");
+				helpMenu.addText(id, "3. Select the amount of units to be moved."); 
+
+	}
+	
+	/**
+	 * Add the text of the combat page.
+	 * 
+	 * @param id
+	 *            The id of the combat page.
+	 */
+	private void combatPage(int id) {
+
+		helpMenu.addText(id, "In this phase if the current player has a country with more than 1< unit,"
+				+ " they can attack an adjacent country which belongs to an enemy.");
+		helpMenu.addText(id, "");
+		helpMenu.addText(id, "A valid attack will be shown by a line linking the selected countries.");
+		helpMenu.addText(id, "How to:");
+		helpMenu.addText(id, "1. Select the country with 1< of units you wish to attack with.");
+		helpMenu.addText(id, "*- A link will be shown to the enemy countries which can be attacked.");
+		helpMenu.addText(id, "2. Select the adjacent enemy country you want to attack.");
+		helpMenu.addText(id, "3. Click the attack button.");
+
+	}
+	
+
+	/**
+	 * Add the text of the war page.
+	 * 
+	 * @param id
+	 *            The id of the war page.
+	 */
+	private void warPage(int id) {
+
+		helpMenu.addText(id, "In this phase, the players involved in battle will be displayed with the choosen countries"
+				+ " and the combat winner is decided by the player with the highest dice roll. "
+				+ "The attacker will have a choice of 1 to 3 dices to attack with, more dices result in a higher chance of winning.");
+		helpMenu.addText(id, "The player would have successfully conqueured the country when their opponent has lost all of their troops"
+				+ ", vice versa the player would have successfully defended their country when their opponent has lost all of their attacking troops.");
+		helpMenu.addText(id, "");
+		helpMenu.addText(id, "Dice rolls selection:");
+		helpMenu.addText(id, "3 dice - Attacker has 4+ units attacking.");
+		helpMenu.addText(id, "2 dice - Attacker has 3 units attacking.");
+		helpMenu.addText(id, "1 dice - Attacker has 2 units attacking.");
 
 	}
 }

@@ -1,4 +1,4 @@
-package peril.ui.states.menuStates;
+package peril.ui.states;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +16,6 @@ import peril.Point;
 import peril.ui.Button;
 import peril.ui.Font;
 import peril.ui.components.menus.HelpMenu;
-import peril.ui.states.InteractiveState;
 
 /**
  * 

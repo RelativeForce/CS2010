@@ -1,4 +1,4 @@
-package peril.ui.states.menuStates;
+package peril.ui.states;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -17,7 +17,6 @@ import peril.io.fileReaders.TextFileReader;
 import peril.ui.Font;
 import peril.ui.components.lists.VisualList;
 import peril.ui.components.menus.HelpMenu;
-import peril.ui.states.InteractiveState;
 
 /**
  * Encapsulates the behaviour of the main menu.

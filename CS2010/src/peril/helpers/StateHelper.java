@@ -9,15 +9,15 @@ import peril.board.Army;
 import peril.board.Country;
 import peril.ui.UIEventHandler;
 import peril.ui.components.menus.WarMenu;
+import peril.ui.states.EndState;
 import peril.ui.states.InteractiveState;
 import peril.ui.states.LoadingScreen;
+import peril.ui.states.MainMenuState;
 import peril.ui.states.gameStates.CoreGameState;
 import peril.ui.states.gameStates.ReinforcementState;
 import peril.ui.states.gameStates.SetupState;
 import peril.ui.states.gameStates.multiSelectState.CombatState;
 import peril.ui.states.gameStates.multiSelectState.MovementState;
-import peril.ui.states.menuStates.EndState;
-import peril.ui.states.menuStates.MainMenuState;
 
 /**
  * A helper class for {@link Game} this object stores the instances of the

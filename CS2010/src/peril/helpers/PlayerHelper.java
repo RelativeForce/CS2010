@@ -13,8 +13,8 @@ import org.newdawn.slick.Color;
 import peril.Challenge;
 import peril.Game;
 import peril.Player;
+import peril.ui.states.EndState;
 import peril.ui.states.gameStates.CoreGameState;
-import peril.ui.states.menuStates.EndState;
 
 /**
  * A helper class for {@link Game} which encapsulates the behaviours of the list

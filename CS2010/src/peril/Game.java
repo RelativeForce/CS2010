@@ -22,7 +22,6 @@ import peril.ui.components.menus.*;
 import peril.ui.states.*;
 import peril.ui.states.gameStates.*;
 import peril.ui.states.gameStates.multiSelectState.*;
-import peril.ui.states.menuStates.*;
 
 /**
  * Encapsulate the main game logic for Peril. This also extends

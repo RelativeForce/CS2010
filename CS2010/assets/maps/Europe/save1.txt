@@ -1,0 +1,52 @@
+Player,1,0,true
+Player,2,0,true
+State,Combat,2,8
+Country,Great Britian,000000050,1,0,0,1
+Country,France,000000100,1,0,0,1
+Country,Germany,000000150,1,-10,0,2
+Country,Spain,000100000,1,-20,0,1
+Country,Greece,000050000,1,-15,0,2
+Country,Poland,000000200,235,0,-10,1
+Country,Italy,000000250,1,0,-15,1
+Country,Chump,050200000,1,0,-10,1
+Country,Mump,050250000,1,0,0,2
+Country,Russia,000150000,1,0,0,1
+Country,Umple,050100000,1,0,0,1
+Country,Flump,050150000,220,0,0,2
+Country,Slump,100050000,1,0,0,2
+Country,Sweden,000200000,1,-15,0,2
+Country,Norway,000250000,1,-50,30,2
+Country,Finland,050050000,1,0,0,2
+Continent,West,Hurricane,Great Britian-France-Germany-Spain
+Continent,Center,Tornado,Greece-Poland-Italy-Chump-Mump
+Continent,East,Hurricane,Russia-Umple-Flump-Slump
+Continent,North,Tsunami,Sweden-Norway-Finland
+Link,Great Britian,France
+Link,Great Britian,Germany
+Link,France,Germany
+Link,France,Spain
+Link,France,Italy
+Link,Germany,Italy
+Link,Germany,Sweden
+Link,Germany,Chump
+Link,Germany,Poland
+Link,Greece,Mump
+Link,Greece,Slump
+Link,Poland,Chump
+Link,Poland,Umple
+Link,Poland,Flump
+Link,Italy,Chump
+Link,Chump,Flump
+Link,Chump,Mump
+Link,Mump,Flump
+Link,Russia,Norway
+Link,Russia,Finland
+Link,Russia,Umple
+Link,Russia,Flump
+Link,Russia,Slump
+Link,Russia,Finland
+Link,Umple,Flump
+Link,Sweden,Norway
+Link,Sweden,Finland
+CountriesOwned,12,5
+CountriesOwned,14,10

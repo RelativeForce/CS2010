@@ -272,6 +272,8 @@ public class MainMenuState extends InteractiveState {
 		// Loads the game assets and move into the set up state
 		if (saves.getSelected() == SaveFile.DEFAULT) {
 			getGame().players.setInitialPlayers(players.getSelected());
+		}else {
+			getGame().players.emptyPlaying();
 		}
 
 		getGame().setRoundNumber(0);

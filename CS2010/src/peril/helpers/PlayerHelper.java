@@ -212,11 +212,11 @@ public class PlayerHelper {
 
 		currentPlayerIndex = (currentPlayerIndex + 1) % playing.size();
 
-		reinforceCurrent();
-
 		if (currentPlayerIndex == 0) {
 			game.endRound();
 		}
+		
+		reinforceCurrent();
 
 		// Check the challenges going into the next round
 		checkChallenges(game.states.reinforcement);

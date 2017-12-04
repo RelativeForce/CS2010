@@ -84,6 +84,9 @@ public final class ChallengeMenu extends Menu {
 
 	}
 
+	/**
+	 * Processes a click at a {@link Point} position on this {@link ChallengeMenu}.
+	 */
 	@Override
 	public void parseClick(Point click) {
 		super.clickedButton(click);

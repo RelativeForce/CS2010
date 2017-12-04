@@ -153,6 +153,7 @@ public final class MovementState extends MultiSelectState {
 		super.leave(gc, game);
 		fortifyButton.hide();
 		getGame().menus.pauseMenu.hideSaveOption();
+		path.clear();
 	}
 
 	/**
@@ -505,7 +506,5 @@ public final class MovementState extends MultiSelectState {
 		fortifyButton.setPosition(new Point(x, y));
 
 	}
-
-	
 
 }

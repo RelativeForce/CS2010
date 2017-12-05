@@ -100,7 +100,8 @@ public final class MenuHelper {
 		int hazardPage = 30;
 
 		// War menu page
-		int warPage = 31;
+		int warPage1 = 31;
+		int warPage2 = 32;
 
 		helpMenu.addPage(movementPage, HelpMenu.NULL_PAGE, HelpMenu.NULL_PAGE, "Help: Movement");
 
@@ -112,15 +113,17 @@ public final class MenuHelper {
 		helpMenu.addPage(hazardPage, HelpMenu.NULL_PAGE, reinforcementPage, "Help: Environmental Hazards");
 
 		// Combat state pages
-		helpMenu.addPage(combatPage, warPage, HelpMenu.NULL_PAGE, "Help: Combat");
-		helpMenu.addPage(warPage, HelpMenu.NULL_PAGE, combatPage, "Help: War");
+		helpMenu.addPage(combatPage, warPage1, HelpMenu.NULL_PAGE, "Help: Combat");
+		helpMenu.addPage(warPage1, warPage2, combatPage, "Help: War pt.1");
+		helpMenu.addPage(warPage2, HelpMenu.NULL_PAGE, warPage1, "Help: War pt.2");
 
 		reinforcementPage(reinforcementPage);
 		setupPage(setupPage);
 		environmentalHazardPage(hazardPage);
 		movementPage(movementPage);
 		combatPage(combatPage);
-		warPage(warPage);
+		warPage1(warPage1);
+		warPage2(warPage2);
 	}
 
 	/**
@@ -137,9 +140,7 @@ public final class MenuHelper {
 		helpMenu.addText(id, "");
 		helpMenu.addText(id, "How to:");
 		helpMenu.addText(id, "1. Select the country you wish to reinforce.");
-		helpMenu.addText(id, "2. Click the rienforment button.");
-		helpMenu.addText(id, "*- 1 one unit would be given to the selected country");
-		helpMenu.addText(id, "*- The amount of clicks equals the amount of units to be given."); 
+		helpMenu.addText(id, "2. Click the rienforment button to add a unit yo the selected country");
 
 	}
 
@@ -182,7 +183,7 @@ public final class MenuHelper {
 		}
 
 	}
-	
+
 	/**
 	 * Add the text of the movement page.
 	 * 
@@ -191,19 +192,21 @@ public final class MenuHelper {
 	 */
 	private void movementPage(int id) {
 
-		helpMenu.addText(id, "In this phase, the current player can move"
-				+ " units from all countries they own to any of their countries which are connected."
-				+ " Countries are connected by a link or through many owned lands connected to each other.");
-				helpMenu.addText(id, "");
-				helpMenu.addText(id, "A valid re-distributuion of the troops will be shown by a line linking the selected countries.");
-				helpMenu.addText(id, "How to:");
-				helpMenu.addText(id, "1. Select the country with 1< of units you wish to move.");
-				helpMenu.addText(id, "2. Select the country you want the units to move to.");
-				helpMenu.addText(id, "*- A link will be shown, should this is be a valid movement");
-				helpMenu.addText(id, "3. Select the amount of units to be moved."); 
+		helpMenu.addText(id,
+				"In this phase, the current player can move"
+						+ " units from all countries they own to any of their countries which are connected."
+						+ " Countries are connected by a link or through many owned lands connected to each other.");
+		helpMenu.addText(id, "");
+		helpMenu.addText(id,
+				"A valid re-distributuion of the troops will be shown by a line linking the selected countries.");
+		helpMenu.addText(id, "How to:");
+		helpMenu.addText(id, "1. Select the country with 1< of units you wish to move.");
+		helpMenu.addText(id,
+				"2. Select the country you want the units to move to. A link will be shown, should this is be a valid movement");
+		helpMenu.addText(id, "3. Select the amount of units to be moved.");
 
 	}
-	
+
 	/**
 	 * Add the text of the combat page.
 	 * 
@@ -212,37 +215,60 @@ public final class MenuHelper {
 	 */
 	private void combatPage(int id) {
 
-		helpMenu.addText(id, "In this phase if the current player has a country with more than 1< unit,"
-				+ " they can attack an adjacent country which belongs to an enemy.");
+		helpMenu.addText(id, "In this phase if the current player can start a war with an adjacent enemy country.");
+		helpMenu.addText(id, "Valid targets will be shown by a line linking the selected countries.");
 		helpMenu.addText(id, "");
-		helpMenu.addText(id, "A valid attack will be shown by a line linking the selected countries.");
 		helpMenu.addText(id, "How to:");
-		helpMenu.addText(id, "1. Select the country with 1< of units you wish to attack with.");
-		helpMenu.addText(id, "*- A link will be shown to the enemy countries which can be attacked.");
+		helpMenu.addText(id,
+				"1. Select the country with more than 1 unit "
+						+ "that you wish to attack with. A link will be shown to the enemy "
+						+ "countries which can be attacked.");
 		helpMenu.addText(id, "2. Select the adjacent enemy country you want to attack.");
-		helpMenu.addText(id, "3. Click the attack button.");
+		helpMenu.addText(id, "3. Click 'Attack' to start a war and open the war menu.");
 
 	}
-	
 
 	/**
-	 * Add the text of the war page.
+	 * Add the text of the war page 1.
 	 * 
 	 * @param id
-	 *            The id of the war page.
+	 *            The id of the war page 1.
 	 */
-	private void warPage(int id) {
+	private void warPage1(int id) {
 
-		helpMenu.addText(id, "In this phase, the players involved in battle will be displayed with the choosen countries"
-				+ " and the combat winner is decided by the player with the highest dice roll. "
-				+ "The attacker will have a choice of 1 to 3 dices to attack with, more dices result in a higher chance of winning.");
-		helpMenu.addText(id, "The player would have successfully conqueured the country when their opponent has lost all of their troops"
-				+ ", vice versa the player would have successfully defended their country when their opponent has lost all of their attacking troops.");
+		helpMenu.addText(id,
+				"The war menu displays a war between the two highlighted countries."
+						+ " The attacking army must be larger than one unit, as one unit is "
+						+ "required for the defense of the country at all times.");
 		helpMenu.addText(id, "");
-		helpMenu.addText(id, "Dice rolls selection:");
-		helpMenu.addText(id, "3 dice - Attacker has 4+ units attacking.");
-		helpMenu.addText(id, "2 dice - Attacker has 3 units attacking.");
-		helpMenu.addText(id, "1 dice - Attacker has 2 units attacking.");
+		helpMenu.addText(id,
+				"The attacker will have a choice of 1 to 3 dices to attack with, depending on the size of their army. "
+						+ "The more dices rolled will result in a higher chance of winning.");
+		helpMenu.addText(id, "");
+		helpMenu.addText(id, "The number of dice corresponds to the "
+				+ "number of units of the army that will be sent to attack the enemy player's army.");
+		helpMenu.addText(id, "The defending army can roll a maximum of 2 dice but the defending"
+				+ " unit will win if the dice rolled are the same.");
+
+	}
+
+	/**
+	 * Add the text of the war page 2.
+	 * 
+	 * @param id
+	 *            The id of the war page 2.
+	 */
+	private void warPage2(int id) {
+		helpMenu.addText(id,
+				"In the situation where the attacking and defending armies are not equal,"
+						+ " all the dice will be rolled but only the highest dice"
+						+ " will be used in the battle, the extra dice will discarded.");
+		helpMenu.addText(id, "");
+		helpMenu.addText(id, "For example: If the attacker has 3 units but the defender only has 1."
+				+ " The best dice of the attacker's 3 will be pit against the defender's only dice.");
+		helpMenu.addText(id, "");
+		helpMenu.addText(id, "If the player has successfully conqueured "
+				+ "the enemy country, the last defending unit of the enemy country will desert and join the player's army.");
 
 	}
 }

@@ -127,6 +127,11 @@ public class Game extends StateBasedGame implements MusicListener {
 			agc = new AppGameContainer(this);
 			agc.setDisplayMode(400, 300, false);
 			agc.setTargetFrameRate(60);
+			
+			// Set the icons of the game
+			String[] icons = new String[] {assets.ui + "goat16.png",assets.ui + "goat32.png"};
+			agc.setIcons(icons);
+			
 			agc.start();
 		} catch (SlickException e) {
 			e.printStackTrace();

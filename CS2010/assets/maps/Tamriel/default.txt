@@ -1,9 +1,11 @@
 // Country, name, rgb, reinforcements, x offset, y offset
+
 //High Rock
 Country,Daggerfall,000000050,1,-25,0,-
 Country,NorthPoint,000000100,1,-25,0,-
 Country,Jehanna,000000150,1,0,0,-
 Country,Wayrest,000000200,1,0,0,-
+
 //Skyrim
 Country,Soltitude,000000250,1,0,0,-
 Country,Markarth,000050050,1,-30,0,-
@@ -14,6 +16,7 @@ Country,Whiterun,000050250,1,0,0,-
 Country,Windhelm,000100000,1,0,0,-
 Country,Falkreath,000100050,1,0,0,-
 Country,Riften,000100100,1,0,0,-
+
 //Morrowind
 Country,Solstheim,000100150,1,0,0,-
 Country,Blacklight,000100200,1,0,0,-
@@ -23,6 +26,7 @@ Country,Necrom,000150050,1,40,110,-
 Country,Mournhold,000150100,1,-50,70,-
 Country,Narsis,000150150,1,0,0,-
 Country,Tear,000150200,1,0,0,-
+
 //Hammerfell
 Country,Dragonstar,000150250,1,0,0,-
 Country,Sentinel,000200000,1,0,0,-
@@ -32,6 +36,7 @@ Country,Helgathe,000200150,1,0,-40,-
 Country,Gilane,000200200,1,-20,-75,-
 Country,Taneth,000200250,1,0,0,-
 Country,Rihad,000250000,1,-30,0,-
+
 //Cyrodiil
 Country,Bruma,000250050,1,0,0,-
 Country,Kvatch,000250100,1,15,40,-
@@ -43,6 +48,7 @@ Country,Cheydinhal,050000050,1,0,0,-
 Country,Bravil,050000100,1,0,0,-
 Country,Leyawiin,050000150,1,0,0,-
 Country,Blackwood,050000200,1,-25,-50,-
+
 //SummersetIsles
 Country,Firsthold,050000250,1,15,-5,-
 Country,Skywatch,050050000,1,0,0,-
@@ -51,7 +57,8 @@ Country,Cloudrest,050050100,1,0,0,-
 Country,Shimmerene,050050150,1,0,0,-
 Country,Alinot,050050200,1,0,0,-
 Country,Dusk,050050250,1,0,0,-
-/Valenwood
+
+//Valenwood
 Country,Arenthia,050100000,1,0,0,-
 Country,Falinesti,050100050,1,-20,0,-
 Country,Silvenar,050100100,1,0,0,-
@@ -59,6 +66,7 @@ Country,Woodhearth,050100150,1,0,0,-
 Country,EldenRoot,050100200,1,0,0,-
 Country,SouthPoint,050100250,1,0,0,-
 Country,Haven,050150000,1,0,0,-
+
 //Elsweyr
 Country,Riverhold,050150050,1,0,-10,-
 Country,Dune,050150100,1,0,0,-
@@ -67,6 +75,7 @@ Country,Orcrest,050150200,1,0,0,-
 Country,Corinth,050150250,1,0,0,-
 Country,Jorval,050200000,1,0,0,-
 Country,Senchal,050200050,1,0,0,-
+
 //BlackMarsh
 Country,Stormhold,050200100,1,-25,0,-
 Country,Helstrom,050200150,1,0,0,-
@@ -74,6 +83,7 @@ Country,Thorn,050200200,1,0,0,-
 Country,Gideon,050200250,1,0,0,-
 Country,Archon,050250000,1,0,0,-
 Country,Blackrose,050250050,1,0,0,-
+
 //Continent, name, hazard, countries
 Continent,HighRock,Hurricane,Daggerfall-NorthPoint-Jehanna-Wayrest
 Continent,Skyrim,Hurricane,Soltitude-Markarth-Morthal-Dawnstar-Winterhold-Whiterun-Windhelm-Falkreath-Riften
@@ -84,6 +94,7 @@ Continent,SummersetIsles,Hurricane,Firsthold-Skywatch-Lillandrill-Cloudrest-Shim
 Continent,Valenwood,Hurricane,Arenthia-Falinesti-Silvenar-Woodhearth-EldenRoot-SouthPoint-Haven
 Continent,Elsweyr,Hurricane,Riverhold-Dune-Rimmen-Orcrest-Corinth-Jorval-Senchal
 Continent,BlackMarsh,Hurricane,Stormhold-Helstrom-Thorn-Gideon-Archon-Blackrose
+
 //Link, country1, country2
 Link,Daggerfall,NorthPoint
 Link,Daggerfall,Wayrest
@@ -221,3 +232,9 @@ Link,Helstrom,Archon
 Link,Helstrom,Blackrose
 Link,Gideon,Blackrose
 Link,Blackrose,Archon
+
+// Challenges - 65 Countries Total
+ArmySize,90,10
+ArmySize,120,20
+CountriesOwned,45,10
+CountriesOwned,55,20

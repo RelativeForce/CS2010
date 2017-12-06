@@ -15,6 +15,7 @@ import peril.Player;
 import peril.Point;
 import peril.ui.Button;
 import peril.ui.Font;
+import peril.ui.Viewable;
 import peril.ui.components.menus.HelpMenu;
 
 /**
@@ -60,6 +61,16 @@ public class EndState extends InteractiveState {
 	 */
 	private Button exitButton;
 
+	private Viewable background;
+
+	private Point first;
+
+	private Point second;
+
+	private Point third;
+
+	private Point fourth;
+
 	/**
 	 * Constructs a new {@link EndState}.
 	 * 
@@ -98,7 +109,7 @@ public class EndState extends InteractiveState {
 	public void parseClick(int button, Point click) {
 		super.clickedButton(click);
 	}
-	
+
 	/**
 	 * Adds a {@link Button} to this {@link EndState}.
 	 */
@@ -113,6 +124,15 @@ public class EndState extends InteractiveState {
 			exitButton = button;
 		}
 
+	}
+
+	/**
+	 * Adds an {@link Viewable} image to this {@link EndState}.
+	 */
+	@Override
+	public void addImage(Viewable image) {
+		background = image;
+		super.addImage(image);
 	}
 
 	/**
@@ -161,14 +181,21 @@ public class EndState extends InteractiveState {
 	 */
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
+
+		super.changeMusic(gc);
+
 		if (podium.isEmpty()) {
 			throw new IllegalStateException("There must be at least one player on the podium for the game to end.");
 		}
-		int padding = 20;
 
+		int padding = 20;
+		background.setImage(background.getPosition(),
+				background.getImage().getScaledCopy(gc.getWidth(), gc.getHeight()));
 		menuButton.setPosition(new Point(gc.getWidth() - menuButton.getWidth() - padding,
 				gc.getHeight() - menuButton.getHeight() - padding));
 		exitButton.setPosition(new Point(padding, gc.getHeight() - exitButton.getHeight() - padding));
+
+		setPodiumPositions(gc);
 	}
 
 	/**
@@ -177,7 +204,7 @@ public class EndState extends InteractiveState {
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
 		super.leave(container, game);
-		
+
 		// Empty the podium
 		podium.clear();
 	}
@@ -189,6 +216,18 @@ public class EndState extends InteractiveState {
 	public Music getMusic() {
 		// TODO victory music
 		return null;
+	}
+
+	private void setPodiumPositions(GameContainer gc) {
+
+		int width = gc.getWidth();
+		int height = gc.getHeight();
+
+		first = new Point((width * 41) / 80, (height * 38) / 80);
+		second = new Point((width * 13) / 40, (height * 6) / 10);
+		third = new Point((width * 55) / 80, (height * 25) / 40);
+		fourth = new Point((width * 41) / 80, (height * 33) / 40);
+
 	}
 
 	/**
@@ -206,28 +245,42 @@ public class EndState extends InteractiveState {
 		// Holds the position of the current player.
 		int position = 1;
 
-		// Initial height of the podium.
-		int y = height / 3;
-
 		// Iterate through each player on the podium.
 		for (Player player : podium) {
 
-			// The text string that will be displayed
-			String text = position + ". " + player.toString();
-
-			// If the current player is first use the winner font otherwise use the loser
-			// font.
-			if (position == 1) {
-				winnerFont.draw(g, text, (width / 2) - (winnerFont.getWidth(text) / 2), y);
-				y += winnerFont.getHeight();
-			} else {
-				loserFont.draw(g, text, (width / 2) - (loserFont.getWidth(text) / 2), y);
-				y += loserFont.getHeight();
+			// The players position on screen is dependent on there position in the podium.
+			switch (position) {
+			case 1:
+				drawPlayer(g, player, first);
+				break;
+			case 2:
+				drawPlayer(g, player, second);
+				break;
+			case 3:
+				drawPlayer(g, player, third);
+				break;
+			case 4:
+				drawPlayer(g, player, fourth);
+				break;
 			}
 
 			position++;
 		}
 
+	}
+
+	/**
+	 * Draws a {@link Player} at a position on screen.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 * @param player
+	 *            {@link Player} to be drawn
+	 * @param position
+	 *            {@link Point} position the player will be drawn
+	 */
+	private void drawPlayer(Graphics g, Player player, Point position) {
+		g.drawImage(player.getImage(), position.x - (player.getWidth() / 2), position.y - (player.getHeight() / 2));
 	}
 
 }

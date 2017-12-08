@@ -1,24 +1,27 @@
 package peril;
 
 import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Random;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Music;
+import org.newdawn.slick.MusicListener;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.board.Army;
 import peril.board.Board;
+import peril.board.Continent;
 import peril.board.Country;
-import peril.io.AssetReader;
-import peril.io.ChallengeReader;
-import peril.io.MapReader;
-import peril.io.TextFileReader;
+import peril.board.EnvironmentalHazard;
+import peril.helpers.*;
+import peril.ui.Container;
 import peril.ui.UIEventHandler;
+import peril.ui.components.menus.*;
 import peril.ui.states.*;
+import peril.ui.states.gameStates.*;
+import peril.ui.states.gameStates.multiSelectState.*;
 
 /**
  * Encapsulate the main game logic for Peril. This also extends
@@ -27,199 +30,112 @@ import peril.ui.states.*;
  * @author Joshua_Eddy
  *
  */
-public class Game extends StateBasedGame {
+public class Game extends StateBasedGame implements MusicListener {
 
 	/**
-	 * The name of the current map, this will be used to locate all the map
-	 * resources.
+	 * The {@link StateHelper} that holds all this {@link Game}'s states.
 	 */
-	public static final String BOARD_NAME = "Europe";
+	public final StateHelper states;
 
 	/**
-	 * Whether the game is running or not.
+	 * The {@link IOHelper} that holds the input out put objects of the
+	 * {@link Game}.
 	 */
-	public volatile boolean run;
+	public final IOHelper io;
 
 	/**
-	 * Whether or not the current users turn is over or not.
+	 * The {@link PlayerHelper} that holds all this {@link Game}s {@link Player}s.
 	 */
-	public volatile boolean endTurn;
-
-	/**
-	 * The state that displays combat to the user. This is heavily couples with
-	 * {@link CombatHandler}.
-	 */
-	public final CombatState combatState;
-
-	/**
-	 * The {@link SetupState} that will allow the user to set up which
-	 * {@link Player} owns which {@link Country}.
-	 */
-	public final SetupState setupState;
-
-	/**
-	 * The {@link ReinforcementState} that allows the {@link Player} to distribute
-	 * their {@link Army} to the {@link Country}s they rule.
-	 */
-	public final ReinforcementState reinforcementState;
-
-	/**
-	 * The {@link MovementState} which lets the user move {@link Army}s from one
-	 * {@link Country} to another.
-	 */
-	public final MovementState movementState;
-
-	/**
-	 * The {@link EndState} that displays the results of the {@link Game}.
-	 */
-	public final EndState endState;
-
-	/**
-	 * The {@link UIEventHandler} that processes all of the user inputs and triggers
-	 * the appropriate operations.
-	 */
-	private final UIEventHandler eventHandler;
-
-	/**
-	 * The {@link CombatHandler} that processes all of the game's combat.
-	 */
-	private final CombatHandler combatHandler;
+	public final PlayerHelper players;
 
 	/**
 	 * The instance of the {@link Board} used for this game.
 	 */
-	private Board board;
+	public final Board board;
+
+	/**
+	 * The {@link DirectoryHelper} that holds all the sub directories of the assets
+	 * folder.
+	 */
+	public final DirectoryHelper assets;
+
+	/**
+	 * The {@link MenuHelper} that holds all the {@link Menu}s for this
+	 * {@link Game}.
+	 */
+	public final MenuHelper menus;
 
 	/**
 	 * The current turn of the {@link Game}. Initially zero;
 	 */
-	private volatile int currentRound;
-
-	/**
-	 * Holds all the players in an iterable array.
-	 */
-	private final Player[] players;
-
-	/**
-	 * Whether all the assets are loaded or not.
-	 */
-	private volatile boolean isLoaded;
-
-	/**
-	 * The {@link Player} who's turn it is.
-	 */
-	private volatile int currentPlayerIndex;
-
-	/**
-	 * Contains all the objectives that a {@link Player} can attain in the game.
-	 */
-	private List<Challenge> challenges;
-
-	/**
-	 * The {@link MapReader} that reads the {@link Board} from external memory.
-	 */
-	private MapReader mapReader;
+	private int currentRound;
 
 	/**
 	 * The {@link AppGameContainer} that contains this {@link Game}.
 	 */
-	private AppGameContainer agc;
-
-	/**
-	 * The {@link AssetReader} that loads all the {@link CoreGameState} states
-	 * buttons into the game from memory.
-	 */
-	private AssetReader assetReader;
-
-	/**
-	 * {@link ChallengeReader} that loads the {@link Challenge}s from memory.
-	 */
-	private ChallengeReader challengeReader;
+	private final AppGameContainer agc;
 
 	/**
 	 * Constructs a new {@link Game}.
 	 */
 	private Game() {
-		super("PERIL: A Turn Based Strategy Game");
+		super("PERIL");
 
-		// Initialise the the players array.
-		this.players = new Player[] { Player.PLAYERONE, Player.PLAYERTWO, Player.PLAYERTHREE, Player.PLAYERFOUR };
+		// Holds the path of the peril assets
+		StringBuilder assetsPath = new StringBuilder(new File(System.getProperty("user.dir")).getPath())
+				.append(File.separatorChar).append("assets");
 
-		Player.PLAYERONE.setDistributableArmySize(3);
+		this.assets = new DirectoryHelper(assetsPath.toString());
 
-		// Set the game indexes to there initial values.
-		this.currentPlayerIndex = 0;
+		// Set the initial round to zero
 		this.currentRound = 0;
 
-		// Assign the game to run.
-		this.endTurn = false;
-		this.run = true;
-		this.isLoaded = false;
+		// Construct the board with the initial name.
+		this.board = new Board(this, "NOT ASSIGNED");
+		
+		this.players = new PlayerHelper(this);
 
-		// Construct the board.
-		this.board = new Board();
+		// Initialise games overlay menus
+		WarMenu warMenu = new WarMenu(new Point(100, 100), this);
+		PauseMenu pauseMenu = new PauseMenu(new Point(100, 100), this);
+		HelpMenu helpMenu = new HelpMenu(new Point(100, 100), this);
+		ChallengeMenu challengeMenu = new ChallengeMenu(new Point(100, 100), this);
 
-		// this.challenges = ChallengeReader.getChallenges(currentDirectory.getPath(),
-		// "Earth");
+		this.menus = new MenuHelper(pauseMenu, warMenu, helpMenu, challengeMenu);
 
 		// Initialise the game states.
-		this.combatState = new CombatState(this);
-		this.setupState = new SetupState(this);
-		this.reinforcementState = new ReinforcementState(this);
-		this.movementState = new MovementState(this);
-		this.endState = new EndState(this);
-		this.eventHandler = new UIEventHandler(this);
+		MainMenuState mainMenu = new MainMenuState(this, 0);
+		SetupState setup = new SetupState(this, 1);
+		ReinforcementState reinforcement = new ReinforcementState(this, 2);
+		CombatState combat = new CombatState(this, 3);
+		MovementState movement = new MovementState(this, 4);
+		EndState end = new EndState(this, 5);
+		LoadingScreen loadingScreen = new LoadingScreen(this, 6);
 
-		// Initialise games combatHandler
-		this.combatHandler = new CombatHandler();
+		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen);
 
-		// Holds the directory this game is operating in.
-		String baseDirectory = new File(System.getProperty("user.dir")).getPath();
+		// Set the containers that ui elements will be loaded into.
+		Container[] containers = new Container[] { challengeMenu, helpMenu, pauseMenu, loadingScreen, warMenu, mainMenu,
+				combat, setup, reinforcement, movement, end };
 
-		// Create the ui_assets file path
-		StringBuilder assestsPath = new StringBuilder(baseDirectory);
-		assestsPath.append(File.separatorChar);
-		assestsPath.append("ui_assets");
+		this.io = new IOHelper(this, containers);
 
-		this.assetReader = new AssetReader(
-				new CoreGameState[] { combatState, setupState, reinforcementState, movementState, endState },
-				assestsPath.toString());
+		this.menus.createHelpPages(this);
 
-		// Create the map file path
-		StringBuilder mapPath = new StringBuilder(baseDirectory);
-		mapPath.append(File.separatorChar);
-		mapPath.append("game_assets");
-
-		this.challengeReader = new ChallengeReader(this, mapPath.toString());
-
-		mapPath.append(File.separatorChar);
-		mapPath.append("maps");
-
-		// Construct the container for the game as a Slick2D state based game. And parse
-		// the details of the map from the maps file.
+		// Construct the container for the game as a Slick2D state based game.
 		try {
 			agc = new AppGameContainer(this);
-			setAppGameContainerDimensions(mapPath.toString());
-
-		} catch (SlickException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
-
-		// Add the path to the map's folder
-		mapPath.append(File.separatorChar);
-		mapPath.append(BOARD_NAME);
-
-		// Initialise the map reader and the players array.
-		this.mapReader = new MapReader(mapPath.toString(), board);
-
-		// Start the display.
-		try {
+			agc.setDisplayMode(400, 300, false);
 			agc.setTargetFrameRate(60);
+			
+			// Set the icons of the game
+			String[] icons = new String[] {assets.ui + "goat16.png",assets.ui + "goat32.png"};
+			agc.setIcons(icons);
+			
 			agc.start();
 		} catch (SlickException e) {
-			System.out.println(e.getMessage());
 			e.printStackTrace();
+			throw new IllegalStateException("The game must have a game container.");
 		}
 
 	}
@@ -230,45 +146,49 @@ public class Game extends StateBasedGame {
 	 */
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
-
-		// Add all the game states to the game to the game container.
-		super.addState(setupState);
-		super.addState(combatState);
-		super.addState(reinforcementState);
-		super.addState(movementState);
-		super.addState(endState);
-		this.enterState(setupState.getID());
-
-		// Assign Key and Mouse Listener as the UIEventhandler
-		container.getInput().addKeyListener(eventHandler);
-		container.getInput().addMouseListener(eventHandler);
-
-		// Hide FPS counter
-		container.setShowFPS(false);
-		container.setVSync(true);
+		states.initGame(container, this, new UIEventHandler(this));
+		EnvironmentalHazard.initIcons(assets.ui);
+		players.init();
 	}
 
 	/**
-	 * Starts the UI and reads the Board.
-	 */
-	public void loadAssets() {
-
-		// If the assests are not already loaded
-		if (!isLoaded) {
-			mapReader.read();
-			assetReader.read();
-			challengeReader.read();
-			isLoaded = true;
-		}
-	}
-
-	/**
-	 * Retrieves the {@link Player} who's current turn it is.
+	 * Changes the dimensions of the {@link Game#agc} to the dimensions specified.
+	 * If the new dimensions are larger than the displays dimensions then this will
+	 * cause the game to go full screen.
 	 * 
-	 * @return {@link Player}
+	 * @param width
+	 *            <code>int</code> new width of the screen.
+	 * @param height
+	 *            <code>int</code> new height of the screen.
+	 * @throws SlickException
 	 */
-	public Player getCurrentPlayer() {
-		return players[currentPlayerIndex];
+	public void reSize(int width, int height) throws SlickException {
+
+		// Change the window to the specified size.
+		if (width >= agc.getScreenWidth() && height >= agc.getScreenHeight()) {
+			agc.setDisplayMode(agc.getScreenWidth(), agc.getScreenHeight(), true);
+		} else {
+
+			agc.setDisplayMode(width, height, false);
+		}
+
+		menus.center(agc.getWidth() / 2, agc.getHeight() / 2);
+
+		// Reset the board
+		board.reset();
+
+	}
+
+	/**
+	 * Distributes the countries between the {@link Game#players} equally.
+	 */
+	public void autoDistributeCountries() {
+
+		players.resetAll();
+
+		// Iterate through each country on the board.
+		board.forEachCountry(country -> assignPlayer(country));
+
 	}
 
 	/**
@@ -281,174 +201,39 @@ public class Game extends StateBasedGame {
 	}
 
 	/**
-	 * Retrieves the combat handler.
+	 * Assigns the current round number to this {@link Game}
 	 * 
-	 * @return <code>CombatHandler</code>
+	 * @param roundNumber
 	 */
-	public CombatHandler getCombatHandler() {
-		return combatHandler;
+	public void setRoundNumber(int roundNumber) {
+		this.currentRound = roundNumber;
 	}
 
 	/**
-	 * Retrieves the {@link Board} in <code>this</code> {@link Game}.
-	 * 
-	 * @return {@link Board}.
+	 * Retrieves the current {@link InteractiveState} of the {@link Game}. This will
+	 * throw {@link IllegalArgumentException} if the {@link GameState} is not a
+	 * {@link InteractiveState}.
 	 */
-	public Board getBoard() {
-		return board;
-	}
-
-	/**
-	 * Iterates to the next player.
-	 */
-	public void nextPlayer() {
-		currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-
-		if (getCurrentPlayer().getCountriesRuled() <= 11) {
-			getCurrentPlayer().setDistributableArmySize(getCurrentPlayer().getDistributableArmySize() + 3);
-		} else {
-			getCurrentPlayer().setDistributableArmySize(
-					getCurrentPlayer().getDistributableArmySize() + (getCurrentPlayer().getCountriesRuled() / 3));
-		}
-		
-		checkChallenges(getCurrentPlayer());
-
-		if (currentPlayerIndex == 0) {
-			endRound();
-		}
-	}
-
 	@Override
-	public CoreGameState getCurrentState() {
+	public InteractiveState getCurrentState() {
 
 		// Holds the current game state.
 		GameState state = super.getCurrentState();
 
 		// If the current state is a CoreGameState return it as a CoreGameState
-		if (state instanceof CoreGameState) {
-			return (CoreGameState) state;
+		if (state instanceof InteractiveState) {
+			return (InteractiveState) state;
 		}
-		throw new IllegalStateException(state.getID() + " is not a valid state as it is not a CoreGameState.");
+		throw new IllegalStateException(state.getID() + " is not a valid state as it is not a InteractiveState.");
 	}
 
 	/**
-	 * Iterates thought all the available {@link Challenge}s to see if the specified
-	 * {@link Player} has completed them or not.
+	 * Enters the next {@link InteractiveState} of the {@link Game}.
 	 * 
-	 * @param currentPlayer
-	 *            {@link Player}
+	 * @param nextState
 	 */
-	public void checkChallenges(Player currentPlayer) {
-
-		// Holds the completed challenges
-		List<Challenge> toRemove = new LinkedList<>();
-
-		// Iterate though all the objectives to see if the the current player has
-		// completed them.
-		for (Challenge challenge : challenges) {
-
-			// If the current player has completed the challenge remove it from the list of
-			// available challenges.
-			if (challenge.hasCompleted(currentPlayer, board)) {
-				toRemove.add(challenge);
-			}
-		}
-
-		// Remove the completed challenges.
-		toRemove.forEach(challenge -> challenges.remove(challenge));
-	}
-
-	/**
-	 * Set the {@link List} of {@link Challenge}s for this {@link Game}.
-	 * 
-	 * @param challenges
-	 *            {@link List} NOT NULL
-	 */
-	public void setChallenges(List<Challenge> challenges) {
-
-		if (challenges == null) {
-			throw new NullPointerException("Challenge list cannot be null.");
-		}
-
-		this.challenges = challenges;
-	}
-
-	/**
-	 * Performs all the tasks that occur at the end of a round.
-	 */
-	private void endRound() {
-		board.endRound();
-		currentRound++;
-	}
-
-	/**
-	 * Reads the maps file and assigns the width and height of the window based on
-	 * the data stored in this file. This method exists due to the fact that Slick2D
-	 * is single threaded and does not allow the processing of images before the
-	 * window is loaded.
-	 * 
-	 * @param mapsFilePath
-	 *            The file path of the folder the maps file is inside.
-	 * @throws SlickException
-	 *             Thrown by
-	 *             {@link AppGameContainer#setDisplayMode(int, int, boolean)}
-	 */
-	private void setAppGameContainerDimensions(String mapsFilePath) throws SlickException {
-
-		// Iterate through each line in the maps file.
-		for (String line : TextFileReader.scanFile(mapsFilePath, "maps.txt")) {
-
-			// Split the line by the commas
-			String[] details = line.split(",");
-
-			// Holds the maps name.
-			String mapName;
-
-			// Parse the map name. If it is invalid throw the appropriate error.
-			try {
-				mapName = details[0];
-			} catch (Exception e) {
-				throw new IllegalArgumentException("The map name is not present.");
-			}
-
-			// If the map's name is the same as the boards name.
-			if (mapName.equals(BOARD_NAME)) {
-
-				// Holds the dimensions of the map.
-				int width;
-				int height;
-
-				// Parse the dimensions of the map and if they are invalid throw the appropriate
-				// exception.
-				try {
-					width = Integer.parseInt(details[1]);
-
-					if (width <= 0) {
-						throw new IllegalArgumentException("Width must be greater than zero.");
-					}
-
-				} catch (Exception e) {
-					throw new IllegalArgumentException("Width of the map is not a valid integer.");
-				}
-
-				try {
-					height = Integer.parseInt(details[2]);
-
-					if (height <= 0) {
-						throw new IllegalArgumentException("Height must be greater than zero.");
-					}
-
-				} catch (Exception e) {
-					throw new IllegalArgumentException("Height of the map is not a valid integer.");
-				}
-
-				// If the dimensions are valid assign them to the window.
-				agc.setDisplayMode(width, height, false);
-				return;
-			}
-
-		}
-
+	public void enterState(InteractiveState nextState) {
+		this.enterState(nextState.getID());
 	}
 
 	/**
@@ -463,4 +248,134 @@ public class Game extends StateBasedGame {
 		new Game();
 
 	}
+
+	/**
+	 * When the currently playing {@link Music} has finished, start the
+	 * {@link Music} of the {@link Game#getCurrentState()} if the
+	 * {@link InteractiveState} has {@link Music}.
+	 */
+	@Override
+	public void musicEnded(Music previousMusic) {
+
+		Music stateMusic = getCurrentState().getMusic();
+
+		if (stateMusic != null) {
+			stateMusic.play();
+		}
+
+	}
+
+	/**
+	 * When the {@link Music} playing in this {@link Game} has changed.
+	 */
+	@Override
+	public void musicSwapped(Music music1, Music music2) {
+
+	}
+
+	/**
+	 * Checks all the {@link Continent}s on the {@link Board} to see if they are
+	 * ruled. This is o(n^2) complexity
+	 */
+	public void checkContinentRulership() {
+
+		players.forEach(player -> player.setContinentsRuled(0));
+
+		board.getContinents().forEach(continent -> {
+
+			continent.isRuled();
+
+			if (continent.getRuler() != null) {
+				continent.getRuler().setContinentsRuled(continent.getRuler().getCountriesRuled() + 1);
+			}
+		});
+
+	}
+
+	/**
+	 * Checks if there is only one {@link Player} in play. If this is the case then
+	 * that {@link Player} has won.
+	 */
+	public void checkWinner() {
+		if (players.numberOfPlayers() == 1) {
+			states.end.addToTop(players.getCurrent());
+			enterState(states.end.getID());
+		}
+	}
+
+	/**
+	 * Set the music on or off based on the specified boolean value.
+	 * 
+	 * @param state
+	 *            <code>boolean</code> on or off
+	 */
+	public void toggleMusic(boolean state) {
+		if (state) {
+			getContainer().setMusicVolume(1f);
+		} else {
+			getContainer().setMusicVolume(0f);
+		}
+	}
+
+	/**
+	 * Performs all the tasks that occur at the end of a round.
+	 */
+	public void endRound() {
+		board.endRound();
+		currentRound++;
+	}
+
+	/**
+	 * Assigns a {@link Player} ruler to a {@link Country} using a parameter
+	 * {@link Random}.
+	 * 
+	 * @param country
+	 *            {@link Country} that is to be ruled.
+	 */
+	private void assignPlayer(Country country) {
+
+		// Holds whether the country has assigned a player ruler.
+		boolean set = false;
+
+		while (!set) {
+
+			// Holds the number of players in the game.
+			int numberOfPlayers = players.numberOfPlayers();
+
+			// Get the player at the random index.
+			Player player = players.getRandomPlayer();
+
+			// Holds the number of countries on the board.
+			int numberOfCountries = board.getNumberOfCountries();
+
+			// Holds the maximum countries this player can own so that all the players nd up
+			// with the same number of countries.
+			int maxCountries;
+
+			/*
+			 * If the number of countries on this board can be equally divided between the
+			 * players then set the max number of countries of that a player can own to the
+			 * equal amount for each player. Otherwise set the max number of countries of
+			 * that a player can own to one above the normal proportion so the to account
+			 * for the left over countries.
+			 */
+			if (numberOfCountries % numberOfPlayers == 0) {
+				maxCountries = numberOfCountries / numberOfPlayers;
+			} else {
+				maxCountries = numberOfCountries / numberOfPlayers + 1;
+			}
+
+			// If the player owns more that their fair share of the maps countries assign
+			// the player again.
+			if (player.getCountriesRuled() < maxCountries) {
+				set = true;
+				country.setRuler(player);
+				player.setCountriesRuled(player.getCountriesRuled() + 1);
+				player.totalArmy.add(1);
+			}
+
+		}
+
+	}
+
 }

@@ -4,9 +4,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Image;
 
 import peril.Player;
-import peril.ui.visual.Clickable;
+import peril.ui.Clickable;
+import peril.ui.Region;
 
 /**
  * Encapsulates the behaviour of a Country. Countries:
@@ -31,11 +33,22 @@ public class Country extends Clickable {
 	private Player ruler;
 
 	/**
+	 * Holds the {@link Image} icon of the {@link EnvironmentalHazard} that has most
+	 * recently occurred on the {@link Country}.
+	 */
+	private Image hazardIcon;
+
+	/**
 	 * Holds the {@link Country}(s) that this country is linked to.
 	 * 
 	 * @see java.util.List
 	 */
 	private List<Country> neighbours;
+
+	/**
+	 * The {@link Color} that denoted this {@link Country} in the map files.
+	 */
+	private final Color color;
 
 	/**
 	 * Holds the army occupying this {@link Country}.
@@ -55,11 +68,24 @@ public class Country extends Clickable {
 	 * @param name
 	 *            of the {@link Country}.
 	 */
-	public Country(String name) {
+	public Country(String name, Region region, Color color) {
+		super(region);
 		this.neighbours = new LinkedList<Country>();
 		this.ruler = null;
 		this.army = new Army(1);
 		this.name = name;
+		this.color = color;
+		this.hazardIcon = null;
+	}
+
+	/**
+	 * Retrieves the {@link Color} that denoted this {@link Country} in the map
+	 * files.
+	 * 
+	 * @return {@link Color}
+	 */
+	public Color getColor() {
+		return color;
 	}
 
 	/**
@@ -80,7 +106,7 @@ public class Country extends Clickable {
 	public void setRuler(Player ruler) {
 		this.ruler = ruler;
 		if (ruler != null) {
-			this.setImage(getRegion().getPosition(), getRegion().convert(ruler.getColor()));
+			this.setImage(getRegion().getPosition(), getRegion().convert(ruler.color));
 		} else {
 			this.setImage(getRegion().getPosition(), getRegion().convert(Color.white));
 		}
@@ -106,6 +132,24 @@ public class Country extends Clickable {
 	 */
 	public Army getArmy() {
 		return army;
+	}
+
+	/**
+	 * Retrieves the {@link Image} icon of an {@link EnvironmentalHazard} that has
+	 * most recently occurred at this {@link Country}.
+	 */
+	public Image getHazard() {
+		return hazardIcon;
+	}
+
+	/**
+	 * Retrieves whether this {@link Country} has had an {@link EnvironmentalHazard}
+	 * occur.
+	 * 
+	 * @return <code>boolean</code>
+	 */
+	public boolean hasHazard() {
+		return hazardIcon != null;
 	}
 
 	/**
@@ -145,7 +189,7 @@ public class Country extends Clickable {
 	 * Performs the end round operation for this {@link Country}.
 	 */
 	public void endRound(EnvironmentalHazard hazard) {
-		hazard.act(army);
+		hazardIcon = hazard.act(army) ? hazard.getIcon() : null;
 	}
 
 	/**

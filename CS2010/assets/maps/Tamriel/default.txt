@@ -217,11 +217,11 @@ Link,AldRhun,Balmora
 Link,Balmora,Necrom
 Link,Mournhold,Necrom
 Link,Mournhold,Narsis
-Link,Mournhold,Jear
-Link,Narsis,Jear
+Link,Mournhold,Tear
+Link,Narsis,Tear
 Link,Narsis,Stormhold
 Link,Narsis,Thorn
-Link,Jear,Thorn
+Link,Tear,Thorn
 Link,Stormhold,Thorn
 Link,Stormhold,Helstrom
 Link,Stormhold,Archon

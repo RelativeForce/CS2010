@@ -2,7 +2,7 @@
 
 //High Rock
 Country,Daggerfall,000000050,1,-25,0,-
-Country,NorthPoint,000000100,1,-25,0,-
+Country,North Point,000000100,1,-25,0,-
 Country,Jehanna,000000150,1,0,0,-
 Country,Wayrest,000000200,1,0,0,-
 
@@ -20,7 +20,7 @@ Country,Riften,000100100,1,0,0,-
 //Morrowind
 Country,Solstheim,000100150,1,0,0,-
 Country,Blacklight,000100200,1,0,0,-
-Country,AldRhun,000100250,1,0,0,-
+Country,Ald'Rhun,000100250,1,0,0,-
 Country,Balmora,000150000,1,0,0,-
 Country,Necrom,000150050,1,40,110,-
 Country,Mournhold,000150100,1,-50,70,-
@@ -42,14 +42,14 @@ Country,Bruma,000250050,1,0,0,-
 Country,Kvatch,000250100,1,15,40,-
 Country,Anvil,000250150,1,0,0,-
 Country,Skingrad,000250200,1,-50,0,-
-Country,ImperialCity,000250250,1,0,-25,-
+Country,Imperial City,000250250,1,0,-25,-
 Country,Chorrol,050000000,1,0,0,-
 Country,Cheydinhal,050000050,1,0,0,-
 Country,Bravil,050000100,1,0,0,-
 Country,Leyawiin,050000150,1,0,0,-
 Country,Blackwood,050000200,1,-25,-50,-
 
-//SummersetIsles
+//Summerset Isles
 Country,Firsthold,050000250,1,15,-5,-
 Country,Skywatch,050050000,1,0,0,-
 Country,Lillandrill,050050050,1,0,0,-
@@ -63,8 +63,8 @@ Country,Arenthia,050100000,1,0,0,-
 Country,Falinesti,050100050,1,-20,0,-
 Country,Silvenar,050100100,1,0,0,-
 Country,Woodhearth,050100150,1,0,0,-
-Country,EldenRoot,050100200,1,0,0,-
-Country,SouthPoint,050100250,1,0,0,-
+Country,Elden Root,050100200,1,0,0,-
+Country,South Point,050100250,1,0,0,-
 Country,Haven,050150000,1,0,0,-
 
 //Elsweyr
@@ -85,22 +85,22 @@ Country,Archon,050250000,1,0,0,-
 Country,Blackrose,050250050,1,0,0,-
 
 //Continent, name, hazard, countries
-Continent,HighRock,Hurricane,Daggerfall-NorthPoint-Jehanna-Wayrest
+Continent,High Rock,Hurricane,Daggerfall-North Point-Jehanna-Wayrest
 Continent,Skyrim,Hurricane,Soltitude-Markarth-Morthal-Dawnstar-Winterhold-Whiterun-Windhelm-Falkreath-Riften
-Continent,Morrowind,Hurricane,Solstheim-Blacklight-AldRhun-Balmora-Necrom-Mournhold-Narsis-Tear
+Continent,Morrowind,Hurricane,Solstheim-Blacklight-Ald'Rhun-Balmora-Necrom-Mournhold-Narsis-Tear
 Continent,Hammerfell,Hurricane,Dragonstar-Sentinel-Skaven-Elinhir-Helgathe-Gilane-Taneth-Rihad
-Continent,Cyrodiil,Hurricane,Bruma-Kvatch-Anvil-Skingrad-ImperialCity-Chorrol-Cheydinhal-Bravil-Leyawiin-Blackwood
-Continent,SummersetIsles,Hurricane,Firsthold-Skywatch-Lillandrill-Cloudrest-Shimmerene-Alinot-Dusk
-Continent,Valenwood,Hurricane,Arenthia-Falinesti-Silvenar-Woodhearth-EldenRoot-SouthPoint-Haven
+Continent,Cyrodiil,Hurricane,Bruma-Kvatch-Anvil-Skingrad-Imperial City-Chorrol-Cheydinhal-Bravil-Leyawiin-Blackwood
+Continent,Summerset Isles,Hurricane,Firsthold-Skywatch-Lillandrill-Cloudrest-Shimmerene-Alinot-Dusk
+Continent,Valenwood,Hurricane,Arenthia-Falinesti-Silvenar-Woodhearth-Elden Root-South Point-Haven
 Continent,Elsweyr,Hurricane,Riverhold-Dune-Rimmen-Orcrest-Corinth-Jorval-Senchal
 Continent,BlackMarsh,Hurricane,Stormhold-Helstrom-Thorn-Gideon-Archon-Blackrose
 
 //Link, country1, country2
-Link,Daggerfall,NorthPoint
+Link,Daggerfall,North Point
 Link,Daggerfall,Wayrest
 Link,Daggerfall,Lillandrill
-Link,NorthPoint,Wayrest
-Link,NorthPoint,Jehanna
+Link,North Point,Wayrest
+Link,North Point,Jehanna
 Link,Wayrest,Dragonstar
 Link,Jehanna,Markarth
 Link,Jehanna,Dragonstar
@@ -136,16 +136,16 @@ Link,Alinot,Dusk
 Link,Skywatch,Woodhearth
 Link,Woodhearth,Falinesti
 Link,Woodhearth,Silvenar
-Link,Woodhearth,EldenRoot
+Link,Woodhearth,Elden Root
 Link,Falinesti,Silvenar
 Link,Falinesti,Arenthia
 Link,Silvenar,Arenthia
-Link,Silvenar,EldenRoot
+Link,Silvenar,Elden Root
 Link,Silvenar,Dune
-Link,EldenRoot,Dune
-Link,EldenRoot,SouthPoint
-Link,EldenRoot,Haven
-Link,SouthPoint,Haven
+Link,Elden Root,Dune
+Link,Elden Root,South Point
+Link,Elden Root,Haven
+Link,South Point,Haven
 Link,Haven,Dune
 Link,Haven,Jorval
 Link,Arenthia,Dune
@@ -182,13 +182,13 @@ Link,Bruma,Chorrol
 Link,Bruma,Cheydinhal
 Link,Chorrol,Cheydinhal
 Link,Chorrol,Skingrad
-Link,Skingrad,ImperialCity
+Link,Skingrad,Imperial City
 Link,Skingrad,Riverhold
 Link,Skingrad,Leyawiin
 Link,Skingrad,Rimmen
 Link,Cheydinhal,Blacklight
 Link,Cheydinhal,Mournhold
-Link,Cheydinhal,ImperialCity
+Link,Cheydinhal,Imperial City
 Link,Cheydinhal,Bravil
 Link,Bravil,Leyawiin
 Link,Bravil,Mournhold
@@ -210,10 +210,10 @@ Link,Rimmen,Corinth
 Link,Corinth,Jorval
 Link,Corinth,Senchal
 Link,Jorval,Senchal
-Link,Solstheim,AldRhun
-Link,Blacklight,AldRhun
+Link,Solstheim,Ald'Rhun
+Link,Blacklight,Ald'Rhun
 Link,Blacklight,Mournhold
-Link,AldRhun,Balmora
+Link,Ald'Rhun,Balmora
 Link,Balmora,Necrom
 Link,Mournhold,Necrom
 Link,Mournhold,Narsis

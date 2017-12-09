@@ -232,7 +232,7 @@ public final class MapReader extends FileParser {
 		country.getArmy().setSize(armySize);
 
 		// Set the army offset.
-		country.getArmy().setOffset(new Point(xOffset, yOffset));
+		country.setArmyPosition(new Point(xOffset, yOffset));
 
 		// Set the ruler
 		country.setRuler(ruler);

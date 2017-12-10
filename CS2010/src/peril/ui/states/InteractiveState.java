@@ -338,7 +338,7 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	}
 
 	/**
-	 * Changes the {@link Music} that is currently paying for the {@link Music} of
+	 * Changes the {@link Music} that is currently playing for the {@link Music} of
 	 * the {@link Game#getCurrentState()}.
 	 * 
 	 * @param gc

@@ -3,3 +3,4 @@ menu.ogg - Supermoon - (Audio Machine) http://audiomachine.com/
 game1.ogg - House of Cards - (Audio Machine) http://audiomachine.com/
 game2.ogg - Sura - (Audio Machine) http://audiomachine.com/
 game3.ogg - Discovery of Power - (Audio Machine) http://audiomachine.com/
+victory.ogg - Veni Vidi Vici - (Audio Machine) http://audiomachine.com/

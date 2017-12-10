@@ -249,9 +249,7 @@ public final class Region {
 		int r = color.getRed();
 		int g = color.getGreen();
 		int b = color.getBlue();
-
-		System.out.println(object.length);
-		System.out.println("W" + width + " H" + height);
+		
 		// Iterate through every pixel in the object[] and if it is true set the
 		// colour of the visual to the specified value.
 		for (int y = 0; y < height; y++) {

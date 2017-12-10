@@ -32,11 +32,11 @@ Country,Helgathe,000200150,21,0,-40,3
 Country,Gilane,000200200,13,-20,-75,3
 Country,Taneth,000200250,9,0,0,3
 Country,Rihad,000250000,17,-30,0,3
-Country,Bruma,000250050,26,0,0,4
+Country,Bruma,000250050,26,0,-15,4
 Country,Kvatch,000250100,8,15,40,2
 Country,Anvil,000250150,30,0,0,2
 Country,Skingrad,000250200,19,-50,0,2
-Country,Imperial City,000250250,11,0,-25,4
+Country,Imperial City,000250250,11,0,-15,4
 Country,Chorrol,050000000,15,0,0,4
 Country,Cheydinhal,050000050,10,0,0,4
 Country,Bravil,050000100,18,0,0,1

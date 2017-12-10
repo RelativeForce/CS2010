@@ -93,24 +93,31 @@ public class MainMenuState extends InteractiveState {
 
 		uiLoaded = false;
 
+		// Read the maps file containing the pre-load details of each map.
 		mapsFile = TextFileReader.scanFile(game.assets.maps, "maps.txt");
 
-		maps = new VisualList<>(new Point(15, 220), 110, 22, 3, 10);
-		players = new VisualList<>(new Point(130, 220), 20, 22, 3, 5);
-		saves = new VisualList<>(new Point(190, 220), 80, 22, 3, 10);
+		// Holds the y of all the menus
+		int menuY = 215;
+		
+		maps = new VisualList<>(new Point(15, menuY), 110, 24, 3, 10);
+		players = new VisualList<>(new Point(215, menuY), 20, 24, 3, 5);
+		saves = new VisualList<>(new Point(130, menuY), 80, 18, 4, 10);
 
+		// Populate the visual lists.
 		getMaps();
 		getPlayers();
 
 		// Initialise the fonts;
-		Font listFont = new Font("Arial", Color.black, 18);
+		Font listFont = new Font("Arial", Color.black, 19);
+		Font savesFont = new Font("Arial", Color.black, 14);
 		textFont = new Font("Calibri", Color.red, 18);
 
 		// Assign list fonts
 		maps.setFont(listFont);
 		players.setFont(listFont);
-		saves.setFont(listFont);
+		saves.setFont(savesFont);
 
+		// Add components so they are initialised when the state is.
 		super.addComponent(maps);
 		super.addComponent(players);
 		super.addComponent(saves);
@@ -125,19 +132,19 @@ public class MainMenuState extends InteractiveState {
 
 		g.setBackground(Color.black);
 		g.setLineWidth(3f);
+		
 		drawImages(g);
-
 		drawButtons(g);
 
 		if (saves.getSelected() == SaveFile.DEFAULT) {
-			textFont.draw(g, "Players: ", 130, 200);
+			textFont.draw(g, "Players: ", players.getPosition().x, players.getPosition().y - textFont.getHeight());
 			players.draw(g);
 		}
 
-		textFont.draw(g, "Map: ", 15, 200);
+		textFont.draw(g, "Map: ", maps.getPosition().x, maps.getPosition().y - textFont.getHeight());
 		maps.draw(g);
 
-		textFont.draw(g, "Load: ", 190, 200);
+		textFont.draw(g, "Load: ", saves.getPosition().x, saves.getPosition().y - textFont.getHeight());
 		saves.draw(g);
 
 	}
@@ -201,7 +208,7 @@ public class MainMenuState extends InteractiveState {
 		super.init(gc, sbg);
 
 		getGame().menus.initMenus();
-		
+
 		textFont.init();
 
 		// Set the music that will be repeated by this state
@@ -272,7 +279,7 @@ public class MainMenuState extends InteractiveState {
 		// Loads the game assets and move into the set up state
 		if (saves.getSelected() == SaveFile.DEFAULT) {
 			getGame().players.setInitialPlayers(players.getSelected());
-		}else {
+		} else {
 			getGame().players.emptyPlaying();
 		}
 
@@ -350,6 +357,8 @@ public class MainMenuState extends InteractiveState {
 
 		saves.clear();
 
+		// Iterate through each save and check if it exists in the current maps
+		// directory, If it does then add it to the saves list.
 		for (SaveFile file : SaveFile.values()) {
 			if (file.existsIn(getGame().assets.maps + mapName)) {
 				saves.add(file.name, file);

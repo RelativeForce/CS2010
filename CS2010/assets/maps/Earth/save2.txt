@@ -1,0 +1,134 @@
+Player,2,0,true
+Player,3,0,true
+Player,4,0,false
+Player,1,3,false
+State,Combat,2,6
+Country,Alaska,000000050,10,-15,-30,2
+Country,NW Canada,000000100,7,-30,15,2
+Country,Greenland,000000150,5,0,-10,2
+Country,Alberta,000000200,4,0,0,2
+Country,Ontario,000000250,6,0,0,2
+Country,Quebec,000050000,8,-20,-20,2
+Country,W USA,000050050,9,0,0,2
+Country,E USA,000050100,12,0,0,2
+Country,C America,000050150,2,0,-30,2
+Country,Venezuela,000050200,1,-20,-10,2
+Country,Brazil,000050250,16,0,0,2
+Country,Peru,000100000,11,10,0,2
+Country,Argentina,000100050,20,-20,-30,2
+Country,Iceland,000100100,10,-10,-10,2
+Country,Great Britain,000100150,9,5,0,2
+Country,Scandinavia,000100200,6,-30,0,2
+Country,Ukraine,000100250,40,0,0,2
+Country,N Europe,000150000,43,0,0,2
+Country,W Europe,000150050,46,0,0,2
+Country,S Europe,000150100,1,0,-20,3
+Country,N Africa,000150150,60,0,0,2
+Country,Egypt,000150200,30,0,0,2
+Country,E Africa,000150250,4,0,0,2
+Country,Congo,000200000,3,0,0,2
+Country,SouthAfrica,000200050,5,-10,0,2
+Country,Madagascar,000200100,7,-10,-10,2
+Country,Ural,000200150,9,-20,20,2
+Country,Siberia,000200200,6,0,0,2
+Country,Yakutsk,000200250,3,0,0,2
+Country,Kamchatka,000250000,2,-40,-50,2
+Country,Irkutsk,000250050,5,0,0,2
+Country,Mongolia,000250100,7,0,0,2
+Country,Japan,000250150,4,10,0,2
+Country,Afghanistan,000250200,8,0,0,2
+Country,China,000250250,7,0,0,2
+Country,Middle East,050000000,2,0,0,2
+Country,India,050000050,7,0,0,2
+Country,Siam,050000100,9,-10,-30,2
+Country,Indonesia,050000150,10,10,-10,2
+Country,New Guinea,050000200,8,0,0,2
+Country,W Australia,050000250,4,0,0,2
+Country,E Australia,050050000,3,30,0,2
+Continent,NorthAmerica,Hurricane,Alaska-NW Canada-Greenland-Alberta-Ontario-Quebec-W USA-E USA-C America
+Continent,SouthAmerica,Tornado,Venezuela-Brazil-Peru-Argentina
+Continent,Europe,Tsunami,Iceland-Great Britain-Scandinavia-Ukraine-N Europe-W Europe-S Europe
+Continent,Africa,Hurricane,N Africa-Egypt-E Africa-Congo-SouthAfrica-Madagascar
+Continent,Asia,Volcanic Eruption,Ural-Siberia-Yakutsk-Kamchatka-Irkutsk-Mongolia-Japan-Afghanistan-China-Middle East-India-Siam
+Continent,Australia,Tsunami,Indonesia-New Guinea-W Australia-E Australia
+Link,Alaska,NW Canada
+Link,Alaska,Alberta
+Link,NW Canada,Alberta
+Link,NW Canada,Greenland
+Link,NW Canada,Ontario
+Link,Greenland,Ontario
+Link,Greenland,Iceland
+Link,Greenland,Quebec
+Link,Alberta,Ontario
+Link,Alberta,W USA
+Link,Ontario,Quebec
+Link,Ontario,E USA
+Link,Quebec,E USA
+Link,W USA,E USA
+Link,W USA,C America
+Link,E USA,C America
+Link,C America,Venezuela
+Link,Venezuela,Peru
+Link,Venezuela,Brazil
+Link,Brazil,Peru
+Link,Brazil,Argentina
+Link,Brazil,N Africa
+Link,Peru,Argentina
+Link,Iceland,Great Britain
+Link,Iceland,Scandinavia
+Link,Great Britain,W Europe
+Link,Great Britain,Scandinavia
+Link,Great Britain,N Europe
+Link,Scandinavia,Ukraine
+Link,Scandinavia,N Europe
+Link,Ukraine,N Europe
+Link,Ukraine,S Europe
+Link,Ukraine,Middle East
+Link,Ukraine,Afghanistan
+Link,Ukraine,Ural
+Link,N Europe,W Europe
+Link,N Europe,S Europe
+Link,W Europe,N Africa
+Link,W Europe,S Europe
+Link,S Europe,N Africa
+Link,S Europe,Egypt
+Link,S Europe,Middle East
+Link,N Africa,Egypt
+Link,N Africa,E Africa
+Link,N Africa,Congo
+Link,Egypt,E Africa
+Link,Egypt,Middle East
+Link,E Africa,Congo
+Link,E Africa,Madagascar
+Link,E Africa,Middle East
+Link,E Africa,SouthAfrica
+Link,Congo,SouthAfrica
+Link,SouthAfrica,Madagascar
+Link,Ural,Siberia
+Link,Ural,China
+Link,Ural,Afghanistan
+Link,Siberia,Yakutsk
+Link,Siberia,Irkutsk
+Link,Siberia,Mongolia
+Link,Siberia,China
+Link,Yakutsk,Kamchatka
+Link,Yakutsk,Irkutsk
+Link,Kamchatka,Japan
+Link,Kamchatka,Irkutsk
+Link,Kamchatka,Mongolia
+Link,Irkutsk,Mongolia
+Link,Mongolia,Japan
+Link,Mongolia,China
+Link,Afghanistan,China
+Link,Afghanistan,India
+Link,Afghanistan,Middle East
+Link,China,India
+Link,China,Siam
+Link,Middle East,India
+Link,India,Siam
+Link,Siam,Indonesia
+Link,Indonesia,New Guinea
+Link,Indonesia,W Australia
+Link,New Guinea,W Australia
+Link,New Guinea,E Australia
+Link,W Australia,E Australia

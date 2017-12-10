@@ -424,30 +424,26 @@ public abstract class CoreGameState extends InteractiveState {
 	protected void drawAllLinks(Graphics g) {
 
 		// Get all the countries from the board.
-		getGame().board.getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
-
-			Army army = country.getArmy();
+		getGame().board.forEachCountry(country -> {
 
 			// Sets x and y as the central width and height of the current country.
-			final int countryX = country.getPosition().x + (country.getWidth() / 2) + army.getOffset().x;
-			final int countryY = country.getPosition().y + (country.getHeight() / 2) + army.getOffset().y;
+			final int countryX = country.getPosition().x + (country.getWidth() / 2) + country.getArmyOffset().x;
+			final int countryY = country.getPosition().y + (country.getHeight() / 2) + country.getArmyOffset().y;
 
 			// For each neighbour of that country draw the link from the neighbour to the
 			// current country
 			country.getNeighbours().forEach(neighbour -> {
 
-				Army neighbourArmy = neighbour.getArmy();
-
 				// Sets x and y as the central width and height of the neighbour country.
 				final int neighbourX = neighbour.getPosition().x + (neighbour.getWidth() / 2)
-						+ neighbourArmy.getOffset().x;
+						+ neighbour.getArmyOffset().x;
 				final int neighbourY = neighbour.getPosition().y + (neighbour.getHeight() / 2)
-						+ neighbourArmy.getOffset().y;
+						+ neighbour.getArmyOffset().y;
 
 				// Draw the line from the country to the neighbour
 				g.drawLine(countryX, countryY, neighbourX, neighbourY);
 			});
-		}));
+		});
 
 	}
 
@@ -503,14 +499,8 @@ public abstract class CoreGameState extends InteractiveState {
 	protected Point getArmyPosition(Country country) {
 
 		// Sets x and y as the central width and height of the current country.
-		int x = country.getPosition().x + country.getWidth() / 2;
-		int y = country.getPosition().y + country.getHeight() / 2;
-
-		Army army = country.getArmy();
-
-		// Move the (x,y) by the offset
-		x += army.getOffset().x;
-		y += army.getOffset().y;
+		int x = country.getPosition().x + (country.getWidth() / 2) + country.getArmyOffset().x;
+		int y = country.getPosition().y + (country.getHeight() / 2) + country.getArmyOffset().y;
 
 		return new Point(x, y);
 	}

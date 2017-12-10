@@ -23,6 +23,7 @@ public class Test_Country {
 	 * Hold the current {@link Country} that is being used for testing.
 	 */
 	private Country testCountry;
+	
 	/**
 	 * Holds the name of the {@link Test_Country#testCountry}, used for testing.
 	 */

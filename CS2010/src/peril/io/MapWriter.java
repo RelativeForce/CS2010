@@ -241,9 +241,9 @@ public class MapWriter {
 		line.append(',');
 
 		// Army offset
-		line.append(Integer.toString(country.getArmy().getOffset().x));
+		line.append(Integer.toString(country.getArmyOffset().x));
 		line.append(',');
-		line.append(Integer.toString(country.getArmy().getOffset().y));
+		line.append(Integer.toString(country.getArmyOffset().y));
 		line.append(',');
 
 		// Player ruler

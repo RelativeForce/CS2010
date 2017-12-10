@@ -21,11 +21,11 @@ import peril.Point;
 public final class Region {
 
 	/**
-	 * <code>boolean[][]</code> where if a pixel from the specified
+	 * <code>boolean[]</code> where if a pixel from the specified
 	 * {@link BufferedImage} is the specified {@link Color} the it is assigned true,
 	 * otherwise it is false.
 	 */
-	private boolean[][] object;
+	private boolean[] object;
 
 	/**
 	 * The <code>int</code> width of this {@link Region}.
@@ -61,7 +61,7 @@ public final class Region {
 	 * {@link Region#combine(List)}.
 	 * 
 	 * @param object
-	 *            <code>boolean[][]</code> where if a pixel from the specified
+	 *            <code>boolean[]</code> where if a pixel from the specified
 	 *            {@link BufferedImage} is the specified {@link Color} the it is
 	 *            assigned true, otherwise it is false.
 	 * @param width
@@ -70,7 +70,7 @@ public final class Region {
 	 *            This height of the image this region is a part of.
 	 * 
 	 */
-	public Region(boolean[][] object, int width, int height) {
+	public Region(boolean[] object, int width, int height) {
 		constructor(object, width, height);
 	}
 
@@ -98,15 +98,13 @@ public final class Region {
 
 		// Initialise the fields
 		this.position = position;
-		this.object = new boolean[width][height];
+		this.object = new boolean[width * height];
 		this.width = width;
 		this.height = height;
 
 		// Assign all the points in the array as true;
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				object[x][y] = true;
-			}
+		for (int index = 0; index < object.length; index++) {
+			object[index] = true;
 		}
 
 	}
@@ -135,7 +133,7 @@ public final class Region {
 			throw new IllegalArgumentException("Height cannot be negative.");
 		}
 		// Holds the region that will be the result.
-		boolean[][] base = new boolean[width][height];
+		boolean[] base = new boolean[width * height];
 
 		// Iterate through all the regions in the list.
 		for (Region region : list) {
@@ -146,8 +144,9 @@ public final class Region {
 
 					// If the current element in the parameter region is true but this regions's
 					// object is false the set it to true.
-					if (!base[region.position.x + x][region.position.y + y] && region.object[x][y]) {
-						base[region.position.x + x][region.position.y + y] = true;
+					if (!base[getIndex(region.position.x + x, region.position.y + y, height)]
+							&& region.object[getIndex(x, y, region.height)]) {
+						base[getIndex(region.position.x + x, region.position.y + y, height)] = true;
 					}
 				}
 			}
@@ -176,7 +175,7 @@ public final class Region {
 			return false;
 		}
 
-		return object[point.x - position.x][point.y - position.y];
+		return object[getIndex(point.x - position.x, point.y - position.y, height)];
 	}
 
 	/**
@@ -211,7 +210,7 @@ public final class Region {
 	 * 
 	 * @return <code>boolean[][]</code>
 	 */
-	public boolean[][] getObject() {
+	public boolean[] getObject() {
 		return object;
 	}
 
@@ -251,11 +250,14 @@ public final class Region {
 		int g = color.getGreen();
 		int b = color.getBlue();
 
-		// Iterate through every pixel in the object[][] and if it is true set the
+		System.out.println(object.length);
+		System.out.println("W" + width + " H" + height);
+		// Iterate through every pixel in the object[] and if it is true set the
 		// colour of the visual to the specified value.
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				if (object[x][y]) {
+
+				if (object[getIndex(x, y, height)]) {
 					imagebuffer.setRGBA(x, y, r, g, b, transparency);
 				}
 			}
@@ -289,8 +291,8 @@ public final class Region {
 	 * @param height
 	 *            This height of the image this region is a part of.
 	 */
-	private void constructor(boolean[][] object, int width, int height) {
-		this.object = new Reducer().reduce(object, width, height);
+	private void constructor(boolean[] object, int width, int height) {
+		this.object = new Reducer(object, width, height).reduce();
 	}
 
 	/**
@@ -302,30 +304,18 @@ public final class Region {
 	 *            {@link Image}
 	 * @return <code>boolean[][]</code>
 	 */
-	private boolean[][] getRegion(Image image) {
-
-		// Holds the array of booleans initially all elements are set to false
-		boolean[][] object = new boolean[image.getWidth()][image.getHeight()];
-
-		// Iterate through all pixel in the image and if a pixel is the same colour as
-		// the one specified set that pixels position to true.
-		for (int y = 0; y < image.getHeight(); y++) {
-
-			for (int x = 0; x < image.getWidth(); x++) {
-
-				if (!image.getColor(x, y).equals(Color.transparent)) {
-					object[x][y] = true;
-				}
-			}
-		}
-
-		return object;
+	private boolean[] getRegion(Image image) {
+		return getRegion(image, null);
 	}
 
 	/**
-	 * Retrieves a <code>boolean[][]</code> where if a pixel from the specified
+	 * Retrieves a <code>boolean[]</code> where if a pixel from the specified
 	 * {@link Image} is the specified {@link Color} the it is assigned true,
-	 * otherwise it is false.
+	 * otherwise it is false <br>
+	 * <strong>OR</strong> if the specified colour is null,<br>
+	 * Retrieves a <code>boolean[][]</code> where if a pixel from the specified
+	 * {@link Image} is not {@link Color#transparent} it is assigned true, otherwise
+	 * it is false.
 	 * 
 	 * @param image
 	 *            {@link Image}
@@ -333,24 +323,53 @@ public final class Region {
 	 *            {@link Color}
 	 * @return <code>boolean[][]</code>
 	 */
-	private boolean[][] getRegion(Image image, Color color) {
+	private boolean[] getRegion(Image image, Color color) {
+
+		// The dimensions of the image
+		final int imageHeight = image.getHeight();
+		final int imageWidth = image.getWidth();
 
 		// Holds the array of booleans initially all elements are set to false
-		boolean[][] object = new boolean[image.getWidth()][image.getHeight()];
+		boolean[] object = new boolean[imageWidth * imageHeight];
 
-		// Iterate through all pixel in the image and if a pixel is the same colour as
-		// the one specified set that pixels position to true.
-		for (int y = 0; y < image.getHeight(); y++) {
+		/*
+		 * Iterate through all pixel in the image and if a pixel is the same colour as
+		 * the one specified set that pixels position to true.
+		 */
+		for (int y = 0; y < imageHeight; y++) {
+			for (int x = 0; x < imageWidth; x++) {
 
-			for (int x = 0; x < image.getWidth(); x++) {
-
-				if (color.equals(image.getColor(x, y))) {
-					object[x][y] = true;
+				/*
+				 * If the colour is null then filter out all the pixels that are transparent
+				 * otherwise filter out all the pixels that are NOT the specified colour.
+				 */
+				if (color == null) {
+					if (!image.getColor(x, y).equals(Color.transparent)) {
+						object[getIndex(x, y, imageHeight)] = true;
+					}
+				} else {
+					if (color.equals(image.getColor(x, y))) {
+						object[getIndex(x, y, imageHeight)] = true;
+					}
 				}
+
 			}
 		}
 
 		return object;
+	}
+
+	/**
+	 * Retrieves the index of a specified coordinate inside the
+	 * {@link Region#object}.
+	 * 
+	 * @param x
+	 * @param y
+	 * @param height
+	 *            of the {@link Region#object}
+	 */
+	private static int getIndex(int x, int y, int height) {
+		return (x * height) + y;
 	}
 
 	/**
@@ -390,16 +409,26 @@ public final class Region {
 		/**
 		 * The array that this {@link Reducer} will shrink to save memory space.
 		 */
-		private boolean[][] toReduce;
+		private boolean[] toReduce;
 
 		/**
-		 * Reduces a specified <code>boolean[][]</code> from the specified width and
-		 * height to the its smallest possible size without loss of data. This also
-		 * assigns {@link Region#width}, {@link Region#height}, {@link Region#x} and
-		 * {@link Region#y}.
+		 * The initial height of the {@link Region}.
+		 */
+		private final int initialHeight;
+
+		/**
+		 * The initial width of the {@link Region}.
+		 */
+		private final int initialWidth;
+
+		/**
+		 * Constructs a new {@link Reducer}.Reduces a specified <code>boolean[]</code>
+		 * from the specified width and height to the its smallest possible size without
+		 * loss of data. This also assigns {@link Region#width}, {@link Region#height},
+		 * {@link Region#x} and {@link Region#y}.
 		 * 
 		 * @param toReduce
-		 *            The <code>boolean[][]</code> to reduce in size.
+		 *            The <code>boolean[]</code> to reduce in size.
 		 * @param width
 		 *            Initial <code>int</code> width of the <code>boolean[][]</code>
 		 *            array.
@@ -408,32 +437,63 @@ public final class Region {
 		 *            array.
 		 * @return <code>boolean[][]</code> reduced array.
 		 */
-		public boolean[][] reduce(boolean[][] toReduce, int width, int height) {
+		public Reducer(boolean[] toReduce, int width, int height) {
 
 			// Initial value is the opposite edge of the image.
 			this.lowerXBoundary = width;
 			this.lowerYBoundary = height;
 			this.upperXBoundary = 0;
 			this.upperYBoundary = 0;
+			this.initialWidth = width;
+			this.initialHeight = height;
 			this.toReduce = toReduce;
 
-			setYBoundaries(width, height);
-			setXBoundaries(width, height);
-
-			return reduceArray();
+			setYBoundaries();
+			setXBoundaries();
 
 		}
 
 		/**
-		 * Assigns the outer horizontal boundary of the region of pixels given by a
-		 * {@link BufferedImage} and {@link Color}.
+		 * Shrinks the size of a specified <code>boolean[][]</code> to its smallest
+		 * possible size based on {@link Reducer#lowerXBoundary},
+		 * {@link Reducer#lowerYBoundary}, {@link Reducer#upperXBoundary} and
+		 * {@link Reducer#upperYBoundary}. Assigns {@link Region#x} and
+		 * {@link Region#y}.
 		 * 
-		 * @param width
-		 *            {@link BufferedImage#getWidth()}
-		 * @param height
-		 *            {@link BufferedImage#getHeight()}
+		 * @return <code>boolean[][]</code> smallest version of the specified array.
 		 */
-		private void setXBoundaries(int width, int height) {
+		public boolean[] reduce() {
+
+			width = upperXBoundary - lowerXBoundary + 1;
+			height = upperYBoundary - lowerYBoundary + 1;
+
+			// Create the new object array to be the size of the space between the
+			// boundaries.
+			boolean[] tempObject = new boolean[width * height];
+
+			// Set the position of the region to the lower boundaries.
+			position = new Point(lowerXBoundary, lowerYBoundary);
+
+			// Iterate through each row of the object[][]
+			for (int y = lowerYBoundary; y <= upperYBoundary; y++) {
+
+				// Iterate through each column of the object[][]
+				for (int x = lowerXBoundary; x <= upperXBoundary; x++) {
+
+					// Assign the value of the current element in the object array to its
+					// corresponding position in the new object array.
+					tempObject[getIndex(x - lowerXBoundary, y - lowerYBoundary, height)] = toReduce[getIndex(x, y,
+							initialHeight)];
+				}
+			}
+
+			return tempObject;
+		}
+
+		/**
+		 * Assigns the outer horizontal boundary of the region of pixels.
+		 */
+		private void setXBoundaries() {
 
 			/*
 			 * IMPORTATNT CONCEPT: This methods iterates from the left edge of the image
@@ -443,27 +503,20 @@ public final class Region {
 			 */
 
 			// Iterate through each row of the image.
-			for (int rowNum = 0; rowNum < height; rowNum++) {
+			for (int rowNum = 0; rowNum < initialHeight; rowNum++) {
 
-				getLowerXBoundary(rowNum, width);
+				getLowerXBoundary(rowNum);
 
-				getUpperXBoundary(rowNum, width);
+				getUpperXBoundary(rowNum);
 
 			}
 
 		}
 
 		/**
-		 * Assigns the outer vertical boundaries of the region of pixels given by a
-		 * {@link BufferedImage} and {@link Color}.
-		 * 
-		 * 
-		 * @param width
-		 *            {@link BufferedImage#getWidth()}
-		 * @param height
-		 *            {@link BufferedImage#getHeight()}
+		 * Assigns the outer vertical boundaries of the region of pixels.
 		 */
-		private void setYBoundaries(int width, int height) {
+		private void setYBoundaries() {
 
 			/*
 			 * IMPORTANT CONCEPT: This methods iterates from the bottom edge of the image
@@ -473,11 +526,11 @@ public final class Region {
 			 */
 
 			// Iterate through each row of the image.
-			for (int colNum = 0; colNum < width; colNum++) {
+			for (int colNum = 0; colNum < initialWidth; colNum++) {
 
-				getLowerYBoundary(colNum, height);
+				getLowerYBoundary(colNum);
 
-				getUpperYBoundary(colNum, height);
+				getUpperYBoundary(colNum);
 
 			}
 
@@ -490,18 +543,15 @@ public final class Region {
 		 * @param rowNum
 		 *            <code>int</code> index of the row currently being processed by
 		 *            {@link Reducer#setXBoundaries(boolean[][], int, int)}.
-		 * @param width
-		 *            <code>int</code> width of the <code>boolean[][]</code> that is
-		 *            being reduced.
 		 */
-		private void getLowerXBoundary(int rowNum, int width) {
+		private void getLowerXBoundary(int rowNum) {
 
 			// Iterate through each column on the current row from the right.
-			for (int x = 0; x < width; x++) {
+			for (int x = 0; x < initialWidth; x++) {
 
 				// If the current column is further left that the current left boundary set it
 				// as the new left boundary. And exit the loop.
-				if (toReduce[x][rowNum]) {
+				if (toReduce[getIndex(x, rowNum, initialHeight)]) {
 					if (x < lowerXBoundary) {
 						lowerXBoundary = x;
 					}
@@ -518,18 +568,15 @@ public final class Region {
 		 * @param rowNum
 		 *            <code>int</code> index of the row currently being processed by
 		 *            {@link Reducer#setXBoundaries(boolean[][], int, int)}.
-		 * @param width
-		 *            <code>int</code> width of the <code>boolean[][]</code> that is
-		 *            being reduced.
 		 */
-		private void getUpperXBoundary(int rowNum, int width) {
+		private void getUpperXBoundary(int rowNum) {
 
 			// Iterate through each column on the current row from the left.
-			for (int x = width - 1; x >= 0; x--) {
+			for (int x = initialWidth - 1; x >= 0; x--) {
 
 				// If the current column is further right that the current right boundary set it
 				// as the new right boundary. And exit the loop.
-				if (toReduce[x][rowNum]) {
+				if (toReduce[getIndex(x, rowNum, initialHeight)]) {
 					if (x > upperXBoundary) {
 						upperXBoundary = x;
 					}
@@ -546,16 +593,13 @@ public final class Region {
 		 * @param colNum
 		 *            <code>int</code> index of the column currently being processed by
 		 *            {@link Reducer#setYBoundaries(boolean[][], int, int)}.
-		 * @param height
-		 *            <code>int</code> height of the <code>boolean[][]</code> that is
-		 *            being reduced.
 		 */
-		private void getUpperYBoundary(int colNum, int height) {
+		private void getUpperYBoundary(int colNum) {
 
 			// Iterate through each row on the current column from the top.
-			for (int y = height - 1; y >= 0; y--) {
+			for (int y = initialHeight - 1; y >= 0; y--) {
 
-				if (toReduce[colNum][y]) {
+				if (toReduce[getIndex(colNum, y, initialHeight)]) {
 					if (y > upperYBoundary) {
 						upperYBoundary = y;
 					}
@@ -573,15 +617,11 @@ public final class Region {
 		 * @param colNum
 		 *            <code>int</code> index of the column currently being processed by
 		 *            {@link Reducer#setYBoundaries(boolean[][], int, int)}.
-		 * @param height
-		 *            <code>int</code> height of the <code>boolean[][]</code> that is
-		 *            being reduced.
 		 */
-		private void getLowerYBoundary(int colNum, int height) {
+		private void getLowerYBoundary(int colNum) {
 			// Iterate through each row on the current column from the bottom.
-			for (int y = 0; y < height; y++) {
-
-				if (toReduce[colNum][y]) {
+			for (int y = 0; y < initialHeight; y++) {
+				if (toReduce[getIndex(colNum, y, initialHeight)]) {
 
 					if (y < lowerYBoundary) {
 						lowerYBoundary = y;
@@ -590,44 +630,5 @@ public final class Region {
 				}
 			}
 		}
-
-		/**
-		 * Shrinks the size of a specified <code>boolean[][]</code> to its smallest
-		 * possible size based on {@link Reducer#lowerXBoundary},
-		 * {@link Reducer#lowerYBoundary}, {@link Reducer#upperXBoundary} and
-		 * {@link Reducer#upperYBoundary}. Assigns {@link Region#x} and
-		 * {@link Region#y}.
-		 * 
-		 * @return <code>boolean[][]</code> smallest version of the specified array.
-		 */
-		private boolean[][] reduceArray() {
-
-			width = upperXBoundary - lowerXBoundary + 1;
-			height = upperYBoundary - lowerYBoundary + 1;
-
-			// Create the new object array to be the size of the space between the
-			// boundaries.
-			boolean[][] tempObject = new boolean[width][height];
-
-			// Set the position of the region to the lower boundaries.
-			position = new Point(lowerXBoundary, lowerYBoundary);
-
-			// Iterate through each row of the object[][]
-			for (int y = lowerYBoundary; y <= upperYBoundary; y++) {
-
-				// Iterate through each column of the object[][]
-				for (int x = lowerXBoundary; x <= upperXBoundary; x++) {
-
-					// Assign the value of the current element in the object array to its
-					// corresponding position in the new object array.
-					tempObject[x - lowerXBoundary][y - lowerYBoundary] = toReduce[x][y];
-				}
-			}
-
-			return tempObject;
-
-		}
-
 	}
-
 }

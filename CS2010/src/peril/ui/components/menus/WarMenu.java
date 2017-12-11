@@ -214,13 +214,12 @@ public class WarMenu extends Menu {
 	@Override
 	public void hide() {
 		super.hide();
-
+		attackButton.hide();
 		dice.clear();
 	}
 
 	/**
-	 * Processes the clicks on the squad sizes on the {@link WarMenu}.
-	 * 
+	 * Processes a click at a {@link Point} position on this {@link WarMenu}.
 	 */
 	public void parseClick(Point click) {
 		if (!squadSizes.click(click)) {
@@ -304,7 +303,7 @@ public class WarMenu extends Menu {
 	}
 
 	/**
-	 * Clears and hides the {@link WarMenu}.
+	 * Clears the elements of and hides, the {@link WarMenu}.
 	 */
 	public void clear() {
 		player = null;
@@ -313,7 +312,7 @@ public class WarMenu extends Menu {
 		ruler = null;
 		this.hide();
 	}
-	
+
 	/**
 	 * Gets an <code>int[]</code> of {@link Random#nextInt(int)} with bounds of 1 -
 	 * 6
@@ -327,7 +326,7 @@ public class WarMenu extends Menu {
 		// Holds the dice roles.
 		Integer[] rolls = new Integer[numberOfRolls];
 
-		// initialise dice rolls for the attacking army
+		// Initialise dice rolls for the attacking army
 		for (int rollIndex = 0; rollIndex < numberOfRolls; rollIndex++) {
 			rolls[rollIndex] = random.nextInt(6) + 1;
 		}
@@ -339,9 +338,8 @@ public class WarMenu extends Menu {
 	}
 
 	/**
-	 * When a {@link Player} clicks on another {@link Country} to fight. This pits 2
-	 * {@link Army}'s against each other. This emulates 1 turn of combat between 2
-	 * {@link Player}s.
+	 * This emulates one round of a war between two {@link Country}s. The defender
+	 * will always defend with the maximum number of units available to them.
 	 * 
 	 * @param attacking
 	 *            This is the {@link Country} that the {@link Player} uses to attack
@@ -614,7 +612,7 @@ public class WarMenu extends Menu {
 	 * @author Joshua_Eddy
 	 *
 	 */
-	private class Dice {
+	private final class Dice {
 
 		/**
 		 * The width of the dice.

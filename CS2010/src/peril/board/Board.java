@@ -235,9 +235,9 @@ public final class Board extends Viewable {
 				hazard = hazard.getScaledCopy(30, 30);
 
 				final int hazardX = x + (country.getWidth() / 2) + (hazard.getWidth() / 2)
-						+ country.getArmy().getOffset().x;
+						+ country.getArmyOffset().x;
 				final int hazardY = y + (country.getHeight() / 2) - hazard.getHeight()
-						+ country.getArmy().getOffset().y;
+						+ country.getArmyOffset().y;
 
 				// Add the hazard to the map to be drawn.
 				hazards.put(new Point(hazardX, hazardY), hazard);

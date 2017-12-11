@@ -38,11 +38,11 @@ Country,Taneth,000200250,1,0,0,-
 Country,Rihad,000250000,1,-30,0,-
 
 //Cyrodiil
-Country,Bruma,000250050,1,0,0,-
+Country,Bruma,000250050,1,0,-15,-
 Country,Kvatch,000250100,1,15,40,-
 Country,Anvil,000250150,1,0,0,-
 Country,Skingrad,000250200,1,-50,0,-
-Country,Imperial City,000250250,1,0,-25,-
+Country,Imperial City,000250250,1,0,-15,-
 Country,Chorrol,050000000,1,0,0,-
 Country,Cheydinhal,050000050,1,0,0,-
 Country,Bravil,050000100,1,0,0,-

@@ -70,6 +70,8 @@ public class EndState extends InteractiveState {
 	private Point third;
 
 	private Point fourth;
+	
+	private Music music;
 
 	/**
 	 * Constructs a new {@link EndState}.
@@ -170,7 +172,9 @@ public class EndState extends InteractiveState {
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
-
+		
+		music = getGame().io.musicHelper.read("victory");
+		
 		// Initialise Fonts
 		winnerFont.init();
 		loserFont.init();
@@ -214,8 +218,7 @@ public class EndState extends InteractiveState {
 	 */
 	@Override
 	public Music getMusic() {
-		// TODO victory music
-		return null;
+		return music;
 	}
 
 	private void setPodiumPositions(GameContainer gc) {

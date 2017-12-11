@@ -7,6 +7,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
 import peril.Player;
+import peril.Point;
 import peril.ui.Clickable;
 import peril.ui.Region;
 
@@ -51,6 +52,12 @@ public class Country extends Clickable {
 	private final Color color;
 
 	/**
+	 * The {@link Point} offset from the centre of the this {@link Country} that the
+	 * {@link Army} will be displayed at.
+	 */
+	private Point armyOffset;
+
+	/**
 	 * Holds the army occupying this {@link Country}.
 	 * 
 	 * @see Army {@link Army}
@@ -63,19 +70,44 @@ public class Country extends Clickable {
 	private String name;
 
 	/**
-	 * Constructs a new {@link Country}.
+	 * Constructs a new {@link Country} with no army offset.
 	 * 
 	 * @param name
-	 *            of the {@link Country}.
+	 *            of the {@link Country}
+	 * @param region
+	 *            {@link Region} of the country on screen.
+	 * @param color
+	 *            The colour that denotes this {@link Country} in the countries
+	 *            image.
 	 */
 	public Country(String name, Region region, Color color) {
+		this(name, region, color, new Point(0, 0));
+	}
+
+	/**
+	 * Constructs a new {@link Country} with a specified army offset.
+	 * 
+	 * @param name
+	 *            of the {@link Country}
+	 * @param region
+	 *            {@link Region} of the country on screen.
+	 * @param color
+	 *            The colour that denotes this {@link Country} in the countries
+	 *            image.
+	 * @param armyOffset
+	 *            The {@link Point} offset from this {@link Country}'s center.
+	 */
+	public Country(String name, Region region, Color color, Point armyOffset) {
 		super(region);
+
 		this.neighbours = new LinkedList<Country>();
 		this.ruler = null;
 		this.army = new Army(1);
 		this.name = name;
 		this.color = color;
 		this.hazardIcon = null;
+		this.armyOffset = armyOffset;
+
 	}
 
 	/**
@@ -132,6 +164,31 @@ public class Country extends Clickable {
 	 */
 	public Army getArmy() {
 		return army;
+	}
+
+	/**
+	 * Retrieves the {@link Point} offset from the centre of the country this army
+	 * will be displayed at.
+	 * 
+	 * @return {@link Point} offset.
+	 */
+	public Point getArmyOffset() {
+		return armyOffset;
+	}
+
+	/**
+	 * Sets the {@link Point} vector offset of this {@link Army} on screen.
+	 * 
+	 * @param offset
+	 */
+	public void setArmyPosition(Point offset) {
+
+		if (offset == null) {
+			throw new NullPointerException("Offset cannot be null.");
+		}
+
+		this.armyOffset = offset;
+
 	}
 
 	/**

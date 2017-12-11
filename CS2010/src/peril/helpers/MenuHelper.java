@@ -89,17 +89,14 @@ public final class MenuHelper {
 	public void createHelpPages(Game game) {
 
 		int setupPage = game.states.setup.getID();
-
 		int reinforcementPage = game.states.reinforcement.getID();
-
 		int combatPage = game.states.combat.getID();
-
 		int movementPage = game.states.movement.getID();
 
 		// EnvironmentalHazards Page id
 		int hazardPage = 30;
 
-		// War menu page
+		// War menu page ids
 		int warPage1 = 31;
 		int warPage2 = 32;
 
@@ -109,7 +106,7 @@ public final class MenuHelper {
 		helpMenu.addPage(setupPage, HelpMenu.NULL_PAGE, HelpMenu.NULL_PAGE, "Help: Setup");
 
 		// Reinforcement state pages
-		helpMenu.addPage(reinforcementPage, hazardPage, HelpMenu.NULL_PAGE, "Help: Reinforcment");
+		helpMenu.addPage(reinforcementPage, hazardPage, HelpMenu.NULL_PAGE, "Help: Reinforce");
 		helpMenu.addPage(hazardPage, HelpMenu.NULL_PAGE, reinforcementPage, "Help: Environmental Hazards");
 
 		// Combat state pages
@@ -117,6 +114,7 @@ public final class MenuHelper {
 		helpMenu.addPage(warPage1, warPage2, combatPage, "Help: War pt.1");
 		helpMenu.addPage(warPage2, HelpMenu.NULL_PAGE, warPage1, "Help: War pt.2");
 
+		// Add the text to the pages
 		reinforcementPage(reinforcementPage);
 		setupPage(setupPage);
 		environmentalHazardPage(hazardPage);
@@ -134,13 +132,15 @@ public final class MenuHelper {
 	 */
 	private void reinforcementPage(int id) {
 
-		helpMenu.addText(id, "In this phase the current player should distribute"
-				+ " their available units to any of their countries.");
-		helpMenu.addText(id, "The available units to be distributed are shown in the top left corner, above units.");
+		helpMenu.addText(id, "In Reinforce, the current player distributes their"
+				+ " available units to their countries. The available units are shown in the top left corner.");
+		helpMenu.addText(id, "");
+		helpMenu.addText(id, "The number of units given each round is dependent on "
+				+ "the round and the number of countries owned. More can be earned through challenges.");
 		helpMenu.addText(id, "");
 		helpMenu.addText(id, "How to:");
 		helpMenu.addText(id, "1. Select the country you wish to reinforce.");
-		helpMenu.addText(id, "2. Click the rienforment button to add a unit yo the selected country");
+		helpMenu.addText(id, "2. Click 'Reinforce' to add a unit to the selected country.");
 
 	}
 
@@ -152,14 +152,14 @@ public final class MenuHelper {
 	 */
 	private void setupPage(int id) {
 
-		helpMenu.addText(id, "In this phase of the game the players select which "
-				+ "players own which countries at the start of the game.");
+		helpMenu.addText(id, "In Setup, the players select who initially owns which countries.");
 
-		helpMenu.addText(id, "To set a player as the ruler of a country, simply"
-				+ " click on the country then press the number button that coresponds to the number of the player."
+		helpMenu.addText(id, "To set the ruler of a country, simply"
+				+ " click on the country then press the number button that corresponds to the number of the player."
 				+ " For example: '1' corresponds to 'Player 1'. 'Space' makes the country neutral.");
 
-		helpMenu.addText(id, "Click 'Auto' to randomly assign an equal number of countries to each player.");
+		helpMenu.addText(id, "Click 'Auto' to randomly divide all the countries equally, between all the players.");
+
 		helpMenu.addText(id, "Once you have assigned the countries as you desire click 'Play' to start the game.");
 	}
 
@@ -173,11 +173,14 @@ public final class MenuHelper {
 
 		// Environmental Hazards
 		helpMenu.addText(id,
-				"After the first round environmental hazards may occur in any country. "
+				"After the first round, environmental hazards may occur in any country. "
 						+ "These hazards will kill a random percentage of the army stationed at "
-						+ "the country the hazard occured up to a maximum value.");
-		helpMenu.addText(id, "These hazards appear as icons over the countries they have effected.");
+						+ "the country the hazard occured in, up to a maximum value.");
+
+		helpMenu.addText(id, "These hazards appear as icons over the countries they have affected.");
+
 		helpMenu.addText(id, "");
+
 		for (EnvironmentalHazard hazard : EnvironmentalHazard.values()) {
 			helpMenu.addText(id, hazard.name + ": " + hazard.maxCasualties + "% at " + hazard.chance + "% chance");
 		}
@@ -193,17 +196,15 @@ public final class MenuHelper {
 	private void movementPage(int id) {
 
 		helpMenu.addText(id,
-				"In this phase, the current player can move"
-						+ " units from all countries they own to any of their countries which are connected."
-						+ " Countries are connected by a link or through many owned lands connected to each other.");
+				"In Movement, the current player can move units from one country to another, provided that both countries are;");
+		helpMenu.addText(id, "- Ruled by the same player.");
+		helpMenu.addText(id, "- Connected by a chain of countries ruled by that player.");
+		helpMenu.addText(id, "A valid troop movement will be shown by a line linking the selected countries.");
 		helpMenu.addText(id, "");
-		helpMenu.addText(id,
-				"A valid re-distributuion of the troops will be shown by a line linking the selected countries.");
 		helpMenu.addText(id, "How to:");
-		helpMenu.addText(id, "1. Select the country with 1< of units you wish to move.");
-		helpMenu.addText(id,
-				"2. Select the country you want the units to move to. A link will be shown, should this is be a valid movement");
-		helpMenu.addText(id, "3. Select the amount of units to be moved.");
+		helpMenu.addText(id, "1. Select the origin country. Must have more than one unit.");
+		helpMenu.addText(id, "2. Select the destination country. If the movement is valid, a link will be shown.");
+		helpMenu.addText(id, "3. Click 'Fortify' to move one unit.");
 
 	}
 
@@ -215,16 +216,17 @@ public final class MenuHelper {
 	 */
 	private void combatPage(int id) {
 
-		helpMenu.addText(id, "In this phase if the current player can start a war with an adjacent enemy country.");
-		helpMenu.addText(id, "Valid targets will be shown by a line linking the selected countries.");
+		helpMenu.addText(id,
+				"In Combat, the current player can attack adjacent enemy countries using their counrties.");
+		helpMenu.addText(id, "Valid targets will be shown by a line linking them to the selected country.");
 		helpMenu.addText(id, "");
 		helpMenu.addText(id, "How to:");
 		helpMenu.addText(id,
 				"1. Select the country with more than 1 unit "
 						+ "that you wish to attack with. A link will be shown to the enemy "
-						+ "countries which can be attacked.");
+						+ "countries that can be attacked.");
 		helpMenu.addText(id, "2. Select the adjacent enemy country you want to attack.");
-		helpMenu.addText(id, "3. Click 'Attack' to start a war and open the war menu.");
+		helpMenu.addText(id, "3. Click 'Attack' to start a war.");
 
 	}
 

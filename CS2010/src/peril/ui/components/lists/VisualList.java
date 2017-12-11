@@ -137,6 +137,18 @@ public class VisualList<T> extends Clickable implements Component {
 	}
 
 	/**
+	 * Sets the selected {@link Element}
+	 * @param index
+	 */
+	public void setSelected(int index) {
+		if(index < 0 || index >= elements.size()) {
+			throw new IllegalArgumentException(index + " is not a valid index.");
+		}
+		
+		selected = elements.get(index);
+	}
+	
+	/**
 	 * Sets the {@link Font} for the {@link VisualList}.
 	 * 
 	 * @param font
@@ -288,7 +300,7 @@ public class VisualList<T> extends Clickable implements Component {
 	/**
 	 * 
 	 * An element of the {@link VisualList} that can be displayed on screen using
-	 * {@link Element#draw(Graphics, Font)}.
+	 * {@link Element#draw(Graphics, Font)}. This element wraps &lt;T&gt;.
 	 * 
 	 * @author Joshua_Eddy
 	 *

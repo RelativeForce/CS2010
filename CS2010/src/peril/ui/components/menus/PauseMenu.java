@@ -53,6 +53,9 @@ public class PauseMenu extends Menu {
 	 */
 	private Font textFont;
 
+	/**
+	 * The {@link Viewable} that is the background of the {@link PauseMenu}.
+	 */
 	private Viewable background;
 
 	/**
@@ -118,6 +121,10 @@ public class PauseMenu extends Menu {
 
 	}
 
+	/**
+	 * Adds an {@link Viewable} to this {@link PauseMenu}. The {@link Viewable}s
+	 * added will be scaled to the size of the {@link PauseMenu}.
+	 */
 	@Override
 	public void addImage(Viewable image) {
 		super.addImage(image);

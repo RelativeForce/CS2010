@@ -100,6 +100,7 @@ public final class CombatState extends MultiSelectState {
 		super.leave(container, game);
 		attackButton.hide();
 		getGame().menus.pauseMenu.hideSaveOption();
+		warMenu.clear();
 	}
 
 	/**

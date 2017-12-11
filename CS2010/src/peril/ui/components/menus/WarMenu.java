@@ -304,6 +304,17 @@ public class WarMenu extends Menu {
 	}
 
 	/**
+	 * Clears and hides the {@link WarMenu}.
+	 */
+	public void clear() {
+		player = null;
+		enemy = null;
+		attacker = null;
+		ruler = null;
+		this.hide();
+	}
+	
+	/**
 	 * Gets an <code>int[]</code> of {@link Random#nextInt(int)} with bounds of 1 -
 	 * 6
 	 * 

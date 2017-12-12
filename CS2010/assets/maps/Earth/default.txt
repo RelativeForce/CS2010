@@ -68,6 +68,7 @@ Link,Alberta,Ontario
 Link,Alberta,W USA
 Link,Ontario,Quebec
 Link,Ontario,E USA
+Link,Ontario,W USA
 Link,Quebec,E USA
 Link,W USA,E USA
 Link,W USA,C America

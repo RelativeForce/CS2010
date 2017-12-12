@@ -151,12 +151,12 @@ Link,Haven,Jorval
 Link,Arenthia,Dune
 Link,Arenthia,Skingrad
 Link,Kvatch,Arenthia
-Link,Markarth,Solstheim
 Link,Markarth,Morthal
 Link,Markarth,Whiterun
 Link,Markarth,Falkreath
 Link,Markarth,Whiterun
 Link,Soltitude,Morthal
+Link,Soltitude,Markarth
 Link,Morthal,Dawnstar
 Link,Morthal,Whiterun
 Link,Dawnstar,Winterhold
@@ -224,9 +224,9 @@ Link,Narsis,Thorn
 Link,Tear,Thorn
 Link,Stormhold,Thorn
 Link,Stormhold,Helstrom
-Link,Stormhold,Archon
 Link,Stormhold,Gideon
-Link,Thorn,Archon
+Link,Stormhold,Blackrose
+Link,Thorn,Blackrose
 Link,Helstrom,Gideon
 Link,Helstrom,Archon
 Link,Helstrom,Blackrose

@@ -87,8 +87,8 @@ Link,Jehanna,Markarth
 Link,Jehanna,Dragonstar
 Link,Wayrest,Dragonstar
 Link,Soltitude,Morthal
+Link,Soltitude,Markarth
 Link,Markarth,Dragonstar
-Link,Markarth,Solstheim
 Link,Markarth,Morthal
 Link,Markarth,Whiterun
 Link,Markarth,Falkreath
@@ -206,12 +206,12 @@ Link,Corinth,Senchal
 Link,Jorval,Senchal
 Link,Stormhold,Thorn
 Link,Stormhold,Helstrom
-Link,Stormhold,Archon
 Link,Stormhold,Gideon
+Link,Stormhold,Blackrose
 Link,Helstrom,Gideon
 Link,Helstrom,Archon
 Link,Helstrom,Blackrose
-Link,Thorn,Archon
+Link,Thorn,Blackrose
 Link,Archon,Blackrose
 Link,Gideon,Archon
 ArmySize,90,10

@@ -85,15 +85,15 @@ Country,Archon,050250000,1,0,0,-
 Country,Blackrose,050250050,1,0,0,-
 
 //Continent, name, hazard, countries
-Continent,High Rock,Hurricane,Daggerfall-North Point-Jehanna-Wayrest
+Continent,High Rock,Volcanic Eruption,Daggerfall-North Point-Jehanna-Wayrest
 Continent,Skyrim,Hurricane,Soltitude-Markarth-Morthal-Dawnstar-Winterhold-Whiterun-Windhelm-Falkreath-Riften
-Continent,Morrowind,Hurricane,Solstheim-Blacklight-Ald'Rhun-Balmora-Necrom-Mournhold-Narsis-Tear
-Continent,Hammerfell,Hurricane,Dragonstar-Sentinel-Skaven-Elinhir-Helgathe-Gilane-Taneth-Rihad
+Continent,Morrowind,Tornado,Solstheim-Blacklight-Ald'Rhun-Balmora-Necrom-Mournhold-Narsis-Tear
+Continent,Hammerfell,Tsunami,Dragonstar-Sentinel-Skaven-Elinhir-Helgathe-Gilane-Taneth-Rihad
 Continent,Cyrodiil,Hurricane,Bruma-Kvatch-Anvil-Skingrad-Imperial City-Chorrol-Cheydinhal-Bravil-Leyawiin-Blackwood
 Continent,Summerset Isles,Hurricane,Firsthold-Skywatch-Lillandrill-Cloudrest-Shimmerene-Alinot-Dusk
-Continent,Valenwood,Hurricane,Arenthia-Falinesti-Silvenar-Woodhearth-Elden Root-South Point-Haven
-Continent,Elsweyr,Hurricane,Riverhold-Dune-Rimmen-Orcrest-Corinth-Jorval-Senchal
-Continent,BlackMarsh,Hurricane,Stormhold-Helstrom-Thorn-Gideon-Archon-Blackrose
+Continent,Valenwood,Tsunami,Arenthia-Falinesti-Silvenar-Woodhearth-Elden Root-South Point-Haven
+Continent,Elsweyr,Volcanic Eruption,Riverhold-Dune-Rimmen-Orcrest-Corinth-Jorval-Senchal
+Continent,BlackMarsh,Tornado,Stormhold-Helstrom-Thorn-Gideon-Archon-Blackrose
 
 //Link, country1, country2
 Link,Daggerfall,North Point

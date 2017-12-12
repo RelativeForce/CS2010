@@ -1,10 +1,8 @@
 package peril.board;
 
-import peril.Point;
-
 /**
  * Encapsulates the behaviours of a collection of units. This will be aggregated
- * by the {@link CombatHandler} and composes the {@link Country}.
+ * by the {@link WarMenu} and composes the {@link Country}.
  * 
  * @author Joshua_Eddy
  *
@@ -12,22 +10,15 @@ import peril.Point;
 public final class Army {
 
 	/**
-	 * The {@link Point} offset from the centre of the country this army will be
-	 * displayed at.
-	 */
-	private Point offset;
-
-	/**
 	 * The size of the army.
 	 */
 	private volatile int size;
 
 	/**
-	 * Constructs a new empty {@link Army} with an offset of (0,0).
+	 * Constructs a new {@link Army} with size of 1 and an offset of (0,0).
 	 */
 	public Army() {
 		setSize(1);
-		offset = new Point(0, 0);
 	}
 
 	/**
@@ -38,11 +29,10 @@ public final class Army {
 	 */
 	public Army(int size) {
 		setSize(size);
-		offset = new Point(0, 0);
 	}
 
 	/**
-	 * Assigns a new size to this {@link Army}.
+	 * Assigns a new size to this {@link Army} overwriting the old value.
 	 * 
 	 * @param size
 	 *            The new size of the {@link Army}. Must be greater than zero.
@@ -55,16 +45,6 @@ public final class Army {
 	}
 
 	/**
-	 * Retrieves the {@link Point} offset from the centre of the country this army
-	 * will be displayed at.
-	 * 
-	 * @return {@link Point} offset.
-	 */
-	public Point getOffset() {
-		return offset;
-	}
-
-	/**
 	 * Retrieves the size of the {@link Army}.
 	 * 
 	 * @return
@@ -73,13 +53,26 @@ public final class Army {
 		return size;
 	}
 
-	public void setOffset(Point offset) {
-		
-		if(offset == null) {
-			throw new NullPointerException("Offset cannot be null.");
+	/**
+	 * Adds a specified number of units to this {@link Army}.
+	 * 
+	 * @param amount
+	 *            of units to add to this {@link Army}
+	 */
+	public void add(int amount) {
+		size += amount;
+	}
+
+	/**
+	 * Removes a specified amount of units from this {@link Army}.
+	 * 
+	 * @param amount
+	 *            of units to remove.
+	 */
+	public void remove(int amount) {
+		if (size - amount < 0) {
+			throw new IllegalStateException("Army size cannot be less than zero");
 		}
-		
-		this.offset = offset;
-		
+		size -= amount;
 	}
 }

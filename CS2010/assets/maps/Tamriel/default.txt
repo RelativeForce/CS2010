@@ -1,0 +1,240 @@
+// Country, name, rgb, reinforcements, x offset, y offset
+
+//High Rock
+Country,Daggerfall,000000050,1,-25,0,-
+Country,North Point,000000100,1,-25,0,-
+Country,Jehanna,000000150,1,0,0,-
+Country,Wayrest,000000200,1,0,0,-
+
+//Skyrim
+Country,Soltitude,000000250,1,0,0,-
+Country,Markarth,000050050,1,-30,0,-
+Country,Morthal,000050100,1,0,0,-
+Country,Dawnstar,000050150,1,0,0,-
+Country,Winterhold,000050200,1,0,0,-
+Country,Whiterun,000050250,1,0,0,-
+Country,Windhelm,000100000,1,0,0,-
+Country,Falkreath,000100050,1,0,0,-
+Country,Riften,000100100,1,0,0,-
+
+//Morrowind
+Country,Solstheim,000100150,1,0,0,-
+Country,Blacklight,000100200,1,0,0,-
+Country,Ald'Rhun,000100250,1,0,0,-
+Country,Balmora,000150000,1,0,0,-
+Country,Necrom,000150050,1,40,110,-
+Country,Mournhold,000150100,1,-50,70,-
+Country,Narsis,000150150,1,0,0,-
+Country,Tear,000150200,1,0,0,-
+
+//Hammerfell
+Country,Dragonstar,000150250,1,0,0,-
+Country,Sentinel,000200000,1,0,0,-
+Country,Skaven,000200050,1,20,-30,-
+Country,Elinhir,000200100,1,0,-65,-
+Country,Helgathe,000200150,1,0,-40,-
+Country,Gilane,000200200,1,-20,-75,-
+Country,Taneth,000200250,1,0,0,-
+Country,Rihad,000250000,1,-30,0,-
+
+//Cyrodiil
+Country,Bruma,000250050,1,0,-15,-
+Country,Kvatch,000250100,1,15,40,-
+Country,Anvil,000250150,1,0,0,-
+Country,Skingrad,000250200,1,-50,0,-
+Country,Imperial City,000250250,1,0,-15,-
+Country,Chorrol,050000000,1,0,0,-
+Country,Cheydinhal,050000050,1,0,0,-
+Country,Bravil,050000100,1,0,0,-
+Country,Leyawiin,050000150,1,0,0,-
+Country,Blackwood,050000200,1,-25,-50,-
+
+//Summerset Isles
+Country,Firsthold,050000250,1,15,-5,-
+Country,Skywatch,050050000,1,0,0,-
+Country,Lillandrill,050050050,1,0,0,-
+Country,Cloudrest,050050100,1,0,0,-
+Country,Shimmerene,050050150,1,0,0,-
+Country,Alinot,050050200,1,0,0,-
+Country,Dusk,050050250,1,0,0,-
+
+//Valenwood
+Country,Arenthia,050100000,1,0,0,-
+Country,Falinesti,050100050,1,-20,0,-
+Country,Silvenar,050100100,1,0,0,-
+Country,Woodhearth,050100150,1,0,0,-
+Country,Elden Root,050100200,1,0,0,-
+Country,South Point,050100250,1,0,0,-
+Country,Haven,050150000,1,0,0,-
+
+//Elsweyr
+Country,Riverhold,050150050,1,0,-10,-
+Country,Dune,050150100,1,0,0,-
+Country,Rimmen,050150150,1,0,-15,-
+Country,Orcrest,050150200,1,0,0,-
+Country,Corinth,050150250,1,0,0,-
+Country,Jorval,050200000,1,0,0,-
+Country,Senchal,050200050,1,0,0,-
+
+//BlackMarsh
+Country,Stormhold,050200100,1,-25,0,-
+Country,Helstrom,050200150,1,0,0,-
+Country,Thorn,050200200,1,0,0,-
+Country,Gideon,050200250,1,0,0,-
+Country,Archon,050250000,1,0,0,-
+Country,Blackrose,050250050,1,0,0,-
+
+//Continent, name, hazard, countries
+Continent,High Rock,Volcanic Eruption,Daggerfall-North Point-Jehanna-Wayrest
+Continent,Skyrim,Hurricane,Soltitude-Markarth-Morthal-Dawnstar-Winterhold-Whiterun-Windhelm-Falkreath-Riften
+Continent,Morrowind,Tornado,Solstheim-Blacklight-Ald'Rhun-Balmora-Necrom-Mournhold-Narsis-Tear
+Continent,Hammerfell,Tsunami,Dragonstar-Sentinel-Skaven-Elinhir-Helgathe-Gilane-Taneth-Rihad
+Continent,Cyrodiil,Hurricane,Bruma-Kvatch-Anvil-Skingrad-Imperial City-Chorrol-Cheydinhal-Bravil-Leyawiin-Blackwood
+Continent,Summerset Isles,Hurricane,Firsthold-Skywatch-Lillandrill-Cloudrest-Shimmerene-Alinot-Dusk
+Continent,Valenwood,Tsunami,Arenthia-Falinesti-Silvenar-Woodhearth-Elden Root-South Point-Haven
+Continent,Elsweyr,Volcanic Eruption,Riverhold-Dune-Rimmen-Orcrest-Corinth-Jorval-Senchal
+Continent,BlackMarsh,Tornado,Stormhold-Helstrom-Thorn-Gideon-Archon-Blackrose
+
+//Link, country1, country2
+Link,Daggerfall,North Point
+Link,Daggerfall,Wayrest
+Link,Daggerfall,Lillandrill
+Link,North Point,Wayrest
+Link,North Point,Jehanna
+Link,Wayrest,Dragonstar
+Link,Jehanna,Markarth
+Link,Jehanna,Dragonstar
+Link,Dragonstar,Markarth
+Link,Dragonstar,Sentinel
+Link,Dragonstar,Skaven
+Link,Dragonstar,Elinhir
+Link,Dragonstar,Falkreath
+Link,Sentinel,Skaven
+Link,Sentinel,Taneth
+Link,Sentinel,Helgathe
+Link,Sentinel,Gilane
+Link,Skaven,Elinhir
+Link,Skaven,Taneth
+Link,Elinhir,Falkreath
+Link,Elinhir,Bruma
+Link,Elinhir,Kvatch
+Link,Elinhir,Rihad
+Link,Helgathe,Gilane
+Link,Helgathe,Lillandrill
+Link,Gilane,Taneth
+Link,Taneth,Rihad
+Link,Lillandrill,Firsthold
+Link,Lillandrill,Cloudrest
+Link,Lillandrill,Shimmerene
+Link,Firsthold,Anvil
+Link,Firsthold,Skywatch
+Link,Cloudrest,Shimmerene
+Link,Shimmerene,Alinot
+Link,Shimmerene,Dusk
+Link,Shimmerene,Skywatch
+Link,Alinot,Dusk
+Link,Skywatch,Woodhearth
+Link,Woodhearth,Falinesti
+Link,Woodhearth,Silvenar
+Link,Woodhearth,Elden Root
+Link,Falinesti,Silvenar
+Link,Falinesti,Arenthia
+Link,Silvenar,Arenthia
+Link,Silvenar,Elden Root
+Link,Silvenar,Dune
+Link,Elden Root,Dune
+Link,Elden Root,South Point
+Link,Elden Root,Haven
+Link,South Point,Haven
+Link,Haven,Dune
+Link,Haven,Jorval
+Link,Arenthia,Dune
+Link,Arenthia,Skingrad
+Link,Kvatch,Arenthia
+Link,Markarth,Morthal
+Link,Markarth,Whiterun
+Link,Markarth,Falkreath
+Link,Markarth,Whiterun
+Link,Soltitude,Morthal
+Link,Soltitude,Markarth
+Link,Morthal,Dawnstar
+Link,Morthal,Whiterun
+Link,Dawnstar,Winterhold
+Link,Dawnstar,Windhelm
+Link,Dawnstar,Whiterun
+Link,Whiterun,Falkreath
+Link,Whiterun,Windhelm
+Link,Whiterun,Riften
+Link,Falkreath,Riften
+Link,Falkreath,Bruma
+Link,Winterhold,Windhelm
+Link,Windhelm,Solstheim
+Link,Windhelm,Blacklight
+Link,Windhelm,Riften
+Link,Riften,Blacklight
+Link,Riften,Cheydinhal
+Link,Riften,Bruma
+Link,Anvil,Kvatch
+Link,Kvatch,Bruma
+Link,Kvatch,Chorrol
+Link,Kvatch,Skingrad
+Link,Bruma,Chorrol
+Link,Bruma,Cheydinhal
+Link,Chorrol,Cheydinhal
+Link,Chorrol,Skingrad
+Link,Skingrad,Imperial City
+Link,Skingrad,Riverhold
+Link,Skingrad,Leyawiin
+Link,Skingrad,Rimmen
+Link,Cheydinhal,Blacklight
+Link,Cheydinhal,Mournhold
+Link,Cheydinhal,Imperial City
+Link,Cheydinhal,Bravil
+Link,Bravil,Leyawiin
+Link,Bravil,Mournhold
+Link,Bravil,Narsis
+Link,Bravil,Stormhold
+Link,Bravil,Blackwood
+Link,Leyawiin,Rimmen
+Link,Blackwood,Stormhold
+Link,Blackwood,Gideon
+Link,Riverhold,Dune
+Link,Riverhold,Orcrest
+Link,Riverhold,Rimmen
+Link,Dune,Orcrest
+Link,Dune,Corinth
+Link,Dune,Jorval
+Link,Orcrest,Rimmen
+Link,Orcrest,Corinth
+Link,Rimmen,Corinth
+Link,Corinth,Jorval
+Link,Corinth,Senchal
+Link,Jorval,Senchal
+Link,Solstheim,Ald'Rhun
+Link,Blacklight,Ald'Rhun
+Link,Blacklight,Mournhold
+Link,Ald'Rhun,Balmora
+Link,Balmora,Necrom
+Link,Mournhold,Necrom
+Link,Mournhold,Narsis
+Link,Mournhold,Tear
+Link,Narsis,Tear
+Link,Narsis,Stormhold
+Link,Narsis,Thorn
+Link,Tear,Thorn
+Link,Stormhold,Thorn
+Link,Stormhold,Helstrom
+Link,Stormhold,Gideon
+Link,Stormhold,Blackrose
+Link,Thorn,Blackrose
+Link,Helstrom,Gideon
+Link,Helstrom,Archon
+Link,Helstrom,Blackrose
+Link,Blackrose,Archon
+Link,Gideon,Archon
+
+// Challenges - 65 Countries Total
+ArmySize,90,10
+ArmySize,120,20
+CountriesOwned,45,10
+CountriesOwned,55,20

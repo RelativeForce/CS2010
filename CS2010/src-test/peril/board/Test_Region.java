@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import peril.Point;
-import peril.ui.visual.Region;
+import peril.ui.Region;
 
 /**
  * Tests {@link Region}. In specific the ability for the {@link Region} to store
@@ -27,7 +27,7 @@ public class Test_Region {
 	/**
 	 * The array that will be used to create the {@link Region} to be tested.
 	 */
-	private boolean[][] testArray;
+	private boolean[] testArray;
 
 	/**
 	 * The {@link Region}
@@ -44,8 +44,8 @@ public class Test_Region {
 	public void setUp() throws Exception {
 
 		// Construct a 4x4 image boolean array with a 2x2 true region in the middle.
-		testArray = new boolean[][] { { false, false, false, false }, { false, true, true, false },
-				{ false, true, true, false }, { false, false, false, false } };
+		testArray = new boolean[] { false, false, false, false, false, true, true, false, false, true, true, false,
+				false, false, false, false };
 
 		// Construct a region using the testArray.
 		testRegion = new Region(testArray, 4, 4);
@@ -60,7 +60,7 @@ public class Test_Region {
 
 		// Assert that the 2x2 true region is stored and can be referenced in the way
 		// that region will use it.
-		assertTrue(testArray[1][1] && testArray[1][2] && testArray[2][1] && testArray[2][2]);
+		assertTrue(testArray[5] && testArray[6] && testArray[9] && testArray[10]);
 
 		// Assert that the x position is 1 as the lowest true value is at x = 1.
 		assertTrue(testRegion.getPosition().x == 1);
@@ -74,10 +74,10 @@ public class Test_Region {
 		// Assert that the height is 2 as the height of the region should be 2.
 		assertTrue(testRegion.getHeight() == 2);
 
-		boolean[][] object = testRegion.getObject();
+		boolean[] object = testRegion.getObject();
 
 		// Assert that the Region reducer has shrunk the array to the 2x2.
-		assertTrue(object[0][0] && object[0][1] && object[1][0] && object[1][1]);
+		assertTrue(object[0] && object[1] && object[2] && object[3]);
 
 	}
 
@@ -107,8 +107,8 @@ public class Test_Region {
 	public void test_Combine() {
 
 		// Construct a 4x4 image boolean array with a 1x1 true region in the at (1,4).
-		boolean[][] testArrayToCombine = new boolean[][] { { false, false, false, false },
-				{ false, false, false, true }, { false, false, false, false }, { false, false, false, false } };
+		boolean[] testArrayToCombine = new boolean[] {  false, false, false, false ,
+				 false, false, false, true ,  false, false, false, false ,  false, false, false, false  };
 
 		// Creates a Region that is to be combined with the test region.
 		Region testRegionToCombine = new Region(testArrayToCombine, 4, 4);
@@ -129,15 +129,15 @@ public class Test_Region {
 		assertTrue(combined.getWidth() == 2);
 		assertTrue(combined.getHeight() == 3);
 
-		boolean[][] object = combined.getObject();
+		boolean[] object = combined.getObject();
 
 		// Assert that the points in the region have the correct boolean state.
-		assertTrue(object[0][0]);
-		assertTrue(object[0][1]);
-		assertTrue(object[1][0]);
-		assertTrue(object[1][1]);
-		assertTrue(object[0][2]);
-		assertTrue(!object[1][2]);
+		assertTrue(object[0]);
+		assertTrue(object[1]);
+		assertTrue(object[2]);
+		assertTrue(object[3]);
+		assertTrue(object[4]);
+		assertTrue(!object[5]);
 
 	}
 

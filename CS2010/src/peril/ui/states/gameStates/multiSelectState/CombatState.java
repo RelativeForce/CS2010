@@ -125,7 +125,7 @@ public final class CombatState extends MultiSelectState {
 
 		super.render(gc, sbg, g);
 		
-		g.setLineWidth(3f);
+		super.drawAllLinks(g);
 		
 		this.drawValidTargets(g);
 

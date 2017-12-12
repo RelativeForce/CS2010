@@ -125,7 +125,7 @@ public class PlayerHelper {
 			// available challenges.
 			if (challenge.hasCompleted(getCurrent(), game.board)) {
 				toRemove.add(challenge);
-				currentState.show(challenge.completed());
+				currentState.showToolTip(challenge.completed());
 			}
 		});
 

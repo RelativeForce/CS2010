@@ -123,6 +123,8 @@ public final class MovementState extends MultiSelectState {
 
 		super.drawPlayerName(g);
 
+		super.drawAllLinks(g);
+		
 		if (path.isEmpty())
 			this.drawValidTargets(g);
 

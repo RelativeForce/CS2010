@@ -212,8 +212,8 @@ Link,Helstrom,Gideon
 Link,Helstrom,Archon
 Link,Helstrom,Blackrose
 Link,Thorn,Archon
-Link,Gideon,Blackrose
 Link,Archon,Blackrose
+Link,Gideon,Archon
 ArmySize,90,10
 ArmySize,120,20
 CountriesOwned,45,10

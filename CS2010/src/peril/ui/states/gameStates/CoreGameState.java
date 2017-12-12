@@ -1,8 +1,10 @@
 package peril.ui.states.gameStates;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -145,6 +147,8 @@ public abstract class CoreGameState extends InteractiveState {
 				g.drawImage(highlightImage, highlightedCountry.getPosition().x, highlightedCountry.getPosition().y);
 			}
 		}
+		
+		g.setLineWidth(3f);
 
 	}
 
@@ -305,7 +309,7 @@ public abstract class CoreGameState extends InteractiveState {
 	 * @param toolTip
 	 *            <code>String</code>
 	 */
-	public void show(String toolTip) {
+	public void showToolTip(String toolTip) {
 
 		if (toolTip == null) {
 			throw new NullPointerException("Popup cannot be null.");
@@ -423,25 +427,36 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	protected void drawAllLinks(Graphics g) {
 
+		// If the links are toggled off do nothing
+		if (!getGame().menus.pauseMenu.showAllLinks()) {
+			return;
+		}
+
+		g.setColor(Color.black);
+		
+		Set<Country> drawn = new HashSet<>();
+
 		// Get all the countries from the board.
 		getGame().board.forEachCountry(country -> {
 
 			// Sets x and y as the central width and height of the current country.
-			final int countryX = country.getPosition().x + (country.getWidth() / 2) + country.getArmyOffset().x;
-			final int countryY = country.getPosition().y + (country.getHeight() / 2) + country.getArmyOffset().y;
+			final int countryX = getCenterArmyPosition(country).x;
+			final int countryY = getCenterArmyPosition(country).y;
+
+			drawn.add(country);
 
 			// For each neighbour of that country draw the link from the neighbour to the
 			// current country
 			country.getNeighbours().forEach(neighbour -> {
 
-				// Sets x and y as the central width and height of the neighbour country.
-				final int neighbourX = neighbour.getPosition().x + (neighbour.getWidth() / 2)
-						+ neighbour.getArmyOffset().x;
-				final int neighbourY = neighbour.getPosition().y + (neighbour.getHeight() / 2)
-						+ neighbour.getArmyOffset().y;
+				if (!drawn.contains(neighbour)) {
+					// Sets x and y as the central width and height of the neighbour country.
+					final int neighbourX = getCenterArmyPosition(neighbour).x;
+					final int neighbourY = getCenterArmyPosition(neighbour).y;
 
-				// Draw the line from the country to the neighbour
-				g.drawLine(countryX, countryY, neighbourX, neighbourY);
+					// Draw the line from the country to the neighbour
+					g.drawLine(countryX, countryY, neighbourX, neighbourY);
+				}
 			});
 		});
 

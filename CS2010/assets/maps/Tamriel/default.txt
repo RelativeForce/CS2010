@@ -230,8 +230,8 @@ Link,Thorn,Archon
 Link,Helstrom,Gideon
 Link,Helstrom,Archon
 Link,Helstrom,Blackrose
-Link,Gideon,Blackrose
 Link,Blackrose,Archon
+Link,Gideon,Archon
 
 // Challenges - 65 Countries Total
 ArmySize,90,10

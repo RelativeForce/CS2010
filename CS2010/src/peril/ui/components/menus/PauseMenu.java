@@ -31,12 +31,18 @@ public class PauseMenu extends Menu {
 	 * {@link VisualList} of buttons to toggle the Music on and off.
 	 * 
 	 */
-	private VisualList<Toggle> toggleMusic;
+	private final VisualList<Toggle> toggleMusic;
+
+	/**
+	 * {@link VisualList} of buttons to toggle the Music on and off.
+	 * 
+	 */
+	private final VisualList<Toggle> toggleAllLinks;
 
 	/**
 	 * Holds a list of all the save files that use can save the game into.
 	 */
-	private VisualList<SaveFile> saveFiles;
+	private final VisualList<SaveFile> saveFiles;
 
 	/**
 	 * Denotes whether or not the save option will be displayed to the user.
@@ -51,7 +57,7 @@ public class PauseMenu extends Menu {
 	/**
 	 * The {@link Font} for the text of the text of the {@link PauseMenu}.
 	 */
-	private Font textFont;
+	private final Font textFont;
 
 	/**
 	 * The {@link Viewable} that is the background of the {@link PauseMenu}.
@@ -72,10 +78,17 @@ public class PauseMenu extends Menu {
 		this.showSaveOption = false;
 
 		// Construct music toggle
-		this.toggleMusic = new VisualList<>(new Point(position.x + (getWidth() / 2), position.y + 70), 30, 15, 2, 5);
+		this.toggleMusic = new VisualList<>(new Point(position.x + (getWidth() / 4), position.y + 70), 30, 15, 2, 5);
 		this.toggleMusic.add(Toggle.ON.toString, Toggle.ON);
 		this.toggleMusic.add(Toggle.OFF.toString, Toggle.OFF);
 		this.toggleMusic.setFont(new Font("Arial", Color.black, 10));
+
+		// Construct all links toggle
+		this.toggleAllLinks = new VisualList<>(new Point(position.x + ((getWidth() * 3) / 4), position.y + 70), 30, 15, 2,
+				5);
+		this.toggleAllLinks.add(Toggle.OFF.toString, Toggle.OFF);
+		this.toggleAllLinks.add(Toggle.ON.toString, Toggle.ON);
+		this.toggleAllLinks.setFont(new Font("Arial", Color.black, 10));
 
 		this.textFont = new Font("Arial", Color.black, 10);
 
@@ -148,7 +161,7 @@ public class PauseMenu extends Menu {
 	public void init() {
 
 		textFont.init();
-
+		toggleAllLinks.init();
 		toggleMusic.init();
 		saveFiles.init();
 
@@ -160,8 +173,10 @@ public class PauseMenu extends Menu {
 	public void parseClick(Point click) {
 
 		if (!toggleMusic.click(click)) {
-			if (!saveFiles.click(click)) {
-				clickedButton(click);
+			if (!toggleAllLinks.click(click)) {
+				if (!saveFiles.click(click)) {
+					clickedButton(click);
+				}
 			}
 		} else {
 			getGame().toggleMusic(toggleMusic.getSelected().toggle);
@@ -176,6 +191,8 @@ public class PauseMenu extends Menu {
 
 		toggleMusic
 				.setPosition(new Point(toggleMusic.getPosition().x + vector.x, toggleMusic.getPosition().y + vector.y));
+		toggleAllLinks.setPosition(
+				new Point(toggleAllLinks.getPosition().x + vector.x, toggleAllLinks.getPosition().y + vector.y));
 		saveFiles.setPosition(new Point(saveFiles.getPosition().x + vector.x, saveFiles.getPosition().y + vector.y));
 	}
 
@@ -207,7 +224,7 @@ public class PauseMenu extends Menu {
 		new MapWriter(getGame(), mapFolderPath, saveFiles.getSelected()).write();
 
 		// Display to the user that the game was saved.
-		((CoreGameState) getGame().getCurrentState()).show("Game Saved [" + saveFiles.getSelected().name + "]");
+		((CoreGameState) getGame().getCurrentState()).showToolTip("Game Saved [" + saveFiles.getSelected().name + "]");
 
 		refreshSaveFiles();
 
@@ -230,6 +247,15 @@ public class PauseMenu extends Menu {
 	}
 
 	/**
+	 * Retrieves whether the the user has toggled show all links on.
+	 * 
+	 * @return <code>boolean</code>
+	 */
+	public boolean showAllLinks() {
+		return toggleAllLinks.getSelected() == Toggle.ON;
+	}
+
+	/**
 	 * Draws the music toggle on the {@link PauseMenu}.
 	 * 
 	 * @param g
@@ -237,12 +263,17 @@ public class PauseMenu extends Menu {
 	 */
 	private void drawMusicToggle(Graphics g) {
 
-		String music = "Toggle Music:";
+		String music = "Music:";
 
-		textFont.draw(g, music, getPosition().x + (getWidth() / 2) - textFont.getWidth(music) - 5,
-				getPosition().y + 70);
+		String links = "Links:";
+
+		textFont.draw(g, music, toggleMusic.getPosition().x - textFont.getWidth(music) - 5,
+				toggleMusic.getPosition().y);
+		textFont.draw(g, links, toggleAllLinks.getPosition().x - textFont.getWidth(links) - 5,
+				toggleAllLinks.getPosition().y);
 
 		toggleMusic.draw(g);
+		toggleAllLinks.draw(g);
 	}
 
 	/**

@@ -154,6 +154,8 @@ public final class ReinforcementState extends CoreGameState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
 
+		super.drawAllLinks(g);
+		
 		super.drawArmies(g);
 
 		super.drawImages(g);

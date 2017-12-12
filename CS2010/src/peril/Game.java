@@ -92,7 +92,7 @@ public class Game extends StateBasedGame implements MusicListener {
 
 		// Construct the board with the initial name.
 		this.board = new Board(this, "NOT ASSIGNED");
-		
+
 		this.players = new PlayerHelper(this);
 
 		// Initialise games overlay menus
@@ -127,11 +127,11 @@ public class Game extends StateBasedGame implements MusicListener {
 			agc = new AppGameContainer(this);
 			agc.setDisplayMode(400, 300, false);
 			agc.setTargetFrameRate(60);
-			
+
 			// Set the icons of the game
-			String[] icons = new String[] {assets.ui + "goat16.png",assets.ui + "goat32.png"};
+			String[] icons = new String[] { assets.ui + "goat16.png", assets.ui + "goat32.png" };
 			agc.setIcons(icons);
-			
+
 			agc.start();
 		} catch (SlickException e) {
 			e.printStackTrace();
@@ -310,11 +310,16 @@ public class Game extends StateBasedGame implements MusicListener {
 	 *            <code>boolean</code> on or off
 	 */
 	public void toggleMusic(boolean state) {
-		if (state) {
-			getContainer().setMusicVolume(1f);
-		} else {
-			getContainer().setMusicVolume(0f);
-		}
+		getContainer().setMusicVolume(state ? 1f : 0f);
+	}
+
+	/**
+	 * Retrieves whether or not the music is on or off.
+	 * 
+	 * @return <code>boolean</code>
+	 */
+	public boolean isMusicOn() {
+		return getContainer().getMusicVolume() == 1f;
 	}
 
 	/**

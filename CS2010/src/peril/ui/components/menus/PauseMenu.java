@@ -98,6 +98,15 @@ public class PauseMenu extends Menu {
 	}
 
 	/**
+	 * Sets this {@link PauseMenu} a visible.
+	 */
+	@Override
+	public void show() {
+		super.show();
+		toggleMusic.setSelected(getGame().isMusicOn() ? Toggle.ON : Toggle.OFF);
+	}
+
+	/**
 	 * Draws the {@link PauseMenu} on screen.
 	 * 
 	 * @param g

@@ -138,16 +138,39 @@ public class VisualList<T> extends Clickable implements Component {
 
 	/**
 	 * Sets the selected {@link Element}
+	 * 
 	 * @param index
 	 */
 	public void setSelected(int index) {
-		if(index < 0 || index >= elements.size()) {
+		if (index < 0 || index >= elements.size()) {
 			throw new IllegalArgumentException(index + " is not a valid index.");
 		}
-		
+
 		selected = elements.get(index);
 	}
-	
+
+	/**
+	 * Sets the selected {@link Element}
+	 * 
+	 * @param index
+	 */
+	public void setSelected(T selected) {
+
+		/*
+		 * Iterate through all the elements and if the payload of the current element is
+		 * equal to the specified T then set that element as the selected.
+		 */
+		for (Element e : elements) {
+			if (e.payload == selected) {
+				this.selected = e;
+				return;
+			}
+		}
+		
+		throw new IllegalArgumentException("Element is not present in this visual list");
+
+	}
+
 	/**
 	 * Sets the {@link Font} for the {@link VisualList}.
 	 * 

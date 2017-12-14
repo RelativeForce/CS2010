@@ -224,6 +224,21 @@ public abstract class CoreGameState extends InteractiveState {
 		}
 
 	}
+	
+	/**
+	 * Determines whether or not the specified {@link Country} has been selected by
+	 * this {@link CoreGameState}. If so, this method will also handle highlighting
+	 * '{@link CoreGameState#addHighlight(Country)}' and removing highlighting
+	 * '{@link CoreGameState#removeHighlight(Country)}'. If the specified
+	 * {@link Country} is <code>null</code> then this should return
+	 * <code>false</code>.
+	 * 
+	 * @param country
+	 *            {@link Country}
+	 * @return Whether or not the specified {@link Country} has been selected by
+	 *         this {@link CoreGameState}.
+	 */
+	public abstract boolean select(Country country);
 
 	/**
 	 * Processes a click at a specified {@link Point} on this {@link CoreGameState}.
@@ -277,21 +292,6 @@ public abstract class CoreGameState extends InteractiveState {
 	 *            {@link Point}
 	 */
 	protected abstract void panElements(Point panVector);
-
-	/**
-	 * Determines whether or not the specified {@link Country} has been selected by
-	 * this {@link CoreGameState}. If so, this method will also handle highlighting
-	 * '{@link CoreGameState#addHighlight(Country)}' and removing highlighting
-	 * '{@link CoreGameState#removeHighlight(Country)}'. If the specified
-	 * {@link Country} is <code>null</code> then this should return
-	 * <code>false</code>.
-	 * 
-	 * @param country
-	 *            {@link Country}
-	 * @return Whether or not the specified {@link Country} has been selected by
-	 *         this {@link CoreGameState}.
-	 */
-	protected abstract boolean select(Country country);
 
 	/**
 	 * Set the current {@link Country} that the player has highlighted.

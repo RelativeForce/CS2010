@@ -105,7 +105,7 @@ public final class SetupState extends CoreGameState {
 	 * During {@link SetupState} any country is select-able.
 	 */
 	@Override
-	protected boolean select(Country country) {
+	public boolean select(Country country) {
 		removeHighlight(getSelected());
 		addHighlight(country);
 		setSelected(country);

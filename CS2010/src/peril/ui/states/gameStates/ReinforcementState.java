@@ -192,7 +192,7 @@ public final class ReinforcementState extends CoreGameState {
 	 * {@link Player} in order to be selected.
 	 */
 	@Override
-	protected boolean select(Country country) {
+	public boolean select(Country country) {
 
 		// If the country is null then set the primary highlighted as null and
 		// de-highlight the current enemy country.

@@ -8,6 +8,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Point;
+import peril.ai.AI;
 import peril.ai.Player;
 import peril.board.Country;
 import peril.ui.Button;
@@ -42,7 +43,7 @@ public final class ReinforcementState extends CoreGameState {
 	/**
 	 * Holds the instance of the reinforce {@link Button}.
 	 */
-	private final String reinforceButton;
+	private final String reinforceButton; 
 
 	/**
 	 * Constructs a new {@link ReinforcementState}.
@@ -119,6 +120,15 @@ public final class ReinforcementState extends CoreGameState {
 		super.drawPauseMenu(g);
 
 		super.drawChallengeMenu(g);
+	}
+
+	@Override
+	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+		super.update(gc, sbg, delta);
+		
+		if(getGame().players.getCurrent().ai != AI.USER && !getGame().players.getCurrent().ai.reinforce(getGame(), delta)) {
+			getGame().enterState(getGame().states.combat);
+		}
 	}
 
 	/**

@@ -116,7 +116,26 @@ public abstract class MultiSelectState extends CoreGameState {
 	@Override
 	public void removeSelected() {
 		super.removeSelected();
+		super.removeHighlight(selected);
 		selected = null;
+	}
+
+	/**
+	 * Retrieves the secondary selected {@link Country}.
+	 * 
+	 * @return Secondary selected {@link Country}
+	 */
+	public Country getSecondary() {
+		return selected;
+	}
+
+	/**
+	 * Retrieves the secondary selected {@link Country}.
+	 * 
+	 * @return Primary selected {@link Country}
+	 */
+	public Country getPrimary() {
+		return getSelected();
 	}
 
 	/**
@@ -166,21 +185,4 @@ public abstract class MultiSelectState extends CoreGameState {
 		super.setSelected(country);
 	}
 
-	/**
-	 * Retrieves the secondary selected {@link Country}.
-	 * 
-	 * @return Secondary selected {@link Country}
-	 */
-	protected Country getSecondary() {
-		return selected;
-	}
-
-	/**
-	 * Retrieves the secondary selected {@link Country}.
-	 * 
-	 * @return Primary selected {@link Country}
-	 */
-	protected Country getPrimary() {
-		return getSelected();
-	}
 }

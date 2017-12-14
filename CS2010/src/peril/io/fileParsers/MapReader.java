@@ -11,6 +11,7 @@ import org.newdawn.slick.Image;
 import peril.Challenge;
 import peril.Game;
 import peril.Point;
+import peril.ai.AI;
 import peril.ai.Player;
 import peril.board.Army;
 import peril.board.Board;
@@ -348,7 +349,7 @@ public final class MapReader extends FileParser {
 		}
 		
 		
-		Player player = new Player(playerNumber, game.players.getColor(playerNumber));
+		Player player = new Player(playerNumber, game.players.getColor(playerNumber), AI.USER);
 		player.distributableArmy.setSize(armySize);
 
 		boolean isActive;

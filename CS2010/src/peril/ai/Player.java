@@ -41,6 +41,8 @@ public final class Player extends Viewable {
 	 */
 	public final Army distributableArmy;
 
+	public final AI ai;
+	
 	/**
 	 * The number of the {@link Country}s the {@link Player} owns.
 	 */
@@ -57,13 +59,14 @@ public final class Player extends Viewable {
 	 * @param number
 	 *            The number of this player
 	 */
-	public Player(int number, Color color) {
+	public Player(int number, Color color, AI ai) {
 		super(new Point(15, 45));
 		this.countries = 0;
 		this.continents = 0;
 		this.color = color;
 		this.distributableArmy = new Army(0);
 		this.totalArmy = new Army(0);
+		this.ai = ai;
 		this.number = number;
 	}
 

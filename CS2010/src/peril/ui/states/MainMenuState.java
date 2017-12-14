@@ -276,12 +276,12 @@ public class MainMenuState extends InteractiveState {
 			throw new IllegalArgumentException("Height must be greater than zero.");
 		}
 
+		getGame().players.emptyPlaying();
+		
 		// Loads the game assets and move into the set up state
 		if (saves.getSelected() == SaveFile.DEFAULT) {
-			getGame().players.setPlayers(players.getSelected());
-		} else {
-			getGame().players.emptyPlaying();
-		}
+			getGame().players.addAIPlayers(players.getSelected());
+		}	
 
 		getGame().setRoundNumber(0);
 		getGame().players.challenges.clear();

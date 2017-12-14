@@ -97,6 +97,7 @@ public abstract class CoreGameState extends InteractiveState {
 	 * Sets the currently selected {@link Country} as <code>null</code>.
 	 */
 	public void removeSelected() {
+		removeHighlight(selected);
 		selected = null;
 	}
 

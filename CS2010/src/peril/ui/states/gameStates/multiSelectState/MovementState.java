@@ -14,6 +14,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Point;
+import peril.ai.AI;
 import peril.ai.Player;
 import peril.board.Army;
 import peril.board.Country;
@@ -101,6 +102,17 @@ public final class MovementState extends MultiSelectState {
 		super.drawPauseMenu(g);
 
 		super.drawChallengeMenu(g);
+	}
+
+	@Override
+	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+		super.update(gc, sbg, delta);
+
+		if (getGame().players.getCurrent().ai != AI.USER
+				&& !getGame().players.getCurrent().ai.fortify(getGame(), delta)) {
+			getGame().enterState(getGame().states.reinforcement);
+			getGame().players.nextPlayer();
+		}
 	}
 
 	/**
@@ -208,6 +220,31 @@ public final class MovementState extends MultiSelectState {
 
 	}
 
+	public boolean isPathBetween(Country start, Country target) {
+		
+		// If the target belongs to the current player.
+		if (target != null && target.getRuler() == start.getRuler()) {
+
+			// Holds the path from the friendly country to the target country.
+			Stack<Country> path = new Stack<Country>();
+
+			// Holds all the traversed countries
+			Set<Country> traversed = new HashSet<>();
+
+			// Clear the current path.
+			this.path.clear();
+
+			// If there is a path between the highlighted and the target add the points to
+			// the drawn path.
+			if (isPath(path, traversed, start, target)) {
+				path.forEach(country -> this.path.add(country));
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
 	/**
 	 * Checks if there is a path between the {@link Country} the mouse is hovering
 	 * over and the currently highlighted {@link Country}.
@@ -218,32 +255,12 @@ public final class MovementState extends MultiSelectState {
 	public void checkPath(Point mousePosition) {
 
 		// If there is a highlighted country.
-		if (getSelected() != null && getSelected().getArmy().getSize() > 1) {
-
-			// Holds the currently highlighted country
-			Country highligthed = getSelected();
+		if (getPrimary() != null && getPrimary().getArmy().getSize() > 1) {
 
 			// Holds the country the user is hovering over.
 			Country target = getGame().board.getCountry(mousePosition);
 
-			// If the target belongs to the current player.
-			if (target != null && target.getRuler() == highligthed.getRuler()) {
-
-				// Holds the path from the friendly country to the target country.
-				Stack<Country> path = new Stack<Country>();
-
-				// Holds all the traversed countries
-				Set<Country> traversed = new HashSet<>();
-
-				// Clear the current path.
-				this.path.clear();
-
-				// If there is a path between the highlighted and the target add the points to
-				// the drawn path.
-				if (isPath(path, traversed, highligthed, target)) {
-					path.forEach(country -> this.path.add(country));
-				}
-			}
+			isPathBetween(getPrimary(), target);
 		}
 	}
 

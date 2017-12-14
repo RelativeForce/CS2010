@@ -240,7 +240,7 @@ public class FunctionHandler {
 	 * @return {@link Action}
 	 */
 	private Action<?> excuteCombat() {
-		return new Action<Game>(game, game -> game.states.combat.warMenu.attack());
+		return new Action<Game>(game, game -> game.menus.warMenu.attack());
 	}
 
 	/**
@@ -269,9 +269,8 @@ public class FunctionHandler {
 	private Action<?> reAssignCountries() {
 		return new Action<Game>(game, game -> {
 
-			// Unhighlight the highlighted country
-			game.states.setup.removeHighlightFrom(game.states.setup.getHighlightedCountry());
-			game.states.setup.highlightCountry(null);
+			// Remove selected
+			game.states.setup.removeSelected();
 
 			// Assign the countries
 			game.autoDistributeCountries();

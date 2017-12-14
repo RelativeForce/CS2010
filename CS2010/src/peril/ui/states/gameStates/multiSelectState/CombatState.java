@@ -30,20 +30,14 @@ public final class CombatState extends MultiSelectState {
 	private static final String STATE_NAME = "Combat";
 
 	/**
-	 * Whether or not {@link CombatState} is currently after or before a country has
-	 * been conquered.
-	 */
-	private boolean isPostCombat;
-
-	/**
 	 * The {@link WarMenu} that displays the combat of the game.
 	 */
-	public final WarMenu warMenu;
+	private final WarMenu warMenu;
 
 	/**
 	 * Holds the instance of a attack {@link Button}.
 	 */
-	private Button attackButton;
+	private final String attackButton;
 
 	/**
 	 * Constructs a new {@link CombatState}.
@@ -55,41 +49,8 @@ public final class CombatState extends MultiSelectState {
 	 */
 	public CombatState(Game game, int id) {
 		super(game, STATE_NAME, id);
-
-		this.isPostCombat = false;
+		this.attackButton = "attack";
 		this.warMenu = game.menus.warMenu;
-	}
-	
-	/**
-	 * Sets the state if this {@link CombatState} to after a {@link Country} has
-	 * been conquered.
-	 */
-	public void setPostCombat() {
-		isPostCombat = true;
-	}
-
-	/**
-	 * Sets the state if this {@link CombatState} to before a {@link Country} has
-	 * been conquered.
-	 */
-	public void setPreCombat() {
-		isPostCombat = false;
-	}
-
-	/**
-	 * Highlights a specified {@link Country}. If there is a friendly
-	 * {@link Country} already highlighted then this will check if the
-	 * {@link Country} is a valid target and allow highlighting accordingly.
-	 */
-	@Override
-	public void highlightCountry(Country country) {
-
-		if (isPostCombat) {
-			highlightCountryPostCombat(country);
-		} else {
-			highlightCounrtyPreCombat(country);
-		}
-
 	}
 
 	/**
@@ -98,22 +59,9 @@ public final class CombatState extends MultiSelectState {
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
 		super.leave(container, game);
-		attackButton.hide();
+		getButton(attackButton).hide();
 		getGame().menus.pauseMenu.hideSaveOption();
 		warMenu.clear();
-	}
-
-	/**
-	 * Adds a {@link Button} to this {@link CombatState}.
-	 */
-	@Override
-	public void addButton(Button button) {
-		super.addButton(button);
-
-		if (button.getId().equals("attack")) {
-			attackButton = button;
-			attackButton.hide();
-		}
 	}
 
 	/**
@@ -124,9 +72,9 @@ public final class CombatState extends MultiSelectState {
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
 		super.render(gc, sbg, g);
-		
+
 		super.drawAllLinks(g);
-		
+
 		this.drawValidTargets(g);
 
 		super.drawArmies(g);
@@ -134,19 +82,19 @@ public final class CombatState extends MultiSelectState {
 		super.drawPlayerName(g);
 
 		super.drawImages(g);
-		
+
 		super.drawButtons(g);
-		
+
 		super.drawPlayerName(g);
 
 		super.drawPopups(g);
-		
+
 		this.warMenu.draw(g);
-		
+
 		super.drawHelp(g);
 
 		super.drawPauseMenu(g);
-		
+
 		super.drawChallengeMenu(g);
 	}
 
@@ -173,14 +121,13 @@ public final class CombatState extends MultiSelectState {
 	}
 
 	/**
-	 * Retrieves the {@link Country} the
-	 * {@link CoreGameState#getHighlightedCountry()} will sent troops too when
-	 * attacking.
+	 * Retrieves the {@link Country} the {@link CoreGameState#getSelected()} will
+	 * sent troops too when attacking.
 	 * 
 	 * @return {@link Country}
 	 */
 	public Country getEnemyCountry() {
-		return super.getSecondaryHightlightedCounrty();
+		return super.getSecondary();
 	}
 
 	/**
@@ -197,79 +144,66 @@ public final class CombatState extends MultiSelectState {
 	 * Hide the attack button.
 	 */
 	public void hideAttackButton() {
-		attackButton.hide();
+		getButton(attackButton).hide();
 	}
-	
+
 	/**
-	 * Pans this {@link CombatState}.
+	 * Clears the highlight from the current primary and secondary {@link Country}s.
+	 */
+	public void clear() {
+		removeHighlight(getPrimary());
+		removeHighlight(getSecondary());
+		hideAttackButton();
+		removeSelected();
+	}
+
+	/**
+	 * The specified {@link Country} is a valid primary {@link Country} if:
+	 * <ul>
+	 * <li>Is <strong>NOT</strong> null</li>
+	 * <li>It is ruled by the current player.</li>
+	 * </ul>
 	 */
 	@Override
-	protected void pan(Point panVector) {
-
-		Point old = attackButton.getPosition();
-
-		Point vector = getGame().board.move(panVector);
-
-		if (vector.x != 0 || vector.y != 0) {
-			attackButton.setPosition(new Point(old.x + vector.x, old.y + vector.y));
-		}
-
+	protected boolean selectPrimary(Country country) {
+		return country != null && getGame().players.getCurrent().equals(country.getRuler());
 	}
-	
+
 	/**
-	 * Processes whether a {@link Country} is a valid target for the
-	 * {@link CoreGameState#getHighlightedCountry()} to attack. This is based on the
-	 * {@link Player} ruler and the {@link Player} ({@link Game#getCurrent()})
-	 * 
-	 * @param country
-	 *            {@link Country}
-	 * @param player
-	 *            {@link Player}
-	 * @param ruler
-	 *            {@link Player}
+	 * The specified {@link Country} is a valid primary {@link Country} if:
+	 * <ul>
+	 * <li>Is <strong>NOT</strong> null</li>
+	 * <li>It is a valid target of the primary {@link Country}.</li>
+	 * </ul>
 	 */
-	protected void processCountry(Country country, Player player, Player ruler) {
+	@Override
+	protected boolean selectSecondary(Country country) {
 
-		// If there is a primary friendly country and the target is not null and the
-		// ruler of the country is not the player.
-		if (getHighlightedCountry() != null) {
-
-			// if the country is a valid target of the primary country..
-			if (isValidTarget(super.getHighlightedCountry(), country)) {
-
-				super.removeHighlightFrom(super.getSecondaryHightlightedCounrty());
-				super.setSecondaryHighlightedCountry(country);
-				moveAttackButton(getArmyPosition(getHighlightedCountry()), getArmyPosition(country));
-				attackButton.show();
-
-			}
-			// If the player owns the other country
-			else if (player.equals(ruler)) {
-
-				// Remove the highlight from the currently highlighted countries and highlight
-				// the clicked country.
-				super.removeHighlightFrom(super.getSecondaryHightlightedCounrty());
-				super.removeHighlightFrom(super.getHighlightedCountry());
-				super.highlightCountry(country);
-				attackButton.hide();
-			}
-
+		if (country == null) {
+			getButton(attackButton).hide();
+			return false;
 		}
-		// If the player does not ruler the country
-		else if (!player.equals(ruler)) {
-			// DO NOTHING
-		}
-		// If the country clicked is to be the new primary country and is owned by the
-		// player.
-		else {
 
-			// Remove the highlight from the currently highlighted countries and highlight
-			// the clicked country.
-			super.removeHighlightFrom(super.getSecondaryHightlightedCounrty());
-			super.removeHighlightFrom(super.getHighlightedCountry());
-			super.highlightCountry(country);
-			attackButton.hide();
+		final boolean selectableSecondary = getPrimary() != null && isValidTarget(getPrimary(), country);
+
+		if (selectableSecondary) {
+			moveAttackButton(getPrimary(), country);
+			getButton(attackButton).show();
+		} else {
+			getButton(attackButton).hide();
 		}
+
+		return selectableSecondary;
+	}
+
+	/**
+	 * Pans the visual elements of the {@link CombatState} along a specified
+	 * {@link Point} vector.
+	 */
+	@Override
+	protected void panElements(Point panVector) {
+		Point current = getButton(attackButton).getPosition();
+		getButton(attackButton).setPosition(new Point(current.x + panVector.x, current.y + panVector.y));
 	}
 
 	/**
@@ -289,54 +223,6 @@ public final class CombatState extends MultiSelectState {
 			warMenu.hide();
 		}
 		return false;
-	}
-	
-	/**
-	 * If a {@link Player} has not conquered a new {@link Country} since they last
-	 * clicked a {@link Country}.
-	 * 
-	 * @param country
-	 *            {@link Country} that was clicked.
-	 */
-	private void highlightCounrtyPreCombat(Country country) {
-
-		// If the country is null then set the primary highlighted as null and
-		// unhighlight the current enemy country.
-		if (country != null) {
-
-			// Holds the current player
-			Player player = getGame().players.getCurrent();
-
-			// Holds the ruler of the country
-			Player ruler = country.getRuler();
-
-			processCountry(country, player, ruler);
-
-		} else {
-			attackButton.hide();
-			super.removeHighlightFrom(super.getSecondaryHightlightedCounrty());
-			super.setSecondaryHighlightedCountry(null);
-			super.removeHighlightFrom(super.getHighlightedCountry());
-			super.highlightCountry(country);
-		}
-	}
-
-	/**
-	 * If a {@link Player} has not conquered a new {@link Country} since they last
-	 * clicked a {@link Country}. Remove the highlight effect on both the primary
-	 * and secondary country.
-	 * 
-	 * @param country
-	 */
-	private void highlightCountryPostCombat(Country country) {
-
-		super.removeHighlightFrom(country);
-		super.setSecondaryHighlightedCountry(null);
-		super.removeHighlightFrom(getHighlightedCountry());
-		super.highlightCountry(null);
-		attackButton.hide();
-
-		setPreCombat();
 	}
 
 	/**
@@ -372,15 +258,15 @@ public final class CombatState extends MultiSelectState {
 	}
 
 	/**
-	 * Draws a line between the {@link CoreGameState#getHighlightedCountry()} and or
-	 * all its valid targets.
+	 * Draws a line between the {@link CoreGameState#getSelected()} and or all its
+	 * valid targets.
 	 * 
 	 * @param g
 	 *            {@link Graphics}
 	 */
 	private void drawValidTargets(Graphics g) {
 
-		Country highlighted = super.getHighlightedCountry();
+		Country highlighted = super.getSelected();
 
 		// If there is a country highlighted.
 		if (highlighted != null) {
@@ -411,12 +297,15 @@ public final class CombatState extends MultiSelectState {
 	 * @param country
 	 *            {@link Country}
 	 */
-	private void moveAttackButton(Point p1, Point p2) {
+	private void moveAttackButton(Country primary, Country target) {
 
+		Point p1 = getCenterArmyPosition(primary);
+		Point p2 = getCenterArmyPosition(target);
 		int x = ((p2.x - p1.x) / 2) + p1.x;
 		int y = ((p2.y - p1.y) / 2) + p1.y;
 
-		attackButton.setPosition(new Point(x, y));
+		getButton(attackButton).setPosition(new Point(x, y));
 
 	}
+
 }

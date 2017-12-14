@@ -1,8 +1,10 @@
 package peril.ui.states.gameStates;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -21,7 +23,6 @@ import peril.Point;
 import peril.board.Army;
 import peril.board.Board;
 import peril.board.Country;
-import peril.ui.Region;
 import peril.ui.components.lists.ToolTipList;
 import peril.ui.components.menus.ChallengeMenu;
 import peril.ui.components.menus.HelpMenu;
@@ -35,16 +36,6 @@ import peril.ui.states.InteractiveState;
  * @author Joseph_Rolli, Joshua_Eddy
  */
 public abstract class CoreGameState extends InteractiveState {
-
-	/**
-	 * The {@link Point} pan direction vector this state will pan at.
-	 */
-	private Point panDirection;
-
-	/**
-	 * The current {@link Country} that the player has highlighted.
-	 */
-	private Country highlightedCountry;
 
 	/**
 	 * Holds the tool tip that will be displayed to the user.
@@ -68,6 +59,16 @@ public abstract class CoreGameState extends InteractiveState {
 	private final List<Music> backgroundMusic;
 
 	/**
+	 * The {@link Point} pan direction vector this state will pan at.
+	 */
+	private Point panDirection;
+
+	/**
+	 * The current {@link Country} that the player has highlighted.
+	 */
+	private Country selected;
+
+	/**
 	 * Constructs a new {@link CoreGameState}.
 	 * 
 	 * @param game
@@ -77,11 +78,11 @@ public abstract class CoreGameState extends InteractiveState {
 	 * @param id
 	 *            The id of this {@link CoreGameState}.
 	 */
-	protected CoreGameState(Game game, String stateName, int id) {
+	public CoreGameState(Game game, String stateName, int id) {
 
 		// The id of the state is used as the id for the help page
 		super(game, stateName, id, id);
-		this.highlightedCountry = null;
+		this.selected = null;
 
 		this.pauseMenu = game.menus.pauseMenu;
 		this.challengeMenu = game.menus.challengeMenu;
@@ -93,18 +94,10 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	/**
-	 * Set the current {@link Country} that the player has highlighted.
+	 * Sets the currently selected {@link Country} as <code>null</code>.
 	 */
-	public void highlightCountry(Country country) {
-
-		highlightedCountry = country;
-
-		if (highlightedCountry != null) {
-			// Highlight the country
-			highlightedCountry.setImage(highlightedCountry.getRegion().getPosition(),
-					highlightedCountry.getRegion().convert(Color.yellow));
-		}
-
+	public void removeSelected() {
+		selected = null;
 	}
 
 	/**
@@ -129,25 +122,13 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	/**
-	 * Renders this {@link CoreGameState}.
+	 * Renders this {@link CoreGameState} which is the {@link Game#board}.
 	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
-		getGame().board.draw(g);
+		drawBoard(g);
 
-		// If there is a highlight country
-		if (highlightedCountry != null) {
-
-			// Holds the highlight image
-			Image highlightImage = highlightedCountry.getImage();
-
-			// If there is an image in the highlighted country
-			if (highlightImage != null) {
-				g.drawImage(highlightImage, highlightedCountry.getPosition().x, highlightedCountry.getPosition().y);
-			}
-		}
-		
 		g.setLineWidth(3f);
 
 	}
@@ -195,8 +176,8 @@ public abstract class CoreGameState extends InteractiveState {
 		toolTipList.clear();
 
 		// Remove the highlight effect on the currently highlighted country
-		removeHighlightFrom(highlightedCountry);
-		highlightedCountry = null;
+		removeHighlight(selected);
+		selected = null;
 
 		// Stop the state from panning after it has been exited.
 		panDirection = null;
@@ -208,40 +189,8 @@ public abstract class CoreGameState extends InteractiveState {
 	 * Returns a the current highlighted {@link Country} in this state.
 	 * 
 	 */
-	public Country getHighlightedCountry() {
-		return highlightedCountry;
-	}
-
-	/**
-	 * Removes the highlight colouring effect on
-	 * {@link CoreGameState#highlightedCountry}.
-	 * 
-	 * @param country
-	 *            {@link Country} to unhighlight.
-	 */
-	public void removeHighlightFrom(Country country) {
-
-		// If there is a highlighted country
-		if (country != null) {
-
-			// Holds the position of the country
-			Point position = country.getRegion().getPosition();
-
-			// Holds the region of the country
-			Region region = country.getRegion();
-
-			// Holds the ruler of the country
-			Player ruler = country.getRuler();
-
-			// If there is a ruler then return the colour of the country to that of the
-			// ruler. Otherwise remove the highlight effect.
-			if (ruler != null) {
-				country.setImage(position, region.convert(ruler.color));
-			} else {
-				country.setImage(position, region.convert(Color.white));
-			}
-		}
-
+	public Country getSelected() {
+		return selected;
 	}
 
 	/**
@@ -321,10 +270,76 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	/**
+	 * Moves all the visual elements contained within this {@link CoreGameState}
+	 * along a specified {@link Point} vector.
+	 * 
+	 * @param panVector
+	 *            {@link Point}
+	 */
+	protected abstract void panElements(Point panVector);
+
+	/**
+	 * Determines whether or not the specified {@link Country} has been selected by
+	 * this {@link CoreGameState}. If so, this method will also handle highlighting
+	 * '{@link CoreGameState#addHighlight(Country)}' and removing highlighting
+	 * '{@link CoreGameState#removeHighlight(Country)}'. If the specified
+	 * {@link Country} is <code>null</code> then this should return
+	 * <code>false</code>.
+	 * 
+	 * @param country
+	 *            {@link Country}
+	 * @return Whether or not the specified {@link Country} has been selected by
+	 *         this {@link CoreGameState}.
+	 */
+	protected abstract boolean select(Country country);
+
+	/**
+	 * Set the current {@link Country} that the player has highlighted.
+	 */
+	protected void setSelected(Country country) {
+		selected = country;
+	}
+
+	/**
+	 * Adds the highlight effect to a {@link Country} assuming the country is not
+	 * <code>null</code>.
+	 * 
+	 * @param country
+	 *            {@link Country}
+	 */
+	protected void addHighlight(Country country) {
+		if (country != null) {
+			country.setImage(country.getRegion().getPosition(), country.getRegion().convert(Color.yellow));
+		}
+	}
+
+	/**
+	 * Removes the highlight colouring effect on {@link CoreGameState#selected}.
+	 * 
+	 * @param country
+	 *            {@link Country} to unhighlight.
+	 */
+	protected void removeHighlight(Country country) {
+
+		// If there is a highlighted country
+		if (country != null) {
+
+			// Holds the ruler of the country
+			Player ruler = country.getRuler();
+
+			// If there is a ruler then return the colour of the country to that of the
+			// ruler. Otherwise remove the highlight effect.
+			country.setImage(country.getPosition(), ruler != null ? country.getRegion().convert(ruler.color) : null);
+
+		}
+
+	}
+
+	/**
 	 * Assigns the pan direction of the {@link CoreGameState}.
 	 * 
 	 * @param mousePosition
-	 *            {@link Point} position of the mosue.
+	 *            {@link Point} position of the mouse.
 	 */
 	public void parseMouse(Point mousePosition) {
 
@@ -407,13 +422,16 @@ public abstract class CoreGameState extends InteractiveState {
 			// Get the country that is clicked.
 			Country clicked = board.getCountry(click);
 
-			// If the board was clicked with the left mouse then highlight the clicked
-			// country, otherwise de-selected the highlighted country.
+			/*
+			 * If the board was clicked with the left mouse and it is a valid country to
+			 * highlight then highlight the clicked country, otherwise de-selected the
+			 * highlighted country.
+			 */
 			if (button == Input.MOUSE_LEFT_BUTTON) {
-				highlightCountry(clicked);
-			} else {
-				removeHighlightFrom(highlightedCountry);
-				highlightCountry(null);
+				select(clicked);
+			} else if (button == Input.MOUSE_RIGHT_BUTTON) {
+				removeHighlight(selected);
+				removeSelected();
 			}
 
 		}
@@ -433,7 +451,7 @@ public abstract class CoreGameState extends InteractiveState {
 		}
 
 		g.setColor(Color.black);
-		
+
 		Set<Country> drawn = new HashSet<>();
 
 		// Get all the countries from the board.
@@ -460,16 +478,6 @@ public abstract class CoreGameState extends InteractiveState {
 			});
 		});
 
-	}
-
-	/**
-	 * Pans the {@link Game#board} according to the
-	 * {@link CoreGameState#panDirection}.
-	 * 
-	 * @param panVector
-	 */
-	protected void pan(Point panVector) {
-		getGame().board.move(panDirection);
 	}
 
 	/**
@@ -511,7 +519,7 @@ public abstract class CoreGameState extends InteractiveState {
 	 * @param country
 	 * @return
 	 */
-	protected Point getArmyPosition(Country country) {
+	private Point getArmyPosition(Country country) {
 
 		// Sets x and y as the central width and height of the current country.
 		int x = country.getPosition().x + (country.getWidth() / 2) + country.getArmyOffset().x;
@@ -537,29 +545,6 @@ public abstract class CoreGameState extends InteractiveState {
 		int y = armyPos.y + 12;
 
 		return new Point(x, y);
-	}
-
-	/**
-	 * Performs a mouse click at a specified {@link Point} position on the
-	 * {@link PauseMenu}.
-	 * 
-	 * @param click
-	 *            {@link Point}
-	 * @return Whether or not the {@link PauseMenu} was clicked or not.
-	 */
-	private boolean clickPauseMenu(Point click) {
-
-		// If the pause menu is invisible then it cannot be clicked.
-		if (pauseMenu.isVisible()) {
-
-			// If the pause menu was clicked then parse the click.
-			if (pauseMenu.isClicked(click)) {
-				pauseMenu.parseClick(click);
-				return true;
-			}
-			pauseMenu.hide();
-		}
-		return false;
 	}
 
 	/**
@@ -599,6 +584,29 @@ public abstract class CoreGameState extends InteractiveState {
 			g.drawString(Integer.toString(troopNumber), armyPosition.x, armyPosition.y);
 
 		}));
+	}
+
+	/**
+	 * Performs a mouse click at a specified {@link Point} position on the
+	 * {@link PauseMenu}.
+	 * 
+	 * @param click
+	 *            {@link Point}
+	 * @return Whether or not the {@link PauseMenu} was clicked or not.
+	 */
+	private boolean clickPauseMenu(Point click) {
+
+		// If the pause menu is invisible then it cannot be clicked.
+		if (pauseMenu.isVisible()) {
+
+			// If the pause menu was clicked then parse the click.
+			if (pauseMenu.isClicked(click)) {
+				pauseMenu.parseClick(click);
+				return true;
+			}
+			pauseMenu.hide();
+		}
+		return false;
 	}
 
 	/**
@@ -670,4 +678,73 @@ public abstract class CoreGameState extends InteractiveState {
 
 	}
 
+	/**
+	 * Pans the {@link Game#board} according to the
+	 * {@link CoreGameState#panDirection}.
+	 * 
+	 * @param panVector
+	 */
+	private void pan(Point panVector) {
+
+		// The vector the board actually moved along.
+		Point actualVector = getGame().board.move(panDirection);
+
+		// If the board actually moved.
+		if (actualVector.x != 0 || actualVector.y != 0) {
+			panElements(actualVector);
+		}
+
+	}
+
+	/**
+	 * Draws this {@link Board} on screen.
+	 * 
+	 * @param g
+	 *            {@link Graphics}
+	 */
+	private void drawBoard(Graphics g) {
+
+		Board board = getGame().board;
+
+		// If the board has a visual representation, render it in the graphics context.
+		if (board.hasImage()) {
+			g.drawImage(board.getImage(), board.getPosition().x, board.getPosition().y);
+		}
+
+		// Holds the hazards that will be drawn on screen.
+		Map<Point, Image> hazards = new HashMap<>();
+
+		// For every country on the board.
+		board.forEachCountry(country -> {
+
+			final int x = country.getPosition().x;
+			final int y = country.getPosition().y;
+
+			// Draw the image of the country on top of the board.
+			if (country.hasImage()) {
+				g.drawImage(country.getImage(), x, y);
+			}
+
+			// If a hazard has occurred
+			if (country.hasHazard()) {
+
+				// Define the hazards visual details
+				Image hazard = country.getHazard();
+				hazard = hazard.getScaledCopy(30, 30);
+
+				final int hazardX = x + (country.getWidth() / 2) + (hazard.getWidth() / 2) + country.getArmyOffset().x;
+				final int hazardY = y + (country.getHeight() / 2) - hazard.getHeight() + country.getArmyOffset().y;
+
+				// Add the hazard to the map to be drawn.
+				hazards.put(new Point(hazardX, hazardY), hazard);
+			}
+
+		});
+
+		// Draw all the hazards on screen.
+		hazards.forEach((position, hazardIcon) -> {
+			g.drawImage(hazardIcon, position.x, position.y);
+		});
+
+	}
 }

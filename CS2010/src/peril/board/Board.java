@@ -1,12 +1,7 @@
 package peril.board;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
-
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 
 import peril.Game;
 import peril.Point;
@@ -198,57 +193,6 @@ public final class Board extends Viewable {
 	 */
 	public int getNumberOfCountries() {
 		return numberOfCountries;
-	}
-
-	/**
-	 * Draws this {@link Board} on screen.
-	 * 
-	 * @param g
-	 *            {@link Graphics}
-	 */
-	public void draw(Graphics g) {
-
-		// If the board has a visual representation, render it in the graphics context.
-		if (hasImage()) {
-			g.drawImage(getImage(), getPosition().x, getPosition().y);
-		}
-
-		// Holds the hazards that will be drawn on screen.
-		Map<Point, Image> hazards = new HashMap<>();
-
-		// For every country on the board.
-		forEachCountry(country -> {
-
-			final int x = country.getPosition().x;
-			final int y = country.getPosition().y;
-
-			// Draw the image of the country on top of the board.
-			if (country.hasImage()) {
-				g.drawImage(country.getImage(), x, y);
-			}
-
-			// If a hazard has occurred
-			if (country.hasHazard()) {
-
-				// Define the hazards visual details
-				Image hazard = country.getHazard();
-				hazard = hazard.getScaledCopy(30, 30);
-
-				final int hazardX = x + (country.getWidth() / 2) + (hazard.getWidth() / 2)
-						+ country.getArmyOffset().x;
-				final int hazardY = y + (country.getHeight() / 2) - hazard.getHeight()
-						+ country.getArmyOffset().y;
-
-				// Add the hazard to the map to be drawn.
-				hazards.put(new Point(hazardX, hazardY), hazard);
-			}
-		});
-
-		// Draw all the hazards on screen.
-		hazards.forEach((position, hazardIcon) -> {
-			g.drawImage(hazardIcon, position.x, position.y);
-		});
-
 	}
 
 	/**

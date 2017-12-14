@@ -6,6 +6,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import net.java.games.input.Component;
 import peril.Game;
 import peril.Player;
 import peril.Point;
@@ -56,26 +57,12 @@ public final class SetupState extends CoreGameState {
 	}
 
 	/**
-	 * Handles highlighting a {@link Country} on the {@link SetupState}.
-	 */
-	@Override
-	public void highlightCountry(Country country) {
-
-		// Unhighlight the current country
-		super.removeHighlightFrom(super.getHighlightedCountry());
-
-		// Highlight the new country
-		super.highlightCountry(country);
-
-	}
-
-	/**
 	 * Parses a button press on this {@link SetupState}.
 	 */
 	@Override
 	public void parseButton(int key, char c, Point mousePosition) {
 
-		Country highlighted = getHighlightedCountry();
+		Country highlighted = getSelected();
 
 		/*
 		 * If the player has highlighted a county then parse the button presses that
@@ -115,6 +102,25 @@ public final class SetupState extends CoreGameState {
 	}
 
 	/**
+	 * During {@link SetupState} any country is select-able.
+	 */
+	@Override
+	protected boolean select(Country country) {
+		removeHighlight(getSelected());
+		addHighlight(country);
+		setSelected(country);
+		return true;
+	}
+
+	/**
+	 * Moves all the {@link Component}s of this {@link SetupState}.
+	 */
+	@Override
+	protected void panElements(Point panVector) {
+		// No elements to pan.
+	}
+
+	/**
 	 * Swaps the {@link Player} ruler of a specified {@link Country} for a new
 	 * {@link player}.
 	 * 
@@ -146,5 +152,4 @@ public final class SetupState extends CoreGameState {
 		}
 
 	}
-
 }

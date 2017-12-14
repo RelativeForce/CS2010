@@ -42,7 +42,7 @@ public final class ReinforcementState extends CoreGameState {
 	/**
 	 * Holds the instance of the reinforce {@link Button}.
 	 */
-	private Button reinforceButton;
+	private final String reinforceButton;
 
 	/**
 	 * Constructs a new {@link ReinforcementState}.
@@ -54,6 +54,7 @@ public final class ReinforcementState extends CoreGameState {
 	 */
 	public ReinforcementState(Game game, int id) {
 		super(game, STATE_NAME, id);
+		this.reinforceButton = "reinforce";
 		this.unitFont = new Font("Arial", Color.white, 50);
 		this.textFont = new Font("Arial", Color.white, 20);
 	}
@@ -65,21 +66,6 @@ public final class ReinforcementState extends CoreGameState {
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
 		getGame().menus.pauseMenu.showSaveOption();
-	}
-
-	/**
-	 * Adds a {@link Button} to this {@link ReinforcementState}. The last
-	 * {@link Button} with the specified id will be used as the
-	 * {@link ReinforcementState#reinforceButton}.
-	 */
-	@Override
-	public void addButton(Button button) {
-		super.addButton(button);
-
-		if (button.getId().equals("reinforce")) {
-			reinforceButton = button;
-			reinforceButton.hide();
-		}
 	}
 
 	/**
@@ -99,52 +85,8 @@ public final class ReinforcementState extends CoreGameState {
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
 		super.leave(container, game);
-		reinforceButton.hide();
+		getButton(reinforceButton).hide();
 		getGame().menus.pauseMenu.hideSaveOption();
-	}
-
-	/**
-	 * Hides the {@link ReinforcementState#reinforceButton}.
-	 */
-	public void hideReinforceButton() {
-		reinforceButton.hide();
-	}
-
-	/**
-	 * Highlights a {@link Country} in this {@link ReinforcementState}.
-	 */
-	@Override
-	public void highlightCountry(Country country) {
-
-		super.removeHighlightFrom(super.getHighlightedCountry());
-
-		// If the country is null then set the primary highlighted as null and
-		// unhighlight the current enemy country.
-		if (country != null) {
-
-			// Holds the current player
-			Player player = getGame().players.getCurrent();
-
-			// Holds the ruler of the country
-			Player ruler = country.getRuler();
-
-			if (player.equals(ruler)) {
-
-				if (player.distributableArmy.getSize() > 0) {
-					moveReinforceButton(country);
-					reinforceButton.show();
-				} else {
-					reinforceButton.hide();
-				}
-				super.highlightCountry(country);
-
-			}
-
-		} else {
-			super.highlightCountry(country);
-			reinforceButton.hide();
-		}
-
 	}
 
 	/**
@@ -155,7 +97,7 @@ public final class ReinforcementState extends CoreGameState {
 		super.render(gc, sbg, g);
 
 		super.drawAllLinks(g);
-		
+
 		super.drawArmies(g);
 
 		super.drawImages(g);
@@ -171,11 +113,11 @@ public final class ReinforcementState extends CoreGameState {
 		textFont.draw(g, "UNITS", 150 - (textFont.getWidth("UNITS") / 2), 95);
 
 		super.drawPopups(g);
-		
+
 		super.drawHelp(g);
 
 		super.drawPauseMenu(g);
-		
+
 		super.drawChallengeMenu(g);
 	}
 
@@ -188,28 +130,12 @@ public final class ReinforcementState extends CoreGameState {
 	 */
 	public void moveReinforceButton(Country country) {
 
-		Point armyPosition = getArmyPosition(country);
+		Point armyPosition = getCenterArmyPosition(country);
 
 		int x = armyPosition.x;
 		int y = armyPosition.y + 25;
 
-		reinforceButton.setPosition(new Point(x, y));
-
-	}
-
-	/**
-	 * Pans this {@link ReinforcementState}.
-	 */
-	@Override
-	protected void pan(Point panVector) {
-
-		Point old = reinforceButton.getPosition();
-
-		Point vector = getGame().board.move(panVector);
-
-		if (vector.x != 0 || vector.y != 0) {
-			reinforceButton.setPosition(new Point(old.x + vector.x, old.y + vector.y));
-		}
+		getButton(reinforceButton).setPosition(new Point(x, y));
 
 	}
 
@@ -219,7 +145,7 @@ public final class ReinforcementState extends CoreGameState {
 	public void reinfoce() {
 
 		// Holds the currently highlighted country
-		Country highlightedCountry = getHighlightedCountry();
+		Country highlightedCountry = getSelected();
 
 		// Holds the current player.
 		Player player = getGame().players.getCurrent();
@@ -244,7 +170,7 @@ public final class ReinforcementState extends CoreGameState {
 					getGame().players.checkChallenges(getGame().states.reinforcement);
 
 					if (player.distributableArmy.getSize() == 0) {
-						getGame().states.reinforcement.hideReinforceButton();
+						getButton(reinforceButton).hide();
 					}
 
 				} else {
@@ -259,6 +185,59 @@ public final class ReinforcementState extends CoreGameState {
 			System.out.println("No country selected.");
 		}
 
+	}
+
+	/**
+	 * The {@link Country} that is to be selected must be owned by the current
+	 * {@link Player} in order to be selected.
+	 */
+	@Override
+	protected boolean select(Country country) {
+
+		// If the country is null then set the primary highlighted as null and
+		// de-highlight the current enemy country.
+		if (country != null) {
+
+			// Holds the current player
+			Player player = getGame().players.getCurrent();
+
+			// Holds the ruler of the country
+			Player ruler = country.getRuler();
+
+			if (player.equals(ruler)) {
+
+				removeHighlight(getSelected());
+
+				if (player.distributableArmy.getSize() > 0) {
+					moveReinforceButton(country);
+					getButton(reinforceButton).show();
+				} else {
+					getButton(reinforceButton).hide();
+				}
+
+				addHighlight(country);
+				setSelected(country);
+				return true;
+
+			}
+
+		} else {
+			getButton(reinforceButton).hide();
+			removeHighlight(getSelected());
+			return true;
+		}
+
+		removeSelected();
+		return false;
+	}
+
+	/**
+	 * Pans this {@link ReinforcementState}.
+	 */
+	@Override
+	protected void panElements(Point panVector) {
+		Point current = getButton(reinforceButton).getPosition();
+		getButton(reinforceButton).setPosition(new Point(current.x + panVector.x, current.y + panVector.y));
 	}
 
 }

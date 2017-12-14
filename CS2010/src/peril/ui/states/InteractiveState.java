@@ -1,7 +1,11 @@
 package peril.ui.states;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -44,13 +48,13 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 * A {@link List} of {@link Button} elements that this {@link InteractiveState}
 	 * has.
 	 */
-	private final List<Button> buttons;
+	private final Map<String, Button> buttons;
 
 	/**
 	 * A {@link List} of {@link Viewable} elements that this
 	 * {@link InteractiveState} has.
 	 */
-	private final List<Viewable> images;
+	private final Set<Viewable> images;
 
 	/**
 	 * Holds all the {@link Component}s that will be initialised when this
@@ -91,8 +95,8 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 		this.id = id;
 		this.game = game;
 		this.stateName = stateName;
-		this.buttons = new LinkedList<>();
-		this.images = new LinkedList<>();
+		this.buttons = new HashMap<>();
+		this.images = new HashSet<>();
 		this.components = new LinkedList<>();
 	}
 
@@ -138,7 +142,7 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 */
 	@Override
 	public void addButton(Button button) {
-		buttons.add(button);
+		buttons.put(button.getId(), button);
 	}
 
 	/**
@@ -247,6 +251,13 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	public int getID() {
 		return id;
 	}
+	
+	protected Button getButton(String buttonId) {
+		if(!buttons.containsKey(buttonId)) {
+			throw new IllegalArgumentException("'"+buttonId + "' button is not in " + stateName + " interactive state.");
+		}
+		return buttons.get(buttonId);
+	}
 
 	/**
 	 * 
@@ -269,7 +280,7 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	public boolean clickedButton(Point click) {
 
 		// Iterate through all the buttons in the current state.
-		for (Button button : buttons) {
+		for (Button button : buttons.values()) {
 
 			// If the click is in the current element
 			if (button.isClicked(click) && button.isVisible()) {
@@ -298,7 +309,7 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 *            {@link Graphics}
 	 */
 	protected void drawButtons(Graphics g) {
-		buttons.forEach(button -> {
+		buttons.forEach((id, button) -> {
 			if (button.isVisible()) {
 				g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y);
 			}

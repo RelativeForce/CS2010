@@ -38,7 +38,7 @@ public final class MovementState extends MultiSelectState {
 	/**
 	 * Holds the instance of the fortify {@link Button}.
 	 */
-	private Button fortifyButton;
+	private final String fortifyButton;
 
 	/**
 	 * Hold the path between two {@link Country}s in the {@link MovementState}.
@@ -56,39 +56,8 @@ public final class MovementState extends MultiSelectState {
 	 */
 	public MovementState(Game game, int id) {
 		super(game, STATE_NAME, id);
-
+		this.fortifyButton = "fortify";
 		path = new LinkedList<>();
-	}
-
-	/**
-	 * Highlights a specified {@link Country} if it is friendly or a
-	 * {@link Country#getNeighbours()} of the
-	 * {@link CoreGameState#getHighlightedCountry()}..
-	 */
-	@Override
-	public void highlightCountry(Country country) {
-
-		// If the country is null then set the primary highlighted as null and
-		// unhighlight the current enemy country.
-		if (country != null) {
-
-			// Holds the current player
-			Player player = getGame().players.getCurrent();
-
-			// Holds the ruler of the country
-			Player ruler = country.getRuler();
-
-			processCountry(country, player, ruler);
-
-		} else {
-			fortifyButton.hide();
-			super.removeHighlightFrom(super.getSecondaryHightlightedCounrty());
-			super.setSecondaryHighlightedCountry(null);
-			super.removeHighlightFrom(super.getHighlightedCountry());
-			super.highlightCountry(country);
-			path.clear();
-		}
-
 	}
 
 	/**
@@ -98,19 +67,6 @@ public final class MovementState extends MultiSelectState {
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
 		getGame().menus.pauseMenu.showSaveOption();
-	}
-
-	/**
-	 * Adds a {@link Button} to this {@link MovementState}.
-	 */
-	@Override
-	public void addButton(Button button) {
-		super.addButton(button);
-
-		if (button.getId().equals("fortify")) {
-			fortifyButton = button;
-			fortifyButton.hide();
-		}
 	}
 
 	/**
@@ -124,7 +80,7 @@ public final class MovementState extends MultiSelectState {
 		super.drawPlayerName(g);
 
 		super.drawAllLinks(g);
-		
+
 		if (path.isEmpty())
 			this.drawValidTargets(g);
 
@@ -133,17 +89,17 @@ public final class MovementState extends MultiSelectState {
 		super.drawArmies(g);
 
 		super.drawImages(g);
-		
+
 		super.drawButtons(g);
-		
+
 		super.drawPlayerName(g);
 
 		super.drawPopups(g);
-		
+
 		super.drawHelp(g);
-		
+
 		super.drawPauseMenu(g);
-		
+
 		super.drawChallengeMenu(g);
 	}
 
@@ -153,27 +109,26 @@ public final class MovementState extends MultiSelectState {
 	@Override
 	public void leave(GameContainer gc, StateBasedGame game) throws SlickException {
 		super.leave(gc, game);
-		fortifyButton.hide();
+		getButton(fortifyButton).hide();
 		getGame().menus.pauseMenu.hideSaveOption();
 		path.clear();
 	}
 
 	/**
-	 * Retrieves the {@link Country} the
-	 * {@link CoreGameState#getHighlightedCountry()} will sent troops too when
-	 * fortify is clicked.
+	 * Retrieves the {@link Country} the {@link CoreGameState#getSelected()} will
+	 * sent troops too when fortify is clicked.
 	 * 
 	 * @return {@link Counrty}
 	 */
 	public Country getTargetCountry() {
-		return super.getSecondaryHightlightedCounrty();
+		return super.getSecondary();
 	}
 
 	/**
 	 * Hide the fortify {@link Button}.
 	 */
 	public void hideFortifyButton() {
-		fortifyButton.hide();
+		getButton(fortifyButton).hide();
 	}
 
 	/**
@@ -218,7 +173,7 @@ public final class MovementState extends MultiSelectState {
 	 */
 	public void fortify() {
 
-		Country primary = getHighlightedCountry();
+		Country primary = getSelected();
 		Country target = getTargetCountry();
 
 		// If there is two countries highlighted
@@ -240,8 +195,8 @@ public final class MovementState extends MultiSelectState {
 				if (primaryArmy.getSize() == 1) {
 					hideFortifyButton();
 					path.clear();
-					super.removeHighlightFrom(target);
-					super.setSecondaryHighlightedCountry(null);
+					super.removeHighlight(target);
+					super.setSecondary(null);
 				}
 			} else {
 				// DO NOTHING
@@ -263,10 +218,10 @@ public final class MovementState extends MultiSelectState {
 	public void checkPath(Point mousePosition) {
 
 		// If there is a highlighted country.
-		if (getHighlightedCountry() != null && getHighlightedCountry().getArmy().getSize() > 1) {
+		if (getSelected() != null && getSelected().getArmy().getSize() > 1) {
 
 			// Holds the currently highlighted country
-			Country highligthed = getHighlightedCountry();
+			Country highligthed = getSelected();
 
 			// Holds the country the user is hovering over.
 			Country target = getGame().board.getCountry(mousePosition);
@@ -289,70 +244,6 @@ public final class MovementState extends MultiSelectState {
 					path.forEach(country -> this.path.add(country));
 				}
 			}
-		}
-	}
-
-	/**
-	 * Pans this {@link MovementState}.
-	 */
-	@Override
-	protected void pan(Point panVector) {
-
-		Point old = fortifyButton.getPosition();
-
-		Point vector = getGame().board.move(panVector);
-
-		if (vector.x != 0 || vector.y != 0) {
-			fortifyButton.setPosition(new Point(old.x + vector.x, old.y + vector.y));
-		}
-
-	}
-
-	/**
-	 * Processes whether a {@link Country} is a valid target for the
-	 * {@link CoreGameState#getHighlightedCountry()} to attack. This is based on the
-	 * {@link Player} ruler and the {@link Player} ({@link Game#getCurrent()})
-	 * 
-	 * @param country
-	 *            {@link Country}
-	 * @param player
-	 *            {@link Player}
-	 * @param ruler
-	 *            {@link Player}
-	 */
-	protected void processCountry(Country country, Player player, Player ruler) {
-
-		Country highlighted = getHighlightedCountry();
-		
-		// If there is a primary friendly country and the target is not null and the
-		// ruler of the country is not the player.
-		if (highlighted != null && player.equals(ruler)) {
-
-			// if the country is a neighbour of the primary highlighted country then it is a
-			// valid target.
-			if (isValidTarget(highlighted, country) || ((path.contains(country)) && highlighted != country)) {
-
-				super.removeHighlightFrom(super.getSecondaryHightlightedCounrty());
-				super.setSecondaryHighlightedCountry(country);
-				moveFortifyButton(country);
-				fortifyButton.show();
-
-			} else {
-				// DO NOTHING
-			}
-
-		}
-		// If the country clicked is to be the new primary country but is not ruler by
-		// the player
-		else if (!player.equals(ruler)) {
-			// DO NOTHING
-		}
-		// If the country clicked is to be the new primary country and is owned by the
-		// player.
-		else {
-			fortifyButton.hide();
-			super.removeHighlightFrom(super.getSecondaryHightlightedCounrty());
-			super.highlightCountry(country);
 		}
 	}
 
@@ -459,8 +350,8 @@ public final class MovementState extends MultiSelectState {
 	}
 
 	/**
-	 * Draws a line between the {@link CoreGameState#getHighlightedCountry()} and or
-	 * all its valid targets.
+	 * Draws a line between the {@link CoreGameState#getSelected()} and or all its
+	 * valid targets.
 	 * 
 	 * @param g
 	 *            {@link Graphics}
@@ -468,23 +359,21 @@ public final class MovementState extends MultiSelectState {
 	private void drawValidTargets(Graphics g) {
 
 		// If there is a country highlighted.
-		if (super.getHighlightedCountry() != null) {
+		if (super.getSelected() != null) {
 
 			// Assign the line colour.
 			g.setColor(Color.white);
 
-			for (Country country : super.getHighlightedCountry().getNeighbours()) {
+			for (Country country : super.getSelected().getNeighbours()) {
 
 				// if it is a valid target highlight the country and draw a line from the
 				// highlighted country to the neighbour country.
-				if (isValidTarget(super.getHighlightedCountry(), country)) {
+				if (isValidTarget(super.getSelected(), country)) {
 
-					Point enemy = super.getArmyPosition(country);
-					Point selected = super.getArmyPosition(super.getHighlightedCountry());
+					Point enemy = super.getCenterArmyPosition(country);
+					Point selected = super.getCenterArmyPosition(super.getSelected());
 
-					g.drawLine(enemy.x + (getOvalWidth(country.getArmy().getSize()) / 2), enemy.y + 10,
-							selected.x + (getOvalWidth(super.getHighlightedCountry().getArmy().getSize()) / 2),
-							selected.y + 10);
+					g.drawLine(enemy.x, enemy.y, selected.x, selected.y);
 				}
 			}
 
@@ -500,13 +389,100 @@ public final class MovementState extends MultiSelectState {
 	 */
 	private void moveFortifyButton(Country country) {
 
-		Point armyPosition = getArmyPosition(country);
+		Point armyPosition = getCenterArmyPosition(country);
 
 		int x = armyPosition.x;
 		int y = armyPosition.y + 25;
 
-		fortifyButton.setPosition(new Point(x, y));
+		getButton(fortifyButton).setPosition(new Point(x, y));
+	}
 
+	/**
+	 * A {@link Country} is valid to be primary selected if:
+	 * <ul>
+	 * <li>It is <strong>NOT</strong> null.</li>
+	 * <li>Has the same ruler as the current {@link Player}.</li>
+	 * <li>There is not a current primary {@link Country} <strong>OR</strong> the
+	 * specified {@link Country} is <strong>NOT</strong> a
+	 * {@link MovementState#isValidLink(Country)}</li>
+	 * </ul>
+	 */
+	@Override
+	protected boolean selectPrimary(Country country) {
+
+		if (country == null) {
+			path.clear();
+			return false;
+		}
+
+		// Holds the current player
+		Player player = getGame().players.getCurrent();
+
+		// Holds the ruler of the country
+		Player ruler = country.getRuler();
+
+		return (getPrimary() == null || !isValidLink(country)) && player.equals(ruler)
+				&& country.getArmy().getSize() > 1;
+
+	}
+
+	/**
+	 * A {@link Country} is valid to be secondary selected if:
+	 * <ul>
+	 * <li>It is <strong>NOT</strong> null.</li>
+	 * <li>Has the same ruler as the current {@link Player}.</li>
+	 * <li>The specified {@link Country} is a
+	 * {@link MovementState#isValidLink(Country)}</li>
+	 * </ul>
+	 */
+	@Override
+	protected boolean selectSecondary(Country country) {
+
+		if (country == null) {
+			getButton(fortifyButton).hide();
+			return false;
+		}
+
+		// Holds the current player
+		Player player = getGame().players.getCurrent();
+
+		// Holds the ruler of the country
+		Player ruler = country.getRuler();
+
+		final boolean selectableSecondary = player.equals(ruler) && isValidLink(country);
+
+		if (selectableSecondary) {
+			moveFortifyButton(country);
+			getButton(fortifyButton).show();
+		} else {
+			getButton(fortifyButton).hide();
+		}
+
+		return selectableSecondary;
+
+	}
+
+	/**
+	 * Retrieves whether or not the specified {@link Country} has a valid link
+	 * between it and the current {@link MultiSelectState#getPrimary()}.
+	 * 
+	 * @param country
+	 *            {@link Country}
+	 * @return Whether or not the specified {@link Country} has a valid link between
+	 *         it and the current {@link MultiSelectState#getPrimary()}.
+	 */
+	private boolean isValidLink(Country country) {
+		return getPrimary() != null
+				&& (isValidTarget(getPrimary(), country) || (path.contains(country) && getPrimary() != country));
+	}
+
+	/**
+	 * Moves the fortify button along the pan {@link Point} vector.
+	 */
+	@Override
+	protected void panElements(Point panVector) {
+		Point current = getButton(fortifyButton).getPosition();
+		getButton(fortifyButton).setPosition(new Point(current.x + panVector.x, current.y + panVector.y));
 	}
 
 }

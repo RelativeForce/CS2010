@@ -198,7 +198,7 @@ public class WarMenu extends Menu {
 
 		attackButton.show();
 
-		attacker = getGame().states.combat.getHighlightedCountry();
+		attacker = getGame().states.combat.getSelected();
 		enemy = getGame().states.combat.getEnemyCountry();
 
 		checkSquadSizes();
@@ -264,11 +264,10 @@ public class WarMenu extends Menu {
 								getGame().checkWinner();
 							}
 						}
+						
+						getGame().states.combat.clear();
 
 						attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
-
-						getGame().states.combat.setPostCombat();
-						getGame().states.combat.highlightCountry(enemy);
 
 						getGame().checkContinentRulership();
 
@@ -279,6 +278,7 @@ public class WarMenu extends Menu {
 						// If the attacking army is not large enough to attack again.
 						if (attacker.getArmy().getSize() == 1) {
 							getGame().states.combat.hideAttackButton();
+							getGame().states.combat.clear();
 						}
 					}
 				}

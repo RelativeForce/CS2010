@@ -1,6 +1,9 @@
 package peril.board;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.function.Consumer;
 
 import peril.Game;
@@ -15,12 +18,12 @@ import peril.ui.Viewable;
  * @author Joshua_Eddy
  *
  */
-public final class Board extends Viewable {
+public final class Board extends Viewable implements Observer {
 
 	/**
 	 * The {@link Continent}s in this {@link Board}.
 	 */
-	private List<Continent> continents;
+	private Map<String, Continent> continents;
 
 	/**
 	 * The {@link Game} this {@link Board} is a part of.
@@ -62,7 +65,7 @@ public final class Board extends Viewable {
 	 * @param continents
 	 *            new {@link List} of {@link Continent}s.
 	 */
-	public void setContinents(List<Continent> continents) {
+	public void setContinents(Map<String, Continent> continents) {
 
 		if (continents == null) {
 			throw new NullPointerException("Continents is null.");
@@ -70,7 +73,7 @@ public final class Board extends Viewable {
 
 		this.continents = continents;
 
-		for (Continent continent : continents) {
+		for (Continent continent : continents.values()) {
 			numberOfCountries += continent.getCountries().size();
 		}
 
@@ -88,7 +91,7 @@ public final class Board extends Viewable {
 		checkContinents();
 
 		// Iterate through all the continents on the board.
-		for (Continent continent : continents) {
+		for (Continent continent : continents.values()) {
 
 			// If the click is inside the continents region get the country from the region.
 			if (continent.isClicked(click)) {
@@ -108,7 +111,7 @@ public final class Board extends Viewable {
 	 * 
 	 * @see java.util.List
 	 */
-	public List<Continent> getContinents() {
+	public Map<String, Continent> getContinents() {
 
 		checkContinents();
 
@@ -123,7 +126,7 @@ public final class Board extends Viewable {
 
 		checkContinents();
 
-		continents.forEach(continent -> continent.endRound());
+		continents.values().forEach(continent -> continent.endRound());
 	}
 
 	/**
@@ -164,7 +167,7 @@ public final class Board extends Viewable {
 			this.setPosition(new Point(valid.x + currentX, valid.y + currentY));
 
 			// Iterate through all the continents on the board.
-			continents.forEach(continent -> {
+			continents.values().forEach(continent -> {
 
 				// Move the current continent along the valid vector.
 				continent.setPosition(
@@ -212,7 +215,7 @@ public final class Board extends Viewable {
 	 *            {@link Consumer}
 	 */
 	public void forEachCountry(Consumer<Country> task) {
-		continents.forEach(continent -> continent.getCountries().forEach(task));
+		continents.values().forEach(continent -> continent.getCountries().forEach(task));
 	}
 
 	/**
@@ -235,6 +238,13 @@ public final class Board extends Viewable {
 			continents.clear();
 		}
 		numberOfCountries = 0;
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		if (arg instanceof Country) {
+			// TODO refresh view
+		}
 	}
 
 	/**

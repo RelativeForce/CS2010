@@ -558,7 +558,7 @@ public abstract class CoreGameState extends InteractiveState {
 	protected void drawArmies(Graphics g) {
 
 		// Iterate across every country on the game board.
-		getGame().board.getContinents().forEach(continent -> continent.getCountries().forEach(country -> {
+		getGame().board.getContinents().values().forEach(continent -> continent.getCountries().forEach(country -> {
 
 			// Draw a background oval with the rulers colour. If no ruler found default to
 			// light grey.

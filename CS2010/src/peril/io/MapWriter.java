@@ -71,7 +71,7 @@ public class MapWriter {
 		game.board.forEachCountry(country -> writer.writeLine(parseCountry(country)));
 
 		// Write all the continents to the file
-		game.board.getContinents().forEach(continent -> writer.writeLine(parseContinent(continent)));
+		game.board.getContinents().values().forEach(continent -> writer.writeLine(parseContinent(continent)));
 
 		// Write all the links to the file
 		game.board.forEachCountry(country -> parseLinks(country));

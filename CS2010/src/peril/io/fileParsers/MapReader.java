@@ -1,9 +1,10 @@
 package peril.io.fileParsers;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
+import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
@@ -33,7 +34,7 @@ public final class MapReader extends FileParser {
 	/**
 	 * The {@link List} of all the {@link Continent}s on the {@link Board}.
 	 */
-	private final List<Continent> continents;
+	private final Map<String, Continent> continents;
 
 	/**
 	 * The image of the {@link Board}.
@@ -48,7 +49,7 @@ public final class MapReader extends FileParser {
 	/**
 	 * The {@link List} of all the {@link Country}s on the {@link Board}.
 	 */
-	private final List<Country> countries;
+	private final Map<String, Country> countries;
 
 	/**
 	 * Holds the {@link Game} which contains the {@link Board} this
@@ -76,8 +77,8 @@ public final class MapReader extends FileParser {
 			throw new NullPointerException("Game cannot be null.");
 		}
 
-		this.continents = new LinkedList<>();
-		this.countries = new LinkedList<>();
+		this.continents = new HashMap<>();
+		this.countries = new HashMap<>();
 		this.game = game;
 
 		this.normalMap = ImageReader.getImage(directoryPath + File.separatorChar + "normal.png");
@@ -238,7 +239,7 @@ public final class MapReader extends FileParser {
 		country.setRuler(ruler);
 
 		// Construct a new country and add the country to the list of countries.
-		countries.add(country);
+		countries.put(name, country);
 
 	}
 
@@ -271,17 +272,11 @@ public final class MapReader extends FileParser {
 			 */
 			for (String countryName : details[3].split("-")) {
 
-				// Iterate through all the countries that have been read from the file.
-				for (Country country : countries) {
+				Country country = countries.get(countryName);
 
-					// If the country's name is specified by the details file to be in this
-					// continent.
-					if (country.getName().equals(countryName)) {
-						toAdd.add(country);
-						toCombine.add(country.getRegion());
-						break;
-					}
-				}
+				toAdd.add(country);
+				toCombine.add(country.getRegion());
+
 			}
 
 			// Create the new continent.
@@ -291,7 +286,7 @@ public final class MapReader extends FileParser {
 			toAdd.forEach(country -> newContinent.addCountry(country));
 
 			// Add the continent to the list of continents.
-			continents.add(newContinent);
+			continents.put(name, newContinent);
 
 		} catch (Exception ex) {
 			throw new IllegalArgumentException("details not valid.");
@@ -309,39 +304,12 @@ public final class MapReader extends FileParser {
 	 */
 	private void parseLink(String[] details) {
 
-		// Holds the names of both the countries specified by the map file.
-		String countryName1 = details[1];
-		String countryName2 = details[2];
-
 		// Holds both the countries if they are in the countries map.
-		Country country1 = null;
-		Country country2 = null;
+		Country country1 = countries.get(details[1]);
+		Country country2 = countries.get(details[2]);
 
-		/**
-		 * Iterate through all the countries in the countries map.
-		 */
-		for (Country country : countries) {
-
-			// If the current country has the same name as counrtyName1 assign country to
-			// country1
-			if (country.getName().equals(countryName1)) {
-				country1 = country;
-			}
-			// If the current country has the same name as counrtyName2 assign country to
-			// country2
-			else if (country.getName().equals(countryName2)) {
-				country2 = country;
-			}
-
-			// If both countries have been found set them as each other's neighbour and
-			// leave the loop.
-			if (country1 != null && country2 != null) {
-				country1.addNeighbour(country2);
-				country2.addNeighbour(country1);
-				break;
-			}
-
-		}
+		country1.addNeighbour(country2);
+		country2.addNeighbour(country1);
 
 	}
 

@@ -281,7 +281,7 @@ public class Game extends StateBasedGame implements MusicListener {
 
 		players.forEach(player -> player.setContinentsRuled(0));
 
-		board.getContinents().forEach(continent -> {
+		board.getContinents().values().forEach(continent -> {
 
 			continent.isRuled();
 

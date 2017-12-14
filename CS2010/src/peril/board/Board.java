@@ -243,7 +243,7 @@ public final class Board extends Viewable implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 		if (arg instanceof Country) {
-			// TODO refresh view
+			// TODO update stuff
 		}
 	}
 

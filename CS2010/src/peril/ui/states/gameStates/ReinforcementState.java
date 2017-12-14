@@ -7,8 +7,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
-import peril.Player;
 import peril.Point;
+import peril.ai.Player;
 import peril.board.Country;
 import peril.ui.Button;
 import peril.ui.Font;

@@ -1,7 +1,8 @@
-package peril;
+package peril.ai;
 
 import org.newdawn.slick.Color;
 
+import peril.Point;
 import peril.board.Army;
 import peril.io.fileReaders.ImageReader;
 import peril.ui.Viewable;

@@ -11,6 +11,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import peril.ai.Player;
 import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
@@ -148,7 +149,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	public void initStatesList(GameContainer container) throws SlickException {
 		states.initGame(container, this, new UIEventHandler(this));
 		EnvironmentalHazard.initIcons(assets.ui);
-		players.init();
 	}
 
 	/**
@@ -184,7 +184,11 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public void autoDistributeCountries() {
 
-		players.resetAll();
+		players.forEach(player->{
+			player.setCountriesRuled(0);
+			player.setContinentsRuled(0);
+			player.totalArmy.setSize(0);
+		});
 
 		// Iterate through each country on the board.
 		board.forEachCountry(country -> assignPlayer(country));

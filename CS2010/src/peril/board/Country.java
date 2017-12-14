@@ -6,8 +6,8 @@ import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
-import peril.Player;
 import peril.Point;
+import peril.ai.Player;
 import peril.ui.Clickable;
 import peril.ui.Region;
 

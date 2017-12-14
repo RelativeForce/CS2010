@@ -4,7 +4,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 
 import peril.Game;
-import peril.Player;
+import peril.ai.Player;
 import peril.board.Army;
 import peril.board.Country;
 import peril.ui.UIEventHandler;

@@ -9,8 +9,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
-import peril.Player;
 import peril.Point;
+import peril.ai.Player;
 import peril.io.SaveFile;
 import peril.io.fileParsers.MapReader;
 import peril.io.fileReaders.TextFileReader;
@@ -278,13 +278,12 @@ public class MainMenuState extends InteractiveState {
 
 		// Loads the game assets and move into the set up state
 		if (saves.getSelected() == SaveFile.DEFAULT) {
-			getGame().players.setInitialPlayers(players.getSelected());
+			getGame().players.setPlayers(players.getSelected());
 		} else {
 			getGame().players.emptyPlaying();
 		}
 
 		getGame().setRoundNumber(0);
-		getGame().players.resetAll();
 		getGame().players.challenges.clear();
 
 		getGame().reSize(map.width, map.height);

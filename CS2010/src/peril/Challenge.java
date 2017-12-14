@@ -1,5 +1,6 @@
 package peril;
 
+import peril.ai.Player;
 import peril.board.Board;
 
 /**

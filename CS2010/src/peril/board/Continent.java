@@ -3,8 +3,8 @@ package peril.board;
 import java.util.LinkedList;
 import java.util.List;
 
-import peril.Player;
 import peril.Point;
+import peril.ai.Player;
 import peril.ui.Clickable;
 import peril.ui.Region;
 

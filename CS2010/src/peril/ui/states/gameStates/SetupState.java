@@ -8,8 +8,8 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import net.java.games.input.Component;
 import peril.Game;
-import peril.Player;
 import peril.Point;
+import peril.ai.Player;
 import peril.board.Country;
 
 /**

@@ -6,7 +6,7 @@ import java.util.Set;
 
 import peril.Challenge;
 import peril.Game;
-import peril.Player;
+import peril.ai.Player;
 import peril.board.Continent;
 import peril.board.Country;
 import peril.ui.states.InteractiveState;

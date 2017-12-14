@@ -10,8 +10,8 @@ import org.newdawn.slick.Image;
 
 import peril.Challenge;
 import peril.Game;
-import peril.Player;
 import peril.Point;
+import peril.ai.Player;
 import peril.board.Army;
 import peril.board.Board;
 import peril.board.Continent;
@@ -337,7 +337,18 @@ public final class MapReader extends FileParser {
 			throw new IllegalArgumentException("Line " + index + " " + details[2] + " is not a valid army size");
 		}
 
-		Player player = parsePlayer(details[1]);
+		
+
+		int playerNumber;
+
+		try {
+			playerNumber = Integer.parseInt(details[1]);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(details[1] + " is not a valid player number.");
+		}
+		
+		
+		Player player = new Player(playerNumber, game.players.getColor(playerNumber));
 		player.distributableArmy.setSize(armySize);
 
 		boolean isActive;

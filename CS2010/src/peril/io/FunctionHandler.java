@@ -1,7 +1,7 @@
 package peril.io;
 
 import peril.Game;
-import peril.Player;
+import peril.ai.Player;
 import peril.board.Continent;
 import peril.board.Country;
 import peril.multiThread.Action;
@@ -284,7 +284,6 @@ public class FunctionHandler {
 	 */
 	private Action<?> enterMainMenu() {
 		return new Action<Game>(game, game -> {
-			game.players.resetAll();
 			game.enterState(game.states.mainMenu);
 		});
 	}

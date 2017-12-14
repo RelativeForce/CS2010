@@ -1,7 +1,7 @@
 package peril.helpers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +12,7 @@ import org.newdawn.slick.Color;
 
 import peril.Challenge;
 import peril.Game;
-import peril.Player;
+import peril.ai.Player;
 import peril.ui.states.EndState;
 import peril.ui.states.gameStates.CoreGameState;
 
@@ -33,22 +33,21 @@ public class PlayerHelper {
 	/**
 	 * Holds all the {@link Player}s in this {@link Game}.
 	 */
-	private final List<Player> playing;
+	private final Map<Integer, Player> playing;
 
-	/**
-	 * The default set of {@link Player}s.
-	 */
-	private final Map<Integer, Player> defaultPlayers;
+	private final Color[] colors;
 
 	/**
 	 * The {@link Game} this {@link PlayerHelper} helps.
 	 */
 	private final Game game;
-	
+
 	/**
 	 * The {@link Player} who's turn it is.
 	 */
-	private int currentPlayerIndex;
+	private Iterator<Integer> index;
+
+	private Player current;
 
 	/**
 	 * Constructs a new {@link PlayerHelper}.
@@ -58,16 +57,11 @@ public class PlayerHelper {
 	 */
 	public PlayerHelper(Game game) {
 		this.game = game;
-		this.currentPlayerIndex = 0;
-		
-		this.playing = new ArrayList<>();
-		this.challenges = new LinkedList<>();
 
-		this.defaultPlayers = new HashMap<Integer, Player>();
-		this.defaultPlayers.put(1, new Player(1, Color.red));
-		this.defaultPlayers.put(2, new Player(2, Color.blue));
-		this.defaultPlayers.put(3, new Player(3, Color.green));
-		this.defaultPlayers.put(4, new Player(4, Color.pink.multiply(Color.pink)));
+		this.playing = new LinkedHashMap<>();
+		this.index = playing.keySet().iterator();
+		this.challenges = new LinkedList<>();
+		this.colors = new Color[] { Color.red, Color.blue, Color.green, Color.pink.multiply(Color.pink) };
 	}
 
 	/**
@@ -86,7 +80,7 @@ public class PlayerHelper {
 	 *            {@link Consumer}
 	 */
 	public void forEach(Consumer<Player> task) {
-		playing.forEach(task);
+		playing.values().forEach(task);
 	}
 
 	/**
@@ -131,7 +125,7 @@ public class PlayerHelper {
 
 		// Remove the completed challenges.
 		toRemove.forEach(challenge -> challenges.remove(challenge));
-		
+
 		// Refresh the challenge view
 		game.menus.challengeMenu.refreshChallenges();
 	}
@@ -145,17 +139,25 @@ public class PlayerHelper {
 	 */
 	public void setLoser(Player player) {
 
-		// If the loser player is before the current player in the list, reduce the
-		// player index to account for the player being removed and the list's size
-		// changing.
-		if (this.currentPlayerIndex > playing.indexOf(player)) {
-			this.currentPlayerIndex--;
-		}
-
 		// Add the player to the podium and remove it from the players in play.
 		game.states.end.addToTop(player);
-		playing.remove(player);
+		
+		playing.remove(player.number);
+		
+		index = playing.keySet().iterator();
 
+		// Bring the iterator through the lit until it finds the player.
+		while (index.hasNext()) {
+			if (index.next() == current.number) {
+				break;
+			}
+		}
+		
+
+	}
+
+	public Player getPlayer(int player) {
+		return playing.get(player);
 	}
 
 	/**
@@ -166,18 +168,7 @@ public class PlayerHelper {
 	 * @return <code>boolean</code>
 	 */
 	public boolean isPlaying(int number) {
-		return playing.contains(defaultPlayers.get(number));
-	}
-
-	/**
-	 * Retrieves whether or not a specified player is in this {@link Game}.
-	 * 
-	 * @param player
-	 *            {@link Player}
-	 * @return <code>boolean</code>
-	 */
-	public boolean isPlaying(Player player) {
-		return playing.contains(player);
+		return playing.containsKey(number);
 	}
 
 	/**
@@ -186,12 +177,7 @@ public class PlayerHelper {
 	 * @return {@link Player}
 	 */
 	public Player getCurrent() {
-
-		if (playing == null) {
-			throw new NullPointerException("List of playing Players is null!");
-		}
-
-		return playing.get(currentPlayerIndex);
+		return current;
 	}
 
 	/**
@@ -201,8 +187,14 @@ public class PlayerHelper {
 	 *            {@link Player}
 	 */
 	public void setCurrent(Player player) {
-		int index = playing.indexOf(player);
-		currentPlayerIndex = index != -1 ? index : currentPlayerIndex;
+
+		if (!playing.containsKey(player.number)) {
+			throw new IllegalArgumentException("Player " + player.number + " is not playing.");
+		}
+
+		current = player;
+
+		
 	}
 
 	/**
@@ -210,12 +202,13 @@ public class PlayerHelper {
 	 */
 	public void nextPlayer() {
 
-		currentPlayerIndex = (currentPlayerIndex + 1) % playing.size();
-
-		if (currentPlayerIndex == 0) {
+		if (!index.hasNext()) {
+			index = playing.keySet().iterator();
 			game.endRound();
 		}
-		
+
+		current = playing.get(index.next());
+
 		reinforceCurrent();
 
 		// Check the challenges going into the next round
@@ -223,40 +216,11 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * Retrieves a {@link Player} using the number assigned to that {@link Player}
-	 * from the default set of players.
-	 * 
-	 * @param number
-	 * @return
-	 */
-	public Player getPlayer(int number) {
-		return defaultPlayers.get(number);
-	}
-
-	/**
-	 * Resets all the countries owned and army size of all the {@link Player}s to
-	 * zero;
-	 */
-	public void resetAll() {
-		defaultPlayers.forEach((number, player) -> player.reset());
-		currentPlayerIndex = 0;
-	}
-
-	/**
 	 * Empties the {@link List} of playing {@link Player}s.
 	 */
 	public void emptyPlaying() {
 		playing.clear();
-	}
-
-	/**
-	 * Initialises all the {@link Player} images.
-	 * 
-	 * @param uiPath
-	 *            Path to the
-	 */
-	public void init() {
-		defaultPlayers.forEach((number, player) -> player.init(game.assets.ui));
+		index = playing.keySet().iterator();
 	}
 
 	/**
@@ -266,14 +230,17 @@ public class PlayerHelper {
 	 * @param numberOfPlayers
 	 *            The number of {@link Player}s to be added.
 	 */
-	public void setInitialPlayers(int numberOfPlayers) {
+	public void setPlayers(int numberOfPlayers) {
 
 		playing.clear();
-		currentPlayerIndex = 0;
 
 		for (int index = 1; index <= numberOfPlayers; index++) {
-			setPlaying(getPlayer(index));
+			playing.put(index, new Player(index, colors[index - 1]));
+			playing.get(index).init(game.assets.ui);
 		}
+
+		index = playing.keySet().iterator();
+		current = playing.get(index.next());
 	}
 
 	/**
@@ -282,7 +249,20 @@ public class PlayerHelper {
 	 * @return
 	 */
 	public Player getRandomPlayer() {
-		return playing.get(new Random().nextInt(playing.size()));
+
+		int pos = new Random().nextInt(playing.size());
+
+		int i = 0;
+		for (Player p : playing.values()) {
+
+			if (pos == i) {
+				return p;
+			}
+
+			i++;
+		}
+
+		return null;
 	}
 
 	/**
@@ -292,8 +272,11 @@ public class PlayerHelper {
 	 *            {@link Player}.
 	 */
 	public void setPlaying(Player player) {
-		if (!playing.contains(player)) {
-			playing.add(player);
+		if (!playing.containsKey(player.number)) {
+			playing.put(player.number, player);
+			player.init(game.assets.ui);
+			index = playing.keySet().iterator();
+			current = playing.get(index.next());
 		}
 	}
 
@@ -318,4 +301,11 @@ public class PlayerHelper {
 		}
 	}
 
+	public Color getColor(int playerNumber) {
+		return colors[playerNumber - 1];
+	}
+
+	private enum AIType {
+		NONE, BASIC;
+	}
 }

@@ -307,7 +307,7 @@ public final class MapReader extends FileParser {
 		// Holds both the countries if they are in the countries map.
 		Country country1 = countries.get(details[1]);
 		Country country2 = countries.get(details[2]);
-
+		
 		country1.addNeighbour(country2);
 		country2.addNeighbour(country1);
 

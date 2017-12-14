@@ -78,7 +78,6 @@ Link,Venezuela,Brazil
 Link,Peru,Argentina
 Link,Peru,Brazil
 Link,Argentina,Brazil
-Link,Brazil,NorthAmerica
 Link,Brazil,N Africa
 Link,N Africa,W Europe
 Link,N Africa,S Europe

@@ -4,19 +4,39 @@ import java.util.function.Consumer;
 
 import peril.Game;
 
-public class AIRequestHandler implements AIController {
+/**
+ * This controller handles all interactions that an {@link AI} could have with
+ * the {@link Game}.
+ * 
+ * @author Joshua_Eddy
+ *
+ */
+public class RequestHandler implements Controller {
 
+	/**
+	 * The instance of the {@link Game} that this {@link RequestHandler} uses.
+	 */
 	private final Game game;
 
-	public AIRequestHandler(Game game) {
+	/**
+	 * Constructs a new {@link RequestHandler}.
+	 * @param game The instance of the {@link Game} that this {@link RequestHandler} uses.
+	 */
+	public RequestHandler(Game game) {
 		this.game = game;
 	}
 
+	/**
+	 * Retrieves the {@link Board}.
+	 */
 	@Override
 	public Board getBoard() {
 		return game.board;
 	}
 
+	/**
+	 * Selects the {@link Country} from the current state.
+	 */
 	@Override
 	public boolean select(Country country) {
 
@@ -87,30 +107,29 @@ public class AIRequestHandler implements AIController {
 		}
 
 		game.states.movement.fortify();
-		game.states.movement.removeSelected();
 
 	}
 
 	@Override
-	public boolean isPathBetween(Country safe, Country border) {
+	public boolean isPathBetween(Country a, Country b) {
 
 		// Ensure that the parameter Country is a valid country, This should never be
 		// false.
-		if (!(safe instanceof peril.board.Country)) {
-			throw new IllegalArgumentException("The parmameter safe country is not a valid country.");
+		if (!(a instanceof peril.board.Country)) {
+			throw new IllegalArgumentException("The parmameter 'A' country is not a valid country.");
 		}
 
-		peril.board.Country checkedSafe = (peril.board.Country) safe;
+		peril.board.Country checkedA = (peril.board.Country) a;
 
 		// Ensure that the parameter Country is a valid country, This should never be
 		// false.
-		if (!(safe instanceof peril.board.Country)) {
+		if (!(a instanceof peril.board.Country)) {
 			throw new IllegalArgumentException("The parmameter border country is not a valid country.");
 		}
 
-		peril.board.Country checkedBorder = (peril.board.Country) border;
+		peril.board.Country checkedB = (peril.board.Country) b;
 
-		return game.states.movement.isPathBetween(checkedSafe, checkedBorder);
+		return game.states.movement.isPathBetween(checkedA, checkedB);
 	}
 
 	@Override
@@ -122,16 +141,14 @@ public class AIRequestHandler implements AIController {
 		}
 
 		// Check both countries are selected.
-		if (game.states.reinforcement.getSelected() == null ) {
+		if (game.states.reinforcement.getSelected() == null) {
 			throw new IllegalStateException("There is valid country selected.");
 		}
-		
+
 		game.states.reinforcement.reinforce();
-		
 
 	}
 
-	
 	@Override
 	public Player getCurrentPlayer() {
 		return game.players.getCurrent();

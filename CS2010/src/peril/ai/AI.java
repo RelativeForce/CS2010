@@ -1,23 +1,23 @@
 package peril.ai;
 
-import peril.ai.api.AIController;
+import peril.ai.api.Controller;
 
 public abstract class AI {
 
 	public static final AI USER = new AI() {
 
 		@Override
-		public boolean processReinforce(AIController api) {
+		public boolean processReinforce(Controller api) {
 			throw new UnsupportedOperationException("This is a user contrlled player.");
 		}
 
 		@Override
-		public boolean processAttack(AIController api) {
+		public boolean processAttack(Controller api) {
 			throw new UnsupportedOperationException("This is a user contrlled player.");
 		}
 
 		@Override
-		public boolean processFortify(AIController api) {
+		public boolean processFortify(Controller api) {
 			throw new UnsupportedOperationException("This is a user contrlled player.");
 		}
 	};
@@ -26,9 +26,9 @@ public abstract class AI {
 
 	private int wait;
 	
-	private final AIController api;
+	private final Controller api;
 
-	public AI(int speed, AIController api) {
+	public AI(int speed, Controller api) {
 		this.speed = speed;
 		this.wait = 0;
 		this.api = api;
@@ -79,10 +79,10 @@ public abstract class AI {
 		return true;
 	}
 
-	protected abstract boolean processReinforce(AIController api);
+	protected abstract boolean processReinforce(Controller api);
 
-	protected abstract boolean processAttack(AIController api);
+	protected abstract boolean processAttack(Controller api);
 
-	protected abstract boolean processFortify(AIController api);
+	protected abstract boolean processFortify(Controller api);
 
 }

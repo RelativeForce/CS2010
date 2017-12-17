@@ -3,7 +3,8 @@ package peril.ai.api;
 import java.util.List;
 
 /**
- * Encapsulates a country on the {@link Board}.
+ * Provides the information of a country on the {@link Board}.
+ * 
  * @author Joshua_Eddy
  *
  */
@@ -26,7 +27,7 @@ public interface Country {
 	/**
 	 * Retrieves the {@link Country#neighbours}.
 	 * 
-	 * @return {@link List} of type {@link Country}.
+	 * @return {@link List} of {@link Country} s.
 	 */
 	List<? extends Country> getNeighbours();
 }

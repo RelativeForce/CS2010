@@ -7,18 +7,18 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import peril.ai.api.AIController;
+import peril.ai.api.Controller;
 import peril.ai.api.Country;
 import peril.ai.api.Player;
 
 public class Monkey extends AI {
 
-	public Monkey(AIController api) {
+	public Monkey(Controller api) {
 		super(100, api);
 	}
 
 	@Override
-	public boolean processReinforce(AIController api) {
+	public boolean processReinforce(Controller api) {
 
 		Map<Integer, Country> countries = new HashMap<>();
 
@@ -48,7 +48,7 @@ public class Monkey extends AI {
 	}
 
 	@Override
-	public boolean processAttack(AIController api) {
+	public boolean processAttack(Controller api) {
 
 		class Entry {
 
@@ -105,7 +105,7 @@ public class Monkey extends AI {
 	}
 
 	@Override
-	public boolean processFortify(AIController api) {
+	public boolean processFortify(Controller api) {
 
 		class Entry {
 

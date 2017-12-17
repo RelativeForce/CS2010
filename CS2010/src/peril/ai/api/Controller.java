@@ -83,6 +83,11 @@ public interface Controller {
 	void reinforce();
 
 	/**
+	 * Clears the currently selected {@link Country}(s) from all the states.
+	 */
+	void clearSelected();
+	
+	/**
 	 * Retrieves the current {@link Player}.
 	 * 
 	 * @return

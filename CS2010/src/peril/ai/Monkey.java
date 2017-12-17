@@ -119,16 +119,26 @@ public final class Monkey extends AI {
 			return false;
 		}
 
-		final Country safe = possibleMoves.get(weights[0]).a;
-		final Country border = possibleMoves.get(weights[0]).b;
+		for (int index = 0; index < weights.length; index++) {
 
-		// If there was a valid link between the safe and border then the secondary will
-		// be the border.
-		api.select(safe);
-		api.select(border);
-		api.fortify();
+			final Country safe = possibleMoves.get(weights[index]).a;
+			final Country border = possibleMoves.get(weights[index]).b;
 
-		return true;
+			api.clearSelected();
+			
+			// If there was a valid link between the safe and border then the secondary will
+			// be the border.
+			if (api.select(safe)) {
+				if (api.select(border)) {
+					api.fortify();
+					return true;
+				}
+			}
+
+		}
+
+		// If there was weighted pairs
+		return false;
 
 	}
 
@@ -144,7 +154,7 @@ public final class Monkey extends AI {
 	 */
 	private Map<Integer, Entry> getFortifyWeightings(Controller api, Set<Country> internal,
 			Map<Country, Integer> frontline) {
-		
+
 		Map<Integer, Entry> possibleMoves = new HashMap<>();
 
 		frontline.keySet().forEach(bordering -> internal.forEach(safe -> {

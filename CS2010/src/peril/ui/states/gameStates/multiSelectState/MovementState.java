@@ -82,9 +82,6 @@ public final class MovementState extends MultiSelectState {
 
 		super.drawAllLinks(g);
 
-		if (path.isEmpty())
-			this.drawValidTargets(g);
-
 		this.drawPath(g);
 
 		super.drawArmies(g);
@@ -108,8 +105,7 @@ public final class MovementState extends MultiSelectState {
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		super.update(gc, sbg, delta);
 
-		if (getGame().players.getCurrent().ai != AI.USER
-				&& !getGame().players.getCurrent().ai.fortify(delta)) {
+		if (getGame().players.getCurrent().ai != AI.USER && !getGame().players.getCurrent().ai.fortify(delta)) {
 			getGame().enterState(getGame().states.reinforcement);
 			getGame().players.nextPlayer();
 		}
@@ -220,29 +216,17 @@ public final class MovementState extends MultiSelectState {
 
 	}
 
+	/**
+	 * Retrieves whether or not there is a path between two {@link Country}s.
+	 * 
+	 * @param start
+	 *            {@link Country}
+	 * @param target
+	 *            {@link Country}
+	 * @return
+	 */
 	public boolean isPathBetween(Country start, Country target) {
-		
-		// If the target belongs to the current player.
-		if (target != null && target.getRuler() == start.getRuler()) {
-
-			// Holds the path from the friendly country to the target country.
-			Stack<Country> path = new Stack<Country>();
-
-			// Holds all the traversed countries
-			Set<Country> traversed = new HashSet<>();
-
-			// Clear the current path.
-			this.path.clear();
-
-			// If there is a path between the highlighted and the target add the points to
-			// the drawn path.
-			if (isPath(path, traversed, start, target)) {
-				path.forEach(country -> this.path.add(country));
-				return true;
-			}
-		}
-		
-		return false;
+		return !getPathBetween(start, target).isEmpty();
 	}
 
 	/**
@@ -260,8 +244,40 @@ public final class MovementState extends MultiSelectState {
 			// Holds the country the user is hovering over.
 			Country target = getGame().board.getCountry(mousePosition);
 
-			isPathBetween(getPrimary(), target);
+			getPathBetween(getPrimary(), target).forEach(country -> path.add(country));
 		}
+	}
+
+	/**
+	 * Retrieves the path between two path between two {@link Country}s.
+	 * 
+	 * @param start
+	 *            {@link Country}
+	 * @param target
+	 *            {@link Country}
+	 * @return
+	 */
+	private Stack<Country> getPathBetween(Country start, Country target) {
+
+		// Holds the path from the friendly country to the target country.
+		Stack<Country> path = new Stack<Country>();
+
+		// Holds all the traversed countries
+		Set<Country> traversed = new HashSet<>();
+
+		// Clear the current path.
+		this.path.clear();
+
+		// If the target belongs to the current player.
+		if (target != null && target.getRuler() == start.getRuler()) {
+
+			// If there is a path between the highlighted and the target add the points to
+			// the drawn path.
+			isPath(path, traversed, start, target);
+		}
+
+		return path;
+
 	}
 
 	/**
@@ -335,69 +351,6 @@ public final class MovementState extends MultiSelectState {
 	}
 
 	/**
-	 * Retrieves whether or not the secondary {@link Country} is a valid targets for
-	 * the primary {@link Country}.
-	 * 
-	 * @param primaryCountry
-	 *            is the primary {@link Country}
-	 * @param secondaryTarget
-	 *            is the second {@link Country}
-	 * @return <code>boolean</code> if it is a valid target.
-	 */
-	private boolean isValidTarget(Country primaryCountry, Country secondaryTarget) {
-
-		// If there is a primary friendly country and the target is not null and the
-		// ruler of the country is the player.
-		if (primaryCountry.getRuler().equals(secondaryTarget.getRuler())) {
-
-			// if the country is a neighbour of the primary highlighted country then it is a
-			// valid target.
-			if (primaryCountry.isNeighbour(secondaryTarget)) {
-
-				// If the army size of the primary country is greater than 1.
-				if (primaryCountry.getArmy().getSize() > 1) {
-					return true;
-				}
-
-			}
-
-		}
-
-		return false;
-	}
-
-	/**
-	 * Draws a line between the {@link CoreGameState#getSelected()} and or all its
-	 * valid targets.
-	 * 
-	 * @param g
-	 *            {@link Graphics}
-	 */
-	private void drawValidTargets(Graphics g) {
-
-		// If there is a country highlighted.
-		if (super.getSelected() != null) {
-
-			// Assign the line colour.
-			g.setColor(Color.white);
-
-			for (Country country : super.getSelected().getNeighbours()) {
-
-				// if it is a valid target highlight the country and draw a line from the
-				// highlighted country to the neighbour country.
-				if (isValidTarget(super.getSelected(), country)) {
-
-					Point enemy = super.getCenterArmyPosition(country);
-					Point selected = super.getCenterArmyPosition(super.getSelected());
-
-					g.drawLine(enemy.x, enemy.y, selected.x, selected.y);
-				}
-			}
-
-		}
-	}
-
-	/**
 	 * Moves the reinforce {@link Button} to be positioned at the top left of the
 	 * current country.
 	 * 
@@ -438,8 +391,7 @@ public final class MovementState extends MultiSelectState {
 		// Holds the ruler of the country
 		Player ruler = country.getRuler();
 
-		return (getPrimary() == null || !isValidLink(country)) && player.equals(ruler)
-				&& country.getArmy().getSize() > 1;
+		return getPrimary() == null && player.equals(ruler) && country.getArmy().getSize() > 1;
 
 	}
 
@@ -455,7 +407,9 @@ public final class MovementState extends MultiSelectState {
 	@Override
 	protected boolean selectSecondary(Country country) {
 
-		if (country == null) {
+		this.path.clear();
+		
+		if (country == null || getPrimary() == null) {
 			getButton(fortifyButton).hide();
 			return false;
 		}
@@ -466,31 +420,32 @@ public final class MovementState extends MultiSelectState {
 		// Holds the ruler of the country
 		Player ruler = country.getRuler();
 
-		final boolean selectableSecondary = player.equals(ruler) && isValidLink(country);
+		// The country is different to the primary and has the same ruler as the player.
+		final boolean friendlyCountry = player.equals(ruler) && getPrimary() != country;
 
-		if (selectableSecondary) {
-			moveFortifyButton(country);
-			getButton(fortifyButton).show();
-		} else {
-			getButton(fortifyButton).hide();
+		if (friendlyCountry) {
+
+			// The path between the current primary and the specified country.
+			final Stack<Country> path = getPathBetween(getPrimary(), country);
+
+			// If there is a path
+			if (!path.isEmpty()) {
+
+				// Display the new path.
+				path.forEach(c -> this.path.add(c));
+
+				// Show the fortify button
+				moveFortifyButton(country);
+				getButton(fortifyButton).show();
+
+				return true;
+			}
+
 		}
+		getButton(fortifyButton).hide();
 
-		return selectableSecondary;
+		return false;
 
-	}
-
-	/**
-	 * Retrieves whether or not the specified {@link Country} has a valid link
-	 * between it and the current {@link MultiSelectState#getPrimary()}.
-	 * 
-	 * @param country
-	 *            {@link Country}
-	 * @return Whether or not the specified {@link Country} has a valid link between
-	 *         it and the current {@link MultiSelectState#getPrimary()}.
-	 */
-	private boolean isValidLink(Country country) {
-		return getPrimary() != null
-				&& (isValidTarget(getPrimary(), country) || (path.contains(country) && getPrimary() != country));
 	}
 
 	/**

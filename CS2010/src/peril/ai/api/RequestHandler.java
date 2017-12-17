@@ -132,6 +132,12 @@ public class RequestHandler implements Controller {
 		return game.states.movement.isPathBetween(checkedA, checkedB);
 	}
 
+	public void clearSelected() {
+		game.states.movement.removeSelected();
+		game.states.combat.removeSelected();
+		game.states.reinforcement.removeSelected();
+	}
+	
 	@Override
 	public void reinforce() {
 
@@ -144,7 +150,6 @@ public class RequestHandler implements Controller {
 		if (game.states.reinforcement.getSelected() == null) {
 			throw new IllegalStateException("There is valid country selected.");
 		}
-
 		game.states.reinforcement.reinforce();
 
 	}

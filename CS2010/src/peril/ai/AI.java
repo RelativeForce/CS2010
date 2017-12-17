@@ -97,6 +97,7 @@ public abstract class AI {
 
 		if (wait <= 0) {
 			wait = speed;
+			api.clearSelected();
 			return processReinforce(api);
 		}
 
@@ -118,6 +119,7 @@ public abstract class AI {
 
 		if (wait <= 0) {
 			wait = speed;
+			api.clearSelected();
 			return processAttack(api);
 		}
 
@@ -138,6 +140,7 @@ public abstract class AI {
 
 		if (wait <= 0) {
 			wait = speed;
+			api.clearSelected();
 			return processFortify(api);
 		}
 

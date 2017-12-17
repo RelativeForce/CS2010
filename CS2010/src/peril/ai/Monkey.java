@@ -247,6 +247,14 @@ public final class Monkey extends AI {
 		return countries;
 	}
 
+	/**
+	 * Retrieves the weighting for a country that the {@link Monkey} may attack.
+	 * 
+	 * @param api
+	 *            The {@link Controller} that this {@link AI} will use to query the
+	 *            state of the game.
+	 * @return weighting
+	 */
 	private Map<Integer, Entry> getAttackWeightings(Controller api) {
 
 		Map<Integer, Entry> countries = new HashMap<>();

@@ -20,7 +20,10 @@ public class RequestHandler implements Controller {
 
 	/**
 	 * Constructs a new {@link RequestHandler}.
-	 * @param game The instance of the {@link Game} that this {@link RequestHandler} uses.
+	 * 
+	 * @param game
+	 *            The instance of the {@link Game} that this {@link RequestHandler}
+	 *            uses.
 	 */
 	public RequestHandler(Game game) {
 		this.game = game;
@@ -63,11 +66,18 @@ public class RequestHandler implements Controller {
 		}
 	}
 
+	/**
+	 * Performs a {@link Consumer} task on each {@link Country} on the
+	 * {@link Board}.
+	 */
 	@Override
 	public void forEachCountry(Consumer<Country> task) {
 		getBoard().getCountries().forEach(task);
 	}
 
+	/**
+	 * Performs an attack between the two selected {@link Country}s
+	 */
 	@Override
 	public void attack() {
 
@@ -93,6 +103,10 @@ public class RequestHandler implements Controller {
 
 	}
 
+	/**
+	 * Fortifies one {@link Country} with one unit from another friendly
+	 * {@link Country}.
+	 */
 	@Override
 	public void fortify() {
 
@@ -110,6 +124,9 @@ public class RequestHandler implements Controller {
 
 	}
 
+	/**
+	 * Checks if there is a valid path between two friendly {@link Country}s.
+	 */
 	@Override
 	public boolean isPathBetween(Country a, Country b) {
 
@@ -132,12 +149,18 @@ public class RequestHandler implements Controller {
 		return game.states.movement.isPathBetween(checkedA, checkedB);
 	}
 
+	/**
+	 * Clears the selected {@link Country}s from all the game states.
+	 */
 	public void clearSelected() {
 		game.states.movement.removeSelected();
 		game.states.combat.removeSelected();
 		game.states.reinforcement.removeSelected();
 	}
-	
+
+	/**
+	 * Reinforces the selected {@link Country} with one unit.
+	 */
 	@Override
 	public void reinforce() {
 
@@ -154,6 +177,9 @@ public class RequestHandler implements Controller {
 
 	}
 
+	/**
+	 * Retrieves the current {@link Player} active in the game.
+	 */
 	@Override
 	public Player getCurrentPlayer() {
 		return game.players.getCurrent();

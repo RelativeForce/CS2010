@@ -12,9 +12,9 @@ import org.newdawn.slick.Color;
 
 import peril.Challenge;
 import peril.Game;
+import peril.Player;
 import peril.ai.AI;
 import peril.ai.Monkey;
-import peril.ai.Player;
 import peril.ui.states.EndState;
 import peril.ui.states.gameStates.CoreGameState;
 
@@ -253,7 +253,7 @@ public class PlayerHelper {
 	public void addAIPlayers(int numberOfPlayers) {
 
 		for (int index = 1; index <= numberOfPlayers; index++) {
-			playing.put(index, new Player(index, colors[index - 1], new Monkey()));
+			playing.put(index, new Player(index, colors[index - 1], new Monkey(game.api)));
 			playing.get(index).init(game.assets.ui);
 		}
 

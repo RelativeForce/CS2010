@@ -10,9 +10,9 @@ import org.newdawn.slick.Image;
 
 import peril.Challenge;
 import peril.Game;
+import peril.Player;
 import peril.Point;
 import peril.ai.AI;
-import peril.ai.Player;
 import peril.board.Army;
 import peril.board.Board;
 import peril.board.Continent;

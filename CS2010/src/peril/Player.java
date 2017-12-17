@@ -1,8 +1,8 @@
-package peril.ai;
+package peril;
 
 import org.newdawn.slick.Color;
 
-import peril.Point;
+import peril.ai.AI;
 import peril.board.Army;
 import peril.io.fileReaders.ImageReader;
 import peril.ui.Viewable;
@@ -15,7 +15,7 @@ import peril.ui.Viewable;
  * @author Joshua_Eddy, Ezekiel_Trinidad
  *
  */
-public final class Player extends Viewable {
+public final class Player extends Viewable implements peril.ai.api.Player{
 
 	/**
 	 * Numerical Representation of the {@link Player}.
@@ -41,6 +41,9 @@ public final class Player extends Viewable {
 	 */
 	public final Army distributableArmy;
 
+	/**
+	 * The {@link AI} that will control this {@link Player}.
+	 */
 	public final AI ai;
 	
 	/**
@@ -138,4 +141,14 @@ public final class Player extends Viewable {
 		String path = uiPath + "player" + number + "Icon.png";
 		setImage(getPosition(), ImageReader.getImage(path).getScaledCopy(90, 40));
 	}
+
+	public int getTotalArmySize() {
+		return totalArmy.getSize();
+	}
+
+	@Override
+	public int getDistributableArmySize() {
+		return distributableArmy.getSize();
+	}
+
 }

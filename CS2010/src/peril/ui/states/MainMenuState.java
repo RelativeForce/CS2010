@@ -9,8 +9,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
+import peril.Player;
 import peril.Point;
-import peril.ai.Player;
 import peril.io.SaveFile;
 import peril.io.fileParsers.MapReader;
 import peril.io.fileReaders.TextFileReader;

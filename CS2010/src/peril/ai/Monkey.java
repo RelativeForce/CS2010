@@ -7,24 +7,25 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import peril.Game;
-import peril.board.Country;
+import peril.ai.api.AIController;
+import peril.ai.api.Country;
+import peril.ai.api.Player;
 
 public class Monkey extends AI {
 
-	public Monkey() {
-		super(500);
+	public Monkey(AIController api) {
+		super(100, api);
 	}
 
 	@Override
-	public boolean processReinforce(Game game) {
+	public boolean processReinforce(AIController api) {
 
 		Map<Integer, Country> countries = new HashMap<>();
 
-		Player current = game.players.getCurrent();
+		Player current = api.getCurrentPlayer();
 
-		game.board.forEachCountry(country -> {
-			if (current.equals(country.getRuler())) {
+		api.forEachCountry(country -> {
+			if (current.equals(country.getOwner())) {
 				countries.put(getReinforceWeight(country, current), country);
 			}
 		});
@@ -39,15 +40,15 @@ public class Monkey extends AI {
 			throw new IllegalStateException("There are no countries");
 		}
 
-		game.states.reinforcement.select(countries.get(highest));
-		game.states.reinforcement.reinfoce();
+		api.select(countries.get(highest));
+		api.reinforce();
 
 		return true;
 
 	}
 
 	@Override
-	public boolean processAttack(Game game) {
+	public boolean processAttack(AIController api) {
 
 		class Entry {
 
@@ -63,19 +64,19 @@ public class Monkey extends AI {
 
 		Map<Integer, Entry> countries = new HashMap<>();
 
-		Player current = game.players.getCurrent();
+		Player current = api.getCurrentPlayer();
 
-		game.board.forEachCountry(country -> {
+		api.forEachCountry(country -> {
 
-			if (current.equals(country.getRuler()) && country.getArmy().getSize() > 1) {
+			if (current.equals(country.getOwner()) && country.getArmySize() > 1) {
 
 				for (Country neighbour : country.getNeighbours()) {
 
-					int value = -country.getArmy().getSize();
+					int value = -country.getArmySize();
 
-					if (!current.equals(neighbour.getRuler())) {
+					if (!current.equals(neighbour.getOwner())) {
 
-						value += neighbour.getArmy().getSize();
+						value += neighbour.getArmySize();
 
 						countries.put(value, new Entry(country, neighbour));
 					}
@@ -91,32 +92,20 @@ public class Monkey extends AI {
 		}
 
 		if (highest == Integer.MIN_VALUE) {
-			if (game.states.combat.getSelected() == null) {
-				game.menus.warMenu.hide();
-			}
 			return false;
 		}
 
-		game.states.combat.select(countries.get(highest).friendly);
-		game.states.combat.select(countries.get(highest).enemy);
+		api.select(countries.get(highest).friendly);
+		api.select(countries.get(highest).enemy);
 
-		if (!game.menus.warMenu.isVisible()) {
-			game.menus.warMenu.show();
-		}
-
-		game.menus.warMenu.attack();
-
-		if (game.states.combat.getSelected() == null) {
-			game.menus.warMenu.hide();
-			game.states.movement.removeSelected();
-		}
+		api.attack();
 
 		return true;
 
 	}
 
 	@Override
-	public boolean processFortify(Game game) {
+	public boolean processFortify(AIController api) {
 
 		class Entry {
 
@@ -130,27 +119,27 @@ public class Monkey extends AI {
 
 		}
 
-		Player current = game.players.getCurrent();
+		Player current = api.getCurrentPlayer();
 
 		Set<Country> internal = new HashSet<>();
 
 		Map<Country, Integer> frontline = new HashMap<>();
 
-		game.board.forEachCountry(country -> {
+		api.forEachCountry(country -> {
 
-			if (current.equals(country.getRuler())) {
+			if (current.equals(country.getOwner())) {
 
 				int enemies = 0;
 
 				for (Country neighbour : country.getNeighbours()) {
 
-					if (!current.equals(neighbour.getRuler())) {
-						enemies += neighbour.getArmy().getSize();
+					if (!current.equals(neighbour.getOwner())) {
+						enemies += neighbour.getArmySize();
 					}
 				}
 
 				if (enemies == 0) {
-					if (country.getArmy().getSize() > 1) {
+					if (country.getArmySize() > 1) {
 						internal.add(country);
 					}
 				} else {
@@ -163,7 +152,7 @@ public class Monkey extends AI {
 
 		frontline.keySet().forEach(bordering -> internal.forEach(safe -> {
 
-			int weight = frontline.get(bordering) - safe.getArmy().getSize();
+			int weight = frontline.get(bordering) - safe.getArmySize();
 
 			possibleMoves.put(weight, new Entry(safe, bordering));
 
@@ -185,11 +174,10 @@ public class Monkey extends AI {
 
 			// If there was a valid link between the safe and border then the secondary will
 			// be the border.
-			if (game.states.movement.isPathBetween(safe, border)) {
-				game.states.movement.select(safe);
-				game.states.movement.select(border);
-				game.states.movement.fortify();
-				game.states.movement.removeSelected();
+			if (api.isPathBetween(safe, border)) {
+				api.select(safe);
+				api.select(border);
+				api.fortify();
 				return true;
 			}
 
@@ -206,15 +194,15 @@ public class Monkey extends AI {
 
 	private int getReinforceWeight(Country country, Player current) {
 
-		int value = -country.getArmy().getSize();
+		int value = -country.getArmySize();
 
 		for (Country c : country.getNeighbours()) {
-			if (!current.equals(c.getRuler())) {
-				value += c.getArmy().getSize();
+			if (!current.equals(c.getOwner())) {
+				value += c.getArmySize();
 			}
 		}
 
-		if (value == -country.getArmy().getSize()) {
+		if (value == -country.getArmySize()) {
 			return Integer.MIN_VALUE;
 		}
 

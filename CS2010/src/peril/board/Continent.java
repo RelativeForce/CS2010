@@ -3,8 +3,8 @@ package peril.board;
 import java.util.LinkedList;
 import java.util.List;
 
+import peril.Player;
 import peril.Point;
-import peril.ai.Player;
 import peril.ui.Clickable;
 import peril.ui.Region;
 
@@ -22,7 +22,7 @@ import peril.ui.Region;
  * @author Joshua_Eddy
  *
  */
-public final class Continent extends Clickable {
+public final class Continent extends Clickable implements peril.ai.api.Continent{
 
 	/**
 	 * The {@link EnvironmentalHazard} that may affect this {@link Continent}.
@@ -181,5 +181,11 @@ public final class Continent extends Clickable {
 
 		}
 
+	}
+
+	
+	@Override
+	public Player getOwner() {
+		return ruler;
 	}
 }

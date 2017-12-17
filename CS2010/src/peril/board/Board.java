@@ -1,9 +1,11 @@
 package peril.board;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import peril.Game;
@@ -18,7 +20,7 @@ import peril.ui.Viewable;
  * @author Joshua_Eddy
  *
  */
-public final class Board extends Viewable implements Observer {
+public final class Board extends Viewable implements Observer, peril.ai.api.Board {
 
 	/**
 	 * The {@link Continent}s in this {@link Board}.
@@ -238,6 +240,16 @@ public final class Board extends Viewable implements Observer {
 			continents.clear();
 		}
 		numberOfCountries = 0;
+	}
+
+	@Override
+	public Set<? extends peril.ai.api.Country> getCountries() {
+
+		HashSet<peril.ai.api.Country> countries = new HashSet<>();
+
+		continents.forEach((continentName, continent) -> countries.addAll(continent.getCountries()));
+
+		return countries;
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package peril.io;
 
 import peril.Game;
-import peril.ai.Player;
+import peril.Player;
 import peril.board.Continent;
 import peril.board.Country;
 import peril.multiThread.Action;
@@ -165,7 +165,7 @@ public class FunctionHandler {
 	 * @return {@link Action}
 	 */
 	private Action<?> reinforceCountry() {
-		return new Action<Game>(game, game -> game.states.reinforcement.reinfoce());
+		return new Action<Game>(game, game -> game.states.reinforcement.reinforce());
 	}
 
 	/**

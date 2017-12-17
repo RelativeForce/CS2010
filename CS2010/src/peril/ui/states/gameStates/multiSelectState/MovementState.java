@@ -13,9 +13,9 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
+import peril.Player;
 import peril.Point;
 import peril.ai.AI;
-import peril.ai.Player;
 import peril.board.Army;
 import peril.board.Country;
 import peril.ui.Button;
@@ -109,7 +109,7 @@ public final class MovementState extends MultiSelectState {
 		super.update(gc, sbg, delta);
 
 		if (getGame().players.getCurrent().ai != AI.USER
-				&& !getGame().players.getCurrent().ai.fortify(getGame(), delta)) {
+				&& !getGame().players.getCurrent().ai.fortify(delta)) {
 			getGame().enterState(getGame().states.reinforcement);
 			getGame().players.nextPlayer();
 		}

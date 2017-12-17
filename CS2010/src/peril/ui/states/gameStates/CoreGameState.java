@@ -18,8 +18,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
+import peril.Player;
 import peril.Point;
-import peril.ai.Player;
 import peril.board.Army;
 import peril.board.Board;
 import peril.board.Country;
@@ -225,7 +225,7 @@ public abstract class CoreGameState extends InteractiveState {
 		}
 
 	}
-	
+
 	/**
 	 * Determines whether or not the specified {@link Country} has been selected by
 	 * this {@link CoreGameState}. If so, this method will also handle highlighting
@@ -330,7 +330,8 @@ public abstract class CoreGameState extends InteractiveState {
 
 			// If there is a ruler then return the colour of the country to that of the
 			// ruler. Otherwise remove the highlight effect.
-			country.setImage(country.getPosition(), ruler != null ? country.getRegion().convert(ruler.color) : null);
+			country.setImage(country.getPosition(), ruler != null ? country.getRegion().convert(ruler.color)
+					: country.getRegion().convert(Color.white));
 
 		}
 

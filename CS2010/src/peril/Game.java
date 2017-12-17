@@ -11,7 +11,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.ai.Player;
+import peril.ai.api.AIController;
+import peril.ai.api.AIRequestHandler;
 import peril.board.Board;
 import peril.board.Continent;
 import peril.board.Country;
@@ -65,6 +66,8 @@ public class Game extends StateBasedGame implements MusicListener {
 	 * {@link Game}.
 	 */
 	public final MenuHelper menus;
+	
+	public final AIController api;
 
 	/**
 	 * The current turn of the {@link Game}. Initially zero;
@@ -122,6 +125,8 @@ public class Game extends StateBasedGame implements MusicListener {
 		this.io = new IOHelper(this, containers);
 
 		this.menus.createHelpPages(this);
+		
+		this.api = new AIRequestHandler(this);
 
 		// Construct the container for the game as a Slick2D state based game.
 		try {

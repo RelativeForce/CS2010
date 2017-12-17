@@ -6,8 +6,8 @@ import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
+import peril.Player;
 import peril.Point;
-import peril.ai.Player;
 import peril.ui.Clickable;
 import peril.ui.Region;
 
@@ -26,7 +26,7 @@ import peril.ui.Region;
  * @see Java.util.List
  *
  */
-public class Country extends Clickable {
+public class Country extends Clickable implements peril.ai.api.Country{
 
 	/**
 	 * Holds the {@link Player} that rules this {@link Country}.
@@ -146,6 +146,13 @@ public class Country extends Clickable {
 	}
 
 	/**
+	 * Returns the size of this {@link Country}'s {@link Army}.
+	 */
+	public int getArmySize() {
+		return army.getSize();
+	}
+
+	/**
 	 * Set an {@link Country#army} to the specifies army.
 	 * 
 	 * @param army
@@ -257,5 +264,16 @@ public class Country extends Clickable {
 	public Player getRuler() {
 		return ruler;
 	}
+	
+	/**
+	 * Retrieves the {@link Player} the rules <code>this</code> {@link Country}.
+	 * 
+	 * @return {@link Country#ruler}.
+	 */
+	public Player getOwner() {
+		return ruler;
+	}
+	
+	
 
 }

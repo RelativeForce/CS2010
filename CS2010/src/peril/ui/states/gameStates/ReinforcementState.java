@@ -7,9 +7,9 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
+import peril.Player;
 import peril.Point;
 import peril.ai.AI;
-import peril.ai.Player;
 import peril.board.Country;
 import peril.ui.Button;
 import peril.ui.Font;
@@ -126,7 +126,7 @@ public final class ReinforcementState extends CoreGameState {
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		super.update(gc, sbg, delta);
 		
-		if(getGame().players.getCurrent().ai != AI.USER && !getGame().players.getCurrent().ai.reinforce(getGame(), delta)) {
+		if(getGame().players.getCurrent().ai != AI.USER && !getGame().players.getCurrent().ai.reinforce(delta)) {
 			getGame().enterState(getGame().states.combat);
 		}
 	}
@@ -152,7 +152,7 @@ public final class ReinforcementState extends CoreGameState {
 	/**
 	 * Reinforces the selected {@link Country}.
 	 */
-	public void reinfoce() {
+	public void reinforce() {
 
 		// Holds the currently highlighted country
 		Country highlightedCountry = getSelected();

@@ -1,45 +1,54 @@
 package peril.ai;
 
-import peril.Game;
+import peril.ai.api.AIController;
 
 public abstract class AI {
 
-	public static final AI USER = new AI(0) {
+	public static final AI USER = new AI() {
 
 		@Override
-		public boolean processReinforce(Game game) {
+		public boolean processReinforce(AIController api) {
 			throw new UnsupportedOperationException("This is a user contrlled player.");
 		}
 
 		@Override
-		public boolean processAttack(Game game) {
+		public boolean processAttack(AIController api) {
 			throw new UnsupportedOperationException("This is a user contrlled player.");
 		}
 
 		@Override
-		public boolean processFortify(Game game) {
+		public boolean processFortify(AIController api) {
 			throw new UnsupportedOperationException("This is a user contrlled player.");
 		}
 	};
 
-	protected final int speed;
+	private final int speed;
 
-	protected int wait;
+	private int wait;
+	
+	private final AIController api;
 
-	public AI(int speed) {
+	public AI(int speed, AIController api) {
 		this.speed = speed;
 		this.wait = 0;
+		this.api = api;
 	}
 
-	public boolean reinforce(Game game, int delta) {
+	private AI() {
+		this.speed = 0;
+		this.wait = 0;
+		this.api = null;
+	}
+	
+	public boolean reinforce(int delta) {
 
-		if (game.players.getCurrent().distributableArmy.getSize() == 0) {
+		if (api.getCurrentPlayer().getDistributableArmySize() == 0) {
 			return false;
 		}
 
 		if (wait <= 0) {
 			wait = speed;
-			return processReinforce(game);
+			return processReinforce(api);
 		}
 
 		wait -= delta;
@@ -47,27 +56,22 @@ public abstract class AI {
 
 	}
 
-	public boolean attack(Game game, int delta) {
-		
-		if (game.players.getCurrent().totalArmy.getSize() == game.players.getCurrent().getCountriesRuled()) {
-			game.menus.warMenu.hide();
-			return false;
-		}
+	public boolean attack(int delta) {
 
 		if (wait <= 0) {
 			wait = speed;
-			return processAttack(game);
+			return processAttack(api);
 		}
 
 		wait -= delta;
 		return true;
 	}
 
-	public boolean fortify(Game game, int delta) {
+	public boolean fortify(int delta) {
 		
 		if (wait <= 0) {
 			wait = speed;
-			return processFortify(game);
+			return processFortify(api);
 		}
 
 		wait -= delta;
@@ -75,10 +79,10 @@ public abstract class AI {
 		return true;
 	}
 
-	protected abstract boolean processReinforce(Game game);
+	protected abstract boolean processReinforce(AIController api);
 
-	protected abstract boolean processAttack(Game game);
+	protected abstract boolean processAttack(AIController api);
 
-	protected abstract boolean processFortify(Game game);
+	protected abstract boolean processFortify(AIController api);
 
 }

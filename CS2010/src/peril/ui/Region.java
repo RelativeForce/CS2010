@@ -1,6 +1,8 @@
 package peril.ui;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
@@ -26,6 +28,8 @@ public final class Region {
 	 * otherwise it is false.
 	 */
 	private boolean[] object;
+	
+	private Map<Color, Image> versions;
 
 	/**
 	 * The <code>int</code> width of this {@link Region}.
@@ -101,6 +105,7 @@ public final class Region {
 		this.object = new boolean[width * height];
 		this.width = width;
 		this.height = height;
+		this.versions = new HashMap<>();
 
 		// Assign all the points in the array as true;
 		for (int index = 0; index < object.length; index++) {
@@ -241,6 +246,10 @@ public final class Region {
 		if (color == null) {
 			throw new NullPointerException("Colour cannot be null");
 		}
+		
+		if(versions.containsKey(color)) {
+			return versions.get(color);
+		}
 
 		// Holds the image of the region.
 		ImageBuffer imagebuffer = new ImageBuffer(width, height);
@@ -260,7 +269,10 @@ public final class Region {
 				}
 			}
 		}
-		return imagebuffer.getImage();
+		
+		Image image = imagebuffer.getImage();
+		versions.put(color, image);
+		return image;
 
 	}
 
@@ -291,6 +303,7 @@ public final class Region {
 	 */
 	private void constructor(boolean[] object, int width, int height) {
 		this.object = new Reducer(object, width, height).reduce();
+		this.versions = new HashMap<>();
 	}
 
 	/**

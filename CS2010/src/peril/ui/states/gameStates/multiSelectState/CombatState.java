@@ -7,9 +7,9 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
+import peril.Player;
 import peril.Point;
 import peril.ai.AI;
-import peril.ai.Player;
 import peril.board.Country;
 import peril.ui.Button;
 import peril.ui.components.menus.WarMenu;
@@ -106,7 +106,7 @@ public final class CombatState extends MultiSelectState {
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		super.update(gc, sbg, delta);
 
-		if(getGame().players.getCurrent().ai != AI.USER && !getGame().players.getCurrent().ai.attack(getGame(), delta)) {
+		if(getGame().players.getCurrent().ai != AI.USER && !getGame().players.getCurrent().ai.attack(delta)) {
 			getGame().enterState(getGame().states.movement);
 		}
 		

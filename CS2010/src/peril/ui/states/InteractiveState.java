@@ -142,7 +142,7 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 */
 	@Override
 	public void addButton(Button button) {
-		buttons.put(button.getId(), button);
+		buttons.put(button.id, button);
 	}
 
 	/**
@@ -248,13 +248,17 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 * Retrieves the the <code>int</code> id of this {@link InteractiveState}.
 	 */
 	@Override
-	public int getID() {
+	public final int getID() {
 		return id;
 	}
-	
-	protected Button getButton(String buttonId) {
-		if(!buttons.containsKey(buttonId)) {
-			throw new IllegalArgumentException("'"+buttonId + "' button is not in " + stateName + " interactive state.");
+
+	/**
+	 * Retrieves a {@link Button} from this {@link InteractiveState} by id.
+	 */
+	public Button getButton(String buttonId) {
+		if (!buttons.containsKey(buttonId)) {
+			throw new IllegalArgumentException(
+					"'" + buttonId + "' button is not in " + stateName + " interactive state.");
 		}
 		return buttons.get(buttonId);
 	}

@@ -15,7 +15,7 @@ import peril.ui.Viewable;
  * @author Joshua_Eddy, Ezekiel_Trinidad
  *
  */
-public final class Player extends Viewable implements peril.ai.api.Player{
+public final class Player extends Viewable implements peril.ai.api.Player {
 
 	/**
 	 * Numerical Representation of the {@link Player}.
@@ -42,10 +42,11 @@ public final class Player extends Viewable implements peril.ai.api.Player{
 	public final Army distributableArmy;
 
 	/**
-	 * The {@link AI} that will control this {@link Player}.
+	 * The {@link AI} that will control this {@link Player}. Assigned
+	 * {@link AI#USER} for a user controlled player.
 	 */
 	public final AI ai;
-	
+
 	/**
 	 * The number of the {@link Country}s the {@link Player} owns.
 	 */
@@ -142,10 +143,16 @@ public final class Player extends Viewable implements peril.ai.api.Player{
 		setImage(getPosition(), ImageReader.getImage(path).getScaledCopy(90, 40));
 	}
 
+	/**
+	 * Retrieves the total size of this {@link Player}s army.
+	 */
 	public int getTotalArmySize() {
 		return totalArmy.getSize();
 	}
 
+	/**
+	 * Retrieves the distribute-able army size.
+	 */
 	@Override
 	public int getDistributableArmySize() {
 		return distributableArmy.getSize();

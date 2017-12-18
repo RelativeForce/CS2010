@@ -86,16 +86,16 @@ public class HelpMenu extends Menu {
 	private final Map<Integer, HelpPage> pages;
 
 	/**
-	 * The {@link Button} that moves this {@link HelpMenu} to the next
+	 * The id of the {@link Button} that moves this {@link HelpMenu} to the next
 	 * {@link HelpPage}.
 	 */
-	private Button next;
+	private final String next;
 
 	/**
-	 * The {@link Button} that moves this {@link HelpMenu} to the previous
+	 * The id of the {@link Button} that moves this {@link HelpMenu} to the previous
 	 * {@link HelpPage}.
 	 */
-	private Button previous;
+	private final String previous;
 
 	/**
 	 * Constructs a new {@link HelpMenu}.
@@ -111,11 +111,14 @@ public class HelpMenu extends Menu {
 	 */
 	public HelpMenu(Point position, Game game) {
 		super(NAME, game, new Region(WIDTH, HEIGHT, position));
+
 		this.pages = new HashMap<>();
 		this.currentPage = 0;
 		this.isInitialised = false;
 		this.pageNumber = 0;
 		this.numberOfPages = 0;
+		this.previous = "previous";
+		this.next = "next";
 	}
 
 	/**
@@ -128,22 +131,6 @@ public class HelpMenu extends Menu {
 
 		// Initialise all the pages
 		pages.forEach((id, page) -> page.init());
-	}
-
-	/**
-	 * Adds a {@link Button} to this {@link HelpMenu}.
-	 */
-	@Override
-	public void addButton(Button button) {
-		super.addButton(button);
-		if (button.getId().equals("next")) {
-			next = button;
-			next.hide();
-		} else if (button.getId().equals("previous")) {
-			previous = button;
-			previous.hide();
-		}
-
 	}
 
 	/**
@@ -202,22 +189,26 @@ public class HelpMenu extends Menu {
 
 		if (pages.containsKey(pageId)) {
 
+			// If there is an next page show the button, otherwise hide it.
 			if (pages.get(pageId).next != NULL_PAGE) {
-				next.show();
+				getButton(next).show();
 			} else {
-				next.hide();
+				getButton(next).hide();
 			}
 
+			// If there is an previous page show the button, otherwise hide it.
 			if (pages.get(pageId).previous != NULL_PAGE) {
-				previous.show();
+				getButton(previous).show();
 			} else {
-				previous.hide();
+				getButton(previous).hide();
 			}
+
 			this.currentPage = pageId;
 			determinePageNumber();
 		} else {
-			next.hide();
-			previous.hide();
+
+			getButton(next).hide();
+			getButton(previous).hide();
 			this.currentPage = pageId;
 		}
 

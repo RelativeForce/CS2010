@@ -75,10 +75,11 @@ public class WarMenu extends Menu {
 	private VisualList<Integer> squadSizes;
 
 	/**
-	 * {@link Button} that will be clicked to attack enemy {@link Country} .
+	 * The id of the {@link Button} that will be clicked to attack enemy
+	 * {@link Country} .
 	 * 
 	 */
-	private Button attackButton;
+	private final String attackButton;
 
 	/**
 	 * The {@link Country} of the attacking {@link Player}.
@@ -118,6 +119,7 @@ public class WarMenu extends Menu {
 		this.countryFont = new Font("Arial", Color.black, 20);
 		this.resultFont = new Font("Arial", Color.black, 15);
 		this.dice = new Dice();
+		this.attackButton = "war";
 
 		this.checkSquadSizes();
 
@@ -169,17 +171,6 @@ public class WarMenu extends Menu {
 	}
 
 	/**
-	 * Adds a {@link Button} to this {@link WarMenu}.
-	 */
-	@Override
-	public void addButton(Button button) {
-		super.addButton(button);
-		if (button.getId().equals("war")) {
-			attackButton = button;
-		}
-	}
-
-	/**
 	 * Adds an {@link Viewable} image to this {@link WarMenu}
 	 */
 	@Override
@@ -196,7 +187,7 @@ public class WarMenu extends Menu {
 	public void show() {
 		super.show();
 
-		attackButton.show();
+		getButton(attackButton).show();
 
 		attacker = getGame().states.combat.getSelected();
 		enemy = getGame().states.combat.getEnemyCountry();
@@ -214,7 +205,7 @@ public class WarMenu extends Menu {
 	@Override
 	public void hide() {
 		super.hide();
-		attackButton.hide();
+		getButton(attackButton).hide();
 		dice.clear();
 	}
 
@@ -264,7 +255,7 @@ public class WarMenu extends Menu {
 								getGame().checkWinner();
 							}
 						}
-						
+
 						getGame().states.combat.clear();
 
 						attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
@@ -313,13 +304,17 @@ public class WarMenu extends Menu {
 		this.hide();
 	}
 
+	/**
+	 * Selects the highest number of dice possible for the current state of the
+	 * {@link WarMenu}.
+	 */
 	public void selectMaxDice() {
-		
+
 		squadSizes.down();
 		squadSizes.down();
-		
+
 	}
-	
+
 	/**
 	 * Gets an <code>int[]</code> of {@link Random#nextInt(int)} with bounds of 1 -
 	 * 6
@@ -404,7 +399,7 @@ public class WarMenu extends Menu {
 				getPosition().y + (getHeight() / 2));
 
 		drawPlayer(g, ruler, (getWidth() / 4));
-		attackButton.hide();
+		getButton(attackButton).hide();
 	}
 
 	/**
@@ -432,7 +427,7 @@ public class WarMenu extends Menu {
 				getPosition().y + (getHeight() / 2) + 30);
 
 		drawPlayer(g, player, (getWidth() / 4));
-		attackButton.hide();
+		getButton(attackButton).hide();
 	}
 
 	/**

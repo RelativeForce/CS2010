@@ -5,18 +5,13 @@ import java.util.Random;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Music;
-import org.newdawn.slick.MusicListener;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.ai.api.Controller;
 import peril.ai.api.RequestHandler;
-import peril.board.Board;
-import peril.board.Continent;
-import peril.board.Country;
-import peril.board.EnvironmentalHazard;
+import peril.board.*;
 import peril.helpers.*;
 import peril.ui.Container;
 import peril.ui.UIEventHandler;
@@ -32,7 +27,7 @@ import peril.ui.states.gameStates.multiSelectState.*;
  * @author Joshua_Eddy
  *
  */
-public class Game extends StateBasedGame implements MusicListener {
+public final class Game extends StateBasedGame{
 
 	/**
 	 * The {@link StateHelper} that holds all this {@link Game}'s states.
@@ -67,6 +62,15 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public final MenuHelper menus;
 	
+	/**
+	 * The {@link MusicHelper} the handles music and looping songs.
+	 */
+	public final MusicHelper music;
+
+	/**
+	 * The {@link Controller} that allows the user/AI to interact with the
+	 * {@link Game}.
+	 */
 	public final Controller api;
 
 	/**
@@ -125,8 +129,10 @@ public class Game extends StateBasedGame implements MusicListener {
 		this.io = new IOHelper(this, containers);
 
 		this.menus.createHelpPages(this);
-		
+
 		this.api = new RequestHandler(this);
+		
+		this.music = new MusicHelper(this);
 
 		// Construct the container for the game as a Slick2D state based game.
 		try {
@@ -189,7 +195,7 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public void autoDistributeCountries() {
 
-		players.forEach(player->{
+		players.forEach(player -> {
 			player.setCountriesRuled(0);
 			player.setContinentsRuled(0);
 			player.totalArmy.setSize(0);
@@ -229,7 +235,7 @@ public class Game extends StateBasedGame implements MusicListener {
 		// Holds the current game state.
 		GameState state = super.getCurrentState();
 
-		// If the current state is a CoreGameState return it as a CoreGameState
+		// If the current state is a CoreGameState return it as a InteractiveState
 		if (state instanceof InteractiveState) {
 			return (InteractiveState) state;
 		}
@@ -255,30 +261,6 @@ public class Game extends StateBasedGame implements MusicListener {
 
 		// Create the instance of the game.
 		new Game();
-
-	}
-
-	/**
-	 * When the currently playing {@link Music} has finished, start the
-	 * {@link Music} of the {@link Game#getCurrentState()} if the
-	 * {@link InteractiveState} has {@link Music}.
-	 */
-	@Override
-	public void musicEnded(Music previousMusic) {
-
-		Music stateMusic = getCurrentState().getMusic();
-
-		if (stateMusic != null) {
-			stateMusic.play();
-		}
-
-	}
-
-	/**
-	 * When the {@link Music} playing in this {@link Game} has changed.
-	 */
-	@Override
-	public void musicSwapped(Music music1, Music music2) {
 
 	}
 

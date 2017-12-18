@@ -5,9 +5,8 @@ import peril.io.SaveFile;
 import peril.io.MapWriter;
 import peril.io.fileParsers.AssetReader;
 import peril.io.fileParsers.FileParser;
-import peril.io.fileReaders.MusicReader;
 import peril.ui.Container;
-import peril.ui.states.gameStates.CoreGameState;
+import peril.ui.states.InteractiveState;
 
 /**
  * This is a helper class of {@link Game} which holds all the input output class
@@ -19,13 +18,8 @@ import peril.ui.states.gameStates.CoreGameState;
 public class IOHelper {
 
 	/**
-	 * The {@link MusicReader} for this {@link Game}.
-	 */
-	public final MusicReader musicHelper;
-
-	/**
-	 * The {@link AssetReader} that loads all the {@link CoreGameState} states
-	 * buttons into the game from memory.
+	 * The {@link AssetReader} that loads all the {@link InteractiveState}'s
+	 * assets into the game from memory.
 	 */
 	public final AssetReader gameLoader;
 
@@ -46,7 +40,6 @@ public class IOHelper {
 	public IOHelper(Game game, Container[] containers) {
 		this.mainMenuLoader = new AssetReader(containers, "menu.txt", game);
 		this.gameLoader = new AssetReader(containers, "game.txt", game);
-		this.musicHelper = new MusicReader(game);
 	}
 
 	/**

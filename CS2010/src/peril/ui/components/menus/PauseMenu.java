@@ -50,9 +50,9 @@ public class PauseMenu extends Menu {
 	private boolean showSaveOption;
 
 	/**
-	 * Holds the instance of the save {@link Button}.
+	 * Holds the id of the save {@link Button}.
 	 */
-	private Button saveButton;
+	private final String saveButton;
 
 	/**
 	 * The {@link Font} for the text of the text of the {@link PauseMenu}.
@@ -75,6 +75,7 @@ public class PauseMenu extends Menu {
 	public PauseMenu(Point position, Game game) {
 		super(NAME, game, new Region(300, 300, position));
 
+		this.saveButton = "save";
 		this.showSaveOption = false;
 
 		// Construct music toggle
@@ -84,8 +85,8 @@ public class PauseMenu extends Menu {
 		this.toggleMusic.setFont(new Font("Arial", Color.black, 10));
 
 		// Construct all links toggle
-		this.toggleAllLinks = new VisualList<>(new Point(position.x + ((getWidth() * 3) / 4), position.y + 70), 30, 15, 2,
-				5);
+		this.toggleAllLinks = new VisualList<>(new Point(position.x + ((getWidth() * 3) / 4), position.y + 70), 30, 15,
+				2, 5);
 		this.toggleAllLinks.add(Toggle.OFF.toString, Toggle.OFF);
 		this.toggleAllLinks.add(Toggle.ON.toString, Toggle.ON);
 		this.toggleAllLinks.setFont(new Font("Arial", Color.black, 10));
@@ -95,19 +96,6 @@ public class PauseMenu extends Menu {
 		// Construct save file list
 		this.saveFiles = new VisualList<>(new Point(position.x + (getWidth() / 2), position.y + 120), 90, 15, 3, 5);
 		this.saveFiles.setFont(new Font("Arial", Color.black, 10));
-	}
-
-	/**
-	 * Adds a button to this {@link PauseMenu}.
-	 */
-	@Override
-	public void addButton(Button button) {
-		super.addButton(button);
-
-		if (button.getId().equals("save")) {
-			saveButton = button;
-			saveButton.hide();
-		}
 	}
 
 	/**
@@ -235,7 +223,7 @@ public class PauseMenu extends Menu {
 	 */
 	public void showSaveOption() {
 		showSaveOption = true;
-		saveButton.show();
+		getButton(saveButton).show();
 	}
 
 	/**
@@ -243,7 +231,7 @@ public class PauseMenu extends Menu {
 	 */
 	public void hideSaveOption() {
 		showSaveOption = false;
-		saveButton.hide();
+		getButton(saveButton).hide();
 	}
 
 	/**

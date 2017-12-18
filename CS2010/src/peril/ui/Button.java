@@ -12,20 +12,20 @@ import peril.multiThread.Action;
  * @author Joseph_Rolli, Joshua_Eddy, Mohammed_Sayed_Ackbar
  *
  */
-public class Button extends Clickable {
+public final class Button extends Clickable {
 
+	/**
+	 * Holds the id of this {@link Button} allowing it to be identified.
+	 */
+	public final String id;
+	
 	/**
 	 * The {@link Action} this {@link Button} will perform when
 	 * {@link Button#click()} is performed.
 	 * 
 	 * @see Action {@link Action}
 	 */
-	private Action<?> action;
-
-	/**
-	 * Holds the id of this {@link Button} allowing it to be identified.
-	 */
-	private String id;
+	private final Action<?> action;
 
 	/**
 	 * Holds whether this {@link Button} should be displayed on screen or not.
@@ -69,15 +69,6 @@ public class Button extends Clickable {
 		if (isVisible) {
 			action.execute();
 		}
-	}
-
-	/**
-	 * Retrieves the id that uniquely identifies this {@link Button}.
-	 * 
-	 * @return <code>String</code> id number
-	 */
-	public String getId() {
-		return id;
 	}
 
 	/**

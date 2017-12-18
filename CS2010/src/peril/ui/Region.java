@@ -23,12 +23,15 @@ import peril.Point;
 public final class Region {
 
 	/**
-	 * <code>boolean[]</code> where if a pixel from the specified
+	 * The <code>boolean[]</code> where if a pixel from the specified
 	 * {@link BufferedImage} is the specified {@link Color} the it is assigned true,
 	 * otherwise it is false.
 	 */
 	private boolean[] object;
-	
+
+	/**
+	 * Holds the {@link Color}ed {@link Image}s of this {@link Region}.
+	 */
 	private Map<Color, Image> versions;
 
 	/**
@@ -57,7 +60,7 @@ public final class Region {
 	 *            {@link Color} of the specified {@link Region}.
 	 */
 	public Region(Image image, Color colour) {
-		constructor(getRegion(image, colour), image.getWidth(), image.getHeight());
+		this(getRegion(image, colour), image.getWidth(), image.getHeight());
 	}
 
 	/**
@@ -75,7 +78,8 @@ public final class Region {
 	 * 
 	 */
 	public Region(boolean[] object, int width, int height) {
-		constructor(object, width, height);
+		this.object = new Reducer(object, width, height).reduce();
+		this.versions = new HashMap<>();
 	}
 
 	/**
@@ -85,7 +89,7 @@ public final class Region {
 	 *            {@link Image}
 	 */
 	public Region(Image image) {
-		constructor(getRegion(image), image.getWidth(), image.getHeight());
+		this(getRegion(image), image.getWidth(), image.getHeight());
 	}
 
 	/**
@@ -246,8 +250,8 @@ public final class Region {
 		if (color == null) {
 			throw new NullPointerException("Colour cannot be null");
 		}
-		
-		if(versions.containsKey(color)) {
+
+		if (versions.containsKey(color)) {
 			return versions.get(color);
 		}
 
@@ -258,7 +262,7 @@ public final class Region {
 		int r = color.getRed();
 		int g = color.getGreen();
 		int b = color.getBlue();
-		
+
 		// Iterate through every pixel in the object[] and if it is true set the
 		// colour of the visual to the specified value.
 		for (int y = 0; y < height; y++) {
@@ -269,7 +273,7 @@ public final class Region {
 				}
 			}
 		}
-		
+
 		Image image = imagebuffer.getImage();
 		versions.put(color, image);
 		return image;
@@ -282,28 +286,13 @@ public final class Region {
 	 * @param position
 	 *            {@link Point}
 	 */
-	protected void setPosition(Point position) {
+	public void setPosition(Point position) {
 
 		if (position == null) {
 			throw new NullPointerException("Position cannot be null.");
 		}
 
 		this.position = position;
-	}
-
-	/**
-	 * Includes the common code from both constructors.
-	 * 
-	 * @param object
-	 *            The object that will be reduce and stored in this {@link Region}.
-	 * @param width
-	 *            This width of the image this region is a part of.
-	 * @param height
-	 *            This height of the image this region is a part of.
-	 */
-	private void constructor(boolean[] object, int width, int height) {
-		this.object = new Reducer(object, width, height).reduce();
-		this.versions = new HashMap<>();
 	}
 
 	/**
@@ -315,7 +304,7 @@ public final class Region {
 	 *            {@link Image}
 	 * @return <code>boolean[][]</code>
 	 */
-	private boolean[] getRegion(Image image) {
+	private static boolean[] getRegion(Image image) {
 		return getRegion(image, null);
 	}
 
@@ -334,7 +323,7 @@ public final class Region {
 	 *            {@link Color}
 	 * @return <code>boolean[][]</code>
 	 */
-	private boolean[] getRegion(Image image, Color color) {
+	private static boolean[] getRegion(Image image, Color color) {
 
 		// The dimensions of the image
 		final int imageHeight = image.getHeight();

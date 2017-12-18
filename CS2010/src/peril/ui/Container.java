@@ -19,7 +19,7 @@ public interface Container {
 	 * @param button
 	 *            {@link Button}
 	 */
-	public void addButton(Button button);
+	void addButton(Button button);
 
 	/**
 	 * Adds a {@link Viewable} to this {@link Container}.
@@ -27,7 +27,7 @@ public interface Container {
 	 * @param image
 	 *            {@link Viewable}
 	 */
-	public void addImage(Viewable image);
+	void addImage(Viewable image);
 
 	/**
 	 * Processes a click at a specified {@link Point} on this {@link Container}.
@@ -37,13 +37,19 @@ public interface Container {
 	 * @return <code>boolean</code> whether a {@link Button} in this
 	 *         {@link Container} was clicked or not.
 	 */
-	public boolean clickedButton(Point click);
+	boolean clickedButton(Point click);
 
 	/**
 	 * Retrieves a uniquely identifying string that denotes this {@link Container}.
 	 * 
 	 * @return name of this {@link Container}.
 	 */
-	public String getName();
+	String getName();
 
+	/**
+	 * Retrieves a {@link Button} by its id.
+	 * 
+	 * @return {@link Button}
+	 */
+	Button getButton(String id);
 }

@@ -163,7 +163,7 @@ public abstract class CoreGameState extends InteractiveState {
 		int numberOfSongs = 3;
 
 		for (int songIndex = 1; songIndex <= numberOfSongs; songIndex++) {
-			backgroundMusic.add(getGame().io.musicHelper.read("game" + songIndex));
+			backgroundMusic.add(getGame().music.read("game" + songIndex));
 		}
 	}
 

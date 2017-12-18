@@ -1,7 +1,9 @@
 package peril.ui.components.menus;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.newdawn.slick.Graphics;
 
@@ -28,7 +30,7 @@ public abstract class Menu extends Clickable implements Container, Component {
 	/**
 	 * A {@link List} of {@link Button}s on this {@link Menu}.
 	 */
-	private List<Button> buttons;
+	private Map<String, Button> buttons;
 
 	/**
 	 * A {@link List} of {@link Viewable}s on this {@link Menu}.
@@ -63,7 +65,7 @@ public abstract class Menu extends Clickable implements Container, Component {
 	public Menu(String name, Game game, Region region) {
 		super(region);
 
-		this.buttons = new LinkedList<>();
+		this.buttons = new HashMap<>();
 		this.images = new LinkedList<>();
 		this.name = name;
 		this.game = game;
@@ -116,7 +118,7 @@ public abstract class Menu extends Clickable implements Container, Component {
 		if (visible) {
 
 			images.forEach(image -> g.drawImage(image.getImage(), image.getPosition().x, image.getPosition().y));
-			buttons.forEach(button -> {
+			buttons.forEach((buttonId, button) -> {
 				if (button.isVisible()) {
 					g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y);
 				}
@@ -151,7 +153,7 @@ public abstract class Menu extends Clickable implements Container, Component {
 
 		button.setPosition(new Point(current.x + menuPosition.x, current.y + menuPosition.y));
 
-		buttons.add(button);
+		buttons.put(button.id, button);
 	}
 
 	/**
@@ -206,16 +208,31 @@ public abstract class Menu extends Clickable implements Container, Component {
 	@Override
 	public boolean clickedButton(Point click) {
 
-		// Iterate through every button on the menu and is a button is clicked
-		for (Button b : buttons) {
+		if (visible) {
+			// Iterate through every button on the menu and is a button is clicked
+			for (Button b : buttons.values()) {
 
-			// If the button is clicked process a click on that button.
-			if (b.isClicked(click)) {
-				b.click();
-				return true;
+				// If the button is clicked process a click on that button.
+				if (b.isClicked(click)) {
+					b.click();
+					return true;
+				}
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Retrieves a {@link Button} from this {@link Menu} by id.
+	 */
+	@Override
+	public Button getButton(String id) {
+
+		if (!buttons.containsKey(id)) {
+			throw new IllegalArgumentException("'" + id + "' button is not in " + name + " menu.");
+		}
+		return buttons.get(id);
+
 	}
 
 	/**
@@ -253,7 +270,7 @@ public abstract class Menu extends Clickable implements Container, Component {
 	 *            {@link Point}
 	 */
 	private void moveButtons(Point vector) {
-		buttons.forEach(button -> button
+		buttons.forEach((buttonId, button) -> button
 				.setPosition(new Point(button.getPosition().x + vector.x, button.getPosition().y + vector.y)));
 	}
 }

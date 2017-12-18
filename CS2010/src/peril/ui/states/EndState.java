@@ -1,7 +1,9 @@
 package peril.ui.states;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -36,41 +38,44 @@ public class EndState extends InteractiveState {
 	/**
 	 * The {@link Font} that the winning {@link Player} will be displayed in.
 	 */
-	private Font winnerFont;
+	private final Font winnerFont;
 
 	/**
 	 * The ordered {@link Player}s finishing positions. {@link Player} at the front
 	 * of the {@link LinkedList} is 1st place.
 	 */
-	private LinkedList<Player> podium;
+	private final LinkedList<Player> podium;
 
 	/**
 	 * The {@link Font} that the losing {@link Player}(s) will be displayed in.
 	 */
-	private Font loserFont;
+	private final Font loserFont;
 
 	/**
 	 * The {@link Button} that will cause the {@link EndState} to return the the
 	 * main menu.
 	 */
-	private Button menuButton;
+	private final String menuButton;
 
 	/**
 	 * The {@link Button} that will cause the {@link EndState} to exit the
 	 * {@link Game}.
 	 */
-	private Button exitButton;
+	private final String exitButton;
 
+	/**
+	 * The background {@link Viewable} of the {@link EndState}.
+	 */
 	private Viewable background;
 
-	private Point first;
+	/**
+	 * Holds the {@link Point} position of the players in the {@link EndState}.
+	 */
+	private Map<Integer, Point> podiumPositions;
 
-	private Point second;
-
-	private Point third;
-
-	private Point fourth;
-	
+	/**
+	 * The background music for this {@link EndState}.
+	 */
 	private Music music;
 
 	/**
@@ -86,6 +91,9 @@ public class EndState extends InteractiveState {
 		podium = new LinkedList<>();
 		winnerFont = new Font("Arial", Color.yellow, 50);
 		loserFont = new Font("Arial", Color.red, 30);
+		exitButton = "exit";
+		menuButton = "menu";
+		podiumPositions = new HashMap<>();
 	}
 
 	/**
@@ -110,22 +118,6 @@ public class EndState extends InteractiveState {
 	@Override
 	public void parseClick(int button, Point click) {
 		super.clickedButton(click);
-	}
-
-	/**
-	 * Adds a {@link Button} to this {@link EndState}.
-	 */
-	@Override
-	public void addButton(Button button) {
-		super.addButton(button);
-
-		// Determine special buttons
-		if (button.getId().equals("menu")) {
-			menuButton = button;
-		} else if (button.getId().equals("exit")) {
-			exitButton = button;
-		}
-
 	}
 
 	/**
@@ -172,9 +164,9 @@ public class EndState extends InteractiveState {
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
-		
-		music = getGame().io.musicHelper.read("victory");
-		
+
+		music = getGame().music.read("victory");
+
 		// Initialise Fonts
 		winnerFont.init();
 		loserFont.init();
@@ -193,12 +185,22 @@ public class EndState extends InteractiveState {
 		}
 
 		int padding = 20;
+
+		// Scale background image based on screen size.
 		background.setImage(background.getPosition(),
 				background.getImage().getScaledCopy(gc.getWidth(), gc.getHeight()));
-		menuButton.setPosition(new Point(gc.getWidth() - menuButton.getWidth() - padding,
-				gc.getHeight() - menuButton.getHeight() - padding));
-		exitButton.setPosition(new Point(padding, gc.getHeight() - exitButton.getHeight() - padding));
 
+		// Reposition menu button based on screen size.
+		int menuX = gc.getWidth() - getButton(menuButton).getWidth() - padding;
+		int menuY = gc.getHeight() - getButton(menuButton).getHeight() - padding;
+		getButton(menuButton).setPosition(new Point(menuX, menuY));
+
+		// Reposition exit button based on screen size.
+		int exitX = padding;
+		int exitY = gc.getHeight() - getButton(exitButton).getHeight() - padding;
+		getButton(exitButton).setPosition(new Point(exitX, exitY));
+
+		// Sets the positions of the podium icons based on the size of the screen.
 		setPodiumPositions(gc);
 	}
 
@@ -221,15 +223,21 @@ public class EndState extends InteractiveState {
 		return music;
 	}
 
+	/**
+	 * Assigns the podium positions on screen based on the size of the screen.
+	 * 
+	 * @param gc
+	 *            {@link GameContainer}
+	 */
 	private void setPodiumPositions(GameContainer gc) {
 
 		int width = gc.getWidth();
 		int height = gc.getHeight();
 
-		first = new Point((width * 41) / 80, (height * 38) / 80);
-		second = new Point((width * 13) / 40, (height * 6) / 10);
-		third = new Point((width * 55) / 80, (height * 25) / 40);
-		fourth = new Point((width * 41) / 80, (height * 33) / 40);
+		podiumPositions.put(1, new Point((width * 41) / 80, (height * 38) / 80));
+		podiumPositions.put(2, new Point((width * 13) / 40, (height * 6) / 10));
+		podiumPositions.put(3, new Point((width * 55) / 80, (height * 25) / 40));
+		podiumPositions.put(4, new Point((width * 41) / 80, (height * 33) / 40));
 
 	}
 
@@ -245,29 +253,9 @@ public class EndState extends InteractiveState {
 	 */
 	private void drawPodium(Graphics g, int width, int height) {
 
-		// Holds the position of the current player.
-		int position = 1;
-
 		// Iterate through each player on the podium.
-		for (Player player : podium) {
-
-			// The players position on screen is dependent on there position in the podium.
-			switch (position) {
-			case 1:
-				drawPlayer(g, player, first);
-				break;
-			case 2:
-				drawPlayer(g, player, second);
-				break;
-			case 3:
-				drawPlayer(g, player, third);
-				break;
-			case 4:
-				drawPlayer(g, player, fourth);
-				break;
-			}
-
-			position++;
+		for (int index = 0; index < podium.size(); index++) {
+			drawPlayer(g, podium.get(index), podiumPositions.get(index + 1));
 		}
 
 	}

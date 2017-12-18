@@ -60,7 +60,7 @@ public class FunctionHandler {
 		case 6:
 			return excuteCombat();
 		case 7:
-			return playGame();
+			return leaveMainMenu();
 		case 8:
 			return reAssignCountries();
 		case 9:
@@ -89,10 +89,15 @@ public class FunctionHandler {
 			return showChallengeMenu();
 		case 21:
 			return hideChallengeMenu();
+		case 22: return leavePlayerSelect();
 		}
 		throw new IllegalArgumentException(code + " is not a valid function code.");
 	}
 
+	private Action<?> leavePlayerSelect() {
+		return new Action<Game>(game, game -> game.states.playerSelection.loadGame());
+	}
+	
 	private Action<?> hideChallengeMenu() {
 		return new Action<Game>(game, game -> game.menus.challengeMenu.hide());
 	}
@@ -250,10 +255,10 @@ public class FunctionHandler {
 	 * 
 	 * @return {@link Action}
 	 */
-	private Action<?> playGame() {
+	private Action<?> leaveMainMenu() {
 		return new Action<Game>(game, game -> {
 			try {
-				game.states.mainMenu.loadMap();
+				game.states.mainMenu.loadGame();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

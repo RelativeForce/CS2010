@@ -391,7 +391,7 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	protected void drawPlayerName(Graphics g) {
 		Player p = getGame().players.getCurrent();
-		g.drawImage(p.getImage(), p.getPosition().x, p.getPosition().y);
+		g.drawImage(p.getImage(), 15, 45);
 	}
 
 	/**

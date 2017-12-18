@@ -27,18 +27,23 @@ public class VisualList<T> extends Clickable implements Component {
 	/**
 	 * The <code>int</code> width of the {@link VisualList}.
 	 */
-	private int width;
+	private final int width;
 
 	/**
 	 * The <code>int</code> height of the {@link VisualList}.
 	 */
-	private int height;
+	private final int height;
 
 	/**
 	 * The <code>int</code> number of {@link Element}s that are displayed in the box
 	 * at once in the {@link VisualList}.
 	 */
 	private int elementsInView;
+
+	/**
+	 * Whether or not this {@link VisualList} is visible or not.
+	 */
+	private boolean visible;
 
 	/**
 	 * The {@link Font} of the text representation of the {@link Element}s.
@@ -49,7 +54,7 @@ public class VisualList<T> extends Clickable implements Component {
 	 * {@link List} of {@link Element}s that are displayed in this
 	 * {@link VisualList}.
 	 */
-	private List<Element> elements;
+	private final List<Element> elements;
 
 	/**
 	 * The {@link Element} that is currently selected in the {@link VisualList}.
@@ -85,13 +90,14 @@ public class VisualList<T> extends Clickable implements Component {
 	 */
 	public VisualList(Point position, int width, int height, int elementsInView, int padding) {
 		super(new Region(width, height * elementsInView, position));
-		elements = new LinkedList<>();
-		selected = null;
+		this.elements = new LinkedList<>();
+		this.selected = null;
 		this.width = width;
 		this.height = height;
 		this.elementsInView = elementsInView;
 		this.padding = padding;
 		this.topElementIndex = 0;
+		this.visible = true;
 	}
 
 	/**
@@ -166,7 +172,7 @@ public class VisualList<T> extends Clickable implements Component {
 				return;
 			}
 		}
-		
+
 		throw new IllegalArgumentException("Element is not present in this visual list");
 
 	}
@@ -189,6 +195,10 @@ public class VisualList<T> extends Clickable implements Component {
 	 *            {@link Point}
 	 */
 	public boolean click(Point click) {
+
+		if (!visible) {
+			return false;
+		}
 
 		// Iterate through all the elements in this list
 		for (Element element : elements) {
@@ -228,6 +238,10 @@ public class VisualList<T> extends Clickable implements Component {
 	 *            {@link Graphics}
 	 */
 	public void draw(Graphics g) {
+
+		if (!visible) {
+			return;
+		}
 
 		g.setColor(Color.white);
 
@@ -318,6 +332,29 @@ public class VisualList<T> extends Clickable implements Component {
 	public void clear() {
 		elements.clear();
 		selected = null;
+	}
+
+	/**
+	 * Shows this {@link VisualList}
+	 */
+	public void show() {
+		visible = true;
+	}
+
+	/**
+	 * Hides this {@link VisualList}.
+	 */
+	public void hide() {
+		visible = false;
+	}
+
+	/**
+	 * Retrieves whether or not the {@link VisualList} is visible or not.
+	 * 
+	 * @return visibility
+	 */
+	public boolean isVisible() {
+		return visible;
 	}
 
 	/**

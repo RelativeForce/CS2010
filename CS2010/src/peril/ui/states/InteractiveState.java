@@ -179,7 +179,9 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 */
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
-		game.menus.helpMenu.changePage(helpId);
+		if (helpId != HelpMenu.NULL_PAGE) {
+			game.menus.helpMenu.changePage(helpId);
+		}
 	}
 
 	/**

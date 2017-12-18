@@ -308,7 +308,7 @@ public final class MapReader extends FileParser {
 		// Holds both the countries if they are in the countries map.
 		Country country1 = countries.get(details[1]);
 		Country country2 = countries.get(details[2]);
-		
+
 		country1.addNeighbour(country2);
 		country2.addNeighbour(country1);
 
@@ -338,8 +338,6 @@ public final class MapReader extends FileParser {
 			throw new IllegalArgumentException("Line " + index + " " + details[2] + " is not a valid army size");
 		}
 
-		
-
 		int playerNumber;
 
 		try {
@@ -347,10 +345,10 @@ public final class MapReader extends FileParser {
 		} catch (Exception e) {
 			throw new IllegalArgumentException(details[1] + " is not a valid player number.");
 		}
-		
-		
+
 		Player player = new Player(playerNumber, game.players.getColor(playerNumber), AI.USER);
 		player.distributableArmy.setSize(armySize);
+		player.setImage(new Point(100, 100), game.players.getPlayerIcon(playerNumber));
 
 		boolean isActive;
 		try {
@@ -360,7 +358,7 @@ public final class MapReader extends FileParser {
 		}
 
 		if (isActive) {
-			game.players.setPlaying(player);
+			game.players.addPlayer(player);
 		} else {
 			game.states.end.addToTop(player);
 		}

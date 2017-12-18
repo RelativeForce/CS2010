@@ -9,7 +9,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
-import peril.Player;
 import peril.Point;
 import peril.io.SaveFile;
 import peril.io.fileParsers.MapReader;
@@ -60,12 +59,6 @@ public class MainMenuState extends InteractiveState {
 	private VisualList<Map> maps;
 
 	/**
-	 * The {@link VisualList} of the number of {@link Player}s that can be in the
-	 * {@link Game}.
-	 */
-	private VisualList<Integer> players;
-
-	/**
 	 * The {@link VisualList} of the saved games read from the saved file.
 	 */
 	private VisualList<SaveFile> saves;
@@ -98,14 +91,12 @@ public class MainMenuState extends InteractiveState {
 
 		// Holds the y of all the menus
 		int menuY = 215;
-		
+
 		maps = new VisualList<>(new Point(15, menuY), 110, 24, 3, 10);
-		players = new VisualList<>(new Point(215, menuY), 20, 24, 3, 5);
 		saves = new VisualList<>(new Point(130, menuY), 80, 18, 4, 10);
 
 		// Populate the visual lists.
 		getMaps();
-		getPlayers();
 
 		// Initialise the fonts;
 		Font listFont = new Font("Arial", Color.black, 19);
@@ -114,12 +105,10 @@ public class MainMenuState extends InteractiveState {
 
 		// Assign list fonts
 		maps.setFont(listFont);
-		players.setFont(listFont);
 		saves.setFont(savesFont);
 
 		// Add components so they are initialised when the state is.
 		super.addComponent(maps);
-		super.addComponent(players);
 		super.addComponent(saves);
 
 	}
@@ -132,14 +121,9 @@ public class MainMenuState extends InteractiveState {
 
 		g.setBackground(Color.black);
 		g.setLineWidth(3f);
-		
+
 		drawImages(g);
 		drawButtons(g);
-
-		if (saves.getSelected() == SaveFile.DEFAULT) {
-			textFont.draw(g, "Players: ", players.getPosition().x, players.getPosition().y - textFont.getHeight());
-			players.draw(g);
-		}
 
 		textFont.draw(g, "Map: ", maps.getPosition().x, maps.getPosition().y - textFont.getHeight());
 		maps.draw(g);
@@ -157,9 +141,7 @@ public class MainMenuState extends InteractiveState {
 
 		if (!super.clickedButton(click)) {
 			if (!maps.click(click)) {
-				if (!saves.click(click)) {
-					players.click(click);
-				}
+				saves.click(click);
 			} else {
 				checkSaves();
 			}
@@ -175,7 +157,7 @@ public class MainMenuState extends InteractiveState {
 		if (key == Input.KEY_ENTER) {
 			// Attempt to load the map
 			try {
-				loadMap();
+				loadGame();
 			} catch (SlickException e) {
 
 			}
@@ -183,8 +165,6 @@ public class MainMenuState extends InteractiveState {
 			if (maps.isClicked(mousePosition)) {
 				maps.up();
 				checkSaves();
-			} else if (players.isClicked(mousePosition)) {
-				players.up();
 			} else if (saves.isClicked(mousePosition)) {
 				saves.up();
 			}
@@ -192,8 +172,6 @@ public class MainMenuState extends InteractiveState {
 			if (maps.isClicked(mousePosition)) {
 				maps.down();
 				checkSaves();
-			} else if (players.isClicked(mousePosition)) {
-				players.down();
 			} else if (saves.isClicked(mousePosition)) {
 				saves.down();
 			}
@@ -262,7 +240,7 @@ public class MainMenuState extends InteractiveState {
 	 * Loads the {@link MainMenuState#listFont} {@link VisualList#getSelected()}
 	 * into the {@link Game} and re-sizes the window of the {@link Game}.
 	 */
-	public void loadMap() throws SlickException {
+	public void loadGame() throws SlickException {
 
 		Map map = maps.getSelected();
 
@@ -277,11 +255,6 @@ public class MainMenuState extends InteractiveState {
 		}
 
 		getGame().players.emptyPlaying();
-		
-		// Loads the game assets and move into the set up state
-		if (saves.getSelected() == SaveFile.DEFAULT) {
-			getGame().players.addAIPlayers(players.getSelected());
-		}	
 
 		getGame().setRoundNumber(0);
 		getGame().players.challenges.clear();
@@ -298,7 +271,13 @@ public class MainMenuState extends InteractiveState {
 		MapReader mapLoader = new MapReader(getGame().assets.maps + map.name, getGame(), saves.getSelected());
 
 		getGame().states.loadingScreen.addReader(mapLoader);
-		getGame().enterState(getGame().states.loadingScreen);
+
+		// Loads the game assets and move into the set up state
+		if (saves.getSelected() == SaveFile.DEFAULT) {
+			getGame().enterState(getGame().states.playerSelection);
+		} else {
+			getGame().enterState(getGame().states.loadingScreen);
+		}
 
 	}
 
@@ -336,15 +315,6 @@ public class MainMenuState extends InteractiveState {
 
 		}
 
-	}
-
-	/**
-	 * The visual representation of the list of players on screen.
-	 */
-	private void getPlayers() {
-		players.add("2", 2);
-		players.add("3", 3);
-		players.add("4", 4);
 	}
 
 	/**

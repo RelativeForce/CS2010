@@ -94,6 +94,8 @@ public final class Game extends StateBasedGame{
 				.append(File.separatorChar).append("assets");
 
 		this.assets = new DirectoryHelper(assetsPath.toString());
+		
+		this.api = new RequestHandler(this);
 
 		// Set the initial round to zero
 		this.currentRound = 0;
@@ -113,24 +115,23 @@ public final class Game extends StateBasedGame{
 
 		// Initialise the game states.
 		MainMenuState mainMenu = new MainMenuState(this, 0);
-		SetupState setup = new SetupState(this, 1);
-		ReinforcementState reinforcement = new ReinforcementState(this, 2);
-		CombatState combat = new CombatState(this, 3);
-		MovementState movement = new MovementState(this, 4);
-		EndState end = new EndState(this, 5);
-		LoadingScreen loadingScreen = new LoadingScreen(this, 6);
+		PlayerSelection playerSelection = new PlayerSelection(this, 1);
+		SetupState setup = new SetupState(this, 2);
+		ReinforcementState reinforcement = new ReinforcementState(this, 3);
+		CombatState combat = new CombatState(this, 4);
+		MovementState movement = new MovementState(this, 5);
+		EndState end = new EndState(this, 6);
+		LoadingScreen loadingScreen = new LoadingScreen(this, 7);
 
-		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen);
+		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen, playerSelection);
 
 		// Set the containers that ui elements will be loaded into.
 		Container[] containers = new Container[] { challengeMenu, helpMenu, pauseMenu, loadingScreen, warMenu, mainMenu,
-				combat, setup, reinforcement, movement, end };
+				combat, setup, reinforcement, movement, end , playerSelection};
 
 		this.io = new IOHelper(this, containers);
 
 		this.menus.createHelpPages(this);
-
-		this.api = new RequestHandler(this);
 		
 		this.music = new MusicHelper(this);
 
@@ -160,6 +161,7 @@ public final class Game extends StateBasedGame{
 	public void initStatesList(GameContainer container) throws SlickException {
 		states.initGame(container, this, new UIEventHandler(this));
 		EnvironmentalHazard.initIcons(assets.ui);
+		players.init(assets.ui);
 	}
 
 	/**

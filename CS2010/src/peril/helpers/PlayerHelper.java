@@ -1,5 +1,6 @@
 package peril.helpers;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -9,12 +10,12 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Image;
 
 import peril.Challenge;
 import peril.Game;
 import peril.Player;
-import peril.ai.AI;
-import peril.ai.Monkey;
+import peril.io.fileReaders.ImageReader;
 import peril.ui.states.EndState;
 import peril.ui.states.gameStates.CoreGameState;
 
@@ -28,6 +29,16 @@ import peril.ui.states.gameStates.CoreGameState;
 public class PlayerHelper {
 
 	/**
+	 * The maximum number of {@link Player}s in the game at any given time.
+	 */
+	public static final int MAX_PLAYERS = 4;
+
+	/**
+	 * The minimum number of {@link Player}s in the game at any given time.
+	 */
+	public static final int MIN_PLAYERS = 2;
+
+	/**
 	 * Contains all the objectives that a {@link Player} can attain in the game.
 	 */
 	public final List<Challenge> challenges;
@@ -37,6 +48,14 @@ public class PlayerHelper {
 	 */
 	private final Map<Integer, Player> playing;
 
+	/**
+	 * Holds all the {@link Player}'s {@link Image} icons in this {@link Game}.
+	 */
+	private final Map<Integer, Image> playerIcons;
+
+	/**
+	 * The {@link Color}s of all the {@link Player}s.
+	 */
 	private final Color[] colors;
 
 	/**
@@ -49,6 +68,9 @@ public class PlayerHelper {
 	 */
 	private Iterator<Integer> index;
 
+	/**
+	 * The current {@link Player}.
+	 */
 	private Player current;
 
 	/**
@@ -59,7 +81,7 @@ public class PlayerHelper {
 	 */
 	public PlayerHelper(Game game) {
 		this.game = game;
-
+		this.playerIcons = new HashMap<>();
 		this.playing = new LinkedHashMap<>();
 		this.index = playing.keySet().iterator();
 		this.challenges = new LinkedList<>();
@@ -143,9 +165,9 @@ public class PlayerHelper {
 
 		// Add the player to the podium and remove it from the players in play.
 		game.states.end.addToTop(player);
-		
+
 		playing.remove(player.number);
-		
+
 		index = playing.keySet().iterator();
 
 		// Bring the iterator through the lit until it finds the player.
@@ -154,7 +176,6 @@ public class PlayerHelper {
 				break;
 			}
 		}
-		
 
 	}
 
@@ -196,7 +217,6 @@ public class PlayerHelper {
 
 		current = player;
 
-		
 	}
 
 	/**
@@ -226,39 +246,19 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * Uses the set of default {@link Players} to populate the playing
-	 * {@link Player}s.
+	 * Adds a {@link Player} to the set of {@link Player}s that are playing.
 	 * 
-	 * @param numberOfPlayers
-	 *            The number of {@link Player}s to be added.
+	 * @param player
 	 */
-	public void addUserPlayers(int numberOfPlayers) {
+	public void addPlayer(Player player) {
 
-		for (int index = 1; index <= numberOfPlayers; index++) {
-			playing.put(index, new Player(index, colors[index - 1], AI.USER));
-			playing.get(index).init(game.assets.ui);
+		if (!playing.containsKey(player.number)) {
+
+			playing.put(player.number, player);
+			index = playing.keySet().iterator();
+			current = playing.get(index.next());
+
 		}
-
-		index = playing.keySet().iterator();
-		current = playing.get(index.next());
-	}
-	
-	/**
-	 * Uses the set of default {@link Players} to populate the playing
-	 * {@link Player}s.
-	 * 
-	 * @param numberOfPlayers
-	 *            The number of {@link Player}s to be added.
-	 */
-	public void addAIPlayers(int numberOfPlayers) {
-
-		for (int index = 1; index <= numberOfPlayers; index++) {
-			playing.put(index, new Player(index, colors[index - 1], new Monkey(game.api)));
-			playing.get(index).init(game.assets.ui);
-		}
-
-		index = playing.keySet().iterator();
-		current = playing.get(index.next());
 	}
 
 	/**
@@ -284,21 +284,6 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * Set a {@link Player} as playing using the number assigned to that player.
-	 * 
-	 * @param player
-	 *            {@link Player}.
-	 */
-	public void setPlaying(Player player) {
-		if (!playing.containsKey(player.number)) {
-			playing.put(player.number, player);
-			player.init(game.assets.ui);
-			index = playing.keySet().iterator();
-			current = playing.get(index.next());
-		}
-	}
-
-	/**
 	 * Gives the current {@link Player} reinforcements based on the number of
 	 * countries they own.
 	 * 
@@ -319,6 +304,41 @@ public class PlayerHelper {
 		}
 	}
 
+	/**
+	 * Retrieves the {@link Image} icon for a {@link Player}
+	 * 
+	 * @param player
+	 *            {@link Player}
+	 * @return {@link Image} icon.
+	 */
+	public Image getPlayerIcon(int player) {
+		return playerIcons.get(player);
+	}
+
+	/**
+	 * Initialises the images of a {@link Player}.
+	 * 
+	 * @param uiPath
+	 *            The path to the folder with the image files in.
+	 */
+	public void init(String uiPath) {
+
+		for (int index = 1; index <= PlayerHelper.MAX_PLAYERS; index++) {
+
+			String path = uiPath + "player" + index + "Icon.png";
+
+			playerIcons.put(index, ImageReader.getImage(path).getScaledCopy(90, 40));
+
+		}
+
+	}
+
+	/**
+	 * Retrieves the {@link Color} associated with a {@link Player}
+	 * 
+	 * @param playerNumber
+	 * @return
+	 */
 	public Color getColor(int playerNumber) {
 		return colors[playerNumber - 1];
 	}

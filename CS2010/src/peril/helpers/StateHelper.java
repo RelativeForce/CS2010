@@ -13,6 +13,7 @@ import peril.ui.states.EndState;
 import peril.ui.states.InteractiveState;
 import peril.ui.states.LoadingScreen;
 import peril.ui.states.MainMenuState;
+import peril.ui.states.PlayerSelection;
 import peril.ui.states.gameStates.CoreGameState;
 import peril.ui.states.gameStates.ReinforcementState;
 import peril.ui.states.gameStates.SetupState;
@@ -68,6 +69,12 @@ public class StateHelper {
 	public final LoadingScreen loadingScreen;
 
 	/**
+	 * The {@link PlayerSelection} that allows the user to select how many players
+	 * will be in the game.
+	 */
+	public final PlayerSelection playerSelection;
+
+	/**
 	 * Constructs a new {@link StateHelper}.
 	 * 
 	 * @param mainMenu
@@ -90,9 +97,12 @@ public class StateHelper {
 	 * @param loadingScreen
 	 *            The {@link LoadingScreen} that will load the map specified files
 	 *            from memory.
+	 * @param playerSelection
+	 *            The {@link PlayerSelection} that allows the user to select how
+	 *            many players will be in the game.
 	 */
 	public StateHelper(MainMenuState mainMenu, CombatState combat, ReinforcementState reinforcement, SetupState setup,
-			MovementState movement, EndState end, LoadingScreen loadingScreen) {
+			MovementState movement, EndState end, LoadingScreen loadingScreen, PlayerSelection playerSelection) {
 		this.mainMenu = mainMenu;
 		this.end = end;
 		this.combat = combat;
@@ -100,6 +110,7 @@ public class StateHelper {
 		this.setup = setup;
 		this.movement = movement;
 		this.loadingScreen = loadingScreen;
+		this.playerSelection = playerSelection;
 	}
 
 	/**
@@ -117,7 +128,7 @@ public class StateHelper {
 
 		// Add starting state to the game container.
 		game.addState(mainMenu);
-
+		game.addState(playerSelection);
 		game.addState(loadingScreen);
 
 		// Add all other states to game container.
@@ -137,9 +148,11 @@ public class StateHelper {
 	}
 
 	/**
-	 * Retrieves the {@link CoreGameState} game state that the game can be saved in by name.
+	 * Retrieves the {@link CoreGameState} game state that the game can be saved in
+	 * by name.
 	 * 
-	 * @param name The name of the {@link CoreGameState}
+	 * @param name
+	 *            The name of the {@link CoreGameState}
 	 * @return {@link CoreGameState}.
 	 */
 	public CoreGameState getSaveState(String name) {

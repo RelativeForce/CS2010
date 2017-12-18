@@ -4,7 +4,6 @@ import org.newdawn.slick.Color;
 
 import peril.ai.AI;
 import peril.board.Army;
-import peril.io.fileReaders.ImageReader;
 import peril.ui.Viewable;
 
 /**
@@ -130,17 +129,6 @@ public final class Player extends Viewable implements peril.ai.api.Player {
 		countries = 0;
 		continents = 0;
 
-	}
-
-	/**
-	 * Initialises the images of a {@link Player}.
-	 * 
-	 * @param uiPath
-	 *            The path to the folder with the image files in.
-	 */
-	public void init(String uiPath) {
-		String path = uiPath + "player" + number + "Icon.png";
-		setImage(getPosition(), ImageReader.getImage(path).getScaledCopy(90, 40));
 	}
 
 	/**

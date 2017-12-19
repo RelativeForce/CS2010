@@ -102,11 +102,6 @@ public class WarMenu extends Menu {
 	private Player ruler;
 
 	/**
-	 * The {@link Viewable} background of this {@link WarMenu}.
-	 */
-	private Viewable background;
-
-	/**
 	 * Constructs a new {@link WarMenu}.
 	 * 
 	 */
@@ -176,8 +171,10 @@ public class WarMenu extends Menu {
 	@Override
 	public void addImage(Viewable image) {
 		super.addImage(image);
-		background = image;
-		background.setImage(this.getPosition(), background.getImage().getScaledCopy(getWidth(), getHeight()));
+		
+		image.scale(getWidth(), getHeight());
+		image.setPosition(getPosition());
+
 	}
 
 	/**

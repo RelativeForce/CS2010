@@ -27,7 +27,7 @@ import peril.ui.states.gameStates.multiSelectState.*;
  * @author Joshua_Eddy
  *
  */
-public final class Game extends StateBasedGame{
+public final class Game extends StateBasedGame {
 
 	/**
 	 * The {@link StateHelper} that holds all this {@link Game}'s states.
@@ -61,7 +61,7 @@ public final class Game extends StateBasedGame{
 	 * {@link Game}.
 	 */
 	public final MenuHelper menus;
-	
+
 	/**
 	 * The {@link MusicHelper} the handles music and looping songs.
 	 */
@@ -94,7 +94,7 @@ public final class Game extends StateBasedGame{
 				.append(File.separatorChar).append("assets");
 
 		this.assets = new DirectoryHelper(assetsPath.toString());
-		
+
 		this.api = new RequestHandler(this);
 
 		// Set the initial round to zero
@@ -123,23 +123,24 @@ public final class Game extends StateBasedGame{
 		EndState end = new EndState(this, 6);
 		LoadingScreen loadingScreen = new LoadingScreen(this, 7);
 
-		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen, playerSelection);
+		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen,
+				playerSelection);
 
 		// Set the containers that ui elements will be loaded into.
 		Container[] containers = new Container[] { challengeMenu, helpMenu, pauseMenu, loadingScreen, warMenu, mainMenu,
-				combat, setup, reinforcement, movement, end , playerSelection};
+				combat, setup, reinforcement, movement, end, playerSelection };
 
 		this.io = new IOHelper(this, containers);
 
 		this.menus.createHelpPages(this);
-		
+
 		this.music = new MusicHelper(this);
 
 		// Construct the container for the game as a Slick2D state based game.
 		try {
 			agc = new AppGameContainer(this);
 			agc.setDisplayMode(400, 300, false);
-			agc.setTargetFrameRate(60);
+			agc.setTargetFrameRate(40);
 
 			// Set the icons of the game
 			String[] icons = new String[] { assets.ui + "goat16.png", assets.ui + "goat32.png" };
@@ -159,9 +160,22 @@ public final class Game extends StateBasedGame{
 	 */
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
-		states.initGame(container, this, new UIEventHandler(this));
+		
+		states.init(this);
+		
 		EnvironmentalHazard.initIcons(assets.ui);
+		
 		players.init(assets.ui);
+
+		UIEventHandler eventHandler = new UIEventHandler(this);
+		
+		// Assign Key and Mouse Listener as the UIEventhandler
+		container.getInput().addKeyListener(eventHandler);
+		container.getInput().addMouseListener(eventHandler);
+
+		// Hide FPS counter
+		container.setShowFPS(false);
+		container.setVSync(true);
 	}
 
 	/**

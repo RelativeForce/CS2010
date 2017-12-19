@@ -310,7 +310,7 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	protected void addHighlight(Country country) {
 		if (country != null) {
-			country.setImage(country.getRegion().getPosition(), country.getRegion().convert(Color.yellow));
+			country.replaceImage(country.getRegion().convert(Color.yellow));
 		}
 	}
 
@@ -330,7 +330,7 @@ public abstract class CoreGameState extends InteractiveState {
 
 			// If there is a ruler then return the colour of the country to that of the
 			// ruler. Otherwise remove the highlight effect.
-			country.setImage(country.getPosition(), ruler != null ? country.getRegion().convert(ruler.color)
+			country.replaceImage(ruler != null ? country.getRegion().convert(ruler.color)
 					: country.getRegion().convert(Color.white));
 
 		}

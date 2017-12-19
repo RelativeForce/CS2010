@@ -156,6 +156,8 @@ public class EndState extends InteractiveState {
 		drawButtons(g);
 
 		drawPodium(g, gc.getWidth(), gc.getHeight());
+		
+		g.destroy();
 	}
 
 	/**
@@ -187,8 +189,7 @@ public class EndState extends InteractiveState {
 		int padding = 20;
 
 		// Scale background image based on screen size.
-		background.setImage(background.getPosition(),
-				background.getImage().getScaledCopy(gc.getWidth(), gc.getHeight()));
+		background.scale(gc.getWidth(), gc.getHeight());
 
 		// Reposition menu button based on screen size.
 		int menuX = gc.getWidth() - getButton(menuButton).getWidth() - padding;

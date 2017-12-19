@@ -166,6 +166,8 @@ public class PlayerSelection extends InteractiveState {
 			}
 
 		});
+		
+		g.destroy();
 
 	}
 
@@ -193,7 +195,7 @@ public class PlayerSelection extends InteractiveState {
 			Player player = new Player(index, color, selectors.get(index).getSelected());
 
 			// Set the player Icon for that player.
-			player.setImage(new Point(100, 100), getGame().players.getPlayerIcon(index));
+			player.replaceImage(getGame().players.getPlayerIcon(index));
 
 			getGame().players.addPlayer(player);
 

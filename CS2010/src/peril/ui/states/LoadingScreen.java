@@ -99,8 +99,7 @@ public final class LoadingScreen extends InteractiveState {
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 
 		// Scale the background image to fill the screen.
-		background.setImage(background.getPosition(),
-				background.getImage().getScaledCopy(gc.getWidth(), gc.getHeight()));
+		background.scale(gc.getWidth(), gc.getHeight());
 
 		changeMusic(gc);
 
@@ -130,6 +129,8 @@ public final class LoadingScreen extends InteractiveState {
 		drawButtons(g);
 
 		progressBar.draw(g);
+		
+		g.destroy();
 
 	}
 
@@ -268,7 +269,7 @@ public final class LoadingScreen extends InteractiveState {
 
 		progressBar.setPosition(barPosition);
 		progressBar.setWidth(barWidth);
-		progressBar.setHeight(40);
+		progressBar.setHeight(windowPaddingY / 2);
 	}
 
 }

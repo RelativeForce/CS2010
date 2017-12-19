@@ -1,13 +1,11 @@
 package peril.helpers;
 
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 
 import peril.Game;
 import peril.Player;
 import peril.board.Army;
 import peril.board.Country;
-import peril.ui.UIEventHandler;
 import peril.ui.components.menus.WarMenu;
 import peril.ui.states.EndState;
 import peril.ui.states.InteractiveState;
@@ -124,7 +122,7 @@ public class StateHelper {
 	 * @param eventHandler
 	 * @throws SlickException
 	 */
-	public void initGame(GameContainer container, Game game, UIEventHandler eventHandler) throws SlickException {
+	public void init(Game game) throws SlickException {
 
 		// Add starting state to the game container.
 		game.addState(mainMenu);
@@ -137,14 +135,6 @@ public class StateHelper {
 		game.addState(combat);
 		game.addState(movement);
 		game.addState(end);
-
-		// Assign Key and Mouse Listener as the UIEventhandler
-		container.getInput().addKeyListener(eventHandler);
-		container.getInput().addMouseListener(eventHandler);
-
-		// Hide FPS counter
-		container.setShowFPS(false);
-		container.setVSync(true);
 	}
 
 	/**

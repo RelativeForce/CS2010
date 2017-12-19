@@ -130,6 +130,8 @@ public class MainMenuState extends InteractiveState {
 
 		textFont.draw(g, "Load: ", saves.getPosition().x, saves.getPosition().y - textFont.getHeight());
 		saves.draw(g);
+		
+		g.destroy();
 
 	}
 

@@ -98,28 +98,22 @@ public final class ReinforcementState extends CoreGameState {
 		super.render(gc, sbg, g);
 
 		super.drawAllLinks(g);
-
 		super.drawArmies(g);
-
 		super.drawImages(g);
-
 		super.drawButtons(g);
-
 		super.drawPlayerName(g);
 
 		String units = Integer.toString(getGame().players.getCurrent().distributableArmy.getSize());
 
 		unitFont.draw(g, units, 150 - (unitFont.getWidth(units) / 2), 45);
-
 		textFont.draw(g, "UNITS", 150 - (textFont.getWidth("UNITS") / 2), 95);
 
 		super.drawPopups(g);
-
 		super.drawHelp(g);
-
 		super.drawPauseMenu(g);
-
 		super.drawChallengeMenu(g);
+		
+		g.destroy();
 	}
 
 	@Override

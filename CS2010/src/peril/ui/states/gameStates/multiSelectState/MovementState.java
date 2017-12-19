@@ -76,29 +76,24 @@ public final class MovementState extends MultiSelectState {
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		super.render(gc, sbg, g);
+		
 		g.setLineWidth(3f);
 
 		super.drawPlayerName(g);
-
 		super.drawAllLinks(g);
-
+		
 		this.drawPath(g);
-
+		
 		super.drawArmies(g);
-
 		super.drawImages(g);
-
 		super.drawButtons(g);
-
 		super.drawPlayerName(g);
-
 		super.drawPopups(g);
-
 		super.drawHelp(g);
-
 		super.drawPauseMenu(g);
-
 		super.drawChallengeMenu(g);
+		
+		g.destroy();
 	}
 
 	@Override

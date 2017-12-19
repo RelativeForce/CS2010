@@ -60,11 +60,6 @@ public class PauseMenu extends Menu {
 	private final Font textFont;
 
 	/**
-	 * The {@link Viewable} that is the background of the {@link PauseMenu}.
-	 */
-	private Viewable background;
-
-	/**
 	 * Constructs a new {@link PauseMenu}.
 	 * 
 	 * @param position
@@ -138,8 +133,8 @@ public class PauseMenu extends Menu {
 	@Override
 	public void addImage(Viewable image) {
 		super.addImage(image);
-		background = image;
-		background.setImage(background.getPosition(), background.getImage().getScaledCopy(getWidth(), getWidth()));
+		image.scale(getWidth(), getWidth());
+		image.setPosition(getPosition());
 
 	}
 

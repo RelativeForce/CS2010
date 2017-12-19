@@ -414,7 +414,7 @@ public class VisualList<T> extends Clickable implements Component {
 		 *            <code>int</code> height of the {@link Element} on screen.
 		 */
 		public void init() {
-			setImage(getRegion().getPosition(), getRegion().convert(Color.yellow));
+			replaceImage(getRegion().convert(Color.yellow));
 		}
 
 		/**

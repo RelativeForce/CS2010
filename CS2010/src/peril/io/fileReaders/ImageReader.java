@@ -39,12 +39,11 @@ public class ImageReader {
 
 		// Attempt to read the specified file and if there is an exception thrown return
 		// null.
-		try {
-
+		try {			
 			return new Image(path);
 
 		} catch (Exception e) {
-			System.out.println("Error: Iamge NOT Found.");
+			System.out.println("Error: Image NOT Found.");
 			e.printStackTrace();
 			return null;
 		}

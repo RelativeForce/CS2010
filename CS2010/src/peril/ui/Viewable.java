@@ -1,6 +1,7 @@
 package peril.ui;
 
 import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 
 import peril.Point;
 
@@ -31,7 +32,7 @@ public class Viewable {
 	 */
 	public Viewable(Point position) {
 		this.image = null;
-		
+
 		if (position == null) {
 			throw new NullPointerException("Position cannot be null");
 		}
@@ -52,12 +53,33 @@ public class Viewable {
 	}
 
 	/**
-	 * Sets the image of the {@link Viewable}, and it's coordinates relative to the
-	 * origin.
+	 * Sets the {@link Image} of the {@link Viewable} and {@link Image#destroy()}s
+	 * the previous one.
 	 */
-	public void setImage(Point position, Image image) {
+	public void replaceImage(Image image) {
+
+		if (this.image != null) {
+
+			try {
+				this.image.destroy();
+			} catch (SlickException e) {
+				e.printStackTrace();
+			}
+		}
+
 		this.image = image;
-		this.position = position;
+	}
+
+	/**
+	 * Sets the {@link Image} of the {@link Viewable} without
+	 * {@link Image#destroy()}ing the previous one.
+	 */
+	public void swapImage(Image image) {
+		this.image = image;
+	}
+
+	public void scale(int width, int height) {
+		image = image.getScaledCopy(width, height);
 	}
 
 	/**
@@ -128,4 +150,9 @@ public class Viewable {
 		throw new NullPointerException("The image is null.");
 	}
 
+	@Override
+	protected void finalize() throws Throwable {
+		if (hasImage())
+			image.destroy();
+	}
 }

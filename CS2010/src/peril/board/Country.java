@@ -138,9 +138,9 @@ public class Country extends Clickable implements peril.ai.api.Country{
 	public void setRuler(Player ruler) {
 		this.ruler = ruler;
 		if (ruler != null) {
-			this.setImage(getRegion().getPosition(), getRegion().convert(ruler.color));
+			this.replaceImage(getRegion().convert(ruler.color));
 		} else {
-			this.setImage(getRegion().getPosition(), getRegion().convert(Color.white));
+			this.replaceImage(getRegion().convert(Color.white));
 		}
 
 	}

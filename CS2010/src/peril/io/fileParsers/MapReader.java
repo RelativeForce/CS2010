@@ -134,12 +134,18 @@ public final class MapReader extends FileParser {
 				game.board.setContinents(continents);
 
 				// Set the normal map as the visual image of the visual representation.
-				game.board.setImage(new Point(0, 0), normalMap);
+				game.board.swapImage(normalMap);
 			}
 		}
 
 	}
 
+	@Override
+	protected void finalize() throws Throwable {
+		normalMap.destroy();
+		countryMap.destroy();
+	}
+	
 	/**
 	 * Parses a <code>String</code> array of details into a new {@link Country}.
 	 * 
@@ -348,7 +354,7 @@ public final class MapReader extends FileParser {
 
 		Player player = new Player(playerNumber, game.players.getColor(playerNumber), AI.USER);
 		player.distributableArmy.setSize(armySize);
-		player.setImage(new Point(100, 100), game.players.getPlayerIcon(playerNumber));
+		player.replaceImage(game.players.getPlayerIcon(playerNumber));
 
 		boolean isActive;
 		try {

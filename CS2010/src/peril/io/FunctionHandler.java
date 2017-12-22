@@ -1,5 +1,7 @@
 package peril.io;
 
+import java.io.IOException;
+
 import org.newdawn.slick.SlickException;
 
 import peril.Game;
@@ -91,11 +93,33 @@ public class FunctionHandler {
 			return showChallengeMenu();
 		case 21:
 			return hideChallengeMenu();
-		case 22: return leavePlayerSelect();
+		case 22:
+			return leavePlayerSelect();
+		case 23:
+			return openWebsite();
 		}
 		throw new IllegalArgumentException(code + " is not a valid function code.");
 	}
 
+	/**
+	 * Retrieves a {@link Action} that opens the strategic goats web site.
+	 * @return {@link Action}
+	 */
+	private Action<?> openWebsite() {
+		return new Action<Game>(game, game -> {
+			String url = "http://strategicgoats.github.io";
+			try {
+				java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+	/**
+	 * Retrieves the {@link Action} that causes the {@link Game} to exit the player selection screen.
+	 * @return
+	 */
 	private Action<?> leavePlayerSelect() {
 		return new Action<Game>(game, game -> {
 			try {
@@ -105,11 +129,19 @@ public class FunctionHandler {
 			}
 		});
 	}
-	
+
+	/**
+	 * Retrieves the {@link Action} that hides the challenge menu.
+	 * @return
+	 */
 	private Action<?> hideChallengeMenu() {
 		return new Action<Game>(game, game -> game.menus.challengeMenu.hide());
 	}
 
+	/**
+	 * Retrieves the {@link Action} that shows the challenge menu.
+	 * @return
+	 */
 	private Action<?> showChallengeMenu() {
 		return new Action<Game>(game, game -> game.menus.challengeMenu.show());
 	}

@@ -114,7 +114,7 @@ public final class Game extends StateBasedGame {
 		this.menus = new MenuHelper(pauseMenu, warMenu, helpMenu, challengeMenu);
 
 		// Initialise the game states.
-		MainMenuState mainMenu = new MainMenuState(this, 0);
+		MainMenu mainMenu = new MainMenu(this, 0);
 		PlayerSelection playerSelection = new PlayerSelection(this, 1);
 		SetupState setup = new SetupState(this, 2);
 		ReinforcementState reinforcement = new ReinforcementState(this, 3);
@@ -139,7 +139,7 @@ public final class Game extends StateBasedGame {
 		// Construct the container for the game as a Slick2D state based game.
 		try {
 			agc = new AppGameContainer(this);
-			agc.setDisplayMode(400, 300, false);
+			agc.setDisplayMode(620,500, false);
 			agc.setTargetFrameRate(40);
 
 			// Set the icons of the game

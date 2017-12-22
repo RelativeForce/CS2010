@@ -1,5 +1,7 @@
 package peril.io;
 
+import org.newdawn.slick.SlickException;
+
 import peril.Game;
 import peril.Player;
 import peril.board.Continent;
@@ -95,7 +97,13 @@ public class FunctionHandler {
 	}
 
 	private Action<?> leavePlayerSelect() {
-		return new Action<Game>(game, game -> game.states.playerSelection.loadGame());
+		return new Action<Game>(game, game -> {
+			try {
+				game.states.playerSelection.loadGame();
+			} catch (SlickException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 	
 	private Action<?> hideChallengeMenu() {

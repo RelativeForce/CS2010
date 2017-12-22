@@ -10,7 +10,7 @@ import peril.ui.components.menus.WarMenu;
 import peril.ui.states.EndState;
 import peril.ui.states.InteractiveState;
 import peril.ui.states.LoadingScreen;
-import peril.ui.states.MainMenuState;
+import peril.ui.states.MainMenu;
 import peril.ui.states.PlayerSelection;
 import peril.ui.states.gameStates.CoreGameState;
 import peril.ui.states.gameStates.ReinforcementState;
@@ -34,9 +34,9 @@ public class StateHelper {
 	public final CombatState combat;
 
 	/**
-	 * The {@link MainMenuState} of the {@link Game}.
+	 * The {@link MainMenu} of the {@link Game}.
 	 */
-	public final MainMenuState mainMenu;
+	public final MainMenu mainMenu;
 
 	/**
 	 * The {@link SetupState} that will allow the user to set up which
@@ -76,7 +76,7 @@ public class StateHelper {
 	 * Constructs a new {@link StateHelper}.
 	 * 
 	 * @param mainMenu
-	 *            The {@link MainMenuState} of the {@link Game}.
+	 *            The {@link MainMenu} of the {@link Game}.
 	 * @param combat
 	 *            The state that displays combat to the user. This is heavily
 	 *            couples with {@link WarMenu}.
@@ -99,7 +99,7 @@ public class StateHelper {
 	 *            The {@link PlayerSelection} that allows the user to select how
 	 *            many players will be in the game.
 	 */
-	public StateHelper(MainMenuState mainMenu, CombatState combat, ReinforcementState reinforcement, SetupState setup,
+	public StateHelper(MainMenu mainMenu, CombatState combat, ReinforcementState reinforcement, SetupState setup,
 			MovementState movement, EndState end, LoadingScreen loadingScreen, PlayerSelection playerSelection) {
 		this.mainMenu = mainMenu;
 		this.end = end;

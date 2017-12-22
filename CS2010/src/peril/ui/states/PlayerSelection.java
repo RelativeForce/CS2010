@@ -29,7 +29,7 @@ import peril.ui.components.menus.HelpMenu;
  * @author Joshua_Eddy
  *
  */
-public class PlayerSelection extends InteractiveState {
+public final class PlayerSelection extends InteractiveState {
 
 	/**
 	 * The name of this {@link PlayerSelection}.
@@ -57,7 +57,11 @@ public class PlayerSelection extends InteractiveState {
 	 * The {@link VisualList} of the number of {@link Player}s that can be in the
 	 * {@link Game}.
 	 */
-	private VisualList<Integer> players;
+	private final VisualList<Integer> players;
+
+	private int width;
+
+	private int height;
 
 	/**
 	 * Constructs a new {@link PlayerSelection}.
@@ -74,6 +78,8 @@ public class PlayerSelection extends InteractiveState {
 		this.allAI = new IdentityHashMap<>();
 		this.selectors = new HashMap<>();
 		this.players = new VisualList<>(new Point(100, 100), 20, 24, 3, 5);
+		this.width = 100;
+		this.height = 100;
 
 		players.setFont(new Font("Arial", Color.black, 19));
 
@@ -166,7 +172,7 @@ public class PlayerSelection extends InteractiveState {
 			}
 
 		});
-		
+
 		g.destroy();
 
 	}
@@ -183,7 +189,7 @@ public class PlayerSelection extends InteractiveState {
 	 * Load the game based on the current state of the elements in this
 	 * {@link PlayerSelection}.
 	 */
-	public void loadGame() {
+	public void loadGame()  throws SlickException{
 
 		// Iterate through the number of players the player has selected
 		for (int index = 1; index <= players.getSelected(); index++) {
@@ -201,8 +207,27 @@ public class PlayerSelection extends InteractiveState {
 
 		}
 
+		getGame().reSize(width, height);
+		
 		// Load the game
 		getGame().enterState(getGame().states.loadingScreen);
+	}
+
+	public void setScreenSize(int width, int height) {
+
+		// Check width
+		if (width <= 0) {
+			throw new IllegalArgumentException("Width must greater than zero.");
+		}
+
+		// Check height
+		if (height <= 0) {
+			throw new IllegalArgumentException("Height must be greater than zero.");
+		}
+		
+		this.width = width;
+		this.height = height;
+
 	}
 
 	/**

@@ -25,7 +25,7 @@ import peril.ui.components.menus.HelpMenu;
  * @see InteractiveState
  *
  */
-public class MainMenuState extends InteractiveState {
+public final class MainMenu extends InteractiveState {
 
 	/**
 	 * The name of a specific {@link InteractiveState}.
@@ -35,12 +35,12 @@ public class MainMenuState extends InteractiveState {
 	/**
 	 * The width of the main menu
 	 */
-	private static final int WIDTH = 400;
+	private static final int WIDTH = 620;
 
 	/**
 	 * The height of the main menu
 	 */
-	private static final int HEIGHT = 300;
+	private static final int HEIGHT = 500;
 
 	/**
 	 * Whether or not the user interface elements have been loaded from memory or
@@ -56,32 +56,32 @@ public class MainMenuState extends InteractiveState {
 	/**
 	 * The {@link VisualList} of the maps read from the map file.
 	 */
-	private VisualList<Map> maps;
+	private final VisualList<Map> maps;
 
 	/**
 	 * The {@link VisualList} of the saved games read from the saved file.
 	 */
-	private VisualList<SaveFile> saves;
+	private final VisualList<SaveFile> saves;
 
 	/**
-	 * The {@link Font} of normal text on the {@link MainMenuState}.
+	 * The {@link Font} of normal text on the {@link MainMenu}.
 	 */
-	private Font textFont;
+	private final Font textFont;
 
 	/**
-	 * The music that plays in the background of this {@link MainMenuState}.
+	 * The music that plays in the background of this {@link MainMenu}.
 	 */
 	private Music background;
 
 	/**
-	 * Constructs a new {@link MainMenuState}
+	 * Constructs a new {@link MainMenu}
 	 * 
 	 * @param game
 	 *            The {@link Game} this state is a part of.
 	 * @param id
-	 *            The ID of this {@link MainMenuState}.
+	 *            The ID of this {@link MainMenu}.
 	 */
-	public MainMenuState(Game game, int id) {
+	public MainMenu(Game game, int id) {
 		super(game, STATE_NAME, id, HelpMenu.NULL_PAGE);
 
 		uiLoaded = false;
@@ -90,7 +90,7 @@ public class MainMenuState extends InteractiveState {
 		mapsFile = TextFileReader.scanFile(game.assets.maps, "maps.txt");
 
 		// Holds the y of all the menus
-		int menuY = 215;
+		int menuY = 415;
 
 		maps = new VisualList<>(new Point(15, menuY), 110, 24, 3, 10);
 		saves = new VisualList<>(new Point(130, menuY), 80, 18, 4, 10);
@@ -114,7 +114,7 @@ public class MainMenuState extends InteractiveState {
 	}
 
 	/**
-	 * Renders this {@link MainMenuState} on screen.
+	 * Renders this {@link MainMenu} on screen.
 	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
@@ -136,7 +136,7 @@ public class MainMenuState extends InteractiveState {
 	}
 
 	/**
-	 * Processed a mouse click on this {@link MainMenuState}.
+	 * Processed a mouse click on this {@link MainMenu}.
 	 */
 	@Override
 	public void parseClick(int button, Point click) {
@@ -151,7 +151,7 @@ public class MainMenuState extends InteractiveState {
 	}
 
 	/**
-	 * Processes a button press on this {@link MainMenuState}.
+	 * Processes a button press on this {@link MainMenu}.
 	 */
 	@Override
 	public void parseButton(int key, char c, Point mousePosition) {
@@ -181,7 +181,7 @@ public class MainMenuState extends InteractiveState {
 	}
 
 	/**
-	 * Initialises the visual elements of this {@link MainMenuState}.
+	 * Initialises the visual elements of this {@link MainMenu}.
 	 */
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
@@ -198,7 +198,7 @@ public class MainMenuState extends InteractiveState {
 	}
 
 	/**
-	 * Enters the {@link MainMenuState}.
+	 * Enters the {@link MainMenu}.
 	 */
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
@@ -218,7 +218,7 @@ public class MainMenuState extends InteractiveState {
 	}
 
 	/**
-	 * Updates this {@link MainMenuState}. When this state is first activated all
+	 * Updates this {@link MainMenu}. When this state is first activated all
 	 * the visual assets of the main menu are loaded in from memory.
 	 */
 	@Override
@@ -231,7 +231,7 @@ public class MainMenuState extends InteractiveState {
 	}
 
 	/**
-	 * Retrieves the {@link MainMenuState} {@link Music}.
+	 * Retrieves the {@link MainMenu} {@link Music}.
 	 */
 	@Override
 	public Music getMusic() {
@@ -239,7 +239,7 @@ public class MainMenuState extends InteractiveState {
 	}
 
 	/**
-	 * Loads the {@link MainMenuState#listFont} {@link VisualList#getSelected()}
+	 * Loads the {@link MainMenu#listFont} {@link VisualList#getSelected()}
 	 * into the {@link Game} and re-sizes the window of the {@link Game}.
 	 */
 	public void loadGame() throws SlickException {
@@ -256,12 +256,11 @@ public class MainMenuState extends InteractiveState {
 			throw new IllegalArgumentException("Height must be greater than zero.");
 		}
 
+		// Reset all the player game elements
 		getGame().players.emptyPlaying();
-
 		getGame().setRoundNumber(0);
 		getGame().players.challenges.clear();
 
-		getGame().reSize(map.width, map.height);
 		getGame().board.setName(map.name);
 
 		// Only load the ui elements for the game on the first load
@@ -276,8 +275,13 @@ public class MainMenuState extends InteractiveState {
 
 		// Loads the game assets and move into the set up state
 		if (saves.getSelected() == SaveFile.DEFAULT) {
+			
+			getGame().states.playerSelection.setScreenSize(map.width, map.height);
 			getGame().enterState(getGame().states.playerSelection);
+			
 		} else {
+			
+			getGame().reSize(map.width, map.height);
 			getGame().enterState(getGame().states.loadingScreen);
 		}
 

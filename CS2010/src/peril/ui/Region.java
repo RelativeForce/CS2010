@@ -19,11 +19,11 @@ import peril.Point;
 public final class Region {
 
 	/**
-	 * The <code>boolean[]</code> where if a pixel from the specified
-	 * {@link BufferedImage} is the specified {@link Color} the it is assigned true,
-	 * otherwise it is false.
+	 * The <code>boolean[]</code> where if a pixel from the specified {@link Image}
+	 * is the specified {@link Color} the it is assigned true, otherwise it is
+	 * false.
 	 */
-	private boolean[] object;
+	private final boolean[] object;
 
 	/**
 	 * The <code>int</code> width of this {@link Region}.
@@ -120,7 +120,7 @@ public final class Region {
 	 */
 	public static Region combine(List<Region> list, int width, int height) {
 
-		// Check params
+		// Check parameters
 		if (list == null) {
 			throw new IllegalArgumentException("List cannot be null.");
 		} else if (list.isEmpty()) {
@@ -130,21 +130,30 @@ public final class Region {
 		} else if (height < 0) {
 			throw new IllegalArgumentException("Height cannot be negative.");
 		}
+		
 		// Holds the region that will be the result.
-		boolean[] base = new boolean[width * height];
+		final boolean[] base = new boolean[width * height];
 
 		// Iterate through all the regions in the list.
-		for (Region region : list) {
+		for (final Region region : list) {
 
 			// Iterate through every element in the region.
 			for (int y = 0; y < region.height; y++) {
 				for (int x = 0; x < region.width; x++) {
 
-					// If the current element in the parameter region is true but this regions's
-					// object is false the set it to true.
-					if (!base[getIndex(region.position.x + x, region.position.y + y, height)]
-							&& region.object[getIndex(x, y, region.height)]) {
-						base[getIndex(region.position.x + x, region.position.y + y, height)] = true;
+					// If the current region object element is true set the corresponding base
+					// element to true.
+					if (region.object[getIndex(x, y, region.height)]) {
+
+						// The index of the current region element
+						final int index = getIndex(region.position.x + x, region.position.y + y, height);
+
+						if (index > base.length) {
+							throw new IllegalArgumentException(
+									index + " is out of bounds of Region. width: " + width + " height: " + height);
+						}
+
+						base[index] = true;
 					}
 				}
 			}
@@ -355,12 +364,12 @@ public final class Region {
 	}
 
 	/**
-	 * Designed to reduce a <code>boolean[][]</code> from a specified
+	 * Designed to reduce a <code>boolean[]</code> from a specified
 	 * <code>int</code> width and <code>int</code> height to the smallest possible
-	 * <code>boolean[][]</code> without loosing any data. This will minimise the
+	 * <code>boolean[]</code> without loosing any data. This will minimise the
 	 * storage space an increase the efficiency greatly. It also helps construct the
 	 * parent class {@link Region}.<br>
-	 * Using {@link Reducer#reduce(boolean[][], int, int)}<br>
+	 * Using {@link Reducer#reduce()}<br>
 	 * Resembles the factory pattern.
 	 * 
 	 * @author Joshua_Eddy

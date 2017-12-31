@@ -27,6 +27,11 @@ public final class Monkey extends AI {
 	private static final int SPEED = 100;
 
 	/**
+	 * The name of this {@link Monkey}.
+	 */
+	private static final String NAME = "Monkey";
+
+	/**
 	 * Constructs a new {@link Monkey} {@link AI}.
 	 * 
 	 * @param api
@@ -34,7 +39,7 @@ public final class Monkey extends AI {
 	 *            state of the game.
 	 */
 	public Monkey(Controller api) {
-		super(SPEED, api);
+		super(NAME, SPEED, api);
 	}
 
 	/**
@@ -125,7 +130,7 @@ public final class Monkey extends AI {
 			final Country border = possibleMoves.get(weights[index]).b;
 
 			api.clearSelected();
-			
+
 			// If there was a valid link between the safe and border then the secondary will
 			// be the border.
 			if (api.select(safe)) {
@@ -157,16 +162,15 @@ public final class Monkey extends AI {
 
 		Map<Integer, Entry> possibleMoves = new HashMap<>();
 
-		frontline.keySet().forEach(bordering -> internal.forEach(safe -> {
-
-			final int weight = frontline.get(bordering) - safe.getArmySize();
+		frontline.keySet().forEach(f -> internal.forEach(i -> {
 
 			// If there is a path between the countries.
-			if (api.isPathBetween(safe, bordering)) {
-				possibleMoves.put(weight, new Entry(safe, bordering));
+			if (api.isPathBetween(i, f)) {
+				possibleMoves.put(frontline.get(f), new Entry(i, f));
 			}
 
 		}));
+
 		return possibleMoves;
 	}
 
@@ -193,22 +197,26 @@ public final class Monkey extends AI {
 
 			if (current.equals(country.getOwner())) {
 
-				int enemies = 0;
+				// The default weight of this country
+				final int defaultValue = -country.getArmySize();
+
+				// The current value.
+				int value = defaultValue;
 
 				// Iterate through all the country's neighbours.
 				for (Country neighbour : country.getNeighbours()) {
 					if (!current.equals(neighbour.getOwner())) {
-						enemies += neighbour.getArmySize();
+						value += neighbour.getArmySize();
 					}
 				}
 
-				// Add the country to the appropriate collection.
-				if (enemies == 0) {
+				// If the current country is an internal country.
+				if (value == defaultValue) {
 					if (country.getArmySize() > 1) {
 						internal.add(country);
 					}
 				} else {
-					frontline.put(country, enemies);
+					frontline.put(country, value);
 				}
 			}
 		});
@@ -230,17 +238,25 @@ public final class Monkey extends AI {
 		// Get the weightings of each country on the board.
 		api.forEachCountry(country -> {
 
+			// If the country is friendly.
 			if (current.equals(country.getOwner())) {
 
 				int value = -country.getArmySize();
 
-				for (Country c : country.getNeighbours()) {
-					if (!current.equals(c.getOwner())) {
-						value += c.getArmySize();
+				// Iterate through all the neighbour countries.
+				for (Country neighbour : country.getNeighbours()) {
+
+					// If the neighbour is an enemy country.
+					if (!current.equals(neighbour.getOwner())) {
+						value += neighbour.getArmySize();
 					}
 				}
 
-				countries.put(value, country);
+				// If the current country has enemy countries.
+				if (value != -country.getArmySize()) {
+					countries.put(value, country);
+				}
+
 			}
 		});
 
@@ -267,11 +283,11 @@ public final class Monkey extends AI {
 
 				for (Country neighbour : country.getNeighbours()) {
 
-					int value = -country.getArmySize();
+					int value = country.getArmySize();
 
 					if (!current.equals(neighbour.getOwner())) {
 
-						value += neighbour.getArmySize();
+						value -= neighbour.getArmySize();
 
 						countries.put(value, new Entry(country, neighbour));
 					}

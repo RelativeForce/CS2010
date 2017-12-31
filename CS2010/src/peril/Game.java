@@ -140,7 +140,7 @@ public final class Game extends StateBasedGame {
 		try {
 			agc = new AppGameContainer(this);
 			agc.setDisplayMode(620,500, false);
-			agc.setTargetFrameRate(40);
+			agc.setTargetFrameRate(60);
 
 			// Set the icons of the game
 			String[] icons = new String[] { assets.ui + "goat16.png", assets.ui + "goat32.png" };

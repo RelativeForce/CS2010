@@ -14,7 +14,7 @@ import peril.ui.Viewable;
  * @author Joshua_Eddy, Ezekiel_Trinidad
  *
  */
-public final class Player extends Viewable implements peril.ai.api.Player {
+public final class Player extends Viewable implements peril.controllers.api.Player {
 
 	/**
 	 * Numerical Representation of the {@link Player}.

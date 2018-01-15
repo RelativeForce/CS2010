@@ -4,15 +4,15 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
-import peril.ai.api.Player;
-import peril.ai.api.Controller;
+import peril.controllers.ModelController;
+import peril.controllers.api.Player;
 import peril.board.Country;
 import peril.ui.states.gameStates.multiSelectState.MovementState;
 
 public class Fortify extends ModelState {
 
 	@Override
-	public boolean select(Country country, Controller api) {
+	public boolean select(Country country, ModelController api) {
 
 		final boolean selectPrimary = selectPrimary(country, api);
 		final boolean selectSecondary = selectSecondary(country, api);
@@ -109,7 +109,7 @@ public class Fortify extends ModelState {
 	 * {@link MovementState#isValidLink(Country)}</li>
 	 * </ul>
 	 */
-	protected boolean selectPrimary(Country country, Controller api) {
+	protected boolean selectPrimary(Country country, ModelController api) {
 
 		if (country == null) {
 			
@@ -135,7 +135,7 @@ public class Fortify extends ModelState {
 	 * {@link MovementState#isValidLink(Country)}</li>
 	 * </ul>
 	 */
-	protected boolean selectSecondary(Country country, Controller api) {
+	protected boolean selectSecondary(Country country, ModelController api) {
 		
 		if (country == null || getPrimary() == null) {
 			

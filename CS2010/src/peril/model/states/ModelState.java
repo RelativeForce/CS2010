@@ -6,8 +6,8 @@ import java.util.List;
 import org.newdawn.slick.Color;
 
 import peril.Player;
-import peril.ai.api.Controller;
 import peril.board.Country;
+import peril.controllers.ModelController;
 import peril.ui.states.gameStates.CoreGameState;
 
 public abstract class ModelState {
@@ -72,7 +72,7 @@ public abstract class ModelState {
 	 * @return Whether or not the specified {@link Country} has been selected by
 	 *         this {@link ModelState}.
 	 */
-	public abstract boolean select(Country country, Controller api);
+	public abstract boolean select(Country country, ModelController api);
 
 	/**
 	 * Adds the highlight effect to a {@link Country} assuming the country is not

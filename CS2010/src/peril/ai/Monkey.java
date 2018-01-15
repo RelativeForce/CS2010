@@ -7,9 +7,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import peril.ai.api.Controller;
-import peril.ai.api.Country;
-import peril.ai.api.Player;
+import peril.controllers.AIController;
+import peril.controllers.api.Country;
+import peril.controllers.api.Player;
 
 /**
  * A very stupid and predictable {@link AI}.
@@ -35,10 +35,10 @@ public final class Monkey extends AI {
 	 * Constructs a new {@link Monkey} {@link AI}.
 	 * 
 	 * @param api
-	 *            The {@link Controller} that this {@link AI} will use to query the
+	 *            The {@link AIController} that this {@link AI} will use to query the
 	 *            state of the game.
 	 */
-	public Monkey(Controller api) {
+	public Monkey(AIController api) {
 		super(NAME, SPEED, api);
 	}
 
@@ -47,7 +47,7 @@ public final class Monkey extends AI {
 	 * countries based on the size of the enemy armies at those countries.
 	 */
 	@Override
-	public boolean processReinforce(Controller api) {
+	public boolean processReinforce(AIController api) {
 
 		Map<Integer, Country> countries = getReinforceWeightings(api);
 
@@ -76,7 +76,7 @@ public final class Monkey extends AI {
 	 * This {@link Monkey} will attack the largest thread at its borders first.
 	 */
 	@Override
-	public boolean processAttack(Controller api) {
+	public boolean processAttack(AIController api) {
 
 		Map<Integer, Entry> countries = getAttackWeightings(api);
 
@@ -104,7 +104,7 @@ public final class Monkey extends AI {
 	 * attack the most neighbouring countries.
 	 */
 	@Override
-	public boolean processFortify(Controller api) {
+	public boolean processFortify(AIController api) {
 
 		final Set<Country> internal = new HashSet<>();
 
@@ -157,7 +157,7 @@ public final class Monkey extends AI {
 	 *            {@link Country}s that border enemy {@link Country}s
 	 * @return weightings
 	 */
-	private Map<Integer, Entry> getFortifyWeightings(Controller api, Set<Country> internal,
+	private Map<Integer, Entry> getFortifyWeightings(AIController api, Set<Country> internal,
 			Map<Country, Integer> frontline) {
 
 		Map<Integer, Entry> possibleMoves = new HashMap<>();
@@ -180,10 +180,10 @@ public final class Monkey extends AI {
 	 * {@link Country}s that border NO enemy {@link Country}s to 'internal'.
 	 * 
 	 * @param api
-	 *            {@link Controller}
+	 *            {@link AIController}
 	 * 
 	 */
-	private void defineFrontline(Controller api, Set<Country> internal, Map<Country, Integer> frontline) {
+	private void defineFrontline(AIController api, Set<Country> internal, Map<Country, Integer> frontline) {
 
 		Player current = api.getCurrentPlayer();
 
@@ -226,11 +226,11 @@ public final class Monkey extends AI {
 	 * Retrieves the weighting for a country that the {@link Monkey} may reinforce.
 	 * 
 	 * @param api
-	 *            The {@link Controller} that this {@link AI} will use to query the
+	 *            The {@link AIController} that this {@link AI} will use to query the
 	 *            state of the game.
 	 * @return weighting
 	 */
-	private Map<Integer, Country> getReinforceWeightings(Controller api) {
+	private Map<Integer, Country> getReinforceWeightings(AIController api) {
 
 		Map<Integer, Country> countries = new HashMap<>();
 		Player current = api.getCurrentPlayer();
@@ -267,11 +267,11 @@ public final class Monkey extends AI {
 	 * Retrieves the weighting for a country that the {@link Monkey} may attack.
 	 * 
 	 * @param api
-	 *            The {@link Controller} that this {@link AI} will use to query the
+	 *            The {@link AIController} that this {@link AI} will use to query the
 	 *            state of the game.
 	 * @return weighting
 	 */
-	private Map<Integer, Entry> getAttackWeightings(Controller api) {
+	private Map<Integer, Entry> getAttackWeightings(AIController api) {
 
 		Map<Integer, Entry> countries = new HashMap<>();
 

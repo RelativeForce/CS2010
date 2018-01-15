@@ -22,7 +22,7 @@ import peril.ui.Region;
  * @author Joshua_Eddy
  *
  */
-public final class Continent extends Clickable implements peril.ai.api.Continent{
+public final class Continent extends Clickable implements peril.controllers.api.Continent{
 
 	/**
 	 * The {@link EnvironmentalHazard} that may affect this {@link Continent}.

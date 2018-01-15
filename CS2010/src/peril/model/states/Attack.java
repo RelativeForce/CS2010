@@ -1,12 +1,12 @@
 package peril.model.states;
 
-import peril.ai.api.Controller;
 import peril.board.Country;
+import peril.controllers.ModelController;
 
 public class Attack extends ModelState {
 
 	@Override
-	public boolean select(Country country, Controller api) {
+	public boolean select(Country country, ModelController api) {
 
 		final boolean selectPrimary = selectPrimary(country, api);
 		final boolean selectSecondary = selectSecondary(country);
@@ -52,7 +52,7 @@ public class Attack extends ModelState {
 	 * <li>It is ruled by the current player.</li>
 	 * </ul>
 	 */
-	private boolean selectPrimary(Country country, Controller api) {
+	private boolean selectPrimary(Country country, ModelController api) {
 		return country != null && api.getCurrentPlayer().equals(country.getRuler());
 	}
 

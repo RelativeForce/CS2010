@@ -26,7 +26,7 @@ import peril.ui.Region;
  * @see Java.util.List
  *
  */
-public class Country extends Clickable implements peril.ai.api.Country{
+public class Country extends Clickable implements peril.controllers.api.Country{
 
 	/**
 	 * Holds the {@link Player} that rules this {@link Country}.

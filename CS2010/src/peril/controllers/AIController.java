@@ -1,6 +1,10 @@
-package peril.ai.api;
+package peril.controllers;
 
 import java.util.function.Consumer;
+
+import peril.controllers.api.Board;
+import peril.controllers.api.Country;
+import peril.controllers.api.Player;
 
 /**
  * The API for all user/AI interactions with the game states.
@@ -8,7 +12,7 @@ import java.util.function.Consumer;
  * @author Joshua_Eddy
  *
  */
-public interface Controller {
+public interface AIController {
 
 	/**
 	 * Retrieves the {@link Board}.
@@ -35,14 +39,14 @@ public interface Controller {
 
 	/**
 	 * Performs an attack from the first {@link Country} to the second
-	 * {@link Country} that was selected using {@link Controller#select(Country)}.
+	 * {@link Country} that was selected using {@link AIController#select(Country)}.
 	 * This method also handles hiding an showing the UI elements of combat.<br>
 	 * <br>
 	 * This method will throw exceptions in the following scenarios:
 	 * <ul>
 	 * <li>The games current state is not 'Combat'.</li>
 	 * <li>There is not two countries selected using
-	 * {@link Controller#select(Country)}.</li>
+	 * {@link AIController#select(Country)}.</li>
 	 * </ul>
 	 *
 	 */
@@ -51,20 +55,20 @@ public interface Controller {
 	/**
 	 * Fortifies the second {@link Country} with one unit from the first
 	 * {@link Country} to that was selected using
-	 * {@link Controller#select(Country)}.
+	 * {@link AIController#select(Country)}.
 	 * 
 	 * <br>
 	 * This method will throw exceptions in the following scenarios:
 	 * <ul>
 	 * <li>The games current state is not 'Fortify'.</li>
 	 * <li>There is not two countries selected using
-	 * {@link Controller#select(Country)}.</li>
+	 * {@link AIController#select(Country)}.</li>
 	 * </ul>
 	 */
 	void fortify();
 
 	/**
-	 * A pre-check for {@link Controller#fortify()}, this retrieves whether or not
+	 * A pre-check for {@link AIController#fortify()}, this retrieves whether or not
 	 * there is a valid path between two {@link Country}s owned by the same
 	 * {@link Player}.
 	 * 
@@ -78,7 +82,7 @@ public interface Controller {
 
 	/**
 	 * Reinforces the {@link Country} selected using
-	 * {@link Controller#select(Country)} with one unit.
+	 * {@link AIController#select(Country)} with one unit.
 	 */
 	void reinforce();
 

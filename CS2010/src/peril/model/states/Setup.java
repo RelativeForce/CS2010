@@ -1,7 +1,7 @@
 package peril.model.states;
 
-import peril.ai.api.Controller;
 import peril.board.Country;
+import peril.controllers.ModelController;
 import peril.ui.states.gameStates.SetupState;
 
 public class Setup extends ModelState{
@@ -9,7 +9,7 @@ public class Setup extends ModelState{
 	/**
 	 * During {@link SetupState} any country is select-able.
 	 */
-	public boolean select(Country country, Controller api) {
+	public boolean select(Country country, ModelController api) {
 		
 		removeHighlight(getSelected(0));
 		deselectAt(0);

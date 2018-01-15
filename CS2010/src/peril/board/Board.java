@@ -20,7 +20,7 @@ import peril.ui.Viewable;
  * @author Joshua_Eddy
  *
  */
-public final class Board extends Viewable implements Observer, peril.ai.api.Board {
+public final class Board extends Viewable implements Observer, peril.controllers.api.Board {
 
 	/**
 	 * The {@link Continent}s in this {@link Board}.
@@ -243,9 +243,9 @@ public final class Board extends Viewable implements Observer, peril.ai.api.Boar
 	}
 
 	@Override
-	public Set<? extends peril.ai.api.Country> getCountries() {
+	public Set<? extends peril.controllers.api.Country> getCountries() {
 
-		HashSet<peril.ai.api.Country> countries = new HashSet<>();
+		HashSet<peril.controllers.api.Country> countries = new HashSet<>();
 
 		continents.forEach((continentName, continent) -> countries.addAll(continent.getCountries()));
 

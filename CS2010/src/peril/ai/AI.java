@@ -1,9 +1,9 @@
 package peril.ai;
 
-import peril.ai.api.Country;
-import peril.ai.api.Player;
-import peril.ai.api.Board;
-import peril.ai.api.Controller;
+import peril.controllers.api.Country;
+import peril.controllers.api.Player;
+import peril.controllers.AIController;
+import peril.controllers.api.Board;
 
 /**
  * An AI player of the game. This AI will perform an action based on the current
@@ -23,17 +23,17 @@ public abstract class AI {
 	public static final AI USER = new AI() {
 
 		@Override
-		public boolean processReinforce(Controller api) {
+		public boolean processReinforce(AIController api) {
 			throw new UnsupportedOperationException("This is a user contrlled player.");
 		}
 
 		@Override
-		public boolean processAttack(Controller api) {
+		public boolean processAttack(AIController api) {
 			throw new UnsupportedOperationException("This is a user contrlled player.");
 		}
 
 		@Override
-		public boolean processFortify(Controller api) {
+		public boolean processFortify(AIController api) {
 			throw new UnsupportedOperationException("This is a user contrlled player.");
 		}
 	};
@@ -49,10 +49,10 @@ public abstract class AI {
 	public final String name;
 
 	/**
-	 * The {@link Controller} that this {@link AI} will use to query the state of
+	 * The {@link AIController} that this {@link AI} will use to query the state of
 	 * the game.
 	 */
-	private final Controller api;
+	private final AIController api;
 
 	/**
 	 * The number of milliseconds that this {@link AI} will wait before performing
@@ -77,10 +77,10 @@ public abstract class AI {
 	 *            If this is zero or lower then the then the {@link AI} will perform
 	 *            its actions at the frame rate of the display.
 	 * @param api
-	 *            The {@link Controller} that this {@link AI} will use to query the
+	 *            The {@link AIController} that this {@link AI} will use to query the
 	 *            state of the game.
 	 */
-	public AI(String name, int defaultSpeed, Controller api) {
+	public AI(String name, int defaultSpeed, AIController api) {
 		this.name = name;
 		this.wait = 0;
 		this.api = api;
@@ -181,7 +181,7 @@ public abstract class AI {
 	}
 
 	/**
-	 * Perform the reinforce operation using the specified {@link Controller}. This
+	 * Perform the reinforce operation using the specified {@link AIController}. This
 	 * operation should be specific to the specialised instance of the
 	 * {@link AI}.<br>
 	 * <br>
@@ -190,26 +190,26 @@ public abstract class AI {
 	 * <li>Only reinforce the selected {@link Country} <strong>ONCE</strong>.</li>
 	 * <li>The operation should be completely functional and rely on
 	 * <strong>ANY</strong> data that is not provided by the
-	 * {@link Controller}.</li>
+	 * {@link AIController}.</li>
 	 * <li>The selected {@link Country} must be owned by the current {@link Player}
-	 * which can be retrieved using {@link Controller#getCurrentPlayer()}.</li>
+	 * which can be retrieved using {@link AIController#getCurrentPlayer()}.</li>
 	 * </ul>
 	 * 
 	 * This method must:
 	 * <ol>
-	 * <li>Select a {@link Country} using {@link Controller#select(Country)}.</li>
-	 * <li>Reinforce that {@link Country} using {@link Controller#reinforce()}.</li>
+	 * <li>Select a {@link Country} using {@link AIController#select(Country)}.</li>
+	 * <li>Reinforce that {@link Country} using {@link AIController#reinforce()}.</li>
 	 * </ol>
 	 * 
 	 * @param api
-	 *            {@link Controller}
+	 *            {@link AIController}
 	 * @return Whether or not this {@link AI} wishes to perform another operation or
-	 *         not. If not the {@link Controller}
+	 *         not. If not the {@link AIController}
 	 */
-	protected abstract boolean processReinforce(Controller api);
+	protected abstract boolean processReinforce(AIController api);
 
 	/**
-	 * Perform the attack operation using the specified {@link Controller}. This
+	 * Perform the attack operation using the specified {@link AIController}. This
 	 * operation should be specific to the specialised instance of the
 	 * {@link AI}.<br>
 	 * <br>
@@ -217,7 +217,7 @@ public abstract class AI {
 	 * <ul>
 	 * <li>Only attack the target {@link Country} <strong>ONCE</strong>.</li>
 	 * <li>The operation should be completely functional and rely on
-	 * <strong>NO</strong> data that is not provided by the {@link Controller}.</li>
+	 * <strong>NO</strong> data that is not provided by the {@link AIController}.</li>
 	 * <li>The primary {@link Country} should have more than a one unit army.</li>
 	 * <li>The primary {@link Country} that is selected must be owned by the current
 	 * {@link Player}.</li>
@@ -229,26 +229,26 @@ public abstract class AI {
 	 * This method must:
 	 * <ol>
 	 * <li>Select a primary {@link Country} using
-	 * {@link Controller#select(Country)}.</li>
+	 * {@link AIController#select(Country)}.</li>
 	 * <li>Select a target {@link Country} using
-	 * {@link Controller#select(Country)}.</li>
-	 * <li>Attack that {@link Country} using {@link Controller#attack()}.</li>
+	 * {@link AIController#select(Country)}.</li>
+	 * <li>Attack that {@link Country} using {@link AIController#attack()}.</li>
 	 * </ol>
 	 * 
 	 * The order that the {@link Country}s are selected matters. The primary
 	 * {@link Country} <strong>MUST</strong> be selected first. The selected
-	 * {@link Country}s can be cleared using {@link Controller#clearSelected()}.
+	 * {@link Country}s can be cleared using {@link AIController#clearSelected()}.
 	 * <br>
 	 * 
 	 * @param api
-	 *            {@link Controller}
+	 *            {@link AIController}
 	 * @return Whether or not this {@link AI} wishes to perform another attack or
 	 *         not.
 	 */
-	protected abstract boolean processAttack(Controller api);
+	protected abstract boolean processAttack(AIController api);
 
 	/**
-	 * Perform the fortify operation using the specified {@link Controller}. This
+	 * Perform the fortify operation using the specified {@link AIController}. This
 	 * operation should be specific to the specialised instance of the
 	 * {@link AI}.<br>
 	 * <br>
@@ -257,35 +257,35 @@ public abstract class AI {
 	 * <ul>
 	 * <li>Only fortify the target {@link Country} <strong>ONCE</strong>.</li>
 	 * <li>The operation should be completely functional and rely on
-	 * <strong>NO</strong> data that is not provided by the {@link Controller}.</li>
+	 * <strong>NO</strong> data that is not provided by the {@link AIController}.</li>
 	 * <li>The primary {@link Country} must have more than a one unit army.</li>
 	 * <li>The primary and target {@link Country}s must be owned by the same
 	 * {@link Player}.</li>
 	 * <li>The target {@link Country} must have a valid path between is and the
 	 * primary {@link Country}. Use
-	 * {@link Controller#isPathBetween(Country, Country)} to check this.</li>
+	 * {@link AIController#isPathBetween(Country, Country)} to check this.</li>
 	 * </ul>
 	 * <br>
 	 * 
 	 * This method must:
 	 * <ol>
 	 * <li>Select a primary {@link Country} using
-	 * {@link Controller#select(Country)}.</li>
+	 * {@link AIController#select(Country)}.</li>
 	 * <li>Select a target {@link Country} using
-	 * {@link Controller#select(Country)}.</li>
-	 * <li>Fortify that {@link Country} using {@link Controller#fortify()}.</li>
+	 * {@link AIController#select(Country)}.</li>
+	 * <li>Fortify that {@link Country} using {@link AIController#fortify()}.</li>
 	 * </ol>
 	 * 
 	 * The order that the {@link Country}s are selected matters. The primary
 	 * {@link Country} <strong>MUST</strong> be selected first. The selected
-	 * {@link Country}s can be cleared using {@link Controller#clearSelected()}}.
+	 * {@link Country}s can be cleared using {@link AIController#clearSelected()}}.
 	 * <br>
 	 * 
 	 * @param api
-	 *            {@link Controller}
+	 *            {@link AIController}
 	 * @return Whether or not this {@link AI} wishes to perform another fortify or
 	 *         not.
 	 */
-	protected abstract boolean processFortify(Controller api);
+	protected abstract boolean processFortify(AIController api);
 
 }

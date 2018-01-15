@@ -1,4 +1,4 @@
-package peril.ai.api;
+package peril.controllers.api;
 
 import java.util.List;
 

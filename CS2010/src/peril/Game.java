@@ -9,8 +9,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.ai.api.Controller;
-import peril.ai.api.RequestHandler;
+import peril.controllers.AIController;
+import peril.controllers.RequestHandler;
 import peril.board.*;
 import peril.helpers.*;
 import peril.ui.Container;
@@ -68,10 +68,10 @@ public final class Game extends StateBasedGame {
 	public final MusicHelper music;
 
 	/**
-	 * The {@link Controller} that allows the user/AI to interact with the
+	 * The {@link AIController} that allows the user/AI to interact with the
 	 * {@link Game}.
 	 */
-	public final Controller api;
+	public final AIController api;
 
 	/**
 	 * The current turn of the {@link Game}. Initially zero;

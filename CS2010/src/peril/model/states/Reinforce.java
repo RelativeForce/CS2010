@@ -1,7 +1,7 @@
 package peril.model.states;
 
-import peril.ai.api.Player;
-import peril.ai.api.Controller;
+import peril.controllers.ModelController;
+import peril.controllers.api.Player;
 import peril.board.Country;
 
 public class Reinforce extends ModelState {
@@ -10,7 +10,7 @@ public class Reinforce extends ModelState {
 	 * The {@link Country} that is to be selected must be owned by the current
 	 * {@link Player} in order to be selected.
 	 */
-	public boolean select(Country country, Controller api) {
+	public boolean select(Country country, ModelController api) {
 
 		if (country != null) {
 

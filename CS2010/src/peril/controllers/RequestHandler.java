@@ -1,8 +1,10 @@
-package peril.ai.api;
+package peril.controllers;
 
 import java.util.function.Consumer;
-
 import peril.Game;
+import peril.controllers.api.Board;
+import peril.controllers.api.Country;
+import peril.controllers.api.Player;
 
 /**
  * This controller handles all interactions that an {@link AI} could have with
@@ -11,7 +13,7 @@ import peril.Game;
  * @author Joshua_Eddy
  *
  */
-public class RequestHandler implements Controller {
+public class RequestHandler implements AIController, ModelController{
 
 	/**
 	 * The instance of the {@link Game} that this {@link RequestHandler} uses.

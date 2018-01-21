@@ -9,11 +9,11 @@ import peril.Point;
 import peril.io.FunctionHandler;
 import peril.io.fileReaders.ImageReader;
 import peril.multiThread.Action;
-import peril.ui.Button;
-import peril.ui.Clickable;
-import peril.ui.Container;
-import peril.ui.Viewable;
-import peril.ui.states.InteractiveState;
+import peril.views.slick.Button;
+import peril.views.slick.Clickable;
+import peril.views.slick.Container;
+import peril.views.slick.Viewable;
+import peril.views.slick.states.InteractiveState;
 
 /**
  * Reads all the {@link Viewable} and {@link Clickable} specified by the user

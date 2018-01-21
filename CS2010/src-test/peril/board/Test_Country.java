@@ -9,10 +9,12 @@ import org.junit.Test;
 import org.newdawn.slick.Color;
 
 import peril.Point;
-import peril.ui.Region;
+import peril.views.slick.Region;
+import peril.views.slick.board.Army;
+import peril.views.slick.board.SlickCountry;
 
 /**
- * This class tests {@link Country}.
+ * This class tests {@link SlickCountry}.
  * 
  * @author James_Rowntree
  *
@@ -20,9 +22,9 @@ import peril.ui.Region;
 public class Test_Country {
 
 	/**
-	 * Hold the current {@link Country} that is being used for testing.
+	 * Hold the current {@link SlickCountry} that is being used for testing.
 	 */
-	private Country testCountry;
+	private SlickCountry testCountry;
 	
 	/**
 	 * Holds the name of the {@link Test_Country#testCountry}, used for testing.
@@ -37,7 +39,7 @@ public class Test_Country {
 	@Before
 	public void setUp() throws Exception {
 		testName = "France";
-		testCountry = new Country(testName, new Region(50, 50, new Point(100, 100)), new Color(22, 22, 22));
+		testCountry = new SlickCountry(testName, new Region(50, 50, new Point(100, 100)), new Color(22, 22, 22));
 
 	}
 
@@ -55,13 +57,13 @@ public class Test_Country {
 	@Test
 	public void test_addNeighbour() {
 		// Creates a new country with the name of testName
-		Country newNeighbour = new Country(testName, new Region(50, 50, new Point(100, 100)), new Color(22, 22, 22));
+		SlickCountry newNeighbour = new SlickCountry(testName, new Region(50, 50, new Point(100, 100)), new Color(22, 22, 22));
 
 		// Adds a country to the list of neighbours in the testCountry.
 		testCountry.addNeighbour(newNeighbour);
 
 		// Stores the current neighbours of the testCountry in resultList.
-		List<Country> resultList = testCountry.getNeighbours();
+		List<SlickCountry> resultList = testCountry.getNeighbours();
 
 		// Asserting that there is a neighbour in the list.
 		assertTrue(!resultList.isEmpty());
@@ -83,13 +85,13 @@ public class Test_Country {
 	}
 
 	/**
-	 * Checks that the army passed into {@link Country#setArmy} is the actual army
+	 * Checks that the army passed into {@link SlickCountry#setArmy} is the actual army
 	 * and not null.
 	 */
 	@Test
 	public void test_setArmy() {
 		// Creates a new army object stores it in 'newArmy'
-		Army newArmy = new Army();
+		ModelArmy newArmy = new ModelArmy();
 		// Calls the mutator 'setArmy' and assigns it the new army object.
 		testCountry.setArmy(newArmy);
 		// Checks that the army created and stored is the 'newArmy'.

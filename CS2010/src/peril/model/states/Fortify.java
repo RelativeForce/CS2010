@@ -4,15 +4,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
-import peril.controllers.ModelController;
+import peril.controllers.GameController;
 import peril.controllers.api.Player;
-import peril.board.Country;
-import peril.ui.states.gameStates.multiSelectState.MovementState;
+import peril.model.ModelPlayer;
+import peril.model.board.ModelArmy;
+import peril.model.board.ModelCountry;
 
 public class Fortify extends ModelState {
 
 	@Override
-	public boolean select(Country country, ModelController api) {
+	public boolean select(ModelCountry country, GameController api) {
 
 		final boolean selectPrimary = selectPrimary(country, api);
 		final boolean selectSecondary = selectSecondary(country, api);
@@ -20,17 +21,12 @@ public class Fortify extends ModelState {
 		// If it a valid primary or secondary country
 		if (selectPrimary || selectSecondary) {
 
-			// The secondary is dependent on the primary so as the country is valid primary
-			// or secondary the current secondary must be de-highlighted.
-			removeHighlight(getSecondary());
+
 
 			// If the country is a valid primary then the old primary is de-highlighted
 			if (selectPrimary && !selectSecondary) {
-				removeHighlight(getPrimary());
 				deselectAt(0);
-
 				addSelected(country, 0);
-
 			}
 			// Otherwise the the secondary is de-highlighted and then the country is
 			// highlighted.
@@ -39,52 +35,47 @@ public class Fortify extends ModelState {
 				addSelected(country, 1);
 			}
 
-			addHighlight(country);
-
 			return true;
 		}
 
-		// Otherwise remove the highlight from both primary and secondary.
-		removeHighlight(getPrimary());
-		removeHighlight(getSecondary());
 		deselectAll();
 		return false;
 	}
 
 	/**
-	 * Retrieves the secondary selected {@link Country}.
+	 * Retrieves the secondary selected {@link ModelCountry}.
 	 * 
-	 * @return Secondary selected {@link Country}
+	 * @return Secondary selected {@link ModelCountry}
 	 */
-	public Country getSecondary() {
+	public ModelCountry getSecondary() {
 		return getSelected(1);
 	}
 
 	/**
-	 * Retrieves the secondary selected {@link Country}.
+	 * Retrieves the secondary selected {@link ModelCountry}.
 	 * 
-	 * @return Primary selected {@link Country}
+	 * @return Primary selected {@link ModelCountry}
 	 */
-	public Country getPrimary() {
+	public ModelCountry getPrimary() {
 		return getSelected(0);
 	}
 
 	/**
-	 * Retrieves the path between two path between two {@link Country}s.
+	 * Retrieves the path between two path between two {@link ModelCountry}s.
 	 * 
 	 * @param start
-	 *            {@link Country}
+	 *            {@link ModelCountry}
 	 * @param target
-	 *            {@link Country}
+	 *            {@link ModelCountry}
 	 * @return
 	 */
-	private Stack<Country> getPathBetween(Country start, Country target) {
+	public Stack<ModelCountry> getPathBetween(ModelCountry start, ModelCountry target) {
 
 		// Holds the path from the friendly country to the target country.
-		Stack<Country> path = new Stack<Country>();
+		Stack<ModelCountry> path = new Stack<ModelCountry>();
 
 		// Holds all the traversed countries
-		Set<Country> traversed = new HashSet<>();
+		Set<ModelCountry> traversed = new HashSet<>();
 
 		// If the target belongs to the current player.
 		if (target != null && target.getRuler() == start.getRuler()) {
@@ -98,18 +89,17 @@ public class Fortify extends ModelState {
 
 	}
 
-
 	/**
-	 * A {@link Country} is valid to be primary selected if:
+	 * A {@link ModelCountry} is valid to be primary selected if:
 	 * <ul>
 	 * <li>It is <strong>NOT</strong> null.</li>
 	 * <li>Has the same ruler as the current {@link Player}.</li>
-	 * <li>There is not a current primary {@link Country} <strong>OR</strong> the
-	 * specified {@link Country} is <strong>NOT</strong> a
-	 * {@link MovementState#isValidLink(Country)}</li>
+	 * <li>There is not a current primary {@link ModelCountry} <strong>OR</strong> the
+	 * specified {@link ModelCountry} is <strong>NOT</strong> a
+	 * {@link MovementState#isValidLink(ModelCountry)}</li>
 	 * </ul>
 	 */
-	protected boolean selectPrimary(Country country, ModelController api) {
+	protected boolean selectPrimary(ModelCountry country, GameController api) {
 
 		if (country == null) {
 			
@@ -117,25 +107,25 @@ public class Fortify extends ModelState {
 		}
 
 		// Holds the current player
-		Player player = api.getCurrentPlayer();
+		ModelPlayer player = api.getCurrentModelPlayer();
 
 		// Holds the ruler of the country
-		Player ruler = country.getRuler();
+		ModelPlayer ruler = country.getRuler();
 
 		return getPrimary() == null && player.equals(ruler) && country.getArmy().getSize() > 1;
 
 	}
 
 	/**
-	 * A {@link Country} is valid to be secondary selected if:
+	 * A {@link ModelCountry} is valid to be secondary selected if:
 	 * <ul>
 	 * <li>It is <strong>NOT</strong> null.</li>
 	 * <li>Has the same ruler as the current {@link Player}.</li>
-	 * <li>The specified {@link Country} is a
-	 * {@link MovementState#isValidLink(Country)}</li>
+	 * <li>The specified {@link ModelCountry} is a
+	 * {@link MovementState#isValidLink(ModelCountry)}</li>
 	 * </ul>
 	 */
-	protected boolean selectSecondary(Country country, ModelController api) {
+	protected boolean selectSecondary(ModelCountry country, GameController api) {
 		
 		if (country == null || getPrimary() == null) {
 			
@@ -143,18 +133,18 @@ public class Fortify extends ModelState {
 		}
 
 		// Holds the current player
-		Player player = api.getCurrentPlayer();
+		ModelPlayer player = api.getCurrentModelPlayer();
 
 		// Holds the ruler of the country
-		Player ruler = country.getRuler();
+		ModelPlayer ruler = country.getRuler();
 
 		// The country is different to the primary and has the same ruler as the player.
-		final boolean friendlyCountry = player.equals(ruler) && getPrimary() != country;
+		final boolean friendlyModelCountry = player.equals(ruler) && getPrimary() != country;
 
-		if (friendlyCountry) {
+		if (friendlyModelCountry) {
 
 			// The path between the current primary and the specified country.
-			final Stack<Country> path = getPathBetween(getPrimary(), country);
+			final Stack<ModelCountry> path = getPathBetween(getPrimary(), country);
 
 			// If there is a path
 			if (!path.isEmpty()) {
@@ -167,31 +157,30 @@ public class Fortify extends ModelState {
 
 	}
 
-	
 	/**
 	 * This method will using a set of traversed nodes recursively perform a depth
 	 * first search from one node to another. The children of each node are added to
 	 * the
 	 * 
 	 * @param travsersed
-	 *            {@link Set} of {@link Country} that have been traversed.
+	 *            {@link Set} of {@link ModelCountry} that have been traversed.
 	 * @param country
-	 *            {@link Country} currently being checked.
+	 *            {@link ModelCountry} currently being checked.
 	 * @param target
-	 *            {@link Country} the is to be reached.
-	 * @return Whether the current {@link Country} is on the path to the target
-	 *         {@link Country}.
+	 *            {@link ModelCountry} the is to be reached.
+	 * @return Whether the current {@link ModelCountry} is on the path to the target
+	 *         {@link ModelCountry}.
 	 */
-	private boolean isPath(Stack<Country> path, Set<Country> travsersed, Country current, Country traget) {
+	private boolean isPath(Stack<ModelCountry> path, Set<ModelCountry> travsersed, ModelCountry current, ModelCountry traget) {
 
 		// Add the current country to the path
 		path.push(current);
 
 		// Holds the children of the current country that have the same ruler.
-		Set<Country> validChildren = new HashSet<>();
+		Set<ModelCountry> validChildren = new HashSet<>();
 
 		// Iterate through all the neighbours that the current country has
-		for (Country country : current.getNeighbours()) {
+		for (ModelCountry country : current.getNeighbours()) {
 
 			/*
 			 * If the target country is a neighbour of the current country add it to the
@@ -224,7 +213,7 @@ public class Fortify extends ModelState {
 		 * Iterate through each valid child and if the child is a part of the path
 		 * return true.
 		 */
-		for (Country child : validChildren) {
+		for (ModelCountry child : validChildren) {
 			if (isPath(path, travsersed, child, traget)) {
 				return true;
 			}
@@ -236,6 +225,44 @@ public class Fortify extends ModelState {
 		 */
 		path.pop();
 		return false;
+	}
+
+	/**
+	 * Moves one unit from the primary {@link SlickCountry} to the secondary
+	 * {@link SlickCountry}.
+	 */
+	public void fortify() {
+
+		ModelCountry primary = getSelected(0);
+		ModelCountry target = getSelected(1);
+
+		// If there is two countries highlighted
+		if (primary != null && target != null) {
+
+			// If the army of the primary highlighted country is larger that 1 unit in size
+			if (primary.getArmy().getSize() > 1) {
+
+				// Holds the army of the primary country
+				ModelArmy primaryArmy = primary.getArmy();
+
+				// Holds the army of the target country
+				ModelArmy targetArmy = target.getArmy();
+
+				// Move the unit.
+				targetArmy.setSize(targetArmy.getSize() + 1);
+				primaryArmy.setSize(primaryArmy.getSize() - 1);
+
+				if (primaryArmy.getSize() == 1) {
+					deselectAll();
+				}
+			} else {
+				// DO NOTHING
+			}
+
+		} else {
+			// DO NOTHING
+		}
+
 	}
 
 }

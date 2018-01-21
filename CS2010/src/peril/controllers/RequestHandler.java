@@ -5,6 +5,10 @@ import peril.Game;
 import peril.controllers.api.Board;
 import peril.controllers.api.Country;
 import peril.controllers.api.Player;
+import peril.model.ModelPlayer;
+import peril.model.board.ModelBoard;
+import peril.model.board.ModelCountry;
+import peril.views.View;
 
 /**
  * This controller handles all interactions that an {@link AI} could have with
@@ -13,7 +17,7 @@ import peril.controllers.api.Player;
  * @author Joshua_Eddy
  *
  */
-public class RequestHandler implements AIController, ModelController{
+public class RequestHandler implements AIController, GameController {
 
 	/**
 	 * The instance of the {@link Game} that this {@link RequestHandler} uses.
@@ -45,23 +49,20 @@ public class RequestHandler implements AIController, ModelController{
 	@Override
 	public boolean select(Country country) {
 
-		// Get the id of the current state.
-		int currentStateId = game.getCurrentStateID();
-
 		// Ensure that the parameter Country is a valid country, This should never be
 		// false.
-		if (!(country instanceof peril.board.Country)) {
+		if (!(country instanceof ModelCountry)) {
 			throw new IllegalArgumentException("The parmameter country is not a valid country.");
 		}
 
-		peril.board.Country checkedCountry = (peril.board.Country) country;
+		ModelCountry checkedCountry = (ModelCountry) country;
 
-		if (currentStateId == game.states.reinforcement.getID()) {
-			return game.states.reinforcement.select(checkedCountry);
-		} else if (currentStateId == game.states.combat.getID()) {
-			return game.states.combat.select(checkedCountry);
-		} else if (currentStateId == game.states.movement.getID()) {
-			return game.states.movement.select(checkedCountry);
+		if (game.view.isCurrentState(game.states.reinforcement)) {
+			return game.states.reinforcement.select(checkedCountry, game.getGameController());
+		} else if (game.view.isCurrentState(game.states.combat)) {
+			return game.states.combat.select(checkedCountry, game.getGameController());
+		} else if (game.view.isCurrentState(game.states.movement)) {
+			return game.states.movement.select(checkedCountry, game.getGameController());
 		} else {
 			throw new IllegalStateException("The current state is not a valid game state.");
 
@@ -83,8 +84,9 @@ public class RequestHandler implements AIController, ModelController{
 	@Override
 	public void attack() {
 
+		
 		// Check correct state
-		if (game.getCurrentStateID() != game.states.combat.getID()) {
+		if (!game.view.isCurrentState(game.states.combat)) {
 			throw new IllegalStateException("You can only attack during the combat state.");
 		}
 
@@ -93,15 +95,7 @@ public class RequestHandler implements AIController, ModelController{
 			throw new IllegalStateException("There is NOT two countries selected. Select two valid countries.");
 		}
 
-		game.menus.warMenu.show();
-		game.menus.warMenu.selectMaxDice();
-		game.menus.warMenu.attack();
-
-		// Cant attack any more hide the war menu.
-		if (game.states.combat.getPrimary() == null || game.states.combat.getSecondary() == null) {
-			game.menus.warMenu.hide();
-			game.states.movement.removeSelected();
-		}
+		game.view.attack();	
 
 	}
 
@@ -113,7 +107,7 @@ public class RequestHandler implements AIController, ModelController{
 	public void fortify() {
 
 		// Check correct state
-		if (game.getCurrentStateID() != game.states.movement.getID()) {
+		if (!game.view.isCurrentState(game.states.movement)) {
 			throw new IllegalStateException("You can only attack during the fortify state.");
 		}
 
@@ -134,30 +128,28 @@ public class RequestHandler implements AIController, ModelController{
 
 		// Ensure that the parameter Country is a valid country, This should never be
 		// false.
-		if (!(a instanceof peril.board.Country)) {
+		if (!(a instanceof ModelCountry)) {
 			throw new IllegalArgumentException("The parmameter 'A' country is not a valid country.");
 		}
 
-		peril.board.Country checkedA = (peril.board.Country) a;
+		ModelCountry checkedA = (ModelCountry) a;
 
 		// Ensure that the parameter Country is a valid country, This should never be
 		// false.
-		if (!(a instanceof peril.board.Country)) {
-			throw new IllegalArgumentException("The parmameter border country is not a valid country.");
+		if (!(b instanceof ModelCountry)) {
+			throw new IllegalArgumentException("The parmameter 'B' country is not a valid country.");
 		}
 
-		peril.board.Country checkedB = (peril.board.Country) b;
+		ModelCountry checkedB = (ModelCountry) b;
 
-		return game.states.movement.isPathBetween(checkedA, checkedB);
+		return !game.states.movement.getPathBetween(checkedA, checkedB).isEmpty();
 	}
 
 	/**
 	 * Clears the selected {@link Country}s from all the game states.
 	 */
 	public void clearSelected() {
-		game.states.movement.removeSelected();
-		game.states.combat.removeSelected();
-		game.states.reinforcement.removeSelected();
+		game.states.clearAll();
 	}
 
 	/**
@@ -167,15 +159,16 @@ public class RequestHandler implements AIController, ModelController{
 	public void reinforce() {
 
 		// Check correct state
-		if (game.getCurrentStateID() != game.states.reinforcement.getID()) {
+		if (!game.view.isCurrentState(game.states.reinforcement)) {
 			throw new IllegalStateException("You can only attack during the reinforcement state.");
 		}
 
 		// Check both countries are selected.
-		if (game.states.reinforcement.getSelected() == null) {
+		if (game.states.reinforcement.getSelected(0) == null) {
 			throw new IllegalStateException("There is valid country selected.");
 		}
-		game.states.reinforcement.reinforce();
+	
+		game.states.reinforcement.reinforce(game.getGameController());
 
 	}
 
@@ -185,6 +178,84 @@ public class RequestHandler implements AIController, ModelController{
 	@Override
 	public Player getCurrentPlayer() {
 		return game.players.getCurrent();
+	}
+
+	@Override
+	public void setHelpMenuPage(int pageId) {
+		game.view.setHelpMenuPage(pageId);
+	}
+
+	@Override
+	public View getView() {
+		return game.view;
+	}
+	
+	@Override
+	public String getUIPath() {
+		return game.assets.ui;
+	}
+
+	@Override
+	public String getMapsPath() {
+		return game.assets.maps;
+	}
+
+	@Override
+	public void resetGame() {
+		game.players.emptyPlaying();
+		game.setRoundNumber(0);
+		game.players.challenges.clear();
+		
+	}
+
+	@Override
+	public void setBoardName(String name) {
+		game.board.setName(name);
+	}
+
+	@Override
+	public void addPlayer(ModelPlayer player) {
+		game.players.addPlayer(player);
+	}
+
+	@Override
+	public AIController getAIController() {
+		return this;
+	}
+
+	@Override
+	public ModelBoard getModelBoard() {
+		return game.board;
+	}
+
+	@Override
+	public ModelPlayer getCurrentModelPlayer() {
+		return game.players.getCurrent();
+	}
+
+	@Override
+	public void forEachModelCountry(Consumer<ModelCountry> task) {
+		game.board.forEachCountry(task);
+	}
+
+	@Override
+	public boolean isPlaying(int playerNumber) {
+		return game.players.isPlaying(playerNumber);
+	}
+
+	@Override
+	public ModelPlayer getModelPlayer(int playerNumber) {
+		return game.players.getPlayer(playerNumber);
+	}
+
+	@Override
+	public void checkChallenges() {
+		game.players.checkChallenges();
+	}
+
+	@Override
+	public void nextPlayer() {
+		game.players.nextPlayer();
 	}
 
 }

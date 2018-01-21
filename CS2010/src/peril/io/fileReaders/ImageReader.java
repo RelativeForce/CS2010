@@ -3,8 +3,8 @@ package peril.io.fileReaders;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
-import peril.board.Board;
-import peril.ui.Region;
+import peril.views.slick.Region;
+import peril.views.slick.board.SlickBoard;
 
 /**
  * Reads an image using a specified file path.
@@ -50,7 +50,7 @@ public class ImageReader {
 	}
 
 	/**
-	 * Retrieves a {@link Region} of the {@link Board} denoted by a {@link Color}.
+	 * Retrieves a {@link Region} of the {@link SlickBoard} denoted by a {@link Color}.
 	 * 
 	 * @param path
 	 *            <code>String</code> path of the {@link Image} file.

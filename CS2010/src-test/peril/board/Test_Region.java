@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import peril.Point;
-import peril.ui.Region;
+import peril.views.slick.Region;
 
 /**
  * Tests {@link Region}. In specific the ability for the {@link Region} to store

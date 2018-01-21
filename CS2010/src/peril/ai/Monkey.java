@@ -175,7 +175,7 @@ public final class Monkey extends AI {
 	}
 
 	/**
-	 * Iterates through each {@link Country} on the {@link Board} and adds the
+	 * Iterates through each {@link Country} on the {@link ModelBoard} and adds the
 	 * {@link Country}s that border enemy {@link Country}s to 'frontline' and
 	 * {@link Country}s that border NO enemy {@link Country}s to 'internal'.
 	 * 

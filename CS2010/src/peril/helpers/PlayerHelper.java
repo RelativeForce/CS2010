@@ -1,6 +1,5 @@
 package peril.helpers;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -9,19 +8,13 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
 
-import org.newdawn.slick.Color;
-import org.newdawn.slick.Image;
-
 import peril.Challenge;
 import peril.Game;
-import peril.Player;
-import peril.io.fileReaders.ImageReader;
-import peril.ui.states.EndState;
-import peril.ui.states.gameStates.CoreGameState;
+import peril.model.ModelPlayer;
 
 /**
  * A helper class for {@link Game} which encapsulates the behaviours of the list
- * of {@link Player}s.
+ * of {@link SlickPlayer}s.
  * 
  * @author Joshua_Eddy
  *
@@ -29,34 +22,27 @@ import peril.ui.states.gameStates.CoreGameState;
 public class PlayerHelper {
 
 	/**
-	 * The maximum number of {@link Player}s in the game at any given time.
+	 * The maximum number of {@link SlickPlayer}s in the game at any given time.
 	 */
 	public static final int MAX_PLAYERS = 4;
 
 	/**
-	 * The minimum number of {@link Player}s in the game at any given time.
+	 * The minimum number of {@link SlickPlayer}s in the game at any given time.
 	 */
 	public static final int MIN_PLAYERS = 2;
 
 	/**
-	 * Contains all the objectives that a {@link Player} can attain in the game.
+	 * Contains all the objectives that a {@link SlickPlayer} can attain in the
+	 * game.
 	 */
 	public final List<Challenge> challenges;
 
 	/**
-	 * Holds all the {@link Player}s in this {@link Game}.
+	 * Holds all the {@link SlickPlayer}s in this {@link Game}.
 	 */
-	private final Map<Integer, Player> playing;
-
-	/**
-	 * Holds all the {@link Player}'s {@link Image} icons in this {@link Game}.
-	 */
-	private final Map<Integer, Image> playerIcons;
-
-	/**
-	 * The {@link Color}s of all the {@link Player}s.
-	 */
-	private final Color[] colors;
+	private final Map<Integer, ModelPlayer> playing;
+	
+	private final List<ModelPlayer> losers;
 
 	/**
 	 * The {@link Game} this {@link PlayerHelper} helps.
@@ -64,14 +50,14 @@ public class PlayerHelper {
 	private final Game game;
 
 	/**
-	 * The {@link Player} who's turn it is.
+	 * The {@link SlickPlayer} who's turn it is.
 	 */
 	private Iterator<Integer> index;
 
 	/**
-	 * The current {@link Player}.
+	 * The current {@link SlickPlayer}.
 	 */
-	private Player current;
+	private ModelPlayer current;
 
 	/**
 	 * Constructs a new {@link PlayerHelper}.
@@ -81,15 +67,14 @@ public class PlayerHelper {
 	 */
 	public PlayerHelper(Game game) {
 		this.game = game;
-		this.playerIcons = new HashMap<>();
 		this.playing = new LinkedHashMap<>();
 		this.index = playing.keySet().iterator();
-		this.challenges = new LinkedList<>();
-		this.colors = new Color[] { Color.red, Color.blue, Color.green, Color.pink.multiply(Color.pink) };
+		this.challenges = new LinkedList<>();	
+		this.losers = new LinkedList<>();
 	}
 
 	/**
-	 * Gets the number of {@link Player}s in the {@link Game}.
+	 * Gets the number of {@link SlickPlayer}s in the {@link Game}.
 	 * 
 	 * @return <code>int</code>
 	 */
@@ -98,12 +83,12 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * Performs the specified task on each {@link Player} in the {@link Game}.
+	 * Performs the specified task on each {@link SlickPlayer} in the {@link Game}.
 	 * 
 	 * @param task
 	 *            {@link Consumer}
 	 */
-	public void forEach(Consumer<Player> task) {
+	public void forEach(Consumer<ModelPlayer> task) {
 		playing.values().forEach(task);
 	}
 
@@ -120,17 +105,17 @@ public class PlayerHelper {
 		}
 
 		this.challenges.add(challenge);
-		game.menus.challengeMenu.refreshChallenges();
+		game.view.updateChallenges();
 	}
 
 	/**
 	 * Iterates thought all the available {@link Challenge}s to see if the specified
-	 * {@link Player} has completed them or not.
+	 * {@link SlickPlayer} has completed them or not.
 	 * 
 	 * @param currentState
 	 *            The current {@link CoreGameState} of the {@link Game}.
 	 */
-	public void checkChallenges(CoreGameState currentState) {
+	public void checkChallenges() {
 
 		// Holds the completed challenges
 		List<Challenge> toRemove = new LinkedList<>();
@@ -143,7 +128,7 @@ public class PlayerHelper {
 			// available challenges.
 			if (challenge.hasCompleted(getCurrent(), game.board)) {
 				toRemove.add(challenge);
-				currentState.showToolTip(challenge.completed());
+				game.view.showToolTip(challenge.completed());
 			}
 		});
 
@@ -151,22 +136,24 @@ public class PlayerHelper {
 		toRemove.forEach(challenge -> challenges.remove(challenge));
 
 		// Refresh the challenge view
-		game.menus.challengeMenu.refreshChallenges();
+		game.view.updateChallenges();
 	}
 
 	/**
-	 * Sets a specified {@link Player} as a loser which removes it from the
+	 * Sets a specified {@link SlickPlayer} as a loser which removes it from the
 	 * {@link Game#players} and adds it to the podium in the {@link EndState}.
 	 * 
-	 * @param player
-	 *            {@link Player} number that has lost.
+	 * @param defendingPlayer
+	 *            {@link SlickPlayer} number that has lost.
 	 */
-	public void setLoser(Player player) {
+	public void setLoser(ModelPlayer defendingPlayer) {
 
 		// Add the player to the podium and remove it from the players in play.
-		game.states.end.addToTop(player);
+		game.view.addLoser(defendingPlayer);
+		
+		losers.add(defendingPlayer);
 
-		playing.remove(player.number);
+		playing.remove(defendingPlayer.number);
 
 		index = playing.keySet().iterator();
 
@@ -179,15 +166,15 @@ public class PlayerHelper {
 
 	}
 
-	public Player getPlayer(int player) {
+	public ModelPlayer getPlayer(int player) {
 		return playing.get(player);
 	}
 
 	/**
 	 * Retrieves whether or not a specified player is in this {@link Game}.
 	 * 
-	 * @param player
-	 *            {@link Player} number
+	 * @param model
+	 *            {@link SlickPlayer} number
 	 * @return <code>boolean</code>
 	 */
 	public boolean isPlaying(int number) {
@@ -195,21 +182,21 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * Retrieves the {@link Player} who's current turn it is.
+	 * Retrieves the {@link SlickPlayer} who's current turn it is.
 	 * 
-	 * @return {@link Player}
+	 * @return {@link SlickPlayer}
 	 */
-	public Player getCurrent() {
+	public ModelPlayer getCurrent() {
 		return current;
 	}
 
 	/**
-	 * Set the current {@link Player} in this {@link PlayerHelper}.
+	 * Set the current {@link SlickPlayer} in this {@link PlayerHelper}.
 	 * 
 	 * @param player
-	 *            {@link Player}
+	 *            {@link SlickPlayer}
 	 */
-	public void setCurrent(Player player) {
+	public void setCurrent(ModelPlayer player) {
 
 		if (!playing.containsKey(player.number)) {
 			throw new IllegalArgumentException("Player " + player.number + " is not playing.");
@@ -234,11 +221,11 @@ public class PlayerHelper {
 		reinforceCurrent();
 
 		// Check the challenges going into the next round
-		checkChallenges(game.states.reinforcement);
+		checkChallenges();
 	}
 
 	/**
-	 * Empties the {@link List} of playing {@link Player}s.
+	 * Empties the {@link List} of playing {@link SlickPlayer}s.
 	 */
 	public void emptyPlaying() {
 		playing.clear();
@@ -246,11 +233,12 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * Adds a {@link Player} to the set of {@link Player}s that are playing.
+	 * Adds a {@link SlickPlayer} to the set of {@link SlickPlayer}s that are
+	 * playing.
 	 * 
 	 * @param player
 	 */
-	public void addPlayer(Player player) {
+	public void addPlayer(ModelPlayer player) {
 
 		if (!playing.containsKey(player.number)) {
 
@@ -262,16 +250,16 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * Retrieves a random {@link Player} that is currently playing.
+	 * Retrieves a random {@link SlickPlayer} that is currently playing.
 	 * 
 	 * @return
 	 */
-	public Player getRandomPlayer() {
+	public ModelPlayer getRandomPlayer() {
 
 		int pos = new Random().nextInt(playing.size());
 
 		int i = 0;
-		for (Player p : playing.values()) {
+		for (ModelPlayer p : playing.values()) {
 
 			if (pos == i) {
 				return p;
@@ -284,15 +272,15 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * Gives the current {@link Player} reinforcements based on the number of
+	 * Gives the current {@link SlickPlayer} reinforcements based on the number of
 	 * countries they own.
 	 * 
-	 * @param player
-	 *            {@link Player}
+	 * @param model
+	 *            {@link SlickPlayer}
 	 */
 	public void reinforceCurrent() {
 
-		Player player = getCurrent();
+		ModelPlayer player = getCurrent();
 
 		// Scale reinforcements with round progression.
 		int roundScale = game.getRoundNumber() != 0 ? game.getRoundNumber() * 2 : 1;
@@ -304,42 +292,4 @@ public class PlayerHelper {
 		}
 	}
 
-	/**
-	 * Retrieves the {@link Image} icon for a {@link Player}
-	 * 
-	 * @param player
-	 *            {@link Player}
-	 * @return {@link Image} icon.
-	 */
-	public Image getPlayerIcon(int player) {
-		return playerIcons.get(player);
-	}
-
-	/**
-	 * Initialises the images of a {@link Player}.
-	 * 
-	 * @param uiPath
-	 *            The path to the folder with the image files in.
-	 */
-	public void init(String uiPath) {
-
-		for (int index = 1; index <= PlayerHelper.MAX_PLAYERS; index++) {
-
-			String path = uiPath + "player" + index + "Icon.png";
-
-			playerIcons.put(index, ImageReader.getImage(path).getScaledCopy(90, 40));
-
-		}
-
-	}
-
-	/**
-	 * Retrieves the {@link Color} associated with a {@link Player}
-	 * 
-	 * @param playerNumber
-	 * @return
-	 */
-	public Color getColor(int playerNumber) {
-		return colors[playerNumber - 1];
-	}
 }

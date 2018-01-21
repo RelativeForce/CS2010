@@ -2,17 +2,8 @@ package peril.io;
 
 import java.io.IOException;
 
-import org.newdawn.slick.SlickException;
-
 import peril.Game;
-import peril.Player;
-import peril.board.Continent;
-import peril.board.Country;
 import peril.multiThread.Action;
-import peril.ui.Button;
-import peril.ui.components.menus.HelpMenu;
-import peril.ui.components.menus.PauseMenu;
-import peril.ui.components.menus.WarMenu;
 
 /**
  * 
@@ -64,7 +55,7 @@ public class FunctionHandler {
 		case 6:
 			return excuteCombat();
 		case 7:
-			return leaveMainMenu();
+			return loadGame();
 		case 8:
 			return reAssignCountries();
 		case 9:
@@ -103,6 +94,7 @@ public class FunctionHandler {
 
 	/**
 	 * Retrieves a {@link Action} that opens the strategic goats web site.
+	 * 
 	 * @return {@link Action}
 	 */
 	private Action<?> openWebsite() {
@@ -117,14 +109,16 @@ public class FunctionHandler {
 	}
 
 	/**
-	 * Retrieves the {@link Action} that causes the {@link Game} to exit the player selection screen.
+	 * Retrieves the {@link Action} that causes the {@link Game} to exit the player
+	 * selection screen.
+	 * 
 	 * @return
 	 */
 	private Action<?> leavePlayerSelect() {
 		return new Action<Game>(game, game -> {
 			try {
-				game.states.playerSelection.loadGame();
-			} catch (SlickException e) {
+				game.view.loadGame();
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		});
@@ -132,18 +126,20 @@ public class FunctionHandler {
 
 	/**
 	 * Retrieves the {@link Action} that hides the challenge menu.
+	 * 
 	 * @return
 	 */
 	private Action<?> hideChallengeMenu() {
-		return new Action<Game>(game, game -> game.menus.challengeMenu.hide());
+		return new Action<Game>(game, game -> game.view.toggleChallengeMenu(false));
 	}
 
 	/**
 	 * Retrieves the {@link Action} that shows the challenge menu.
+	 * 
 	 * @return
 	 */
 	private Action<?> showChallengeMenu() {
-		return new Action<Game>(game, game -> game.menus.challengeMenu.show());
+		return new Action<Game>(game, game -> game.view.toggleChallengeMenu(true));
 	}
 
 	/**
@@ -152,7 +148,7 @@ public class FunctionHandler {
 	 * @return
 	 */
 	private Action<?> hideWarMenu() {
-		return new Action<Game>(game, game -> game.menus.warMenu.hide());
+		return new Action<Game>(game, game -> game.view.toggleWarMenu(false));
 	}
 
 	/**
@@ -161,7 +157,7 @@ public class FunctionHandler {
 	 * @return
 	 */
 	private Action<?> hidePauseMenu() {
-		return new Action<Game>(game, game -> game.menus.pauseMenu.hide());
+		return new Action<Game>(game, game -> game.view.togglePauseMenu(false));
 	}
 
 	/**
@@ -170,7 +166,7 @@ public class FunctionHandler {
 	 * @return
 	 */
 	private Action<?> showPauseMenu() {
-		return new Action<Game>(game, game -> game.menus.pauseMenu.show());
+		return new Action<Game>(game, game -> game.view.togglePauseMenu(true));
 	}
 
 	/**
@@ -180,7 +176,7 @@ public class FunctionHandler {
 	 * @return
 	 */
 	private Action<?> previousHelpPage() {
-		return new Action<Game>(game, game -> game.menus.helpMenu.previousPage());
+		return new Action<Game>(game, game -> game.view.previousHelpPage());
 	}
 
 	/**
@@ -190,7 +186,7 @@ public class FunctionHandler {
 	 * @return
 	 */
 	private Action<?> nextHelpPage() {
-		return new Action<Game>(game, game -> game.menus.helpMenu.nextPage());
+		return new Action<Game>(game, game -> game.view.nextHelpPage());
 	}
 
 	/**
@@ -200,17 +196,18 @@ public class FunctionHandler {
 	 * @return {@link Action}
 	 */
 	private Action<?> showWarMenu() {
-		return new Action<Game>(game, game -> game.menus.warMenu.show());
+		return new Action<Game>(game, game -> game.view.toggleWarMenu(true));
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will add one unit to a {@link Country} and
-	 * remove one unit from the current {@link Player#getDistributableArmySize()}.
+	 * Retrieves the {@link Action} that will add one unit to a {@link SlickCountry}
+	 * and remove one unit from the current
+	 * {@link SlickPlayer#getDistributableArmySize()}.
 	 * 
 	 * @return {@link Action}
 	 */
 	private Action<?> reinforceCountry() {
-		return new Action<Game>(game, game -> game.states.reinforcement.reinforce());
+		return new Action<Game>(game, game -> game.states.reinforcement.reinforce(game.getGameController()));
 	}
 
 	/**
@@ -220,7 +217,7 @@ public class FunctionHandler {
 	 * @return {@link Action}
 	 */
 	private Action<?> enterCombat() {
-		return new Action<Game>(game, game -> game.enterState(game.states.combat));
+		return new Action<Game>(game, game -> game.confirmReinforce());
 	}
 
 	/**
@@ -230,7 +227,7 @@ public class FunctionHandler {
 	 * @return {@link Action}
 	 */
 	private Action<?> enterMovement() {
-		return new Action<Game>(game, game -> game.enterState(game.states.movement));
+		return new Action<Game>(game, game -> game.confirmCombat());
 	}
 
 	/**
@@ -241,30 +238,18 @@ public class FunctionHandler {
 	 * @return {@link Action}
 	 */
 	private Action<?> enterReinforment() {
-		return new Action<Game>(game, game -> {
-			game.enterState(game.states.reinforcement);
-			game.players.nextPlayer();
-		});
+		return new Action<Game>(game, game -> game.confirmMovement());
 	}
 
 	/**
 	 * Retrieves the {@link Action} that will change the state of the {@link Game}
 	 * from {@link Game#setup} to {@link Game#reinforcement}, checking the ownership
-	 * of {@link Continent}s in the process.
+	 * of {@link SlickContinent}s in the process.
 	 * 
 	 * @return {@link Action}
 	 */
 	private Action<?> leaveSetUp() {
-		return new Action<Game>(game, game -> {
-
-			// checks the ownership of the continents
-			game.checkContinentRulership();
-
-			// Change the state of the game to reinforcement and give player one their units
-			// based on the countries they own.
-			game.players.reinforceCurrent();
-			game.enterState(game.states.reinforcement);
-		});
+		return new Action<Game>(game, game -> game.confirmSetup());
 	}
 
 	/**
@@ -279,26 +264,26 @@ public class FunctionHandler {
 
 	/**
 	 * Retrieves the {@link Action} that will perform one round of the
-	 * {@link WarMenu#fight(Country, Country, int)} on the two countries selected in
-	 * the {@link Game#combat}.
+	 * {@link WarMenu#fight(SlickCountry, SlickCountry, int)} on the two countries
+	 * selected in the {@link Game#combat}.
 	 * 
 	 * @return {@link Action}
 	 */
 	private Action<?> excuteCombat() {
-		return new Action<Game>(game, game -> game.menus.warMenu.attack());
+		return new Action<Game>(game, game -> game.view.attack());
 	}
 
 	/**
 	 * Retrieves the {@link Action} that will move the {@link Game} from the
 	 * {@link Game#mainMenu} to the {@link Game#setup} state and load the
-	 * {@link Board} specified by the {@link Game#mainMenu}.
+	 * {@link ModelBoard} specified by the {@link Game#mainMenu}.
 	 * 
 	 * @return {@link Action}
 	 */
-	private Action<?> leaveMainMenu() {
+	private Action<?> loadGame() {
 		return new Action<Game>(game, game -> {
 			try {
-				game.states.mainMenu.loadGame();
+				game.view.loadGame();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -306,8 +291,8 @@ public class FunctionHandler {
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will re-assign the {@link Country}s to new
-	 * {@link Player}s.
+	 * Retrieves the {@link Action} that will re-assign the {@link SlickCountry}s to
+	 * new {@link SlickPlayer}s.
 	 * 
 	 * @return {@link Action}
 	 */
@@ -315,7 +300,7 @@ public class FunctionHandler {
 		return new Action<Game>(game, game -> {
 
 			// Remove selected
-			game.states.setup.removeSelected();
+			game.states.setup.deselectAll();
 
 			// Assign the countries
 			game.autoDistributeCountries();
@@ -328,9 +313,7 @@ public class FunctionHandler {
 	 * {@link Game#pauseMenu} to the {@link Game#mainMenu} state
 	 */
 	private Action<?> enterMainMenu() {
-		return new Action<Game>(game, game -> {
-			game.enterState(game.states.mainMenu);
-		});
+		return new Action<Game>(game, game -> game.view.enterMainMenu());
 	}
 
 	/**
@@ -339,7 +322,7 @@ public class FunctionHandler {
 	 * @return {@link Action}
 	 */
 	private Action<?> exitGame() {
-		return new Action<Game>(game, game -> game.getContainer().exit());
+		return new Action<Game>(game, game -> game.view.exit());
 	}
 
 	/**
@@ -349,7 +332,7 @@ public class FunctionHandler {
 	 * @return
 	 */
 	private Action<?> saveGame() {
-		return new Action<Game>(game, game -> game.menus.pauseMenu.save());
+		return new Action<Game>(game, game -> game.view.save());
 	}
 
 	/**
@@ -358,7 +341,7 @@ public class FunctionHandler {
 	 * @return
 	 */
 	private Action<?> showHelp() {
-		return new Action<Game>(game, game -> game.menus.helpMenu.show());
+		return new Action<Game>(game, game -> game.view.toggleHelpMenu(true));
 	}
 
 	/**
@@ -367,6 +350,6 @@ public class FunctionHandler {
 	 * @return
 	 */
 	private Action<?> hideHelp() {
-		return new Action<Game>(game, game -> game.menus.helpMenu.hide());
+		return new Action<Game>(game, game -> game.view.toggleHelpMenu(false));
 	}
 }

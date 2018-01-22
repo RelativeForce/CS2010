@@ -90,7 +90,8 @@ public final class ModelCountry extends Observable implements Country {
 	 */
 	public void setRuler(ModelPlayer ruler) {
 		this.ruler = ruler;
-
+		
+		setChanged();
 		notifyObservers(new Update<>("ruler", ruler));
 	}
 
@@ -145,6 +146,7 @@ public final class ModelCountry extends Observable implements Country {
 
 		neighbours.add(neighbour);
 
+		setChanged();
 		notifyObservers(new Update<>("neighbours", neighbours));
 	}
 
@@ -157,6 +159,7 @@ public final class ModelCountry extends Observable implements Country {
 		boolean occurred = hazard.act(army);
 
 		// If the hazard occurred update the most recent hazard.
+		setChanged();
 		notifyObservers(new Update<>("hazard", occurred ? hazard : null));
 
 	}

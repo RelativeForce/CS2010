@@ -69,6 +69,7 @@ public final class ModelBoard extends Observable implements Board {
 			numberOfCountries += continent.getCountries().size();
 		}
 		
+		setChanged();
 		notifyObservers(new Update<>("continents", continents));
 
 	}
@@ -136,6 +137,7 @@ public final class ModelBoard extends Observable implements Board {
 	public void setName(String name) {
 		this.name = name;
 		
+		setChanged();
 		notifyObservers(new Update<>("name", name));
 	}
 

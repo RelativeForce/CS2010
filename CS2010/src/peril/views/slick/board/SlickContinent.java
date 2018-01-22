@@ -1,7 +1,5 @@
 package peril.views.slick.board;
 
-import org.newdawn.slick.Graphics;
-
 import peril.Point;
 import peril.model.board.ModelContinent;
 import peril.model.board.ModelCountry;
@@ -64,10 +62,6 @@ public final class SlickContinent extends Clickable {
 		}
 		// Will return null if the click is not inside a country.
 		return null;
-	}
-
-	public void draw(Graphics g) {
-		model.getCountries().forEach(modelCountry -> view.getVisualCountry(modelCountry).draw(g));
 	}
 
 }

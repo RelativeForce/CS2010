@@ -20,6 +20,7 @@ import peril.model.board.ModelBoard;
 import peril.model.board.ModelContinent;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelHazard;
+import peril.views.slick.board.SlickArmy;
 import peril.views.slick.board.SlickBoard;
 import peril.views.slick.board.SlickContinent;
 import peril.views.slick.board.SlickCountry;
@@ -65,7 +66,7 @@ public final class MapReader extends FileParser {
 	private final Game game;
 
 	private final SlickModelView view;
-	
+
 	private final SlickGame slickGame;
 
 	/**
@@ -80,7 +81,7 @@ public final class MapReader extends FileParser {
 	 * @param file
 	 *            The file that will contain this map.
 	 */
- 	public MapReader(String directoryPath, Game game, SaveFile file) {
+	public MapReader(String directoryPath, Game game, SaveFile file) {
 		super(directoryPath, file.filename);
 
 		if (game == null) {
@@ -90,7 +91,7 @@ public final class MapReader extends FileParser {
 		this.continents = new HashMap<>();
 		this.countries = new HashMap<>();
 		this.game = game;
-		
+
 		this.slickGame = (SlickGame) game.view;
 		this.view = (SlickModelView) game.view.getModelView();
 
@@ -144,7 +145,7 @@ public final class MapReader extends FileParser {
 			if (isFinished()) {
 				// Set the boards continents
 				game.board.setContinents(continents);
-				
+
 				// Set the normal map as the visual image of the visual representation.
 				view.getVisualBoard(game.board).swapImage(normalMap);
 			}
@@ -229,7 +230,7 @@ public final class MapReader extends FileParser {
 		SlickPlayer slick = parsePlayer(details[6]);
 
 		ModelPlayer ruler = null;
-		
+
 		// If there is an owner add it to the players list
 		if (slick != null) {
 			ruler = slick.model;
@@ -249,16 +250,18 @@ public final class MapReader extends FileParser {
 		Region region = new Region(countryMap, color);
 
 		// Initialise the new country.
-		SlickCountry country = new SlickCountry(region, color, model, view);
+		SlickCountry country = new SlickCountry(region, new Point(xOffset, yOffset), model, view);
+
+		SlickArmy army = new SlickArmy(country.model.getArmy());
 
 		// Set the army size
 		country.model.getArmy().setSize(armySize);
 
-		// Set the army offset.
-		country.setArmyPosition(new Point(xOffset, yOffset));
-
-		// Add the
+		// Add the country to the view.
 		view.addCountry(country);
+
+		// Add the army to the view.
+		view.addArmy(army);
 
 		// Construct a new country and add the country to the list of countries.
 		countries.put(name, country);
@@ -309,7 +312,7 @@ public final class MapReader extends FileParser {
 			SlickContinent newContinent = new SlickContinent(region, model, view);
 
 			toAdd.forEach(country -> model.addCountry(country));
-			
+
 			view.addContinent(newContinent);
 
 			// Add the continent to the list of continents.
@@ -374,8 +377,7 @@ public final class MapReader extends FileParser {
 		}
 
 		SlickPlayer player = new SlickPlayer(playerNumber, slickGame.getColor(playerNumber), AI.USER);
-		
-		
+
 		player.model.distributableArmy.setSize(armySize);
 		player.replaceImage(slickGame.getPlayerIcon(playerNumber));
 
@@ -385,7 +387,7 @@ public final class MapReader extends FileParser {
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Line " + index + " " + details[2] + " is not a valid army size");
 		}
-		
+
 		view.addPlayer(player);
 
 		if (isActive) {
@@ -467,8 +469,6 @@ public final class MapReader extends FileParser {
 				public String toString() {
 					return "Own " + numberOfContinets + " Continents";
 				}
-
-				
 
 			});
 

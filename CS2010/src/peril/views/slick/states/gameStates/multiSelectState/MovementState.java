@@ -2,6 +2,8 @@ package peril.views.slick.states.gameStates.multiSelectState;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -54,6 +56,8 @@ public final class MovementState extends MultiSelectState {
 		super(game, STATE_NAME, id, model);
 		this.fortifyButton = "fortify";
 		path = new LinkedList<>();
+
+		model.addObserver(this);
 	}
 
 	/**
@@ -170,8 +174,13 @@ public final class MovementState extends MultiSelectState {
 			// Holds the country the user is hovering over.
 			SlickCountry target = slick.modelView.getVisualBoard(game.getModelBoard()).getCountry(mousePosition);
 
-			((Fortify) model).getPathBetween(model.getSelected(0), target.model)
-					.forEach(country -> path.add(slick.modelView.getVisualCountry(country)));
+			if (target != null) {
+
+				path.clear();
+
+				((Fortify) model).getPathBetween(model.getSelected(0), target.model)
+						.forEach(country -> path.add(slick.modelView.getVisualCountry(country)));
+			}
 		}
 	}
 
@@ -201,4 +210,22 @@ public final class MovementState extends MultiSelectState {
 		getButton(fortifyButton).setPosition(new Point(current.x + panVector.x, current.y + panVector.y));
 	}
 
+	@Override
+	public void update(Observable o, Object arg) {
+		super.update(o, arg);
+
+		if (selected.size() == 2) {
+			getButton(fortifyButton).show();
+
+			path.clear();
+
+			((Fortify) model).getPathBetween(selected.get(0).model, selected.get(1).model)
+					.forEach(country -> path.add(slick.modelView.getVisualCountry(country)));
+
+			moveFortifyButton(selected.get(1));
+		} else {
+			getButton(fortifyButton).hide();
+		}
+
+	}
 }

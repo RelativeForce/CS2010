@@ -1,5 +1,7 @@
 package peril.views.slick.states.gameStates;
 
+import java.util.Observable;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -40,6 +42,8 @@ public final class SetupState extends CoreGameState {
 	 */
 	public SetupState(GameController game, int id, Setup model) {
 		super(game, STATE_NAME, id, model);
+
+		model.addObserver(this);
 	}
 
 	/**
@@ -115,4 +119,11 @@ public final class SetupState extends CoreGameState {
 		// No elements to pan.
 	}
 
+	@Override
+	public void update(Observable o, Object arg) {
+		super.update(o, arg);
+	
+		// Do any updates when a country is selected.
+
+	}
 }

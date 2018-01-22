@@ -10,7 +10,7 @@ public class Setup extends ModelState{
 	 */
 	public boolean select(ModelCountry country, GameController api) {
 		
-		deselectAt(0);
+		deselectAll();
 		addSelected(country, 0);
 		
 		return true;

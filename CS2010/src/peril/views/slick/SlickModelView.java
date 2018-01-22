@@ -95,6 +95,10 @@ public final class SlickModelView implements ModelView {
 			
 			// When this is initialised add the board.
 			addBoard(new SlickBoard(gc.getModelBoard(), this));
+			
+			for(SlickHazard hazard : SlickHazard.values()) {
+				addHazard(hazard);
+			}
 
 		}
 	}

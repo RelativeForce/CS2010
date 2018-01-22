@@ -1,5 +1,7 @@
 package peril.views.slick.states.gameStates.multiSelectState;
 
+import java.util.Observable;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -55,6 +57,8 @@ public final class CombatState extends MultiSelectState {
 		super(game, STATE_NAME, id, model);
 		this.attackButton = "attack";
 		this.warMenu = slick.menus.warMenu;
+		
+		model.addObserver(this);
 		
 	}
 
@@ -179,11 +183,11 @@ public final class CombatState extends MultiSelectState {
 	 */
 	private void drawValidTargets(Graphics g) {
 
-		SlickCountry highlighted = slick.modelView.getVisualCountry(model.getSelected(0));
-
 		// If there is a country highlighted.
-		if (highlighted != null) {
+		if (!selected.isEmpty()) {
 
+			SlickCountry highlighted = selected.get(0);
+			
 			// Assign the line colour.
 			g.setColor(Color.white);
 
@@ -224,4 +228,16 @@ public final class CombatState extends MultiSelectState {
 
 	}
 
+	@Override
+	public void update(Observable o, Object arg) {
+		super.update(o, arg);
+	
+		if(selected.size() == 2) {
+			getButton(attackButton).show();
+			moveAttackButton(selected.get(0), selected.get(1));
+		}else {
+			getButton(attackButton).hide();
+		}
+
+	}
 }

@@ -1,5 +1,7 @@
 package peril.views.slick.states.gameStates;
 
+import java.util.Observable;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -60,6 +62,8 @@ public final class ReinforcementState extends CoreGameState {
 		this.reinforceButton = "reinforce";
 		this.unitFont = new Font("Arial", Color.white, 50);
 		this.textFont = new Font("Arial", Color.white, 20);
+		
+		model.addObserver(this);
 	}
 
 	/**
@@ -134,7 +138,7 @@ public final class ReinforcementState extends CoreGameState {
 	 * @param country
 	 *            {@link SlickCountry}
 	 */
-	public void moveReinforceButton(SlickCountry country) {
+	private void moveReinforceButton(SlickCountry country) {
 
 		Point armyPosition = getCenterArmyPosition(country);
 
@@ -154,4 +158,16 @@ public final class ReinforcementState extends CoreGameState {
 		getButton(reinforceButton).setPosition(new Point(current.x + panVector.x, current.y + panVector.y));
 	}
 
+	@Override
+	public void update(Observable o, Object arg) {
+		super.update(o, arg);
+	
+		if(!selected.isEmpty()) {
+			getButton(reinforceButton).show();
+			moveReinforceButton(selected.get(0));
+		}else {
+			getButton(reinforceButton).hide();
+		}
+
+	}
 }

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Random;
 import java.util.Set;
 
@@ -19,8 +21,11 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Point;
+import peril.Update;
 import peril.controllers.GameController;
+import peril.model.board.ModelCountry;
 import peril.model.states.ModelState;
+import peril.views.slick.board.SlickArmy;
 import peril.views.slick.board.SlickBoard;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
@@ -36,7 +41,7 @@ import peril.views.slick.states.InteractiveState;
  * 
  * @author Joseph_Rolli, Joshua_Eddy
  */
-public abstract class CoreGameState extends InteractiveState {
+public abstract class CoreGameState extends InteractiveState implements Observer {
 
 	/**
 	 * Holds the tool tip that will be displayed to the user.
@@ -66,6 +71,8 @@ public abstract class CoreGameState extends InteractiveState {
 	 */
 	private Point panDirection;
 
+	protected final List<SlickCountry> selected;
+
 	/**
 	 * Constructs a new {@link CoreGameState}.
 	 * 
@@ -87,6 +94,7 @@ public abstract class CoreGameState extends InteractiveState {
 		this.panDirection = null;
 		this.toolTipList = new ToolTipList(new Point(210, 60));
 		this.backgroundMusic = new ArrayList<>();
+		this.selected = new ArrayList<>();
 
 		super.addComponent(toolTipList);
 	}
@@ -277,8 +285,7 @@ public abstract class CoreGameState extends InteractiveState {
 
 			// If there is a ruler then return the colour of the country to that of the
 			// ruler. Otherwise remove the highlight effect.
-			country.replaceImage(ruler != null ? country.getRegion().convert(ruler.color)
-					: country.getRegion().convert(Color.white));
+			country.changeColour(ruler != null ? ruler.color : Color.white);
 
 		}
 
@@ -391,7 +398,7 @@ public abstract class CoreGameState extends InteractiveState {
 			 * highlighted country.
 			 */
 			if (button == Input.MOUSE_LEFT_BUTTON) {
-				model.select(clicked.model, game);
+				model.select(clicked == null ? null : clicked.model, game);
 			} else if (button == Input.MOUSE_RIGHT_BUTTON) {
 				model.deselectAll();
 			}
@@ -467,18 +474,6 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	/**
-	 * Retrieves the width of the oval that will be displayed behind the army of a
-	 * country.
-	 * 
-	 * @param armySize
-	 *            <code>int</code> size of the army
-	 * @return <code>int</code> width of oval in pixels.
-	 */
-	protected int getOvalWidth(int armySize) {
-		return (((int) Math.log10(armySize)) + 1) * 15;
-	}
-
-	/**
 	 * Retrieves the {@link Point} position that an {@link ModelArmy} will be
 	 * displayed at on the screen relative to the top left corner.
 	 * 
@@ -506,8 +501,10 @@ public abstract class CoreGameState extends InteractiveState {
 
 		Point armyPos = getArmyPosition(country);
 
+		SlickArmy army = slick.modelView.getVisualArmy(country.model.getArmy());
+
 		// Add the distance to the centre of the oval.
-		int x = armyPos.x + (getOvalWidth((country.model.getArmy().getSize()) * 4) / 5);
+		int x = armyPos.x + (army.getOvalWidth((army.model.getSize()) * 4) / 5);
 		int y = armyPos.y + 12;
 
 		return new Point(x, y);
@@ -528,28 +525,11 @@ public abstract class CoreGameState extends InteractiveState {
 
 			final SlickCountry country = slick.modelView.getVisualCountry(model);
 
-			// Draw a background oval with the rulers colour. If no ruler found default to
-			// light grey.
-			if (country.model.getRuler() != null) {
-				g.setColor(slick.modelView.getVisualPlayer(country.model.getRuler()).color);
-			} else {
-				g.setColor(Color.lightGray);
-			}
+			final SlickArmy army = slick.modelView.getVisualArmy(country.model.getArmy());
 
-			// Holds the position that army will be drawn at
-			Point armyPosition = getArmyPosition(country);
+			final SlickPlayer ruler = slick.modelView.getVisualPlayer(country.model.getRuler());
 
-			// Holds the size of the current countries army
-			int troopNumber = country.model.getArmy().getSize();
-
-			drawArmyOval(armyPosition, troopNumber, g);
-
-			g.setColor(Color.white);
-
-			// Draw a string representing the number of troops
-			// within that army at (x,y).
-
-			g.drawString(Integer.toString(troopNumber), armyPosition.x, armyPosition.y);
+			army.draw(g, getArmyPosition(country), ruler);
 
 		}));
 	}
@@ -626,27 +606,6 @@ public abstract class CoreGameState extends InteractiveState {
 	}
 
 	/**
-	 * Draws the oval that is displayed behind the {@link ModelArmy} on a
-	 * {@link SlickCountry}.
-	 * 
-	 * @param position
-	 *            {@link Point}
-	 * @param size
-	 *            size of the {@link ModelArmy}
-	 * @param g
-	 *            {@link Graphics}
-	 */
-	private void drawArmyOval(Point position, int size, Graphics g) {
-
-		int width = getOvalWidth(size);
-
-		int offset = width / 5;
-
-		g.fillOval(position.x - offset, position.y - 3, width, 25);
-
-	}
-
-	/**
 	 * Pans the {@link Game#board} according to the
 	 * {@link CoreGameState#panDirection}.
 	 * 
@@ -687,7 +646,7 @@ public abstract class CoreGameState extends InteractiveState {
 
 		// For every country on the board.
 		board.model.forEachCountry(model -> {
-			
+
 			SlickCountry country = slick.modelView.getVisualCountry(model);
 
 			final int x = country.getPosition().x;
@@ -718,6 +677,59 @@ public abstract class CoreGameState extends InteractiveState {
 		hazards.forEach((position, hazardIcon) -> {
 			g.drawImage(hazardIcon, position.x, position.y);
 		});
+
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+
+		if (!(arg instanceof Update)) {
+			throw new IllegalArgumentException("The property must be an update.");
+		}
+
+		Update<?> update = (Update<?>) arg;
+
+		switch (update.property) {
+
+		case "selected":
+			updateSelected(update);
+			break;
+
+		}
+
+	}
+
+	private void updateSelected(Update<?> update) {
+
+		if (!(update.newValue instanceof List<?>)) {
+			throw new IllegalArgumentException("The update new value must be a list of model countries.");
+		}
+
+		selected.forEach(country -> {
+			removeHighlight(country);
+
+		});
+
+		selected.clear();
+
+		for (Object obj : (List<?>) update.newValue) {
+
+			if (obj != null) {
+				
+				if (!(obj instanceof ModelCountry)) {
+					throw new IllegalArgumentException("The list must contain model countries.");
+				}
+				ModelCountry model = (ModelCountry) obj;
+
+				SlickCountry country = slick.modelView.getVisualCountry(model);
+
+				addHighlight(country);
+
+				selected.add(country);
+
+			}
+
+		}
 
 	}
 }

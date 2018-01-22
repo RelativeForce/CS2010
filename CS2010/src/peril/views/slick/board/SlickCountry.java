@@ -4,11 +4,12 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import peril.Point;
 import peril.Update;
+import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
+import peril.model.board.ModelHazard;
 import peril.views.slick.Clickable;
 import peril.views.slick.Region;
 import peril.views.slick.SlickModelView;
@@ -37,15 +38,10 @@ public class SlickCountry extends Clickable implements Observer {
 	private Image hazardIcon;
 
 	/**
-	 * The {@link Color} that denoted this {@link SlickCountry} in the map files.
-	 */
-	private final Color color;
-
-	/**
 	 * The {@link Point} offset from the centre of the this {@link SlickCountry}
 	 * that the {@link ModelArmy} will be displayed at.
 	 */
-	private Point armyOffset;
+	private final Point armyOffset;
 
 	public final ModelCountry model;
 
@@ -62,8 +58,8 @@ public class SlickCountry extends Clickable implements Observer {
 	 *            The colour that denotes this {@link SlickCountry} in the countries
 	 *            image.
 	 */
-	public SlickCountry(Region region, Color color, ModelCountry model, SlickModelView view) {
-		this(region, color, new Point(0, 0), model, view);
+	public SlickCountry(Region region, ModelCountry model, SlickModelView view) {
+		this(region, new Point(0, 0), model, view);
 	}
 
 	/**
@@ -79,13 +75,21 @@ public class SlickCountry extends Clickable implements Observer {
 	 * @param armyOffset
 	 *            The {@link Point} offset from this {@link SlickCountry}'s center.
 	 */
-	public SlickCountry(Region region, Color color, Point armyOffset, ModelCountry model, SlickModelView view) {
+	public SlickCountry(Region region, Point armyOffset, ModelCountry model, SlickModelView view) {
 		super(region);
-		this.color = color;
 		this.hazardIcon = null;
 		this.armyOffset = armyOffset;
 		this.model = model;
 		this.view = view;
+		
+		model.addObserver(this);
+		
+		if (model.getRuler() == null) {
+			changeColour(Color.white);
+		} else{
+			changeColour(view.getVisualPlayer(model.getRuler()).color);
+		}
+
 	}
 
 	public void changeColour(Color newColor) {
@@ -99,35 +103,17 @@ public class SlickCountry extends Clickable implements Observer {
 	 *            {@link SlickPlayer}
 	 * 
 	 */
-	private void updateColour(Update<?> update) {
+	private void updateRuler(Update<?> update) {
 
+		
 		if (update.newValue == null) {
 			changeColour(Color.white);
-		} else if (update.newValue instanceof SlickPlayer) {
-			changeColour(((SlickPlayer) update.newValue).color);
+		} else if (update.newValue instanceof ModelPlayer) {
+			changeColour(view.getVisualPlayer((ModelPlayer) update.newValue).color);
 		} else {
 			throw new IllegalArgumentException(
 					"For ruler update, newValue must be an instance of peril.views.slick.Player");
 		}
-
-	}
-
-	/**
-	 * Sets the {@link Point} vector offset of this {@link ModelArmy} on screen.
-	 * 
-	 * @param offset
-	 */
-	public void setArmyPosition(Point offset) {
-
-		if (offset == null) {
-			throw new NullPointerException("Offset cannot be null.");
-		}
-
-		this.armyOffset = offset;
-
-	}
-
-	public void draw(Graphics g) {
 
 	}
 
@@ -139,11 +125,12 @@ public class SlickCountry extends Clickable implements Observer {
 
 			switch (update.property) {
 			case "ruler":
-				updateColour(update);
+				updateRuler(update);
 				break;
 			case "hazard":
 				updateHazard(update);
 				break;
+			case "neighbours":break;
 			default:
 				throw new IllegalArgumentException(
 						update.property + " is not a valid propetry of peril.views.slick.board.Country");
@@ -158,8 +145,8 @@ public class SlickCountry extends Clickable implements Observer {
 
 		if (update.newValue == null) {
 			hazardIcon = null;
-		} else if (update.newValue instanceof SlickPlayer) {
-			hazardIcon = (Image) update.newValue;
+		} else if (update.newValue instanceof ModelHazard) {
+			hazardIcon = view.getVisualHazard((ModelHazard) update.newValue).getIcon();
 		} else {
 			throw new IllegalArgumentException("For hazard update, newValue must be an Image.");
 		}
@@ -169,7 +156,7 @@ public class SlickCountry extends Clickable implements Observer {
 	public boolean hasHazard() {
 		return hazardIcon != null;
 	}
-	
+
 	public Point getArmyOffset() {
 		return armyOffset;
 	}

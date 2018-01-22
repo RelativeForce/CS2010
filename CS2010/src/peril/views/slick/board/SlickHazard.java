@@ -18,7 +18,7 @@ public enum SlickHazard {
 	 * A VOLCANIC_ERUPTION has a 10% chance of occurring and may kill up to 20% of
 	 * the units in an {@link Army}.
 	 */
-	VOLCANIC_ERUPTION(ModelHazard.TSUNAMI) {
+	VOLCANIC_ERUPTION(ModelHazard.VOLCANIC_ERUPTION) {
 
 		/**
 		 * The {@link Image} icon of an {@link SlickHazard#VOLCANIC_ERUPTION}.
@@ -52,7 +52,7 @@ public enum SlickHazard {
 	 * A TORNADO has a 12% chance of occurring and may kill up to 30% of the units
 	 * in an {@link Army}.
 	 */
-	TORNADO(ModelHazard.TSUNAMI) {
+	TORNADO(ModelHazard.TORNADO) {
 
 		/**
 		 * The {@link Image} icon of an {@link SlickHazard#TORNADO}.
@@ -84,7 +84,7 @@ public enum SlickHazard {
 	 * A HURRICANE has a 20% chance of occurring and may kill up to 10% of the units
 	 * in an {@link Army}.
 	 */
-	HURRICANE(ModelHazard.TSUNAMI) {
+	HURRICANE(ModelHazard.HURRICANE) {
 		/**
 		 * The {@link Image} icon of an {@link SlickHazard#HURRICANE}.
 		 */

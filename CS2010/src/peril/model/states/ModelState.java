@@ -1,7 +1,6 @@
 package peril.model.states;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Observable;
 
 import peril.Update;
@@ -11,12 +10,12 @@ import peril.model.board.ModelCountry;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
 
-public abstract class ModelState extends Observable{
+public abstract class ModelState extends Observable {
 
 	/**
 	 * The current {@link SlickCountry} that the player has highlighted.
 	 */
-	private List<ModelCountry> selected;
+	private LinkedList<ModelCountry> selected;
 
 	public ModelState() {
 		selected = new LinkedList<>();
@@ -26,9 +25,10 @@ public abstract class ModelState extends Observable{
 	 * Sets the currently selected {@link SlickCountry} as <code>null</code>.
 	 */
 	public final void deselectAll() {
-		
+
 		selected.clear();
-		
+
+		setChanged();
 		notifyObservers(new Update<>("selected", selected));
 	}
 
@@ -37,14 +37,13 @@ public abstract class ModelState extends Observable{
 	 */
 	protected final void deselectAt(int index) {
 
-		if (selected.isEmpty()) {
-			throw new IllegalStateException("There are no countries selected.");
-		} else if (index < 0 && index > selected.size() - 1) {
-			throw new IllegalArgumentException(index + " is not a valid index.");
+		if (selected.isEmpty() || index < 0 || index > selected.size() - 1) {
+			return;
 		}
-		
+
 		selected.remove(index);
-		
+
+		setChanged();
 		notifyObservers(new Update<>("selected", selected));
 
 	}
@@ -54,6 +53,10 @@ public abstract class ModelState extends Observable{
 	 * 
 	 */
 	public ModelCountry getSelected(int index) {
+		if (selected.isEmpty() || index >= selected.size()) {
+			return null;
+		}
+
 		return selected.get(index);
 	}
 
@@ -61,9 +64,10 @@ public abstract class ModelState extends Observable{
 	 * Set the current {@link SlickCountry} that the player has highlighted.
 	 */
 	protected void addSelected(ModelCountry country, int index) {
-		
+
 		selected.add(index, country);
-		
+
+		setChanged();
 		notifyObservers(new Update<>("selected", selected));
 	}
 
@@ -72,20 +76,20 @@ public abstract class ModelState extends Observable{
 	}
 
 	/**
-	 * Determines whether or not the specified {@link SlickCountry} has been selected by
-	 * this {@link CoreGameState}. If the specified {@link SlickCountry} is
-	 * <code>null</code> then this should return <code>false</code>.
+	 * Determines whether or not the specified {@link SlickCountry} has been
+	 * selected by this {@link CoreGameState}. If the specified {@link SlickCountry}
+	 * is <code>null</code> then this should return <code>false</code>.
 	 * 
 	 * @param country
 	 *            {@link SlickCountry}
-	 * @return Whether or not the specified {@link SlickCountry} has been selected by
-	 *         this {@link ModelState}.
+	 * @return Whether or not the specified {@link SlickCountry} has been selected
+	 *         by this {@link ModelState}.
 	 */
 	public abstract boolean select(ModelCountry country, GameController api);
 
 	/**
-	 * Swaps the {@link SlickPlayer} ruler of a specified {@link SlickCountry} for a new
-	 * {@link player}.
+	 * Swaps the {@link SlickPlayer} ruler of a specified {@link SlickCountry} for a
+	 * new {@link player}.
 	 * 
 	 * @param country
 	 *            {@link SlickCountry}

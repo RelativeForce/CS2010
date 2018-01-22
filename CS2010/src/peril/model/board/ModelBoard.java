@@ -4,11 +4,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
-import java.util.Observer;
 import java.util.Set;
 import java.util.function.Consumer;
 
 import peril.Game;
+import peril.Update;
 import peril.controllers.api.Board;
 import peril.controllers.api.Country;
 
@@ -20,7 +20,7 @@ import peril.controllers.api.Country;
  * @author Joshua_Eddy
  *
  */
-public final class ModelBoard implements Observer, Board {
+public final class ModelBoard extends Observable implements Board {
 
 	/**
 	 * The {@link ModelContinent}s in this {@link ModelBoard}.
@@ -33,7 +33,7 @@ public final class ModelBoard implements Observer, Board {
 	private int numberOfCountries;
 
 	/**
-	 * Holds the name of this {@link Borad}.
+	 * Holds the name of this {@link ModelBoard}.
 	 */
 	private String name;
 
@@ -68,6 +68,8 @@ public final class ModelBoard implements Observer, Board {
 		for (ModelContinent continent : continents.values()) {
 			numberOfCountries += continent.getCountries().size();
 		}
+		
+		notifyObservers(new Update<>("continents", continents));
 
 	}
 
@@ -133,6 +135,8 @@ public final class ModelBoard implements Observer, Board {
 	 */
 	public void setName(String name) {
 		this.name = name;
+		
+		notifyObservers(new Update<>("name", name));
 	}
 
 	/**
@@ -147,21 +151,18 @@ public final class ModelBoard implements Observer, Board {
 		numberOfCountries = 0;
 	}
 
+	/**
+	 * Retrieves the {@link Set} of all the {@link Country}s that are on this {@link Board}.
+	 */
 	@Override
 	public Set<? extends Country> getCountries() {
 
 		HashSet<Country> countries = new HashSet<>();
 
+		// Add each continents countries to the set
 		continents.forEach((continentName, continent) -> countries.addAll(continent.getCountries()));
 
 		return countries;
-	}
-
-	@Override
-	public void update(Observable o, Object arg) {
-		if (arg instanceof ModelCountry) {
-			// TODO update stuff
-		}
 	}
 
 	/**

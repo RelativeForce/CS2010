@@ -1,5 +1,8 @@
 package peril.model;
 
+import java.util.Observable;
+
+import peril.Update;
 import peril.ai.AI;
 import peril.controllers.api.Player;
 import peril.model.board.ModelArmy;
@@ -12,7 +15,7 @@ import peril.model.board.ModelArmy;
  * @author Joshua_Eddy, Ezekiel_Trinidad
  *
  */
-public final class ModelPlayer implements Player {
+public final class ModelPlayer extends Observable implements Player {
 
 	/**
 	 * Numerical Representation of the {@link ModelPlayer}.
@@ -66,11 +69,13 @@ public final class ModelPlayer implements Player {
 	/**
 	 * Sets the {@link ModelCountry}s owned by the {@link ModelPlayer}.
 	 * 
-	 * @param countriesOwned
+	 * @param countriesRuled
 	 *            The number of {@link ModelCountry}s the {@link ModelPlayer} now owns.
 	 */
-	public void setCountriesRuled(int countriesOwned) {
-		countries = countriesOwned;
+	public void setCountriesRuled(int countriesRuled) {
+		countries = countriesRuled;
+		
+		notifyObservers(new Update<>("countries", countries));
 	}
 
 	/**
@@ -90,6 +95,8 @@ public final class ModelPlayer implements Player {
 	 */
 	public void setContinentsRuled(int continentsRuled) {
 		continents = continentsRuled;
+		
+		notifyObservers(new Update<>("continents", continentsRuled));
 	}
 
 	/**
@@ -116,8 +123,14 @@ public final class ModelPlayer implements Player {
 
 		totalArmy.setSize(0);
 		distributableArmy.setSize(0);
+		
+		// Reset countries ruled.
 		countries = 0;
+		notifyObservers(new Update<>("countries", countries));
+		
+		// Reset continents ruled.
 		continents = 0;
+		notifyObservers(new Update<>("continents", continents));
 
 	}
 

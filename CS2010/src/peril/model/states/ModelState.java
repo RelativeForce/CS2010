@@ -2,14 +2,16 @@ package peril.model.states;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
 
+import peril.Update;
 import peril.controllers.GameController;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
 
-public abstract class ModelState {
+public abstract class ModelState extends Observable{
 
 	/**
 	 * The current {@link SlickCountry} that the player has highlighted.
@@ -24,7 +26,10 @@ public abstract class ModelState {
 	 * Sets the currently selected {@link SlickCountry} as <code>null</code>.
 	 */
 	public final void deselectAll() {
+		
 		selected.clear();
+		
+		notifyObservers(new Update<>("selected", selected));
 	}
 
 	/**
@@ -39,6 +44,8 @@ public abstract class ModelState {
 		}
 		
 		selected.remove(index);
+		
+		notifyObservers(new Update<>("selected", selected));
 
 	}
 
@@ -54,7 +61,10 @@ public abstract class ModelState {
 	 * Set the current {@link SlickCountry} that the player has highlighted.
 	 */
 	protected void addSelected(ModelCountry country, int index) {
+		
 		selected.add(index, country);
+		
+		notifyObservers(new Update<>("selected", selected));
 	}
 
 	public final int numberOfSelected() {
@@ -73,7 +83,6 @@ public abstract class ModelState {
 	 */
 	public abstract boolean select(ModelCountry country, GameController api);
 
-	
 	/**
 	 * Swaps the {@link SlickPlayer} ruler of a specified {@link SlickCountry} for a new
 	 * {@link player}.

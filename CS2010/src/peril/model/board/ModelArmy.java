@@ -1,5 +1,9 @@
 package peril.model.board;
 
+import java.util.Observable;
+
+import peril.Update;
+
 /**
  * Encapsulates the behaviours of a collection of units. This will be aggregated
  * by the {@link WarMenu} and composes the {@link ModelCountry}.
@@ -7,12 +11,12 @@ package peril.model.board;
  * @author Joshua_Eddy
  *
  */
-public final class ModelArmy {
+public final class ModelArmy extends Observable{
 
 	/**
 	 * The size of the army.
 	 */
-	private volatile int size;
+	private int size;
 
 	/**
 	 * Constructs a new {@link ModelArmy} with size of 1 and an offset of (0,0).
@@ -42,6 +46,8 @@ public final class ModelArmy {
 			throw new IllegalArgumentException("Size must be greater than zero");
 		}
 		this.size = size;
+		
+		notifyObservers(new Update<>("size", size));
 	}
 
 	/**
@@ -61,6 +67,8 @@ public final class ModelArmy {
 	 */
 	public void add(int amount) {
 		size += amount;
+		
+		notifyObservers(new Update<>("size", size));
 	}
 
 	/**
@@ -74,5 +82,7 @@ public final class ModelArmy {
 			throw new IllegalStateException("Army size cannot be less than zero");
 		}
 		size -= amount;
+		
+		notifyObservers(new Update<>("size", size));
 	}
 }

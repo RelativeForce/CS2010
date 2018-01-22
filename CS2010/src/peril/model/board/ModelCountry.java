@@ -2,8 +2,10 @@ package peril.model.board;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
 
 import peril.Point;
+import peril.Update;
 import peril.controllers.api.Country;
 import peril.controllers.api.Player;
 import peril.model.ModelPlayer;
@@ -23,7 +25,7 @@ import peril.model.ModelPlayer;
  * @see Java.util.List
  *
  */
-public class ModelCountry implements Country{
+public final class ModelCountry extends Observable implements Country {
 
 	/**
 	 * Holds the {@link Player} that rules this {@link ModelCountry}.
@@ -35,19 +37,19 @@ public class ModelCountry implements Country{
 	 * 
 	 * @see java.util.List
 	 */
-	private List<ModelCountry> neighbours;
+	private final List<ModelCountry> neighbours;
 
 	/**
 	 * Holds the army occupying this {@link ModelCountry}.
 	 * 
 	 * @see ModelArmy {@link ModelArmy}
 	 */
-	private ModelArmy army;
+	private final ModelArmy army;
 
 	/**
 	 * Holds the name of the {@link ModelCountry}.
 	 */
-	private String name;
+	private final String name;
 
 	/**
 	 * Constructs a new {@link ModelCountry} with a specified army offset.
@@ -88,6 +90,8 @@ public class ModelCountry implements Country{
 	 */
 	public void setRuler(ModelPlayer ruler) {
 		this.ruler = ruler;
+
+		notifyObservers(new Update<>("ruler", ruler));
 	}
 
 	/**
@@ -95,18 +99,6 @@ public class ModelCountry implements Country{
 	 */
 	public int getArmySize() {
 		return army.getSize();
-	}
-
-	/**
-	 * Set an {@link ModelCountry#army} to the specifies army.
-	 * 
-	 * @param army
-	 */
-	public void setArmy(ModelArmy army) {
-		if (army == null) {
-			throw new NullPointerException("Current army cannnot be null");
-		}
-		this.army = army;
 	}
 
 	/**
@@ -128,7 +120,8 @@ public class ModelCountry implements Country{
 	}
 
 	/**
-	 * Checks if the {@link ModelCountry} is a neighbour of this {@link ModelCountry}.
+	 * Checks if the {@link ModelCountry} is a neighbour of this
+	 * {@link ModelCountry}.
 	 * 
 	 * @param country
 	 *            {@link ModelCountry} to check
@@ -145,37 +138,47 @@ public class ModelCountry implements Country{
 	 *            {@link ModelCountry}
 	 */
 	public void addNeighbour(ModelCountry neighbour) {
+
 		if (neighbour == null) {
 			throw new NullPointerException("The neighbour cannot be null");
 		}
+
 		neighbours.add(neighbour);
+
+		notifyObservers(new Update<>("neighbours", neighbours));
 	}
 
 	/**
 	 * Performs the end round operation for this {@link ModelCountry}.
 	 */
 	public void endRound(ModelHazard hazard) {
-		hazard.act(army);
+		
+		// Holds whether the hazard has occurred or not.
+		boolean occurred = hazard.act(army);
+
+		// If the hazard occurred update the most recent hazard.
+		notifyObservers(new Update<>("hazard", occurred ? hazard : null));
+
 	}
 
 	/**
-	 * Retrieves the {@link Player} the rules <code>this</code> {@link ModelCountry}.
+	 * Retrieves the {@link Player} the rules <code>this</code>
+	 * {@link ModelCountry}.
 	 * 
 	 * @return {@link ModelCountry#ruler}.
 	 */
 	public ModelPlayer getRuler() {
 		return ruler;
 	}
-	
+
 	/**
-	 * Retrieves the {@link Player} the rules <code>this</code> {@link ModelCountry}.
+	 * Retrieves the {@link Player} the rules <code>this</code>
+	 * {@link ModelCountry}.
 	 * 
 	 * @return {@link ModelCountry#ruler}.
 	 */
 	public Player getOwner() {
 		return ruler;
 	}
-	
-	
 
 }

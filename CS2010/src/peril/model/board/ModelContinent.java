@@ -72,7 +72,7 @@ public final class ModelContinent extends Observable implements Continent {
 		countries.add(country);
 
 		setChanged();
-		notifyObservers(new Update<>("countries", countries));
+		notifyObservers(new Update("countries", countries));
 	}
 
 	/**
@@ -97,7 +97,7 @@ public final class ModelContinent extends Observable implements Continent {
 		checkRuler();
 
 		setChanged();
-		notifyObservers(new Update<>("ruler", ruler));
+		notifyObservers(new Update("ruler", ruler));
 
 		return ruler != null;
 	}

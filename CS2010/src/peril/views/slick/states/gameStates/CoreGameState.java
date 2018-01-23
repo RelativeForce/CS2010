@@ -687,7 +687,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 			throw new IllegalArgumentException("The property must be an update.");
 		}
 
-		Update<?> update = (Update<?>) arg;
+		Update update = (Update) arg;
 
 		switch (update.property) {
 
@@ -699,7 +699,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 	}
 
-	private void updateSelected(Update<?> update) {
+	private void updateSelected(Update update) {
 
 		if (!(update.newValue instanceof List<?>)) {
 			throw new IllegalArgumentException("The update new value must be a list of model countries.");

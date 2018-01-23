@@ -104,7 +104,7 @@ public class SlickCountry extends Clickable implements Observer {
 	 *            {@link SlickPlayer}
 	 * 
 	 */
-	private void updateRuler(Update<?> update) {
+	private void updateRuler(Update update) {
 
 		
 		if (update.newValue == null) {
@@ -122,7 +122,7 @@ public class SlickCountry extends Clickable implements Observer {
 	public void update(Observable o, Object arg) {
 		if (arg instanceof Update) {
 
-			Update<?> update = (Update<?>) arg;
+			Update update = (Update) arg;
 
 			switch (update.property) {
 			case "ruler":
@@ -142,7 +142,7 @@ public class SlickCountry extends Clickable implements Observer {
 		}
 	}
 
-	private void updateHazard(Update<?> update) {
+	private void updateHazard(Update update) {
 
 		if (update.newValue == null) {
 			hazardIcon = null;

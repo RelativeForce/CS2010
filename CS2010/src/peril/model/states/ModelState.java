@@ -29,7 +29,7 @@ public abstract class ModelState extends Observable {
 		selected.clear();
 
 		setChanged();
-		notifyObservers(new Update<>("selected", selected));
+		notifyObservers(new Update("selected", selected));
 	}
 
 	/**
@@ -44,7 +44,7 @@ public abstract class ModelState extends Observable {
 		selected.remove(index);
 
 		setChanged();
-		notifyObservers(new Update<>("selected", selected));
+		notifyObservers(new Update("selected", selected));
 
 	}
 
@@ -68,7 +68,7 @@ public abstract class ModelState extends Observable {
 		selected.add(index, country);
 
 		setChanged();
-		notifyObservers(new Update<>("selected", selected));
+		notifyObservers(new Update("selected", selected));
 	}
 
 	public final int numberOfSelected() {

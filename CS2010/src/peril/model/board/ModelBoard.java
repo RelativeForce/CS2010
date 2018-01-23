@@ -70,7 +70,7 @@ public final class ModelBoard extends Observable implements Board {
 		}
 		
 		setChanged();
-		notifyObservers(new Update<>("continents", continents));
+		notifyObservers(new Update("continents", continents));
 
 	}
 
@@ -138,7 +138,7 @@ public final class ModelBoard extends Observable implements Board {
 		this.name = name;
 		
 		setChanged();
-		notifyObservers(new Update<>("name", name));
+		notifyObservers(new Update("name", name));
 	}
 
 	/**

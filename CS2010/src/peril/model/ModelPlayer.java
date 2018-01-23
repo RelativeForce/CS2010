@@ -75,7 +75,7 @@ public final class ModelPlayer extends Observable implements Player {
 	public void setCountriesRuled(int countriesRuled) {
 		countries = countriesRuled;
 		
-		notifyObservers(new Update<>("countries", countries));
+		notifyObservers(new Update("countries", countries));
 	}
 
 	/**
@@ -96,7 +96,7 @@ public final class ModelPlayer extends Observable implements Player {
 	public void setContinentsRuled(int continentsRuled) {
 		continents = continentsRuled;
 		
-		notifyObservers(new Update<>("continents", continentsRuled));
+		notifyObservers(new Update("continents", continentsRuled));
 	}
 
 	/**
@@ -126,11 +126,11 @@ public final class ModelPlayer extends Observable implements Player {
 		
 		// Reset countries ruled.
 		countries = 0;
-		notifyObservers(new Update<>("countries", countries));
+		notifyObservers(new Update("countries", countries));
 		
 		// Reset continents ruled.
 		continents = 0;
-		notifyObservers(new Update<>("continents", continents));
+		notifyObservers(new Update("continents", continents));
 
 	}
 

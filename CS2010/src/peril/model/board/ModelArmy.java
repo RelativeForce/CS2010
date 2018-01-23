@@ -48,7 +48,7 @@ public final class ModelArmy extends Observable{
 		this.size = size;
 		
 		setChanged();
-		notifyObservers(new Update<>("size", size));
+		notifyObservers(new Update("size", size));
 	}
 
 	/**
@@ -70,7 +70,7 @@ public final class ModelArmy extends Observable{
 		size += amount;
 		
 		setChanged();
-		notifyObservers(new Update<>("size", size));
+		notifyObservers(new Update("size", size));
 	}
 
 	/**
@@ -86,6 +86,6 @@ public final class ModelArmy extends Observable{
 		size -= amount;
 		
 		setChanged();
-		notifyObservers(new Update<>("size", size));
+		notifyObservers(new Update("size", size));
 	}
 }

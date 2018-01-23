@@ -6,6 +6,7 @@ import java.util.Set;
 
 import peril.Challenge;
 import peril.Game;
+import peril.model.ModelColor;
 import peril.model.ModelPlayer;
 import peril.views.slick.SlickGame;
 import peril.views.slick.board.SlickContinent;
@@ -238,12 +239,12 @@ public class MapWriter {
 		line.append(country.model.getName());
 		line.append(',');
 
-		SlickPlayer player = (SlickPlayer) game.view.getModelView().getVisualPlayer(country.model.getRuler());
-
+		ModelColor color = country.model.getColor();
+		
 		// Country RGB
-		line.append(formatRGB(player.color.getRed()));
-		line.append(formatRGB(player.color.getGreen()));
-		line.append(formatRGB(player.color.getBlue()));
+		line.append(formatRGB(color.red));
+		line.append(formatRGB(color.green));
+		line.append(formatRGB(color.blue));
 		line.append(',');
 
 		// Army Size

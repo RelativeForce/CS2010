@@ -7,6 +7,7 @@ import java.util.Observable;
 import peril.Update;
 import peril.controllers.api.Country;
 import peril.controllers.api.Player;
+import peril.model.ModelColor;
 import peril.model.ModelPlayer;
 
 /**
@@ -50,6 +51,8 @@ public final class ModelCountry extends Observable implements Country {
 	 */
 	private final String name;
 
+	private final ModelColor color;
+
 	/**
 	 * Constructs a new {@link ModelCountry} with a specified army offset.
 	 * 
@@ -63,12 +66,13 @@ public final class ModelCountry extends Observable implements Country {
 	 * @param armyOffset
 	 *            The {@link Point} offset from this {@link ModelCountry}'s center.
 	 */
-	public ModelCountry(String name) {
+	public ModelCountry(String name, ModelColor color) {
 
 		this.neighbours = new LinkedList<ModelCountry>();
 		this.ruler = null;
 		this.army = new ModelArmy(1);
 		this.name = name;
+		this.color = color;
 
 	}
 
@@ -89,7 +93,7 @@ public final class ModelCountry extends Observable implements Country {
 	 */
 	public void setRuler(ModelPlayer ruler) {
 		this.ruler = ruler;
-		
+
 		setChanged();
 		notifyObservers(new Update("ruler", ruler));
 	}
@@ -118,7 +122,11 @@ public final class ModelCountry extends Observable implements Country {
 	public List<ModelCountry> getNeighbours() {
 		return neighbours;
 	}
-
+	
+	public ModelColor getColor() {
+		return color;
+	}
+	
 	/**
 	 * Checks if the {@link ModelCountry} is a neighbour of this
 	 * {@link ModelCountry}.
@@ -153,7 +161,7 @@ public final class ModelCountry extends Observable implements Country {
 	 * Performs the end round operation for this {@link ModelCountry}.
 	 */
 	public void endRound(ModelHazard hazard) {
-		
+
 		// Holds whether the hazard has occurred or not.
 		boolean occurred = hazard.act(army);
 

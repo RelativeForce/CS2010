@@ -13,6 +13,7 @@ import peril.Game;
 import peril.ai.AI;
 import peril.io.FileParser;
 import peril.io.SaveFile;
+import peril.model.ModelColor;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelContinent;
@@ -240,16 +241,13 @@ public final class MapReader extends FileParser {
 			ruler.setCountriesRuled(ruler.getCountriesRuled() + 1);
 		}
 
-		ModelCountry model = new ModelCountry(name);
+		ModelCountry model = new ModelCountry(name, new ModelColor(r, g, b));
 
 		// Set the ruler
 		model.setRuler(ruler);
 
-		// Initialise a new colour using the RGB values.
-		Color color = new Color(r, g, b);
-
 		// Gets the region by colour.
-		Region region = new Region(countryMap, color);
+		Region region = new Region(countryMap, new Color(r, g, b));
 
 		// Initialise the new country.
 		SlickCountry country = new SlickCountry(region, new Point(xOffset, yOffset), model, view);

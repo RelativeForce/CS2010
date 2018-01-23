@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import peril.model.ModelColor;
 import peril.model.board.ModelCountry;
 
 /**
@@ -20,7 +22,7 @@ public class Test_Country {
 	 * Hold the current {@link SlickCountry} that is being used for testing.
 	 */
 	private ModelCountry testCountry;
-	
+
 	/**
 	 * Holds the name of the {@link Test_Country#testCountry}, used for testing.
 	 */
@@ -34,7 +36,7 @@ public class Test_Country {
 	@Before
 	public void setUp() throws Exception {
 		testName = "France";
-		testCountry = new ModelCountry(testName);
+		testCountry = new ModelCountry(testName, new ModelColor(0, 0, 0));
 
 	}
 
@@ -52,7 +54,7 @@ public class Test_Country {
 	@Test
 	public void test_addNeighbour() {
 		// Creates a new country with the name of testName
-		ModelCountry newNeighbour = new ModelCountry(testName);
+		ModelCountry newNeighbour = new ModelCountry(testName, new ModelColor(0, 0, 0));
 
 		// Adds a country to the list of neighbours in the testCountry.
 		testCountry.addNeighbour(newNeighbour);

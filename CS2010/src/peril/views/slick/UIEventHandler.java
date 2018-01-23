@@ -5,7 +5,6 @@ import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.MouseListener;
 
 import peril.Game;
-import peril.Point;
 import peril.views.slick.states.InteractiveState;
 import peril.views.slick.states.gameStates.CoreGameState;
 

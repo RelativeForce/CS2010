@@ -20,11 +20,11 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
-import peril.Point;
 import peril.Update;
 import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
 import peril.model.states.ModelState;
+import peril.views.slick.Point;
 import peril.views.slick.board.SlickArmy;
 import peril.views.slick.board.SlickBoard;
 import peril.views.slick.board.SlickCountry;

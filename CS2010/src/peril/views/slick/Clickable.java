@@ -2,8 +2,6 @@ package peril.views.slick;
 
 import org.newdawn.slick.Image;
 
-import peril.Point;
-
 /**
  * Encapsulates the behaviour of being clicked by the mouse. Any object that
  * extends this will be able to be clicked by the mouse.

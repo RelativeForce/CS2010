@@ -11,11 +11,11 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
-import peril.Point;
 import peril.ai.AI;
 import peril.controllers.GameController;
 import peril.model.states.Fortify;
 import peril.views.slick.Button;
+import peril.views.slick.Point;
 import peril.views.slick.board.SlickCountry;
 
 /**

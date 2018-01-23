@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import peril.Point;
+import peril.views.slick.Point;
 import peril.views.slick.Region;
 
 /**

@@ -6,8 +6,8 @@ import java.util.Observer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-import peril.Point;
 import peril.model.board.ModelArmy;
+import peril.views.slick.Point;
 
 /**
  * The slick view for {@link ModelArmy}. This observes the {@link ModelArmy} and

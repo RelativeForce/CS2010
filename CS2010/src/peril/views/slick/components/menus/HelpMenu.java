@@ -9,8 +9,8 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import peril.Game;
-import peril.Point;
 import peril.views.slick.Button;
+import peril.views.slick.Point;
 import peril.views.slick.Region;
 import peril.views.slick.Viewable;
 import peril.views.slick.components.Component;

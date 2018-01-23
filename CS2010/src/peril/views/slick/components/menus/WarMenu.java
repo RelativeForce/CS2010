@@ -11,11 +11,10 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 import peril.Game;
-import peril.Point;
-
 import peril.io.fileReaders.ImageReader;
 import peril.views.slick.Button;
 import peril.views.slick.Font;
+import peril.views.slick.Point;
 import peril.model.ModelPlayer;
 import peril.views.slick.Region;
 import peril.views.slick.Viewable;

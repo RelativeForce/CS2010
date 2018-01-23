@@ -10,7 +10,6 @@ import org.newdawn.slick.Image;
 
 import peril.Challenge;
 import peril.Game;
-import peril.Point;
 import peril.ai.AI;
 import peril.io.SaveFile;
 import peril.io.fileParsers.FileParser;

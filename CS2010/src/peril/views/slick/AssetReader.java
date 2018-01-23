@@ -1,18 +1,14 @@
-package peril.io.fileParsers;
+package peril.views.slick;
 
 import java.io.File;
 
 import org.newdawn.slick.Image;
 
 import peril.Game;
-import peril.Point;
 import peril.io.FunctionHandler;
+import peril.io.fileParsers.FileParser;
 import peril.io.fileReaders.ImageReader;
 import peril.multiThread.Action;
-import peril.views.slick.Button;
-import peril.views.slick.Clickable;
-import peril.views.slick.Container;
-import peril.views.slick.Viewable;
 import peril.views.slick.states.InteractiveState;
 
 /**

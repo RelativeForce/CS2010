@@ -3,8 +3,6 @@ package peril.views.slick;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-import peril.Point;
-
 /**
  * Encapsulates the behaviour of an {@link Image} in the game.
  * 

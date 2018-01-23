@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import peril.views.slick.Point;
+
 public class Test_Point {
 
 	@Before

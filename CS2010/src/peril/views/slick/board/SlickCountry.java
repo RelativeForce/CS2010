@@ -5,12 +5,13 @@ import java.util.Observer;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
-import peril.Point;
+
 import peril.Update;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelHazard;
 import peril.views.slick.Clickable;
+import peril.views.slick.Point;
 import peril.views.slick.Region;
 import peril.views.slick.SlickModelView;
 

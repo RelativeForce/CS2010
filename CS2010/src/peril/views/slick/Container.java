@@ -1,7 +1,5 @@
 package peril.views.slick;
 
-import peril.Point;
-
 /**
  * Defines the behaviours of a object that can contain {@link Button}s and
  * {@link Viewable}s. In the case of {@link Buttons} this also defines the

@@ -11,7 +11,6 @@ import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
-import peril.Point;
 import peril.controllers.GameController;
 import peril.helpers.PlayerHelper;
 import peril.io.SaveFile;
@@ -427,7 +426,6 @@ public class SlickGame extends StateBasedGame implements View {
 
 	@Override
 	public FileParser getMapLoader(String mapPath, SaveFile save) {
-		
 		return new MapReader(mapPath, game, save);
 	}
 

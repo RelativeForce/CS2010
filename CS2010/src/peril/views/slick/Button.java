@@ -2,7 +2,6 @@ package peril.views.slick;
 
 import org.newdawn.slick.Image;
 
-import peril.Point;
 import peril.multiThread.Action;
 
 /**

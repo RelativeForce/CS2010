@@ -8,11 +8,11 @@ import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.Point;
 import peril.controllers.GameController;
 import peril.io.SaveFile;
 import peril.io.fileReaders.TextFileReader;
 import peril.views.slick.Font;
+import peril.views.slick.Point;
 import peril.views.slick.components.lists.VisualList;
 import peril.views.slick.components.menus.HelpMenu;
 

@@ -2,8 +2,8 @@ package peril.views.slick.helpers;
 
 import peril.Challenge;
 import peril.Game;
-import peril.Point;
 import peril.model.board.ModelHazard;
+import peril.views.slick.Point;
 import peril.views.slick.SlickGame;
 import peril.views.slick.components.menus.*;
 

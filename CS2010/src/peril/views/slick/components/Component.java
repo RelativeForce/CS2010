@@ -2,7 +2,7 @@ package peril.views.slick.components;
 
 import org.newdawn.slick.Graphics;
 
-import peril.Point;
+import peril.views.slick.Point;
 import peril.views.slick.states.InteractiveState;
 
 /**

@@ -3,8 +3,8 @@ package peril.views.slick.helpers;
 import peril.Game;
 import peril.io.SaveFile;
 import peril.io.MapWriter;
-import peril.io.fileParsers.AssetReader;
 import peril.io.fileParsers.FileParser;
+import peril.views.slick.AssetReader;
 import peril.views.slick.Container;
 
 /**

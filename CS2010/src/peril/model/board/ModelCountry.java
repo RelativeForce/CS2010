@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
 
-import peril.Point;
 import peril.Update;
 import peril.controllers.api.Country;
 import peril.controllers.api.Player;

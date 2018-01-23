@@ -1,9 +1,9 @@
 package peril.views.slick.board;
 
 import peril.Game;
-import peril.Point;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelContinent;
+import peril.views.slick.Point;
 import peril.views.slick.SlickModelView;
 import peril.views.slick.Viewable;
 

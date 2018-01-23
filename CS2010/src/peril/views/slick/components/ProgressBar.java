@@ -2,7 +2,7 @@ package peril.views.slick.components;
 
 import org.newdawn.slick.Graphics;
 
-import peril.Point;
+import peril.views.slick.Point;
 
 /**
  * Encapsulates the behaviours of a progress bar that can be displayed on

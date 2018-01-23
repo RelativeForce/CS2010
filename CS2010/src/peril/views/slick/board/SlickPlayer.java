@@ -2,9 +2,9 @@ package peril.views.slick.board;
 
 import org.newdawn.slick.Color;
 
-import peril.Point;
 import peril.ai.AI;
 import peril.model.ModelPlayer;
+import peril.views.slick.Point;
 import peril.views.slick.Viewable;
 
 /**

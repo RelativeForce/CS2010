@@ -6,8 +6,8 @@ import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-import peril.Point;
 import peril.views.slick.Font;
+import peril.views.slick.Point;
 
 /**
  * This object is a visual component that can be used to display a block of text

@@ -8,10 +8,10 @@ import java.util.Map;
 import org.newdawn.slick.Graphics;
 
 import peril.Game;
-import peril.Point;
 import peril.views.slick.Button;
 import peril.views.slick.Clickable;
 import peril.views.slick.Container;
+import peril.views.slick.Point;
 import peril.views.slick.Region;
 import peril.views.slick.Viewable;
 import peril.views.slick.components.Component;

@@ -6,9 +6,9 @@ import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-import peril.Point;
 import peril.views.slick.Clickable;
 import peril.views.slick.Font;
+import peril.views.slick.Point;
 import peril.views.slick.Region;
 import peril.views.slick.components.Component;
 import peril.views.slick.states.InteractiveState;

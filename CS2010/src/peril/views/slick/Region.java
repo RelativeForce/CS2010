@@ -4,7 +4,6 @@ import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.ImageBuffer;
-import peril.Point;
 
 /**
  * Denotes the region of pixels given by a {@link BufferedImage} and a

@@ -10,10 +10,10 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import net.java.games.input.Component;
 import peril.Game;
-import peril.Point;
 import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
 import peril.model.states.Setup;
+import peril.views.slick.Point;
 import peril.views.slick.board.SlickCountry;
 
 /**

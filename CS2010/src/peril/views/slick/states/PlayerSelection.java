@@ -13,12 +13,12 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
-import peril.Point;
 import peril.ai.AI;
 import peril.ai.Monkey;
 import peril.controllers.GameController;
 import peril.helpers.PlayerHelper;
 import peril.views.slick.Font;
+import peril.views.slick.Point;
 import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.components.lists.VisualList;
 import peril.views.slick.components.menus.HelpMenu;

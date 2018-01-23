@@ -5,7 +5,7 @@ import org.newdawn.slick.Graphics;
 
 import peril.Challenge;
 import peril.Game;
-import peril.Point;
+import peril.views.slick.Point;
 import peril.views.slick.Region;
 import peril.views.slick.components.TextField;
 

@@ -6,9 +6,9 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
-import peril.Point;
 import peril.controllers.GameController;
 import peril.model.states.ModelState;
+import peril.views.slick.Point;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.states.gameStates.CoreGameState;
 

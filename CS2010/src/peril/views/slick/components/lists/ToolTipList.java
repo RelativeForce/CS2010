@@ -8,7 +8,7 @@ import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-import peril.Point;
+import peril.views.slick.Point;
 import peril.views.slick.components.Component;
 
 /**

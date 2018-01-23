@@ -1,8 +1,8 @@
 package peril.views;
 
 import peril.Game;
+import peril.io.FileParser;
 import peril.io.SaveFile;
-import peril.io.fileParsers.FileParser;
 import peril.model.ModelPlayer;
 import peril.model.states.ModelState;
 

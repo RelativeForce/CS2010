@@ -1,4 +1,4 @@
-package peril.io.fileReaders;
+package peril.io;
 
 import java.io.File;
 import java.util.LinkedList;

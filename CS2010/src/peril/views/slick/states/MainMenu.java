@@ -10,7 +10,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.controllers.GameController;
 import peril.io.SaveFile;
-import peril.io.fileReaders.TextFileReader;
+import peril.io.TextFileReader;
 import peril.views.slick.Font;
 import peril.views.slick.Point;
 import peril.views.slick.components.lists.VisualList;

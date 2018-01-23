@@ -2,7 +2,7 @@ package peril.views.slick.board;
 
 import org.newdawn.slick.Image;
 import peril.model.board.ModelHazard;
-import peril.io.fileReaders.ImageReader;
+import peril.views.slick.io.ImageReader;
 
 /**
  * These may occur once a turn and will kill a random percentage of the army

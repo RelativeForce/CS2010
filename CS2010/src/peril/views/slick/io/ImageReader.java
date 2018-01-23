@@ -1,4 +1,4 @@
-package peril.io.fileReaders;
+package peril.views.slick.io;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;

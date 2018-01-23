@@ -11,7 +11,6 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 import peril.Game;
-import peril.io.fileReaders.ImageReader;
 import peril.views.slick.Button;
 import peril.views.slick.Font;
 import peril.views.slick.Point;
@@ -23,6 +22,7 @@ import peril.views.slick.board.SlickPlayer;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
 import peril.views.slick.components.lists.VisualList;
+import peril.views.slick.io.ImageReader;
 
 /**
  * Encapsulates all the game combat logic.

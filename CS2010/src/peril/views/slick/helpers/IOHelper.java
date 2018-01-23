@@ -2,10 +2,10 @@ package peril.views.slick.helpers;
 
 import peril.Game;
 import peril.io.SaveFile;
+import peril.io.FileParser;
 import peril.io.MapWriter;
-import peril.io.fileParsers.FileParser;
-import peril.views.slick.AssetReader;
 import peril.views.slick.Container;
+import peril.views.slick.io.AssetReader;
 
 /**
  * This is a helper class of {@link Game} which holds all the input output class

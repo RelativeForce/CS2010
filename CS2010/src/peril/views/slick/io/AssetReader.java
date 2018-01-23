@@ -1,14 +1,18 @@
-package peril.views.slick;
+package peril.views.slick.io;
 
 import java.io.File;
 
 import org.newdawn.slick.Image;
 
 import peril.Game;
-import peril.io.FunctionHandler;
-import peril.io.fileParsers.FileParser;
-import peril.io.fileReaders.ImageReader;
+import peril.helpers.FunctionHelper;
+import peril.io.FileParser;
 import peril.multiThread.Action;
+import peril.views.slick.Button;
+import peril.views.slick.Clickable;
+import peril.views.slick.Container;
+import peril.views.slick.Point;
+import peril.views.slick.Viewable;
 import peril.views.slick.states.InteractiveState;
 
 /**
@@ -28,10 +32,10 @@ public final class AssetReader extends FileParser {
 	private final Container[] containers;
 
 	/**
-	 * Holds the {@link FunctionHandler} that contains the functions that buttons
+	 * Holds the {@link FunctionHelper} that contains the functions that buttons
 	 * will execute.
 	 */
-	private final FunctionHandler functionHandler;
+	private final FunctionHelper functionHandler;
 
 	/**
 	 * Constructs a new {@link AssetReader}.
@@ -52,7 +56,7 @@ public final class AssetReader extends FileParser {
 			throw new NullPointerException("CoreGameState array cannot be empty.");
 		}
 		
-		this.functionHandler = new FunctionHandler(game);
+		this.functionHandler = new FunctionHelper(game);
 		this.containers = containers;
 	}
 
@@ -237,7 +241,7 @@ public final class AssetReader extends FileParser {
 
 	/**
 	 * Parses a {@link Action} from a specified function code using
-	 * {@link FunctionHandler}.
+	 * {@link FunctionHelper}.
 	 * 
 	 * @param functionCodeStr
 	 * @return {@link Action} associated with a code.

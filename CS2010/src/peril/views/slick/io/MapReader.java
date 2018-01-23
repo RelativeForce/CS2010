@@ -1,4 +1,4 @@
-package peril.views.slick;
+package peril.views.slick.io;
 
 import java.io.File;
 import java.util.HashMap;
@@ -11,14 +11,17 @@ import org.newdawn.slick.Image;
 import peril.Challenge;
 import peril.Game;
 import peril.ai.AI;
+import peril.io.FileParser;
 import peril.io.SaveFile;
-import peril.io.fileParsers.FileParser;
-import peril.io.fileReaders.ImageReader;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelContinent;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelHazard;
+import peril.views.slick.Point;
+import peril.views.slick.Region;
+import peril.views.slick.SlickGame;
+import peril.views.slick.SlickModelView;
 import peril.views.slick.board.SlickArmy;
 import peril.views.slick.board.SlickBoard;
 import peril.views.slick.board.SlickContinent;

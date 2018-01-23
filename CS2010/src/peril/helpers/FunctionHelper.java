@@ -1,4 +1,4 @@
-package peril.io;
+package peril.helpers;
 
 import java.io.IOException;
 
@@ -12,21 +12,21 @@ import peril.multiThread.Action;
  * @author Mohammad_ali_Sayed_Ackbar
  *
  */
-public class FunctionHandler {
+public class FunctionHelper {
 
 	/**
-	 * The {@link Game} this {@link FunctionHandler} is a part of.
+	 * The {@link Game} this {@link FunctionHelper} is a part of.
 	 */
 	private final Game game;
 
 	/**
 	 * 
-	 * Constructs a new {@link FunctionHandler}
+	 * Constructs a new {@link FunctionHelper}
 	 * 
 	 * @param game
-	 *            The {@link Game} this {@link FunctionHandler} is a part of.
+	 *            The {@link Game} this {@link FunctionHelper} is a part of.
 	 */
-	public FunctionHandler(Game game) {
+	public FunctionHelper(Game game) {
 		this.game = game;
 	}
 

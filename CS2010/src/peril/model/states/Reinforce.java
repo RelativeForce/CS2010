@@ -4,7 +4,6 @@ import peril.controllers.GameController;
 import peril.controllers.api.Player;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
-import peril.views.slick.board.SlickCountry;
 
 public class Reinforce extends ModelState {
 

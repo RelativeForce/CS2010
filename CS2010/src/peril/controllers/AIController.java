@@ -7,7 +7,7 @@ import peril.controllers.api.Country;
 import peril.controllers.api.Player;
 
 /**
- * The API for all user/AI interactions with the game states.
+ * The API for all AI interactions with the game states.
  * 
  * @author Joshua_Eddy
  *
@@ -94,7 +94,7 @@ public interface AIController {
 	/**
 	 * Retrieves the current {@link Player}.
 	 * 
-	 * @return
+	 * @return {@link Player}
 	 */
 	Player getCurrentPlayer();
 }

@@ -11,7 +11,7 @@ import peril.model.board.ModelCountry;
 import peril.views.View;
 
 /**
- * This controller handles all interactions that an {@link AI} could have with
+ * This controller handles all interactions that an {@link AI} or {@link View} could have with
  * the {@link Game}.
  * 
  * @author Joshua_Eddy
@@ -205,7 +205,6 @@ public class RequestHandler implements AIController, GameController {
 		game.players.emptyPlaying();
 		game.setRoundNumber(0);
 		game.players.challenges.clear();
-		
 	}
 
 	@Override

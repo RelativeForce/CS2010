@@ -1,10 +1,7 @@
 package peril.helpers;
 
 import peril.Game;
-import peril.model.states.Attack;
-import peril.model.states.Fortify;
-import peril.model.states.Reinforce;
-import peril.model.states.Setup;
+import peril.model.states.*;
 
 /**
  * A helper class for {@link Game} this object stores the instances of the

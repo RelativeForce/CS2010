@@ -1,4 +1,4 @@
-package peril.multiThread;
+package peril.concurrent;
 
 import java.util.function.Consumer;
 

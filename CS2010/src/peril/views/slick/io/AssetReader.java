@@ -5,9 +5,9 @@ import java.io.File;
 import org.newdawn.slick.Image;
 
 import peril.Game;
+import peril.concurrent.Action;
 import peril.helpers.FunctionHelper;
 import peril.io.FileParser;
-import peril.multiThread.Action;
 import peril.views.slick.Button;
 import peril.views.slick.Clickable;
 import peril.views.slick.Container;

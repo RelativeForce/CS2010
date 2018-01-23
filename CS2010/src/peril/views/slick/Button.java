@@ -2,7 +2,7 @@ package peril.views.slick;
 
 import org.newdawn.slick.Image;
 
-import peril.multiThread.Action;
+import peril.concurrent.Action;
 
 /**
  * Encapsulates the behaviour of a button on screen. This button can be clicked

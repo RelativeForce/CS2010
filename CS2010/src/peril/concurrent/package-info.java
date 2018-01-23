@@ -5,4 +5,4 @@
  * @author Joshua
  *
  */
-package peril.multiThread;
+package peril.concurrent;

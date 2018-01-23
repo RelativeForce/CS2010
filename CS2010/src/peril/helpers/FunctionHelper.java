@@ -3,7 +3,7 @@ package peril.helpers;
 import java.io.IOException;
 
 import peril.Game;
-import peril.multiThread.Action;
+import peril.concurrent.Action;
 
 /**
  * 

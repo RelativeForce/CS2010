@@ -21,7 +21,8 @@ import peril.views.slick.board.SlickPlayer;
 /**
  * Encapsulates the behaviour of the Reinforcement {@link CoreGameState} where
  * the {@link SlickPlayer} places their units from
- * {@link SlickPlayer#getDistributableArmySize()} on their {@link SlickCountry}s.
+ * {@link SlickPlayer#getDistributableArmySize()} on their
+ * {@link SlickCountry}s.
  * 
  * @author Joseph_Rolli, Joshua_Eddy
  *
@@ -47,7 +48,7 @@ public final class ReinforcementState extends CoreGameState {
 	/**
 	 * Holds the instance of the reinforce {@link Button}.
 	 */
-	private final String reinforceButton; 
+	private final String reinforceButton;
 
 	/**
 	 * Constructs a new {@link ReinforcementState}.
@@ -62,7 +63,7 @@ public final class ReinforcementState extends CoreGameState {
 		this.reinforceButton = "reinforce";
 		this.unitFont = new Font("Arial", Color.white, 50);
 		this.textFont = new Font("Arial", Color.white, 20);
-		
+
 		model.addObserver(this);
 	}
 
@@ -119,15 +120,15 @@ public final class ReinforcementState extends CoreGameState {
 		super.drawHelp(g);
 		super.drawPauseMenu(g);
 		super.drawChallengeMenu(g);
-		
+
 		g.destroy();
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		super.update(gc, sbg, delta);
-		
-		if(game.getCurrentModelPlayer().ai != AI.USER && !game.getCurrentModelPlayer().ai.reinforce(delta)) {
+
+		if (game.getCurrentModelPlayer().ai != AI.USER && !game.getCurrentModelPlayer().ai.reinforce(delta)) {
 			slick.enterState(slick.states.combat);
 		}
 	}
@@ -162,11 +163,11 @@ public final class ReinforcementState extends CoreGameState {
 	@Override
 	public void update(Observable o, Object arg) {
 		super.update(o, arg);
-	
-		if(!selected.isEmpty()) {
+
+		if (selected.size() == 1 && game.getCurrentModelPlayer().distributableArmy.getSize() > 1) {
 			getButton(reinforceButton).show();
 			moveReinforceButton(selected.get(0));
-		}else {
+		} else {
 			getButton(reinforceButton).hide();
 		}
 

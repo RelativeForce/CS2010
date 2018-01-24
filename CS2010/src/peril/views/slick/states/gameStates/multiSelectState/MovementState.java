@@ -215,7 +215,7 @@ public final class MovementState extends MultiSelectState {
 	public void update(Observable o, Object arg) {
 		super.update(o, arg);
 
-		if (selected.size() == 2) {
+		if (selected.size() == 2 && selected.get(0).model.getArmy().getSize() > 1) {
 			getButton(fortifyButton).show();
 
 			path.clear();

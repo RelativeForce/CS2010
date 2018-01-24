@@ -22,8 +22,8 @@ import peril.views.slick.states.gameStates.CoreGameState;
 
 /**
  * Encapsulates the behaviour of the 'Combat' state of the game. In this state
- * the {@link Game#getCurrent()} chooses which of their {@link SlickCountry}s they
- * will attack other {@link SlickCountry}s with.
+ * the {@link Game#getCurrent()} chooses which of their {@link SlickCountry}s
+ * they will attack other {@link SlickCountry}s with.
  * 
  * @author Joseph_Rolli, Joshua_Eddy
  *
@@ -57,9 +57,9 @@ public final class CombatState extends MultiSelectState {
 		super(game, STATE_NAME, id, model);
 		this.attackButton = "attack";
 		this.warMenu = slick.menus.warMenu;
-		
+
 		model.addObserver(this);
-		
+
 	}
 
 	/**
@@ -74,8 +74,8 @@ public final class CombatState extends MultiSelectState {
 	}
 
 	/**
-	 * Displays super classes render method then the current {@link SlickPlayer}s name
-	 * and then the enemy {@link SlickCountry}.
+	 * Displays super classes render method then the current {@link SlickPlayer}s
+	 * name and then the enemy {@link SlickCountry}.
 	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
@@ -98,7 +98,7 @@ public final class CombatState extends MultiSelectState {
 		super.drawHelp(g);
 		super.drawPauseMenu(g);
 		super.drawChallengeMenu(g);
-		
+
 		g.destroy();
 	}
 
@@ -109,10 +109,10 @@ public final class CombatState extends MultiSelectState {
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		super.update(gc, sbg, delta);
 
-		if(game.getCurrentModelPlayer().ai != AI.USER && !game.getCurrentModelPlayer().ai.attack(delta)) {
+		if (game.getCurrentModelPlayer().ai != AI.USER && !game.getCurrentModelPlayer().ai.attack(delta)) {
 			slick.enterState(slick.states.movement);
 		}
-		
+
 		// Hide the war menu if the pause menu is over it.
 		if (slick.menus.pauseMenu.isVisible()) {
 			warMenu.hide();
@@ -188,7 +188,7 @@ public final class CombatState extends MultiSelectState {
 		if (!selected.isEmpty()) {
 
 			SlickCountry highlighted = selected.get(0);
-			
+
 			// Assign the line colour.
 			g.setColor(Color.white);
 
@@ -196,7 +196,6 @@ public final class CombatState extends MultiSelectState {
 
 				SlickCountry neighbour = slick.modelView.getVisual(modelNeighbour);
 
-				
 				// if it is a valid target highlight the country and draw a line from the
 				// highlighted country to the neighbour country.
 				if (((Attack) model).isValidTarget(highlighted.model, modelNeighbour)) {
@@ -232,11 +231,11 @@ public final class CombatState extends MultiSelectState {
 	@Override
 	public void update(Observable o, Object arg) {
 		super.update(o, arg);
-	
-		if(selected.size() == 2) {
+
+		if (selected.size() == 2 && selected.get(0).model.getArmy().getSize() > 1) {
 			getButton(attackButton).show();
 			moveAttackButton(selected.get(0), selected.get(1));
-		}else {
+		} else {
 			getButton(attackButton).hide();
 		}
 

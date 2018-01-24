@@ -210,6 +210,7 @@ public final class MainMenu extends InteractiveState {
 		changeMusic(gc);
 		
 		slick.modelView.clear();
+		game.getModelBoard().reset();
 
 		try {
 			slick.reSize(WIDTH, HEIGHT);

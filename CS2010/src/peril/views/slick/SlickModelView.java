@@ -49,7 +49,6 @@ public final class SlickModelView implements ModelView {
 		hazards.clear();
 		states.clear();
 		armies.clear();
-		boards.clear();
 		players.clear();
 	}
 

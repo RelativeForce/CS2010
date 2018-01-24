@@ -103,7 +103,7 @@ public class SlickGame extends StateBasedGame implements View {
 	public void initStatesList(GameContainer container) throws SlickException {
 
 		states.init(this);
-
+		
 		modelView.init(game.getGameController());
 
 		SlickHazard.initIcons(game.assets.ui);
@@ -153,7 +153,6 @@ public class SlickGame extends StateBasedGame implements View {
 		}
 
 		menus.center(agc.getWidth() / 2, agc.getHeight() / 2);
-		modelView.getVisual(game.board).setPosition(new Point(0,0));
 
 	}
 

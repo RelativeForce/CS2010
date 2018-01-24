@@ -103,9 +103,15 @@ public final class MapReader extends FileParser {
 
 		this.normalMap = ImageReader.getImage(directoryPath + File.separatorChar + "normal.png");
 		this.countryMap = ImageReader.getImage(directoryPath + File.separatorChar + "countries.png");
+
 		
-		// Set the normal map as the visual image of the visual representation.
-		this.view.getVisual(game.board).swapImage(normalMap);
+		SlickBoard board = this.view.getVisual(game.board);
+
+		if (board != null) {
+			board.setPosition(new Point(0, 0));
+			// Set the normal map as the visual image of the visual representation.
+			board.swapImage(normalMap);
+		}
 
 	}
 

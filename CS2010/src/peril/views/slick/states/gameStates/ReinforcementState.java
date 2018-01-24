@@ -73,6 +73,7 @@ public final class ReinforcementState extends CoreGameState {
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
 		slick.menus.pauseMenu.showSaveOption();
+		getButton(reinforceButton).hide();
 	}
 
 	/**

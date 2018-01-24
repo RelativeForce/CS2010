@@ -53,7 +53,7 @@ public final class SlickContinent extends Clickable {
 		// Iterates through all the countries in this continent.
 		for (ModelCountry modelCountry : model.getCountries()) {
 
-			SlickCountry country = view.getVisualCountry(modelCountry);
+			SlickCountry country = view.getVisual(modelCountry);
 
 			// Checks if the specifies click is inside the bounds of the current country.
 			if (country.isClicked(click)) {

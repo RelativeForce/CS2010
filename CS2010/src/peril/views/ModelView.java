@@ -11,19 +11,19 @@ import peril.model.states.ModelState;
 
 public interface ModelView {
 
-	Object getVisualCountry(ModelCountry country);
+	Object getVisual(ModelCountry country);
 	
-	Object getVisualContinent(ModelContinent continent);
+	Object getVisual(ModelContinent continent);
 	
-	Object getVisualBoard(ModelBoard board);
+	Object getVisual(ModelBoard board);
 	
-	Object getVisualHazard(ModelHazard hazard);
+	Object getVisual(ModelHazard hazard);
 	
-	Object getVisualArmy(ModelArmy army);
+	Object getVisual(ModelArmy army);
 	
-	Object getVisualState(ModelState state);
+	Object getVisual(ModelState state);
 	
-	Object getVisualPlayer(ModelPlayer player);
+	Object getVisual(ModelPlayer player);
 	
 	void clear();
 	

@@ -209,7 +209,8 @@ public final class PlayerSelection extends InteractiveState {
 			slick.modelView.addPlayer(player);
 
 		}
-
+		// Reset the board
+		game.getModelBoard().reset();
 		slick.reSize(width, height);
 
 		// Load the game

@@ -72,15 +72,15 @@ public class MapWriter {
 
 		// Write all the countries to the file
 		game.board.forEachCountry(country -> writer
-				.writeLine(parseCountry((SlickCountry) game.view.getModelView().getVisualCountry(country))));
+				.writeLine(parseCountry((SlickCountry) game.view.getModelView().getVisual(country))));
 
 		// Write all the continents to the file
 		game.board.getContinents().values().forEach(continent -> writer
-				.writeLine(parseContinent((SlickContinent) game.view.getModelView().getVisualContinent(continent))));
+				.writeLine(parseContinent((SlickContinent) game.view.getModelView().getVisual(continent))));
 
 		// Write all the links to the file
 		game.board.forEachCountry(
-				country -> parseLinks((SlickCountry) game.view.getModelView().getVisualCountry(country)));
+				country -> parseLinks((SlickCountry) game.view.getModelView().getVisual(country)));
 
 		game.players.challenges.forEach(challenge -> writer.writeLine(parseChallenge(challenge)));
 
@@ -151,7 +151,7 @@ public class MapWriter {
 	 */
 	private void parseLinks(SlickCountry country) {
 		country.model.getNeighbours().forEach(
-				neighbour -> parseLink(country, (SlickCountry) game.view.getModelView().getVisualCountry(neighbour)));
+				neighbour -> parseLink(country, (SlickCountry) game.view.getModelView().getVisual(neighbour)));
 	}
 
 	/**

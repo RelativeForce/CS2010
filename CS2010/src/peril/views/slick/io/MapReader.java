@@ -2,9 +2,12 @@ package peril.views.slick.io;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
@@ -43,7 +46,7 @@ public final class MapReader extends FileParser {
 	 * The {@link List} of all the {@link SlickContinent}s on the
 	 * {@link SlickBoard}.
 	 */
-	private final Map<String, ModelContinent> continents;
+	private final Set<ModelContinent> continents;
 
 	/**
 	 * The image of the {@link SlickBoard}.
@@ -91,7 +94,7 @@ public final class MapReader extends FileParser {
 			throw new NullPointerException("Game cannot be null.");
 		}
 
-		this.continents = new HashMap<>();
+		this.continents = new HashSet<>();
 		this.countries = new HashMap<>();
 		this.game = game;
 
@@ -100,6 +103,9 @@ public final class MapReader extends FileParser {
 
 		this.normalMap = ImageReader.getImage(directoryPath + File.separatorChar + "normal.png");
 		this.countryMap = ImageReader.getImage(directoryPath + File.separatorChar + "countries.png");
+		
+		// Set the normal map as the visual image of the visual representation.
+		this.view.getVisual(game.board).swapImage(normalMap);
 
 	}
 
@@ -148,9 +154,6 @@ public final class MapReader extends FileParser {
 			if (isFinished()) {
 				// Set the boards continents
 				game.board.setContinents(continents);
-
-				// Set the normal map as the visual image of the visual representation.
-				view.getVisualBoard(game.board).swapImage(normalMap);
 			}
 		}
 
@@ -316,7 +319,7 @@ public final class MapReader extends FileParser {
 			view.addContinent(newContinent);
 
 			// Add the continent to the list of continents.
-			continents.put(name, model);
+			continents.add(model);
 
 		} catch (Exception ex) {
 			throw new IllegalArgumentException("details not valid.");
@@ -592,6 +595,6 @@ public final class MapReader extends FileParser {
 			throw new IllegalArgumentException(player + " is not a valid player number.");
 		}
 
-		return view.getVisualPlayer(game.players.getPlayer(playerNumber));
+		return view.getVisual(game.players.getPlayer(playerNumber));
 	}
 }

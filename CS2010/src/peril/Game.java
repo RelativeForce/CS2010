@@ -257,7 +257,7 @@ view.enterCombat();
 
 	public void confirmSetup() {
 		
-		// checks the ownership of the continents
+		// Checks the ownership of the continents
 		checkContinentRulership();
 
 		// Change the state of the game to reinforcement and give player one their units
@@ -269,12 +269,13 @@ view.enterCombat();
 	
 	public void confirmMovement() {
 		
+		// Move to the next player
 		players.nextPlayer();
 		
+		// Enter the reinforce state
 		view.enterReinforce();
 	}
 
-	
 	public void forEachLoser(Consumer<ModelPlayer> task) {
 		
 	}

@@ -189,13 +189,13 @@ public class WarMenu extends Menu {
 
 		getButton(attackButton).show();
 ;
-		attacker = (SlickCountry) getGame().view.getModelView().getVisualCountry(getGame().states.combat.getSelected(0));
-		enemy = (SlickCountry) getGame().view.getModelView().getVisualCountry(getGame().states.combat.getSelected(1));
+		attacker = (SlickCountry) getGame().view.getModelView().getVisual(getGame().states.combat.getSelected(0));
+		enemy = (SlickCountry) getGame().view.getModelView().getVisual(getGame().states.combat.getSelected(1));
 
 		checkSquadSizes();
 
-		ruler = (SlickPlayer) getGame().view.getModelView().getVisualPlayer(enemy.model.getRuler());
-		player = (SlickPlayer) getGame().view.getModelView().getVisualPlayer(attacker.model.getRuler());
+		ruler = (SlickPlayer) getGame().view.getModelView().getVisual(enemy.model.getRuler());
+		player = (SlickPlayer) getGame().view.getModelView().getVisual(attacker.model.getRuler());
 
 	}
 

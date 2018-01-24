@@ -1,5 +1,6 @@
 package peril.model.board;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,7 @@ public final class ModelBoard extends Observable implements Board {
 	/**
 	 * The {@link ModelContinent}s in this {@link ModelBoard}.
 	 */
-	private Map<String, ModelContinent> continents;
+	private final Map<String, ModelContinent> continents;
 
 	/**
 	 * The number of {@link ModelCountry}s in the {@link ModelBoard}.
@@ -46,7 +47,7 @@ public final class ModelBoard extends Observable implements Board {
 	 *            The name of the {@link ModelBoard}.
 	 */
 	public ModelBoard(String name) {
-		this.continents = null;
+		this.continents = new HashMap<>();
 		this.numberOfCountries = 0;
 		this.name = name;
 	}
@@ -54,21 +55,22 @@ public final class ModelBoard extends Observable implements Board {
 	/**
 	 * Sets this {@link ModelBoard}'s {@link List} of {@link ModelContinent}s.
 	 * 
-	 * @param continents
+	 * @param newContinents
 	 *            new {@link List} of {@link ModelContinent}s.
 	 */
-	public void setContinents(Map<String, ModelContinent> continents) {
+	public void setContinents(Set<ModelContinent> newContinents) {
 
-		if (continents == null) {
+		if (newContinents == null) {
 			throw new NullPointerException("Continents is null.");
 		}
 
-		this.continents = continents;
+		reset();
+		newContinents.forEach(continent -> continents.put(continent.getName(), continent));
 
-		for (ModelContinent continent : continents.values()) {
+		for (ModelContinent continent : newContinents) {
 			numberOfCountries += continent.getCountries().size();
 		}
-		
+
 		setChanged();
 		notifyObservers(new Update("continents", continents));
 
@@ -82,9 +84,6 @@ public final class ModelBoard extends Observable implements Board {
 	 * @see java.util.List
 	 */
 	public Map<String, ModelContinent> getContinents() {
-
-		checkContinents();
-
 		return continents;
 	}
 
@@ -93,9 +92,6 @@ public final class ModelBoard extends Observable implements Board {
 	 * {@link ModelContinent#executeTurn()}.
 	 */
 	public void endRound() {
-
-		checkContinents();
-
 		continents.values().forEach(continent -> continent.endRound());
 	}
 
@@ -136,25 +132,24 @@ public final class ModelBoard extends Observable implements Board {
 	 */
 	public void setName(String name) {
 		this.name = name;
-		
+
 		setChanged();
 		notifyObservers(new Update("name", name));
 	}
 
 	/**
-	 * Clear all the {@link ModelContinent}s from the {@link Game} thus deleting all the
-	 * {@link ModelCountry}s and reseting the {@link ModelBoard} to its initial state.
+	 * Clear all the {@link ModelContinent}s from the {@link Game} thus deleting all
+	 * the {@link ModelCountry}s and reseting the {@link ModelBoard} to its initial
+	 * state.
 	 */
 	public void reset() {
-
-		if (continents != null) {
-			continents.clear();
-		}
+		continents.clear();
 		numberOfCountries = 0;
 	}
 
 	/**
-	 * Retrieves the {@link Set} of all the {@link Country}s that are on this {@link Board}.
+	 * Retrieves the {@link Set} of all the {@link Country}s that are on this
+	 * {@link Board}.
 	 */
 	@Override
 	public Set<? extends Country> getCountries() {
@@ -165,16 +160,6 @@ public final class ModelBoard extends Observable implements Board {
 		continents.forEach((continentName, continent) -> countries.addAll(continent.getCountries()));
 
 		return countries;
-	}
-
-	/**
-	 * Checks whether {@link ModelBoard#continents} is <code>null</code>. If it is this
-	 * method will throw {@link IllegalStateException}.
-	 */
-	private void checkContinents() {
-		if (continents == null) {
-			throw new IllegalStateException("There are no Continents on this board");
-		}
 	}
 
 }

@@ -195,16 +195,16 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 		switch (key) {
 		case Input.KEY_UP:
-			slick.modelView.getVisualBoard(game.getModelBoard()).move(new Point(0, +increment), width, height);
+			slick.modelView.getVisual(game.getModelBoard()).move(new Point(0, +increment), width, height);
 			break;
 		case Input.KEY_DOWN:
-			slick.modelView.getVisualBoard(game.getModelBoard()).move(new Point(0, -increment), width, height);
+			slick.modelView.getVisual(game.getModelBoard()).move(new Point(0, -increment), width, height);
 			break;
 		case Input.KEY_LEFT:
-			slick.modelView.getVisualBoard(game.getModelBoard()).move(new Point(+increment, 0), width, height);
+			slick.modelView.getVisual(game.getModelBoard()).move(new Point(+increment, 0), width, height);
 			break;
 		case Input.KEY_RIGHT:
-			slick.modelView.getVisualBoard(game.getModelBoard()).move(new Point(-increment, 0), width, height);
+			slick.modelView.getVisual(game.getModelBoard()).move(new Point(-increment, 0), width, height);
 			break;
 		case Input.KEY_ENTER:
 			pauseMenu.toggleVisibility();
@@ -281,7 +281,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		if (country != null) {
 
 			// Holds the ruler of the country
-			SlickPlayer ruler = slick.modelView.getVisualPlayer(country.model.getRuler());
+			SlickPlayer ruler = slick.modelView.getVisual(country.model.getRuler());
 
 			// If there is a ruler then return the colour of the country to that of the
 			// ruler. Otherwise remove the highlight effect.
@@ -358,7 +358,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 *            {@link Graphics}
 	 */
 	protected void drawPlayerName(Graphics g) {
-		SlickPlayer p = slick.modelView.getVisualPlayer(game.getCurrentModelPlayer());
+		SlickPlayer p = slick.modelView.getVisual(game.getCurrentModelPlayer());
 		g.drawImage(p.getImage(), 15, 45);
 	}
 
@@ -384,7 +384,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	protected void clickBoard(int button, Point click) {
 
 		// Holds the game board
-		SlickBoard board = slick.modelView.getVisualBoard(game.getModelBoard());
+		SlickBoard board = slick.modelView.getVisual(game.getModelBoard());
 
 		// If there is a game board
 		if (board != null) {
@@ -426,7 +426,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		// Get all the countries from the board.
 		game.forEachModelCountry(model -> {
 
-			final SlickCountry country = slick.modelView.getVisualCountry(model);
+			final SlickCountry country = slick.modelView.getVisual(model);
 
 			// Sets x and y as the central width and height of the current country.
 			final int countryX = getCenterArmyPosition(country).x;
@@ -438,7 +438,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 			// current country
 			model.getNeighbours().forEach(modelNeighbour -> {
 
-				final SlickCountry neighbour = slick.modelView.getVisualCountry(modelNeighbour);
+				final SlickCountry neighbour = slick.modelView.getVisual(modelNeighbour);
 
 				if (!drawn.contains(neighbour)) {
 					// Sets x and y as the central width and height of the neighbour country.
@@ -501,7 +501,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 		Point armyPos = getArmyPosition(country);
 
-		SlickArmy army = slick.modelView.getVisualArmy(country.model.getArmy());
+		SlickArmy army = slick.modelView.getVisual(country.model.getArmy());
 
 		// Add the distance to the centre of the oval.
 		int x = armyPos.x + (army.getOvalWidth((army.model.getSize()) * 4) / 5);
@@ -523,11 +523,11 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		// Iterate across every country on the game board.
 		game.getModelBoard().getContinents().values().forEach(continent -> continent.getCountries().forEach(model -> {
 
-			final SlickCountry country = slick.modelView.getVisualCountry(model);
+			final SlickCountry country = slick.modelView.getVisual(model);
 
-			final SlickArmy army = slick.modelView.getVisualArmy(country.model.getArmy());
+			final SlickArmy army = slick.modelView.getVisual(country.model.getArmy());
 
-			final SlickPlayer ruler = slick.modelView.getVisualPlayer(country.model.getRuler());
+			final SlickPlayer ruler = slick.modelView.getVisual(country.model.getRuler());
 
 			army.draw(g, getArmyPosition(country), ruler);
 
@@ -617,7 +617,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		int height = slick.getContainer().getHeight();
 
 		// The vector the board actually moved along.
-		Point actualVector = slick.modelView.getVisualBoard(game.getModelBoard()).move(panDirection, width, height);
+		Point actualVector = slick.modelView.getVisual(game.getModelBoard()).move(panDirection, width, height);
 
 		// If the board actually moved.
 		if (actualVector.x != 0 || actualVector.y != 0) {
@@ -634,7 +634,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 */
 	private void drawBoard(Graphics g) {
 
-		SlickBoard board = slick.modelView.getVisualBoard(game.getModelBoard());
+		SlickBoard board = slick.modelView.getVisual(game.getModelBoard());
 
 		// If the board has a visual representation, render it in the graphics context.
 		if (board.hasImage()) {
@@ -647,7 +647,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		// For every country on the board.
 		board.model.forEachCountry(model -> {
 
-			SlickCountry country = slick.modelView.getVisualCountry(model);
+			SlickCountry country = slick.modelView.getVisual(model);
 
 			final int x = country.getPosition().x;
 			final int y = country.getPosition().y;
@@ -721,7 +721,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 				}
 				ModelCountry model = (ModelCountry) obj;
 
-				SlickCountry country = slick.modelView.getVisualCountry(model);
+				SlickCountry country = slick.modelView.getVisual(model);
 
 				addHighlight(country);
 

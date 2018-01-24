@@ -19,6 +19,7 @@ import peril.model.ModelPlayer;
 import peril.model.states.ModelState;
 import peril.views.ModelView;
 import peril.views.View;
+import peril.views.slick.board.SlickBoard;
 import peril.views.slick.board.SlickHazard;
 import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.components.menus.*;
@@ -102,7 +103,7 @@ public class SlickGame extends StateBasedGame implements View {
 	public void initStatesList(GameContainer container) throws SlickException {
 
 		states.init(this);
-		
+
 		modelView.init(game.getGameController());
 
 		SlickHazard.initIcons(game.assets.ui);
@@ -145,17 +146,39 @@ public class SlickGame extends StateBasedGame implements View {
 	public void reSize(int width, int height) throws SlickException {
 
 		// Change the window to the specified size.
-		if (width >= agc.getScreenWidth() && height >= agc.getScreenHeight()) {
+		if (width >= agc.getScreenWidth() || height >= agc.getScreenHeight()) {
 			agc.setDisplayMode(agc.getScreenWidth(), agc.getScreenHeight(), true);
 		} else {
-
 			agc.setDisplayMode(width, height, false);
 		}
 
 		menus.center(agc.getWidth() / 2, agc.getHeight() / 2);
+		modelView.getVisual(game.board).setPosition(new Point(0,0));
 
-		// Reset the board
-		game.board.reset();
+	}
+
+	@Override
+	public void centerBoard() {
+		
+		final SlickBoard board = modelView.getVisual(game.board);
+		
+		// Unlock both x and y panning
+		board.unlock();
+
+		// The centre position of the board
+		final int x = ((agc.getWidth() - board.getWidth()) / 2);
+		final int y = ((agc.getHeight() - board.getHeight()) / 2);
+		
+		board.setPosition(new Point(x, y));
+		
+		// Lock panning if the board is to small for the screen.
+		if(board.getWidth() <= agc.getWidth()) {
+			board.lockX();
+		}
+		
+		if(board.getHeight() <= agc.getHeight()) {
+			board.lockY();
+		}
 
 	}
 
@@ -232,7 +255,7 @@ public class SlickGame extends StateBasedGame implements View {
 		this.menus = new MenuHelper(pauseMenu, warMenu, helpMenu, challengeMenu);
 
 		GameController gc = game.getGameController();
-		
+
 		// Initialise the game states.
 		MainMenu mainMenu = new MainMenu(gc, 0);
 		PlayerSelection playerSelection = new PlayerSelection(gc, 1);
@@ -261,7 +284,7 @@ public class SlickGame extends StateBasedGame implements View {
 
 	@Override
 	public void setWinner(ModelPlayer winner) {
-		states.end.addToTop(modelView.getVisualPlayer(winner));
+		states.end.addToTop(modelView.getVisual(winner));
 		enterState(states.end.getID());
 	}
 
@@ -339,7 +362,7 @@ public class SlickGame extends StateBasedGame implements View {
 
 	@Override
 	public void addLoser(ModelPlayer player) {
-		states.end.addToTop(modelView.getVisualPlayer(player));
+		states.end.addToTop(modelView.getVisual(player));
 	}
 
 	@Override

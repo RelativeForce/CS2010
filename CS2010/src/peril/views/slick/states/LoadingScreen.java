@@ -210,6 +210,9 @@ public final class LoadingScreen extends InteractiveState {
 		firstState = null;
 
 		slick.menus.pauseMenu.refreshSaveFiles();
+		
+		slick.centerBoard();
+		
 	}
 
 	/**

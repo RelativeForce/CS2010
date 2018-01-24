@@ -88,7 +88,7 @@ public class SlickCountry extends Clickable implements Observer {
 		if (model.getRuler() == null) {
 			changeColour(Color.white);
 		} else{
-			changeColour(view.getVisualPlayer(model.getRuler()).color);
+			changeColour(view.getVisual(model.getRuler()).color);
 		}
 
 	}
@@ -110,7 +110,7 @@ public class SlickCountry extends Clickable implements Observer {
 		if (update.newValue == null) {
 			changeColour(Color.white);
 		} else if (update.newValue instanceof ModelPlayer) {
-			changeColour(view.getVisualPlayer((ModelPlayer) update.newValue).color);
+			changeColour(view.getVisual((ModelPlayer) update.newValue).color);
 		} else {
 			throw new IllegalArgumentException(
 					"For ruler update, newValue must be an instance of peril.views.slick.Player");
@@ -147,7 +147,7 @@ public class SlickCountry extends Clickable implements Observer {
 		if (update.newValue == null) {
 			hazardIcon = null;
 		} else if (update.newValue instanceof ModelHazard) {
-			hazardIcon = view.getVisualHazard((ModelHazard) update.newValue).getIcon();
+			hazardIcon = view.getVisual((ModelHazard) update.newValue).getIcon();
 		} else {
 			throw new IllegalArgumentException("For hazard update, newValue must be an Image.");
 		}

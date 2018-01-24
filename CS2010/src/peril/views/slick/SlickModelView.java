@@ -53,37 +53,37 @@ public final class SlickModelView implements ModelView {
 		players.clear();
 	}
 
-	public SlickCountry getVisualCountry(ModelCountry country) {
+	public SlickCountry getVisual(ModelCountry country) {
 		return countries.get(country);
 	}
 
 	@Override
-	public SlickContinent getVisualContinent(ModelContinent continent) {
+	public SlickContinent getVisual(ModelContinent continent) {
 		return continents.get(continent);
 	}
 
 	@Override
-	public SlickBoard getVisualBoard(ModelBoard board) {
+	public SlickBoard getVisual(ModelBoard board) {
 		return boards.get(board);
 	}
 
 	@Override
-	public SlickHazard getVisualHazard(ModelHazard hazard) {
+	public SlickHazard getVisual(ModelHazard hazard) {
 		return hazards.get(hazard);
 	}
 
 	@Override
-	public SlickArmy getVisualArmy(ModelArmy army) {
+	public SlickArmy getVisual(ModelArmy army) {
 		return armies.get(army);
 	}
 
 	@Override
-	public CoreGameState getVisualState(ModelState state) {
+	public CoreGameState getVisual(ModelState state) {
 		return states.get(state);
 	}
 
 	@Override
-	public SlickPlayer getVisualPlayer(ModelPlayer player) {
+	public SlickPlayer getVisual(ModelPlayer player) {
 		return players.get(player);
 	}
 

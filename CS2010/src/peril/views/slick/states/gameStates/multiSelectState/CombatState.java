@@ -126,6 +126,7 @@ public final class CombatState extends MultiSelectState {
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
 		slick.menus.pauseMenu.showSaveOption();
+		getButton(attackButton).hide();
 	}
 
 	/**
@@ -193,7 +194,7 @@ public final class CombatState extends MultiSelectState {
 
 			for (ModelCountry modelNeighbour : highlighted.model.getNeighbours()) {
 
-				SlickCountry neighbour = slick.modelView.getVisualCountry(modelNeighbour);
+				SlickCountry neighbour = slick.modelView.getVisual(modelNeighbour);
 
 				
 				// if it is a valid target highlight the country and draw a line from the

@@ -208,6 +208,8 @@ public final class MainMenu extends InteractiveState {
 		checkSaves();
 
 		changeMusic(gc);
+		
+		slick.modelView.clear();
 
 		try {
 			slick.reSize(WIDTH, HEIGHT);
@@ -274,7 +276,8 @@ public final class MainMenu extends InteractiveState {
 			slick.enterState(slick.states.playerSelection);
 
 		} else {
-
+			// Reset the board
+			game.getModelBoard().reset();
 			slick.reSize(map.width, map.height);
 			slick.enterState(slick.states.loadingScreen);
 		}

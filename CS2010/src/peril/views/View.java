@@ -59,5 +59,7 @@ public interface View {
 	FileParser getMapLoader(String mapPath, SaveFile save);
 
 	void attack();
+	
+	void centerBoard();
 
 }

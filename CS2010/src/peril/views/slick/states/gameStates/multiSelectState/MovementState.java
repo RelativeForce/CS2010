@@ -67,6 +67,7 @@ public final class MovementState extends MultiSelectState {
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
 		slick.menus.pauseMenu.showSaveOption();
+		getButton(fortifyButton).hide();
 	}
 
 	/**
@@ -172,14 +173,14 @@ public final class MovementState extends MultiSelectState {
 		if (model.getSelected(0) != null && model.getSelected(0).getArmy().getSize() > 1) {
 
 			// Holds the country the user is hovering over.
-			SlickCountry target = slick.modelView.getVisualBoard(game.getModelBoard()).getCountry(mousePosition);
+			SlickCountry target = slick.modelView.getVisual(game.getModelBoard()).getCountry(mousePosition);
 
 			if (target != null) {
 
 				path.clear();
 
 				((Fortify) model).getPathBetween(model.getSelected(0), target.model)
-						.forEach(country -> path.add(slick.modelView.getVisualCountry(country)));
+						.forEach(country -> path.add(slick.modelView.getVisual(country)));
 			}
 		}
 	}
@@ -220,7 +221,7 @@ public final class MovementState extends MultiSelectState {
 			path.clear();
 
 			((Fortify) model).getPathBetween(selected.get(0).model, selected.get(1).model)
-					.forEach(country -> path.add(slick.modelView.getVisualCountry(country)));
+					.forEach(country -> path.add(slick.modelView.getVisual(country)));
 
 			moveFortifyButton(selected.get(1));
 		} else {

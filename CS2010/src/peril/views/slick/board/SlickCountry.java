@@ -147,7 +147,12 @@ public class SlickCountry extends Clickable implements Observer {
 		if (update.newValue == null) {
 			hazardIcon = null;
 		} else if (update.newValue instanceof ModelHazard) {
-			hazardIcon = view.getVisual((ModelHazard) update.newValue).getIcon();
+			
+			SlickHazard h = view.getVisual((ModelHazard) update.newValue);
+			
+			if(h != null) {
+				hazardIcon = h.getIcon();
+			}			
 		} else {
 			throw new IllegalArgumentException("For hazard update, newValue must be an Image.");
 		}

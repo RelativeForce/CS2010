@@ -86,6 +86,10 @@ public final class Game {
 		this.currentRound = 0;
 
 		this.view = view;
+		
+		UnitHelper helper = UnitHelper.getInstance();
+		
+		helper.addUnit("soldier", 1);
 
 	}
 

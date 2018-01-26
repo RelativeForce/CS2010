@@ -1,8 +1,10 @@
 package peril.model.board;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
-
 import peril.Update;
+import peril.helpers.UnitHelper;
 
 /**
  * Encapsulates the behaviours of a collection of units. This will be aggregated
@@ -11,27 +13,34 @@ import peril.Update;
  * @author Joshua_Eddy
  *
  */
-public final class ModelArmy extends Observable{
+public final class ModelArmy extends Observable {
 
 	/**
 	 * The size of the army.
 	 */
-	private int size;
+	private int strength;
+
+	/**
+	 * Contains the {@link ModelUnit}s that this {@link ModelArmy} consists of.
+	 */
+	private final Map<ModelUnit, Integer> units;
 
 	/**
 	 * Constructs a new {@link ModelArmy} with size of 1 and an offset of (0,0).
 	 */
 	public ModelArmy() {
-		setSize(1);
+		this(1);
 	}
 
 	/**
-	 * Constructs a new {@link ModelArmy} of a specified size with an offset of (0,0).
+	 * Constructs a new {@link ModelArmy} of a specified size with an offset of
+	 * (0,0).
 	 * 
 	 * @param size
 	 *            The size of the {@link ModelArmy}. Must be greater than zero.
 	 */
 	public ModelArmy(int size) {
+		units = new HashMap<>();
 		setSize(size);
 	}
 
@@ -45,10 +54,12 @@ public final class ModelArmy extends Observable{
 		if (size < 0) {
 			throw new IllegalArgumentException("Size must be greater than zero");
 		}
-		this.size = size;
-		
+		this.strength = size;
+		computeUnits();
+
 		setChanged();
 		notifyObservers(new Update("size", size));
+
 	}
 
 	/**
@@ -57,7 +68,7 @@ public final class ModelArmy extends Observable{
 	 * @return
 	 */
 	public int getSize() {
-		return size;
+		return strength;
 	}
 
 	/**
@@ -67,10 +78,10 @@ public final class ModelArmy extends Observable{
 	 *            of units to add to this {@link ModelArmy}
 	 */
 	public void add(int amount) {
-		size += amount;
-		
+		strength += amount;
+
 		setChanged();
-		notifyObservers(new Update("size", size));
+		notifyObservers(new Update("size", strength));
 	}
 
 	/**
@@ -80,12 +91,76 @@ public final class ModelArmy extends Observable{
 	 *            of units to remove.
 	 */
 	public void remove(int amount) {
-		if (size - amount < 0) {
+		if (strength - amount < 0) {
 			throw new IllegalStateException("Army size cannot be less than zero");
 		}
-		size -= amount;
-		
+
+		// Change to the army
+		strength -= amount;
+
+		computeUnits();
+
 		setChanged();
-		notifyObservers(new Update("size", size));
+		notifyObservers(new Update("size", strength));
+	}
+
+	/**
+	 * Retrieves a whether a specific type of {@link ModelUnit} is currently in this
+	 * {@link ModelArmy}.
+	 * 
+	 * @param unit
+	 *            {@link ModelArmy}
+	 * @return
+	 */
+	public boolean hasUnit(ModelUnit unit) {
+		return units.get(unit) != 0;
+	}
+
+	/**
+	 * Retrieves a number of a specific type of {@link ModelUnit} that are currently
+	 * in this {@link ModelArmy}.
+	 * 
+	 * @param unit
+	 *            {@link ModelUnit}.
+	 * @return
+	 */
+	public int getUnit(ModelUnit unit) {
+		return units.get(unit);
+	}
+
+	/**
+	 * Determines the units that this {@link ModelArmy} can contain.
+	 */
+	private void computeUnits() {
+
+		// Clear the current list of units.
+		if (!units.isEmpty())
+			units.clear();
+
+		int armySize = strength;
+
+		// Holds the current strongest unit that is smaller than the army size.
+		ModelUnit unit = UnitHelper.getInstance().getStrongest();
+
+		// While the army can be further divided.
+		while (armySize > 0) {
+
+			// If the unit is null then there is no unit weaker than the previous.
+			if (unit == null) {
+				throw new IllegalStateException("There is not unit teir that the army can be divide further into.");
+			}
+
+			// If the current unit fits into the army add the max number of that unit to the
+			// army that can be fit.
+			if (unit.strength <= armySize) {
+				units.put(unit, armySize / unit.strength);
+				armySize = armySize % unit.strength;
+			}
+
+			// Move to the unit below.
+			unit = UnitHelper.getInstance().getUnitBelow(unit);
+
+		}
+
 	}
 }

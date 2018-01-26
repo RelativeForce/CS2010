@@ -164,7 +164,7 @@ public final class ReinforcementState extends CoreGameState {
 	public void update(Observable o, Object arg) {
 		super.update(o, arg);
 
-		if (selected.size() == 1 && game.getCurrentModelPlayer().distributableArmy.getSize() > 1) {
+		if (selected.size() == 1 && game.getCurrentModelPlayer().distributableArmy.getSize() > 0) {
 			getButton(reinforceButton).show();
 			moveReinforceButton(selected.get(0));
 		} else {

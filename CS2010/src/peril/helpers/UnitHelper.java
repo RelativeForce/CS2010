@@ -144,7 +144,7 @@ public final class UnitHelper {
 		 * {@link T#compareTo(Comparable)} value.
 		 */
 		@Override
-		public boolean add(T e) {
+		public boolean add(T element) {
 
 			int index = 0;
 			boolean found = false;
@@ -154,14 +154,14 @@ public final class UnitHelper {
 			 */
 			while (this.iterator().hasNext() && !found) {
 
-				if (iterator().next().compareTo(e) < 0) {
+				if (iterator().next().compareTo(element) < 0 || index == size()) {
 					found = true;
 				} else {
 					index++;
 				}
 			}
 
-			super.add(index, e);
+			super.add(index, element);
 
 			return true;
 		}

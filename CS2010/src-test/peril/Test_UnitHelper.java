@@ -37,9 +37,11 @@ public class Test_UnitHelper {
 		helper.addUnit(car);
 		helper.addUnit(tank);
 		
-		ModelUnit test_soldier = helper.getWeakest();
+		assertTrue(helper.getWeakest().name.equals(soldier.name));
+		assertTrue(helper.getStrongest().name.equals(tank.name));
 		
-		assertTrue(test_soldier.name.equals(soldier.name));
+		assertTrue(helper.getUnitAbove(car).name.equals(tank.name));
+		assertTrue(helper.getUnitBelow(car).name.equals(soldier.name));
 
 	}
 

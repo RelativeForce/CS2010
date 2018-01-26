@@ -27,7 +27,7 @@ public class Test_UnitHelper {
 		ModelUnit soldier = new ModelUnit("soldier", 1);
 		ModelUnit car = new ModelUnit("car", 3);
 		ModelUnit tank = new ModelUnit("tank", 5);
-		
+
 		helper.clear();
 		helper.addUnit(soldier);
 
@@ -36,12 +36,15 @@ public class Test_UnitHelper {
 
 		helper.addUnit(car);
 		helper.addUnit(tank);
-		
+
 		assertTrue(helper.getWeakest().name.equals(soldier.name));
 		assertTrue(helper.getStrongest().name.equals(tank.name));
-		
+
 		assertTrue(helper.getUnitAbove(car).name.equals(tank.name));
 		assertTrue(helper.getUnitBelow(car).name.equals(soldier.name));
+
+		assertTrue(helper.getUnitAbove(tank) == null);
+		assertTrue(helper.getUnitBelow(soldier) == null);
 
 	}
 

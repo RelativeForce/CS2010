@@ -1,6 +1,7 @@
 package peril.helpers;
 
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 import peril.model.board.ModelUnit;
 
@@ -99,7 +100,7 @@ public final class UnitHelper {
 
 		int index = units.indexOf(unit);
 
-		if (index < 0 || index > units.size() - 1) {
+		if (index < 0 || index > units.size() - 2) {
 			return null;
 		}
 
@@ -122,6 +123,19 @@ public final class UnitHelper {
 		}
 
 		return units.get(index - 1);
+	}
+
+	/**
+	 * Performs a specified {@link Consumer} task on each element of the
+	 * {@link UnitHelper}.
+	 * 
+	 * @param task
+	 *            {@link Consumer}
+	 */
+	public void forEach(Consumer<ModelUnit> task) {
+		for (ModelUnit unit : units) {
+			task.accept(unit);
+		}
 	}
 
 	/**

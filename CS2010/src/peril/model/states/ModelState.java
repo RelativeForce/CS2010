@@ -71,6 +71,12 @@ public abstract class ModelState extends Observable {
 		notifyObservers(new Update("selected", selected));
 	}
 
+	/**
+	 * Returns the current number of currently selected {@link ModelCountry}s in
+	 * this {@link ModelState}.
+	 * 
+	 * @return int
+	 */
 	public final int numberOfSelected() {
 		return selected.size();
 	}

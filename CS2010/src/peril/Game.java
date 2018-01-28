@@ -90,6 +90,8 @@ public final class Game {
 		UnitHelper helper = UnitHelper.getInstance();
 		
 		helper.addUnit("soldier", 1);
+		helper.addUnit("car", 3);
+		helper.addUnit("tank", 5);
 
 	}
 

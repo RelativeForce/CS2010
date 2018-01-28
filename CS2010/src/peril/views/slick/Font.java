@@ -10,7 +10,7 @@ import org.newdawn.slick.Graphics;
  * @author Joshua_Eddy
  *
  */
-public class Font{
+public class Font {
 
 	/**
 	 * The {@link TrueTypeFont} for this {@link Font}.
@@ -33,6 +33,11 @@ public class Font{
 	private final String fontName;
 
 	/**
+	 * Whether this {@link Font} has been initialised or not.
+	 */
+	private boolean initialised;
+
+	/**
 	 * Constructs the new {@link Font}.
 	 * 
 	 * @param fontName
@@ -47,6 +52,7 @@ public class Font{
 		this.color = color;
 		this.fontName = fontName;
 		this.fontSize = fontSize;
+		this.initialised = false;
 
 	}
 
@@ -54,8 +60,13 @@ public class Font{
 	 * Initialises this {@link Font}.
 	 */
 	public void init() {
-		java.awt.Font font = new java.awt.Font(fontName, java.awt.Font.PLAIN, fontSize);
-		ttFont = new TrueTypeFont(font, false);
+
+		if (!initialised) {
+			java.awt.Font font = new java.awt.Font(fontName, java.awt.Font.PLAIN, fontSize);
+			ttFont = new TrueTypeFont(font, false);
+			initialised = true;
+		}
+
 	}
 
 	/**
@@ -87,6 +98,15 @@ public class Font{
 		g.setColor(originalColour);
 		g.setFont(originalFont);
 
+	}
+
+	/**
+	 * Retrieves whether this {@link Font} has been initialised or not.
+	 * 
+	 * @return boolean
+	 */
+	public boolean isInitialised() {
+		return initialised;
 	}
 
 	/**

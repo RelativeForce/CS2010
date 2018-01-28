@@ -42,6 +42,7 @@ public final class ModelArmy extends Observable {
 	public ModelArmy(int size) {
 		units = new HashMap<>();
 		setSize(size);
+		computeUnits();
 	}
 
 	/**
@@ -79,6 +80,8 @@ public final class ModelArmy extends Observable {
 	 */
 	public void add(int amount) {
 		strength += amount;
+		
+		computeUnits();
 
 		setChanged();
 		notifyObservers(new Update("size", strength));
@@ -112,8 +115,8 @@ public final class ModelArmy extends Observable {
 	 *            {@link ModelArmy}
 	 * @return
 	 */
-	public boolean hasUnit(ModelUnit unit) {
-		return units.get(unit) != 0;
+	public boolean hasUnit(ModelUnit unit) {		
+		return units.get(unit) != null && units.get(unit) != 0;
 	}
 
 	/**

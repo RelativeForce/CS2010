@@ -71,6 +71,10 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 */
 	private Point panDirection;
 
+	/**
+	 * Holds all the {@link SlickCountry}s that are currently selected by this
+	 * {@link CoreGameState}.
+	 */
 	protected final List<SlickCountry> selected;
 
 	/**
@@ -174,6 +178,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 		toolTipList.clear();
 
+		collapseSelected();
+		
 		model.deselectAll();
 
 		// Stop the state from panning after it has been exited.
@@ -209,6 +215,12 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		case Input.KEY_ENTER:
 			pauseMenu.toggleVisibility();
 			break;
+		case Input.KEY_E:
+			expandSelected();
+			break;
+		case Input.KEY_C:
+			collapseSelected();
+			break;
 		default:
 			break;
 
@@ -229,6 +241,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 			// board.
 			if (!super.clickedButton(click)) {
 				clickBoard(button, click);
+			} else {
+
 			}
 		}
 
@@ -302,6 +316,14 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		if (country != null) {
 			country.replaceImage(country.getRegion().convert(Color.yellow));
 		}
+	}
+
+	protected final void expandSelected() {
+		selected.forEach(country -> slick.modelView.getVisual(country.model.getArmy()).expand());
+	}
+
+	protected void collapseSelected() {
+		selected.forEach(country -> slick.modelView.getVisual(country.model.getArmy()).collapse());
 	}
 
 	/**
@@ -715,7 +737,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		for (Object obj : (List<?>) update.newValue) {
 
 			if (obj != null) {
-				
+
 				if (!(obj instanceof ModelCountry)) {
 					throw new IllegalArgumentException("The list must contain model countries.");
 				}

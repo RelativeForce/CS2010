@@ -3,6 +3,7 @@ package peril.model.board;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
+import java.util.Observer;
 
 import peril.Update;
 import peril.controllers.api.Country;
@@ -25,7 +26,7 @@ import peril.model.ModelPlayer;
  * @see Java.util.List
  *
  */
-public final class ModelCountry extends Observable implements Country {
+public final class ModelCountry extends Observable implements Country, Observer {
 
 	/**
 	 * Holds the {@link Player} that rules this {@link ModelCountry}.
@@ -73,6 +74,8 @@ public final class ModelCountry extends Observable implements Country {
 		this.army = new ModelArmy(1);
 		this.name = name;
 		this.color = color;
+		
+		this.army.addObserver(this);
 
 	}
 
@@ -102,7 +105,7 @@ public final class ModelCountry extends Observable implements Country {
 	 * Returns the size of this {@link ModelCountry}'s {@link ModelArmy}.
 	 */
 	public int getArmySize() {
-		return army.getSize();
+		return army.getStrength();
 	}
 
 	/**
@@ -189,6 +192,15 @@ public final class ModelCountry extends Observable implements Country {
 	 */
 	public Player getOwner() {
 		return ruler;
+	}
+
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		if(o instanceof ModelArmy) {
+			setChanged();
+			notifyObservers();
+		}
 	}
 
 }

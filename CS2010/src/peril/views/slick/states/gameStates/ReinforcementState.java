@@ -111,7 +111,7 @@ public final class ReinforcementState extends CoreGameState {
 		super.drawButtons(g);
 		super.drawPlayerName(g);
 
-		String units = Integer.toString(game.getCurrentModelPlayer().distributableArmy.getSize());
+		String units = Integer.toString(game.getCurrentModelPlayer().distributableArmy.getStrength());
 
 		unitFont.draw(g, units, 150 - (unitFont.getWidth(units) / 2), 45);
 		textFont.draw(g, "UNITS", 150 - (textFont.getWidth("UNITS") / 2), 95);
@@ -164,7 +164,13 @@ public final class ReinforcementState extends CoreGameState {
 	public void update(Observable o, Object arg) {
 		super.update(o, arg);
 
-		if (selected.size() == 1 && game.getCurrentModelPlayer().distributableArmy.getSize() > 0) {
+		// If there is no reinforce Button the game is not loaded or there is an error.
+		// In either case there should be no full state update.
+		if (getButton(reinforceButton) == null) {
+			return;
+		}
+
+		if (selected.size() == 1 && game.getCurrentModelPlayer().distributableArmy.getStrength() > 0) {
 			getButton(reinforceButton).show();
 			moveReinforceButton(selected.get(0));
 		} else {

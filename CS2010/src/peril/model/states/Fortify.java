@@ -112,7 +112,7 @@ public class Fortify extends ModelState {
 		// Holds the ruler of the country
 		ModelPlayer ruler = country.getRuler();
 
-		return getPrimary() == null && player.equals(ruler) && country.getArmy().getSize() > 1;
+		return getPrimary() == null && player.equals(ruler) && country.getArmy().getStrength() > 1;
 
 	}
 
@@ -240,7 +240,7 @@ public class Fortify extends ModelState {
 		if (primary != null && target != null) {
 
 			// If the army of the primary highlighted country is larger that 1 unit in size
-			if (primary.getArmy().getSize() > 1) {
+			if (primary.getArmy().getStrength() > 1) {
 
 				// Holds the army of the primary country
 				ModelArmy primaryArmy = primary.getArmy();
@@ -249,10 +249,10 @@ public class Fortify extends ModelState {
 				ModelArmy targetArmy = target.getArmy();
 
 				// Move the unit.
-				targetArmy.setSize(targetArmy.getSize() + 1);
-				primaryArmy.setSize(primaryArmy.getSize() - 1);
+				targetArmy.setStrength(targetArmy.getStrength() + 1);
+				primaryArmy.setStrength(primaryArmy.getStrength() - 1);
 
-				if (primaryArmy.getSize() == 1) {
+				if (primaryArmy.getStrength() == 1) {
 					deselectAll();
 				}
 			} else {

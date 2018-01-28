@@ -56,19 +56,20 @@ public class Reinforce extends ModelState {
 		if (highlightedCountry != null) {
 
 			// If the player has any units to place
-			if (player.distributableArmy.getSize() > 0) {
+			if (player.distributableArmy.getStrength() > 0) {
 
 				ModelPlayer ruler = highlightedCountry.getRuler();
 
 				// If the highlighted country has a ruler and it is that player
 				if (ruler != null && ruler.equals(player)) {
 
-					// Get that country's army and increase its size by one.
-					highlightedCountry.getArmy().add(1);
-
 					// Remove the unit from the list of units to place.
 					player.distributableArmy.remove(1);
 					player.totalArmy.add(1);
+					
+					// Get that country's army and increase its size by one.
+					highlightedCountry.getArmy().add(1);
+					
 					game.checkChallenges();
 
 

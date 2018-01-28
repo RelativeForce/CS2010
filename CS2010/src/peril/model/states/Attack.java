@@ -103,7 +103,7 @@ public class Attack extends ModelState {
 			if (primaryModelCountry.isNeighbour(secondaryTarget)) {
 
 				// If the army size of the primary country is greater than 1.
-				if (primaryModelCountry.getArmy().getSize() > 1) {
+				if (primaryModelCountry.getArmy().getStrength() > 1) {
 					return true;
 				}
 

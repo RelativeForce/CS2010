@@ -133,7 +133,7 @@ public class MapWriter {
 		line.append(player.number);
 		line.append(',');
 
-		line.append(player.distributableArmy.getSize());
+		line.append(player.distributableArmy.getStrength());
 		line.append(',');
 
 		line.append(isActive);
@@ -248,7 +248,7 @@ public class MapWriter {
 		line.append(',');
 
 		// Army Size
-		line.append(country.model.getArmy().getSize());
+		line.append(country.model.getArmy().getStrength());
 		line.append(',');
 
 		// Army offset

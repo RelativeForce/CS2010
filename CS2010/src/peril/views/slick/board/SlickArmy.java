@@ -175,7 +175,7 @@ public final class SlickArmy implements Observer {
 		}
 
 		// Holds the size of the current countries army
-		int troopNumber = model.getSize();
+		int troopNumber = model.getStrength();
 
 		drawArmyOval(position, troopNumber, g);
 

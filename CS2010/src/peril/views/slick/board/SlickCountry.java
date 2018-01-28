@@ -120,6 +120,11 @@ public class SlickCountry extends Clickable implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
+		
+		if(arg == null) {
+			return;
+		}
+		
 		if (arg instanceof Update) {
 
 			Update update = (Update) arg;

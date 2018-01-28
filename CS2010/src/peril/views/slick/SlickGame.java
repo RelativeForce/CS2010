@@ -16,6 +16,7 @@ import peril.helpers.PlayerHelper;
 import peril.io.FileParser;
 import peril.io.SaveFile;
 import peril.model.ModelPlayer;
+import peril.model.board.ModelBoard;
 import peril.model.states.ModelState;
 import peril.views.ModelView;
 import peril.views.View;
@@ -229,7 +230,7 @@ public class SlickGame extends StateBasedGame implements View {
 		}
 
 	}
-
+	
 	@Override
 	public void init(Game game) throws Exception {
 		this.game = game;
@@ -255,17 +256,25 @@ public class SlickGame extends StateBasedGame implements View {
 
 		GameController gc = game.getGameController();
 
-		// Initialise the game states.
+		// Initialise the slick states.
 		MainMenu mainMenu = new MainMenu(gc, 0);
 		PlayerSelection playerSelection = new PlayerSelection(gc, 1);
+		EndState end = new EndState(gc, 6);
+		LoadingScreen loadingScreen = new LoadingScreen(gc, 7);
 
+		// Initialise the game play states
 		SetupState setup = new SetupState(gc, 2, game.states.setup);
 		ReinforcementState reinforcement = new ReinforcementState(gc, 3, game.states.reinforcement);
 		CombatState combat = new CombatState(gc, 4, game.states.combat);
 		MovementState movement = new MovementState(gc, 5, game.states.movement);
-		EndState end = new EndState(gc, 6);
-		LoadingScreen loadingScreen = new LoadingScreen(gc, 7);
-
+		
+		// Subscribe the states to the board
+		ModelBoard board = gc.getModelBoard();
+		board.addObserver(setup);
+		board.addObserver(reinforcement);
+		board.addObserver(combat);
+		board.addObserver(movement);
+		
 		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen,
 				playerSelection);
 

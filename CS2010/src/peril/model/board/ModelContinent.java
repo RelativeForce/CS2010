@@ -3,6 +3,7 @@ package peril.model.board;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
+import java.util.Observer;
 
 import peril.Update;
 import peril.controllers.api.Continent;
@@ -23,7 +24,7 @@ import peril.model.ModelPlayer;
  * @author Joshua_Eddy
  *
  */
-public final class ModelContinent extends Observable implements Continent {
+public final class ModelContinent extends Observable implements Continent, Observer {
 
 	/**
 	 * The {@link ModelHazard} that may affect this {@link ModelContinent}.
@@ -70,7 +71,9 @@ public final class ModelContinent extends Observable implements Continent {
 	 */
 	public void addCountry(ModelCountry country) {
 		countries.add(country);
-
+		
+		country.addObserver(this);
+		
 		setChanged();
 		notifyObservers(new Update("countries", countries));
 	}
@@ -176,5 +179,14 @@ public final class ModelContinent extends Observable implements Continent {
 	@Override
 	public Player getOwner() {
 		return ruler;
+	}
+
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		if(o instanceof ModelCountry) {
+			setChanged();
+			notifyObservers();
+		}
 	}
 }

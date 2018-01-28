@@ -147,7 +147,7 @@ public class WarMenu extends Menu {
 		if (isVisible()) {
 
 			// Attacker has failed to conquer country
-			if (attacker.model.getArmy().getSize() == 1) {
+			if (attacker.model.getArmy().getStrength() == 1) {
 				failedConquer(g);
 			}
 			// Attacker has conquered country
@@ -230,13 +230,13 @@ public class WarMenu extends Menu {
 			ModelPlayer defendingPlayer = enemy.model.getRuler();
 
 			// If the army of the primary highlighted country is larger that 1 unit in size
-			if (attacker.model.getArmy().getSize() > 1) {
+			if (attacker.model.getArmy().getStrength() > 1) {
 
 				int squadSize = squadSizes.getSelected();
 
 				// If the the attacking army is larger than or equal to the size of the
 				// specified squad then attack.
-				if (attacker.model.getArmy().getSize() >= squadSize) {
+				if (attacker.model.getArmy().getStrength() >= squadSize) {
 
 					// Execute the combat
 					fight(attacker, enemy, squadSize);
@@ -267,7 +267,7 @@ public class WarMenu extends Menu {
 					} else {
 
 						// If the attacking army is not large enough to attack again.
-						if (attacker.model.getArmy().getSize() == 1) {
+						if (attacker.model.getArmy().getStrength() == 1) {
 							getGame().states.combat.deselectAll();;
 						}
 					}
@@ -364,7 +364,7 @@ public class WarMenu extends Menu {
 
 		// Get the dice rolls for the attackers and defenders.
 		Integer[] attackerDiceRolls = getDiceRolls(attackSquadSize);
-		Integer[] defenderDiceRolls = getDiceRolls(defending.model.getArmy().getSize() > 1 ? 2 : 1);
+		Integer[] defenderDiceRolls = getDiceRolls(defending.model.getArmy().getStrength() > 1 ? 2 : 1);
 
 		// The position of the top attacker dice
 		int attackX = squadSizes.getPosition().x + squadSizes.getWidth() + 5;
@@ -453,12 +453,12 @@ public class WarMenu extends Menu {
 	 */
 	private void drawArmySizes(Graphics g) {
 
-		String attackingArmy = "" + attacker.model.getArmy().getSize();
+		String attackingArmy = "" + attacker.model.getArmy().getStrength();
 
 		textFont.draw(g, attackingArmy, getPosition().x + (getWidth() / 4) - (textFont.getWidth(attackingArmy) / 2),
 				getPosition().y + 120);
 
-		String enemyArmy = "" + enemy.model.getArmy().getSize();
+		String enemyArmy = "" + enemy.model.getArmy().getStrength();
 		textFont.draw(g, enemyArmy, getPosition().x + ((getWidth() * 3) / 4) - (textFont.getWidth(enemyArmy) / 2),
 				getPosition().y + 120);
 
@@ -532,7 +532,7 @@ public class WarMenu extends Menu {
 		else {
 
 			// Holds the max size of the attacking squad (<= 3)
-			int maxSize = (attacker.model.getArmy().getSize() - 1 > 3 ? 3 : attacker.model.getArmy().getSize() - 1);
+			int maxSize = (attacker.model.getArmy().getStrength() - 1 > 3 ? 3 : attacker.model.getArmy().getStrength() - 1);
 
 			// Constructs the list to hold that maz size
 			squadSizes = new VisualList<>(position, width, height, maxSize, 7);
@@ -583,7 +583,7 @@ public class WarMenu extends Menu {
 
 				// If the army of the defending country is of size on then this victory will
 				// conquer the country. Otherwise just kill one unit from the defending army.
-				if (defendingArmy.getSize() == 1) {
+				if (defendingArmy.getStrength() == 1) {
 					defending.model.setRuler(attacker);
 					attacker.totalArmy.add(1);
 					break;
@@ -601,7 +601,7 @@ public class WarMenu extends Menu {
 				attackingArmy.remove(1);
 				attacker.totalArmy.remove(1);
 
-				if (attackingArmy.getSize() < 4) {
+				if (attackingArmy.getStrength() < 4) {
 					checkSquadSizes();
 				}
 			}

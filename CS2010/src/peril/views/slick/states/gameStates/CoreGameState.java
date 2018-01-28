@@ -526,7 +526,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		SlickArmy army = slick.modelView.getVisual(country.model.getArmy());
 
 		// Add the distance to the centre of the oval.
-		int x = armyPos.x + (army.getOvalWidth((army.model.getSize()) * 4) / 5);
+		int x = armyPos.x + (army.getOvalWidth((army.model.getStrength()) * 4) / 5);
 		int y = armyPos.y + 12;
 
 		return new Point(x, y);
@@ -705,18 +705,22 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	@Override
 	public void update(Observable o, Object arg) {
 
-		if (!(arg instanceof Update)) {
-			throw new IllegalArgumentException("The property must be an update.");
-		}
+		// If the model state was updated
+		if(o instanceof ModelState) {
+			
+			if (!(arg instanceof Update)) {
+				throw new IllegalArgumentException("The property must be an update.");
+			}
 
-		Update update = (Update) arg;
+			Update update = (Update) arg;
 
-		switch (update.property) {
+			switch (update.property) {
 
-		case "selected":
-			updateSelected(update);
-			break;
+			case "selected":
+				updateSelected(update);
+				break;
 
+			}
 		}
 
 	}

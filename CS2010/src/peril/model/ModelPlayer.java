@@ -121,8 +121,8 @@ public final class ModelPlayer extends Observable implements Player {
 	 */
 	public void reset() {
 
-		totalArmy.setSize(0);
-		distributableArmy.setSize(0);
+		totalArmy.setStrength(0);
+		distributableArmy.setStrength(0);
 		
 		// Reset countries ruled.
 		countries = 0;
@@ -138,7 +138,7 @@ public final class ModelPlayer extends Observable implements Player {
 	 * Retrieves the total size of this {@link ModelPlayer}s army.
 	 */
 	public int getTotalArmySize() {
-		return totalArmy.getSize();
+		return totalArmy.getStrength();
 	}
 
 	/**
@@ -146,7 +146,7 @@ public final class ModelPlayer extends Observable implements Player {
 	 */
 	@Override
 	public int getDistributableArmySize() {
-		return distributableArmy.getSize();
+		return distributableArmy.getStrength();
 	}
 
 }

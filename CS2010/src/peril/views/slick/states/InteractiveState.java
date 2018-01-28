@@ -45,7 +45,7 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 * associated with.
 	 */
 	protected final GameController game;
-	
+
 	protected final SlickGame slick;
 
 	/**
@@ -93,10 +93,11 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 			throw new NullPointerException("Game cannot be null.");
 		} else if (stateName.isEmpty()) {
 			throw new NullPointerException("StateName cannot be empty.");
-		}else if(!(game.getView() instanceof SlickGame)) {
-			throw new IllegalArgumentException("The current game view is not compatible with this state. Use the Slick2D view.");
+		} else if (!(game.getView() instanceof SlickGame)) {
+			throw new IllegalArgumentException(
+					"The current game view is not compatible with this state. Use the Slick2D view.");
 		}
-		
+
 		this.helpId = helpId;
 		this.id = id;
 		this.game = game;
@@ -253,13 +254,10 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	}
 
 	/**
-	 * Retrieves a {@link Button} from this {@link InteractiveState} by id.
+	 * Retrieves a {@link Button} from this {@link InteractiveState} by id. If the
+	 * specified id is not found this shall return <code>null</code>.
 	 */
 	public Button getButton(String buttonId) {
-		if (!buttons.containsKey(buttonId)) {
-			throw new IllegalArgumentException(
-					"'" + buttonId + "' button is not in " + stateName + " interactive state.");
-		}
 		return buttons.get(buttonId);
 	}
 

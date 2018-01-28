@@ -101,7 +101,7 @@ public enum ModelHazard {
 		if (occur) {
 
 			// Holds the current size of the army.
-			int currentSize = army.getSize();
+			int currentSize = army.getStrength();
 
 			// Holds the max amount of units this hazard can kill
 			int maxCasualties = (this.maxCasualties * currentSize) / 100;
@@ -113,11 +113,11 @@ public enum ModelHazard {
 			if (currentSize - casualties < 1) {
 
 				// Set the army to the minimum size.
-				army.setSize(1);
+				army.setStrength(1);
 			} else {
 
 				// Remove the dead regiments.
-				army.setSize(currentSize - casualties);
+				army.setStrength(currentSize - casualties);
 			}
 
 		}

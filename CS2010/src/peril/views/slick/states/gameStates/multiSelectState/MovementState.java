@@ -170,7 +170,7 @@ public final class MovementState extends MultiSelectState {
 	public void checkPath(Point mousePosition) {
 
 		// If there is a highlighted country.
-		if (model.getSelected(0) != null && model.getSelected(0).getArmy().getSize() > 1) {
+		if (model.getSelected(0) != null && model.getSelected(0).getArmy().getStrength() > 1) {
 
 			// Holds the country the user is hovering over.
 			SlickCountry target = slick.modelView.getVisual(game.getModelBoard()).getCountry(mousePosition);
@@ -215,7 +215,13 @@ public final class MovementState extends MultiSelectState {
 	public void update(Observable o, Object arg) {
 		super.update(o, arg);
 
-		if (selected.size() == 2 && selected.get(0).model.getArmy().getSize() > 1) {
+		// If there is no fortify button the game is not loaded or there is an error. In
+		// either case there should be no full state update.
+		if (getButton(fortifyButton) == null) {
+			return;
+		}
+
+		if (selected.size() == 2 && selected.get(0).model.getArmy().getStrength() > 1) {
 			getButton(fortifyButton).show();
 
 			path.clear();

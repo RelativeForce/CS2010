@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -21,7 +22,7 @@ import peril.controllers.api.Country;
  * @author Joshua_Eddy
  *
  */
-public final class ModelBoard extends Observable implements Board {
+public final class ModelBoard extends Observable implements Board, Observer {
 
 	/**
 	 * The {@link ModelContinent}s in this {@link ModelBoard}.
@@ -69,6 +70,7 @@ public final class ModelBoard extends Observable implements Board {
 
 		for (ModelContinent continent : newContinents) {
 			numberOfCountries += continent.getCountries().size();
+			continent.addObserver(this);
 		}
 
 		setChanged();
@@ -160,6 +162,15 @@ public final class ModelBoard extends Observable implements Board {
 		continents.forEach((continentName, continent) -> countries.addAll(continent.getCountries()));
 
 		return countries;
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		if(o instanceof ModelContinent) {
+			setChanged();
+			notifyObservers();
+		}
+		
 	}
 
 }

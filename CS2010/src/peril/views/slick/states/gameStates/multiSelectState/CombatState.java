@@ -232,7 +232,13 @@ public final class CombatState extends MultiSelectState {
 	public void update(Observable o, Object arg) {
 		super.update(o, arg);
 
-		if (selected.size() == 2 && selected.get(0).model.getArmy().getSize() > 1) {
+		// If there is no attack Button the game is not loaded or there is an error. In
+		// either case there should be no full state update.
+		if (getButton(attackButton) == null) {
+			return;
+		}
+
+		if (selected.size() == 2 && selected.get(0).model.getArmy().getStrength() > 1) {
 			getButton(attackButton).show();
 			moveAttackButton(selected.get(0), selected.get(1));
 		} else {

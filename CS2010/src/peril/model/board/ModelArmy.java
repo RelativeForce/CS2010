@@ -26,40 +26,39 @@ public final class ModelArmy extends Observable {
 	private final Map<ModelUnit, Integer> units;
 
 	/**
-	 * Constructs a new {@link ModelArmy} with size of 1 and an offset of (0,0).
+	 * Constructs a new {@link ModelArmy} with strength of 1.
 	 */
 	public ModelArmy() {
 		this(1);
 	}
 
 	/**
-	 * Constructs a new {@link ModelArmy} of a specified size with an offset of
-	 * (0,0).
+	 * Constructs a new {@link ModelArmy} of a specified strength.
 	 * 
-	 * @param size
+	 * @param strength
 	 *            The size of the {@link ModelArmy}. Must be greater than zero.
 	 */
-	public ModelArmy(int size) {
+	public ModelArmy(int strength) {
 		units = new HashMap<>();
-		setSize(size);
+		setStrength(strength);
 		computeUnits();
 	}
 
 	/**
-	 * Assigns a new size to this {@link ModelArmy} overwriting the old value.
+	 * Assigns a new strength to this {@link ModelArmy} overwriting the old value.
 	 * 
-	 * @param size
+	 * @param strength
 	 *            The new size of the {@link ModelArmy}. Must be greater than zero.
 	 */
-	public void setSize(int size) {
-		if (size < 0) {
+	public void setStrength(int strength) {
+		if (strength < 0) {
 			throw new IllegalArgumentException("Size must be greater than zero");
 		}
-		this.strength = size;
+		this.strength = strength;
 		computeUnits();
 
 		setChanged();
-		notifyObservers(new Update("size", size));
+		notifyObservers(new Update("size", strength));
 
 	}
 
@@ -68,7 +67,7 @@ public final class ModelArmy extends Observable {
 	 * 
 	 * @return
 	 */
-	public int getSize() {
+	public int getStrength() {
 		return strength;
 	}
 

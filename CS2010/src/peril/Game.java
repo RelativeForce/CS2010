@@ -103,7 +103,7 @@ public final class Game {
 		players.forEach(player -> {
 			player.setCountriesRuled(0);
 			player.setContinentsRuled(0);
-			player.totalArmy.setSize(0);
+			player.totalArmy.setStrength(0);
 		});
 
 		// Iterate through each country on the board.

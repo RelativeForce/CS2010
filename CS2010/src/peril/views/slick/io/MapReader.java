@@ -264,7 +264,7 @@ public final class MapReader extends FileParser {
 		SlickArmy army = new SlickArmy(country.model.getArmy());
 
 		// Set the army size
-		country.model.getArmy().setSize(armySize);
+		country.model.getArmy().setStrength(armySize);
 
 		// Add the country to the view.
 		view.addCountry(country);
@@ -387,7 +387,7 @@ public final class MapReader extends FileParser {
 
 		SlickPlayer player = new SlickPlayer(playerNumber, slickGame.getColor(playerNumber), AI.USER);
 
-		player.model.distributableArmy.setSize(armySize);
+		player.model.distributableArmy.setStrength(armySize);
 		player.replaceImage(slickGame.getPlayerIcon(playerNumber));
 
 		boolean isActive;
@@ -558,7 +558,7 @@ public final class MapReader extends FileParser {
 				@Override
 				public boolean hasCompleted(ModelPlayer player, ModelBoard board) {
 
-					if (player.totalArmy.getSize() >= sizeOfArmy) {
+					if (player.totalArmy.getStrength() >= sizeOfArmy) {
 						// Give the player a army of size 5 to distribute.
 						player.distributableArmy.add(reward);
 						return true;

@@ -6,6 +6,7 @@ import org.newdawn.slick.Image;
 
 import peril.Game;
 import peril.concurrent.Action;
+import peril.controllers.GameController;
 import peril.helpers.FunctionHelper;
 import peril.io.FileParser;
 import peril.views.slick.Button;
@@ -48,8 +49,8 @@ public final class AssetReader extends FileParser {
 	 * @param filename
 	 *            The file name of the assets file.
 	 */
-	public AssetReader(Container[] containers, String filename, Game game) {
-		super(game.assets.ui, filename);
+	public AssetReader(Container[] containers, String filename, GameController game) {
+		super(game.getUIPath(), filename);
 
 		// Check params
 		if (containers.length == 0) {

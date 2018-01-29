@@ -10,7 +10,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
-import peril.Game;
+import peril.controllers.GameController;
 import peril.views.slick.Button;
 import peril.views.slick.Font;
 import peril.views.slick.Point;
@@ -108,7 +108,7 @@ public class WarMenu extends Menu {
 	 * Constructs a new {@link WarMenu}.
 	 * 
 	 */
-	public WarMenu(Point position, Game game) {
+	public WarMenu(Point position, GameController game) {
 		super(NAME, game, new Region(400, 400, position));
 
 		this.random = new Random();
@@ -119,7 +119,7 @@ public class WarMenu extends Menu {
 		this.dice = new Dice();
 		this.attackButton = "war";
 
-		this.checkSquadSizes();
+		checkSquadSizes();
 
 	}
 
@@ -189,13 +189,13 @@ public class WarMenu extends Menu {
 
 		getButton(attackButton).show();
 ;
-		attacker = (SlickCountry) getGame().view.getModelView().getVisual(getGame().states.combat.getSelected(0));
-		enemy = (SlickCountry) getGame().view.getModelView().getVisual(getGame().states.combat.getSelected(1));
+		attacker = slick.modelView.getVisual(game.getAttack().getSelected(0));
+		enemy = slick.modelView.getVisual(game.getAttack().getSelected(1));
 
 		checkSquadSizes();
 
-		ruler = (SlickPlayer) getGame().view.getModelView().getVisual(enemy.model.getRuler());
-		player = (SlickPlayer) getGame().view.getModelView().getVisual(attacker.model.getRuler());
+		ruler = slick.modelView.getVisual(enemy.model.getRuler());
+		player = slick.modelView.getVisual(attacker.model.getRuler());
 
 	}
 
@@ -251,24 +251,25 @@ public class WarMenu extends Menu {
 
 							// If the player has no countries they have lost.
 							if (defendingPlayer.getCountriesRuled() == 0) {
-								getGame().players.setLoser(defendingPlayer);
-								getGame().checkWinner();
+								
+								slick.addLoser(defendingPlayer);
+								game.checkWinner();
 							}
 						}
 
-						getGame().states.combat.deselectAll();
+						game.getAttack().deselectAll();
 
 						attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
 
-						getGame().checkContinentRulership();
+						game.checkContinentRulership();
 
-						getGame().players.checkChallenges();
+						game.checkChallenges();
 
 					} else {
 
 						// If the attacking army is not large enough to attack again.
 						if (attacker.model.getArmy().getStrength() == 1) {
-							getGame().states.combat.deselectAll();;
+							game.getAttack().deselectAll();;
 						}
 					}
 				}
@@ -277,8 +278,8 @@ public class WarMenu extends Menu {
 		} 
 
 		// Cant attack any more hide the war menu.
-		if (getGame().states.combat.getPrimary() == null || getGame().states.combat.getSecondary() == null) {
-			getGame().states.combat.deselectAll();
+		if (game.getAttack().getPrimary() == null || game.getAttack().getSecondary() == null) {
+			game.getAttack().deselectAll();
 		}
 	}
 
@@ -709,7 +710,7 @@ public class WarMenu extends Menu {
 		 */
 		public void init() {
 			for (int i = 1; i <= 6; i++) {
-				this.defaultDice.put(i, ImageReader.getImage(getGame().assets.ui + "dice" + i + ".png")
+				this.defaultDice.put(i, ImageReader.getImage(game.getUIPath() + "dice" + i + ".png")
 						.getScaledCopy(diceWidth, diceHeight));
 			}
 		}

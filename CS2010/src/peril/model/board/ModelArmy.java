@@ -79,7 +79,7 @@ public final class ModelArmy extends Observable {
 	 */
 	public void add(int amount) {
 		strength += amount;
-		
+
 		computeUnits();
 
 		setChanged();
@@ -114,7 +114,7 @@ public final class ModelArmy extends Observable {
 	 *            {@link ModelArmy}
 	 * @return
 	 */
-	public boolean hasUnit(ModelUnit unit) {		
+	public boolean hasUnit(ModelUnit unit) {
 		return units.get(unit) != null && units.get(unit) != 0;
 	}
 
@@ -128,6 +128,24 @@ public final class ModelArmy extends Observable {
 	 */
 	public int getUnit(ModelUnit unit) {
 		return units.get(unit);
+	}
+
+	/**
+	 * Returns the number of different types of {@link ModelUnit}s in this
+	 * {@link ModelArmy}.
+	 * 
+	 * @return
+	 */
+	public int getUnitType() {
+
+		int numberOfUnitTypes = 0;
+
+		for (int unitAmount : units.values()) {
+			if (unitAmount > 0)
+				numberOfUnitTypes++;
+		}
+
+		return numberOfUnitTypes;
 	}
 
 	/**

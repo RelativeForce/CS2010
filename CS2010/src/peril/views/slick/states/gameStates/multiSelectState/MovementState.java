@@ -232,6 +232,7 @@ public final class MovementState extends MultiSelectState {
 			moveFortifyButton(selected.get(1));
 		} else {
 			getButton(fortifyButton).hide();
+			path.clear();
 		}
 
 	}

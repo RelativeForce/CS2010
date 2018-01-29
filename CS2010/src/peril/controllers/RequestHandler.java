@@ -1,6 +1,9 @@
 package peril.controllers;
 
+import java.util.List;
 import java.util.function.Consumer;
+
+import peril.Challenge;
 import peril.Game;
 import peril.controllers.api.Board;
 import peril.controllers.api.Country;
@@ -8,16 +11,20 @@ import peril.controllers.api.Player;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelCountry;
+import peril.model.states.Attack;
+import peril.model.states.Fortify;
+import peril.model.states.Reinforce;
+import peril.model.states.Setup;
 import peril.views.View;
 
 /**
- * This controller handles all interactions that an {@link AI} or {@link View} could have with
- * the {@link Game}.
+ * This controller handles all interactions that an {@link AI} or {@link View}
+ * could have with the {@link Game}.
  * 
  * @author Joshua_Eddy
  *
  */
-public class RequestHandler implements AIController, GameController {
+public final class RequestHandler implements AIController, GameController {
 
 	/**
 	 * The instance of the {@link Game} that this {@link RequestHandler} uses.
@@ -84,7 +91,6 @@ public class RequestHandler implements AIController, GameController {
 	@Override
 	public void attack() {
 
-		
 		// Check correct state
 		if (!game.view.isCurrentState(game.states.combat)) {
 			throw new IllegalStateException("You can only attack during the combat state.");
@@ -95,7 +101,7 @@ public class RequestHandler implements AIController, GameController {
 			throw new IllegalStateException("There is NOT two countries selected. Select two valid countries.");
 		}
 
-		game.view.attack();	
+		game.view.attack();
 
 	}
 
@@ -167,7 +173,7 @@ public class RequestHandler implements AIController, GameController {
 		if (game.states.reinforcement.getSelected(0) == null) {
 			throw new IllegalStateException("There is valid country selected.");
 		}
-	
+
 		game.states.reinforcement.reinforce(game.getGameController());
 
 	}
@@ -189,7 +195,7 @@ public class RequestHandler implements AIController, GameController {
 	public View getView() {
 		return game.view;
 	}
-	
+
 	@Override
 	public String getUIPath() {
 		return game.assets.ui;
@@ -255,6 +261,111 @@ public class RequestHandler implements AIController, GameController {
 	@Override
 	public void nextPlayer() {
 		game.players.nextPlayer();
+	}
+
+	@Override
+	public void checkWinner() {
+		game.checkWinner();
+	}
+
+	@Override
+	public void checkContinentRulership() {
+		game.checkContinentRulership();
+	}
+
+	@Override
+	public Attack getAttack() {
+		return game.states.combat;
+	}
+
+	@Override
+	public Reinforce getReinforce() {
+		return game.states.reinforcement;
+	}
+
+	@Override
+	public Fortify getFortify() {
+		return game.states.movement;
+	}
+
+	@Override
+	public Setup getSetup() {
+		return game.states.setup;
+	}
+
+	@Override
+	public String getMusicPath() {
+		return game.assets.music;
+	}
+
+	@Override
+	public void setCurrentPlayer(ModelPlayer model) {
+		game.players.setCurrent(model);
+	}
+
+	@Override
+	public void setRoundNumber(int roundNumber) {
+		game.setRoundNumber(roundNumber);
+	}
+
+	@Override
+	public void addChallenge(Challenge challenge) {
+		game.players.addChallenge(challenge);
+	}
+
+	@Override
+	public List<Challenge> getChallenges() {
+		return game.players.challenges;
+	}
+
+	@Override
+	public void forEachModelPlayer(Consumer<ModelPlayer> task) {
+		game.players.forEach(task);
+	}
+
+	@Override
+	public void forEachLoser(Consumer<ModelPlayer> task) {
+		game.view.forEachLoser(task);
+	}
+
+	@Override
+	public int getRoundNumber() {
+		return game.getRoundNumber();
+	}
+
+	@Override
+	public void confirmReinforce() {
+		game.view.enterCombat();
+	}
+
+	public void confirmCombat() {
+		game.view.enterFortify();
+	}
+
+	public void confirmSetup() {
+
+		// Checks the ownership of the continents
+		checkContinentRulership();
+
+		// Change the state of the game to reinforcement and give player one their units
+		// based on the countries they own.
+		game.players.reinforceCurrent();
+
+		game.view.enterReinforce();
+	}
+
+	public void confirmMovement() {
+
+		// Move to the next player
+		game.players.nextPlayer();
+
+		// Enter the reinforce state
+		game.view.enterReinforce();
+	}
+
+	@Override
+	public void autoDistributeCountries() {
+		game.autoDistributeCountries();
 	}
 
 }

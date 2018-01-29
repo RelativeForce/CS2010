@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -14,6 +15,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.controllers.GameController;
+import peril.model.ModelPlayer;
 import peril.views.slick.Button;
 import peril.views.slick.Font;
 import peril.views.slick.Point;
@@ -274,6 +276,10 @@ public class EndState extends InteractiveState {
 	 */
 	private void drawPlayer(Graphics g, SlickPlayer player, Point position) {
 		g.drawImage(player.getImage(), position.x - (player.getWidth() / 2), position.y - (player.getHeight() / 2));
+	}
+
+	public void forEachLoser(Consumer<ModelPlayer> task) {
+		podium.forEach(loser -> task.accept(loser.model));
 	}
 
 }

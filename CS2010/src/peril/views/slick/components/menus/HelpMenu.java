@@ -9,6 +9,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import peril.Game;
+import peril.controllers.GameController;
 import peril.views.slick.Button;
 import peril.views.slick.Point;
 import peril.views.slick.Region;
@@ -109,7 +110,7 @@ public class HelpMenu extends Menu {
 	 * @param height
 	 *            of {@link HelpMenu}}
 	 */
-	public HelpMenu(Point position, Game game) {
+	public HelpMenu(Point position, GameController game) {
 		super(NAME, game, new Region(WIDTH, HEIGHT, position));
 
 		this.pages = new HashMap<>();

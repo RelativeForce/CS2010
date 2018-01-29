@@ -2,12 +2,13 @@ package peril.helpers;
 
 import java.io.IOException;
 
-import peril.Game;
 import peril.concurrent.Action;
+import peril.controllers.GameController;
 
 /**
  * 
- * This hold the functionality of every {@link Button} in the {@link Game}.
+ * This hold the functionality of every {@link Button} in the
+ * {@link GameController}.
  * 
  * @author Mohammad_ali_Sayed_Ackbar
  *
@@ -15,18 +16,19 @@ import peril.concurrent.Action;
 public class FunctionHelper {
 
 	/**
-	 * The {@link Game} this {@link FunctionHelper} is a part of.
+	 * The {@link GameController} this {@link FunctionHelper} is a part of.
 	 */
-	private final Game game;
+	private final GameController game;
 
 	/**
 	 * 
 	 * Constructs a new {@link FunctionHelper}
 	 * 
 	 * @param game
-	 *            The {@link Game} this {@link FunctionHelper} is a part of.
+	 *            The {@link GameController} this {@link FunctionHelper} is a part
+	 *            of.
 	 */
-	public FunctionHelper(Game game) {
+	public FunctionHelper(GameController game) {
 		this.game = game;
 	}
 
@@ -55,15 +57,15 @@ public class FunctionHelper {
 		case 6:
 			return excuteCombat();
 		case 7:
-			return loadGame();
+			return loadGameController();
 		case 8:
 			return reAssignCountries();
 		case 9:
 			return showWarMenu();
 		case 10:
-			return exitGame();
+			return exitGameController();
 		case 11:
-			return saveGame();
+			return saveGameController();
 		case 12:
 			return enterMainMenu();
 		case 13:
@@ -98,7 +100,7 @@ public class FunctionHelper {
 	 * @return {@link Action}
 	 */
 	private Action<?> openWebsite() {
-		return new Action<Game>(game, game -> {
+		return new Action<GameController>(game, game -> {
 			String url = "http://strategicgoats.github.io";
 			try {
 				java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
@@ -109,15 +111,15 @@ public class FunctionHelper {
 	}
 
 	/**
-	 * Retrieves the {@link Action} that causes the {@link Game} to exit the player
-	 * selection screen.
+	 * Retrieves the {@link Action} that causes the {@link GameController} to exit
+	 * the player selection screen.
 	 * 
 	 * @return
 	 */
 	private Action<?> leavePlayerSelect() {
-		return new Action<Game>(game, game -> {
+		return new Action<GameController>(game, game -> {
 			try {
-				game.view.loadGame();
+				game.getView().loadGame();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -130,7 +132,7 @@ public class FunctionHelper {
 	 * @return
 	 */
 	private Action<?> hideChallengeMenu() {
-		return new Action<Game>(game, game -> game.view.toggleChallengeMenu(false));
+		return new Action<GameController>(game, game -> game.getView().toggleChallengeMenu(false));
 	}
 
 	/**
@@ -139,7 +141,7 @@ public class FunctionHelper {
 	 * @return
 	 */
 	private Action<?> showChallengeMenu() {
-		return new Action<Game>(game, game -> game.view.toggleChallengeMenu(true));
+		return new Action<GameController>(game, game -> game.getView().toggleChallengeMenu(true));
 	}
 
 	/**
@@ -148,7 +150,7 @@ public class FunctionHelper {
 	 * @return
 	 */
 	private Action<?> hideWarMenu() {
-		return new Action<Game>(game, game -> game.view.toggleWarMenu(false));
+		return new Action<GameController>(game, game -> game.getView().toggleWarMenu(false));
 	}
 
 	/**
@@ -157,7 +159,7 @@ public class FunctionHelper {
 	 * @return
 	 */
 	private Action<?> hidePauseMenu() {
-		return new Action<Game>(game, game -> game.view.togglePauseMenu(false));
+		return new Action<GameController>(game, game -> game.getView().togglePauseMenu(false));
 	}
 
 	/**
@@ -166,7 +168,7 @@ public class FunctionHelper {
 	 * @return
 	 */
 	private Action<?> showPauseMenu() {
-		return new Action<Game>(game, game -> game.view.togglePauseMenu(true));
+		return new Action<GameController>(game, game -> game.getView().togglePauseMenu(true));
 	}
 
 	/**
@@ -176,7 +178,7 @@ public class FunctionHelper {
 	 * @return
 	 */
 	private Action<?> previousHelpPage() {
-		return new Action<Game>(game, game -> game.view.previousHelpPage());
+		return new Action<GameController>(game, game -> game.getView().previousHelpPage());
 	}
 
 	/**
@@ -186,7 +188,7 @@ public class FunctionHelper {
 	 * @return
 	 */
 	private Action<?> nextHelpPage() {
-		return new Action<Game>(game, game -> game.view.nextHelpPage());
+		return new Action<GameController>(game, game -> game.getView().nextHelpPage());
 	}
 
 	/**
@@ -196,7 +198,7 @@ public class FunctionHelper {
 	 * @return {@link Action}
 	 */
 	private Action<?> showWarMenu() {
-		return new Action<Game>(game, game -> game.view.toggleWarMenu(true));
+		return new Action<GameController>(game, game -> game.getView().toggleWarMenu(true));
 	}
 
 	/**
@@ -207,49 +209,53 @@ public class FunctionHelper {
 	 * @return {@link Action}
 	 */
 	private Action<?> reinforceCountry() {
-		return new Action<Game>(game, game -> game.states.reinforcement.reinforce(game.getGameController()));
+		return new Action<GameController>(game, game -> game.getReinforce().reinforce(game));
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will change the state of the {@link Game}
-	 * from {@link Game#reinforcement} to {@link Game#combat}.
+	 * Retrieves the {@link Action} that will change the state of the
+	 * {@link GameController} from {@link GameController#reinforcement} to
+	 * {@link GameController#combat}.
 	 * 
 	 * @return {@link Action}
 	 */
 	private Action<?> enterCombat() {
-		return new Action<Game>(game, game -> game.confirmReinforce());
+		return new Action<GameController>(game, game -> game.confirmReinforce());
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will change the state of the {@link Game}
-	 * from {@link Game#combat} to {@link Game#movement}.
+	 * Retrieves the {@link Action} that will change the state of the
+	 * {@link GameController} from {@link GameController#combat} to
+	 * {@link GameController#movement}.
 	 * 
 	 * @return {@link Action}
 	 */
 	private Action<?> enterMovement() {
-		return new Action<Game>(game, game -> game.confirmCombat());
+		return new Action<GameController>(game, game -> game.confirmCombat());
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will change the state of the {@link Game}
-	 * from {@link Game#movement} to {@link Game#reinforcement}, moving tp the next
-	 * player in the process.
+	 * Retrieves the {@link Action} that will change the state of the
+	 * {@link GameController} from {@link GameController#movement} to
+	 * {@link GameController#reinforcement}, moving tp the next player in the
+	 * process.
 	 * 
 	 * @return {@link Action}
 	 */
 	private Action<?> enterReinforment() {
-		return new Action<Game>(game, game -> game.confirmMovement());
+		return new Action<GameController>(game, game -> game.confirmMovement());
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will change the state of the {@link Game}
-	 * from {@link Game#setup} to {@link Game#reinforcement}, checking the ownership
-	 * of {@link SlickContinent}s in the process.
+	 * Retrieves the {@link Action} that will change the state of the
+	 * {@link GameController} from {@link GameController#setup} to
+	 * {@link GameController#reinforcement}, checking the ownership of
+	 * {@link SlickContinent}s in the process.
 	 * 
 	 * @return {@link Action}
 	 */
 	private Action<?> leaveSetUp() {
-		return new Action<Game>(game, game -> game.confirmSetup());
+		return new Action<GameController>(game, game -> game.confirmSetup());
 	}
 
 	/**
@@ -259,31 +265,32 @@ public class FunctionHelper {
 	 * @return {@link Action}
 	 */
 	private Action<?> fortifyCountry() {
-		return new Action<Game>(game, game -> game.states.movement.fortify());
+		return new Action<GameController>(game, game -> game.getFortify().fortify());
 	}
 
 	/**
 	 * Retrieves the {@link Action} that will perform one round of the
 	 * {@link WarMenu#fight(SlickCountry, SlickCountry, int)} on the two countries
-	 * selected in the {@link Game#combat}.
+	 * selected in the {@link GameController#combat}.
 	 * 
 	 * @return {@link Action}
 	 */
 	private Action<?> excuteCombat() {
-		return new Action<Game>(game, game -> game.view.attack());
+		return new Action<GameController>(game, game -> game.getView().attack());
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will move the {@link Game} from the
-	 * {@link Game#mainMenu} to the {@link Game#setup} state and load the
-	 * {@link ModelBoard} specified by the {@link Game#mainMenu}.
+	 * Retrieves the {@link Action} that will move the {@link GameController} from
+	 * the {@link GameController#mainMenu} to the {@link GameController#setup} state
+	 * and load the {@link ModelBoard} specified by the
+	 * {@link GameController#mainMenu}.
 	 * 
 	 * @return {@link Action}
 	 */
-	private Action<?> loadGame() {
-		return new Action<Game>(game, game -> {
+	private Action<?> loadGameController() {
+		return new Action<GameController>(game, game -> {
 			try {
-				game.view.loadGame();
+				game.getView().loadGame();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -297,10 +304,10 @@ public class FunctionHelper {
 	 * @return {@link Action}
 	 */
 	private Action<?> reAssignCountries() {
-		return new Action<Game>(game, game -> {
+		return new Action<GameController>(game, game -> {
 
 			// Remove selected
-			game.states.setup.deselectAll();
+			game.getSetup().deselectAll();
 
 			// Assign the countries
 			game.autoDistributeCountries();
@@ -309,20 +316,21 @@ public class FunctionHelper {
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will move the {@link Game} from the
-	 * {@link Game#pauseMenu} to the {@link Game#mainMenu} state
+	 * Retrieves the {@link Action} that will move the {@link GameController} from
+	 * the {@link GameController#pauseMenu} to the {@link GameController#mainMenu}
+	 * state
 	 */
 	private Action<?> enterMainMenu() {
-		return new Action<Game>(game, game -> game.view.enterMainMenu());
+		return new Action<GameController>(game, game -> game.getView().enterMainMenu());
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will exit the {@link Game}.
+	 * Retrieves the {@link Action} that will exit the {@link GameController}.
 	 * 
 	 * @return {@link Action}
 	 */
-	private Action<?> exitGame() {
-		return new Action<Game>(game, game -> game.view.exit());
+	private Action<?> exitGameController() {
+		return new Action<GameController>(game, game -> game.getView().exit());
 	}
 
 	/**
@@ -331,8 +339,8 @@ public class FunctionHelper {
 	 * 
 	 * @return
 	 */
-	private Action<?> saveGame() {
-		return new Action<Game>(game, game -> game.view.save());
+	private Action<?> saveGameController() {
+		return new Action<GameController>(game, game -> game.getView().save());
 	}
 
 	/**
@@ -341,7 +349,7 @@ public class FunctionHelper {
 	 * @return
 	 */
 	private Action<?> showHelp() {
-		return new Action<Game>(game, game -> game.view.toggleHelpMenu(true));
+		return new Action<GameController>(game, game -> game.getView().toggleHelpMenu(true));
 	}
 
 	/**
@@ -350,6 +358,6 @@ public class FunctionHelper {
 	 * @return
 	 */
 	private Action<?> hideHelp() {
-		return new Action<Game>(game, game -> game.view.toggleHelpMenu(false));
+		return new Action<GameController>(game, game -> game.getView().toggleHelpMenu(false));
 	}
 }

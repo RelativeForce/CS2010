@@ -6,6 +6,7 @@ import java.util.Set;
 
 import peril.Challenge;
 import peril.Game;
+import peril.controllers.GameController;
 import peril.model.ModelColor;
 import peril.model.ModelPlayer;
 import peril.views.slick.SlickGame;
@@ -35,7 +36,7 @@ public class MapWriter {
 	/**
 	 * The {@link Game} that this {@link MapWriter} is a part of.
 	 */
-	private Game game;
+	private GameController game;
 
 	/**
 	 * Constructs a new {@link MapWriter}.
@@ -47,10 +48,11 @@ public class MapWriter {
 	 * @param file
 	 *            The {@link SaveFile} that will be written to.
 	 */
-	public MapWriter(Game game, String mapDiretory, SaveFile file) {
+	public MapWriter(GameController game, SaveFile file) {
 		this.savedLinks = new HashSet<>();
 		this.game = game;
-		this.writer = new TextFileWriter(mapDiretory + File.separatorChar + file.filename, false);
+		this.writer = new TextFileWriter(
+				game.getMapsPath() + game.getModelBoard().getName() + File.separatorChar + file.filename, false);
 	}
 
 	/**
@@ -62,27 +64,27 @@ public class MapWriter {
 		writer.open();
 
 		// Write player details for the active players
-		game.players.forEach(player -> writer.writeLine(parsePlayer(player, true)));
+		game.forEachModelPlayer(player -> writer.writeLine(parsePlayer(player, true)));
 
 		// Write the player details from the losers
 		game.forEachLoser(player -> writer.writeLine(parsePlayer(player, false)));
 
 		// Write the state the game will start in
-		writer.writeLine(parseState(((SlickGame) game.view).getCurrentState(), game.getRoundNumber()));
+		writer.writeLine(parseState(((SlickGame) game.getView()).getCurrentState(), game.getRoundNumber()));
 
 		// Write all the countries to the file
-		game.board.forEachCountry(country -> writer
-				.writeLine(parseCountry((SlickCountry) game.view.getModelView().getVisual(country))));
+		game.getModelBoard().forEachCountry(country -> writer
+				.writeLine(parseCountry((SlickCountry) game.getView().getModelView().getVisual(country))));
 
 		// Write all the continents to the file
-		game.board.getContinents().values().forEach(continent -> writer
-				.writeLine(parseContinent((SlickContinent) game.view.getModelView().getVisual(continent))));
+		game.getModelBoard().getContinents().values().forEach(continent -> writer
+				.writeLine(parseContinent((SlickContinent) game.getView().getModelView().getVisual(continent))));
 
 		// Write all the links to the file
-		game.board.forEachCountry(
-				country -> parseLinks((SlickCountry) game.view.getModelView().getVisual(country)));
+		game.getModelBoard()
+				.forEachCountry(country -> parseLinks((SlickCountry) game.getView().getModelView().getVisual(country)));
 
-		game.players.challenges.forEach(challenge -> writer.writeLine(parseChallenge(challenge)));
+		game.getChallenges().forEach(challenge -> writer.writeLine(parseChallenge(challenge)));
 
 		// Save the file
 		writer.save();
@@ -105,7 +107,7 @@ public class MapWriter {
 		line.append(state.getName());
 		line.append(',');
 
-		line.append(game.players.getCurrent().number);
+		line.append(game.getCurrentModelPlayer().number);
 		line.append(',');
 
 		line.append(roundNumber);
@@ -150,8 +152,8 @@ public class MapWriter {
 	 *            {@link SlickCountry}
 	 */
 	private void parseLinks(SlickCountry country) {
-		country.model.getNeighbours().forEach(
-				neighbour -> parseLink(country, (SlickCountry) game.view.getModelView().getVisual(neighbour)));
+		country.model.getNeighbours()
+				.forEach(neighbour -> parseLink(country, (SlickCountry) game.getView().getModelView().getVisual(neighbour)));
 	}
 
 	/**
@@ -240,7 +242,7 @@ public class MapWriter {
 		line.append(',');
 
 		ModelColor color = country.model.getColor();
-		
+
 		// Country RGB
 		line.append(formatRGB(color.red));
 		line.append(formatRGB(color.green));

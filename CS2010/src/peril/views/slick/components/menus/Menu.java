@@ -7,12 +7,13 @@ import java.util.Map;
 
 import org.newdawn.slick.Graphics;
 
-import peril.Game;
+import peril.controllers.GameController;
 import peril.views.slick.Button;
 import peril.views.slick.Clickable;
 import peril.views.slick.Container;
 import peril.views.slick.Point;
 import peril.views.slick.Region;
+import peril.views.slick.SlickGame;
 import peril.views.slick.Viewable;
 import peril.views.slick.components.Component;
 import peril.views.slick.states.InteractiveState;
@@ -30,12 +31,12 @@ public abstract class Menu extends Clickable implements Container, Component {
 	/**
 	 * A {@link List} of {@link Button}s on this {@link Menu}.
 	 */
-	private Map<String, Button> buttons;
+	private final Map<String, Button> buttons;
 
 	/**
 	 * A {@link List} of {@link Viewable}s on this {@link Menu}.
 	 */
-	private List<Viewable> images;
+	private final List<Viewable> images;
 
 	/**
 	 * The string representation of this {@link Menu}.
@@ -45,7 +46,10 @@ public abstract class Menu extends Clickable implements Container, Component {
 	/**
 	 * The {@link Game} that this {@link Menu} is a part of.
 	 */
-	private Game game;
+	protected final GameController game;
+	
+	protected final SlickGame slick;
+			
 
 	/**
 	 * Whether or not this {@link Menu} is visible or not.
@@ -62,9 +66,14 @@ public abstract class Menu extends Clickable implements Container, Component {
 	 * @param region
 	 *            {@link Region}
 	 */
-	public Menu(String name, Game game, Region region) {
+	public Menu(String name, GameController game, Region region) {
 		super(region);
+		
+		if(!(game.getView() instanceof SlickGame)) {
+			throw new IllegalArgumentException("This menu ( "+name+" ) only supports slick 2d.");
+		}
 
+		this.slick = (SlickGame) game.getView();
 		this.buttons = new HashMap<>();
 		this.images = new LinkedList<>();
 		this.name = name;
@@ -251,15 +260,6 @@ public abstract class Menu extends Clickable implements Container, Component {
 	@Override
 	public String getName() {
 		return name;
-	}
-
-	/**
-	 * Retrieves the {@link Game} that this {@link Menu} is a part of.
-	 * 
-	 * @return {@link Game}
-	 */
-	protected final Game getGame() {
-		return game;
 	}
 
 	/**

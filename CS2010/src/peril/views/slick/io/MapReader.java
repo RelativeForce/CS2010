@@ -14,6 +14,7 @@ import org.newdawn.slick.Image;
 import peril.Challenge;
 import peril.Game;
 import peril.ai.AI;
+import peril.controllers.GameController;
 import peril.io.FileParser;
 import peril.io.SaveFile;
 import peril.model.ModelColor;
@@ -69,7 +70,7 @@ public final class MapReader extends FileParser {
 	 * {@link MapReader} will populate when {@link MapReader#parseBoard(SlickBoard)}
 	 * is performed.
 	 */
-	private final Game game;
+	private final GameController game;
 
 	private final SlickModelView view;
 
@@ -87,7 +88,7 @@ public final class MapReader extends FileParser {
 	 * @param file
 	 *            The file that will contain this map.
 	 */
-	public MapReader(String directoryPath, Game game, SaveFile file) {
+	public MapReader(String directoryPath, GameController game, SaveFile file) {
 		super(directoryPath, file.filename);
 
 		if (game == null) {
@@ -98,14 +99,13 @@ public final class MapReader extends FileParser {
 		this.countries = new HashMap<>();
 		this.game = game;
 
-		this.slickGame = (SlickGame) game.view;
-		this.view = (SlickModelView) game.view.getModelView();
+		this.slickGame = (SlickGame) game.getView();
+		this.view = (SlickModelView) game.getView().getModelView();
 
 		this.normalMap = ImageReader.getImage(directoryPath + File.separatorChar + "normal.png");
 		this.countryMap = ImageReader.getImage(directoryPath + File.separatorChar + "countries.png");
 
-		
-		SlickBoard board = this.view.getVisual(game.board);
+		final SlickBoard board = this.view.getVisual(game.getModelBoard());
 
 		if (board != null) {
 			board.setPosition(new Point(0, 0));
@@ -159,7 +159,7 @@ public final class MapReader extends FileParser {
 
 			if (isFinished()) {
 				// Set the boards continents
-				game.board.setContinents(continents);
+				game.getModelBoard().setContinents(continents);
 			}
 		}
 
@@ -400,7 +400,7 @@ public final class MapReader extends FileParser {
 		view.addPlayer(player);
 
 		if (isActive) {
-			game.players.addPlayer(player.model);
+			game.addPlayer(player.model);
 		} else {
 			slickGame.addLoser(player.model);
 		}
@@ -429,7 +429,8 @@ public final class MapReader extends FileParser {
 		slickGame.states.loadingScreen.setFirstState(slickGame.states.getSaveState(details[1]));
 
 		// Set the current player of the as the player specified by the name.
-		game.players.setCurrent(parsePlayer(details[2]).model);
+
+		game.setCurrentPlayer(parsePlayer(details[2]).model);
 
 		try {
 			game.setRoundNumber(Integer.parseInt(details[3]));
@@ -459,7 +460,7 @@ public final class MapReader extends FileParser {
 
 			int reward = Integer.parseInt(details[2]);
 
-			game.players.addChallenge(new Challenge(details[0], numberOfContinets, reward) {
+			game.addChallenge(new Challenge(details[0], numberOfContinets, reward) {
 
 				@Override
 				public boolean hasCompleted(ModelPlayer player, ModelBoard board) {
@@ -506,7 +507,7 @@ public final class MapReader extends FileParser {
 
 			int reward = Integer.parseInt(details[2]);
 
-			game.players.addChallenge(new Challenge(details[0], numberOfCountries, reward) {
+			game.addChallenge(new Challenge(details[0], numberOfCountries, reward) {
 
 				@Override
 				public boolean hasCompleted(ModelPlayer player, ModelBoard board) {
@@ -553,7 +554,7 @@ public final class MapReader extends FileParser {
 
 			int reward = Integer.parseInt(details[2]);
 
-			game.players.addChallenge(new Challenge(details[0], sizeOfArmy, reward) {
+			game.addChallenge(new Challenge(details[0], sizeOfArmy, reward) {
 
 				@Override
 				public boolean hasCompleted(ModelPlayer player, ModelBoard board) {
@@ -600,7 +601,7 @@ public final class MapReader extends FileParser {
 		} catch (Exception e) {
 			throw new IllegalArgumentException(player + " is not a valid player number.");
 		}
-
-		return view.getVisual(game.players.getPlayer(playerNumber));
+		
+		return view.getVisual(game.getModelPlayer(playerNumber));
 	}
 }

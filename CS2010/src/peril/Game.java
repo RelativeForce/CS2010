@@ -2,7 +2,6 @@ package peril;
 
 import java.io.File;
 import java.util.Random;
-import java.util.function.Consumer;
 
 import peril.controllers.*;
 import peril.helpers.*;
@@ -86,9 +85,9 @@ public final class Game {
 		this.currentRound = 0;
 
 		this.view = view;
-		
+
 		UnitHelper helper = UnitHelper.getInstance();
-		
+
 		helper.addUnit("soldier", 1);
 		helper.addUnit("car", 3);
 		helper.addUnit("tank", 5);
@@ -147,7 +146,7 @@ public final class Game {
 	public void start() {
 
 		try {
-			view.init(this);
+			view.init(api);
 			view.start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -251,39 +250,6 @@ public final class Game {
 
 		}
 
-	}
-	
-	public void confirmReinforce() {
-view.enterCombat();
-	}
-	
-	public void confirmCombat() {
-		view.enterFortify();
-	}
-
-	public void confirmSetup() {
-		
-		// Checks the ownership of the continents
-		checkContinentRulership();
-
-		// Change the state of the game to reinforcement and give player one their units
-		// based on the countries they own.
-		players.reinforceCurrent();
-
-		view.enterReinforce();
-	}
-	
-	public void confirmMovement() {
-		
-		// Move to the next player
-		players.nextPlayer();
-		
-		// Enter the reinforce state
-		view.enterReinforce();
-	}
-
-	public void forEachLoser(Consumer<ModelPlayer> task) {
-		
 	}
 
 }

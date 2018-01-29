@@ -2,6 +2,8 @@ package peril.views.slick;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
+
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -13,10 +15,14 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.controllers.GameController;
 import peril.helpers.PlayerHelper;
+import peril.helpers.UnitHelper;
 import peril.io.FileParser;
 import peril.io.SaveFile;
 import peril.model.ModelPlayer;
+import peril.model.board.ModelArmy;
 import peril.model.board.ModelBoard;
+import peril.model.board.ModelUnit;
+import peril.model.states.Attack;
 import peril.model.states.ModelState;
 import peril.views.ModelView;
 import peril.views.View;
@@ -75,7 +81,7 @@ public class SlickGame extends StateBasedGame implements View {
 	 */
 	private final Color[] colors;
 
-	private Game game;
+	private GameController game;
 
 	public SlickGame(String title) {
 		super(title);
@@ -104,12 +110,12 @@ public class SlickGame extends StateBasedGame implements View {
 	public void initStatesList(GameContainer container) throws SlickException {
 
 		states.init(this);
-		
-		modelView.init(game.getGameController());
 
-		SlickHazard.initIcons(game.assets.ui);
+		modelView.init(game);
 
-		initPlayers(game.assets.ui);
+		SlickHazard.initIcons(game.getUIPath());
+
+		initPlayers(game.getUIPath());
 
 		UIEventHandler eventHandler = new UIEventHandler(this);
 
@@ -159,24 +165,24 @@ public class SlickGame extends StateBasedGame implements View {
 
 	@Override
 	public void centerBoard() {
-		
-		final SlickBoard board = modelView.getVisual(game.board);
-		
+
+		final SlickBoard board = modelView.getVisual(game.getModelBoard());
+
 		// Unlock both x and y panning
 		board.unlock();
 
 		// The centre position of the board
 		final int x = ((agc.getWidth() - board.getWidth()) / 2);
 		final int y = ((agc.getHeight() - board.getHeight()) / 2);
-		
+
 		board.setPosition(new Point(x, y));
-		
+
 		// Lock panning if the board is to small for the screen.
-		if(board.getWidth() <= agc.getWidth()) {
+		if (board.getWidth() <= agc.getWidth()) {
 			board.lockX();
 		}
-		
-		if(board.getHeight() <= agc.getHeight()) {
+
+		if (board.getHeight() <= agc.getHeight()) {
 			board.lockY();
 		}
 
@@ -230,15 +236,17 @@ public class SlickGame extends StateBasedGame implements View {
 		}
 
 	}
-	
+
 	@Override
-	public void init(Game game) throws Exception {
+	public void init(GameController game) throws Exception {
 		this.game = game;
+
+
 		// Construct the container for the game as a Slick2D state based game.
 		try {
 
 			// Set the icons of the game
-			String[] icons = new String[] { game.assets.ui + "goat16.png", game.assets.ui + "goat32.png" };
+			String[] icons = new String[] { game.getUIPath() + "goat16.png", game.getUIPath() + "goat32.png" };
 			agc.setIcons(icons);
 
 		} catch (SlickException e) {
@@ -247,34 +255,32 @@ public class SlickGame extends StateBasedGame implements View {
 		}
 
 		// Initialise games overlay menus
-		WarMenu warMenu = new WarMenu(new Point(100, 100), game);
-		PauseMenu pauseMenu = new PauseMenu(new Point(100, 100), game);
-		HelpMenu helpMenu = new HelpMenu(new Point(100, 100), game);
-		ChallengeMenu challengeMenu = new ChallengeMenu(new Point(100, 100), game);
+		final WarMenu warMenu = new WarMenu(new Point(100, 100), game);
+		final PauseMenu pauseMenu = new PauseMenu(new Point(100, 100), game);
+		final HelpMenu helpMenu = new HelpMenu(new Point(100, 100), game);
+		final ChallengeMenu challengeMenu = new ChallengeMenu(new Point(100, 100), game);
 
 		this.menus = new MenuHelper(pauseMenu, warMenu, helpMenu, challengeMenu);
 
-		GameController gc = game.getGameController();
-
 		// Initialise the slick states.
-		MainMenu mainMenu = new MainMenu(gc, 0);
-		PlayerSelection playerSelection = new PlayerSelection(gc, 1);
-		EndState end = new EndState(gc, 6);
-		LoadingScreen loadingScreen = new LoadingScreen(gc, 7);
+		final MainMenu mainMenu = new MainMenu(game, 0);
+		final PlayerSelection playerSelection = new PlayerSelection(game, 1);
+		final EndState end = new EndState(game, 6);
+		final LoadingScreen loadingScreen = new LoadingScreen(game, 7);
 
 		// Initialise the game play states
-		SetupState setup = new SetupState(gc, 2, game.states.setup);
-		ReinforcementState reinforcement = new ReinforcementState(gc, 3, game.states.reinforcement);
-		CombatState combat = new CombatState(gc, 4, game.states.combat);
-		MovementState movement = new MovementState(gc, 5, game.states.movement);
-		
+		final SetupState setup = new SetupState(game, 2, game.getSetup());
+		final ReinforcementState reinforcement = new ReinforcementState(game, 3, game.getReinforce());
+		final CombatState combat = new CombatState(game, 4, game.getAttack());
+		final MovementState movement = new MovementState(game, 5, game.getFortify());
+
 		// Subscribe the states to the board
-		ModelBoard board = gc.getModelBoard();
+		final ModelBoard board = game.getModelBoard();
 		board.addObserver(setup);
 		board.addObserver(reinforcement);
 		board.addObserver(combat);
 		board.addObserver(movement);
-		
+
 		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen,
 				playerSelection);
 
@@ -286,7 +292,7 @@ public class SlickGame extends StateBasedGame implements View {
 
 		this.menus.createHelpPages(this);
 
-		this.music = new MusicHelper(this, game.assets.music);
+		this.music = new MusicHelper(this, game.getMusicPath());
 
 	}
 
@@ -372,7 +378,7 @@ public class SlickGame extends StateBasedGame implements View {
 	public void addLoser(ModelPlayer player) {
 		states.end.addToTop(modelView.getVisual(player));
 	}
-
+	
 	@Override
 	public void showToolTip(String text) {
 
@@ -461,4 +467,39 @@ public class SlickGame extends StateBasedGame implements View {
 		return new MapReader(mapPath, game, save);
 	}
 
+	private ModelUnit[] getArmyUnits(Attack attackState) {
+		
+		final ModelArmy attacker = attackState.getPrimary().getArmy();
+		final UnitHelper units = UnitHelper.getInstance();
+		final int numberOfUnitTypes = attacker.getUnitType();
+		final ModelUnit[] attackingArmy = new ModelUnit[numberOfUnitTypes > 3 ? 3 : numberOfUnitTypes];
+
+		ModelUnit current = units.getStrongest();
+
+		int armyIndex = 0;
+
+		while (current != null && armyIndex < attackingArmy.length) {
+
+			if (attacker.hasUnit(current)) {
+
+				int unitIndex = 0;
+				while (unitIndex < attacker.getUnit(current) && armyIndex != attackingArmy.length) {
+					
+					attackingArmy[armyIndex] = current;
+					armyIndex++;
+					unitIndex++;
+				}
+			}
+
+			current = units.getUnitBelow(current);
+		}
+		
+		return attackingArmy;
+	}
+
+	
+	@Override
+	public void forEachLoser(Consumer<ModelPlayer> task) {
+		states.end.forEachLoser(task);
+	}
 }

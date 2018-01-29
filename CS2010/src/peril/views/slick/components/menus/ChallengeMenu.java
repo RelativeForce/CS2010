@@ -5,6 +5,7 @@ import org.newdawn.slick.Graphics;
 
 import peril.Challenge;
 import peril.Game;
+import peril.controllers.GameController;
 import peril.views.slick.Point;
 import peril.views.slick.Region;
 import peril.views.slick.components.TextField;
@@ -47,7 +48,7 @@ public final class ChallengeMenu extends Menu {
 	 * @param game
 	 *            The {@link Game} this {@link ChallengeMenu} is a part of.
 	 */
-	public ChallengeMenu(Point position, Game game) {
+	public ChallengeMenu(Point position, GameController game) {
 		super(NAME, game, new Region(350, 300, position));
 		this.paddingX = (getWidth() / 12);
 		this.paddingY = (getHeight() / 8);
@@ -110,8 +111,7 @@ public final class ChallengeMenu extends Menu {
 		text.clear();
 
 		// List all the challenges
-		getGame().players.challenges
-				.forEach(challenge -> text.addText(challenge.toString() + " - Reward: " + challenge.reward + " Units"));
+		game.getChallenges().forEach(challenge -> text.addText(challenge.toString() + " - Reward: " + challenge.reward + " Units"));
 
 	}
 

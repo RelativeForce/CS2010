@@ -1,12 +1,18 @@
 package peril.controllers;
 
+import java.util.List;
 import java.util.function.Consumer;
 
+import peril.Challenge;
 import peril.Game;
 import peril.controllers.api.Player;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelCountry;
+import peril.model.states.Attack;
+import peril.model.states.Fortify;
+import peril.model.states.Reinforce;
+import peril.model.states.Setup;
 import peril.views.View;
 
 /**
@@ -126,4 +132,49 @@ public interface GameController {
 	 * Changes the current {@link ModelPlayer} to the next.
 	 */
 	void nextPlayer();
+
+	/**
+	 * Checks whether the game has been won.
+	 */
+	void checkWinner();
+
+	/**
+	 * Checks whether the continents ruler ship has changed.
+	 */
+	void checkContinentRulership();
+
+	Attack getAttack();
+
+	Reinforce getReinforce();
+
+	Fortify getFortify();
+
+	Setup getSetup();
+
+	String getMusicPath();
+
+	void setCurrentPlayer(ModelPlayer model);
+
+	void setRoundNumber(int parseInt);
+
+	void addChallenge(Challenge challenge);
+
+	List<Challenge> getChallenges();
+
+	void forEachModelPlayer(Consumer<ModelPlayer> task);
+
+	void forEachLoser(Consumer<ModelPlayer> task);
+
+	int getRoundNumber();
+
+	void confirmReinforce();
+
+	void confirmCombat();
+
+	void confirmSetup();
+
+	void confirmMovement();
+
+	void autoDistributeCountries();
+
 }

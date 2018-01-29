@@ -1,6 +1,8 @@
 package peril.views;
 
-import peril.Game;
+import java.util.function.Consumer;
+
+import peril.controllers.GameController;
 import peril.io.FileParser;
 import peril.io.SaveFile;
 import peril.model.ModelPlayer;
@@ -10,7 +12,7 @@ public interface View {
 
 	void start() throws Exception;
 	
-	void init(Game game) throws Exception;
+	void init(GameController game) throws Exception;
 	
 	void setWinner(ModelPlayer winner);
 	
@@ -61,5 +63,7 @@ public interface View {
 	void attack();
 	
 	void centerBoard();
+
+	void forEachLoser(Consumer<ModelPlayer> task);
 
 }

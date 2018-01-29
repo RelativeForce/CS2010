@@ -1,6 +1,7 @@
 package peril.views.slick.helpers;
 
 import peril.Game;
+import peril.controllers.GameController;
 import peril.io.SaveFile;
 import peril.io.FileParser;
 import peril.io.MapWriter;
@@ -17,8 +18,8 @@ import peril.views.slick.io.AssetReader;
 public class IOHelper {
 
 	/**
-	 * The {@link AssetReader} that loads all the {@link InteractiveState}'s
-	 * assets into the game from memory.
+	 * The {@link AssetReader} that loads all the {@link InteractiveState}'s assets
+	 * into the game from memory.
 	 */
 	public final AssetReader gameLoader;
 
@@ -36,7 +37,7 @@ public class IOHelper {
 	 *            {@link Container}s that the {@link FileParser}s may add elements
 	 *            to.
 	 */
-	public IOHelper(Game game, Container[] containers) {
+	public IOHelper(GameController game, Container[] containers) {
 		this.mainMenuLoader = new AssetReader(containers, "menu.txt", game);
 		this.gameLoader = new AssetReader(containers, "game.txt", game);
 	}
@@ -50,8 +51,8 @@ public class IOHelper {
 	 * @param file
 	 *            {@link SaveFile}
 	 */
-	public void saveBoard(Game game, SaveFile file) {
-		new MapWriter(game, game.assets.maps + game.board.getName(), file).write();
+	public void saveBoard(GameController game, SaveFile file) {
+		new MapWriter(game, file).write();
 	}
 
 }

@@ -54,7 +54,7 @@ public final class SlickArmy implements Observer {
 		this.model = model;
 		this.expanded = false;
 		this.collapsedFont = new Font("Arial", Color.white, 17);
-		this.expandedFont = new Font("Arial", Color.black, 10);
+		this.expandedFont = new Font("Arial", Color.black, 25);
 
 		model.addObserver(this);
 	}
@@ -131,11 +131,14 @@ public final class SlickArmy implements Observer {
 	private void drawExpanded(Graphics g, Point position, SlickPlayer ruler) {
 
 		final UnitHelper units = UnitHelper.getInstance();
+		final int padding = 50;
 
 		int x = position.x;
 		int y = position.y;
 
 		ModelUnit current = units.getStrongest();
+
+		x -= ((model.getUnitType() - 1) * padding) / 2;
 
 		// Iterate until there are not more types of unit.
 		while (current != null) {
@@ -143,9 +146,9 @@ public final class SlickArmy implements Observer {
 			// If the unit exists in the model army draw it
 			if (model.hasUnit(current)) {
 
-				drawUnits(g, new Point(x, y), current);
+				drawUnit(g, new Point(x, y), current);
 
-				x += 15;
+				x += padding;
 			}
 
 			current = units.getUnitBelow(current);
@@ -175,13 +178,13 @@ public final class SlickArmy implements Observer {
 		}
 
 		// Holds the size of the current countries army
-		int troopNumber = model.getStrength();
+		final int troopNumber = model.getStrength();
 
 		drawArmyOval(position, troopNumber, g);
 
 		// Draw a string representing the number of troops
 		// within that army at (x,y).
-		collapsedFont.draw(g, Integer.toString(troopNumber), position.x, position.y);
+		collapsedFont.draw(g, Integer.toString(troopNumber), position.x + (getOvalWidth(troopNumber)/2), position.y);
 
 	}
 
@@ -202,7 +205,7 @@ public final class SlickArmy implements Observer {
 
 		int offset = width / 5;
 
-		g.fillOval(position.x - offset, position.y - 3, width, 25);
+		g.fillOval(position.x + (width / 2) - offset, position.y - 3, width, 25);
 
 	}
 
@@ -217,14 +220,17 @@ public final class SlickArmy implements Observer {
 	 *            {@link Graphics}
 	 * 
 	 */
-	private void drawUnits(Graphics g, Point position, ModelUnit unit) {
+	private void drawUnit(Graphics g, Point position, ModelUnit unit) {
 
 		final int numberOfCurrent = model.getUnit(unit);
 
 		g.setColor(Color.lightGray);
-		g.fillRect(position.x, position.y, 15, 15);
+		g.fillRect(position.x, position.y, 30, 30);
 
-		expandedFont.draw(g, Integer.toString(numberOfCurrent), position.x, position.y);
+		final String number = Integer.toString(numberOfCurrent);
+		final int x = position.x + 15 - (expandedFont.getWidth(number)/ 2);
+
+		expandedFont.draw(g, number, x, position.y);
 
 	}
 

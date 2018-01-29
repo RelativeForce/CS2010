@@ -4,6 +4,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import peril.Game;
+import peril.controllers.GameController;
 import peril.io.MapWriter;
 import peril.io.SaveFile;
 import peril.views.slick.Button;
@@ -66,7 +67,7 @@ public class PauseMenu extends Menu {
 	 * @param game
 	 *            The {@link Game} the {@link PauseMenu} is associated with.
 	 */
-	public PauseMenu(Point position, Game game) {
+	public PauseMenu(Point position, GameController game) {
 		super(NAME, game, new Region(300, 300, position));
 
 		this.saveButton = "save";
@@ -98,7 +99,7 @@ public class PauseMenu extends Menu {
 	@Override
 	public void show() {
 		super.show();
-		toggleMusic.setSelected(getGame().view.isMusicOn() ? Toggle.ON : Toggle.OFF);
+		toggleMusic.setSelected(slick.isMusicOn() ? Toggle.ON : Toggle.OFF);
 	}
 
 	/**
@@ -161,7 +162,7 @@ public class PauseMenu extends Menu {
 				}
 			}
 		} else {
-			getGame().view.toggleMusic(toggleMusic.getSelected().toggle);
+			slick.toggleMusic(toggleMusic.getSelected().toggle);
 		}
 	}
 
@@ -199,14 +200,11 @@ public class PauseMenu extends Menu {
 	 */
 	public void save() {
 
-		// Holds the path of the current map
-		String mapFolderPath = getGame().assets.maps + getGame().board.getName();
-
 		// Save the current state of the game
-		new MapWriter(getGame(), mapFolderPath, saveFiles.getSelected()).write();
-		
-		getGame().view.showToolTip("Game Saved [" + saveFiles.getSelected().name + "]");	
-		
+		new MapWriter(game, saveFiles.getSelected()).write();
+
+		slick.showToolTip("Game Saved [" + saveFiles.getSelected().name + "]");
+
 		refreshSaveFiles();
 
 	}
@@ -282,7 +280,7 @@ public class PauseMenu extends Menu {
 
 		// If the save file does not currently exist display to the user that it is
 		// empty
-		boolean exists = file.existsIn(getGame().assets.maps + getGame().board.getName());
+		boolean exists = file.existsIn(game.getMapsPath() + game.getModelBoard().getName());
 		String text = file.name + (exists ? "" : " - Empty");
 
 		saveFiles.add(text, file);

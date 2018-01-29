@@ -368,4 +368,10 @@ public final class RequestHandler implements AIController, GameController {
 		game.autoDistributeCountries();
 	}
 
+	@Override
+	public void setLoser(ModelPlayer player) {
+		game.players.setLoser(player);
+		game.view.addLoser(player);
+	}
+
 }

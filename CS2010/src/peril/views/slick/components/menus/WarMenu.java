@@ -252,7 +252,7 @@ public class WarMenu extends Menu {
 							// If the player has no countries they have lost.
 							if (defendingPlayer.getCountriesRuled() == 0) {
 								
-								slick.addLoser(defendingPlayer);
+								game.setLoser(defendingPlayer);
 								game.checkWinner();
 							}
 						}

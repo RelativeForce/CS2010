@@ -147,9 +147,6 @@ public class PlayerHelper {
 	 *            {@link SlickPlayer} number that has lost.
 	 */
 	public void setLoser(ModelPlayer defendingPlayer) {
-
-		// Add the player to the podium and remove it from the players in play.
-		game.view.addLoser(defendingPlayer);
 		
 		losers.add(defendingPlayer);
 

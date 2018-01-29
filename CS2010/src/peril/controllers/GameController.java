@@ -177,4 +177,6 @@ public interface GameController {
 
 	void autoDistributeCountries();
 
+	void setLoser(ModelPlayer player);
+
 }

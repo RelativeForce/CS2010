@@ -66,6 +66,4 @@ public interface View {
 
 	void forEachLoser(Consumer<ModelPlayer> task);
 
-	void enterState(ModelState state);
-
 }

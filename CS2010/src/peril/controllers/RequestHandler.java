@@ -15,7 +15,6 @@ import peril.model.board.ModelBoard;
 import peril.model.board.ModelCountry;
 import peril.model.states.Attack;
 import peril.model.states.Fortify;
-import peril.model.states.ModelState;
 import peril.model.states.Reinforce;
 import peril.model.states.Setup;
 import peril.views.View;
@@ -377,10 +376,6 @@ public final class RequestHandler implements AIController, GameController {
 		game.view.addLoser(player);
 	}
 
-	public void enterState(ModelState state) {
-		game.view.enterState(state);
-	}
-
 	@Override
 	public void processAI(int delta) {
 
@@ -391,11 +386,11 @@ public final class RequestHandler implements AIController, GameController {
 			final ModelPlayer current = getCurrentModelPlayer();
 
 			if (view.isCurrentState(states.reinforcement) && !current.ai.reinforce(delta)) {
-				view.enterState(states.combat);
+				view.enterCombat();
 			} else if (view.isCurrentState(states.combat) && !current.ai.attack(delta)) {
-				view.enterState(states.movement);
+				view.enterFortify();
 			} else if (view.isCurrentState(states.movement) && !current.ai.fortify(delta)) {
-				view.enterState(states.reinforcement);
+				view.enterReinforce();
 				nextPlayer();
 			}
 

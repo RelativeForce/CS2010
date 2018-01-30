@@ -508,8 +508,4 @@ public class SlickGame extends StateBasedGame implements View {
 		states.end.forEachLoser(task);
 	}
 
-	@Override
-	public void enterState(ModelState state) {
-		enterState(modelView.getVisual(state));
-	}
 }

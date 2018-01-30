@@ -9,7 +9,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
-import peril.ai.AI;
 import peril.controllers.GameController;
 import peril.model.states.Reinforce;
 import peril.views.slick.Button;
@@ -126,9 +125,7 @@ public final class ReinforcementState extends CoreGameState {
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		super.update(gc, sbg, delta);
 
-		if (game.getCurrentModelPlayer().ai != AI.USER && !game.getCurrentModelPlayer().ai.reinforce(delta)) {
-			slick.enterState(slick.states.combat);
-		}
+		game.processAI(delta);
 	}
 
 	/**

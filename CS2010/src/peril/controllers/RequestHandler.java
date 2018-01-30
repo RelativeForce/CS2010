@@ -5,14 +5,17 @@ import java.util.function.Consumer;
 
 import peril.Challenge;
 import peril.Game;
+import peril.ai.AI;
 import peril.controllers.api.Board;
 import peril.controllers.api.Country;
 import peril.controllers.api.Player;
+import peril.helpers.ModelStateHelper;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelCountry;
 import peril.model.states.Attack;
 import peril.model.states.Fortify;
+import peril.model.states.ModelState;
 import peril.model.states.Reinforce;
 import peril.model.states.Setup;
 import peril.views.View;
@@ -372,6 +375,32 @@ public final class RequestHandler implements AIController, GameController {
 	public void setLoser(ModelPlayer player) {
 		game.players.setLoser(player);
 		game.view.addLoser(player);
+	}
+
+	public void enterState(ModelState state) {
+		game.view.enterState(state);
+	}
+
+	@Override
+	public void processAI(int delta) {
+
+		if (getCurrentModelPlayer().ai != AI.USER) {
+			
+			final View view = game.view;
+			final ModelStateHelper states = game.states;
+			final ModelPlayer current = getCurrentModelPlayer();
+
+			if (view.isCurrentState(states.reinforcement) && !current.ai.reinforce(delta)) {
+				view.enterState(states.combat);
+			} else if (view.isCurrentState(states.combat) && !current.ai.attack(delta)) {
+				view.enterState(states.movement);
+			} else if (view.isCurrentState(states.movement) && !current.ai.fortify(delta)) {
+				view.enterState(states.reinforcement);
+				nextPlayer();
+			}
+
+		}
+
 	}
 
 }

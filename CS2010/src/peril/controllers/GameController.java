@@ -11,6 +11,7 @@ import peril.model.board.ModelBoard;
 import peril.model.board.ModelCountry;
 import peril.model.states.Attack;
 import peril.model.states.Fortify;
+import peril.model.states.ModelState;
 import peril.model.states.Reinforce;
 import peril.model.states.Setup;
 import peril.views.View;
@@ -179,4 +180,7 @@ public interface GameController {
 
 	void setLoser(ModelPlayer player);
 
+	void processAI(int delta);
+
+	void enterState(ModelState state);
 }

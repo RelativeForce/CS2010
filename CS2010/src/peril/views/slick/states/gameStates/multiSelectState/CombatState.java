@@ -9,7 +9,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
-import peril.ai.AI;
 import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
 import peril.model.states.Attack;
@@ -98,9 +97,8 @@ public final class CombatState extends MultiSelectState {
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		super.update(gc, sbg, delta);
 
-		if (game.getCurrentModelPlayer().ai != AI.USER && !game.getCurrentModelPlayer().ai.attack(delta)) {
-			slick.enterState(slick.states.movement);
-		}
+		game.processAI(delta);
+		
 	}
 
 	/**

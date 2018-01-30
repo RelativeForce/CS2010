@@ -7,6 +7,7 @@ import peril.model.board.ModelBoard;
 import peril.model.board.ModelContinent;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelHazard;
+import peril.model.board.ModelUnit;
 import peril.model.states.ModelState;
 
 public interface ModelView {
@@ -25,7 +26,11 @@ public interface ModelView {
 	
 	Object getVisual(ModelPlayer player);
 	
+	Object getVisual(ModelUnit unit);
+	
 	void clear();
+	
+	void addUnit(Object unit);
 	
 	void addCountry(Object country);
 	

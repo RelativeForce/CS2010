@@ -50,18 +50,6 @@ public final class UnitHelper {
 	}
 
 	/**
-	 * Adds a new type of {@link ModelUnit}.
-	 * 
-	 * @param name
-	 *            of the {@link ModelUnit}.
-	 * @param strength
-	 *            of the {@link ModelUnit}.
-	 */
-	public void addUnit(String name, int strength) {
-		units.add(new ModelUnit(name, strength));
-	}
-
-	/**
 	 * Removes all the {@link ModelUnit} that this {@link UnitHelper} contains.
 	 */
 	public void clear() {
@@ -178,6 +166,26 @@ public final class UnitHelper {
 			super.add(index, element);
 
 			return true;
+		}
+		
+		@Override
+		public T getLast() {
+			
+			if(isEmpty()) {
+				return null;
+			}
+			
+			return super.getLast();
+		}
+		
+		@Override
+		public T getFirst() {
+	
+			if(isEmpty()) {
+				return null;
+			}
+			
+			return super.getFirst();
 		}
 
 	}

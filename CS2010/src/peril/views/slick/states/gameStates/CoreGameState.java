@@ -624,7 +624,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 		selected.forEach(country -> {
 			removeHighlight(country);
-
+			slick.modelView.getVisual(country.model.getArmy()).collapse();
 		});
 
 		selected.clear();

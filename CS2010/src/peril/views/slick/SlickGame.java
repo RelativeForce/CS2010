@@ -108,7 +108,7 @@ public class SlickGame extends StateBasedGame implements View {
 	 */
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
-
+		
 		states.init(this);
 
 		modelView.init(game);

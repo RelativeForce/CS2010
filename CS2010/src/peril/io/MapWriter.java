@@ -7,8 +7,10 @@ import java.util.Set;
 import peril.Challenge;
 import peril.Game;
 import peril.controllers.GameController;
+import peril.helpers.UnitHelper;
 import peril.model.ModelColor;
 import peril.model.ModelPlayer;
+import peril.model.board.ModelUnit;
 import peril.views.slick.SlickGame;
 import peril.views.slick.board.SlickContinent;
 import peril.views.slick.board.SlickCountry;
@@ -62,6 +64,8 @@ public class MapWriter {
 
 		// Open the file
 		writer.open();
+		
+		UnitHelper.getInstance().forEach(unit -> writer.writeLine(parseUnit(unit)));
 
 		// Write player details for the active players
 		game.forEachModelPlayer(player -> writer.writeLine(parsePlayer(player, true)));
@@ -88,6 +92,23 @@ public class MapWriter {
 
 		// Save the file
 		writer.save();
+	}
+
+	private String parseUnit(ModelUnit unit) {
+		
+		StringBuilder line = new StringBuilder();
+		line.append("Unit,");
+		
+		line.append(unit.name);
+		line.append(',');
+		
+		line.append(unit.strength);
+		line.append(',');
+		
+		line.append(unit.fileName);
+		
+		
+		return line.toString();
 	}
 
 	/**

@@ -68,6 +68,7 @@ Link,Alberta,Ontario
 Link,Alberta,W USA
 Link,Ontario,Quebec
 Link,Ontario,E USA
+Link,Ontario,W USA
 Link,Quebec,E USA
 Link,W USA,E USA
 Link,W USA,C America
@@ -78,7 +79,6 @@ Link,Venezuela,Brazil
 Link,Peru,Argentina
 Link,Peru,Brazil
 Link,Argentina,Brazil
-Link,Brazil,NorthAmerica
 Link,Brazil,N Africa
 Link,N Africa,W Europe
 Link,N Africa,S Europe

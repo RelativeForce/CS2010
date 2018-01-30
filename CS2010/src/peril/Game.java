@@ -3,25 +3,17 @@ package peril;
 import java.io.File;
 import java.util.Random;
 
-import org.newdawn.slick.AppGameContainer;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Music;
-import org.newdawn.slick.MusicListener;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.state.GameState;
-import org.newdawn.slick.state.StateBasedGame;
-
-import peril.board.Board;
-import peril.board.Continent;
-import peril.board.Country;
-import peril.board.EnvironmentalHazard;
+import peril.controllers.*;
 import peril.helpers.*;
-import peril.ui.Container;
-import peril.ui.UIEventHandler;
-import peril.ui.components.menus.*;
-import peril.ui.states.*;
-import peril.ui.states.gameStates.*;
-import peril.ui.states.gameStates.multiSelectState.*;
+import peril.model.ModelPlayer;
+import peril.model.board.ModelBoard;
+import peril.model.board.ModelCountry;
+import peril.model.states.Attack;
+import peril.model.states.Fortify;
+import peril.model.states.Reinforce;
+import peril.model.states.Setup;
+import peril.views.View;
+import peril.views.slick.SlickGame;
 
 /**
  * Encapsulate the main game logic for Peril. This also extends
@@ -30,28 +22,18 @@ import peril.ui.states.gameStates.multiSelectState.*;
  * @author Joshua_Eddy
  *
  */
-public class Game extends StateBasedGame implements MusicListener {
+public final class Game {
 
 	/**
-	 * The {@link StateHelper} that holds all this {@link Game}'s states.
-	 */
-	public final StateHelper states;
-
-	/**
-	 * The {@link IOHelper} that holds the input out put objects of the
-	 * {@link Game}.
-	 */
-	public final IOHelper io;
-
-	/**
-	 * The {@link PlayerHelper} that holds all this {@link Game}s {@link Player}s.
+	 * The {@link PlayerHelper} that holds all this {@link Game}s
+	 * {@link SlickPlayer}s.
 	 */
 	public final PlayerHelper players;
 
 	/**
-	 * The instance of the {@link Board} used for this game.
+	 * The instance of the {@link SlickBoard} used for this game.
 	 */
-	public final Board board;
+	public final ModelBoard board;
 
 	/**
 	 * The {@link DirectoryHelper} that holds all the sub directories of the assets
@@ -59,11 +41,15 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public final DirectoryHelper assets;
 
+	public final ModelStateHelper states;
+
 	/**
-	 * The {@link MenuHelper} that holds all the {@link Menu}s for this
+	 * The {@link AIController} that allows the user/AI to interact with the
 	 * {@link Game}.
 	 */
-	public final MenuHelper menus;
+	private final RequestHandler api;
+
+	public final View view;
 
 	/**
 	 * The current turn of the {@link Game}. Initially zero;
@@ -71,15 +57,9 @@ public class Game extends StateBasedGame implements MusicListener {
 	private int currentRound;
 
 	/**
-	 * The {@link AppGameContainer} that contains this {@link Game}.
-	 */
-	private final AppGameContainer agc;
-
-	/**
 	 * Constructs a new {@link Game}.
 	 */
-	private Game() {
-		super("PERIL");
+	private Game(View view) {
 
 		// Holds the path of the peril assets
 		StringBuilder assetsPath = new StringBuilder(new File(System.getProperty("user.dir")).getPath())
@@ -87,95 +67,30 @@ public class Game extends StateBasedGame implements MusicListener {
 
 		this.assets = new DirectoryHelper(assetsPath.toString());
 
+		this.api = new RequestHandler(this);
+
+		// Construct the board with the initial name.
+		this.board = new ModelBoard("NOT ASSIGNED");
+
+		this.players = new PlayerHelper(this);
+
+		Setup setup = new Setup();
+		Attack attack = new Attack();
+		Fortify fortify = new Fortify();
+		Reinforce reinforce = new Reinforce();
+
+		this.states = new ModelStateHelper(attack, reinforce, setup, fortify);
+
 		// Set the initial round to zero
 		this.currentRound = 0;
 
-		// Construct the board with the initial name.
-		this.board = new Board(this, "NOT ASSIGNED");
-		
-		this.players = new PlayerHelper(this);
+		this.view = view;
 
-		// Initialise games overlay menus
-		WarMenu warMenu = new WarMenu(new Point(100, 100), this);
-		PauseMenu pauseMenu = new PauseMenu(new Point(100, 100), this);
-		HelpMenu helpMenu = new HelpMenu(new Point(100, 100), this);
-		ChallengeMenu challengeMenu = new ChallengeMenu(new Point(100, 100), this);
+		UnitHelper helper = UnitHelper.getInstance();
 
-		this.menus = new MenuHelper(pauseMenu, warMenu, helpMenu, challengeMenu);
-
-		// Initialise the game states.
-		MainMenuState mainMenu = new MainMenuState(this, 0);
-		SetupState setup = new SetupState(this, 1);
-		ReinforcementState reinforcement = new ReinforcementState(this, 2);
-		CombatState combat = new CombatState(this, 3);
-		MovementState movement = new MovementState(this, 4);
-		EndState end = new EndState(this, 5);
-		LoadingScreen loadingScreen = new LoadingScreen(this, 6);
-
-		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen);
-
-		// Set the containers that ui elements will be loaded into.
-		Container[] containers = new Container[] { challengeMenu, helpMenu, pauseMenu, loadingScreen, warMenu, mainMenu,
-				combat, setup, reinforcement, movement, end };
-
-		this.io = new IOHelper(this, containers);
-
-		this.menus.createHelpPages(this);
-
-		// Construct the container for the game as a Slick2D state based game.
-		try {
-			agc = new AppGameContainer(this);
-			agc.setDisplayMode(400, 300, false);
-			agc.setTargetFrameRate(60);
-			
-			// Set the icons of the game
-			String[] icons = new String[] {assets.ui + "goat16.png",assets.ui + "goat32.png"};
-			agc.setIcons(icons);
-			
-			agc.start();
-		} catch (SlickException e) {
-			e.printStackTrace();
-			throw new IllegalStateException("The game must have a game container.");
-		}
-
-	}
-
-	/**
-	 * Adds {@link CoreGameState}s to the {@link GameContainer} for this
-	 * {@link Game}.
-	 */
-	@Override
-	public void initStatesList(GameContainer container) throws SlickException {
-		states.initGame(container, this, new UIEventHandler(this));
-		EnvironmentalHazard.initIcons(assets.ui);
-		players.init();
-	}
-
-	/**
-	 * Changes the dimensions of the {@link Game#agc} to the dimensions specified.
-	 * If the new dimensions are larger than the displays dimensions then this will
-	 * cause the game to go full screen.
-	 * 
-	 * @param width
-	 *            <code>int</code> new width of the screen.
-	 * @param height
-	 *            <code>int</code> new height of the screen.
-	 * @throws SlickException
-	 */
-	public void reSize(int width, int height) throws SlickException {
-
-		// Change the window to the specified size.
-		if (width >= agc.getScreenWidth() && height >= agc.getScreenHeight()) {
-			agc.setDisplayMode(agc.getScreenWidth(), agc.getScreenHeight(), true);
-		} else {
-
-			agc.setDisplayMode(width, height, false);
-		}
-
-		menus.center(agc.getWidth() / 2, agc.getHeight() / 2);
-
-		// Reset the board
-		board.reset();
+		helper.addUnit("soldier", 1);
+		helper.addUnit("car", 3);
+		helper.addUnit("tank", 5);
 
 	}
 
@@ -184,7 +99,11 @@ public class Game extends StateBasedGame implements MusicListener {
 	 */
 	public void autoDistributeCountries() {
 
-		players.resetAll();
+		players.forEach(player -> {
+			player.setCountriesRuled(0);
+			player.setContinentsRuled(0);
+			player.totalArmy.setStrength(0);
+		});
 
 		// Iterate through each country on the board.
 		board.forEachCountry(country -> assignPlayer(country));
@@ -210,33 +129,6 @@ public class Game extends StateBasedGame implements MusicListener {
 	}
 
 	/**
-	 * Retrieves the current {@link InteractiveState} of the {@link Game}. This will
-	 * throw {@link IllegalArgumentException} if the {@link GameState} is not a
-	 * {@link InteractiveState}.
-	 */
-	@Override
-	public InteractiveState getCurrentState() {
-
-		// Holds the current game state.
-		GameState state = super.getCurrentState();
-
-		// If the current state is a CoreGameState return it as a CoreGameState
-		if (state instanceof InteractiveState) {
-			return (InteractiveState) state;
-		}
-		throw new IllegalStateException(state.getID() + " is not a valid state as it is not a InteractiveState.");
-	}
-
-	/**
-	 * Enters the next {@link InteractiveState} of the {@link Game}.
-	 * 
-	 * @param nextState
-	 */
-	public void enterState(InteractiveState nextState) {
-		this.enterState(nextState.getID());
-	}
-
-	/**
 	 * Runs the game.
 	 * 
 	 * @param args
@@ -245,43 +137,40 @@ public class Game extends StateBasedGame implements MusicListener {
 	public static void main(String[] args) {
 
 		// Create the instance of the game.
-		new Game();
+		Game peril = new Game(new SlickGame("PERIL"));
+
+		peril.start();
 
 	}
 
-	/**
-	 * When the currently playing {@link Music} has finished, start the
-	 * {@link Music} of the {@link Game#getCurrentState()} if the
-	 * {@link InteractiveState} has {@link Music}.
-	 */
-	@Override
-	public void musicEnded(Music previousMusic) {
+	public void start() {
 
-		Music stateMusic = getCurrentState().getMusic();
-
-		if (stateMusic != null) {
-			stateMusic.play();
+		try {
+			view.init(api);
+			view.start();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 	}
 
-	/**
-	 * When the {@link Music} playing in this {@link Game} has changed.
-	 */
-	@Override
-	public void musicSwapped(Music music1, Music music2) {
+	public AIController getAIController() {
+		return api;
+	}
 
+	public GameController getGameController() {
+		return api;
 	}
 
 	/**
-	 * Checks all the {@link Continent}s on the {@link Board} to see if they are
-	 * ruled. This is o(n^2) complexity
+	 * Checks all the {@link SlickContinent}s on the {@link SlickBoard} to see if
+	 * they are ruled. This is o(n^2) complexity
 	 */
 	public void checkContinentRulership() {
 
 		players.forEach(player -> player.setContinentsRuled(0));
 
-		board.getContinents().forEach(continent -> {
+		board.getContinents().values().forEach(continent -> {
 
 			continent.isRuled();
 
@@ -293,27 +182,12 @@ public class Game extends StateBasedGame implements MusicListener {
 	}
 
 	/**
-	 * Checks if there is only one {@link Player} in play. If this is the case then
-	 * that {@link Player} has won.
+	 * Checks if there is only one {@link SlickPlayer} in play. If this is the case
+	 * then that {@link SlickPlayer} has won.
 	 */
 	public void checkWinner() {
 		if (players.numberOfPlayers() == 1) {
-			states.end.addToTop(players.getCurrent());
-			enterState(states.end.getID());
-		}
-	}
-
-	/**
-	 * Set the music on or off based on the specified boolean value.
-	 * 
-	 * @param state
-	 *            <code>boolean</code> on or off
-	 */
-	public void toggleMusic(boolean state) {
-		if (state) {
-			getContainer().setMusicVolume(1f);
-		} else {
-			getContainer().setMusicVolume(0f);
+			view.setWinner(players.getCurrent());
 		}
 	}
 
@@ -326,13 +200,13 @@ public class Game extends StateBasedGame implements MusicListener {
 	}
 
 	/**
-	 * Assigns a {@link Player} ruler to a {@link Country} using a parameter
-	 * {@link Random}.
+	 * Assigns a {@link SlickPlayer} ruler to a {@link SlickCountry} using a
+	 * parameter {@link Random}.
 	 * 
 	 * @param country
-	 *            {@link Country} that is to be ruled.
+	 *            {@link SlickCountry} that is to be ruled.
 	 */
-	private void assignPlayer(Country country) {
+	private void assignPlayer(ModelCountry country) {
 
 		// Holds whether the country has assigned a player ruler.
 		boolean set = false;
@@ -343,7 +217,7 @@ public class Game extends StateBasedGame implements MusicListener {
 			int numberOfPlayers = players.numberOfPlayers();
 
 			// Get the player at the random index.
-			Player player = players.getRandomPlayer();
+			ModelPlayer player = players.getRandomPlayer();
 
 			// Holds the number of countries on the board.
 			int numberOfCountries = board.getNumberOfCountries();

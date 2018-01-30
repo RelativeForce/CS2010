@@ -38,11 +38,11 @@ Country,Taneth,000200250,1,0,0,-
 Country,Rihad,000250000,1,-30,0,-
 
 //Cyrodiil
-Country,Bruma,000250050,1,0,0,-
+Country,Bruma,000250050,1,0,-15,-
 Country,Kvatch,000250100,1,15,40,-
 Country,Anvil,000250150,1,0,0,-
 Country,Skingrad,000250200,1,-50,0,-
-Country,Imperial City,000250250,1,0,-25,-
+Country,Imperial City,000250250,1,0,-15,-
 Country,Chorrol,050000000,1,0,0,-
 Country,Cheydinhal,050000050,1,0,0,-
 Country,Bravil,050000100,1,0,0,-
@@ -85,15 +85,15 @@ Country,Archon,050250000,1,0,0,-
 Country,Blackrose,050250050,1,0,0,-
 
 //Continent, name, hazard, countries
-Continent,High Rock,Hurricane,Daggerfall-North Point-Jehanna-Wayrest
+Continent,High Rock,Volcanic Eruption,Daggerfall-North Point-Jehanna-Wayrest
 Continent,Skyrim,Hurricane,Soltitude-Markarth-Morthal-Dawnstar-Winterhold-Whiterun-Windhelm-Falkreath-Riften
-Continent,Morrowind,Hurricane,Solstheim-Blacklight-Ald'Rhun-Balmora-Necrom-Mournhold-Narsis-Tear
-Continent,Hammerfell,Hurricane,Dragonstar-Sentinel-Skaven-Elinhir-Helgathe-Gilane-Taneth-Rihad
+Continent,Morrowind,Tornado,Solstheim-Blacklight-Ald'Rhun-Balmora-Necrom-Mournhold-Narsis-Tear
+Continent,Hammerfell,Tsunami,Dragonstar-Sentinel-Skaven-Elinhir-Helgathe-Gilane-Taneth-Rihad
 Continent,Cyrodiil,Hurricane,Bruma-Kvatch-Anvil-Skingrad-Imperial City-Chorrol-Cheydinhal-Bravil-Leyawiin-Blackwood
 Continent,Summerset Isles,Hurricane,Firsthold-Skywatch-Lillandrill-Cloudrest-Shimmerene-Alinot-Dusk
-Continent,Valenwood,Hurricane,Arenthia-Falinesti-Silvenar-Woodhearth-Elden Root-South Point-Haven
-Continent,Elsweyr,Hurricane,Riverhold-Dune-Rimmen-Orcrest-Corinth-Jorval-Senchal
-Continent,BlackMarsh,Hurricane,Stormhold-Helstrom-Thorn-Gideon-Archon-Blackrose
+Continent,Valenwood,Tsunami,Arenthia-Falinesti-Silvenar-Woodhearth-Elden Root-South Point-Haven
+Continent,Elsweyr,Volcanic Eruption,Riverhold-Dune-Rimmen-Orcrest-Corinth-Jorval-Senchal
+Continent,BlackMarsh,Tornado,Stormhold-Helstrom-Thorn-Gideon-Archon-Blackrose
 
 //Link, country1, country2
 Link,Daggerfall,North Point
@@ -151,12 +151,12 @@ Link,Haven,Jorval
 Link,Arenthia,Dune
 Link,Arenthia,Skingrad
 Link,Kvatch,Arenthia
-Link,Markarth,Solstheim
 Link,Markarth,Morthal
 Link,Markarth,Whiterun
 Link,Markarth,Falkreath
 Link,Markarth,Whiterun
 Link,Soltitude,Morthal
+Link,Soltitude,Markarth
 Link,Morthal,Dawnstar
 Link,Morthal,Whiterun
 Link,Dawnstar,Winterhold
@@ -224,14 +224,14 @@ Link,Narsis,Thorn
 Link,Tear,Thorn
 Link,Stormhold,Thorn
 Link,Stormhold,Helstrom
-Link,Stormhold,Archon
 Link,Stormhold,Gideon
-Link,Thorn,Archon
+Link,Stormhold,Blackrose
+Link,Thorn,Blackrose
 Link,Helstrom,Gideon
 Link,Helstrom,Archon
 Link,Helstrom,Blackrose
-Link,Gideon,Blackrose
 Link,Blackrose,Archon
+Link,Gideon,Archon
 
 // Challenges - 65 Countries Total
 ArmySize,90,10

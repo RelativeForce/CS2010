@@ -184,7 +184,7 @@ public final class SlickArmy implements Observer {
 
 		// Draw a string representing the number of troops
 		// within that army at (x,y).
-		collapsedFont.draw(g, Integer.toString(troopNumber), position.x + (getOvalWidth(troopNumber)/2), position.y);
+		collapsedFont.draw(g, Integer.toString(troopNumber), position.x, position.y);
 
 	}
 
@@ -205,7 +205,7 @@ public final class SlickArmy implements Observer {
 
 		int offset = width / 5;
 
-		g.fillOval(position.x + (width / 2) - offset, position.y - 3, width, 25);
+		g.fillOval(position.x - offset, position.y - 3, width, 25);
 
 	}
 
@@ -228,7 +228,7 @@ public final class SlickArmy implements Observer {
 		g.fillRect(position.x, position.y, 30, 30);
 
 		final String number = Integer.toString(numberOfCurrent);
-		final int x = position.x + 15 - (expandedFont.getWidth(number)/ 2);
+		final int x = position.x + 15 - (expandedFont.getWidth(number) / 2);
 
 		expandedFont.draw(g, number, x, position.y);
 

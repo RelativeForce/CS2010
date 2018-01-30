@@ -10,6 +10,8 @@ import org.junit.Test;
 import peril.model.ModelColor;
 import peril.model.board.ModelCountry;
 
+import peril.Player;
+
 /**
  * This class tests {@link SlickCountry}.
  * 
@@ -37,6 +39,17 @@ public class Test_Country {
 	public void setUp() throws Exception {
 		testName = "France";
 		testCountry = new ModelCountry(testName, new ModelColor(0, 0, 0));
+
+	}
+
+	@Test
+	public void test_ruler() {
+
+		Player newRuler = Player.FOUR;
+
+		testCountry.setRuler(newRuler);
+
+		assertTrue(testCountry.getRuler().equals(newRuler));
 
 	}
 

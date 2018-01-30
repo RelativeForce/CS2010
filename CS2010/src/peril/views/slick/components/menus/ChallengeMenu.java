@@ -21,7 +21,7 @@ public final class ChallengeMenu extends Menu {
 	/**
 	 * The string name of the {@link ChallengeMenu}.
 	 */
-	private static final String NAME = "Challenge Menu";
+	public static final String NAME = "Challenge Menu";
 
 	/**
 	 * The {@link TextField} that shows the challenges on screen.

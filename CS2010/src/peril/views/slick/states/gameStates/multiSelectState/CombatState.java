@@ -17,7 +17,6 @@ import peril.views.slick.Button;
 import peril.views.slick.Point;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
-import peril.views.slick.components.menus.WarMenu;
 import peril.views.slick.states.gameStates.CoreGameState;
 
 /**
@@ -36,11 +35,6 @@ public final class CombatState extends MultiSelectState {
 	private static final String STATE_NAME = "Combat";
 
 	/**
-	 * The {@link WarMenu} that displays the combat of the game.
-	 */
-	private final WarMenu warMenu;
-
-	/**
 	 * Holds the instance of a attack {@link Button}.
 	 */
 	private final String attackButton;
@@ -56,7 +50,6 @@ public final class CombatState extends MultiSelectState {
 	public CombatState(GameController game, int id, Attack model) {
 		super(game, STATE_NAME, id, model);
 		this.attackButton = "attack";
-		this.warMenu = slick.menus.warMenu;
 
 		model.addObserver(this);
 
@@ -69,8 +62,8 @@ public final class CombatState extends MultiSelectState {
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
 		super.leave(container, game);
 		getButton(attackButton).hide();
-		slick.menus.pauseMenu.hideSaveOption();
-		warMenu.clear();
+		menus.hideSaveOption();
+		menus.clearMenus();
 	}
 
 	/**
@@ -93,11 +86,7 @@ public final class CombatState extends MultiSelectState {
 		super.drawPlayerName(g);
 		super.drawPopups(g);
 
-		this.warMenu.draw(g);
-
-		super.drawHelp(g);
-		super.drawPauseMenu(g);
-		super.drawChallengeMenu(g);
+		menus.draw(g);
 
 		g.destroy();
 	}
@@ -112,11 +101,6 @@ public final class CombatState extends MultiSelectState {
 		if (game.getCurrentModelPlayer().ai != AI.USER && !game.getCurrentModelPlayer().ai.attack(delta)) {
 			slick.enterState(slick.states.movement);
 		}
-
-		// Hide the war menu if the pause menu is over it.
-		if (slick.menus.pauseMenu.isVisible()) {
-			warMenu.hide();
-		}
 	}
 
 	/**
@@ -125,18 +109,8 @@ public final class CombatState extends MultiSelectState {
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
-		slick.menus.pauseMenu.showSaveOption();
+		menus.showSaveOption();
 		getButton(attackButton).hide();
-	}
-
-	/**
-	 * Processes a click at a specified {@link Point} on this {@link CombatState}.
-	 */
-	@Override
-	public void parseClick(int button, Point click) {
-		if (!clickedWarMenu(click)) {
-			super.parseClick(button, click);
-		}
 	}
 
 	/**
@@ -154,25 +128,6 @@ public final class CombatState extends MultiSelectState {
 	protected void panElements(Point panVector) {
 		Point current = getButton(attackButton).getPosition();
 		getButton(attackButton).setPosition(new Point(current.x + panVector.x, current.y + panVector.y));
-	}
-
-	/**
-	 * Parses a click on the {@link WarMenu} and retrieves whether the
-	 * {@link WarMenu} was clicked or not.
-	 * 
-	 * @param click
-	 *            {@link Point}
-	 * @return <code>boolean</code>
-	 */
-	private boolean clickedWarMenu(Point click) {
-		if (warMenu.isVisible()) {
-			if (warMenu.isClicked(click)) {
-				warMenu.parseClick(click);
-				return true;
-			}
-			warMenu.hide();
-		}
-		return false;
 	}
 
 	/**

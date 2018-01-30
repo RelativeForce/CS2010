@@ -30,9 +30,8 @@ import peril.views.slick.board.SlickBoard;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.components.lists.ToolTipList;
-import peril.views.slick.components.menus.ChallengeMenu;
-import peril.views.slick.components.menus.HelpMenu;
 import peril.views.slick.components.menus.PauseMenu;
+import peril.views.slick.helpers.MenuHelper;
 import peril.views.slick.states.InteractiveState;
 
 /**
@@ -48,17 +47,9 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 */
 	private final ToolTipList toolTipList;
 
-	/**
-	 * Displays the challenges to the user.
-	 */
-	private final ChallengeMenu challengeMenu;
-
 	public final ModelState model;
-
-	/**
-	 * The {@link PauseMenu} for this {@link CoreGameState}.
-	 */
-	private final PauseMenu pauseMenu;
+	
+	protected final MenuHelper menus;
 
 	/**
 	 * The {@link Music} that is played in the background of the
@@ -91,10 +82,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 		// The id of the state is used as the id for the help page
 		super(game, stateName, id, id);
-
+		this.menus = slick.menus;
 		this.model = model;
-		this.pauseMenu = slick.menus.pauseMenu;
-		this.challengeMenu = slick.menus.challengeMenu;
 		this.panDirection = null;
 		this.toolTipList = new ToolTipList(new Point(210, 60));
 		this.backgroundMusic = new ArrayList<>();
@@ -109,7 +98,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 
-		slick.menus.helpMenu.changePage(getID());
+
+		menus.changeHelpPage(getID());
 
 		// If the music has been turned off. Turn it on and play the current states
 		// music.
@@ -144,15 +134,9 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		super.update(gc, sbg, delta);
 		toolTipList.elapseTime(delta);
 
-		if (panDirection != null && !pauseMenu.isVisible()) {
+		if (panDirection != null && !menus.menuVisible()) {
 			pan(panDirection);
 		}
-
-		// Hide the about widow if the pause menu is visible
-		if (pauseMenu.isVisible()) {
-			slick.toggleHelpMenu(false);
-		}
-
 	}
 
 	/**
@@ -184,8 +168,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 		// Stop the state from panning after it has been exited.
 		panDirection = null;
-
-		pauseMenu.hide();
 	}
 
 	/**
@@ -212,8 +194,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		case Input.KEY_RIGHT:
 			slick.modelView.getVisual(game.getModelBoard()).move(new Point(-increment, 0), width, height);
 			break;
-		case Input.KEY_ENTER:
-			pauseMenu.toggleVisibility();
+		case Input.KEY_ESCAPE:
+			menus.show(PauseMenu.NAME);
 			break;
 		case Input.KEY_E:
 			expandSelected();
@@ -235,7 +217,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	public void parseClick(int button, Point click) {
 
 		// If the player hasn't clicked the pause menu
-		if (!clickedChallenges(click) && !clickPauseMenu(click) && !clickedHelp(click)) {
+		if (!menus.clicked(click)) {
 
 			// If the player hasn't clicked a UI Button in the state, they must've clicked
 			// board.
@@ -385,16 +367,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	}
 
 	/**
-	 * Draws the {@link ChallengeMenu} on screen.
-	 * 
-	 * @param g
-	 *            {@link Graphics}
-	 */
-	protected void drawChallengeMenu(Graphics g) {
-		challengeMenu.draw(g);
-	}
-
-	/**
 	 * Simulates a click at a {@link Point} on the {@link SlickBoard} and highlights
 	 * the {@link SlickCountry} that clicked.
 	 * 
@@ -437,7 +409,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	protected void drawAllLinks(Graphics g) {
 
 		// If the links are toggled off do nothing
-		if (!slick.menus.pauseMenu.showAllLinks()) {
+		if (!menus.linksVisible()) {
 			return;
 		}
 
@@ -483,16 +455,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 */
 	protected void drawPopups(Graphics g) {
 		toolTipList.draw(g);
-	}
-
-	/**
-	 * Draws the {@link PauseMenu} on screen.
-	 * 
-	 * @param g
-	 *            {@link Graphics}
-	 */
-	protected void drawPauseMenu(Graphics g) {
-		pauseMenu.draw(g);
 	}
 
 	/**
@@ -554,78 +516,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 			army.draw(g, getArmyPosition(country), ruler);
 
 		}));
-	}
-
-	/**
-	 * Performs a mouse click at a specified {@link Point} position on the
-	 * {@link PauseMenu}.
-	 * 
-	 * @param click
-	 *            {@link Point}
-	 * @return Whether or not the {@link PauseMenu} was clicked or not.
-	 */
-	private boolean clickPauseMenu(Point click) {
-
-		// If the pause menu is invisible then it cannot be clicked.
-		if (pauseMenu.isVisible()) {
-
-			// If the pause menu was clicked then parse the click.
-			if (pauseMenu.isClicked(click)) {
-				pauseMenu.parseClick(click);
-				return true;
-			}
-			pauseMenu.hide();
-		}
-		return false;
-	}
-
-	/**
-	 * Retrieves whether or not the {@link HelpMenu} window was clicked or not.
-	 * 
-	 * @param click
-	 *            {@link Point}
-	 * @return
-	 */
-	private boolean clickedHelp(Point click) {
-
-		// If the pause menu is invisible then it cannot be clicked.
-		if (slick.menus.helpMenu.isVisible()) {
-
-			// If the pause menu was clicked then parse the click.
-			if (slick.menus.helpMenu.isClicked(click)) {
-				slick.menus.helpMenu.parseClick(click);
-				return true;
-			}
-
-			slick.menus.helpMenu.hide();
-		}
-
-		return false;
-	}
-
-	/**
-	 * Retrieves whether or not the {@link HelpMenu} window was clicked or not.
-	 * 
-	 * @param click
-	 *            {@link Point}
-	 * @return
-	 */
-	private boolean clickedChallenges(Point click) {
-
-		// If the pause menu is invisible then it cannot be clicked.
-		if (slick.menus.challengeMenu.isVisible()) {
-
-			// If the pause menu was clicked then parse the click.
-			if (slick.menus.challengeMenu.isClicked(click)) {
-				slick.menus.challengeMenu.parseClick(click);
-				return true;
-			}
-
-			slick.menus.challengeMenu.hide();
-		}
-
-		return false;
-	}
+	}	
 
 	/**
 	 * Pans the {@link Game#board} according to the

@@ -32,6 +32,11 @@ public class HelpMenu extends Menu {
 	 * page the current page will not link to anything.
 	 */
 	public static final int NULL_PAGE = -1;
+	
+	/**
+	 * The uniquely identifying string name of the {@link HelpMenu}.
+	 */
+	public static final String NAME = "Help";
 
 	/**
 	 * The width of the {@link HelpMenu}
@@ -42,11 +47,6 @@ public class HelpMenu extends Menu {
 	 * The height of the {@link HelpMenu}.
 	 */
 	private static final int HEIGHT = 400;
-
-	/**
-	 * The uniquely identifying string name of the {@link HelpMenu}.
-	 */
-	private static final String NAME = "Help";
 
 	/**
 	 * The padding in the horizontal direction between the edge of the

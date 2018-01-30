@@ -35,7 +35,7 @@ public class WarMenu extends Menu {
 	/**
 	 * The name of this {@link Menu}.
 	 */
-	private final static String NAME = "War Menu";
+	public final static String NAME = "War Menu";
 
 	/**
 	 * The {@link Dice} displaying dice interactions on screen.

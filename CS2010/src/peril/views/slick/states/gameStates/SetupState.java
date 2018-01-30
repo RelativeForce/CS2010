@@ -58,9 +58,7 @@ public final class SetupState extends CoreGameState {
 		super.drawImages(g);
 		super.drawButtons(g);
 		super.drawPopups(g);
-		super.drawHelp(g);
-		super.drawPauseMenu(g);
-		super.drawChallengeMenu(g);
+		menus.draw(g);
 
 		g.destroy();
 

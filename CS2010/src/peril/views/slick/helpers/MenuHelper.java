@@ -386,4 +386,8 @@ public final class MenuHelper {
 		warMenu.attack();
 	}
 
+	public boolean isPaused() {
+		return ((PauseMenu) menus.get(PauseMenu.NAME)).isVisible();
+	}
+
 }

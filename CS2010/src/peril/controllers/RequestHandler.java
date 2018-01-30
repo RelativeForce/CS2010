@@ -361,10 +361,12 @@ public final class RequestHandler implements AIController, GameController {
 	public void confirmMovement() {
 
 		// Move to the next player
-		game.players.nextPlayer();
+		nextPlayer();
 
 		// Enter the reinforce state
 		game.view.enterReinforce();
+		
+		System.gc();
 	}
 
 	@Override
@@ -381,7 +383,7 @@ public final class RequestHandler implements AIController, GameController {
 	@Override
 	public void processAI(int delta) {
 
-		if (getCurrentModelPlayer().ai != AI.USER) {
+		if (getCurrentModelPlayer().ai != AI.USER && !game.view.isPaused()) {
 			
 			final View view = game.view;
 			final ModelStateHelper states = game.states;

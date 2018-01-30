@@ -41,6 +41,8 @@ public interface View {
 	void toggleWarMenu(boolean state);
 
 	void save();
+	
+	boolean isPaused();
 
 	void toggleHelpMenu(boolean state);
 	

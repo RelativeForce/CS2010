@@ -11,6 +11,7 @@ import peril.model.board.ModelArmy;
 import peril.model.board.ModelUnit;
 import peril.views.slick.Font;
 import peril.views.slick.Point;
+import peril.views.slick.SlickModelView;
 
 /**
  * The slick view for {@link ModelArmy}. This observes the {@link ModelArmy} and
@@ -44,17 +45,20 @@ public final class SlickArmy implements Observer {
 	 */
 	private final Font expandedFont;
 
+	private final SlickModelView view;
+
 	/**
 	 * Constructs a new {@link SlickArmy} using an {@link ModelArmy}.
 	 * 
 	 * @param model
 	 */
-	public SlickArmy(ModelArmy model) {
+	public SlickArmy(ModelArmy model, SlickModelView view) {
 
 		this.model = model;
 		this.expanded = false;
 		this.collapsedFont = new Font("Arial", Color.white, 17);
 		this.expandedFont = new Font("Arial", Color.black, 25);
+		this.view = view;
 
 		model.addObserver(this);
 	}
@@ -225,7 +229,8 @@ public final class SlickArmy implements Observer {
 		final int numberOfCurrent = model.getUnit(unit);
 
 		g.setColor(Color.lightGray);
-		g.fillRect(position.x, position.y, 30, 30);
+
+		g.drawImage(view.getVisual(unit).getImage(), position.x, position.y);
 
 		final String number = Integer.toString(numberOfCurrent);
 		final int x = position.x + 15 - (expandedFont.getWidth(number) / 2);

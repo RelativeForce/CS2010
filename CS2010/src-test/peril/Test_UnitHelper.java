@@ -24,9 +24,9 @@ public class Test_UnitHelper {
 	@Test
 	public void test() {
 
-		ModelUnit soldier = new ModelUnit("soldier", 1);
-		ModelUnit car = new ModelUnit("car", 3);
-		ModelUnit tank = new ModelUnit("tank", 5);
+		ModelUnit soldier = new ModelUnit("soldier", 1, "");
+		ModelUnit car = new ModelUnit("car", 3, "");
+		ModelUnit tank = new ModelUnit("tank", 5, "");
 
 		helper.clear();
 		helper.addUnit(soldier);

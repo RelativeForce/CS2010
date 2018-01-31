@@ -108,7 +108,7 @@ public class SlickGame extends StateBasedGame implements View {
 	 */
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
-
+		
 		states.init(this);
 
 		modelView.init(game);
@@ -506,6 +506,12 @@ public class SlickGame extends StateBasedGame implements View {
 	@Override
 	public void forEachLoser(Consumer<ModelPlayer> task) {
 		states.end.forEachLoser(task);
+	}
+
+	
+	@Override
+	public boolean isPaused() {
+		return menus.isPaused();
 	}
 
 }

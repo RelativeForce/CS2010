@@ -10,6 +10,7 @@ import peril.controllers.api.Board;
 import peril.controllers.api.Country;
 import peril.controllers.api.Player;
 import peril.helpers.ModelStateHelper;
+import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelCountry;
@@ -140,7 +141,7 @@ public final class RequestHandler implements AIController, GameController {
 			throw new IllegalArgumentException("The parmameter 'A' country is not a valid country.");
 		}
 
-		ModelCountry checkedA = (ModelCountry) a;
+		final ModelCountry checkedA = (ModelCountry) a;
 
 		// Ensure that the parameter Country is a valid country, This should never be
 		// false.
@@ -148,7 +149,7 @@ public final class RequestHandler implements AIController, GameController {
 			throw new IllegalArgumentException("The parmameter 'B' country is not a valid country.");
 		}
 
-		ModelCountry checkedB = (ModelCountry) b;
+		final ModelCountry checkedB = (ModelCountry) b;
 
 		return !game.states.movement.getPathBetween(checkedA, checkedB).isEmpty();
 	}
@@ -213,6 +214,7 @@ public final class RequestHandler implements AIController, GameController {
 		game.players.emptyPlaying();
 		game.setRoundNumber(0);
 		game.players.challenges.clear();
+		UnitHelper.getInstance().clear();
 	}
 
 	@Override
@@ -359,10 +361,12 @@ public final class RequestHandler implements AIController, GameController {
 	public void confirmMovement() {
 
 		// Move to the next player
-		game.players.nextPlayer();
+		nextPlayer();
 
 		// Enter the reinforce state
 		game.view.enterReinforce();
+		
+		System.gc();
 	}
 
 	@Override
@@ -379,7 +383,7 @@ public final class RequestHandler implements AIController, GameController {
 	@Override
 	public void processAI(int delta) {
 
-		if (getCurrentModelPlayer().ai != AI.USER) {
+		if (getCurrentModelPlayer().ai != AI.USER && !game.view.isPaused()) {
 			
 			final View view = game.view;
 			final ModelStateHelper states = game.states;

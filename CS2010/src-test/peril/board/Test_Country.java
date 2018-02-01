@@ -9,7 +9,8 @@ import org.junit.Test;
 
 import peril.model.ModelColor;
 import peril.model.board.ModelCountry;
-import peril.model.board.ModelLink;
+import peril.model.board.links.ModelLink;
+import peril.model.board.links.ModelLinkState;
 
 /**
  * This class tests {@link SlickCountry}.
@@ -58,7 +59,7 @@ public class Test_Country {
 		ModelCountry newNeighbour = new ModelCountry(testName, new ModelColor(0, 0, 0));
 
 		// Adds a country to the list of neighbours in the testCountry.
-		testCountry.addNeighbour(newNeighbour, new ModelLink(false));
+		testCountry.addNeighbour(newNeighbour, new ModelLink(ModelLinkState.OPEN));
 
 		// Stores the current neighbours of the testCountry in resultList.
 		Set<ModelCountry> resultList = testCountry.getNeighbours();

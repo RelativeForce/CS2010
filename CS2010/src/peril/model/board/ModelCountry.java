@@ -12,6 +12,7 @@ import peril.controllers.api.Country;
 import peril.controllers.api.Player;
 import peril.model.ModelColor;
 import peril.model.ModelPlayer;
+import peril.model.board.links.ModelLink;
 
 /**
  * Encapsulates the behaviour of a Country. Countries:
@@ -76,7 +77,7 @@ public final class ModelCountry extends Observable implements Country, Observer 
 		this.army = new ModelArmy(1);
 		this.name = name;
 		this.color = color;
-		
+
 		this.army.addObserver(this);
 
 	}
@@ -127,11 +128,11 @@ public final class ModelCountry extends Observable implements Country, Observer 
 	public Set<ModelCountry> getNeighbours() {
 		return neighbours.keySet();
 	}
-	
+
 	public ModelColor getColor() {
 		return color;
 	}
-	
+
 	/**
 	 * Checks if the {@link ModelCountry} is a neighbour of this
 	 * {@link ModelCountry}.
@@ -149,6 +150,8 @@ public final class ModelCountry extends Observable implements Country, Observer 
 	 * 
 	 * @param neighbour
 	 *            {@link ModelCountry}
+	 * @param link
+	 *            The {@link ModelLink} between the two {@link ModelCountry}s.
 	 */
 	public void addNeighbour(ModelCountry neighbour, ModelLink link) {
 
@@ -157,9 +160,23 @@ public final class ModelCountry extends Observable implements Country, Observer 
 		}
 
 		neighbours.put(neighbour, link);
+		
+		link.addObserver(this);
 
 		setChanged();
 		notifyObservers(new Update("neighbours", neighbours));
+	}
+
+	/**
+	 * Retrieves the {@link ModelLink} between this {@link ModelCountry} and the
+	 * specified {@link ModelCountry}.
+	 * 
+	 * @param country
+	 *            {@link ModelCountry}
+	 * @return {@link ModelLink}
+	 */
+	public ModelLink getLinkTo(ModelCountry country) {
+		return neighbours.get(country);
 	}
 
 	/**
@@ -196,10 +213,9 @@ public final class ModelCountry extends Observable implements Country, Observer 
 		return ruler;
 	}
 
-	
 	@Override
 	public void update(Observable o, Object arg) {
-		if(o instanceof ModelArmy) {
+		if (o instanceof ModelArmy) {
 			setChanged();
 			notifyObservers();
 		}

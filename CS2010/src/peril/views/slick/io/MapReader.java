@@ -20,22 +20,13 @@ import peril.io.FileParser;
 import peril.io.SaveFile;
 import peril.model.ModelColor;
 import peril.model.ModelPlayer;
-import peril.model.board.ModelBoard;
-import peril.model.board.ModelContinent;
-import peril.model.board.ModelCountry;
-import peril.model.board.ModelHazard;
-import peril.model.board.ModelLink;
-import peril.model.board.ModelUnit;
+import peril.model.board.*;
+import peril.model.board.links.*;
 import peril.views.slick.Point;
 import peril.views.slick.Region;
 import peril.views.slick.SlickGame;
 import peril.views.slick.SlickModelView;
-import peril.views.slick.board.SlickArmy;
-import peril.views.slick.board.SlickBoard;
-import peril.views.slick.board.SlickContinent;
-import peril.views.slick.board.SlickCountry;
-import peril.views.slick.board.SlickPlayer;
-import peril.views.slick.board.SlickUnit;
+import peril.views.slick.board.*;
 import peril.views.slick.states.InteractiveState;
 
 /**
@@ -388,8 +379,8 @@ public final class MapReader extends FileParser {
 		ModelCountry country1 = countries.get(details[1]).model;
 		ModelCountry country2 = countries.get(details[2]).model;
 
-		country1.addNeighbour(country2, new ModelLink(false));
-		country2.addNeighbour(country1, new ModelLink(false));
+		country1.addNeighbour(country2, new ModelLink(ModelLinkState.OPEN));
+		country2.addNeighbour(country1, new ModelLink(ModelLinkState.OPEN));
 
 	}
 

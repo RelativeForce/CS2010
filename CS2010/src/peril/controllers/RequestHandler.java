@@ -371,7 +371,7 @@ public final class RequestHandler implements AIController, GameController {
 
 	@Override
 	public void autoDistributeCountries() {
-		game.autoDistributeCountries();
+		getSetup().autoDistributeCountries(getModelBoard(), game.players);
 	}
 
 	@Override

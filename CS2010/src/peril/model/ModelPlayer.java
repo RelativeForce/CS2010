@@ -42,6 +42,11 @@ public final class ModelPlayer extends Observable implements Player {
 	public final AI ai;
 
 	/**
+	 * The amount of points the {@link ModelPlayer} will have.
+	 */
+	private int points;
+	
+	/**
 	 * The number of the {@link ModelCountry}s the {@link ModelPlayer} owns.
 	 */
 	private int countries;

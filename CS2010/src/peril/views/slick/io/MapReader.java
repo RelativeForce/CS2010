@@ -293,7 +293,7 @@ public final class MapReader extends FileParser {
 		// Initialise the new country.
 		SlickCountry country = new SlickCountry(region, new Point(xOffset, yOffset), model, view);
 
-		SlickArmy army = new SlickArmy(country.model.getArmy(), view);
+		SlickArmy army = new SlickArmy(country.model.getArmy());
 
 		// Set the army size
 		country.model.getArmy().setStrength(armySize);

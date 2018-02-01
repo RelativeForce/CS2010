@@ -23,12 +23,10 @@ import peril.Game;
 import peril.Update;
 import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
+import peril.model.board.ModelUnit;
 import peril.model.states.ModelState;
 import peril.views.slick.Point;
-import peril.views.slick.board.SlickArmy;
-import peril.views.slick.board.SlickBoard;
-import peril.views.slick.board.SlickCountry;
-import peril.views.slick.board.SlickPlayer;
+import peril.views.slick.board.*;
 import peril.views.slick.components.lists.ToolTipList;
 import peril.views.slick.components.menus.PauseMenu;
 import peril.views.slick.helpers.MenuHelper;
@@ -48,7 +46,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	private final ToolTipList toolTipList;
 
 	public final ModelState model;
-	
+
 	protected final MenuHelper menus;
 
 	/**
@@ -97,7 +95,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 */
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
-
 
 		menus.changeHelpPage(getID());
 
@@ -163,7 +160,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		toolTipList.clear();
 
 		collapseSelected();
-		
+
 		model.deselectAll();
 
 		// Stop the state from panning after it has been exited.
@@ -217,16 +214,51 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	public void parseClick(int button, Point click) {
 
 		// If the player hasn't clicked the pause menu
-		if (!menus.clicked(click)) {
+		if (!menus.clicked(click))
 
 			// If the player hasn't clicked a UI Button in the state, they must've clicked
 			// board.
 			if (!super.clickedButton(click)) {
-				clickBoard(button, click);
-			} else {
+
+				// holds whether a unit was clicked.
+				boolean unitClicked = false;
+
+				for (final SlickCountry country : selected) {
+
+					final SlickArmy army = slick.modelView.getVisual(country.model.getArmy());
+
+					// If the army is expanded
+					if (army.isExpanded()) {
+
+						// Iterate over each unit in the army
+						for (ModelUnit unit : army.model) {
+
+							// Holds the slick ersion of the current unit.
+							final SlickUnit slickUnit = slick.modelView.getVisual(unit);
+
+							// If the slick unit was clicked
+							if (slickUnit.isClicked(click)) {
+
+								// Select the unit then flag the fact a unit has been clicked.
+								army.model.select(unit);
+								unitClicked = true;
+								break;
+							}
+						}
+
+						// If a unit has been clicked break out of the slected loop.
+						if (unitClicked) {
+							break;
+						}
+					}
+				}
+
+				// If there was no unit clicked.
+				if (!unitClicked) {
+					clickBoard(button, click);
+				}
 
 			}
-		}
 
 	}
 
@@ -513,10 +545,10 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 			final SlickPlayer ruler = slick.modelView.getVisual(country.model.getRuler());
 
-			army.draw(g, getArmyPosition(country), ruler);
+			army.draw(g, getArmyPosition(country), ruler, slick.modelView);
 
 		}));
-	}	
+	}
 
 	/**
 	 * Pans the {@link Game#board} according to the
@@ -597,8 +629,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	public void update(Observable o, Object arg) {
 
 		// If the model state was updated
-		if(o instanceof ModelState) {
-			
+		if (o instanceof ModelState) {
+
 			if (!(arg instanceof Update)) {
 				throw new IllegalArgumentException("The property must be an update.");
 			}

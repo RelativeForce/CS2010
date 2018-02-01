@@ -1,6 +1,7 @@
 package peril.model.board;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Observable;
 import peril.Update;
@@ -13,7 +14,7 @@ import peril.helpers.UnitHelper;
  * @author Joshua_Eddy
  *
  */
-public final class ModelArmy extends Observable {
+public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 
 	/**
 	 * The size of the army.
@@ -24,6 +25,11 @@ public final class ModelArmy extends Observable {
 	 * Contains the {@link ModelUnit}s that this {@link ModelArmy} consists of.
 	 */
 	private final Map<ModelUnit, Integer> units;
+
+	/**
+	 * Holds the currently selected {@link ModelUnit}.
+	 */
+	private ModelUnit selected;
 
 	/**
 	 * Constructs a new {@link ModelArmy} with strength of 1.
@@ -40,6 +46,7 @@ public final class ModelArmy extends Observable {
 	 */
 	public ModelArmy(int strength) {
 		units = new HashMap<>();
+		selected = null;
 		setStrength(strength);
 		computeUnits();
 	}
@@ -84,6 +91,43 @@ public final class ModelArmy extends Observable {
 
 		setChanged();
 		notifyObservers(new Update("size", strength));
+	}
+
+	/**
+	 * Retrieves the currently selected {@link ModelUnit}.
+	 * 
+	 * @return {@link ModelUnit}
+	 */
+	public ModelUnit getSelected() {
+		return selected;
+	}
+
+	/**
+	 * Selects a specified unit from this {@link ModelArmy}.
+	 * 
+	 * @param unit
+	 *            {@link ModelUnit}
+	 * @return Returns whether the {@link ModelUnit} was selected or not.
+	 */
+	public boolean select(ModelUnit unit) {
+
+		// If the unit is in this army then it canbe selected.
+		if (units.containsKey(unit)) {
+
+			setSelected(unit);
+			return true;
+
+		}
+
+		setSelected(null);
+		return false;
+	}
+
+	/**
+	 * De-selected the currently selected unit.
+	 */
+	public void deselect() {
+		select(null);
 	}
 
 	/**
@@ -149,6 +193,29 @@ public final class ModelArmy extends Observable {
 	}
 
 	/**
+	 * Retreieves the {@link Iterator} for this {@link ModelArmy} of all the
+	 * {@link ModelUnit}s inside.
+	 */
+	@Override
+	public Iterator<ModelUnit> iterator() {
+		return units.keySet().iterator();
+	}
+
+	/**
+	 * Sets the selected {@link ModelUnit}.
+	 * 
+	 * @param unit
+	 *            {@link ModelUnit}
+	 */
+	private void setSelected(ModelUnit unit) {
+
+		selected = unit;
+
+		setChanged();
+		notifyObservers(new Update("selected", selected));
+	}
+
+	/**
 	 * Determines the units that this {@link ModelArmy} can contain.
 	 */
 	private void computeUnits() {
@@ -183,4 +250,5 @@ public final class ModelArmy extends Observable {
 		}
 
 	}
+
 }

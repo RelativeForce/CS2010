@@ -103,7 +103,23 @@ public final class ModelLink extends Observable {
 		setChanged();
 		notifyObservers();
 	}
-	
+
+	/**
+	 * Retrieves whether or not a {@link ModelUnit} can be transfered along this
+	 * {@link ModelLinkState} between the two {@link ModelCountry}s.
+	 * 
+	 * @param unit
+	 *            {@link ModelUnit}
+	 * @param origin
+	 *            {@link ModelCountry}
+	 * @param destination
+	 *            {@link ModelCountry}
+	 * @return boolean
+	 */
+	public boolean canTransfer(ModelUnit unit, ModelCountry origin, ModelCountry destination) {
+		return current.canTransfer(unit, origin, destination);
+	}
+
 	/**
 	 * Transfers a unit between two countries.
 	 * 

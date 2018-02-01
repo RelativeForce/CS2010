@@ -14,6 +14,7 @@ import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelCountry;
+import peril.model.board.ModelUnit;
 import peril.model.states.Attack;
 import peril.model.states.Fortify;
 import peril.model.states.Reinforce;
@@ -119,13 +120,23 @@ public final class RequestHandler implements AIController, GameController {
 		if (!game.view.isCurrentState(game.states.movement)) {
 			throw new IllegalStateException("You can only attack during the fortify state.");
 		}
+		
+		final ModelCountry primary = game.states.movement.getPrimary();
+		final ModelCountry secondary = game.states.movement.getSecondary();
 
 		// Check both countries are selected.
-		if (game.states.movement.getPrimary() == null || game.states.movement.getSecondary() == null) {
+		if (primary == null || secondary == null) {
 			throw new IllegalStateException("There is NOT two countries selected. Select two valid countries.");
 		}
+		
+		ModelUnit unit = UnitHelper.getInstance().getWeakest();
+		
+		// If there is a selected unit fortify the country with that.
+		if(primary.getArmy().getSelected() != null) {
+			unit = primary.getArmy().getSelected();
+		}
 
-		game.states.movement.fortify(UnitHelper.getInstance().getWeakest());
+		game.states.movement.fortify(unit);
 
 	}
 

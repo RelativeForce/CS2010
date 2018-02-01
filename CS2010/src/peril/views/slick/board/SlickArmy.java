@@ -7,7 +7,6 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import peril.Update;
-import peril.helpers.UnitHelper;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelUnit;
 import peril.views.slick.Font;
@@ -27,6 +26,11 @@ public final class SlickArmy implements Observer {
 	 * The {@link ModelArmy} this {@link SlickArmy} will observe and display.
 	 */
 	public final ModelArmy model;
+
+	/**
+	 * The padding between {@link SlickUnit}s in the expanded view.
+	 */
+	private static final int PADDING = 50;
 
 	/**
 	 * Whether of not this {@link SlickArmy} will be displayed in its expanded view
@@ -116,6 +120,46 @@ public final class SlickArmy implements Observer {
 	}
 
 	/**
+	 * Processes a click on this {@link SlickArmy}. If a {@link SlickUnit} in this
+	 * army is clicked it will be selected.
+	 * 
+	 * @param click
+	 *            {@link Point} position of the click.
+	 * @param armyPosition
+	 *            {@link Point} position of this {@link SlickArmy}.
+	 * @param view
+	 *            The {@link SlickModelView} that will allow the retrieval of the
+	 *            {@link SlickUnit}s
+	 * @return Whether or not a {@link SlickUnit} was selected or not.
+	 */
+	public boolean isClicked(Point click, Point armyPosition, SlickModelView view) {
+
+		// If the army is expanded
+		if (isExpanded()) {
+
+			// Reposition units so the click detection works
+			rePositionUnits(armyPosition, view);
+
+			// Iterate over each unit in the army
+			for (ModelUnit unit : model) {
+
+				// Holds the slick version of the current unit.
+				final SlickUnit slickUnit = view.getVisual(unit);
+
+				// If the slick unit was clicked
+				if (slickUnit.isClicked(click)) {
+
+					// Select the unit then flag the fact a unit has been clicked.
+					model.select(unit);
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Draws this {@link SlickArmy} at a position on screen.
 	 * 
 	 * @param g
@@ -166,42 +210,58 @@ public final class SlickArmy implements Observer {
 	 */
 	private void drawExpanded(Graphics g, Point position, SlickPlayer ruler, SlickModelView view) {
 
-		final UnitHelper units = UnitHelper.getInstance();
-		final int padding = 50;
 		final SlickUnit slickSelected = view.getVisual(selected);
 
-		int x = position.x;
+		rePositionUnits(position, view);
+
+		int x = position.x - ((model.getUnitType() - 1) * PADDING) / 2;
 		int y = position.y;
 
-		ModelUnit current = units.getStrongest();
+		for (ModelUnit current : model) {
 
-		x -= ((model.getUnitType() - 1) * padding) / 2;
+			final SlickUnit unit = view.getVisual(current);
 
-		// Iterate until there are not more types of unit.
-		while (current != null) {
+			if (view.getVisual(current).equals(slickSelected)) {
 
-			// If the unit exists in the model army draw it
-			if (model.hasUnit(current)) {
+				final int width = unit.getWidth();
+				final int height = unit.getHeight();
+				final int xPadding = width / 20;
+				final int yPadding = height / 20;
 
-				final SlickUnit unit = view.getVisual(current);
-
-				if (view.getVisual(current).equals(slickSelected)) {
-
-					final int width = unit.getWidth();
-					final int height = unit.getHeight();
-					final int xPadding = width / 20;
-					final int yPadding = height / 20;
-
-					g.setColor(Color.cyan);
-					g.fillRect(x - xPadding, y - yPadding, width + (2 * xPadding), height + (2 * yPadding));
-				}
-
-				drawUnit(g, new Point(x, y), unit);
-
-				x += padding;
+				g.setColor(Color.cyan);
+				g.fillRect(x - xPadding, y - yPadding, width + (2 * xPadding), height + (2 * yPadding));
 			}
 
-			current = units.getUnitBelow(current);
+			drawUnit(g, unit);
+
+			x += PADDING;
+
+		}
+	}
+
+	/**
+	 * Repositions the {@link SlickUnit}s that make up this {@link SlickArmy} so
+	 * that they are correctly drawn on screen.
+	 * 
+	 * @param position
+	 *            The {@link Point} position of this {@link SlickArmy}.
+	 * @param view
+	 *            The {@link SlickModelView} that will allow the retrieval of the
+	 *            {@link SlickUnit}s
+	 */
+	private void rePositionUnits(Point position, SlickModelView view) {
+
+		int x = position.x - ((model.getUnitType() - 1) * PADDING) / 2;
+		int y = position.y;
+
+		for (ModelUnit current : model) {
+
+			final SlickUnit unit = view.getVisual(current);
+
+			unit.setPosition(new Point(x, y));
+
+			x += PADDING;
+
 		}
 
 	}
@@ -271,13 +331,12 @@ public final class SlickArmy implements Observer {
 	 * @param view
 	 * 
 	 */
-	private void drawUnit(Graphics g, Point position, SlickUnit unit) {
+	private void drawUnit(Graphics g, SlickUnit unit) {
 
 		final int numberOfCurrent = model.getUnit(unit.model);
+		final Point position = unit.getPosition();
 
 		g.setColor(Color.lightGray);
-		
-		unit.setPosition(position);
 
 		g.drawImage(unit.getImage(), position.x, position.y);
 

@@ -23,7 +23,6 @@ import peril.Game;
 import peril.Update;
 import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
-import peril.model.board.ModelUnit;
 import peril.model.states.ModelState;
 import peril.views.slick.Point;
 import peril.views.slick.board.*;
@@ -227,30 +226,10 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 					final SlickArmy army = slick.modelView.getVisual(country.model.getArmy());
 
-					// If the army is expanded
-					if (army.isExpanded()) {
-
-						// Iterate over each unit in the army
-						for (ModelUnit unit : army.model) {
-
-							// Holds the slick ersion of the current unit.
-							final SlickUnit slickUnit = slick.modelView.getVisual(unit);
-
-							// If the slick unit was clicked
-							if (slickUnit.isClicked(click)) {
-
-								// Select the unit then flag the fact a unit has been clicked.
-								army.model.select(unit);
-								unitClicked = true;
-								break;
-							}
-						}
-
-						// If a unit has been clicked break out of the slected loop.
-						if (unitClicked) {
-							break;
-						}
+					if(army.isClicked(click, getArmyPosition(country), slick.modelView)) {
+						unitClicked = true;
 					}
+					
 				}
 
 				// If there was no unit clicked.

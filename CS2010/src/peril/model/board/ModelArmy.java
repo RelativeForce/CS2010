@@ -127,7 +127,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 	 * De-selected the currently selected unit.
 	 */
 	public void deselect() {
-		select(null);
+		setSelected(null);
 	}
 
 	/**
@@ -219,6 +219,9 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 	 * Determines the units that this {@link ModelArmy} can contain.
 	 */
 	private void computeUnits() {
+
+		// De-select the currently selected unit.
+		deselect();
 
 		// Clear the current list of units.
 		if (!units.isEmpty())

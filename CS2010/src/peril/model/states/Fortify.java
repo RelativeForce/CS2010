@@ -6,7 +6,6 @@ import java.util.Stack;
 
 import peril.controllers.GameController;
 import peril.controllers.api.Player;
-import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
@@ -143,29 +142,16 @@ public class Fortify extends ModelState {
 
 		if (friendlyModelCountry) {
 
-			// Hold the immutable function parameters.
-			final UnitHelper units = UnitHelper.getInstance();
-
-			// The current unit in the iteration
-			ModelUnit current = units.getStrongest();
-
-			// While there is a units to iterate over.
-			while (current != null) {
-
-				// If the primary country has the current unit.
-				if (getPrimary().getArmy().hasUnit(current)) {
-
-					// The path between the current primary and the specified country.
-					final Stack<ModelCountry> path = getPathBetween(getPrimary(), country, current);
-
-					// If there is a path
-					if (!path.isEmpty()) {
-						return true;
-					}
-
-				}
+			// Iterate over all the units in the army
+			for (ModelUnit current : getPrimary().getArmy()) {
 				
-				current = units.getUnitBelow(current);
+				// The path between the current primary and the specified country.
+				final Stack<ModelCountry> path = getPathBetween(getPrimary(), country, current);
+
+				// If there is a path
+				if (!path.isEmpty()) {
+					return true;
+				}
 			}
 		}
 

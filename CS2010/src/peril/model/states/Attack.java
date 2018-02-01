@@ -1,7 +1,6 @@
 package peril.model.states;
 
 import peril.controllers.GameController;
-import peril.helpers.UnitHelper;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
 import peril.model.board.links.ModelLink;
@@ -108,30 +107,19 @@ public class Attack extends ModelState {
 				// If the army size of the primary country is greater than 1.
 				if (primary.getArmy().getStrength() > 1) {
 
-					// Hold the immutable function parameters.
-					final UnitHelper units = UnitHelper.getInstance();
 					final ModelLink link = primary.getLinkTo(target);
 
 					// Whether a unit can be transfer between the primary and the target.
 					boolean canTranfer = false;
-					
-					// The current unit in the iteration
-					ModelUnit current = units.getStrongest();
 
-					// While there is a units to iterate over.
-					while (current != null) {
-
-						// If the primary country has the current unit.
-						if (primary.getArmy().hasUnit(current)) {
-
-							// If the current unit can be transfered.
-							if (link.canTransfer(current, primary, target)) {
-								canTranfer = true;
-								break;
-							}
-						}
+					// Iterate over all the units in the army
+					for (ModelUnit unit : primary.getArmy()) {
 						
-						current = units.getUnitBelow(current);
+						// If the current unit can be transfered.
+						if (link.canTransfer(unit, primary, target)) {
+							canTranfer = true;
+							break;
+						}
 					}
 
 					// If there is a unit that can be transfered.

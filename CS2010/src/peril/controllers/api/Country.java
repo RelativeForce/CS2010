@@ -1,6 +1,7 @@
 package peril.controllers.api;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Provides the information of a country on the {@link Board}.
@@ -29,5 +30,5 @@ public interface Country {
 	 * 
 	 * @return {@link List} of {@link Country} s.
 	 */
-	List<? extends Country> getNeighbours();
+	Set<? extends Country> getNeighbours();
 }

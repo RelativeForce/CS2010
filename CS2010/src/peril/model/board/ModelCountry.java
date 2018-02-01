@@ -1,9 +1,11 @@
 package peril.model.board;
 
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 
 import peril.Update;
 import peril.controllers.api.Country;
@@ -38,7 +40,7 @@ public final class ModelCountry extends Observable implements Country, Observer 
 	 * 
 	 * @see java.util.List
 	 */
-	private final List<ModelCountry> neighbours;
+	private final Map<ModelCountry, ModelLink> neighbours;
 
 	/**
 	 * Holds the army occupying this {@link ModelCountry}.
@@ -69,7 +71,7 @@ public final class ModelCountry extends Observable implements Country, Observer 
 	 */
 	public ModelCountry(String name, ModelColor color) {
 
-		this.neighbours = new LinkedList<ModelCountry>();
+		this.neighbours = new HashMap<ModelCountry, ModelLink>();
 		this.ruler = null;
 		this.army = new ModelArmy(1);
 		this.name = name;
@@ -122,8 +124,8 @@ public final class ModelCountry extends Observable implements Country, Observer 
 	 * 
 	 * @return {@link List} of type {@link ModelCountry}.
 	 */
-	public List<ModelCountry> getNeighbours() {
-		return neighbours;
+	public Set<ModelCountry> getNeighbours() {
+		return neighbours.keySet();
 	}
 	
 	public ModelColor getColor() {
@@ -139,7 +141,7 @@ public final class ModelCountry extends Observable implements Country, Observer 
 	 * @return Whether it is a neighbour or not.
 	 */
 	public boolean isNeighbour(ModelCountry country) {
-		return neighbours.contains(country);
+		return neighbours.keySet().contains(country);
 	}
 
 	/**
@@ -148,13 +150,13 @@ public final class ModelCountry extends Observable implements Country, Observer 
 	 * @param neighbour
 	 *            {@link ModelCountry}
 	 */
-	public void addNeighbour(ModelCountry neighbour) {
+	public void addNeighbour(ModelCountry neighbour, ModelLink link) {
 
 		if (neighbour == null) {
 			throw new NullPointerException("The neighbour cannot be null");
 		}
 
-		neighbours.add(neighbour);
+		neighbours.put(neighbour, link);
 
 		setChanged();
 		notifyObservers(new Update("neighbours", neighbours));

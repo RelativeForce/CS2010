@@ -24,6 +24,7 @@ import peril.model.board.ModelBoard;
 import peril.model.board.ModelContinent;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelHazard;
+import peril.model.board.ModelLink;
 import peril.model.board.ModelUnit;
 import peril.views.slick.Point;
 import peril.views.slick.Region;
@@ -387,8 +388,8 @@ public final class MapReader extends FileParser {
 		ModelCountry country1 = countries.get(details[1]).model;
 		ModelCountry country2 = countries.get(details[2]).model;
 
-		country1.addNeighbour(country2);
-		country2.addNeighbour(country1);
+		country1.addNeighbour(country2, new ModelLink(false));
+		country2.addNeighbour(country1, new ModelLink(false));
 
 	}
 

@@ -11,6 +11,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.controllers.GameController;
+import peril.helpers.UnitHelper;
 import peril.model.states.Fortify;
 import peril.views.slick.Button;
 import peril.views.slick.Point;
@@ -172,7 +173,7 @@ public final class MovementState extends MultiSelectState {
 
 				path.clear();
 
-				((Fortify) model).getPathBetween(model.getSelected(0), target.model)
+				((Fortify) model).getPathBetween(model.getSelected(0), target.model, UnitHelper.getInstance().getWeakest())
 						.forEach(country -> path.add(slick.modelView.getVisual(country)));
 			}
 		}
@@ -219,7 +220,7 @@ public final class MovementState extends MultiSelectState {
 
 			path.clear();
 
-			((Fortify) model).getPathBetween(selected.get(0).model, selected.get(1).model)
+			((Fortify) model).getPathBetween(selected.get(0).model, selected.get(1).model, UnitHelper.getInstance().getWeakest())
 					.forEach(country -> path.add(slick.modelView.getVisual(country)));
 
 			moveFortifyButton(selected.get(1));

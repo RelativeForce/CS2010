@@ -181,4 +181,6 @@ public interface GameController {
 
 	void processAI(int delta);
 
+	void fortify();
+
 }

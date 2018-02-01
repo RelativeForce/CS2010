@@ -125,7 +125,7 @@ public final class RequestHandler implements AIController, GameController {
 			throw new IllegalStateException("There is NOT two countries selected. Select two valid countries.");
 		}
 
-		game.states.movement.fortify();
+		game.states.movement.fortify(UnitHelper.getInstance().getWeakest());
 
 	}
 
@@ -151,7 +151,7 @@ public final class RequestHandler implements AIController, GameController {
 
 		final ModelCountry checkedB = (ModelCountry) b;
 
-		return !game.states.movement.getPathBetween(checkedA, checkedB).isEmpty();
+		return !game.states.movement.getPathBetween(checkedA, checkedB, UnitHelper.getInstance().getWeakest()).isEmpty();
 	}
 
 	/**

@@ -130,6 +130,8 @@ public class Attack extends ModelState {
 								break;
 							}
 						}
+						
+						current = units.getUnitBelow(current);
 					}
 
 					// If there is a unit that can be transfered.

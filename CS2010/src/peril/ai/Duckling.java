@@ -1,33 +1,29 @@
 package peril.ai;
 
-import peril.ai.api.Controller;
-import peril.ai.api.Country;
+import peril.controllers.AIController;
 
 public class Duckling extends AI {
 
-	public Duckling(Controller api) {
-		super(500, api);
-
+	public Duckling(AIController api) {
+		super("Duckling", 100, api);
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	protected boolean processReinforce(Controller api) {
-		
-		 //figure out which country to reinforce
-		
-		
+	protected boolean processReinforce(AIController api) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	protected boolean processAttack(Controller api) {
-
+	protected boolean processAttack(AIController api) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	protected boolean processFortify(Controller api) {
-
+	protected boolean processFortify(AIController api) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 

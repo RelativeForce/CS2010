@@ -15,14 +15,10 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.controllers.GameController;
 import peril.helpers.PlayerHelper;
-import peril.helpers.UnitHelper;
 import peril.io.FileParser;
 import peril.io.SaveFile;
 import peril.model.ModelPlayer;
-import peril.model.board.ModelArmy;
 import peril.model.board.ModelBoard;
-import peril.model.board.ModelUnit;
-import peril.model.states.Attack;
 import peril.model.states.ModelState;
 import peril.views.ModelView;
 import peril.views.View;
@@ -471,36 +467,6 @@ public class SlickGame extends StateBasedGame implements View {
 	@Override
 	public FileParser getMapLoader(String mapPath, SaveFile save) {
 		return new MapReader(mapPath, game, save);
-	}
-
-	private ModelUnit[] getArmyUnits(Attack attackState) {
-		
-		final ModelArmy attacker = attackState.getPrimary().getArmy();
-		final UnitHelper units = UnitHelper.getInstance();
-		final int numberOfUnitTypes = attacker.getUnitType();
-		final ModelUnit[] attackingArmy = new ModelUnit[numberOfUnitTypes > 3 ? 3 : numberOfUnitTypes];
-
-		ModelUnit current = units.getStrongest();
-
-		int armyIndex = 0;
-
-		while (current != null && armyIndex < attackingArmy.length) {
-
-			if (attacker.hasUnit(current)) {
-
-				int unitIndex = 0;
-				while (unitIndex < attacker.getUnit(current) && armyIndex != attackingArmy.length) {
-					
-					attackingArmy[armyIndex] = current;
-					armyIndex++;
-					unitIndex++;
-				}
-			}
-
-			current = units.getUnitBelow(current);
-		}
-		
-		return attackingArmy;
 	}
 	
 	@Override

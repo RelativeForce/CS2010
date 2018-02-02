@@ -208,13 +208,13 @@ public final class SlickArmy implements Observer {
 	 *            {@link SlickPlayer}
 	 * @param view
 	 */
-	private void drawExpanded(Graphics g, Point position, SlickPlayer ruler, SlickModelView view) {
+	public void drawExpanded(Graphics g, Point position, SlickPlayer ruler, SlickModelView view) {
 
 		final SlickUnit slickSelected = view.getVisual(selected);
 
 		rePositionUnits(position, view);
 
-		int x = position.x - ((model.getUnitType() - 1) * PADDING) / 2;
+		int x = position.x - ((model.getVarietyOfUnits() - 1) * PADDING);
 		int y = position.y;
 
 		for (ModelUnit current : model) {
@@ -251,7 +251,7 @@ public final class SlickArmy implements Observer {
 	 */
 	private void rePositionUnits(Point position, SlickModelView view) {
 
-		int x = position.x - ((model.getUnitType() - 1) * PADDING) / 2;
+		int x = position.x - ((model.getVarietyOfUnits() - 1) * PADDING);
 		int y = position.y;
 
 		for (ModelUnit current : model) {
@@ -333,7 +333,7 @@ public final class SlickArmy implements Observer {
 	 */
 	private void drawUnit(Graphics g, SlickUnit unit) {
 
-		final int numberOfCurrent = model.getUnit(unit.model);
+		final int numberOfCurrent = model.getNumberOf(unit.model);
 		final Point position = unit.getPosition();
 
 		g.setColor(Color.lightGray);

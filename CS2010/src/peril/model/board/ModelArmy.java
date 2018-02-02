@@ -17,11 +17,6 @@ import peril.helpers.UnitHelper;
 public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 
 	/**
-	 * The size of the army.
-	 */
-	private int strength;
-
-	/**
 	 * Contains the {@link ModelUnit}s that this {@link ModelArmy} consists of.
 	 */
 	private final Map<ModelUnit, Integer> units;
@@ -32,41 +27,18 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 	private ModelUnit selected;
 
 	/**
-	 * Constructs a new {@link ModelArmy} with strength of 1.
-	 */
-	public ModelArmy() {
-		this(1);
-	}
-
-	/**
 	 * Constructs a new {@link ModelArmy} of a specified strength.
 	 * 
 	 * @param strength
 	 *            The size of the {@link ModelArmy}. Must be greater than zero.
 	 */
-	public ModelArmy(int strength) {
+	public ModelArmy() {
 		units = new HashMap<>();
 		selected = null;
-		setStrength(strength);
-		computeUnits();
-	}
-
-	/**
-	 * Assigns a new strength to this {@link ModelArmy} overwriting the old value.
-	 * 
-	 * @param strength
-	 *            The new size of the {@link ModelArmy}. Must be greater than zero.
-	 */
-	public void setStrength(int strength) {
-		if (strength < 0) {
-			throw new IllegalArgumentException("Size must be greater than zero");
-		}
-		this.strength = strength;
-		computeUnits();
-
-		setChanged();
-		notifyObservers(new Update("size", strength));
-
+		
+		// Add one of the weakest units to this army
+		units.put(UnitHelper.getInstance().getWeakest(), 1);
+		
 	}
 
 	/**
@@ -75,22 +47,14 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 	 * @return
 	 */
 	public int getStrength() {
+		
+		int strength = 0;
+		
+		for(ModelUnit unit : units.keySet()) {
+			strength += units.get(unit) * unit.strength;
+		}
+		
 		return strength;
-	}
-
-	/**
-	 * Adds a specified number of units to this {@link ModelArmy}.
-	 * 
-	 * @param amount
-	 *            of units to add to this {@link ModelArmy}
-	 */
-	public void add(int amount) {
-		strength += amount;
-
-		computeUnits();
-
-		setChanged();
-		notifyObservers(new Update("size", strength));
 	}
 
 	/**
@@ -136,18 +100,25 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 	 * @param amount
 	 *            of units to remove.
 	 */
-	public void remove(int amount) {
-		if (strength - amount < 0) {
-			throw new IllegalStateException("Army size cannot be less than zero");
+	public boolean remove(ModelUnit unit) {
+		
+		if(units.containsKey(unit)) {
+			
+			if(units.get(unit) == 1) {
+				units.remove(unit);
+			}else {
+				units.replace(unit, units.get(unit) - 1);
+			}
+			
+			
+			setChanged();
+			notifyObservers(new Update("size", getStrength()));
+			
+			return true;
 		}
-
-		// Change to the army
-		strength -= amount;
-
-		computeUnits();
-
-		setChanged();
-		notifyObservers(new Update("size", strength));
+		
+		return false;
+		
 	}
 
 	/**
@@ -170,7 +141,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 	 *            {@link ModelUnit}.
 	 * @return
 	 */
-	public int getUnit(ModelUnit unit) {
+	public int getNumberOf(ModelUnit unit) {
 		return units.get(unit);
 	}
 
@@ -180,7 +151,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 	 * 
 	 * @return
 	 */
-	public int getUnitType() {
+	public int getVarietyOfUnits() {
 
 		int numberOfUnitTypes = 0;
 
@@ -193,12 +164,41 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 	}
 
 	/**
-	 * Retreieves the {@link Iterator} for this {@link ModelArmy} of all the
+	 * Retrieves the {@link Iterator} for this {@link ModelArmy} of all the
 	 * {@link ModelUnit}s inside.
 	 */
 	@Override
 	public Iterator<ModelUnit> iterator() {
 		return units.keySet().iterator();
+	}
+	
+	public void add(ModelUnit unit) {
+
+		int currentNumber = units.get(unit) == null ? 0 : units.get(unit);
+
+		units.put(unit, currentNumber + 1);
+
+	}
+	
+	public void remove(int strength) {
+		
+		final int newStrength = getStrength() - strength;
+		
+		if(newStrength >= UnitHelper.getInstance().getWeakest().strength) {
+			computeUnits(newStrength);
+		}else {
+			
+			// Clear the current list of units.
+			if (!units.isEmpty())
+				units.clear();
+			
+			units.put(UnitHelper.getInstance().getWeakest(), 1);
+			
+		}
+		
+		
+		
+		
 	}
 
 	/**
@@ -218,7 +218,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 	/**
 	 * Determines the units that this {@link ModelArmy} can contain.
 	 */
-	private void computeUnits() {
+	private void computeUnits(int strength) {
 
 		// De-select the currently selected unit.
 		deselect();
@@ -252,6 +252,18 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 
 		}
 
+	}
+
+	
+	public int getNumberOfUnits() {
+
+		int number = 0;
+		
+		for(Integer amount : units.values()) {
+			number += amount;
+		}
+
+		return number;
 	}
 
 }

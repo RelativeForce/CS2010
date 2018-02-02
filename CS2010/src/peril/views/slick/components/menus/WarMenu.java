@@ -2,6 +2,8 @@ package peril.views.slick.components.menus;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Collections;
 import java.util.Random;
@@ -11,6 +13,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 import peril.controllers.GameController;
+import peril.helpers.UnitHelper;
 import peril.views.slick.Button;
 import peril.views.slick.Font;
 import peril.views.slick.Point;
@@ -19,9 +22,10 @@ import peril.views.slick.Region;
 import peril.views.slick.Viewable;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
+import peril.views.slick.board.SlickUnit;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
-import peril.views.slick.components.lists.VisualList;
+import peril.model.board.ModelUnit;
 import peril.views.slick.io.ImageReader;
 
 /**
@@ -71,11 +75,13 @@ public class WarMenu extends Menu {
 	 */
 	private final Font resultFont;
 
-	/**
-	 * A {@link VisualList} of Buttons to select the number of units to attack with.
-	 * 
-	 */
-	private VisualList<Integer> squadSizes;
+	private final List<SlickUnit> attackingSquad;
+
+	private final List<SlickUnit> defendingSquad;
+
+	private Point squadTop;
+
+	private Point armyPosition;
 
 	/**
 	 * The id of the {@link Button} that will be clicked to attack enemy
@@ -109,7 +115,7 @@ public class WarMenu extends Menu {
 	 * 
 	 */
 	public WarMenu(Point position, GameController game) {
-		super(NAME, game, new Region(400, 400, position));
+		super(NAME, game, new Region(300, 400, position));
 
 		this.random = new Random();
 		this.headingFont = new Font("Arial", Color.red, 28);
@@ -118,8 +124,13 @@ public class WarMenu extends Menu {
 		this.resultFont = new Font("Arial", Color.black, 15);
 		this.dice = new Dice();
 		this.attackButton = "war";
+		this.attackingSquad = new LinkedList<>();
+		this.defendingSquad = new LinkedList<>();
 
-		checkSquadSizes();
+		final int x = getPosition().x + (getWidth() / 2) - 25;
+		final int y = getPosition().y - 100 + getHeight();
+		this.squadTop = new Point(this.getPosition().x + (this.getWidth() / 4), this.getPosition().y + 200);
+		this.armyPosition = new Point(x, y);
 
 	}
 
@@ -133,7 +144,6 @@ public class WarMenu extends Menu {
 		countryFont.init();
 		resultFont.init();
 		dice.init();
-		squadSizes.init();
 
 	}
 
@@ -145,6 +155,8 @@ public class WarMenu extends Menu {
 		super.draw(g);
 
 		if (isVisible()) {
+			
+			rePositionAttackSquad();
 
 			// Attacker has failed to conquer country
 			if (attacker.model.getArmy().getStrength() == 1) {
@@ -188,14 +200,14 @@ public class WarMenu extends Menu {
 		super.show();
 
 		getButton(attackButton).show();
-;
+
 		attacker = slick.modelView.getVisual(game.getAttack().getSelected(0));
 		enemy = slick.modelView.getVisual(game.getAttack().getSelected(1));
 
-		checkSquadSizes();
-
 		ruler = slick.modelView.getVisual(enemy.model.getRuler());
 		player = slick.modelView.getVisual(attacker.model.getRuler());
+
+		defineDefendingSquad();
 
 	}
 
@@ -213,9 +225,54 @@ public class WarMenu extends Menu {
 	 * Processes a click at a {@link Point} position on this {@link WarMenu}.
 	 */
 	public void parseClick(Point click) {
-		if (!squadSizes.click(click)) {
-			clickedButton(click);
+
+		if (slick.modelView.getVisual(attacker.model.getArmy()).isClicked(click, armyPosition, slick.modelView)) {
+
+		} else {
+
+			boolean squadClicked = false;
+
+			// Reposition the squad so the click detection works.
+			rePositionAttackSquad();
+
+			SlickUnit toRemove = null;
+
+			for (SlickUnit unit : attackingSquad) {
+
+				if (unit.isClicked(click)) {
+
+					attacker.model.getArmy().add(unit.model);
+
+					toRemove = unit;
+					squadClicked = true;
+					break;
+				}
+
+			}
+
+			if (toRemove != null) {
+				attackingSquad.remove(toRemove);
+			}
+
+			if (squadClicked) {
+				clickedButton(click);
+			}
+
 		}
+
+	}
+
+	private void rePositionAttackSquad() {
+
+		int x = squadTop.x;
+		int y = squadTop.y;
+
+		for (SlickUnit unit : attackingSquad) {
+			unit.setPosition(new Point(x, y));
+
+			y += unit.getHeight() + 2;
+		}
+
 	}
 
 	/**
@@ -223,6 +280,7 @@ public class WarMenu extends Menu {
 	 * they are eligible to 'fight'.
 	 */
 	public void attack() {
+
 		// If there is two countries highlighted
 		if (attacker != null && enemy != null) {
 
@@ -232,7 +290,7 @@ public class WarMenu extends Menu {
 			// If the army of the primary highlighted country is larger that 1 unit in size
 			if (attacker.model.getArmy().getStrength() > 1) {
 
-				int squadSize = squadSizes.getSelected();
+				final int squadSize = getSquadSize();
 
 				// If the the attacking army is larger than or equal to the size of the
 				// specified squad then attack.
@@ -251,7 +309,7 @@ public class WarMenu extends Menu {
 
 							// If the player has no countries they have lost.
 							if (defendingPlayer.getCountriesRuled() == 0) {
-								
+
 								game.setLoser(defendingPlayer);
 								game.checkWinner();
 							}
@@ -269,15 +327,15 @@ public class WarMenu extends Menu {
 
 						// If the attacking army is not large enough to attack again.
 						if (attacker.model.getArmy().getStrength() == 1) {
-							game.getAttack().deselectAll();;
+							game.getAttack().deselectAll();
 						}
 					}
 				}
 
 			}
-		} 
+		}
 
-		// Cant attack any more hide the war menu.
+		// Can't attack any more hide the war menu.
 		if (game.getAttack().getPrimary() == null || game.getAttack().getSecondary() == null) {
 			game.getAttack().deselectAll();
 		}
@@ -289,9 +347,9 @@ public class WarMenu extends Menu {
 	 */
 	@Override
 	public void moveComponents(Point vector) {
-
-		squadSizes.setPosition(new Point(squadSizes.getPosition().x + vector.x, squadSizes.getPosition().y + vector.y));
-
+		final int x = getPosition().x + (getWidth() / 2) - 25;
+		final int y = getPosition().y - 100 + getHeight();
+		armyPosition = new Point(x, y);
 	}
 
 	/**
@@ -300,20 +358,17 @@ public class WarMenu extends Menu {
 	public void clear() {
 		player = null;
 		enemy = null;
+
+		clearSquad();
+
 		attacker = null;
 		ruler = null;
-		this.hide();
+
+		hide();
 	}
 
-	/**
-	 * Selects the highest number of dice possible for the current state of the
-	 * {@link WarMenu}.
-	 */
-	public void selectMaxDice() {
-
-		squadSizes.down();
-		squadSizes.down();
-
+	private int getSquadSize() {
+		return attackingSquad.size();
 	}
 
 	/**
@@ -368,15 +423,16 @@ public class WarMenu extends Menu {
 		Integer[] defenderDiceRolls = getDiceRolls(defending.model.getArmy().getStrength() > 1 ? 2 : 1);
 
 		// The position of the top attacker dice
-		int attackX = squadSizes.getPosition().x + squadSizes.getWidth() + 5;
-		int attackY = squadSizes.getPosition().y;
+		int attackX = squadTop.x + 55;
+		int attackY = squadTop.y;
 
 		// The position of the top defender dice
 		int defendX = this.getPosition().x + ((this.getWidth() * 3) / 4);
-		int defendY = squadSizes.getPosition().y;
+		int defendY = squadTop.y;
 
 		// Display the dice that we rolled
-		dice.set(attackerDiceRolls, defenderDiceRolls, new Point(attackX, attackY), new Point(defendX, defendY));
+		dice.set(attackerDiceRolls, defenderDiceRolls, new Point(attackX, attackY), new Point(defendX, defendY),
+				attackingSquad.get(0).getHeight());
 
 		// Compare the dice that were rolled.
 		compareDiceRolls(attackerDiceRolls, defenderDiceRolls, attacking, defending);
@@ -440,8 +496,10 @@ public class WarMenu extends Menu {
 	 *            {@link Graphics}
 	 */
 	private void normalCombat(Graphics g) {
-		squadSizes.draw(g);
 		drawPlayer(g, ruler, (getWidth() / 4));
+
+		slick.modelView.getVisual(attacker.model.getArmy()).drawExpanded(g, armyPosition, ruler, slick.modelView);
+
 		dice.draw(g);
 	}
 
@@ -510,47 +568,6 @@ public class WarMenu extends Menu {
 	}
 
 	/**
-	 * Initialises the {@link VisualList} of squad sizes (The number of units to
-	 * attack with)
-	 */
-	private void checkSquadSizes() {
-
-		int width = 30;
-		int height = 30;
-		Point position = new Point(this.getPosition().x + (this.getWidth() / 4) - (width / 2),
-				this.getPosition().y + 200);
-
-		// If there is no attacker then set the squad sizes list to its original size.
-		if (attacker == null) {
-			squadSizes = new VisualList<>(position, width, height, 3, 7);
-			squadSizes.add("1", 1);
-			squadSizes.add("2", 2);
-			squadSizes.add("3", 3);
-
-		}
-		// Otherwise assign the elements of the list based on the army size of the
-		// attacking player.
-		else {
-
-			// Holds the max size of the attacking squad (<= 3)
-			int maxSize = (attacker.model.getArmy().getStrength() - 1 > 3 ? 3 : attacker.model.getArmy().getStrength() - 1);
-
-			// Constructs the list to hold that maz size
-			squadSizes = new VisualList<>(position, width, height, maxSize, 7);
-
-			// Populate the list.
-			for (int index = 1; index <= maxSize; index++) {
-				squadSizes.add(Integer.toString(index), index);
-			}
-
-			squadSizes.init();
-		}
-
-		squadSizes.setFont(headingFont);
-
-	}
-
-	/**
 	 * Compares the attackers dice roles from the defenders rolls and removes units
 	 * from the attacking country and defending country appropriately.
 	 * 
@@ -563,6 +580,8 @@ public class WarMenu extends Menu {
 	 */
 	private void compareDiceRolls(Integer[] attackerDiceRolls, Integer[] defenderDiceRolls, SlickCountry attacking,
 			SlickCountry defending) {
+
+		returnUnitsToArmy(attackingSquad, attacker.model.getArmy());
 
 		ModelArmy attackingArmy = attacking.model.getArmy();
 		ModelArmy defendingArmy = defending.model.getArmy();
@@ -586,14 +605,14 @@ public class WarMenu extends Menu {
 				// conquer the country. Otherwise just kill one unit from the defending army.
 				if (defendingArmy.getStrength() == 1) {
 					defending.model.setRuler(attacker);
-					attacker.totalArmy.add(1);
+					attacker.totalArmy.add(UnitHelper.getInstance().getWeakest());
 					break;
 				} else {
-					defendingArmy.remove(1);
+					defendingArmy.remove(attackingSquad.get(i).model.strength);
 				}
 
 				if (defender != null) {
-					defender.totalArmy.remove(1);
+					defender.totalArmy.remove(attackingSquad.get(i).model.strength);
 				}
 
 			}
@@ -601,13 +620,48 @@ public class WarMenu extends Menu {
 			else {
 				attackingArmy.remove(1);
 				attacker.totalArmy.remove(1);
-
-				if (attackingArmy.getStrength() < 4) {
-					checkSquadSizes();
-				}
 			}
 		}
 
+	}
+
+	private void defineDefendingSquad() {
+
+		final ModelArmy army = enemy.model.getArmy();
+		final int squadSize = army.getNumberOfUnits() > 1 ? 2 : 1;
+		final UnitHelper units = UnitHelper.getInstance();
+
+		if (!defendingSquad.isEmpty())
+			defendingSquad.clear();
+
+		ModelUnit current = units.getStrongest();
+
+		while (current != null && defendingSquad.size() != squadSize) {
+
+			if (army.hasUnit(current)) {
+
+				for (int index = 0; index < army.getNumberOf(current) && defendingSquad.size() != squadSize; index++) {
+					defendingSquad.add(slick.modelView.getVisual(current));
+				}
+			}
+
+			current = units.getUnitBelow(current);
+
+		}
+
+		// Remove all the squad members from the army.
+		defendingSquad.forEach(unit -> enemy.model.getArmy().remove(unit.model));
+
+	}
+
+	private void returnUnitsToArmy(List<SlickUnit> squad, ModelArmy army) {
+		squad.forEach((unit) -> army.add(unit.model));
+	}
+
+	private void clearSquad() {
+		if (!attackingSquad.isEmpty()) {
+			attackingSquad.clear();
+		}
 	}
 
 	/**
@@ -657,7 +711,8 @@ public class WarMenu extends Menu {
 		 * @param defendTop
 		 *            {@link Point} of the top dice for the defender.
 		 */
-		public void set(Integer[] attackerDiceRolls, Integer[] defenderDiceRolls, Point attackTop, Point defendTop) {
+		public void set(Integer[] attackerDiceRolls, Integer[] defenderDiceRolls, Point attackTop, Point defendTop,
+				int unitHeight) {
 
 			int defendX = defendTop.x;
 			int defendY = defendTop.y;
@@ -669,17 +724,17 @@ public class WarMenu extends Menu {
 
 			for (Integer roll : attackerDiceRolls) {
 				display.put(new Point(attackX, attackY), defaultDice.get(roll));
-				attackY += diceHeight + 2;
+				attackY += unitHeight + 2;
 			}
 
 			for (Integer roll : defenderDiceRolls) {
 				display.put(new Point(defendX, defendY), defaultDice.get(roll));
-				defendY += diceHeight + 2;
+				defendY += unitHeight + 2;
 			}
 
 			int boxWidth = 10;
 
-			Region box = new Region(boxWidth, diceHeight, new Point(0, 0));
+			Region box = new Region(boxWidth, unitHeight, new Point(0, 0));
 
 			Image redBox = box.convert(Color.red, 255);
 

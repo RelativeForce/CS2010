@@ -5,12 +5,14 @@ import java.util.Observable;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
+import peril.model.board.links.ModelLinkState;
 import peril.model.states.Attack;
 import peril.views.slick.Button;
 import peril.views.slick.Point;
@@ -100,6 +102,25 @@ public final class CombatState extends MultiSelectState {
 		game.processAI(delta);
 		
 	}
+	
+	@Override
+	public void parseButton(int key, char c, Point mousePosition) {
+		
+		if(key == Input.KEY_B) {
+			
+			final ModelCountry primary = model.getSelected(0);
+			final ModelCountry secondary = model.getSelected(1);
+			
+			if(primary != null && secondary != null) {
+				
+				secondary.getLinkTo(primary).setState(ModelLinkState.BLOCKADE, 3);
+				
+			}
+		}
+		
+		
+		super.parseButton(key, c, mousePosition);
+	}
 
 	/**
 	 * Enters this {@link CombatState}.
@@ -156,7 +177,7 @@ public final class CombatState extends MultiSelectState {
 					Point enemy = super.getCenterArmyPosition(neighbour);
 					Point selected = super.getCenterArmyPosition(highlighted);
 
-					g.drawLine(enemy.x, enemy.y, selected.x, selected.y);
+					g.drawLine(enemy.x, enemy.y + 5, selected.x, selected.y + 5);
 				}
 			}
 

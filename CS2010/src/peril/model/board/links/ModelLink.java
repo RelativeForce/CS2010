@@ -121,6 +121,15 @@ public final class ModelLink extends Observable {
 	}
 
 	/**
+	 * Retrieves the current {@link ModelLinkState} of this {@link ModelLink}.
+	 * 
+	 * @return {@link ModelLinkState}
+	 */
+	public ModelLinkState getState() {
+		return current;
+	}
+
+	/**
 	 * Transfers a unit between two countries.
 	 * 
 	 * @param unit

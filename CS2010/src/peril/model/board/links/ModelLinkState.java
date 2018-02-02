@@ -12,9 +12,12 @@ import peril.model.board.ModelUnit;
  */
 public enum ModelLinkState {
 
-	OPEN("Open"){
-		
-		
+	/**
+	 * A {@link ModelLinkState} that is completely open and does not effect units
+	 * transferring over it.
+	 */
+	OPEN("Open") {
+
 		@Override
 		public boolean canTransfer(ModelUnit unit, ModelCountry origin, ModelCountry destination) {
 			return true;
@@ -26,19 +29,69 @@ public enum ModelLinkState {
 			// Move the unit.
 			origin.getArmy().remove(unit.strength);
 			destination.getArmy().add(unit.strength);
+		}
+	},
+	/**
+	 * A {@link ModelLinkState} that prevents any units from being transfered across
+	 * it.
+	 */
+	BLOCKADE("Blockade") {
+
+		@Override
+		public boolean canTransfer(ModelUnit unit, ModelCountry origin, ModelCountry destination) {
+			return false;
+		}
+
+		@Override
+		public void transferBetween(ModelUnit unit, ModelCountry origin, ModelCountry destination) {
+			throw new IllegalStateException(name + " cannot transfer units.");
+		}
+	},
+	/**
+	 * A {@link ModelLinkState} that allows units to move between two friendly
+	 * countries freely but if the origin is an enemy of the destination then the
+	 * strength of the transfered unit is reduced by 40%.
+	 */
+	FORTIFIED("Fortified") {
+
+		@Override
+		public boolean canTransfer(ModelUnit unit, ModelCountry origin, ModelCountry destination) {
+			return true;
+		}
+
+		@Override
+		public void transferBetween(ModelUnit unit, ModelCountry origin, ModelCountry destination) {
+
+			if (origin.getRuler() == destination.getRuler()) {
+
+				// Move the unit.
+				origin.getArmy().remove(unit.strength);
+				destination.getArmy().add(unit.strength);
+			} else {
+
+				// Add Only move 60% of the unit
+				origin.getArmy().remove(unit.strength);
+				destination.getArmy().add((unit.strength * 10) / 6);
+
+			}
 
 		}
-		
-		
-		
 	};
-	
+
+	/**
+	 * The name of this {@link ModelLinkState}.
+	 */
 	public final String name;
-	
+
+	/**
+	 * Constructs a new {@link ModelLinkState}.
+	 * 
+	 * @param name
+	 *            The name of this {@link ModelLinkState}.
+	 */
 	private ModelLinkState(String name) {
 		this.name = name;
-		
-		
+
 	}
 
 	/**
@@ -53,7 +106,7 @@ public enum ModelLinkState {
 	 *            {@link ModelCountry}
 	 * @return boolean
 	 */
-	abstract boolean canTransfer(ModelUnit unit, ModelCountry origin, ModelCountry destination);
+	public abstract boolean canTransfer(ModelUnit unit, ModelCountry origin, ModelCountry destination);
 
 	/**
 	 * Performs the transfer operation on the {@link ModelUnit}.
@@ -65,6 +118,6 @@ public enum ModelLinkState {
 	 * @param destination
 	 *            {@link ModelCountry}
 	 */
-	abstract void transferBetween(ModelUnit unit, ModelCountry origin, ModelCountry destination);
+	public abstract void transferBetween(ModelUnit unit, ModelCountry origin, ModelCountry destination);
 
 }

@@ -198,7 +198,7 @@ public final class Monkey extends AI {
 			if (current.equals(country.getOwner())) {
 
 				// The default weight of this country
-				final int defaultValue = -country.getArmySize();
+				final int defaultValue = -country.getArmyStrength();
 
 				// The current value.
 				int value = defaultValue;
@@ -206,13 +206,13 @@ public final class Monkey extends AI {
 				// Iterate through all the country's neighbours.
 				for (Country neighbour : country.getNeighbours()) {
 					if (!current.equals(neighbour.getOwner())) {
-						value += neighbour.getArmySize();
+						value += neighbour.getArmyStrength();
 					}
 				}
 
 				// If the current country is an internal country.
 				if (value == defaultValue) {
-					if (country.getArmySize() > 1) {
+					if (country.getArmyStrength() > 1) {
 						internal.add(country);
 					}
 				} else {
@@ -241,19 +241,19 @@ public final class Monkey extends AI {
 			// If the country is friendly.
 			if (current.equals(country.getOwner())) {
 
-				int value = -country.getArmySize();
+				int value = -country.getArmyStrength();
 
 				// Iterate through all the neighbour countries.
 				for (Country neighbour : country.getNeighbours()) {
 
 					// If the neighbour is an enemy country.
 					if (!current.equals(neighbour.getOwner())) {
-						value += neighbour.getArmySize();
+						value += neighbour.getArmyStrength();
 					}
 				}
 
 				// If the current country has enemy countries.
-				if (value != -country.getArmySize()) {
+				if (value != -country.getArmyStrength()) {
 					countries.put(value, country);
 				}
 
@@ -279,15 +279,15 @@ public final class Monkey extends AI {
 
 		api.forEachCountry(country -> {
 
-			if (current.equals(country.getOwner()) && country.getArmySize() > 1) {
+			if (current.equals(country.getOwner()) && country.getArmyStrength() > 1) {
 
 				for (Country neighbour : country.getNeighbours()) {
 
-					int value = country.getArmySize();
+					int value = country.getArmyStrength();
 
 					if (!current.equals(neighbour.getOwner())) {
 
-						value -= neighbour.getArmySize();
+						value -= neighbour.getArmyStrength();
 
 						countries.put(value, new Entry(country, neighbour));
 					}

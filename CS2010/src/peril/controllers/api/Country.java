@@ -16,7 +16,7 @@ public interface Country {
 	 * 
 	 * @return size of army.
 	 */
-	int getArmySize();
+	int getArmyStrength();
 
 	/**
 	 * Retrieves the {@link Player} the rules <code>this</code> {@link Country}.

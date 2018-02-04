@@ -9,7 +9,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
-import peril.ai.AI;
 import peril.controllers.GameController;
 import peril.model.states.Reinforce;
 import peril.views.slick.Button;
@@ -73,7 +72,7 @@ public final class ReinforcementState extends CoreGameState {
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
-		slick.menus.pauseMenu.showSaveOption();
+		menus.showSaveOption();
 		getButton(reinforceButton).hide();
 	}
 
@@ -95,7 +94,7 @@ public final class ReinforcementState extends CoreGameState {
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
 		super.leave(container, game);
 		getButton(reinforceButton).hide();
-		slick.menus.pauseMenu.hideSaveOption();
+		menus.hideSaveOption();
 	}
 
 	/**
@@ -117,9 +116,7 @@ public final class ReinforcementState extends CoreGameState {
 		textFont.draw(g, "UNITS", 150 - (textFont.getWidth("UNITS") / 2), 95);
 
 		super.drawPopups(g);
-		super.drawHelp(g);
-		super.drawPauseMenu(g);
-		super.drawChallengeMenu(g);
+		menus.draw(g);
 
 		g.destroy();
 	}
@@ -128,9 +125,7 @@ public final class ReinforcementState extends CoreGameState {
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		super.update(gc, sbg, delta);
 
-		if (game.getCurrentModelPlayer().ai != AI.USER && !game.getCurrentModelPlayer().ai.reinforce(delta)) {
-			slick.enterState(slick.states.combat);
-		}
+		game.processAI(delta);
 	}
 
 	/**

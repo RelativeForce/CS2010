@@ -10,9 +10,8 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.Game;
-import peril.ai.AI;
 import peril.controllers.GameController;
+import peril.helpers.UnitHelper;
 import peril.model.states.Fortify;
 import peril.views.slick.Button;
 import peril.views.slick.Point;
@@ -66,7 +65,7 @@ public final class MovementState extends MultiSelectState {
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
-		slick.menus.pauseMenu.showSaveOption();
+		menus.showSaveOption();
 		getButton(fortifyButton).hide();
 	}
 
@@ -89,9 +88,7 @@ public final class MovementState extends MultiSelectState {
 		super.drawButtons(g);
 		super.drawPlayerName(g);
 		super.drawPopups(g);
-		super.drawHelp(g);
-		super.drawPauseMenu(g);
-		super.drawChallengeMenu(g);
+		menus.draw(g);
 
 		g.destroy();
 	}
@@ -100,10 +97,7 @@ public final class MovementState extends MultiSelectState {
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		super.update(gc, sbg, delta);
 
-		if (game.getCurrentModelPlayer().ai != AI.USER && !game.getCurrentModelPlayer().ai.fortify(delta)) {
-			slick.enterState(slick.states.reinforcement);
-			game.nextPlayer();
-		}
+		game.processAI(delta);
 	}
 
 	/**
@@ -113,7 +107,7 @@ public final class MovementState extends MultiSelectState {
 	public void leave(GameContainer gc, StateBasedGame game) throws SlickException {
 		super.leave(gc, game);
 		getButton(fortifyButton).hide();
-		slick.menus.pauseMenu.hideSaveOption();
+		menus.hideSaveOption();
 		path.clear();
 	}
 
@@ -179,7 +173,7 @@ public final class MovementState extends MultiSelectState {
 
 				path.clear();
 
-				((Fortify) model).getPathBetween(model.getSelected(0), target.model)
+				((Fortify) model).getPathBetween(model.getSelected(0), target.model, UnitHelper.getInstance().getWeakest())
 						.forEach(country -> path.add(slick.modelView.getVisual(country)));
 			}
 		}
@@ -226,7 +220,7 @@ public final class MovementState extends MultiSelectState {
 
 			path.clear();
 
-			((Fortify) model).getPathBetween(selected.get(0).model, selected.get(1).model)
+			((Fortify) model).getPathBetween(selected.get(0).model, selected.get(1).model, UnitHelper.getInstance().getWeakest())
 					.forEach(country -> path.add(slick.modelView.getVisual(country)));
 
 			moveFortifyButton(selected.get(1));

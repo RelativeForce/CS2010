@@ -331,16 +331,6 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	}
 
 	/**
-	 * Draws this {@link Game}'s {@link HelpMenu} on screen.
-	 * 
-	 * @param g
-	 *            {@link Graphics}
-	 */
-	protected void drawHelp(Graphics g) {
-		slick.menus.helpMenu.draw(g);
-	}
-
-	/**
 	 * Draws all the {@link Viewable}s in this {@link InteractiveState}.
 	 * 
 	 * @param g

@@ -154,7 +154,7 @@ public interface GameController {
 	String getMusicPath();
 
 	void setCurrentPlayer(ModelPlayer model);
-
+	
 	void setRoundNumber(int parseInt);
 
 	void addChallenge(Challenge challenge);
@@ -178,5 +178,9 @@ public interface GameController {
 	void autoDistributeCountries();
 
 	void setLoser(ModelPlayer player);
+
+	void processAI(int delta);
+
+	void fortify();
 
 }

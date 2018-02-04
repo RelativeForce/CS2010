@@ -1,3 +1,8 @@
+// Unit, name, strength, filename
+Unit,soldier,1,dice1.png
+Unit,car,5,dice2.png
+Unit,tank,15,dice3.png
+
 // Country, name, rgb, x offset, y offset
 Country,Alaska,000000050,1,-15,-30,-
 Country,NW Canada,000000100,1,-30,15,-

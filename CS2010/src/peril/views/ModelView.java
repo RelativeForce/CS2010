@@ -7,6 +7,8 @@ import peril.model.board.ModelBoard;
 import peril.model.board.ModelContinent;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelHazard;
+import peril.model.board.ModelUnit;
+import peril.model.board.links.ModelLinkState;
 import peril.model.states.ModelState;
 
 public interface ModelView {
@@ -25,7 +27,13 @@ public interface ModelView {
 	
 	Object getVisual(ModelPlayer player);
 	
+	Object getVisual(ModelUnit unit);
+	
+	Object getVisual(ModelLinkState link);
+	
 	void clear();
+	
+	void addUnit(Object unit);
 	
 	void addCountry(Object country);
 	
@@ -40,6 +48,8 @@ public interface ModelView {
 	void addState(Object state);
 	
 	void addHazard(Object hazard);
+	
+	void addLinkState(Object linkState);
 
 	void init(GameController gc);
 	

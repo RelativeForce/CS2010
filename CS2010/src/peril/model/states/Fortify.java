@@ -9,6 +9,7 @@ import peril.controllers.api.Player;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
+import peril.model.board.ModelUnit;
 
 public class Fortify extends ModelState {
 
@@ -20,8 +21,6 @@ public class Fortify extends ModelState {
 
 		// If it a valid primary or secondary country
 		if (selectPrimary || selectSecondary) {
-
-
 
 			// If the country is a valid primary then the old primary is de-highlighted
 			if (selectPrimary && !selectSecondary) {
@@ -69,7 +68,7 @@ public class Fortify extends ModelState {
 	 *            {@link ModelCountry}
 	 * @return
 	 */
-	public Stack<ModelCountry> getPathBetween(ModelCountry start, ModelCountry target) {
+	public Stack<ModelCountry> getPathBetween(ModelCountry start, ModelCountry target, final ModelUnit unit) {
 
 		// Holds the path from the friendly country to the target country.
 		Stack<ModelCountry> path = new Stack<ModelCountry>();
@@ -82,7 +81,7 @@ public class Fortify extends ModelState {
 
 			// If there is a path between the highlighted and the target add the points to
 			// the drawn path.
-			isPath(path, traversed, start, target);
+			isPath(path, traversed, start, target, unit);
 		}
 
 		return path;
@@ -94,15 +93,15 @@ public class Fortify extends ModelState {
 	 * <ul>
 	 * <li>It is <strong>NOT</strong> null.</li>
 	 * <li>Has the same ruler as the current {@link Player}.</li>
-	 * <li>There is not a current primary {@link ModelCountry} <strong>OR</strong> the
-	 * specified {@link ModelCountry} is <strong>NOT</strong> a
+	 * <li>There is not a current primary {@link ModelCountry} <strong>OR</strong>
+	 * the specified {@link ModelCountry} is <strong>NOT</strong> a
 	 * {@link MovementState#isValidLink(ModelCountry)}</li>
 	 * </ul>
 	 */
 	protected boolean selectPrimary(ModelCountry country, GameController api) {
 
 		if (country == null) {
-			
+
 			return false;
 		}
 
@@ -126,31 +125,34 @@ public class Fortify extends ModelState {
 	 * </ul>
 	 */
 	protected boolean selectSecondary(ModelCountry country, GameController api) {
-		
+
 		if (country == null || getPrimary() == null) {
-			
+
 			return false;
 		}
 
 		// Holds the current player
-		ModelPlayer player = api.getCurrentModelPlayer();
+		final ModelPlayer player = api.getCurrentModelPlayer();
 
 		// Holds the ruler of the country
-		ModelPlayer ruler = country.getRuler();
+		final ModelPlayer ruler = country.getRuler();
 
 		// The country is different to the primary and has the same ruler as the player.
 		final boolean friendlyModelCountry = player.equals(ruler) && getPrimary() != country;
 
 		if (friendlyModelCountry) {
 
-			// The path between the current primary and the specified country.
-			final Stack<ModelCountry> path = getPathBetween(getPrimary(), country);
+			// Iterate over all the units in the army
+			for (ModelUnit current : getPrimary().getArmy()) {
+				
+				// The path between the current primary and the specified country.
+				final Stack<ModelCountry> path = getPathBetween(getPrimary(), country, current);
 
-			// If there is a path
-			if (!path.isEmpty()) {
-				return true;
+				// If there is a path
+				if (!path.isEmpty()) {
+					return true;
+				}
 			}
-
 		}
 
 		return false;
@@ -171,7 +173,8 @@ public class Fortify extends ModelState {
 	 * @return Whether the current {@link ModelCountry} is on the path to the target
 	 *         {@link ModelCountry}.
 	 */
-	private boolean isPath(Stack<ModelCountry> path, Set<ModelCountry> travsersed, ModelCountry current, ModelCountry traget) {
+	private boolean isPath(Stack<ModelCountry> path, Set<ModelCountry> travsersed, ModelCountry current,
+			ModelCountry traget, final ModelUnit unit) {
 
 		// Add the current country to the path
 		path.push(current);
@@ -193,7 +196,8 @@ public class Fortify extends ModelState {
 			}
 
 			// If the country has not already been traversed and has the same ruler.
-			if (!travsersed.contains(country) && current.getRuler() == country.getRuler()) {
+			if (!travsersed.contains(country) && current.getRuler() == country.getRuler()
+					&& current.getLinkTo(country).canTransfer(unit, current, country)) {
 				validChildren.add(country);
 				travsersed.add(country);
 			}
@@ -214,7 +218,7 @@ public class Fortify extends ModelState {
 		 * return true.
 		 */
 		for (ModelCountry child : validChildren) {
-			if (isPath(path, travsersed, child, traget)) {
+			if (isPath(path, travsersed, child, traget, unit)) {
 				return true;
 			}
 		}
@@ -231,7 +235,7 @@ public class Fortify extends ModelState {
 	 * Moves one unit from the primary {@link SlickCountry} to the secondary
 	 * {@link SlickCountry}.
 	 */
-	public void fortify() {
+	public void fortify(ModelUnit unit) {
 
 		ModelCountry primary = getSelected(0);
 		ModelCountry target = getSelected(1);
@@ -240,7 +244,7 @@ public class Fortify extends ModelState {
 		if (primary != null && target != null) {
 
 			// If the army of the primary highlighted country is larger that 1 unit in size
-			if (primary.getArmy().getStrength() > 1) {
+			if (primary.getArmy().getStrength() > unit.strength) {
 
 				// Holds the army of the primary country
 				ModelArmy primaryArmy = primary.getArmy();
@@ -249,8 +253,8 @@ public class Fortify extends ModelState {
 				ModelArmy targetArmy = target.getArmy();
 
 				// Move the unit.
-				targetArmy.setStrength(targetArmy.getStrength() + 1);
-				primaryArmy.setStrength(primaryArmy.getStrength() - 1);
+				targetArmy.setStrength(targetArmy.getStrength() + unit.strength);
+				primaryArmy.setStrength(primaryArmy.getStrength() - unit.strength);
 
 				if (primaryArmy.getStrength() == 1) {
 					deselectAll();

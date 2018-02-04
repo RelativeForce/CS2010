@@ -15,23 +15,18 @@ import peril.Challenge;
 import peril.Game;
 import peril.ai.AI;
 import peril.controllers.GameController;
+import peril.helpers.UnitHelper;
 import peril.io.FileParser;
 import peril.io.SaveFile;
 import peril.model.ModelColor;
 import peril.model.ModelPlayer;
-import peril.model.board.ModelBoard;
-import peril.model.board.ModelContinent;
-import peril.model.board.ModelCountry;
-import peril.model.board.ModelHazard;
+import peril.model.board.*;
+import peril.model.board.links.*;
 import peril.views.slick.Point;
 import peril.views.slick.Region;
 import peril.views.slick.SlickGame;
 import peril.views.slick.SlickModelView;
-import peril.views.slick.board.SlickArmy;
-import peril.views.slick.board.SlickBoard;
-import peril.views.slick.board.SlickContinent;
-import peril.views.slick.board.SlickCountry;
-import peril.views.slick.board.SlickPlayer;
+import peril.views.slick.board.*;
 import peril.views.slick.states.InteractiveState;
 
 /**
@@ -132,6 +127,9 @@ public final class MapReader extends FileParser {
 			case "Country":
 				parseCountry(details);
 				break;
+			case "Unit":
+				parseUnit(details);
+				break;
 			case "Link":
 				parseLink(details);
 				break;
@@ -162,6 +160,40 @@ public final class MapReader extends FileParser {
 				game.getModelBoard().setContinents(continents);
 			}
 		}
+
+	}
+
+	private void parseUnit(String[] details) {
+
+		int UNIT_LENGTH = 4;
+
+		if (details.length != UNIT_LENGTH) {
+			throw new IllegalArgumentException(
+					"The line does not contain the correct number of elements, there should be " + UNIT_LENGTH + "");
+		}
+
+		String name = details[1];
+
+		int strength;
+		
+		// Parse the strength value of the unit.
+		try {
+			strength = Integer.parseInt(details[2]);
+		} catch (Exception ex) {
+			throw new IllegalArgumentException(details[2] + " is not a valid rgb value.");
+		}
+		
+		String fileName = details[3];
+		
+		ModelUnit model = new ModelUnit(name, strength, fileName);
+		
+		Image asset = ImageReader.getImage(game.getUIPath() + fileName).getScaledCopy(30, 30);
+		
+		SlickUnit slickUnit = new SlickUnit(model, asset);
+		
+		view.addUnit(slickUnit);
+		
+		UnitHelper.getInstance().addUnit(model);
 
 	}
 
@@ -347,8 +379,8 @@ public final class MapReader extends FileParser {
 		ModelCountry country1 = countries.get(details[1]).model;
 		ModelCountry country2 = countries.get(details[2]).model;
 
-		country1.addNeighbour(country2);
-		country2.addNeighbour(country1);
+		country1.addNeighbour(country2, new ModelLink(ModelLinkState.OPEN));
+		country2.addNeighbour(country1, new ModelLink(ModelLinkState.OPEN));
 
 	}
 
@@ -601,7 +633,7 @@ public final class MapReader extends FileParser {
 		} catch (Exception e) {
 			throw new IllegalArgumentException(player + " is not a valid player number.");
 		}
-		
+
 		return view.getVisual(game.getModelPlayer(playerNumber));
 	}
 }

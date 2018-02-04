@@ -108,7 +108,7 @@ public class SlickGame extends StateBasedGame implements View {
 	 */
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
-
+		
 		states.init(this);
 
 		modelView.init(game);
@@ -290,7 +290,7 @@ public class SlickGame extends StateBasedGame implements View {
 
 		this.io = new IOHelper(game, containers);
 
-		this.menus.createHelpPages(this);
+		this.menus.createHelpPages(states);
 
 		this.music = new MusicHelper(this, game.getMusicPath());
 
@@ -353,14 +353,12 @@ public class SlickGame extends StateBasedGame implements View {
 
 	@Override
 	public void attack() {
-		menus.warMenu.show();
-		menus.warMenu.selectMaxDice();
-		menus.warMenu.attack();
+		menus.autoAttack();
 	}
 
 	@Override
 	public void setHelpMenuPage(int pageId) {
-		menus.helpMenu.changePage(pageId);
+		menus.changeHelpPage(pageId);
 
 	}
 
@@ -371,7 +369,7 @@ public class SlickGame extends StateBasedGame implements View {
 
 	@Override
 	public void updateChallenges() {
-		menus.challengeMenu.refreshChallenges();
+		menus.refreshChallenges();
 	}
 
 	@Override
@@ -399,41 +397,49 @@ public class SlickGame extends StateBasedGame implements View {
 		}
 
 	}
-
+	
 	@Override
 	public void toggleChallengeMenu(boolean state) {
-		menus.challengeMenu.setVisibility(state);
+		toggleMenu(state, ChallengeMenu.NAME);
 	}
 
 	@Override
 	public void togglePauseMenu(boolean state) {
-		menus.pauseMenu.setVisibility(state);
+		toggleMenu(state, PauseMenu.NAME);
 	}
 
 	@Override
 	public void toggleWarMenu(boolean state) {
-		menus.warMenu.setVisibility(state);
+		toggleMenu(state, WarMenu.NAME);
 	}
 
 	@Override
 	public void save() {
-		menus.pauseMenu.save();
+		menus.save();
 	}
 
 	@Override
 	public void toggleHelpMenu(boolean state) {
-		menus.helpMenu.setVisibility(state);
+		toggleMenu(state, HelpMenu.NAME);
+	}
+	
+	private void toggleMenu(boolean state, String menuName) {
+		if(state) {
+			menus.show(menuName);
+		}else {
+			menus.hide(menuName);
+		}
 	}
 
 	@Override
 	public void nextHelpPage() {
-		menus.helpMenu.nextPage();
+		menus.nextHelpPage();
 
 	}
 
 	@Override
 	public void previousHelpPage() {
-		menus.helpMenu.previousPage();
+		menus.previousHelpPage();
 	}
 
 	@Override
@@ -496,10 +502,16 @@ public class SlickGame extends StateBasedGame implements View {
 		
 		return attackingArmy;
 	}
-
 	
 	@Override
 	public void forEachLoser(Consumer<ModelPlayer> task) {
 		states.end.forEachLoser(task);
 	}
+
+	
+	@Override
+	public boolean isPaused() {
+		return menus.isPaused();
+	}
+
 }

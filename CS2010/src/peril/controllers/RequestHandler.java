@@ -5,12 +5,16 @@ import java.util.function.Consumer;
 
 import peril.Challenge;
 import peril.Game;
+import peril.ai.AI;
 import peril.controllers.api.Board;
 import peril.controllers.api.Country;
 import peril.controllers.api.Player;
+import peril.helpers.ModelStateHelper;
+import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelCountry;
+import peril.model.board.ModelUnit;
 import peril.model.states.Attack;
 import peril.model.states.Fortify;
 import peril.model.states.Reinforce;
@@ -116,13 +120,23 @@ public final class RequestHandler implements AIController, GameController {
 		if (!game.view.isCurrentState(game.states.movement)) {
 			throw new IllegalStateException("You can only attack during the fortify state.");
 		}
+		
+		final ModelCountry primary = game.states.movement.getPrimary();
+		final ModelCountry secondary = game.states.movement.getSecondary();
 
 		// Check both countries are selected.
-		if (game.states.movement.getPrimary() == null || game.states.movement.getSecondary() == null) {
+		if (primary == null || secondary == null) {
 			throw new IllegalStateException("There is NOT two countries selected. Select two valid countries.");
 		}
+		
+		ModelUnit unit = UnitHelper.getInstance().getWeakest();
+		
+		// If there is a selected unit fortify the country with that.
+		if(primary.getArmy().getSelected() != null) {
+			unit = primary.getArmy().getSelected();
+		}
 
-		game.states.movement.fortify();
+		game.states.movement.fortify(unit);
 
 	}
 
@@ -138,7 +152,7 @@ public final class RequestHandler implements AIController, GameController {
 			throw new IllegalArgumentException("The parmameter 'A' country is not a valid country.");
 		}
 
-		ModelCountry checkedA = (ModelCountry) a;
+		final ModelCountry checkedA = (ModelCountry) a;
 
 		// Ensure that the parameter Country is a valid country, This should never be
 		// false.
@@ -146,9 +160,9 @@ public final class RequestHandler implements AIController, GameController {
 			throw new IllegalArgumentException("The parmameter 'B' country is not a valid country.");
 		}
 
-		ModelCountry checkedB = (ModelCountry) b;
+		final ModelCountry checkedB = (ModelCountry) b;
 
-		return !game.states.movement.getPathBetween(checkedA, checkedB).isEmpty();
+		return !game.states.movement.getPathBetween(checkedA, checkedB, UnitHelper.getInstance().getWeakest()).isEmpty();
 	}
 
 	/**
@@ -211,6 +225,7 @@ public final class RequestHandler implements AIController, GameController {
 		game.players.emptyPlaying();
 		game.setRoundNumber(0);
 		game.players.challenges.clear();
+		UnitHelper.getInstance().clear();
 	}
 
 	@Override
@@ -357,10 +372,12 @@ public final class RequestHandler implements AIController, GameController {
 	public void confirmMovement() {
 
 		// Move to the next player
-		game.players.nextPlayer();
+		nextPlayer();
 
 		// Enter the reinforce state
 		game.view.enterReinforce();
+		
+		System.gc();
 	}
 
 	@Override
@@ -372,6 +389,28 @@ public final class RequestHandler implements AIController, GameController {
 	public void setLoser(ModelPlayer player) {
 		game.players.setLoser(player);
 		game.view.addLoser(player);
+	}
+
+	@Override
+	public void processAI(int delta) {
+
+		if (getCurrentModelPlayer().ai != AI.USER && !game.view.isPaused()) {
+			
+			final View view = game.view;
+			final ModelStateHelper states = game.states;
+			final ModelPlayer current = getCurrentModelPlayer();
+
+			if (view.isCurrentState(states.reinforcement) && !current.ai.reinforce(delta)) {
+				view.enterCombat();
+			} else if (view.isCurrentState(states.combat) && !current.ai.attack(delta)) {
+				view.enterFortify();
+			} else if (view.isCurrentState(states.movement) && !current.ai.fortify(delta)) {
+				view.enterReinforce();
+				nextPlayer();
+			}
+
+		}
+
 	}
 
 }

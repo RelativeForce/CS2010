@@ -1,10 +1,14 @@
 package peril.views.slick.helpers;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
+
+import org.newdawn.slick.Graphics;
+
 import peril.Challenge;
 import peril.Game;
 import peril.model.board.ModelHazard;
 import peril.views.slick.Point;
-import peril.views.slick.SlickGame;
 import peril.views.slick.components.menus.*;
 
 /**
@@ -15,25 +19,9 @@ import peril.views.slick.components.menus.*;
  */
 public final class MenuHelper {
 
-	/**
-	 * The {@link PauseMenu} for the {@link Game}
-	 */
-	public final PauseMenu pauseMenu;
+	private final Map<String, Menu> menus;
 
-	/**
-	 * The {@link WarMenu} that processes all of the game's combat.
-	 */
-	public final WarMenu warMenu;
-
-	/**
-	 * The {@link HelpMenu} that holds the help information for the {@link Game}.
-	 */
-	public final HelpMenu helpMenu;
-
-	/**
-	 * The {@link ChallengeMenu} that displays the {@link Challenge}s to the user.
-	 */
-	public final ChallengeMenu challengeMenu;
+	private Menu visible;
 
 	/**
 	 * Constructs a new {@link MenuHelper}.
@@ -50,10 +38,14 @@ public final class MenuHelper {
 	 *            the user.
 	 */
 	public MenuHelper(PauseMenu pauseMenu, WarMenu warMenu, HelpMenu helpMenu, ChallengeMenu challengeMenu) {
-		this.helpMenu = helpMenu;
-		this.warMenu = warMenu;
-		this.pauseMenu = pauseMenu;
-		this.challengeMenu = challengeMenu;
+
+		this.menus = new IdentityHashMap<>();
+		this.menus.put(pauseMenu.getName(), pauseMenu);
+		this.menus.put(warMenu.getName(), warMenu);
+		this.menus.put(helpMenu.getName(), helpMenu);
+		this.menus.put(challengeMenu.getName(), challengeMenu);
+
+		this.visible = null;
 	}
 
 	/**
@@ -64,21 +56,111 @@ public final class MenuHelper {
 	 * @param centerY
 	 */
 	public void center(int centerX, int centerY) {
-		pauseMenu.setPosition(new Point(centerX - (pauseMenu.getWidth() / 2), centerY - (pauseMenu.getHeight() / 2)));
-		helpMenu.setPosition(new Point(centerX - (helpMenu.getWidth() / 2), centerY - (helpMenu.getHeight() / 2)));
-		warMenu.setPosition(new Point(centerX - (warMenu.getWidth() / 2), centerY - (warMenu.getHeight() / 2)));
-		challengeMenu.setPosition(
-				new Point(centerX - (challengeMenu.getWidth() / 2), centerY - (challengeMenu.getHeight() / 2)));
+		menus.forEach((name, menu) -> {
+			menu.setPosition(new Point(centerX - (menu.getWidth() / 2), centerY - (menu.getHeight() / 2)));
+		});
 	}
 
 	/**
 	 * Initialises all the {@link Menu}s in this {@link MenuHelper}.
 	 */
 	public void initMenus() {
-		helpMenu.init();
-		pauseMenu.init();
-		warMenu.init();
-		challengeMenu.init();
+		menus.forEach((name, menu) -> menu.init());
+	}
+
+	public void show(String menuName) {
+
+		for (String name : menus.keySet()) {
+			if (name.equals(menuName)) {
+				showMenu(menus.get(name));
+				break;
+			}
+		}
+	}
+
+	public void changeHelpPage(int id) {
+		((HelpMenu) menus.get(HelpMenu.NAME)).changePage(id);
+	}
+
+	private void showMenu(Menu menu) {
+		hideVisible();
+
+		if (menu != null) {
+			visible = menu;
+			visible.show();
+		}
+
+	}
+
+	public void hideVisible() {
+		if (visible != null) {
+			visible.hide();
+			visible = null;
+		}
+	}
+
+	public void hide(String menuName) {
+		
+		if(visible != null && visible.getName().equals(menuName)) {
+			hideVisible();
+		}
+		
+	}
+	
+	public void save() {
+		((PauseMenu) menus.get(PauseMenu.NAME)).save();
+	}
+	
+	public boolean menuVisible() {
+		return visible != null;
+	}
+
+	public boolean linksVisible() {
+		return ((PauseMenu) menus.get(PauseMenu.NAME)).showAllLinks();
+	}
+
+	/**
+	 * If the currently visible menu has been clicked
+	 * 
+	 * @param click
+	 * @return
+	 */
+	public boolean clicked(Point click) {
+		
+		// If there is no visible menu
+		if(visible == null) {
+			return false;
+		}
+		
+		// If the visible menu is not clicked
+		if(!visible.isClicked(click)) {
+			return false;
+		}
+		
+		visible.parseClick(click);
+		
+		return true;
+	
+	}
+	
+	public void showSaveOption() {
+		((PauseMenu) menus.get(PauseMenu.NAME)).showSaveOption();
+	}
+	
+	public void hideSaveOption() {
+		((PauseMenu) menus.get(PauseMenu.NAME)).hideSaveOption();
+	}
+	
+	public void nextHelpPage() {
+		((HelpMenu) menus.get(HelpMenu.NAME)).nextPage();
+	}
+	
+	public void previousHelpPage() {
+		((HelpMenu) menus.get(HelpMenu.NAME)).previousPage();
+	}
+	
+	public void clearMenus() {
+		((WarMenu) menus.get(WarMenu.NAME)).clear();
 	}
 
 	/**
@@ -87,12 +169,12 @@ public final class MenuHelper {
 	 * @param game
 	 *            {@link Game}
 	 */
-	public void createHelpPages(SlickGame game) {
+	public void createHelpPages(StateHelper states) {
 
-		int setupPage = game.states.setup.getID();
-		int reinforcementPage = game.states.reinforcement.getID();
-		int combatPage = game.states.combat.getID();
-		int movementPage = game.states.movement.getID();
+		int setupPage = states.setup.getID();
+		int reinforcementPage = states.reinforcement.getID();
+		int combatPage = states.combat.getID();
+		int movementPage = states.movement.getID();
 
 		// EnvironmentalHazards Page id
 		int hazardPage = 30;
@@ -100,6 +182,8 @@ public final class MenuHelper {
 		// War menu page ids
 		int warPage1 = 31;
 		int warPage2 = 32;
+
+		HelpMenu helpMenu = (HelpMenu) menus.get(HelpMenu.NAME);
 
 		helpMenu.addPage(movementPage, HelpMenu.NULL_PAGE, HelpMenu.NULL_PAGE, "Help: Movement");
 
@@ -116,13 +200,28 @@ public final class MenuHelper {
 		helpMenu.addPage(warPage2, HelpMenu.NULL_PAGE, warPage1, "Help: War pt.2");
 
 		// Add the text to the pages
-		reinforcementPage(reinforcementPage);
-		setupPage(setupPage);
-		environmentalHazardPage(hazardPage);
-		movementPage(movementPage);
-		combatPage(combatPage);
-		warPage1(warPage1);
-		warPage2(warPage2);
+		reinforcementPage(reinforcementPage, helpMenu);
+		setupPage(setupPage, helpMenu);
+		environmentalHazardPage(hazardPage, helpMenu);
+		movementPage(movementPage, helpMenu);
+		combatPage(combatPage, helpMenu);
+		warPage1(warPage1, helpMenu);
+		warPage2(warPage2, helpMenu);
+	}
+
+	public void refreshSaveFiles() {
+		((PauseMenu) menus.get(PauseMenu.NAME)).refreshSaveFiles();
+	}
+
+	/**
+	 * Draws the currently visible {@link Menu}.
+	 * 
+	 * @param g
+	 */
+	public void draw(Graphics g) {
+		if (visible != null) {
+			visible.draw(g);
+		}
 	}
 
 	/**
@@ -131,7 +230,7 @@ public final class MenuHelper {
 	 * @param id
 	 *            The id of the reinforcement page.
 	 */
-	private void reinforcementPage(int id) {
+	private void reinforcementPage(int id, HelpMenu helpMenu) {
 
 		helpMenu.addText(id, "In Reinforce, the current player distributes their"
 				+ " available units to their countries. The available units are shown in the top left corner.");
@@ -151,7 +250,7 @@ public final class MenuHelper {
 	 * @param id
 	 *            The id of the setup page.
 	 */
-	private void setupPage(int id) {
+	private void setupPage(int id, HelpMenu helpMenu) {
 
 		helpMenu.addText(id, "In Setup, the players select who initially owns which countries.");
 
@@ -170,7 +269,7 @@ public final class MenuHelper {
 	 * @param id
 	 *            The id of the environmental hazard page.
 	 */
-	private void environmentalHazardPage(int id) {
+	private void environmentalHazardPage(int id, HelpMenu helpMenu) {
 
 		// Environmental Hazards
 		helpMenu.addText(id,
@@ -194,7 +293,7 @@ public final class MenuHelper {
 	 * @param id
 	 *            The id of the movement page.
 	 */
-	private void movementPage(int id) {
+	private void movementPage(int id, HelpMenu helpMenu) {
 
 		helpMenu.addText(id,
 				"In Movement, the current player can move units from one country to another, provided that both countries are;");
@@ -215,7 +314,7 @@ public final class MenuHelper {
 	 * @param id
 	 *            The id of the combat page.
 	 */
-	private void combatPage(int id) {
+	private void combatPage(int id, HelpMenu helpMenu) {
 
 		helpMenu.addText(id,
 				"In Combat, the current player can attack adjacent enemy countries using their counrties.");
@@ -237,7 +336,7 @@ public final class MenuHelper {
 	 * @param id
 	 *            The id of the war page 1.
 	 */
-	private void warPage1(int id) {
+	private void warPage1(int id, HelpMenu helpMenu) {
 
 		helpMenu.addText(id,
 				"The war menu displays a war between the two highlighted countries."
@@ -261,7 +360,7 @@ public final class MenuHelper {
 	 * @param id
 	 *            The id of the war page 2.
 	 */
-	private void warPage2(int id) {
+	private void warPage2(int id, HelpMenu helpMenu) {
 		helpMenu.addText(id,
 				"In the situation where the attacking and defending armies are not equal,"
 						+ " all the dice will be rolled but only the highest dice"
@@ -274,4 +373,21 @@ public final class MenuHelper {
 				+ "the enemy country, the last defending unit of the enemy country will desert and join the player's army.");
 
 	}
+
+	
+	public void refreshChallenges() {
+		((ChallengeMenu) menus.get(ChallengeMenu.NAME)).refreshChallenges();
+	}
+	
+	public void autoAttack() {
+		WarMenu warMenu = (WarMenu) menus.get(WarMenu.NAME);
+		show(WarMenu.NAME);
+		warMenu.selectMaxDice();
+		warMenu.attack();
+	}
+
+	public boolean isPaused() {
+		return ((PauseMenu) menus.get(PauseMenu.NAME)).isVisible();
+	}
+
 }

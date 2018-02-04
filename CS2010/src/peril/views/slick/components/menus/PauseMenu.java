@@ -25,7 +25,7 @@ public class PauseMenu extends Menu {
 	/**
 	 * Holds the name of this {@link PauseMenu}.
 	 */
-	private final static String NAME = "Pause Menu";
+	public final static String NAME = "Pause Menu";
 
 	/**
 	 * {@link VisualList} of buttons to toggle the Music on and off.

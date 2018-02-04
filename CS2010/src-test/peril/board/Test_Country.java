@@ -2,13 +2,15 @@ package peril.board;
 
 import static org.junit.Assert.*;
 
-import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import peril.model.ModelColor;
 import peril.model.board.ModelCountry;
+import peril.model.board.links.ModelLink;
+import peril.model.board.links.ModelLinkState;
 
 /**
  * This class tests {@link SlickCountry}.
@@ -45,7 +47,7 @@ public class Test_Country {
 	 */
 	@Test(expected = NullPointerException.class)
 	public void test_addNullNeighbour() {
-		testCountry.addNeighbour(null);
+		testCountry.addNeighbour(null, null);
 	}
 
 	/**
@@ -57,10 +59,10 @@ public class Test_Country {
 		ModelCountry newNeighbour = new ModelCountry(testName, new ModelColor(0, 0, 0));
 
 		// Adds a country to the list of neighbours in the testCountry.
-		testCountry.addNeighbour(newNeighbour);
+		testCountry.addNeighbour(newNeighbour, new ModelLink(ModelLinkState.OPEN));
 
 		// Stores the current neighbours of the testCountry in resultList.
-		List<ModelCountry> resultList = testCountry.getNeighbours();
+		Set<ModelCountry> resultList = testCountry.getNeighbours();
 
 		// Asserting that there is a neighbour in the list.
 		assertTrue(!resultList.isEmpty());

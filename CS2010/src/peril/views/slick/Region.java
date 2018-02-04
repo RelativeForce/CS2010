@@ -129,7 +129,7 @@ public final class Region {
 		} else if (height < 0) {
 			throw new IllegalArgumentException("Height cannot be negative.");
 		}
-		
+
 		// Holds the region that will be the result.
 		final boolean[] base = new boolean[width * height];
 
@@ -159,6 +159,54 @@ public final class Region {
 		}
 
 		return new Region(base, width, height);
+	}
+
+	/**
+	 * Determines whether the two specified {@link Region}s overlap or not at the
+	 * pixel level.
+	 * 
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	public static boolean overlap(Region a, Region b) {
+
+		boolean overlap = false;
+
+		final boolean xLeft = a.position.x < b.position.x + b.width;
+		final boolean xRight = a.position.x + a.width > b.position.x;
+
+		final boolean yTop = a.position.y < b.position.y + b.height;
+		final boolean yBottom = a.position.y + a.height > b.position.y;
+
+		final boolean borderOverlapX = xLeft || xRight;
+		final boolean borderOverlapY = yTop || yBottom;
+
+		// If the regions' borders overlap then they may over lap at pixel level.
+		if (borderOverlapX && borderOverlapY) {
+
+			// Determine the x and y boundaries based on where a and b overlap
+			final int minX = xLeft ? a.position.x : b.position.x;
+			final int maxX = xRight ? a.position.x + a.width : b.position.x + b.width;
+			final int minY = yTop ? a.position.y : b.position.y;
+			final int maxY = yBottom ? a.position.y + a.height : b.position.y + b.height;
+
+			// Iterate over the overlapping region and check if any of the pixels in that
+			// region overlap.
+			for (int x = minX; x < maxX; x++) {
+
+				for (int y = minY; y < maxY; y++) {
+
+					if (a.isInside(new Point(x, y)) && b.isInside(new Point(x, y))) {
+						overlap = true;
+					}
+
+				}
+			}
+
+		}
+
+		return overlap;
 	}
 
 	/**
@@ -363,8 +411,8 @@ public final class Region {
 	}
 
 	/**
-	 * Designed to reduce a <code>boolean[]</code> from a specified
-	 * <code>int</code> width and <code>int</code> height to the smallest possible
+	 * Designed to reduce a <code>boolean[]</code> from a specified <code>int</code>
+	 * width and <code>int</code> height to the smallest possible
 	 * <code>boolean[]</code> without loosing any data. This will minimise the
 	 * storage space an increase the efficiency greatly. It also helps construct the
 	 * parent class {@link Region}.<br>

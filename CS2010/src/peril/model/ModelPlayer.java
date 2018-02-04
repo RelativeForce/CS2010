@@ -9,8 +9,8 @@ import peril.model.board.ModelArmy;
 
 /**
  * The internal representation of a user of the system. This object will hold
- * all of the details about a users game such as the number of {@link ModelCountry}s
- * that user has.
+ * all of the details about a users game such as the number of
+ * {@link ModelCountry}s that user has.
  * 
  * @author Joshua_Eddy, Ezekiel_Trinidad
  *
@@ -29,8 +29,8 @@ public final class ModelPlayer extends Observable implements Player {
 	public final ModelArmy totalArmy;
 
 	/**
-	 * The {@link ModelArmy} to be distributed by the {@link ModelPlayer} at the start of the
-	 * next turn.
+	 * The {@link ModelArmy} to be distributed by the {@link ModelPlayer} at the
+	 * start of the next turn.
 	 * 
 	 */
 	public final ModelArmy distributableArmy;
@@ -60,8 +60,8 @@ public final class ModelPlayer extends Observable implements Player {
 	public ModelPlayer(int number, AI ai) {
 		this.countries = 0;
 		this.continents = 0;
-		this.distributableArmy = new ModelArmy(0);
-		this.totalArmy = new ModelArmy(0);
+		this.distributableArmy = new ModelArmy();
+		this.totalArmy = new ModelArmy();
 		this.ai = ai;
 		this.number = number;
 	}
@@ -70,11 +70,12 @@ public final class ModelPlayer extends Observable implements Player {
 	 * Sets the {@link ModelCountry}s owned by the {@link ModelPlayer}.
 	 * 
 	 * @param countriesRuled
-	 *            The number of {@link ModelCountry}s the {@link ModelPlayer} now owns.
+	 *            The number of {@link ModelCountry}s the {@link ModelPlayer} now
+	 *            owns.
 	 */
 	public void setCountriesRuled(int countriesRuled) {
 		countries = countriesRuled;
-		
+
 		notifyObservers(new Update("countries", countries));
 	}
 
@@ -91,11 +92,12 @@ public final class ModelPlayer extends Observable implements Player {
 	 * Sets the {@link ModelContinent}s ruled by the {@link ModelPlayer}.
 	 * 
 	 * @param continentsRuled
-	 *            The number of {@link ModelContinent}s the {@link ModelPlayer} now owns.
+	 *            The number of {@link ModelContinent}s the {@link ModelPlayer} now
+	 *            owns.
 	 */
 	public void setContinentsRuled(int continentsRuled) {
 		continents = continentsRuled;
-		
+
 		notifyObservers(new Update("continents", continentsRuled));
 	}
 
@@ -123,11 +125,11 @@ public final class ModelPlayer extends Observable implements Player {
 
 		totalArmy.setStrength(0);
 		distributableArmy.setStrength(0);
-		
+
 		// Reset countries ruled.
 		countries = 0;
 		notifyObservers(new Update("countries", countries));
-		
+
 		// Reset continents ruled.
 		continents = 0;
 		notifyObservers(new Update("continents", continents));

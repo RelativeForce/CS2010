@@ -5,6 +5,7 @@ import java.util.Observable;
 
 import peril.Update;
 import peril.controllers.GameController;
+import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
 import peril.views.slick.board.SlickCountry;
@@ -111,7 +112,7 @@ public abstract class ModelState extends Observable {
 		// one.
 		if (oldRuler != null) {
 			oldRuler.setCountriesRuled(oldRuler.getCountriesRuled() - 1);
-			oldRuler.totalArmy.remove(1);
+			oldRuler.totalArmy.remove(UnitHelper.getInstance().getWeakest());
 		}
 
 		// Reassign the ruler of the country.
@@ -121,7 +122,7 @@ public abstract class ModelState extends Observable {
 		// owns by one.
 		if (newRuler != null) {
 			newRuler.setCountriesRuled(newRuler.getCountriesRuled() + 1);
-			newRuler.totalArmy.add(1);
+			newRuler.totalArmy.add(UnitHelper.getInstance().getWeakest());
 		}
 
 	}

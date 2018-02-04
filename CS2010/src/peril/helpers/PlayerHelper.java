@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 import peril.Challenge;
 import peril.Game;
 import peril.model.ModelPlayer;
+import peril.model.board.ModelArmy;
 
 /**
  * A helper class for {@link Game} which encapsulates the behaviours of the list
@@ -41,7 +42,7 @@ public class PlayerHelper {
 	 * Holds all the {@link SlickPlayer}s in this {@link Game}.
 	 */
 	private final Map<Integer, ModelPlayer> playing;
-	
+
 	private final List<ModelPlayer> losers;
 
 	/**
@@ -69,7 +70,7 @@ public class PlayerHelper {
 		this.game = game;
 		this.playing = new LinkedHashMap<>();
 		this.index = playing.keySet().iterator();
-		this.challenges = new LinkedList<>();	
+		this.challenges = new LinkedList<>();
 		this.losers = new LinkedList<>();
 	}
 
@@ -147,7 +148,7 @@ public class PlayerHelper {
 	 *            {@link SlickPlayer} number that has lost.
 	 */
 	public void setLoser(ModelPlayer defendingPlayer) {
-		
+
 		losers.add(defendingPlayer);
 
 		playing.remove(defendingPlayer.number);
@@ -280,13 +281,13 @@ public class PlayerHelper {
 		ModelPlayer player = getCurrent();
 
 		// Scale reinforcements with round progression.
-		int roundScale = game.getRoundNumber() != 0 ? game.getRoundNumber() * 2 : 1;
+		final int roundScale = game.getRoundNumber() != 0 ? game.getRoundNumber() * 2 : 1;
 
-		if (player.getCountriesRuled() < 12) {
-			player.distributableArmy.add(3 * roundScale);
-		} else {
-			player.distributableArmy.add((player.getCountriesRuled() * roundScale) / 3);
-		}
+		// The factor is based on player progression.
+		final int factor = (player.getCountriesRuled() < 12 ? 9 : player.getCountriesRuled()) / 3;
+
+		player.distributableArmy.add(ModelArmy.generateUnits(factor * roundScale));
+
 	}
 
 }

@@ -27,8 +27,8 @@ public enum ModelLinkState {
 		public void transferBetween(ModelUnit unit, ModelCountry origin, ModelCountry destination) {
 
 			// Move the unit.
-			origin.getArmy().remove(unit.strength);
-			destination.getArmy().add(unit.strength);
+			origin.getArmy().remove(unit);
+			destination.getArmy().add(unit);
 		}
 	},
 	/**
@@ -45,36 +45,6 @@ public enum ModelLinkState {
 		@Override
 		public void transferBetween(ModelUnit unit, ModelCountry origin, ModelCountry destination) {
 			throw new IllegalStateException(name + " cannot transfer units.");
-		}
-	},
-	/**
-	 * A {@link ModelLinkState} that allows units to move between two friendly
-	 * countries freely but if the origin is an enemy of the destination then the
-	 * strength of the transfered unit is reduced by 40%.
-	 */
-	FORTIFIED("Fortified") {
-
-		@Override
-		public boolean canTransfer(ModelUnit unit, ModelCountry origin, ModelCountry destination) {
-			return true;
-		}
-
-		@Override
-		public void transferBetween(ModelUnit unit, ModelCountry origin, ModelCountry destination) {
-
-			if (origin.getRuler() == destination.getRuler()) {
-
-				// Move the unit.
-				origin.getArmy().remove(unit.strength);
-				destination.getArmy().add(unit.strength);
-			} else {
-
-				// Add Only move 60% of the unit
-				origin.getArmy().remove(unit.strength);
-				destination.getArmy().add((unit.strength * 10) / 6);
-
-			}
-
 		}
 	};
 

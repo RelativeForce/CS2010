@@ -175,24 +175,24 @@ public final class MapReader extends FileParser {
 		String name = details[1];
 
 		int strength;
-		
+
 		// Parse the strength value of the unit.
 		try {
 			strength = Integer.parseInt(details[2]);
 		} catch (Exception ex) {
 			throw new IllegalArgumentException(details[2] + " is not a valid rgb value.");
 		}
-		
+
 		String fileName = details[3];
-		
+
 		ModelUnit model = new ModelUnit(name, strength, fileName);
-		
-		Image asset = ImageReader.getImage(game.getUIPath() + fileName).getScaledCopy(30, 30);
-		
+
+		Image asset = ImageReader.getImage(game.getUIPath() + fileName).getScaledCopy(SlickUnit.WIDTH, SlickUnit.HEIGHT);
+
 		SlickUnit slickUnit = new SlickUnit(model, asset);
-		
+
 		view.addUnit(slickUnit);
-		
+
 		UnitHelper.getInstance().addUnit(model);
 
 	}
@@ -273,19 +273,18 @@ public final class MapReader extends FileParser {
 
 		SlickPlayer slick = parsePlayer(details[6]);
 
-		ModelPlayer ruler = null;
+		ModelCountry model = new ModelCountry(name, new ModelColor(r, g, b));
 
 		// If there is an owner add it to the players list
 		if (slick != null) {
-			ruler = slick.model;
-			ruler.totalArmy.add(armySize);
+			ModelPlayer ruler = slick.model;
+
+			// Set the ruler
+			model.setRuler(ruler);
 			ruler.setCountriesRuled(ruler.getCountriesRuled() + 1);
+
+			ModelArmy.generateUnits(armySize).forEach(unit -> ruler.totalArmy.add(unit));
 		}
-
-		ModelCountry model = new ModelCountry(name, new ModelColor(r, g, b));
-
-		// Set the ruler
-		model.setRuler(ruler);
 
 		// Gets the region by colour.
 		Region region = new Region(countryMap, new Color(r, g, b));
@@ -295,7 +294,7 @@ public final class MapReader extends FileParser {
 
 		SlickArmy army = new SlickArmy(country.model.getArmy());
 
-		// Set the army size
+		// Set the army strength
 		country.model.getArmy().setStrength(armySize);
 
 		// Add the country to the view.
@@ -401,10 +400,10 @@ public final class MapReader extends FileParser {
 					+ " does not contain the correct number of elements, there should be " + STATE_LENGTH + "");
 		}
 
-		int armySize;
+		int armyStrength;
 
 		try {
-			armySize = Integer.parseInt(details[2]);
+			armyStrength = Integer.parseInt(details[2]);
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Line " + index + " " + details[2] + " is not a valid army size");
 		}
@@ -419,7 +418,8 @@ public final class MapReader extends FileParser {
 
 		SlickPlayer player = new SlickPlayer(playerNumber, slickGame.getColor(playerNumber), AI.USER);
 
-		player.model.distributableArmy.setStrength(armySize);
+		player.model.distributableArmy.setStrength(armyStrength);
+
 		player.replaceImage(slickGame.getPlayerIcon(playerNumber));
 
 		boolean isActive;
@@ -498,8 +498,8 @@ public final class MapReader extends FileParser {
 				public boolean hasCompleted(ModelPlayer player, ModelBoard board) {
 
 					if (player.getContinentsRuled() >= goal) {
-						// Give the player a army of size 5 to distribute.
-						player.distributableArmy.add(reward);
+						// Give the player a army to distribute.
+						player.distributableArmy.add(ModelArmy.generateUnits(reward));
 						return true;
 					}
 
@@ -545,8 +545,8 @@ public final class MapReader extends FileParser {
 				public boolean hasCompleted(ModelPlayer player, ModelBoard board) {
 
 					if (player.getCountriesRuled() >= goal) {
-						// Give the player a reward army to distribute.
-						player.distributableArmy.add(reward);
+						// Give the player a army to distribute.
+						player.distributableArmy.add(ModelArmy.generateUnits(reward));
 
 						return true;
 					}
@@ -592,8 +592,9 @@ public final class MapReader extends FileParser {
 				public boolean hasCompleted(ModelPlayer player, ModelBoard board) {
 
 					if (player.totalArmy.getStrength() >= sizeOfArmy) {
-						// Give the player a army of size 5 to distribute.
-						player.distributableArmy.add(reward);
+
+						// Give the player a army to distribute.
+						player.distributableArmy.add(ModelArmy.generateUnits(reward));
 						return true;
 					}
 

@@ -212,26 +212,33 @@ public final class SlickArmy implements Observer {
 
 		final SlickUnit slickSelected = view.getVisual(selected);
 
+		// Reposition the units on screen.
 		rePositionUnits(position, view);
 
-		int x = position.x - ((model.getVarietyOfUnits() - 1) * PADDING);
-		int y = position.y;
+		int x = position.x - ((model.getVarietyOfUnits() - 1) * PADDING) - (SlickUnit.WIDTH / 2);
+		int y = position.y - (SlickUnit.HEIGHT / 2);
 
+		// For each unit in the army
 		for (ModelUnit current : model) {
 
+			// Holds the visual version of the unit.
 			final SlickUnit unit = view.getVisual(current);
 
+			// If the current unit is the selected unit then draw a highlight rectangle
+			// behind it.
 			if (view.getVisual(current).equals(slickSelected)) {
 
-				final int width = unit.getWidth();
-				final int height = unit.getHeight();
-				final int xPadding = width / 20;
-				final int yPadding = height / 20;
+				final int xPadding = SlickUnit.WIDTH / 20;
+				final int yPadding = SlickUnit.HEIGHT / 20;
+
+				final int width = SlickUnit.WIDTH + (2 * xPadding);
+				final int height = SlickUnit.HEIGHT + (2 * yPadding);
 
 				g.setColor(Color.cyan);
-				g.fillRect(x - xPadding, y - yPadding, width + (2 * xPadding), height + (2 * yPadding));
+				g.fillRect(x - xPadding, y - yPadding, width, height);
 			}
 
+			// Draw the unit.
 			drawUnit(g, unit);
 
 			x += PADDING;
@@ -251,9 +258,10 @@ public final class SlickArmy implements Observer {
 	 */
 	private void rePositionUnits(Point position, SlickModelView view) {
 
-		int x = position.x - ((model.getVarietyOfUnits() - 1) * PADDING);
-		int y = position.y;
+		int x = position.x - ((model.getVarietyOfUnits() - 1) * PADDING) - (SlickUnit.WIDTH / 2);
+		int y = position.y - (SlickUnit.HEIGHT / 2);
 
+		// For each unit in the army
 		for (ModelUnit current : model) {
 
 			final SlickUnit unit = view.getVisual(current);
@@ -341,9 +349,11 @@ public final class SlickArmy implements Observer {
 		g.drawImage(unit.getImage(), position.x, position.y);
 
 		final String number = Integer.toString(numberOfCurrent);
-		final int x = position.x + 15 - (expandedFont.getWidth(number) / 2);
+		
+		final int x = position.x + (SlickUnit.WIDTH / 2) - (expandedFont.getWidth(number) / 2);
+		final int y = position.y + (SlickUnit.HEIGHT / 2) - (expandedFont.getHeight() / 2);
 
-		expandedFont.draw(g, number, x, position.y);
+		expandedFont.draw(g, number, x, y);
 
 	}
 

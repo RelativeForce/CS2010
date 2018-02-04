@@ -11,7 +11,6 @@ import peril.views.slick.Button;
 import peril.views.slick.Font;
 import peril.views.slick.Point;
 import peril.views.slick.Region;
-import peril.views.slick.Viewable;
 import peril.views.slick.components.lists.VisualList;
 
 /**
@@ -123,18 +122,6 @@ public class PauseMenu extends Menu {
 			drawMusicToggle(g);
 
 		}
-
-	}
-
-	/**
-	 * Adds an {@link Viewable} to this {@link PauseMenu}. The {@link Viewable}s
-	 * added will be scaled to the size of the {@link PauseMenu}.
-	 */
-	@Override
-	public void addImage(Viewable image) {
-		super.addImage(image);
-		image.scale(getWidth(), getWidth());
-		image.setPosition(getPosition());
 
 	}
 

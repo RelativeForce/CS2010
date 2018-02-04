@@ -47,9 +47,8 @@ public abstract class Menu extends Clickable implements Container, Component {
 	 * The {@link Game} that this {@link Menu} is a part of.
 	 */
 	protected final GameController game;
-	
+
 	protected final SlickGame slick;
-			
 
 	/**
 	 * Whether or not this {@link Menu} is visible or not.
@@ -68,9 +67,9 @@ public abstract class Menu extends Clickable implements Container, Component {
 	 */
 	public Menu(String name, GameController game, Region region) {
 		super(region);
-		
-		if(!(game.getView() instanceof SlickGame)) {
-			throw new IllegalArgumentException("This menu ( "+name+" ) only supports slick 2d.");
+
+		if (!(game.getView() instanceof SlickGame)) {
+			throw new IllegalArgumentException("This menu ( " + name + " ) only supports slick 2d.");
 		}
 
 		this.slick = (SlickGame) game.getView();
@@ -151,15 +150,15 @@ public abstract class Menu extends Clickable implements Container, Component {
 	}
 
 	public void setVisibility(boolean state) {
-		
+
 		if (state) {
 			show();
 		} else {
 			hide();
 		}
-		
+
 	}
-	
+
 	/**
 	 * Adds a {@link Button} to this {@link Menu}.
 	 */

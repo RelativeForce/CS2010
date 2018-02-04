@@ -73,7 +73,7 @@ public final class ModelCountry extends Observable implements Country, Observer 
 
 		this.neighbours = new HashMap<ModelCountry, ModelLink>();
 		this.ruler = null;
-		this.army = new ModelArmy(1);
+		this.army = new ModelArmy();
 		this.name = name;
 		this.color = color;
 

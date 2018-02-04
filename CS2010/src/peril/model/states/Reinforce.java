@@ -2,8 +2,10 @@ package peril.model.states;
 
 import peril.controllers.GameController;
 import peril.controllers.api.Player;
+import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
+import peril.model.board.ModelUnit;
 
 public class Reinforce extends ModelState {
 
@@ -63,12 +65,14 @@ public class Reinforce extends ModelState {
 				// If the highlighted country has a ruler and it is that player
 				if (ruler != null && ruler.equals(player)) {
 
+					final ModelUnit weakest = UnitHelper.getInstance().getWeakest();
+					
 					// Remove the unit from the list of units to place.
-					player.distributableArmy.remove(1);
-					player.totalArmy.add(1);
+					player.distributableArmy.remove(weakest);
+					player.totalArmy.add(weakest);
 					
 					// Get that country's army and increase its size by one.
-					highlightedCountry.getArmy().add(1);
+					highlightedCountry.getArmy().add(weakest);
 					
 					game.checkChallenges();
 

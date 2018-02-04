@@ -253,8 +253,8 @@ public class Fortify extends ModelState {
 				ModelArmy targetArmy = target.getArmy();
 
 				// Move the unit.
-				targetArmy.setStrength(targetArmy.getStrength() + unit.strength);
-				primaryArmy.setStrength(primaryArmy.getStrength() - unit.strength);
+				primaryArmy.remove(unit);
+				targetArmy.add(unit);
 
 				if (primaryArmy.getStrength() == 1) {
 					deselectAll();

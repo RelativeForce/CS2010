@@ -8,9 +8,9 @@ import peril.views.slick.Region;
 
 public class SlickUnit extends Clickable{
 	
-	public static final int WIDTH = 50;
+	public static final int WIDTH = 25;
 	
-	public static final int HEIGHT = 50;
+	public static final int HEIGHT = 25;
 	
 	public final ModelUnit model;
 	

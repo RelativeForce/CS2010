@@ -58,7 +58,10 @@ public class Action<T> {
 	 * {@link Action#isDone()} will return <code>true</code>.
 	 */
 	public void execute() {
-		task.accept(object);
+		
+		if(task != null) {
+			task.accept(object);
+		}
 		done = true;
 	}
 

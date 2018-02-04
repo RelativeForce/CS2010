@@ -64,6 +64,8 @@ public interface View {
 
 	void attack();
 	
+	void AIattack();
+	
 	void centerBoard();
 
 	void forEachLoser(Consumer<ModelPlayer> task);

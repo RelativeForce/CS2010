@@ -107,7 +107,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 	 * @param amount
 	 *            of units to remove.
 	 */
-	public boolean remove(ModelUnit unit) {
+	public void remove(ModelUnit unit) {
 
 		if (units.containsKey(unit)) {
 
@@ -116,14 +116,12 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 			} else {
 				units.replace(unit, units.get(unit) - 1);
 			}
-
-			setChanged();
-			notifyObservers(new Update("size", getStrength()));
-
-			return true;
+		} else {
+			remove(unit.strength);
 		}
 
-		return false;
+		setChanged();
+		notifyObservers();
 
 	}
 
@@ -176,6 +174,9 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 
 		units.put(unit, currentNumber + 1);
 
+		setChanged();
+		notifyObservers();
+
 	}
 
 	public void add(List<ModelUnit> unitList) {
@@ -192,12 +193,18 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 
 		populateArmy(strength);
 
+		setChanged();
+		notifyObservers();
+
 	}
 
 	public void setWeakest() {
 		clearUnits();
 
 		units.put(UnitHelper.getInstance().getWeakest(), 1);
+		
+		setChanged();
+		notifyObservers();
 
 	}
 
@@ -210,6 +217,9 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 		} else {
 			clearUnits();
 		}
+		
+		setChanged();
+		notifyObservers();
 
 	}
 

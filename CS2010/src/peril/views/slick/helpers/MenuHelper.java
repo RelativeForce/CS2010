@@ -373,17 +373,24 @@ public final class MenuHelper {
 				+ "the enemy country, the last defending unit of the enemy country will desert and join the player's army.");
 
 	}
-
 	
 	public void refreshChallenges() {
 		((ChallengeMenu) menus.get(ChallengeMenu.NAME)).refreshChallenges();
 	}
 	
+	public void attack() {
+		WarMenu warMenu = (WarMenu) menus.get(WarMenu.NAME);
+
+		warMenu.attack();
+	}
+	
 	public void autoAttack() {
+		
 		WarMenu warMenu = (WarMenu) menus.get(WarMenu.NAME);
 		show(WarMenu.NAME);
 		warMenu.selectMaxDice();
 		warMenu.attack();
+		
 	}
 
 	public boolean isPaused() {

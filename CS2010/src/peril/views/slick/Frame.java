@@ -3,7 +3,9 @@ package peril.views.slick;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 
 /**
  * Holds all the visual elements of the frame.
@@ -58,7 +60,7 @@ public final class Frame {
 		}
 	}
 
-	public void click(Point click) {
+	public boolean click(Point click) {
 		
 		boolean clickProcessed = false;
 		
@@ -78,5 +80,20 @@ public final class Frame {
 			}
 		}
 		
+		return clickProcessed;
+		
 	}
+	
+	public void draw(Image image, int x, int y) {
+		g.drawImage(image, x, y);
+	}
+	
+	public void draw(Font font, String text, int x, int y) {
+		font.draw(g, text, x, y);
+	}
+	
+	public void setColor(Color color) {
+		g.setColor(color);
+	}
+
 }

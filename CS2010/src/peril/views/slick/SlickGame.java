@@ -349,7 +349,7 @@ public class SlickGame extends StateBasedGame implements View {
 
 	@Override
 	public void attack() {
-		menus.autoAttack();
+		menus.attack();
 	}
 
 	@Override
@@ -474,10 +474,15 @@ public class SlickGame extends StateBasedGame implements View {
 		states.end.forEachLoser(task);
 	}
 
-	
 	@Override
 	public boolean isPaused() {
 		return menus.isPaused();
+	}
+
+	
+	@Override
+	public void AIattack() {
+		menus.autoAttack();
 	}
 
 }

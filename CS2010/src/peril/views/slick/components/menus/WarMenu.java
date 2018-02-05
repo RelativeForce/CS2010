@@ -866,7 +866,7 @@ public class WarMenu extends Menu {
 		 */
 		public void init() {
 			for (int i = 1; i <= 6; i++) {
-				this.defaultDice.put(i, ImageReader.getImage(game.getUIPath() + "dice" + i + ".png")
+				this.defaultDice.put(i, ImageReader.getImage(game.getDirectory().getDicePath() + "dice" + i + ".png")
 						.getScaledCopy(SlickUnit.WIDTH, SlickUnit.HEIGHT));
 			}
 		}

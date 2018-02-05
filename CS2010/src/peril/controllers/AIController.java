@@ -38,6 +38,12 @@ public interface AIController {
 	void forEachCountry(Consumer<Country> task);
 
 	/**
+	 * Reinforces the {@link Country} selected using
+	 * {@link AIController#select(Country)} with one unit.
+	 */
+	void reinforce();
+
+	/**
 	 * Performs an attack from the first {@link Country} to the second
 	 * {@link Country} that was selected using {@link AIController#select(Country)}.
 	 * This method also handles hiding an showing the UI elements of combat.<br>
@@ -79,12 +85,6 @@ public interface AIController {
 	 * @return <code>boolean</code>
 	 */
 	boolean isPathBetween(Country a, Country b);
-
-	/**
-	 * Reinforces the {@link Country} selected using
-	 * {@link AIController#select(Country)} with one unit.
-	 */
-	void reinforce();
 
 	/**
 	 * Clears the currently selected {@link Country}(s) from all the states.

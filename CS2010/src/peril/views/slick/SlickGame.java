@@ -13,6 +13,7 @@ import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
+import peril.controllers.Directory;
 import peril.controllers.GameController;
 import peril.helpers.PlayerHelper;
 import peril.io.FileParser;
@@ -104,13 +105,15 @@ public class SlickGame extends StateBasedGame implements View {
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
 		
+		final Directory directory = game.getDirectory();
+		
 		states.init(this);
 
 		modelView.init(game);
 
-		SlickHazard.initIcons(game.getUIPath());
+		SlickHazard.initIcons(directory.getHazardsPath());
 
-		initPlayers(game.getUIPath());
+		initPlayers(directory.getPlayersPath());
 
 		UIEventHandler eventHandler = new UIEventHandler(this);
 
@@ -236,12 +239,13 @@ public class SlickGame extends StateBasedGame implements View {
 	public void init(GameController game) throws Exception {
 		this.game = game;
 
+		final Directory directory = game.getDirectory();
 
 		// Construct the container for the game as a Slick2D state based game.
 		try {
 
 			// Set the icons of the game
-			String[] icons = new String[] { game.getUIPath() + "goat16.png", game.getUIPath() + "goat32.png" };
+			String[] icons = new String[] { directory.getUIPath() + "goat16.png", directory.getUIPath() + "goat32.png" };
 			agc.setIcons(icons);
 
 		} catch (SlickException e) {
@@ -287,7 +291,7 @@ public class SlickGame extends StateBasedGame implements View {
 
 		this.menus.createHelpPages(states);
 
-		this.music = new MusicHelper(this, game.getMusicPath());
+		this.music = new MusicHelper(this, directory.getMusicPath());
 
 	}
 
@@ -321,14 +325,14 @@ public class SlickGame extends StateBasedGame implements View {
 	/**
 	 * Initialises the images of a {@link SlickPlayer}.
 	 * 
-	 * @param uiPath
+	 * @param playersPath
 	 *            The path to the folder with the image files in.
 	 */
-	public void initPlayers(String uiPath) {
+	public void initPlayers(String playersPath) {
 
 		for (int index = 1; index <= PlayerHelper.MAX_PLAYERS; index++) {
 
-			String path = uiPath + "player" + index + "Icon.png";
+			String path = playersPath + "player" + index + "Icon.png";
 
 			playerIcons.put(index, ImageReader.getImage(path).getScaledCopy(90, 40));
 

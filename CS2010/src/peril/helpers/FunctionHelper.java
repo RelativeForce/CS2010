@@ -265,7 +265,7 @@ public class FunctionHelper {
 	 * @return {@link Action}
 	 */
 	private Action<?> fortifyCountry() {
-		return new Action<GameController>(game, game -> game.fortify());
+		return new Action<GameController>(game, game -> game.getFortify().fortify(UnitHelper.getInstance().getWeakest()));
 	}
 
 	/**

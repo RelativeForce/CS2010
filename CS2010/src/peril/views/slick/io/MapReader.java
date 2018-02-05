@@ -1,6 +1,5 @@
 package peril.views.slick.io;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -83,12 +82,8 @@ public final class MapReader extends FileParser {
 	 * @param file
 	 *            The file that will contain this map.
 	 */
-	public MapReader(String directoryPath, GameController game, SaveFile file) {
-		super(directoryPath, file.filename);
-
-		if (game == null) {
-			throw new NullPointerException("Game cannot be null.");
-		}
+	public MapReader(String mapName, GameController game, SaveFile file) {
+		super(game.getDirectory().asMapPath(mapName), game.getDirectory(), file.filename);
 
 		this.continents = new HashSet<>();
 		this.countries = new HashMap<>();
@@ -97,14 +92,15 @@ public final class MapReader extends FileParser {
 		this.slickGame = (SlickGame) game.getView();
 		this.view = (SlickModelView) game.getView().getModelView();
 
-		this.normalMap = ImageReader.getImage(directoryPath + File.separatorChar + "normal.png");
-		this.countryMap = ImageReader.getImage(directoryPath + File.separatorChar + "countries.png");
+		this.normalMap = ImageReader.getImage(directory.asMapPath(mapName) + "normal.png");
+		this.countryMap = ImageReader.getImage(directory.asMapPath(mapName) + "countries.png");
 
 		final SlickBoard board = this.view.getVisual(game.getModelBoard());
 
 		if (board != null) {
-			board.setPosition(new Point(0, 0));
+			
 			// Set the normal map as the visual image of the visual representation.
+			board.setPosition(new Point(0, 0));
 			board.swapImage(normalMap);
 		}
 
@@ -187,7 +183,8 @@ public final class MapReader extends FileParser {
 
 		ModelUnit model = new ModelUnit(name, strength, fileName);
 
-		Image asset = ImageReader.getImage(game.getUIPath() + fileName).getScaledCopy(SlickUnit.WIDTH, SlickUnit.HEIGHT);
+		Image asset = ImageReader.getImage(directory.getUnitsPath() + fileName).getScaledCopy(SlickUnit.WIDTH,
+				SlickUnit.HEIGHT);
 
 		SlickUnit slickUnit = new SlickUnit(model, asset);
 

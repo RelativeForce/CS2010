@@ -65,7 +65,7 @@ public final class SlickArmy implements Observer {
 		this.model = model;
 		this.expanded = false;
 		this.collapsedFont = new Font("Arial", Color.white, 17);
-		this.expandedFont = new Font("Arial", Color.black, 25);
+		this.expandedFont = new Font("Arial", Color.cyan, 25);
 		this.selected = null;
 
 		model.addObserver(this);

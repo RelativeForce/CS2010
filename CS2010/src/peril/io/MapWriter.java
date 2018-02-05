@@ -53,8 +53,11 @@ public class MapWriter {
 	public MapWriter(GameController game, SaveFile file) {
 		this.savedLinks = new HashSet<>();
 		this.game = game;
-		this.writer = new TextFileWriter(
-				game.getMapsPath() + game.getModelBoard().getName() + File.separatorChar + file.filename, false);
+
+		// The file path for the map
+		final String mapPath = game.getDirectory().getMapsPath() + game.getModelBoard().getName();
+
+		this.writer = new TextFileWriter(mapPath + File.separatorChar + file.filename, false);
 	}
 
 	/**
@@ -64,7 +67,7 @@ public class MapWriter {
 
 		// Open the file
 		writer.open();
-		
+
 		UnitHelper.getInstance().forEach(unit -> writer.writeLine(parseUnit(unit)));
 
 		// Write player details for the active players
@@ -95,19 +98,18 @@ public class MapWriter {
 	}
 
 	private String parseUnit(ModelUnit unit) {
-		
+
 		StringBuilder line = new StringBuilder();
 		line.append("Unit,");
-		
+
 		line.append(unit.name);
 		line.append(',');
-		
+
 		line.append(unit.strength);
 		line.append(',');
-		
+
 		line.append(unit.fileName);
-		
-		
+
 		return line.toString();
 	}
 
@@ -173,8 +175,8 @@ public class MapWriter {
 	 *            {@link SlickCountry}
 	 */
 	private void parseLinks(SlickCountry country) {
-		country.model.getNeighbours()
-				.forEach(neighbour -> parseLink(country, (SlickCountry) game.getView().getModelView().getVisual(neighbour)));
+		country.model.getNeighbours().forEach(
+				neighbour -> parseLink(country, (SlickCountry) game.getView().getModelView().getVisual(neighbour)));
 	}
 
 	/**

@@ -2,6 +2,8 @@ package peril.helpers;
 
 import java.io.File;
 
+import peril.controllers.Directory;
+
 /**
  * Helps the {@link Game} by holding the directory paths of the various asset
  * types.
@@ -9,22 +11,25 @@ import java.io.File;
  * @author Joshua_Eddy
  *
  */
-public class DirectoryHelper {
+public final class DirectoryHelper implements Directory {
 
-	/**
-	 * The path to the ui folder.
-	 */
-	public final String ui;
+	private final String base;
 
-	/**
-	 * The path to the maps folder.
-	 */
-	public final String maps;
+	private static final String UI = "ui";
 
-	/**
-	 * The path to the music folder.
-	 */
-	public final String music;
+	private static final String MAPS = "maps";
+
+	private static final String MUSIC = "music";
+
+	private static final String DICE = "dice";
+
+	private static final String BUTTONS = "buttons";
+
+	private static final String UNITS = "units";
+
+	private static final String PLAYERS = "players";
+
+	private static final String HAZARDS = "hazards";
 
 	/**
 	 * Constructs a new {@link DirectoryHelper}.
@@ -33,12 +38,56 @@ public class DirectoryHelper {
 	 *            The path to the assets directory.
 	 */
 	public DirectoryHelper(String assetsPath) {
+		base = assetsPath;
+	}
 
-		// Set the directory paths for the different types of game assets.
-		maps = new StringBuilder(assetsPath).append(File.separatorChar).append("maps").append(File.separatorChar).toString();
-		music = new StringBuilder(assetsPath).append(File.separatorChar).append("music").append(File.separatorChar).toString();
-		ui = new StringBuilder(assetsPath).append(File.separatorChar).append("ui").append(File.separatorChar).toString();
+	@Override
+	public String getUIPath() {
+		return base + fileSeperator() + UI + fileSeperator();
+	}
 
+	@Override
+	public String getMapsPath() {
+		return base + fileSeperator() + MAPS + fileSeperator();
+	}
+
+	@Override
+	public String getMusicPath() {
+		return base + fileSeperator() + MUSIC + fileSeperator();
+	}
+
+	@Override
+	public String getDicePath() {
+		return getUIPath() + DICE + fileSeperator();
+	}
+
+	@Override
+	public String getButtonsPath() {
+		return getUIPath() + BUTTONS + fileSeperator();
+	}
+
+	@Override
+	public String getUnitsPath() {
+		return getUIPath() + UNITS + fileSeperator();
+	}
+
+	@Override
+	public String getPlayersPath() {
+		return getUIPath() + PLAYERS + fileSeperator();
+	}
+
+	@Override
+	public String getHazardsPath() {
+		return getUIPath() + HAZARDS + fileSeperator();
+	}
+
+	@Override
+	public String asMapPath(String mapName) {
+		return getMapsPath() + mapName + fileSeperator();
+	}
+	
+	private char fileSeperator() {
+		return File.separatorChar;
 	}
 
 }

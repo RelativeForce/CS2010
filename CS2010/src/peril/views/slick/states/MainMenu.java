@@ -86,7 +86,7 @@ public final class MainMenu extends InteractiveState {
 		uiLoaded = false;
 
 		// Read the maps file containing the pre-load details of each map.
-		mapsFile = TextFileReader.scanFile(game.getMapsPath(), "maps.txt");
+		mapsFile = TextFileReader.scanFile(game.getDirectory().getMapsPath(), "maps.txt");
 
 		// Holds the y of all the menus
 		int menuY = 415;
@@ -268,7 +268,7 @@ public final class MainMenu extends InteractiveState {
 			uiLoaded = true;
 		}
 
-		slick.states.loadingScreen.addReader(slick.getMapLoader(game.getMapsPath() + map.name, saves.getSelected()));
+		slick.states.loadingScreen.addReader(slick.getMapLoader(map.name, saves.getSelected()));
 
 		// Loads the game assets and move into the set up state
 		if (saves.getSelected() == SaveFile.DEFAULT) {
@@ -333,7 +333,7 @@ public final class MainMenu extends InteractiveState {
 		// Iterate through each save and check if it exists in the current maps
 		// directory, If it does then add it to the saves list.
 		for (SaveFile file : SaveFile.values()) {
-			if (file.existsIn(game.getMapsPath() + mapName)) {
+			if (file.existsIn(game.getDirectory().getMapsPath() + mapName)) {
 				saves.add(file.name, file);
 			}
 		}

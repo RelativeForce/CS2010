@@ -32,89 +32,14 @@ public interface GameController {
 	 * @return
 	 */
 	ModelPlayer getCurrentModelPlayer();
-
-	/**
-	 * Sets the {@link Game} help menu to the specified page id.
-	 * 
-	 * @param pageId
-	 */
-	void setHelpMenuPage(int pageId);
-
-	/**
-	 * Retrieves the {@link View} that is currently in use by the {@link Game}.
-	 * 
-	 * @return
-	 */
-	View getView();
-
-	/**
-	 * The file path string to the UI components folder.
-	 * 
-	 * @return file path/
-	 */
-	String getUIPath();
-
-	/**
-	 * The file path string to the maps folder.
-	 * 
-	 * @return file path/
-	 */
-	String getMapsPath();
-
-	/**
-	 * Resets the state of the {@link Game} back to its initial state. All data is
-	 * erased.
-	 */
-	void resetGame();
-
-	/**
-	 * Sets the {@link ModelBoard}'s name.
-	 * 
-	 * @param name
-	 */
-	void setBoardName(String name);
-
-	/**
-	 * Adds a {@link ModelPlayer} to the {@link Game}.
-	 * 
-	 * @param player
-	 *            {@link ModelPlayer}
-	 */
-	void addPlayer(ModelPlayer player);
-
-	/**
-	 * Retrieves the {@link Game}'s {@link AIController}.
-	 * 
-	 * @return {@link AIController}
-	 */
-	AIController getAIController();
-
+	
 	/**
 	 * Retrieves the {@link Game}'s {@link ModelBoard}.
 	 * 
 	 * @return
 	 */
 	ModelBoard getModelBoard();
-
-	/**
-	 * Performs a {@link Consumer} task on each {@link ModelCountry} on the
-	 * {@link ModelBoard}.
-	 * 
-	 * @param task
-	 *            {@link Consumer} task
-	 */
-	void forEachModelCountry(Consumer<ModelCountry> task);
-
-	/**
-	 * Checks whether a {@link ModelPlayer} with the specified number is currently
-	 * playing or not.
-	 * 
-	 * @param playerNumber
-	 *            number of the {@link ModelPlayer}
-	 * @return
-	 */
-	boolean isPlaying(int playerNumber);
-
+	
 	/**
 	 * Retrieves a {@link ModelPlayer} using a specified player number.
 	 * 
@@ -122,28 +47,7 @@ public interface GameController {
 	 * @return
 	 */
 	ModelPlayer getModelPlayer(int playerNumber);
-
-	/**
-	 * Refreshes the state of all the challenges based on the current state of all
-	 * the {@link ModelPlayer}s.
-	 */
-	void checkChallenges();
-
-	/**
-	 * Changes the current {@link ModelPlayer} to the next.
-	 */
-	void nextPlayer();
-
-	/**
-	 * Checks whether the game has been won.
-	 */
-	void checkWinner();
-
-	/**
-	 * Checks whether the continents ruler ship has changed.
-	 */
-	void checkContinentRulership();
-
+	
 	/**
 	 * Returns the state that displays combat phase to the user.
 	 * 
@@ -171,13 +75,104 @@ public interface GameController {
 	 * @return Returns a {@link Setup} state.
 	 */
 	Setup getSetup();
+	
+	/**
+	 * Gets the list of all {@link Challenge}s the {@link ModelPlayer}s can
+	 * complete.
+	 * 
+	 * @return The {@link List} of {@link Challenge}s.
+	 */
+	List<Challenge> getChallenges();
+	
+	/**
+	 * Retrieves the {@link View} that is currently in use by the {@link Game}.
+	 * 
+	 * @return
+	 */
+	View getView();
+	
+	/**
+	 * Retrieves the {@link Game}'s {@link AIController}.
+	 * 
+	 * @return {@link AIController}
+	 */
+	AIController getAIController();
+	
+	/**
+	 * Retrieves the {@link Directory} that denotes the file system of the assets of
+	 * the game.
+	 * 
+	 * @return {@link Directory}
+	 */
+	Directory getDirectory();
 
 	/**
-	 * Returns a String that is the path to the music assets.
+	 * Sets the {@link Game} help menu to the specified page id.
 	 * 
-	 * @return String path to the music assets.
+	 * @param pageId
 	 */
-	String getMusicPath();
+	void setHelpMenuPage(int pageId);
+
+	/**
+	 * Resets the state of the {@link Game} back to its initial state. All data is
+	 * erased.
+	 */
+	void resetGame();
+
+	/**
+	 * Sets the {@link ModelBoard}'s name.
+	 * 
+	 * @param name
+	 */
+	void setBoardName(String name);
+
+	/**
+	 * Adds a {@link ModelPlayer} to the {@link Game}.
+	 * 
+	 * @param player
+	 *            {@link ModelPlayer}
+	 */
+	void addPlayer(ModelPlayer player);
+
+	/**
+	 * Performs a {@link Consumer} task on each {@link ModelCountry} on the
+	 * {@link ModelBoard}.
+	 * 
+	 * @param task
+	 *            {@link Consumer} task
+	 */
+	void forEachModelCountry(Consumer<ModelCountry> task);
+
+	/**
+	 * Checks whether a {@link ModelPlayer} with the specified number is currently
+	 * playing or not.
+	 * 
+	 * @param playerNumber
+	 *            number of the {@link ModelPlayer}
+	 * @return
+	 */
+	boolean isPlaying(int playerNumber);
+
+	/**
+	 * Refreshes the state of all the challenges based on the current state of all
+	 * the {@link ModelPlayer}s.
+	 */
+	void checkChallenges();
+
+	/**
+	 * Changes the current {@link ModelPlayer} to the next.
+	 */
+	void nextPlayer();
+
+	/**
+	 * Checks whether the game has been won.
+	 */
+	void checkWinner();
+
+	/**
+	 * Checks whether the continents ruler ship has changed.
+	 */
+	void checkContinentRulership();
 
 	/**
 	 * Sets the current {@link ModelPlayer} for this round.
@@ -202,14 +197,6 @@ public interface GameController {
 	 *            The {@link Challenge} to be added.
 	 */
 	void addChallenge(Challenge challenge);
-
-	/**
-	 * Gets the list of all {@link Challenge}s the {@link ModelPlayer}s can
-	 * complete.
-	 * 
-	 * @return The {@link List} of {@link Challenge}s.
-	 */
-	List<Challenge> getChallenges();
 
 	/**
 	 * Performs a specified task for each {@link ModelPlayer}.
@@ -270,7 +257,8 @@ public interface GameController {
 	/**
 	 * Sets a {@link ModelPlayer} as a loser.
 	 * 
-	 * @param player the {@link ModelPlayer} who is a loser.
+	 * @param player
+	 *            the {@link ModelPlayer} who is a loser.
 	 */
 	void setLoser(ModelPlayer player);
 
@@ -285,10 +273,9 @@ public interface GameController {
 	/**
 	 * Processes the turn of the AI.
 	 * 
-	 * @param delta Delta time delay for the AI to process its turn.
+	 * @param delta
+	 *            Delta time delay for the AI to process its turn.
 	 */
 	void processAI(int delta);
-
-	void fortify();
 
 }

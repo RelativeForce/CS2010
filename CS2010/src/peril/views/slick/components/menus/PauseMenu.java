@@ -265,10 +265,11 @@ public class PauseMenu extends Menu {
 	 */
 	private void addSaveFile(SaveFile file) {
 
+		final String mapPath = game.getDirectory().getMapsPath() + game.getModelBoard().getName();
+		
 		// If the save file does not currently exist display to the user that it is
 		// empty
-		boolean exists = file.existsIn(game.getMapsPath() + game.getModelBoard().getName());
-		String text = file.name + (exists ? "" : " - Empty");
+		final String text = file.name + (file.existsIn(mapPath) ? "" : " - Empty");
 
 		saveFiles.add(text, file);
 	}

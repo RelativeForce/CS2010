@@ -330,7 +330,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		}
 
 	}
-	
+
 	/**
 	 * Updates this {@link CoreGameState} as an {@link Observer}.
 	 */
@@ -356,7 +356,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		}
 
 	}
-	
+
 	/**
 	 * Moves all the visual elements contained within this {@link CoreGameState}
 	 * along a specified {@link Point} vector.
@@ -655,19 +655,23 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		// Iterate over each object in the list and highlight them.
 		for (Object obj : (List<?>) update.newValue) {
 
-			if (!(obj instanceof ModelCountry)) {
-				throw new IllegalArgumentException("The list must contain model countries.");
+			// If the object is not a null country
+			if (obj != null) {
+
+				if (!(obj instanceof ModelCountry)) {
+					throw new IllegalArgumentException("The list must contain model countries.");
+				}
+
+				// Holds the slick country assigned to the model country from the list.
+				final SlickCountry country = slick.modelView.getVisual((ModelCountry) obj);
+
+				// Expand the army and highlight the new country
+				slick.modelView.getVisual(country.model.getArmy()).expand();
+				addHighlight(country);
+
+				// Add the country to the list of selected countries.
+				selected.add(country);
 			}
-
-			// Holds the slick country assigned to the model country from the list.
-			final SlickCountry country = slick.modelView.getVisual((ModelCountry) obj);
-
-			// Expand the army and highlight the new country
-			slick.modelView.getVisual(country.model.getArmy()).expand();
-			addHighlight(country);
-
-			// Add the country to the list of selected countries.
-			selected.add(country);
 
 		}
 

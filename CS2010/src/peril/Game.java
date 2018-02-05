@@ -43,7 +43,9 @@ public final class Game {
 	 * The {@link AIController} that allows the user/AI to interact with the
 	 * {@link Game}.
 	 */
-	private final RequestHandler api;
+	private final GameController game;
+	
+	private final AIController ai;
 
 	public final View view;
 
@@ -63,7 +65,8 @@ public final class Game {
 
 		this.assets = new DirectoryHelper(assetsPath.toString());
 
-		this.api = new RequestHandler(this);
+		this.game = new GameHandler(this);
+		this.ai = new AIHandler(this);
 
 		// Construct the board with the initial name.
 		this.board = new ModelBoard("NOT ASSIGNED");
@@ -120,7 +123,7 @@ public final class Game {
 	public void start() {
 
 		try {
-			view.init(api);
+			view.init(game);
 			view.start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -129,11 +132,11 @@ public final class Game {
 	}
 
 	public AIController getAIController() {
-		return api;
+		return ai;
 	}
 
 	public GameController getGameController() {
-		return api;
+		return game;
 	}
 
 	/**

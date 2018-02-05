@@ -73,7 +73,7 @@ public final class PlayerSelection extends InteractiveState {
 	 * @param id
 	 *            The id of this {@link PlayerSelection}.
 	 */
-	public PlayerSelection(GameController game,  int id) {
+	public PlayerSelection(GameController game, int id) {
 		super(game, NAME, id, HelpMenu.NULL_PAGE);
 
 		this.playButton = "play";
@@ -193,6 +193,10 @@ public final class PlayerSelection extends InteractiveState {
 	 */
 	public void loadGame() throws SlickException {
 
+		// Reset the board
+		game.resetGame();
+		game.getModelBoard().reset();
+
 		// Iterate through the number of players the player has selected
 		for (int index = 1; index <= players.getSelected(); index++) {
 
@@ -209,11 +213,9 @@ public final class PlayerSelection extends InteractiveState {
 			slick.modelView.addPlayer(player);
 
 		}
-		// Reset the board
-		game.getModelBoard().reset();
-		slick.reSize(width, height);
 
 		// Load the game
+		slick.reSize(width, height);
 		slick.enterState(slick.states.loadingScreen);
 	}
 

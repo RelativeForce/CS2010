@@ -58,7 +58,7 @@ public class Reinforce extends ModelState {
 		if (highlightedCountry != null) {
 
 			// If the player has any units to place
-			if (player.distributableArmy.getStrength() > 0) {
+			if (player.distributableArmy.getNumberOfUnits() > 0) {
 
 				ModelPlayer ruler = highlightedCountry.getRuler();
 

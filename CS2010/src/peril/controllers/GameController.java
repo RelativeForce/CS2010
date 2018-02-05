@@ -3,8 +3,6 @@ package peril.controllers;
 import java.util.List;
 import java.util.function.Consumer;
 
-import javax.jws.WebParam.Mode;
-
 import peril.Challenge;
 import peril.Game;
 import peril.controllers.api.Country;
@@ -17,7 +15,6 @@ import peril.model.states.Fortify;
 import peril.model.states.Reinforce;
 import peril.model.states.Setup;
 import peril.views.View;
-import peril.views.slick.states.gameStates.multiSelectState.CombatState;
 
 /**
  * 

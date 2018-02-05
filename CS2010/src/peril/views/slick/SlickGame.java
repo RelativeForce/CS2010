@@ -34,7 +34,6 @@ import peril.views.slick.io.ImageReader;
 import peril.views.slick.io.MapReader;
 import peril.views.slick.states.*;
 import peril.views.slick.states.gameStates.*;
-import peril.views.slick.states.gameStates.multiSelectState.*;
 
 public class SlickGame extends StateBasedGame implements View {
 

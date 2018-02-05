@@ -1,4 +1,4 @@
-package peril.views.slick.states.gameStates.multiSelectState;
+package peril.views.slick.states.gameStates;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +25,7 @@ import peril.views.slick.board.SlickCountry;
  * @author Joshua_Eddy, Joseph_Rolli
  *
  */
-public final class MovementState extends MultiSelectState {
+public final class MovementState extends CoreGameState {
 
 	/**
 	 * The name of a specific {@link MovementState}.

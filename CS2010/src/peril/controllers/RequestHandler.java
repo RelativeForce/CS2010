@@ -382,7 +382,7 @@ public final class RequestHandler implements AIController, GameController {
 
 	@Override
 	public void autoDistributeCountries() {
-		game.autoDistributeCountries();
+		getSetup().autoDistributeCountries(getModelBoard(), game.players);
 	}
 
 	@Override
@@ -411,6 +411,12 @@ public final class RequestHandler implements AIController, GameController {
 
 		}
 
+	}
+	
+	@Override
+	public void addPoints(int points) {
+		ModelPlayer currentPlayer = game.players.getCurrent();
+		currentPlayer.setPoints(currentPlayer.getPoints());
 	}
 
 }

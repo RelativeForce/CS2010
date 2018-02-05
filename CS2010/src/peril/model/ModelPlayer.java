@@ -42,6 +42,11 @@ public final class ModelPlayer extends Observable implements Player {
 	public final AI ai;
 
 	/**
+	 * The amount of points the {@link ModelPlayer} will have.
+	 */
+	private int points;
+
+	/**
 	 * The number of the {@link ModelCountry}s the {@link ModelPlayer} owns.
 	 */
 	private int countries;
@@ -64,6 +69,7 @@ public final class ModelPlayer extends Observable implements Player {
 		this.totalArmy = new ModelArmy();
 		this.ai = ai;
 		this.number = number;
+		this.points = 0;
 	}
 
 	/**
@@ -149,6 +155,21 @@ public final class ModelPlayer extends Observable implements Player {
 	@Override
 	public int getDistributableArmySize() {
 		return distributableArmy.getStrength();
+	}
+
+	/**
+	 * Retrieves the amount of points this {@link ModelPlayer} has.
+	 */
+	public int getPoints() {
+		return this.points;
+	}
+
+	/**
+	 * Sets the amount of points this {@link ModelPlayer} has.
+	 * @param points The new amount of points the {@link ModelPlayer} will have.
+	 */
+	public void setPoints(int points) {
+		this.points = points;
 	}
 
 }

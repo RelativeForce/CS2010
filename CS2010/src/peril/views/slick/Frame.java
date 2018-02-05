@@ -96,4 +96,9 @@ public final class Frame {
 		g.setColor(color);
 	}
 
+	public void drawLine(Point a, Point b) {
+		g.drawLine(a.x, a.y, b.x, b.y);
+		
+	}
+
 }

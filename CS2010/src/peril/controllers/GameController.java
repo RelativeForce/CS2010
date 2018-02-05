@@ -3,8 +3,11 @@ package peril.controllers;
 import java.util.List;
 import java.util.function.Consumer;
 
+import javax.jws.WebParam.Mode;
+
 import peril.Challenge;
 import peril.Game;
+import peril.controllers.api.Country;
 import peril.controllers.api.Player;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
@@ -14,6 +17,7 @@ import peril.model.states.Fortify;
 import peril.model.states.Reinforce;
 import peril.model.states.Setup;
 import peril.views.View;
+import peril.views.slick.states.gameStates.multiSelectState.CombatState;
 
 /**
  * 
@@ -143,42 +147,149 @@ public interface GameController {
 	 */
 	void checkContinentRulership();
 
+	/**
+	 * Returns the state that displays combat phase to the user.
+	 * 
+	 * @return Returns an {@link Attack} state.
+	 */
 	Attack getAttack();
 
+	/**
+	 * Returns the state that displays reinforcement phase to the user.
+	 * 
+	 * @return Returns a {@link Reinforce} state.
+	 */
 	Reinforce getReinforce();
 
+	/**
+	 * Returns the state that displays the fortification(fortify) phase to the user.
+	 * 
+	 * @return Returns a {@link Fortify} state.
+	 */
 	Fortify getFortify();
 
+	/**
+	 * Returns the state that displays the setup phase to the user.
+	 * 
+	 * @return Returns a {@link Setup} state.
+	 */
 	Setup getSetup();
 
+	/**
+	 * Returns a String that is the path to the music assets.
+	 * 
+	 * @return String path to the music assets.
+	 */
 	String getMusicPath();
 
+	/**
+	 * Sets the current {@link ModelPlayer} for this round.
+	 * 
+	 * @param model
+	 *            The current {@link ModelPlayer} who's turn it is.
+	 */
 	void setCurrentPlayer(ModelPlayer model);
-	
+
+	/**
+	 * Sets the current round number.
+	 * 
+	 * @param parseInt
+	 *            The number of the current round.
+	 */
 	void setRoundNumber(int parseInt);
 
+	/**
+	 * Adds a {@link Challenge} to the game for the {@link ModelPlayer}s to achieve.
+	 *
+	 * @param challenge
+	 *            The {@link Challenge} to be added.
+	 */
 	void addChallenge(Challenge challenge);
 
+	/**
+	 * Gets the list of all {@link Challenge}s the {@link ModelPlayer}s can
+	 * complete.
+	 * 
+	 * @return The {@link List} of {@link Challenge}s.
+	 */
 	List<Challenge> getChallenges();
 
+	/**
+	 * Performs a specified task for each {@link ModelPlayer}.
+	 * 
+	 * @param task
+	 *            The task to be performed on each {@link ModelPlayer.}
+	 */
 	void forEachModelPlayer(Consumer<ModelPlayer> task);
 
+	/**
+	 * Performs a specified task for each loser {@link ModelPlayer}.
+	 * 
+	 * @param task
+	 *            The task to be performed on each {@link ModelPlayer} (loser).
+	 */
 	void forEachLoser(Consumer<ModelPlayer> task);
 
+	/**
+	 * Gets the current round number.
+	 * 
+	 * @return int value of the current round number.
+	 */
 	int getRoundNumber();
 
+	/**
+	 * Confirms that the {@link Reinforce} state is finished and moves onto the next
+	 * state.
+	 * 
+	 */
 	void confirmReinforce();
 
+	/**
+	 * Confirms that the {@link Attack}(Combat) state is finished and moves onto the
+	 * next state.
+	 * 
+	 */
 	void confirmCombat();
 
+	/**
+	 * Confirms that the {@link Setup} state is finished and moves onto the next
+	 * state.
+	 * 
+	 */
 	void confirmSetup();
 
+	/**
+	 * Confirms the movement of troops of the current {@link ModelPlayer} and moves
+	 * onto the next {@link ModelPlayer}.
+	 */
 	void confirmMovement();
 
+	/**
+	 * Automatically distributes the {@link Country}s for each {@link ModelPlayer}
+	 * in the game.
+	 */
 	void autoDistributeCountries();
 
+	/**
+	 * Sets a {@link ModelPlayer} as a loser.
+	 * 
+	 * @param player the {@link ModelPlayer} who is a loser.
+	 */
 	void setLoser(ModelPlayer player);
 
+	/**
+	 * Adds point to the current player. Kill a unit = 1 point Conquer a country =
+	 * 10 points
+	 * 
+	 * @param points
+	 */
+	void addPoints(int points);
+
+	/**
+	 * Processes the turn of the AI.
+	 * 
+	 * @param delta Delta time delay for the AI to process its turn.
+	 */
 	void processAI(int delta);
 
 	void fortify();

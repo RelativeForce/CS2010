@@ -380,7 +380,6 @@ public final class MenuHelper {
 	
 	public void attack() {
 		WarMenu warMenu = (WarMenu) menus.get(WarMenu.NAME);
-
 		warMenu.attack();
 	}
 	
@@ -388,7 +387,7 @@ public final class MenuHelper {
 		
 		WarMenu warMenu = (WarMenu) menus.get(WarMenu.NAME);
 		show(WarMenu.NAME);
-		warMenu.selectMaxDice();
+		warMenu.selectMaxUnits();
 		warMenu.attack();
 		
 	}

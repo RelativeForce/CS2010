@@ -484,10 +484,20 @@ public class WarMenu extends Menu {
 	 * Selects the highest number of dice possible for the current state of the
 	 * {@link WarMenu}.
 	 */
-	public void selectMaxDice() {
+	public void selectMaxUnits() {
 
-		// TODO
-
+		ModelArmy army = attacker.model.getArmy();
+		
+		ModelUnit unit = army.getStrongestUnit();
+		
+		while(attackingSquad.size() < MAX_ATTACK_SQUAD_SIZE && army.getNumberOfUnits() > 1) {
+			
+			if(army.hasUnit(unit)) {
+				moveToAttackSquad(unit);
+			}else {
+				unit = army.getStrongestUnit();
+			}
+		}
 	}
 
 	/**

@@ -222,6 +222,21 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 		
 		throw new IllegalStateException("There are no units in this army.");
 	}
+	
+public ModelUnit getStrongestUnit() {
+		
+		ModelUnit current = UnitHelper.getInstance().getStrongest();
+		
+		while(current != null) {
+			if(hasUnit(current)) {
+				return current;
+			}
+			
+			current = UnitHelper.getInstance().getUnitBelow(current);
+		}
+		
+		throw new IllegalStateException("There are no units in this army.");
+	}
 
 	public void remove(int strength) {
 

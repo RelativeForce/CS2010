@@ -354,7 +354,7 @@ public class SlickGame extends StateBasedGame implements View {
 
 	@Override
 	public void attack() {
-		menus.attack();
+		menus.autoAttack();
 	}
 
 	@Override

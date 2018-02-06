@@ -8,13 +8,14 @@ import peril.controllers.api.Country;
 import peril.controllers.api.Player;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
+import peril.model.states.ModelState;
 
 /**
  * The controller for all AI -> {@link Game} interactions.
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.02
+ * @version 1.01.03
  * @since 2018-02-06
  * 
  * @see AIController
@@ -59,15 +60,14 @@ public final class AIHandler implements AIController {
 
 		// Cast to a model country
 		final ModelCountry checkedCountry = (ModelCountry) country;
-
-		// Determine the current state and then select the check country in it.
-		if (game.view.isCurrentState(game.states.reinforce)) {
-			return game.states.reinforce.select(checkedCountry, game.getGameController());
-		} else if (game.view.isCurrentState(game.states.attack)) {
-			return game.states.attack.select(checkedCountry, game.getGameController());
-		} else if (game.view.isCurrentState(game.states.fortify)) {
-			return game.states.fortify.select(checkedCountry, game.getGameController());
-		} else {
+		
+		// The current model state
+		final ModelState state = game.getGameController().getCurrentState();
+		
+		// If the state is null then the current state is not a game state.
+		if(state != null) {
+			return state.select(checkedCountry, game.getGameController());
+		}else {
 			throw new IllegalStateException("The current state is not a valid game state.");
 		}
 	}

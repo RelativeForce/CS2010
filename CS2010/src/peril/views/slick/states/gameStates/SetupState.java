@@ -28,11 +28,6 @@ import peril.views.slick.board.SlickCountry;
 public final class SetupState extends CoreGameState {
 
 	/**
-	 * The name of a specific {@link SetupState}.
-	 */
-	private static final String STATE_NAME = "Setup";
-
-	/**
 	 * Constructs a new {@link SetupState}.
 	 * 
 	 * @param game
@@ -41,7 +36,7 @@ public final class SetupState extends CoreGameState {
 	 *            The ID of this {@link SetupState}
 	 */
 	public SetupState(GameController game, int id, Setup model) {
-		super(game, STATE_NAME, id, model);
+		super(game, model.getName(), id, model);
 
 		model.addObserver(this);
 	}

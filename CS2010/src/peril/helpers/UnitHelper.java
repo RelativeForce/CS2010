@@ -21,7 +21,7 @@ public final class UnitHelper {
 	/**
 	 * The {@link OrderedList} that holds all the {@link ModelUnit}.
 	 */
-	private OrderedList<ModelUnit> units;
+	private final OrderedList<ModelUnit> units;
 
 	/**
 	 * Constructs a new {@link UnitHelper}.
@@ -133,11 +133,13 @@ public final class UnitHelper {
 	 *
 	 * @param <T>
 	 *            An object that is {@link Comparable}.
+	 * @version 1.01.01
+	 * @since 2018-02-06
 	 */
 	private class OrderedList<T extends Comparable<T>> extends LinkedList<T> {
 
 		/**
-		 * 
+		 * The unique id of this subclass of {@link LinkedList}.
 		 */
 		private static final long serialVersionUID = -8011586922814965872L;
 
@@ -167,24 +169,24 @@ public final class UnitHelper {
 
 			return true;
 		}
-		
+
 		@Override
 		public T getLast() {
-			
-			if(isEmpty()) {
+
+			if (isEmpty()) {
 				return null;
 			}
-			
+
 			return super.getLast();
 		}
-		
+
 		@Override
 		public T getFirst() {
-	
-			if(isEmpty()) {
+
+			if (isEmpty()) {
 				return null;
 			}
-			
+
 			return super.getFirst();
 		}
 

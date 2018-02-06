@@ -1,33 +1,37 @@
 package peril.controllers.api;
 
-import java.util.List;
+import java.util.Set;
 
 /**
- * Provides the information of a country on the {@link Board}.
+ * Provides the information of a country.
  * 
  * @author Joshua_Eddy
+ * 
+ * @version 1.01.01
+ * @since 2018-02-06
  *
  */
 public interface Country {
 
 	/**
-	 * Returns the size of this {@link Country}'s army.
+	 * Returns the strength of this {@link Country}'s army.
 	 * 
-	 * @return size of army.
+	 * @return strength of army.
 	 */
-	int getArmySize();
+	int getArmyStrength();
 
 	/**
 	 * Retrieves the {@link Player} the rules <code>this</code> {@link Country}.
+	 * <code>null</code> is the {@link Country} is not ruled.
 	 * 
 	 * @return {@link Player}
 	 */
 	Player getOwner();
 
 	/**
-	 * Retrieves the {@link Country#neighbours}.
+	 * Retrieves the {@link Set} of neighbours of this {@link Country}.
 	 * 
-	 * @return {@link List} of {@link Country} s.
+	 * @return {@link Set} of {@link Country}s.
 	 */
-	List<? extends Country> getNeighbours();
+	Set<? extends Country> getNeighbours();
 }

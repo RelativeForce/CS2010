@@ -9,8 +9,19 @@ import peril.controllers.api.Player;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
+import peril.model.board.ModelUnit;
+import peril.views.slick.states.gameStates.MovementState;
 
 public class Fortify extends ModelState {
+	
+	/**
+	 * The name of a specific {@link MovementState}.
+	 */
+	private static final String STATE_NAME = "Movement";
+
+	public Fortify() {
+		super(STATE_NAME);
+	}
 
 	@Override
 	public boolean select(ModelCountry country, GameController api) {
@@ -20,8 +31,6 @@ public class Fortify extends ModelState {
 
 		// If it a valid primary or secondary country
 		if (selectPrimary || selectSecondary) {
-
-
 
 			// If the country is a valid primary then the old primary is de-highlighted
 			if (selectPrimary && !selectSecondary) {
@@ -69,7 +78,7 @@ public class Fortify extends ModelState {
 	 *            {@link ModelCountry}
 	 * @return
 	 */
-	public Stack<ModelCountry> getPathBetween(ModelCountry start, ModelCountry target) {
+	public Stack<ModelCountry> getPathBetween(ModelCountry start, ModelCountry target, final ModelUnit unit) {
 
 		// Holds the path from the friendly country to the target country.
 		Stack<ModelCountry> path = new Stack<ModelCountry>();
@@ -82,7 +91,7 @@ public class Fortify extends ModelState {
 
 			// If there is a path between the highlighted and the target add the points to
 			// the drawn path.
-			isPath(path, traversed, start, target);
+			isPath(path, traversed, start, target, unit);
 		}
 
 		return path;
@@ -94,15 +103,15 @@ public class Fortify extends ModelState {
 	 * <ul>
 	 * <li>It is <strong>NOT</strong> null.</li>
 	 * <li>Has the same ruler as the current {@link Player}.</li>
-	 * <li>There is not a current primary {@link ModelCountry} <strong>OR</strong> the
-	 * specified {@link ModelCountry} is <strong>NOT</strong> a
+	 * <li>There is not a current primary {@link ModelCountry} <strong>OR</strong>
+	 * the specified {@link ModelCountry} is <strong>NOT</strong> a
 	 * {@link MovementState#isValidLink(ModelCountry)}</li>
 	 * </ul>
 	 */
 	protected boolean selectPrimary(ModelCountry country, GameController api) {
 
 		if (country == null) {
-			
+
 			return false;
 		}
 
@@ -126,31 +135,34 @@ public class Fortify extends ModelState {
 	 * </ul>
 	 */
 	protected boolean selectSecondary(ModelCountry country, GameController api) {
-		
+
 		if (country == null || getPrimary() == null) {
-			
+
 			return false;
 		}
 
 		// Holds the current player
-		ModelPlayer player = api.getCurrentModelPlayer();
+		final ModelPlayer player = api.getCurrentModelPlayer();
 
 		// Holds the ruler of the country
-		ModelPlayer ruler = country.getRuler();
+		final ModelPlayer ruler = country.getRuler();
 
 		// The country is different to the primary and has the same ruler as the player.
 		final boolean friendlyModelCountry = player.equals(ruler) && getPrimary() != country;
 
 		if (friendlyModelCountry) {
 
-			// The path between the current primary and the specified country.
-			final Stack<ModelCountry> path = getPathBetween(getPrimary(), country);
+			// Iterate over all the units in the army
+			for (ModelUnit current : getPrimary().getArmy()) {
+				
+				// The path between the current primary and the specified country.
+				final Stack<ModelCountry> path = getPathBetween(getPrimary(), country, current);
 
-			// If there is a path
-			if (!path.isEmpty()) {
-				return true;
+				// If there is a path
+				if (!path.isEmpty()) {
+					return true;
+				}
 			}
-
 		}
 
 		return false;
@@ -171,7 +183,8 @@ public class Fortify extends ModelState {
 	 * @return Whether the current {@link ModelCountry} is on the path to the target
 	 *         {@link ModelCountry}.
 	 */
-	private boolean isPath(Stack<ModelCountry> path, Set<ModelCountry> travsersed, ModelCountry current, ModelCountry traget) {
+	private boolean isPath(Stack<ModelCountry> path, Set<ModelCountry> travsersed, ModelCountry current,
+			ModelCountry traget, final ModelUnit unit) {
 
 		// Add the current country to the path
 		path.push(current);
@@ -193,7 +206,8 @@ public class Fortify extends ModelState {
 			}
 
 			// If the country has not already been traversed and has the same ruler.
-			if (!travsersed.contains(country) && current.getRuler() == country.getRuler()) {
+			if (!travsersed.contains(country) && current.getRuler() == country.getRuler()
+					&& current.getLinkTo(country).canTransfer(unit, current, country)) {
 				validChildren.add(country);
 				travsersed.add(country);
 			}
@@ -214,7 +228,7 @@ public class Fortify extends ModelState {
 		 * return true.
 		 */
 		for (ModelCountry child : validChildren) {
-			if (isPath(path, travsersed, child, traget)) {
+			if (isPath(path, travsersed, child, traget, unit)) {
 				return true;
 			}
 		}
@@ -233,26 +247,33 @@ public class Fortify extends ModelState {
 	 */
 	public void fortify() {
 
-		ModelCountry primary = getSelected(0);
-		ModelCountry target = getSelected(1);
-
+		final ModelCountry primary = getSelected(0);
+		final ModelCountry target = getSelected(1);
+		
 		// If there is two countries highlighted
 		if (primary != null && target != null) {
+			
+			// Holds the army of the primary country
+			final ModelArmy primaryArmy = primary.getArmy();
+
+			// Holds the army of the target country
+			final ModelArmy targetArmy = target.getArmy();
+
+			// Whether of not there is a unit selected in the current country's army.
+			final boolean unitSelected = primary.getArmy().getSelected() != null;
+
+			// If there is a selected unit fortify the country with that otherwise use the
+			// weakest unit in the army.
+			final ModelUnit unit = unitSelected ? primary.getArmy().getSelected() : primary.getArmy().getWeakestUnit();
 
 			// If the army of the primary highlighted country is larger that 1 unit in size
-			if (primary.getArmy().getStrength() > 1) {
-
-				// Holds the army of the primary country
-				ModelArmy primaryArmy = primary.getArmy();
-
-				// Holds the army of the target country
-				ModelArmy targetArmy = target.getArmy();
+			if (primary.getArmy().getNumberOfUnits() > 1) {
 
 				// Move the unit.
-				targetArmy.setStrength(targetArmy.getStrength() + 1);
-				primaryArmy.setStrength(primaryArmy.getStrength() - 1);
+				primaryArmy.remove(unit);
+				targetArmy.add(unit);
 
-				if (primaryArmy.getStrength() == 1) {
+				if (primaryArmy.getNumberOfUnits() == 1) {
 					deselectAll();
 				}
 			} else {

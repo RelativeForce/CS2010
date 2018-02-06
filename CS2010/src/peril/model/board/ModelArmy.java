@@ -1,6 +1,9 @@
 package peril.model.board;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import peril.Update;
@@ -13,12 +16,7 @@ import peril.helpers.UnitHelper;
  * @author Joshua_Eddy
  *
  */
-public final class ModelArmy extends Observable {
-
-	/**
-	 * The size of the army.
-	 */
-	private int strength;
+public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 
 	/**
 	 * Contains the {@link ModelUnit}s that this {@link ModelArmy} consists of.
@@ -26,11 +24,9 @@ public final class ModelArmy extends Observable {
 	private final Map<ModelUnit, Integer> units;
 
 	/**
-	 * Constructs a new {@link ModelArmy} with strength of 1.
+	 * Holds the currently selected {@link ModelUnit}.
 	 */
-	public ModelArmy() {
-		this(1);
-	}
+	private ModelUnit selected;
 
 	/**
 	 * Constructs a new {@link ModelArmy} of a specified strength.
@@ -38,28 +34,18 @@ public final class ModelArmy extends Observable {
 	 * @param strength
 	 *            The size of the {@link ModelArmy}. Must be greater than zero.
 	 */
-	public ModelArmy(int strength) {
-		units = new HashMap<>();
-		setStrength(strength);
-		computeUnits();
+	public ModelArmy() {
+		// Add one of the weakest units to this army
+		this(0);
+
 	}
 
-	/**
-	 * Assigns a new strength to this {@link ModelArmy} overwriting the old value.
-	 * 
-	 * @param strength
-	 *            The new size of the {@link ModelArmy}. Must be greater than zero.
-	 */
-	public void setStrength(int strength) {
-		if (strength < 0) {
-			throw new IllegalArgumentException("Size must be greater than zero");
-		}
-		this.strength = strength;
-		computeUnits();
+	public ModelArmy(int strength) {
 
-		setChanged();
-		notifyObservers(new Update("size", strength));
+		units = new HashMap<>();
+		selected = null;
 
+		populateArmy(strength);
 	}
 
 	/**
@@ -68,22 +54,51 @@ public final class ModelArmy extends Observable {
 	 * @return
 	 */
 	public int getStrength() {
+
+		int strength = 0;
+
+		for (ModelUnit unit : units.keySet()) {
+			strength += units.get(unit) * unit.strength;
+		}
+
 		return strength;
 	}
 
 	/**
-	 * Adds a specified number of units to this {@link ModelArmy}.
+	 * Retrieves the currently selected {@link ModelUnit}.
 	 * 
-	 * @param amount
-	 *            of units to add to this {@link ModelArmy}
+	 * @return {@link ModelUnit}
 	 */
-	public void add(int amount) {
-		strength += amount;
+	public ModelUnit getSelected() {
+		return selected;
+	}
 
-		computeUnits();
+	/**
+	 * Selects a specified unit from this {@link ModelArmy}.
+	 * 
+	 * @param unit
+	 *            {@link ModelUnit}
+	 * @return Returns whether the {@link ModelUnit} was selected or not.
+	 */
+	public boolean select(ModelUnit unit) {
 
-		setChanged();
-		notifyObservers(new Update("size", strength));
+		// If the unit is in this army then it canbe selected.
+		if (units.containsKey(unit)) {
+
+			setSelected(unit);
+			return true;
+
+		}
+
+		setSelected(null);
+		return false;
+	}
+
+	/**
+	 * De-selected the currently selected unit.
+	 */
+	public void deselect() {
+		setSelected(null);
 	}
 
 	/**
@@ -92,18 +107,22 @@ public final class ModelArmy extends Observable {
 	 * @param amount
 	 *            of units to remove.
 	 */
-	public void remove(int amount) {
-		if (strength - amount < 0) {
-			throw new IllegalStateException("Army size cannot be less than zero");
+	public void remove(ModelUnit unit) {
+
+		if (units.containsKey(unit)) {
+
+			if (units.get(unit) == 1) {
+				units.remove(unit);
+			} else {
+				units.replace(unit, units.get(unit) - 1);
+			}
+		} else {
+			remove(unit.strength);
 		}
 
-		// Change to the army
-		strength -= amount;
-
-		computeUnits();
-
 		setChanged();
-		notifyObservers(new Update("size", strength));
+		notifyObservers();
+
 	}
 
 	/**
@@ -126,7 +145,7 @@ public final class ModelArmy extends Observable {
 	 *            {@link ModelUnit}.
 	 * @return
 	 */
-	public int getUnit(ModelUnit unit) {
+	public int getNumberOf(ModelUnit unit) {
 		return units.get(unit);
 	}
 
@@ -136,31 +155,150 @@ public final class ModelArmy extends Observable {
 	 * 
 	 * @return
 	 */
-	public int getUnitType() {
+	public int getVarietyOfUnits() {
+		return units.size();
+	}
 
-		int numberOfUnitTypes = 0;
+	/**
+	 * Retrieves the {@link Iterator} for this {@link ModelArmy} of all the
+	 * {@link ModelUnit}s inside.
+	 */
+	@Override
+	public Iterator<ModelUnit> iterator() {
+		return units.keySet().iterator();
+	}
 
-		for (int unitAmount : units.values()) {
-			if (unitAmount > 0)
-				numberOfUnitTypes++;
+	public void add(ModelUnit unit) {
+
+		int currentNumber = units.get(unit) == null ? 0 : units.get(unit);
+
+		units.put(unit, currentNumber + 1);
+
+		setChanged();
+		notifyObservers();
+
+	}
+
+	public void add(List<ModelUnit> unitList) {
+		unitList.forEach(unit -> add(unit));
+	}
+
+	public void setStrength(int strength) {
+
+		if (strength < 0) {
+			throw new IllegalArgumentException("New strength can not be less than zero.");
 		}
 
-		return numberOfUnitTypes;
+		clearUnits();
+
+		populateArmy(strength);
+
+		setChanged();
+		notifyObservers();
+
+	}
+
+	public void setWeakest() {
+		clearUnits();
+
+		units.put(UnitHelper.getInstance().getWeakest(), 1);
+
+		setChanged();
+		notifyObservers();
+
+	}
+
+	public ModelUnit getWeakestUnit() {
+		
+		ModelUnit current = UnitHelper.getInstance().getWeakest();
+		
+		while(current != null) {
+			if(hasUnit(current)) {
+				return current;
+			}
+			
+			current = UnitHelper.getInstance().getUnitAbove(current);
+		}
+		
+		throw new IllegalStateException("There are no units in this army.");
+	}
+	
+public ModelUnit getStrongestUnit() {
+		
+		ModelUnit current = UnitHelper.getInstance().getStrongest();
+		
+		while(current != null) {
+			if(hasUnit(current)) {
+				return current;
+			}
+			
+			current = UnitHelper.getInstance().getUnitBelow(current);
+		}
+		
+		throw new IllegalStateException("There are no units in this army.");
+	}
+
+	public void remove(int strength) {
+
+		final int newStrength = getStrength() - strength;
+
+		if (newStrength >= UnitHelper.getInstance().getWeakest().strength) {
+			populateArmy(newStrength);
+		} else {
+			clearUnits();
+		}
+
+		setChanged();
+		notifyObservers();
+
+	}
+
+	private void clearUnits() {
+		// Clear the current list of units.
+		if (!units.isEmpty())
+			units.clear();
+
+	}
+
+	/**
+	 * Sets the selected {@link ModelUnit}.
+	 * 
+	 * @param unit
+	 *            {@link ModelUnit}
+	 */
+	private void setSelected(ModelUnit unit) {
+
+		selected = unit;
+
+		setChanged();
+		notifyObservers(new Update("selected", selected));
+
 	}
 
 	/**
 	 * Determines the units that this {@link ModelArmy} can contain.
 	 */
-	private void computeUnits() {
+	private void populateArmy(int strength) {
+
+		// De-select the currently selected unit.
+		deselect();
 
 		// Clear the current list of units.
-		if (!units.isEmpty())
-			units.clear();
+		clearUnits();
 
-		int armySize = strength;
+		// Generate the units then add them to the current army.
+		add(generateUnits(strength));
+
+	}
+
+	public static List<ModelUnit> generateUnits(int strength) {
+
+		List<ModelUnit> units = new LinkedList<>();
 
 		// Holds the current strongest unit that is smaller than the army size.
 		ModelUnit unit = UnitHelper.getInstance().getStrongest();
+
+		int armySize = strength;
 
 		// While the army can be further divided.
 		while (armySize > 0) {
@@ -170,17 +308,31 @@ public final class ModelArmy extends Observable {
 				throw new IllegalStateException("There is not unit teir that the army can be divide further into.");
 			}
 
-			// If the current unit fits into the army add the max number of that unit to the
+			// If the current unit fits into the army add one of that unit to the
 			// army that can be fit.
 			if (unit.strength <= armySize) {
-				units.put(unit, armySize / unit.strength);
-				armySize = armySize % unit.strength;
+				units.add(unit);
+				armySize = armySize - unit.strength;
+			} else {
+				// Move to the unit below.
+				unit = UnitHelper.getInstance().getUnitBelow(unit);
 			}
-
-			// Move to the unit below.
-			unit = UnitHelper.getInstance().getUnitBelow(unit);
 
 		}
 
+		return units;
+
 	}
+
+	public int getNumberOfUnits() {
+
+		int number = 0;
+
+		for (Integer amount : units.values()) {
+			number += amount;
+		}
+
+		return number;
+	}
+
 }

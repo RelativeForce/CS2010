@@ -20,18 +20,13 @@ import peril.views.slick.board.SlickPlayer;
 /**
  * Encapsulates the behaviour of the Reinforcement {@link CoreGameState} where
  * the {@link SlickPlayer} places their units from
- * {@link SlickPlayer#getDistributableArmySize()} on their
+ * {@link SlickPlayer#getDistributableArmyStrength()} on their
  * {@link SlickCountry}s.
  * 
  * @author Joseph_Rolli, Joshua_Eddy
  *
  */
 public final class ReinforcementState extends CoreGameState {
-
-	/**
-	 * The name of a specific {@link ReinforcementState}.
-	 */
-	private static final String STATE_NAME = "Reinforcement";
 
 	/**
 	 * The {@link Font} for displaying the {@link Player's} available units to
@@ -58,7 +53,7 @@ public final class ReinforcementState extends CoreGameState {
 	 *            The ID of this {@link ReinforcementState}
 	 */
 	public ReinforcementState(GameController game, int id, Reinforce model) {
-		super(game, STATE_NAME, id, model);
+		super(game, model.getName(), id, model);
 		this.reinforceButton = "reinforce";
 		this.unitFont = new Font("Arial", Color.white, 50);
 		this.textFont = new Font("Arial", Color.white, 20);

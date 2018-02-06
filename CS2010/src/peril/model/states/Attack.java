@@ -2,9 +2,22 @@ package peril.model.states;
 
 import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
+import peril.model.board.ModelUnit;
+import peril.model.board.links.ModelLink;
+import peril.views.slick.states.gameStates.CombatState;
 
 public class Attack extends ModelState {
+	
+	/**
+	 * The name of a specific {@link CombatState}.
+	 */
+	private static final String STATE_NAME = "Combat";
 
+	public Attack() {
+		super(STATE_NAME);
+		// TODO Auto-generated constructor stub
+	}
+	
 	@Override
 	public boolean select(ModelCountry country, GameController api) {
 
@@ -72,7 +85,7 @@ public class Attack extends ModelState {
 	public ModelCountry getPrimary() {
 		return getSelected(0);
 	}
-	
+
 	/**
 	 * Retrieves the secondary selected {@link ModelCountry}.
 	 * 
@@ -86,31 +99,49 @@ public class Attack extends ModelState {
 	 * Retrieves whether or not the secondary {@link ModelCountry} is a valid
 	 * targets for the primary {@link ModelCountry}.
 	 * 
-	 * @param primaryModelCountry
+	 * @param primary
 	 *            is the primary {@link ModelCountry}
-	 * @param secondaryTarget
+	 * @param target
 	 *            is the second {@link ModelCountry}
 	 * @return <code>boolean</code> if it is a valid target.
 	 */
-	public boolean isValidTarget(ModelCountry primaryModelCountry, ModelCountry secondaryTarget) {
+	public boolean isValidTarget(ModelCountry primary, ModelCountry target) {
 
 		// If there is a primary friendly country and the target is not null and the
 		// ruler of the country is not the player.
-		if (!primaryModelCountry.getRuler().equals(secondaryTarget.getRuler())) {
+		if (!primary.getRuler().equals(target.getRuler())) {
 
 			// if the country is a neighbour of the primary highlighted country then it is a
 			// valid target.
-			if (primaryModelCountry.isNeighbour(secondaryTarget)) {
+			if (primary.isNeighbour(target)) {
 
 				// If the army size of the primary country is greater than 1.
-				if (primaryModelCountry.getArmy().getStrength() > 1) {
-					return true;
+				if (primary.getArmy().getStrength() > 1) {
+
+					final ModelLink link = primary.getLinkTo(target);
+
+					// Whether a unit can be transfer between the primary and the target.
+					boolean canTranfer = false;
+
+					// Iterate over all the units in the army
+					for (ModelUnit unit : primary.getArmy()) {
+						
+						// If the current unit can be transfered.
+						if (link.canTransfer(unit, primary, target)) {
+							canTranfer = true;
+							break;
+						}
+					}
+
+					// If there is a unit that can be transfered.
+					if (canTranfer) {
+						return true;
+					}
 				}
-
 			}
-
 		}
 
+		// If any of the conditions are not met then the target is not valid.
 		return false;
 	}
 

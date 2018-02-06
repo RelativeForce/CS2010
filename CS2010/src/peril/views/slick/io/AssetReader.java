@@ -1,7 +1,5 @@
 package peril.views.slick.io;
 
-import java.io.File;
-
 import org.newdawn.slick.Image;
 
 import peril.Game;
@@ -50,13 +48,13 @@ public final class AssetReader extends FileParser {
 	 *            The file name of the assets file.
 	 */
 	public AssetReader(Container[] containers, String filename, GameController game) {
-		super(game.getUIPath(), filename);
+		super(game.getDirectory().getUIPath(), game.getDirectory(), filename);
 
 		// Check params
 		if (containers.length == 0) {
 			throw new NullPointerException("CoreGameState array cannot be empty.");
 		}
-		
+
 		this.functionHandler = new FunctionHelper(game);
 		this.containers = containers;
 	}
@@ -99,7 +97,7 @@ public final class AssetReader extends FileParser {
 	 */
 	private void parseImage(String[] details) {
 
-		int IMAGE_LENGTH = 7;
+		final int IMAGE_LENGTH = 7;
 
 		// Check there is the correct number of details
 		if (details.length != IMAGE_LENGTH) {
@@ -107,14 +105,17 @@ public final class AssetReader extends FileParser {
 					+ " does not contain the correct number of elements, there should be " + IMAGE_LENGTH + "");
 		}
 
+		// The file path of the image
+		String filePath = directory.getUIPath() + details[2];
+
 		// Holds the scaled image
-		Image asset = parseAsset(details[2], details[3], details[4]);
+		final Image asset = parseAsset(filePath, details[3], details[4]);
 
 		// Holds the position of the image on the screen.
-		Point position = parsePosition(details[5], details[6]);
+		final Point position = parsePosition(details[5], details[6]);
 
 		// Get the state by name
-		Container container = getContainerByName(details[1]);
+		final Container container = getContainerByName(details[1]);
 
 		// Add the image to the container
 		container.addImage(new Viewable(asset, position));
@@ -137,18 +138,21 @@ public final class AssetReader extends FileParser {
 		}
 
 		// Holds the container that the button will be added to.
-		Container container = getContainerByName(details[1]);
+		final Container container = getContainerByName(details[1]);
 
 		// Holds the function of the button.
-		Action<?> function = parseFunction(details[2]);
+		final Action<?> function = parseFunction(details[2]);
+
+		// The file path of the image
+		final String filePath = directory.getButtonsPath() + details[3];
 
 		// Holds the image of the button
-		Image asset = parseAsset(details[3], details[4], details[5]);
+		final Image asset = parseAsset(filePath, details[4], details[5]);
 
 		// Holds the image of the button.
-		Point position = parsePosition(details[6], details[7]);
+		final Point position = parsePosition(details[6], details[7]);
 
-		String id = details[8];
+		final String id = details[8];
 
 		// Add the button to the container
 		container.addButton(new Button(position, asset, function, id));
@@ -166,7 +170,7 @@ public final class AssetReader extends FileParser {
 	 *            The desired scaled height of the {@link Image}
 	 * @return {@link Image}
 	 */
-	private Image parseAsset(String fileName, String widthStr, String heightStr) {
+	private Image parseAsset(String filePath, String widthStr, String heightStr) {
 
 		Image asset;
 		int width;
@@ -174,9 +178,9 @@ public final class AssetReader extends FileParser {
 
 		// Get the asset image
 		try {
-			asset = ImageReader.getImage(directoryPath + File.separatorChar + fileName);
+			asset = ImageReader.getImage(filePath);
 		} catch (Exception e) {
-			throw new IllegalArgumentException(fileName + " is not a valid name");
+			throw new IllegalArgumentException(filePath + " is not a valid path");
 		}
 
 		// If the width is a dash then don't scale the width

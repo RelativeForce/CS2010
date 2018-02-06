@@ -77,6 +77,10 @@ public final class Button extends Clickable {
 		isVisible = false;
 	}
 
+	public Action<?> getAction(){
+		return action;
+	}
+	
 	/**
 	 * Sets this {@link Button} to visible.
 	 */

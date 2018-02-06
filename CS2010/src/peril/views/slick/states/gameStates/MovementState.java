@@ -1,4 +1,4 @@
-package peril.views.slick.states.gameStates.multiSelectState;
+package peril.views.slick.states.gameStates;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +11,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.controllers.GameController;
+import peril.helpers.UnitHelper;
 import peril.model.states.Fortify;
 import peril.views.slick.Button;
 import peril.views.slick.Point;
@@ -24,12 +25,7 @@ import peril.views.slick.board.SlickCountry;
  * @author Joshua_Eddy, Joseph_Rolli
  *
  */
-public final class MovementState extends MultiSelectState {
-
-	/**
-	 * The name of a specific {@link MovementState}.
-	 */
-	private static final String STATE_NAME = "Movement";
+public final class MovementState extends CoreGameState {
 
 	/**
 	 * Holds the instance of the fortify {@link Button}.
@@ -51,7 +47,7 @@ public final class MovementState extends MultiSelectState {
 	 * 
 	 */
 	public MovementState(GameController game, int id, Fortify model) {
-		super(game, STATE_NAME, id, model);
+		super(game, model.getName(), id, model);
 		this.fortifyButton = "fortify";
 		path = new LinkedList<>();
 
@@ -172,7 +168,7 @@ public final class MovementState extends MultiSelectState {
 
 				path.clear();
 
-				((Fortify) model).getPathBetween(model.getSelected(0), target.model)
+				((Fortify) model).getPathBetween(model.getSelected(0), target.model, UnitHelper.getInstance().getWeakest())
 						.forEach(country -> path.add(slick.modelView.getVisual(country)));
 			}
 		}
@@ -219,7 +215,7 @@ public final class MovementState extends MultiSelectState {
 
 			path.clear();
 
-			((Fortify) model).getPathBetween(selected.get(0).model, selected.get(1).model)
+			((Fortify) model).getPathBetween(selected.get(0).model, selected.get(1).model, UnitHelper.getInstance().getWeakest())
 					.forEach(country -> path.add(slick.modelView.getVisual(country)));
 
 			moveFortifyButton(selected.get(1));

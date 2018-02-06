@@ -2,14 +2,11 @@ package peril.views.slick.states.gameStates;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
-import java.util.Set;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -25,31 +22,42 @@ import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
 import peril.model.states.ModelState;
 import peril.views.slick.Point;
-import peril.views.slick.board.SlickArmy;
-import peril.views.slick.board.SlickBoard;
-import peril.views.slick.board.SlickCountry;
-import peril.views.slick.board.SlickPlayer;
+import peril.views.slick.board.*;
 import peril.views.slick.components.lists.ToolTipList;
+import peril.views.slick.components.menus.Menu;
 import peril.views.slick.components.menus.PauseMenu;
 import peril.views.slick.helpers.MenuHelper;
 import peril.views.slick.states.InteractiveState;
 
 /**
- * A {@link InteractiveState} which displays the {@link SlickBoard} from the
- * {@link Game} to the user.
+ * A {@link InteractiveState} which displays the {@link SlickBoard} to the user.
+ * This is an {@link Observer} to a {@link ModelState}.
  * 
  * @author Joseph_Rolli, Joshua_Eddy
+ * @version 1.01.01
+ * @since 2018-02-05
+ * 
+ * @see InteractiveState
+ * @see Observer
+ * @see ModelState
  */
 public abstract class CoreGameState extends InteractiveState implements Observer {
 
 	/**
-	 * Holds the tool tip that will be displayed to the user.
+	 * The {@link ModelState} that this {@link CoreGameState} observes.
 	 */
-	private final ToolTipList toolTipList;
-
 	public final ModelState model;
-	
+
+	/**
+	 * The {@link MenuHelper} that contains all the {@link Menu}s.
+	 */
 	protected final MenuHelper menus;
+
+	/**
+	 * Holds all the {@link SlickCountry}s that are currently selected by this
+	 * {@link CoreGameState}.
+	 */
+	protected final List<SlickCountry> selected;
 
 	/**
 	 * The {@link Music} that is played in the background of the
@@ -63,10 +71,9 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	private Point panDirection;
 
 	/**
-	 * Holds all the {@link SlickCountry}s that are currently selected by this
-	 * {@link CoreGameState}.
+	 * Holds the tool tip that will be displayed to the user.
 	 */
-	protected final List<SlickCountry> selected;
+	private final ToolTipList toolTipList;
 
 	/**
 	 * Constructs a new {@link CoreGameState}.
@@ -77,6 +84,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 *            Holds the name of a specific {@link CoreGameState}.
 	 * @param id
 	 *            The id of this {@link CoreGameState}.
+	 * @param model
+	 *            The {@link ModelState} that this {@link CoreGameState} observes.
 	 */
 	public CoreGameState(GameController game, String stateName, int id, ModelState model) {
 
@@ -98,7 +107,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 
-
 		menus.changeHelpPage(getID());
 
 		// If the music has been turned off. Turn it on and play the current states
@@ -115,7 +123,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	}
 
 	/**
-	 * Renders this {@link CoreGameState} which is the {@link Game#board}.
+	 * Renders this {@link CoreGameState} which is the {@link SlickBoard}.
 	 */
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
@@ -132,8 +140,11 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		super.update(gc, sbg, delta);
+
+		// Elapse the time of the tool tips.
 		toolTipList.elapseTime(delta);
 
+		// If there is no menu visible and there is a pan direction, pan.
 		if (panDirection != null && !menus.menuVisible()) {
 			pan(panDirection);
 		}
@@ -146,8 +157,11 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
 
+		/*
+		 * Read all the songs from the music folder that will be played over the core
+		 * game state.
+		 */
 		int numberOfSongs = 3;
-
 		for (int songIndex = 1; songIndex <= numberOfSongs; songIndex++) {
 			backgroundMusic.add(slick.music.read("game" + songIndex));
 		}
@@ -163,7 +177,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		toolTipList.clear();
 
 		collapseSelected();
-		
+
 		model.deselectAll();
 
 		// Stop the state from panning after it has been exited.
@@ -217,16 +231,31 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	public void parseClick(int button, Point click) {
 
 		// If the player hasn't clicked the pause menu
-		if (!menus.clicked(click)) {
+		if (!menus.clicked(click))
 
 			// If the player hasn't clicked a UI Button in the state, they must've clicked
 			// board.
 			if (!super.clickedButton(click)) {
-				clickBoard(button, click);
-			} else {
+
+				// holds whether a unit was clicked.
+				boolean unitClicked = false;
+
+				for (final SlickCountry country : selected) {
+
+					final SlickArmy army = slick.modelView.getVisual(country.model.getArmy());
+
+					if (army.isClicked(click, country.getArmyPosition(), slick.modelView)) {
+						unitClicked = true;
+					}
+
+				}
+
+				// If there was no unit clicked.
+				if (!unitClicked) {
+					clickBoard(button, click);
+				}
 
 			}
-		}
 
 	}
 
@@ -234,7 +263,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * Retrieves the {@link Music} played by this {@link CoreGameState}.
 	 */
 	@Override
-	public Music getMusic() {
+	public final Music getMusic() {
 		return backgroundMusic.get(new Random().nextInt(backgroundMusic.size()));
 	}
 
@@ -245,7 +274,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * @param toolTip
 	 *            <code>String</code>
 	 */
-	public void showToolTip(String toolTip) {
+	public final void showToolTip(String toolTip) {
 
 		if (toolTip == null) {
 			throw new NullPointerException("Popup cannot be null.");
@@ -254,58 +283,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		// Display the tool tip for 8 seconds
 		toolTipList.add(toolTip, 8000);
 
-	}
-
-	/**
-	 * Moves all the visual elements contained within this {@link CoreGameState}
-	 * along a specified {@link Point} vector.
-	 * 
-	 * @param panVector
-	 *            {@link Point}
-	 */
-	protected abstract void panElements(Point panVector);
-
-	/**
-	 * Removes the highlight colouring effect on {@link CoreGameState#selected}.
-	 * 
-	 * @param country
-	 *            {@link SlickCountry} to unhighlight.
-	 */
-	protected void removeHighlight(SlickCountry country) {
-
-		// If there is a highlighted country
-		if (country != null) {
-
-			// Holds the ruler of the country
-			SlickPlayer ruler = slick.modelView.getVisual(country.model.getRuler());
-
-			// If there is a ruler then return the colour of the country to that of the
-			// ruler. Otherwise remove the highlight effect.
-			country.changeColour(ruler != null ? ruler.color : Color.white);
-
-		}
-
-	}
-
-	/**
-	 * Adds the highlight effect to a {@link SlickCountry} assuming the country is
-	 * not <code>null</code>.
-	 * 
-	 * @param country
-	 *            {@link SlickCountry}
-	 */
-	protected final void addHighlight(SlickCountry country) {
-		if (country != null) {
-			country.replaceImage(country.getRegion().convert(Color.yellow));
-		}
-	}
-
-	protected final void expandSelected() {
-		selected.forEach(country -> slick.modelView.getVisual(country.model.getArmy()).expand());
-	}
-
-	protected void collapseSelected() {
-		selected.forEach(country -> slick.modelView.getVisual(country.model.getArmy()).collapse());
 	}
 
 	/**
@@ -355,13 +332,97 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	}
 
 	/**
+	 * Updates this {@link CoreGameState} as an {@link Observer}.
+	 */
+	@Override
+	public void update(Observable o, Object arg) {
+
+		// If the model state was updated
+		if (o instanceof ModelState) {
+
+			if (!(arg instanceof Update)) {
+				throw new IllegalArgumentException("The property must be an update.");
+			}
+
+			Update update = (Update) arg;
+
+			switch (update.property) {
+
+			case "selected":
+				updateSelected(update);
+				break;
+
+			}
+		}
+
+	}
+
+	/**
+	 * Moves all the visual elements contained within this {@link CoreGameState}
+	 * along a specified {@link Point} vector.
+	 * 
+	 * @param panVector
+	 *            {@link Point}
+	 */
+	protected abstract void panElements(Point panVector);
+
+	/**
+	 * Removes the highlight colouring effect on {@link CoreGameState#selected}.
+	 * 
+	 * @param country
+	 *            {@link SlickCountry} to unhighlight.
+	 */
+	protected final void removeHighlight(SlickCountry country) {
+
+		// If there is a highlighted country
+		if (country != null) {
+
+			// Holds the ruler of the country
+			SlickPlayer ruler = slick.modelView.getVisual(country.model.getRuler());
+
+			// If there is a ruler then return the colour of the country to that of the
+			// ruler. Otherwise remove the highlight effect.
+			country.changeColour(ruler != null ? ruler.color : Color.white);
+
+		}
+
+	}
+
+	/**
+	 * Adds the highlight effect to a {@link SlickCountry} assuming the country is
+	 * not <code>null</code>.
+	 * 
+	 * @param country
+	 *            {@link SlickCountry}
+	 */
+	protected final void addHighlight(SlickCountry country) {
+		if (country != null) {
+			country.replaceImage(country.getRegion().convert(Color.yellow));
+		}
+	}
+
+	/**
+	 * Expands the selected {@link SlickCountry}'s {@link SlickArmy}.
+	 */
+	protected final void expandSelected() {
+		selected.forEach(country -> slick.modelView.getVisual(country.model.getArmy()).expand());
+	}
+
+	/**
+	 * Collapses the selected {@link SlickCountry}'s {@link SlickArmy}.
+	 */
+	protected final void collapseSelected() {
+		selected.forEach(country -> slick.modelView.getVisual(country.model.getArmy()).collapse());
+	}
+
+	/**
 	 * Draws the {@link SlickPlayer}'s name in the {@link SlickPlayer}'s
 	 * {@link Color}.
 	 * 
 	 * @param g
 	 *            {@link Graphics}
 	 */
-	protected void drawPlayerName(Graphics g) {
+	protected final void drawPlayerName(Graphics g) {
 		SlickPlayer p = slick.modelView.getVisual(game.getCurrentModelPlayer());
 		g.drawImage(p.getImage(), 15, 45);
 	}
@@ -375,7 +436,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * @param button
 	 *            The mouse button that was clicked.
 	 */
-	protected void clickBoard(int button, Point click) {
+	protected final void clickBoard(int button, Point click) {
 
 		// Holds the game board
 		SlickBoard board = slick.modelView.getVisual(game.getModelBoard());
@@ -406,7 +467,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * @param g
 	 *            {@link Graphics}
 	 */
-	protected void drawAllLinks(Graphics g) {
+	protected final void drawAllLinks(Graphics g) {
 
 		// If the links are toggled off do nothing
 		if (!menus.linksVisible()) {
@@ -415,33 +476,25 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 		g.setColor(Color.black);
 
-		Set<SlickCountry> drawn = new HashSet<>();
-
 		// Get all the countries from the board.
 		game.forEachModelCountry(model -> {
 
-			final SlickCountry country = slick.modelView.getVisual(model);
-
-			// Sets x and y as the central width and height of the current country.
-			final int countryX = getCenterArmyPosition(country).x;
-			final int countryY = getCenterArmyPosition(country).y;
-
-			drawn.add(country);
+			// The position of the current country's army.
+			final Point countryPosition = getCenterArmyPosition(slick.modelView.getVisual(model));
 
 			// For each neighbour of that country draw the link from the neighbour to the
 			// current country
 			model.getNeighbours().forEach(modelNeighbour -> {
 
-				final SlickCountry neighbour = slick.modelView.getVisual(modelNeighbour);
+				// The position of the neighbour's army.
+				final Point neighbourPosition = getCenterArmyPosition(slick.modelView.getVisual(modelNeighbour));
 
-				if (!drawn.contains(neighbour)) {
-					// Sets x and y as the central width and height of the neighbour country.
-					final int neighbourX = getCenterArmyPosition(neighbour).x;
-					final int neighbourY = getCenterArmyPosition(neighbour).y;
+				// The link from the country to its neighbour
+				final SlickLinkState link = slick.modelView.getVisual(model.getLinkTo(modelNeighbour).getState());
 
-					// Draw the line from the country to the neighbour
-					g.drawLine(countryX, countryY, neighbourX, neighbourY);
-				}
+				// Draw the link
+				link.draw(g, countryPosition, neighbourPosition);
+
 			});
 		});
 
@@ -453,24 +506,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * 
 	 * @param g
 	 */
-	protected void drawPopups(Graphics g) {
+	protected final void drawPopups(Graphics g) {
 		toolTipList.draw(g);
-	}
-
-	/**
-	 * Retrieves the {@link Point} position that an {@link ModelArmy} will be
-	 * displayed at on the screen relative to the top left corner.
-	 * 
-	 * @param country
-	 * @return
-	 */
-	private Point getArmyPosition(SlickCountry country) {
-
-		// Sets x and y as the central width and height of the current country.
-		int x = country.getPosition().x + (country.getWidth() / 2) + country.getArmyOffset().x;
-		int y = country.getPosition().y + (country.getHeight() / 2) + country.getArmyOffset().y;
-
-		return new Point(x, y);
 	}
 
 	/**
@@ -481,9 +518,9 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 *            {@link SlickCountry}
 	 * @return {@link Point} position
 	 */
-	protected Point getCenterArmyPosition(SlickCountry country) {
+	protected final Point getCenterArmyPosition(SlickCountry country) {
 
-		Point armyPos = getArmyPosition(country);
+		Point armyPos = country.getArmyPosition();
 
 		SlickArmy army = slick.modelView.getVisual(country.model.getArmy());
 
@@ -502,7 +539,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 *            A graphics context that can be used to render primitives to the
 	 *            accelerated canvas provided by LWJGL.
 	 */
-	protected void drawArmies(Graphics g) {
+	protected final void drawArmies(Graphics g) {
 
 		// Iterate across every country on the game board.
 		game.getModelBoard().getContinents().values().forEach(continent -> continent.getCountries().forEach(model -> {
@@ -513,10 +550,10 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 			final SlickPlayer ruler = slick.modelView.getVisual(country.model.getRuler());
 
-			army.draw(g, getArmyPosition(country), ruler);
+			army.draw(g, country.getArmyPosition(), ruler, slick.modelView);
 
 		}));
-	}	
+	}
 
 	/**
 	 * Pans the {@link Game#board} according to the
@@ -593,57 +630,47 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 	}
 
-	@Override
-	public void update(Observable o, Object arg) {
-
-		// If the model state was updated
-		if(o instanceof ModelState) {
-			
-			if (!(arg instanceof Update)) {
-				throw new IllegalArgumentException("The property must be an update.");
-			}
-
-			Update update = (Update) arg;
-
-			switch (update.property) {
-
-			case "selected":
-				updateSelected(update);
-				break;
-
-			}
-		}
-
-	}
-
+	/**
+	 * Updates the currently selected {@link SlickCountry}.
+	 * 
+	 * @param update
+	 *            {@link Update} where {@link Update#newValue} is a
+	 *            {@link List}<{@link ModelCountry}>.
+	 */
 	private void updateSelected(Update update) {
 
 		if (!(update.newValue instanceof List<?>)) {
 			throw new IllegalArgumentException("The update new value must be a list of model countries.");
 		}
 
+		// De select the currently selected
 		selected.forEach(country -> {
 			removeHighlight(country);
 			slick.modelView.getVisual(country.model.getArmy()).collapse();
 		});
 
+		// Clear the selected.
 		selected.clear();
 
+		// Iterate over each object in the list and highlight them.
 		for (Object obj : (List<?>) update.newValue) {
 
+			// If the object is not a null country
 			if (obj != null) {
 
 				if (!(obj instanceof ModelCountry)) {
 					throw new IllegalArgumentException("The list must contain model countries.");
 				}
-				ModelCountry model = (ModelCountry) obj;
 
-				SlickCountry country = slick.modelView.getVisual(model);
+				// Holds the slick country assigned to the model country from the list.
+				final SlickCountry country = slick.modelView.getVisual((ModelCountry) obj);
 
+				// Expand the army and highlight the new country
+				slick.modelView.getVisual(country.model.getArmy()).expand();
 				addHighlight(country);
 
+				// Add the country to the list of selected countries.
 				selected.add(country);
-
 			}
 
 		}

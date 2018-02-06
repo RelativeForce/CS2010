@@ -1,73 +1,79 @@
 package peril.helpers;
 
 import peril.Game;
+import peril.model.ModelPlayer;
+import peril.model.board.ModelCountry;
+import peril.model.board.ModelUnit;
 import peril.model.states.*;
 
 /**
  * A helper class for {@link Game} this object stores the instances of the
- * various {@link InteractiveState}s of the {@link Game}.
+ * various {@link ModelState}s.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-06
+ * @version 1.01.01
  *
  */
 public class ModelStateHelper {
 
 	/**
-	 * The state that displays combat to the user. This is heavily couples with
-	 * {@link WarMenu}.
+	 * The state that displays combat to the user.
 	 */
-	public final Attack combat;
+	public final Attack attack;
 
 	/**
-	 * The {@link SetupState} that will allow the user to set up which
-	 * {@link SlickPlayer} owns which {@link SlickCountry}.
+	 * The state that will allow the user to set up which {@link ModelPlayer} owns
+	 * which {@link ModelCountry}.
 	 */
 	public final Setup setup;
 
 	/**
-	 * The {@link ReinforcementState} that allows the {@link SlickPlayer} to
-	 * distribute their {@link ModelArmy} to the {@link SlickCountry}s they rule.
+	 * The state that allows the {@link ModelPlayer} to distribute their
+	 * {@link ModelArmy} to the {@link ModelCountry}s they rule.
 	 */
-	public final Reinforce reinforcement;
+	public final Reinforce reinforce;
 
 	/**
-	 * The {@link MovementState} which lets the user move {@link ModelArmy}s from
-	 * one {@link SlickCountry} to another.
+	 * The state which lets the user move {@link ModelArmy}'s {@link ModelUnit}(s)
+	 * from one {@link ModelCountry} to another.
 	 */
-	public final Fortify movement;
+	public final Fortify fortify;
 
 	/**
 	 * Constructs a new {@link ModelStateHelper}.
 	 * 
 	 * @param combat
-	 *            The state that displays combat to the user. This is heavily
-	 *            couples with {@link WarMenu}.
+	 *            The state that displays combat to the user.
 	 * @param reinforcement
-	 *            The {@link ReinforcementState} that allows the {@link SlickPlayer}
-	 *            to distribute their {@link ModelArmy} to the {@link SlickCountry}s
-	 *            they rule.
+	 *            The state that allows the {@link ModelPlayer} to distribute their
+	 *            {@link ModelArmy} to the {@link ModelCountry}s they rule.
 	 * @param setup
-	 *            The {@link SetupState} that will allow the user to set up which
-	 *            {@link SlickPlayer} owns which {@link SlickCountry}.
+	 *            The state that will allow the user to set up which
+	 *            {@link ModelPlayer} owns which {@link ModelCountry}.
 	 * @param movement
-	 *            The {@link MovementState} which lets the user move
-	 *            {@link ModelArmy}s from one {@link SlickCountry} to another.
-
+	 *            The state which lets the user move {@link ModelArmy}'s
+	 *            {@link ModelUnit}(s) from one {@link ModelCountry} to another.
+	 * 
 	 */
 	public ModelStateHelper(Attack combat, Reinforce reinforcement, Setup setup, Fortify movement) {
 
-		this.combat = combat;
-		this.reinforcement = reinforcement;
+		this.attack = combat;
+		this.reinforce = reinforcement;
 		this.setup = setup;
-		this.movement = movement;
+		this.fortify = movement;
 
 	}
 
+	/**
+	 * Clears the selected {@link ModelCountry}s from all the {@link ModelState}s.
+	 */
 	public void clearAll() {
 		setup.deselectAll();
-		reinforcement.deselectAll();
-		combat.deselectAll();
-		movement.deselectAll();
+		reinforce.deselectAll();
+		attack.deselectAll();
+		fortify.deselectAll();
 	}
 
 }

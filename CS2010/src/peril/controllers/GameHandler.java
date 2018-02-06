@@ -18,10 +18,15 @@ import peril.model.states.Setup;
 import peril.views.View;
 
 /**
- * This controller handles all interactions that an {@link AI} or {@link View}
- * could have with the {@link Game}.
+ * This controller handles all interactions between the {@link View} and
+ * {@link Game}. This realises {@link GameController}.
  * 
  * @author Joshua_Eddy
+ * 
+ * @see GameController
+ * 
+ * @version 1.01.01
+ * @since 2018-02-06
  *
  */
 public final class GameHandler implements GameController {
@@ -54,9 +59,15 @@ public final class GameHandler implements GameController {
 
 	@Override
 	public void resetGame() {
+		
+		// Delete all the players and clear the challenges.
 		game.players.emptyPlaying();
-		game.setRoundNumber(0);
 		game.players.challenges.clear();
+		
+		// Reset the game back to round zero
+		game.setRoundNumber(0);
+		
+		// Remove all the units.
 		UnitHelper.getInstance().clear();
 	}
 
@@ -203,7 +214,8 @@ public final class GameHandler implements GameController {
 
 		// Enter the reinforce state
 		game.view.enterReinforce();
-		
+
+		// Call the garbage collector
 		System.gc();
 	}
 
@@ -222,7 +234,7 @@ public final class GameHandler implements GameController {
 	public void processAI(int delta) {
 
 		if (getCurrentModelPlayer().ai != AI.USER && !game.view.isPaused()) {
-			
+
 			final View view = game.view;
 			final ModelStateHelper states = game.states;
 			final ModelPlayer current = getCurrentModelPlayer();
@@ -239,18 +251,18 @@ public final class GameHandler implements GameController {
 		}
 
 	}
-	
+
 	@Override
 	public void addPoints(int points) {
-		ModelPlayer currentPlayer = game.players.getCurrent();
+		
+		// Add the specified number of points to the current player.
+		final ModelPlayer currentPlayer = game.players.getCurrent();
 		currentPlayer.setPoints(currentPlayer.getPoints());
 	}
 
-	
 	@Override
 	public Directory getDirectory() {
 		return game.assets;
 	}
 
-	
 }

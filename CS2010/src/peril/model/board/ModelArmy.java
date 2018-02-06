@@ -202,10 +202,25 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 		clearUnits();
 
 		units.put(UnitHelper.getInstance().getWeakest(), 1);
-		
+
 		setChanged();
 		notifyObservers();
 
+	}
+
+	public ModelUnit getWeakestUnit() {
+		
+		ModelUnit current = UnitHelper.getInstance().getWeakest();
+		
+		while(current != null) {
+			if(hasUnit(current)) {
+				return current;
+			}
+			
+			current = UnitHelper.getInstance().getUnitAbove(current);
+		}
+		
+		throw new IllegalStateException("There are no units in this army.");
 	}
 
 	public void remove(int strength) {
@@ -217,7 +232,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 		} else {
 			clearUnits();
 		}
-		
+
 		setChanged();
 		notifyObservers();
 

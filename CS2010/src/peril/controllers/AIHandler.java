@@ -6,14 +6,33 @@ import peril.Game;
 import peril.controllers.api.Board;
 import peril.controllers.api.Country;
 import peril.controllers.api.Player;
-import peril.helpers.UnitHelper;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
 
+/**
+ * The controller for all AI -> {@link Game} interactions.
+ * 
+ * @author Joshua_Eddy
+ * 
+ * @version 1.01.01
+ * @since 2018-02-06
+ * 
+ * @see AIController
+ *
+ */
 public final class AIHandler implements AIController {
 
+	/**
+	 * The {@link Game} that this {@link AIHandler} interacts with.
+	 */
 	private final Game game;
-	
+
+	/**
+	 * Constructs an new {@link AIHandler}.
+	 * 
+	 * @param game
+	 *            The {@link Game} that this {@link AIHandler} interacts with.
+	 */
 	public AIHandler(Game game) {
 		this.game = game;
 	}
@@ -38,8 +57,10 @@ public final class AIHandler implements AIController {
 			throw new IllegalArgumentException("The parmameter country is not a valid country.");
 		}
 
-		ModelCountry checkedCountry = (ModelCountry) country;
+		// Cast to a model country
+		final ModelCountry checkedCountry = (ModelCountry) country;
 
+		// Determine the current state and then select the check country in it.
 		if (game.view.isCurrentState(game.states.reinforcement)) {
 			return game.states.reinforcement.select(checkedCountry, game.getGameController());
 		} else if (game.view.isCurrentState(game.states.combat)) {
@@ -48,10 +69,9 @@ public final class AIHandler implements AIController {
 			return game.states.movement.select(checkedCountry, game.getGameController());
 		} else {
 			throw new IllegalStateException("The current state is not a valid game state.");
-
 		}
 	}
-	
+
 	/**
 	 * Performs a {@link Consumer} task on each {@link Country} on the
 	 * {@link Board}.
@@ -80,19 +100,20 @@ public final class AIHandler implements AIController {
 		game.view.attack();
 
 	}
-	
+
 	/**
 	 * Fortifies one {@link Country} with one unit from another friendly
 	 * {@link Country}.
 	 */
 	@Override
 	public void fortify() {
-		
+
 		// Check correct state
 		if (!game.view.isCurrentState(game.states.movement)) {
 			throw new IllegalStateException("You can only attack during the fortify state.");
 		}
-		
+
+		// Cast to model countries.
 		final ModelCountry primary = game.states.movement.getPrimary();
 		final ModelCountry secondary = game.states.movement.getSecondary();
 
@@ -100,14 +121,15 @@ public final class AIHandler implements AIController {
 		if (primary == null || secondary == null) {
 			throw new IllegalStateException("There is NOT two countries selected. Select two valid countries.");
 		}
-		
-		ModelUnit unit = UnitHelper.getInstance().getWeakest();
-		
-		// If there is a selected unit fortify the country with that.
-		if(primary.getArmy().getSelected() != null) {
-			unit = primary.getArmy().getSelected();
-		}
 
+		// Whether of not there is a unit selected in the current country's army.
+		final boolean unitSelected = primary.getArmy().getSelected() != null;
+
+		// If there is a selected unit fortify the country with that otherwise use the
+		// weakest unit in the army.
+		final ModelUnit unit = unitSelected ? primary.getArmy().getSelected() : primary.getArmy().getWeakestUnit();
+
+		// Fortify
 		game.states.movement.fortify(unit);
 	}
 
@@ -115,25 +137,30 @@ public final class AIHandler implements AIController {
 	 * Checks if there is a valid path between two friendly {@link Country}s.
 	 */
 	@Override
-	public boolean isPathBetween(Country a, Country b) {
+	public boolean isPathBetween(Country source, Country destination) {
 
-		// Ensure that the parameter Country is a valid country, This should never be
-		// false.
-		if (!(a instanceof ModelCountry)) {
-			throw new IllegalArgumentException("The parmameter 'A' country is not a valid country.");
+		// Ensure that both the parameter Country is a valid model country, This should
+		// never be false.
+		if (!(source instanceof ModelCountry)) {
+			throw new IllegalArgumentException("The parmameter 'source' country is not a valid country.");
+		} else if (!(destination instanceof ModelCountry)) {
+			throw new IllegalArgumentException("The parmameter 'destination' country is not a valid country.");
 		}
 
-		final ModelCountry checkedA = (ModelCountry) a;
+		final ModelCountry checkedSource = (ModelCountry) source;
+		final ModelCountry checkedDestination = (ModelCountry) destination;
 
-		// Ensure that the parameter Country is a valid country, This should never be
-		// false.
-		if (!(b instanceof ModelCountry)) {
-			throw new IllegalArgumentException("The parmameter 'B' country is not a valid country.");
-		}
+		// Whether of not there is a unit selected in the current country's army.
+		final boolean unitSelected = checkedSource.getArmy().getSelected() != null;
 
-		final ModelCountry checkedB = (ModelCountry) b;
+		// If there is a selected unit fortify the country with that otherwise use the
+		// weakest unit in the army.
+		final ModelUnit unit = unitSelected ? checkedSource.getArmy().getSelected()
+				: checkedSource.getArmy().getWeakestUnit();
 
-		return !game.states.movement.getPathBetween(checkedA, checkedB, UnitHelper.getInstance().getWeakest()).isEmpty();
+		// Return whether or not the path between the countries is not empty. If the
+		// path is empty then there is no valid path.
+		return !game.states.movement.getPathBetween(checkedSource, checkedDestination, unit).isEmpty();
 	}
 
 	/**
@@ -149,14 +176,14 @@ public final class AIHandler implements AIController {
 	@Override
 	public void reinforce() {
 
-		// Check correct state
+		// Check the current state is reinforce
 		if (!game.view.isCurrentState(game.states.reinforcement)) {
-			throw new IllegalStateException("You can only attack during the reinforcement state.");
+			throw new IllegalStateException("You can only reinforce during the reinforcement state.");
 		}
 
-		// Check both countries are selected.
-		if (game.states.reinforcement.getSelected(0) == null) {
-			throw new IllegalStateException("There is valid country selected.");
+		// Check there is a country selected.
+		if (game.states.reinforcement.numberOfSelected() == 0) {
+			throw new IllegalStateException("There is no country selected.");
 		}
 
 		game.states.reinforcement.reinforce(game.getGameController());

@@ -5,8 +5,6 @@ import java.util.function.Consumer;
 
 import peril.Challenge;
 import peril.Game;
-import peril.controllers.api.Country;
-import peril.controllers.api.Player;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelCountry;
@@ -18,64 +16,68 @@ import peril.views.View;
 
 /**
  * 
- * The API for all {@link Game} - {@link View} interactions. Any invalid
+ * The API for all {@link View} -> {@link Game} interactions. Any invalid
  * operations will throw the appropriate exceptions.
  * 
  * @author Joshua_Eddy
+ * 
+ * @version 1.01.01
+ * @since 2018-02-06
  *
  */
 public interface GameController {
 
 	/**
-	 * Retrieves the current {@link Player}.
+	 * Retrieves the current {@link ModelPlayer}.
 	 * 
-	 * @return
+	 * @return {@link ModelPlayer}.
 	 */
 	ModelPlayer getCurrentModelPlayer();
-	
+
 	/**
 	 * Retrieves the {@link Game}'s {@link ModelBoard}.
 	 * 
-	 * @return
+	 * @return {@link ModelBoard}
 	 */
 	ModelBoard getModelBoard();
-	
+
 	/**
 	 * Retrieves a {@link ModelPlayer} using a specified player number.
 	 * 
 	 * @param playerNumber
-	 * @return
+	 *            number of the player.
+	 * @return {@link ModelPlayer}.
 	 */
 	ModelPlayer getModelPlayer(int playerNumber);
-	
+
 	/**
 	 * Returns the state that displays combat phase to the user.
 	 * 
-	 * @return Returns an {@link Attack} state.
+	 * @return {@link Attack}.
 	 */
 	Attack getAttack();
 
 	/**
 	 * Returns the state that displays reinforcement phase to the user.
 	 * 
-	 * @return Returns a {@link Reinforce} state.
+	 * @return {@link Reinforce}.
 	 */
 	Reinforce getReinforce();
 
 	/**
 	 * Returns the state that displays the fortification(fortify) phase to the user.
 	 * 
-	 * @return Returns a {@link Fortify} state.
+	 * @return {@link Fortify}.
 	 */
 	Fortify getFortify();
 
 	/**
 	 * Returns the state that displays the setup phase to the user.
 	 * 
-	 * @return Returns a {@link Setup} state.
+	 * @return {@link Setup}.
 	 */
 	Setup getSetup();
-	
+
 	/**
 	 * Gets the list of all {@link Challenge}s the {@link ModelPlayer}s can
 	 * complete.
@@ -83,21 +85,21 @@ public interface GameController {
 	 * @return The {@link List} of {@link Challenge}s.
 	 */
 	List<Challenge> getChallenges();
-	
+
 	/**
 	 * Retrieves the {@link View} that is currently in use by the {@link Game}.
 	 * 
-	 * @return
+	 * @return {@link View}
 	 */
 	View getView();
-	
+
 	/**
 	 * Retrieves the {@link Game}'s {@link AIController}.
 	 * 
 	 * @return {@link AIController}
 	 */
 	AIController getAIController();
-	
+
 	/**
 	 * Retrieves the {@link Directory} that denotes the file system of the assets of
 	 * the game.
@@ -110,6 +112,7 @@ public interface GameController {
 	 * Sets the {@link Game} help menu to the specified page id.
 	 * 
 	 * @param pageId
+	 *            The id of the help page.
 	 */
 	void setHelpMenuPage(int pageId);
 
@@ -123,6 +126,7 @@ public interface GameController {
 	 * Sets the {@link ModelBoard}'s name.
 	 * 
 	 * @param name
+	 *            New name of the {@link ModelBoard}.
 	 */
 	void setBoardName(String name);
 
@@ -149,7 +153,8 @@ public interface GameController {
 	 * 
 	 * @param playerNumber
 	 *            number of the {@link ModelPlayer}
-	 * @return
+	 * @return Whether a {@link ModelPlayer} with the specified number is currently
+	 *         playing or not.
 	 */
 	boolean isPlaying(int playerNumber);
 
@@ -160,17 +165,19 @@ public interface GameController {
 	void checkChallenges();
 
 	/**
-	 * Changes the current {@link ModelPlayer} to the next.
+	 * Changes the current {@link ModelPlayer} to the next in the sequence.
 	 */
 	void nextPlayer();
 
 	/**
-	 * Checks whether the game has been won.
+	 * Checks whether the game has been won if so it will cause the game to move
+	 * into the end game state.
 	 */
 	void checkWinner();
 
 	/**
-	 * Checks whether the continents ruler ship has changed.
+	 * Checks whether the continents ruler ship has changed. This is a separate as
+	 * it is a complex function.
 	 */
 	void checkContinentRulership();
 
@@ -224,27 +231,24 @@ public interface GameController {
 	/**
 	 * Confirms that the {@link Reinforce} state is finished and moves onto the next
 	 * state.
-	 * 
 	 */
 	void confirmReinforce();
 
 	/**
 	 * Confirms that the {@link Attack}(Combat) state is finished and moves onto the
 	 * next state.
-	 * 
 	 */
 	void confirmCombat();
 
 	/**
 	 * Confirms that the {@link Setup} state is finished and moves onto the next
 	 * state.
-	 * 
 	 */
 	void confirmSetup();
 
 	/**
-	 * Confirms the movement of troops of the current {@link ModelPlayer} and moves
-	 * onto the next {@link ModelPlayer}.
+	 * Confirms that the {@link Fortify} state is finished and moves onto the next
+	 * state. Also moves the next {@link ModelPlayer}.
 	 */
 	void confirmMovement();
 
@@ -263,8 +267,8 @@ public interface GameController {
 	void setLoser(ModelPlayer player);
 
 	/**
-	 * Adds point to the current player. Kill a unit = 1 point Conquer a country =
-	 * 10 points
+	 * Adds point to the current {@link ModelPlayer}. Kill a unit = 1 point Conquer
+	 * a country = 10 points
 	 * 
 	 * @param points
 	 */
@@ -274,7 +278,8 @@ public interface GameController {
 	 * Processes the turn of the AI.
 	 * 
 	 * @param delta
-	 *            Delta time delay for the AI to process its turn.
+	 *            The amount of milliseconds that have passed since the last time
+	 *            this method was called.
 	 */
 	void processAI(int delta);
 

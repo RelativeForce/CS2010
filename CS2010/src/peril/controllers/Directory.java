@@ -1,38 +1,83 @@
 package peril.controllers;
 
+/**
+ * 
+ * Provides the path to the game asset folders. All paths end in the system
+ * specific path separator character. ('/' on windows).
+ * 
+ * @author Joshua_Eddy
+ * 
+ * @version 1.01.01
+ * @since 2018-02-06
+ *
+ */
 public interface Directory {
 
 	/**
-	 * The file path string to the UI components folder.
+	 * The file path string to the folder containing the UI images.
 	 * 
-	 * @return file path/
+	 * @return UI images file path
 	 */
 	String getUIPath();
 
 	/**
-	 * The file path string to the maps folder.
+	 * The file path string to the folder which contains the map folder(s). Each sub
+	 * folder has the same name as the map it contains.
 	 * 
-	 * @return file path/
+	 * @return Maps file path
 	 */
 	String getMapsPath();
-	
+
 	/**
-	 * Returns a String that is the path to the music assets.
+	 * The file path string to the music folder.
 	 * 
-	 * @return String path to the music assets.
+	 * @return Music file path
 	 */
 	String getMusicPath();
-	
+
+	/**
+	 * The file path string to the folder containing the dice images.
+	 * 
+	 * @return Dice file path
+	 */
 	String getDicePath();
 
+	/**
+	 * The file path to the folder containing the button images.
+	 * 
+	 * @return Buttons file path
+	 */
 	String getButtonsPath();
-	
+
+	/**
+	 * The file path to the folder containing the unit icons.
+	 * 
+	 * @return Units file path
+	 */
 	String getUnitsPath();
-	
+
+	/**
+	 * The file path to the folder containing the player images.
+	 * 
+	 * @return Player file path
+	 */
 	String getPlayersPath();
-	
+
+	/**
+	 * The file path to the folder containing the hazard icons.
+	 * 
+	 * @return Hazards file path
+	 */
 	String getHazardsPath();
-	
+
+	/**
+	 * Uses the specified map name to construct the file path to the folder that
+	 * contains the assets of specified map.
+	 * 
+	 * @param mapName
+	 *            Name of the map.
+	 * @return Map file path
+	 */
 	String asMapPath(String mapName);
-	
+
 }

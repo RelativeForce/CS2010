@@ -14,6 +14,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.ai.AI;
+import peril.ai.Ernie;
 import peril.ai.Monkey;
 import peril.controllers.GameController;
 import peril.helpers.PlayerHelper;
@@ -323,6 +324,7 @@ public final class PlayerSelection extends InteractiveState {
 	private void addAllAI() {
 		allAI.put("Monkey", new Monkey(game.getAIController()));
 		allAI.put("None", AI.USER);
+		allAI.put("Ernie", new Ernie(game.getAIController()));
 	}
 
 }

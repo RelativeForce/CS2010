@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 
 import peril.Challenge;
 import peril.Game;
+import peril.helpers.AIHelper;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelCountry;
@@ -20,9 +21,9 @@ import peril.views.View;
  * The API for all {@link View} -> {@link Game} interactions. Any invalid
  * operations will throw the appropriate exceptions.
  * 
- * @author Joshua_Eddy
+ * @author Joshua_Eddy, James_Rowntree
  * 
- * @version 1.01.02
+ * @version 1.01.03
  * @since 2018-02-06
  *
  */
@@ -292,5 +293,12 @@ public interface GameController {
 	 * 
 	 */
 	ModelState getCurrentState();
+
+	/**
+	 * Retrieves the {@link AIHelper} of the game.
+	 * 
+	 * @return {@link AIHelper}
+	 */
+	AIHelper getAIs();
 
 }

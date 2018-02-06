@@ -17,9 +17,9 @@ import peril.views.slick.SlickGame;
 /**
  * Encapsulate the main game logic for Peril.
  * 
- * @author Joshua_Eddy
+ * @author Joshua_Eddy, James_Rowntree
  * 
- * @version 1.01.01
+ * @version 1.01.02
  * @since 2018-02-06
  *
  */
@@ -53,6 +53,11 @@ public final class Game {
 	public final View view;
 
 	/**
+	 * The {@link AIHelper} for this game.
+	 */
+	public final AIHelper aiHelper;
+
+	/**
 	 * The {@link GameController} that allows the {@link View} to interact with the
 	 * {@link Game}.
 	 */
@@ -75,7 +80,6 @@ public final class Game {
 	private Game(View view) {
 
 		this.view = view;
-
 		// Holds the path of the peril assets
 		final StringBuilder assetsPath = new StringBuilder(new File(System.getProperty("user.dir")).getPath())
 				.append(File.separatorChar).append("assets");
@@ -85,6 +89,7 @@ public final class Game {
 		this.ai = new AIHandler(this);
 		this.board = new ModelBoard("NOT ASSIGNED");
 		this.players = new PlayerHelper(this);
+		this.aiHelper = new AIHelper(game);
 
 		// Construct model states
 		final Setup setup = new Setup();

@@ -8,6 +8,9 @@ import peril.model.board.ModelUnit;
  * {@link ModelCountry}s used by {@link ModelLink}.
  * 
  * @author Joshua_Eddy
+ * 
+ * @version 1.01.01
+ * @since 2018-02-06
  *
  */
 public enum ModelLinkState {
@@ -74,7 +77,8 @@ public enum ModelLinkState {
 	 *            {@link ModelCountry}
 	 * @param destination
 	 *            {@link ModelCountry}
-	 * @return boolean
+	 * @return boolean Retrieves whether or not a {@link ModelUnit} can be
+	 *         transfered.
 	 */
 	public abstract boolean canTransfer(ModelUnit unit, ModelCountry origin, ModelCountry destination);
 

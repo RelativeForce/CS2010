@@ -11,6 +11,9 @@ import peril.model.board.ModelUnit;
  * link can have multiple states.
  * 
  * @author Joshua_Eddy
+ * 
+ * @version 1.01.01
+ * @since 2018-02-06
  *
  */
 public final class ModelLink extends Observable {

@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import peril.Challenge;
 import peril.Game;
 import peril.ai.AI;
+import peril.helpers.AIHelper;
 import peril.helpers.ModelStateHelper;
 import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;
@@ -26,7 +27,7 @@ import peril.views.View;
  * 
  * @see GameController
  * 
- * @version 1.01.02
+ * @version 1.01.03
  * @since 2018-02-06
  *
  */
@@ -281,6 +282,11 @@ public final class GameHandler implements GameController {
 		}
 		
 		return null;
+	}
+
+	@Override
+	public AIHelper getAIs() {
+		return game.aiHelper;
 	}
 
 }

@@ -1,7 +1,6 @@
 package peril.views.slick.states;
 
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.newdawn.slick.Color;
@@ -14,7 +13,6 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.ai.AI;
-import peril.ai.Monkey;
 import peril.controllers.GameController;
 import peril.helpers.PlayerHelper;
 import peril.views.slick.Font;
@@ -37,12 +35,6 @@ public final class PlayerSelection extends InteractiveState {
 	 * The name of this {@link PlayerSelection}.
 	 */
 	private static final String NAME = "Select";
-
-	/**
-	 * The {@link Map} that contains all the {@link AI} that are available for the
-	 * user to select.
-	 */
-	private final Map<String, AI> allAI;
 
 	/**
 	 * The {@link Map} of {@link SlickPlayer} number to there associated
@@ -77,7 +69,6 @@ public final class PlayerSelection extends InteractiveState {
 		super(game, NAME, id, HelpMenu.NULL_PAGE);
 
 		this.playButton = "play";
-		this.allAI = new IdentityHashMap<>();
 		this.selectors = new HashMap<>();
 		this.players = new VisualList<>(new Point(100, 100), 20, 24, 3, 5);
 		this.width = 100;
@@ -85,7 +76,6 @@ public final class PlayerSelection extends InteractiveState {
 
 		players.setFont(new Font("Arial", Color.black, 19));
 
-		addAllAI();
 		addSelectors();
 
 		super.addComponent(players);
@@ -316,15 +306,9 @@ public final class PlayerSelection extends InteractiveState {
 	 *            {@link VisualList} selector.
 	 */
 	private void populateSelector(VisualList<AI> selector) {
-		allAI.forEach((AIName, AI) -> selector.add(AIName, AI));
-	}
-
-	/**
-	 * Defines all the {@link AI} that are available for the user to select.
-	 */
-	private void addAllAI() {
-		allAI.put("Monkey", new Monkey(game.getAIController()));
-		allAI.put("None", AI.USER);
+		for (AI ai : game.getAIs()) {
+			selector.add(ai.name, ai);
+		}
 	}
 
 }

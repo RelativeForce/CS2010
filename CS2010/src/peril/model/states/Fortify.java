@@ -235,28 +235,35 @@ public class Fortify extends ModelState {
 	 * Moves one unit from the primary {@link SlickCountry} to the secondary
 	 * {@link SlickCountry}.
 	 */
-	public void fortify(ModelUnit unit) {
+	public void fortify() {
 
-		ModelCountry primary = getSelected(0);
-		ModelCountry target = getSelected(1);
-
+		final ModelCountry primary = getSelected(0);
+		final ModelCountry target = getSelected(1);
+		
 		// If there is two countries highlighted
 		if (primary != null && target != null) {
+			
+			// Holds the army of the primary country
+			final ModelArmy primaryArmy = primary.getArmy();
+
+			// Holds the army of the target country
+			final ModelArmy targetArmy = target.getArmy();
+
+			// Whether of not there is a unit selected in the current country's army.
+			final boolean unitSelected = primary.getArmy().getSelected() != null;
+
+			// If there is a selected unit fortify the country with that otherwise use the
+			// weakest unit in the army.
+			final ModelUnit unit = unitSelected ? primary.getArmy().getSelected() : primary.getArmy().getWeakestUnit();
 
 			// If the army of the primary highlighted country is larger that 1 unit in size
-			if (primary.getArmy().getStrength() > unit.strength) {
-
-				// Holds the army of the primary country
-				ModelArmy primaryArmy = primary.getArmy();
-
-				// Holds the army of the target country
-				ModelArmy targetArmy = target.getArmy();
+			if (primary.getArmy().getNumberOfUnits() > 1) {
 
 				// Move the unit.
 				primaryArmy.remove(unit);
 				targetArmy.add(unit);
 
-				if (primaryArmy.getStrength() == 1) {
+				if (primaryArmy.getNumberOfUnits() == 1) {
 					deselectAll();
 				}
 			} else {

@@ -25,7 +25,7 @@ import peril.views.View;
  * 
  * @see GameController
  * 
- * @version 1.01.01
+ * @version 1.01.02
  * @since 2018-02-06
  *
  */
@@ -133,17 +133,17 @@ public final class GameHandler implements GameController {
 
 	@Override
 	public Attack getAttack() {
-		return game.states.combat;
+		return game.states.attack;
 	}
 
 	@Override
 	public Reinforce getReinforce() {
-		return game.states.reinforcement;
+		return game.states.reinforce;
 	}
 
 	@Override
 	public Fortify getFortify() {
-		return game.states.movement;
+		return game.states.fortify;
 	}
 
 	@Override
@@ -239,11 +239,11 @@ public final class GameHandler implements GameController {
 			final ModelStateHelper states = game.states;
 			final ModelPlayer current = getCurrentModelPlayer();
 
-			if (view.isCurrentState(states.reinforcement) && !current.ai.reinforce(delta)) {
+			if (view.isCurrentState(states.reinforce) && !current.ai.reinforce(delta)) {
 				view.enterCombat();
-			} else if (view.isCurrentState(states.combat) && !current.ai.attack(delta)) {
+			} else if (view.isCurrentState(states.attack) && !current.ai.attack(delta)) {
 				view.enterFortify();
-			} else if (view.isCurrentState(states.movement) && !current.ai.fortify(delta)) {
+			} else if (view.isCurrentState(states.fortify) && !current.ai.fortify(delta)) {
 				view.enterReinforce();
 				nextPlayer();
 			}

@@ -11,12 +11,16 @@ import java.util.function.Consumer;
  *
  * @param <T>
  *            The type of element that the {@link Consumer} inside
- *            <code>this</code> {@link Action} will perform its task on.
+ *            <code>this</code> action will perform its task on.
+ * @version 1.01.01
+ * @since 2018-02-06
  */
-public class Action<T> {
+public final class Action<T> {
 
 	/**
-	 * Whether the {@link Action} is complete or not.
+	 * Whether the {@link Action} is complete or not. The {@link Action} can be
+	 * performed multiple times so this should be flagged <code>true</code> upon
+	 * first completion of the {@link Action#task}.
 	 */
 	private volatile boolean done;
 
@@ -39,6 +43,15 @@ public class Action<T> {
 	 *            The object that this action will be performed on.
 	 */
 	public Action(T object, Consumer<T> task) {
+
+		// Check parameters
+		if (object == null) {
+			throw new NullPointerException("The object cannot be null");
+		} else if (task == null) {
+			throw new NullPointerException("The task cannot be null");
+		}
+
+		// Assign the task as initially incomplete.
 		this.done = false;
 		this.task = task;
 		this.object = object;
@@ -58,10 +71,11 @@ public class Action<T> {
 	 * {@link Action#isDone()} will return <code>true</code>.
 	 */
 	public void execute() {
-		
-		if(task != null) {
-			task.accept(object);
-		}
+
+		// Execute the task on the object
+		task.accept(object);
+
+		// Assign this task as complete.
 		done = true;
 	}
 

@@ -204,7 +204,7 @@ public class FunctionHelper {
 	/**
 	 * Retrieves the {@link Action} that will add one unit to a {@link SlickCountry}
 	 * and remove one unit from the current
-	 * {@link SlickPlayer#getDistributableArmySize()}.
+	 * {@link SlickPlayer#getDistributableArmyStrength()}.
 	 * 
 	 * @return {@link Action}
 	 */

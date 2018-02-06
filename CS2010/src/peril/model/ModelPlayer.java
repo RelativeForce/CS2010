@@ -145,7 +145,7 @@ public final class ModelPlayer extends Observable implements Player {
 	/**
 	 * Retrieves the total size of this {@link ModelPlayer}s army.
 	 */
-	public int getTotalArmySize() {
+	public int getTotalArmyStrength() {
 		return totalArmy.getStrength();
 	}
 
@@ -153,7 +153,7 @@ public final class ModelPlayer extends Observable implements Player {
 	 * Retrieves the distribute-able army size.
 	 */
 	@Override
-	public int getDistributableArmySize() {
+	public int getDistributableArmyStrength() {
 		return distributableArmy.getStrength();
 	}
 

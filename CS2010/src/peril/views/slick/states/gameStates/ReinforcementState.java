@@ -20,7 +20,7 @@ import peril.views.slick.board.SlickPlayer;
 /**
  * Encapsulates the behaviour of the Reinforcement {@link CoreGameState} where
  * the {@link SlickPlayer} places their units from
- * {@link SlickPlayer#getDistributableArmySize()} on their
+ * {@link SlickPlayer#getDistributableArmyStrength()} on their
  * {@link SlickCountry}s.
  * 
  * @author Joseph_Rolli, Joshua_Eddy

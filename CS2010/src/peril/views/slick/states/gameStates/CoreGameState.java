@@ -19,6 +19,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.Update;
 import peril.controllers.GameController;
+import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
 import peril.model.states.ModelState;
 import peril.views.slick.Point;
@@ -217,11 +218,30 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		case Input.KEY_C:
 			collapseSelected();
 			break;
+		case Input.KEY_T:
+			tradeSelectedUnitUp();
+			break;
 		default:
 			break;
 
 		}
 
+	}
+	
+	private void tradeSelectedUnitUp() {
+		
+		if(selected.get(0) == null) {
+			return;
+		}
+		
+		ModelArmy army = selected.get(0).model.getArmy();
+		
+		if(army.getSelected() == null) {
+			return;
+		}
+		
+		army.tradeUp(army.getSelected());
+		
 	}
 
 	/**

@@ -149,6 +149,45 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 		return units.get(unit);
 	}
 
+	public boolean tradeUp(ModelUnit unit) {
+		if (!hasUnit(unit)) {
+			return false;
+		}
+
+		final ModelUnit above = UnitHelper.getInstance().getUnitAbove(unit);
+
+		if (above == null) {
+			return false;
+		}
+
+		final int numberOfUnit = units.get(unit);
+
+		final int strengthCombined = numberOfUnit * unit.strength;
+
+		final boolean strongerThanAbove = strengthCombined > above.strength;
+
+		if (!strongerThanAbove) {
+			return false;
+		}
+
+		final int numberOfAbove = strengthCombined / above.strength;
+
+		final int remainder = strengthCombined % above.strength;
+
+		for (int index = 0; index < numberOfUnit; index++) {
+			remove(unit);
+		}
+		
+		for(int index = 0; index < numberOfAbove; index++) {
+			add(above);
+		}
+		
+		generateUnits(remainder).forEach(smaller -> add(smaller));
+
+		return true;
+
+	}
+
 	/**
 	 * Returns the number of different types of {@link ModelUnit}s in this
 	 * {@link ModelArmy}.
@@ -209,32 +248,32 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 	}
 
 	public ModelUnit getWeakestUnit() {
-		
+
 		ModelUnit current = UnitHelper.getInstance().getWeakest();
-		
-		while(current != null) {
-			if(hasUnit(current)) {
+
+		while (current != null) {
+			if (hasUnit(current)) {
 				return current;
 			}
-			
+
 			current = UnitHelper.getInstance().getUnitAbove(current);
 		}
-		
+
 		throw new IllegalStateException("There are no units in this army.");
 	}
-	
-public ModelUnit getStrongestUnit() {
-		
+
+	public ModelUnit getStrongestUnit() {
+
 		ModelUnit current = UnitHelper.getInstance().getStrongest();
-		
-		while(current != null) {
-			if(hasUnit(current)) {
+
+		while (current != null) {
+			if (hasUnit(current)) {
 				return current;
 			}
-			
+
 			current = UnitHelper.getInstance().getUnitBelow(current);
 		}
-		
+
 		throw new IllegalStateException("There are no units in this army.");
 	}
 

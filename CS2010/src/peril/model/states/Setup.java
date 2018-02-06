@@ -8,8 +8,21 @@ import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelCountry;
+import peril.views.slick.states.gameStates.SetupState;
 
 public class Setup extends ModelState {
+
+	/**
+	 * The name of a specific {@link Setup}.
+	 */
+	private static final String STATE_NAME = "Setup";
+
+	/**
+	 * Constructs a new {@link Setup}.
+	 */
+	public Setup() {
+		super(STATE_NAME);
+	}
 
 	/**
 	 * During {@link SetupState} any country is select-able.
@@ -33,7 +46,6 @@ public class Setup extends ModelState {
 			player.totalArmy.setStrength(0);
 		});
 
-		
 		// Iterate through each country on the board.
 		board.forEachCountry(country -> assignPlayer(country, players, board.getNumberOfCountries()));
 

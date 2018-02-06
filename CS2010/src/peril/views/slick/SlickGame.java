@@ -20,6 +20,7 @@ import peril.io.FileParser;
 import peril.io.SaveFile;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
+import peril.model.board.ModelCountry;
 import peril.model.states.ModelState;
 import peril.views.ModelView;
 import peril.views.View;
@@ -104,9 +105,9 @@ public class SlickGame extends StateBasedGame implements View {
 	 */
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
-		
+
 		final Directory directory = game.getDirectory();
-		
+
 		states.init(this);
 
 		modelView.init(game);
@@ -245,7 +246,8 @@ public class SlickGame extends StateBasedGame implements View {
 		try {
 
 			// Set the icons of the game
-			String[] icons = new String[] { directory.getUIPath() + "goat16.png", directory.getUIPath() + "goat32.png" };
+			String[] icons = new String[] { directory.getUIPath() + "goat16.png",
+					directory.getUIPath() + "goat32.png" };
 			agc.setIcons(icons);
 
 		} catch (SlickException e) {
@@ -375,7 +377,7 @@ public class SlickGame extends StateBasedGame implements View {
 	public void addLoser(ModelPlayer player) {
 		states.end.addToTop(modelView.getVisual(player));
 	}
-	
+
 	@Override
 	public void showToolTip(String text) {
 
@@ -396,7 +398,7 @@ public class SlickGame extends StateBasedGame implements View {
 		}
 
 	}
-	
+
 	@Override
 	public void toggleChallengeMenu(boolean state) {
 		toggleMenu(state, ChallengeMenu.NAME);
@@ -421,11 +423,11 @@ public class SlickGame extends StateBasedGame implements View {
 	public void toggleHelpMenu(boolean state) {
 		toggleMenu(state, HelpMenu.NAME);
 	}
-	
+
 	private void toggleMenu(boolean state, String menuName) {
-		if(state) {
+		if (state) {
 			menus.show(menuName);
-		}else {
+		} else {
 			menus.hide(menuName);
 		}
 	}
@@ -471,7 +473,7 @@ public class SlickGame extends StateBasedGame implements View {
 	public FileParser getMapLoader(String mapPath, SaveFile save) {
 		return new MapReader(mapPath, game, save);
 	}
-	
+
 	@Override
 	public void forEachLoser(Consumer<ModelPlayer> task) {
 		states.end.forEachLoser(task);
@@ -482,7 +484,16 @@ public class SlickGame extends StateBasedGame implements View {
 		return menus.isPaused();
 	}
 
-	
+	@Override
+	public int getArmyOffsetX(ModelCountry country) {
+		return modelView.getVisual(country).getArmyOffset().x;
+	}
+
+	@Override
+	public int getArmyOffsetY(ModelCountry country) {
+		return modelView.getVisual(country).getArmyOffset().y;
+	}
+
 	@Override
 	public void AIattack() {
 		menus.autoAttack();

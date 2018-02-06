@@ -8,8 +8,6 @@ import peril.controllers.GameController;
 import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
-import peril.views.slick.board.SlickCountry;
-import peril.views.slick.board.SlickPlayer;
 
 public abstract class ModelState extends Observable {
 
@@ -18,8 +16,29 @@ public abstract class ModelState extends Observable {
 	 */
 	private LinkedList<ModelCountry> selected;
 
-	public ModelState() {
+	/**
+	 * Holds the name of a specific {@link ModelState}.
+	 */
+	private final String stateName;
+
+	/**
+	 * Constructs an new {@link ModelState}.
+	 * 
+	 * @param stateName
+	 *            Name of the {@link ModelState}.
+	 */
+	public ModelState(String stateName) {
 		selected = new LinkedList<>();
+		this.stateName = stateName;
+	}
+
+	/**
+	 * Retrieves the name of a specific {@link ModelState}.
+	 * 
+	 * @return State name
+	 */
+	public String getName() {
+		return stateName;
 	}
 
 	/**

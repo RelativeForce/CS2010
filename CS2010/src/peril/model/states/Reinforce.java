@@ -6,8 +6,18 @@ import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
+import peril.views.slick.states.gameStates.ReinforcementState;
 
 public class Reinforce extends ModelState {
+	
+	/**
+	 * The name of a specific {@link ReinforcementState}.
+	 */
+	private static final String STATE_NAME = "Reinforcement";
+
+	public Reinforce() {
+		super(STATE_NAME);
+	}
 
 	/**
 	 * The {@link SlickCountry} that is to be selected must be owned by the current

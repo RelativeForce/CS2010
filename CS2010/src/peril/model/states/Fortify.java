@@ -10,8 +10,18 @@ import peril.model.ModelPlayer;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
+import peril.views.slick.states.gameStates.MovementState;
 
 public class Fortify extends ModelState {
+	
+	/**
+	 * The name of a specific {@link MovementState}.
+	 */
+	private static final String STATE_NAME = "Movement";
+
+	public Fortify() {
+		super(STATE_NAME);
+	}
 
 	@Override
 	public boolean select(ModelCountry country, GameController api) {

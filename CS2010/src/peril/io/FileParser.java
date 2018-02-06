@@ -9,6 +9,9 @@ import peril.controllers.Directory;
  * the reader will be read sequentially using {@link FileParser#parseLine()}.
  * 
  * @author Joshua_Eddy
+ * 
+ * @version 1.01.01
+ * @since 2018-02-06
  *
  */
 public abstract class FileParser {
@@ -40,9 +43,9 @@ public abstract class FileParser {
 	public FileParser(String sourceFilePath, Directory directory, String filename) {
 
 		if (directory == null) {
-			throw new NullPointerException("File path cannot be empty.");
+			throw new NullPointerException("File path cannot be null.");
 		} else if (filename.isEmpty()) {
-			throw new NullPointerException("File name cannot be empty.");
+			throw new IllegalArgumentException("File name cannot be empty.");
 		}
 		this.directory = directory;
 		this.lines = TextFileReader.scanFile(sourceFilePath, filename);

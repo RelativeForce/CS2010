@@ -10,6 +10,7 @@ import peril.model.board.ModelBoard;
 import peril.model.board.ModelCountry;
 import peril.model.states.Attack;
 import peril.model.states.Fortify;
+import peril.model.states.ModelState;
 import peril.model.states.Reinforce;
 import peril.model.states.Setup;
 import peril.views.View;
@@ -21,7 +22,7 @@ import peril.views.View;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.01
+ * @version 1.01.02
  * @since 2018-02-06
  *
  */
@@ -282,5 +283,14 @@ public interface GameController {
 	 *            this method was called.
 	 */
 	void processAI(int delta);
+
+	/**
+	 * Retrieves the current {@link ModelState} of the game.
+	 * 
+	 * @return {@link ModelState} or null if the current state is not a
+	 *         {@link ModelState}.
+	 * 
+	 */
+	ModelState getCurrentState();
 
 }

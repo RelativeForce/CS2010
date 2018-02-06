@@ -11,6 +11,9 @@ import java.util.Scanner;
  * desired text file.
  * 
  * @author Joshua_Eddy
+ * 
+ * @version 1.01.01
+ * @since 2018-02-06
  *
  * @see java.io.File
  */

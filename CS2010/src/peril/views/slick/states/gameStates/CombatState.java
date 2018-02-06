@@ -30,11 +30,6 @@ import peril.views.slick.board.SlickPlayer;
 public final class CombatState extends CoreGameState {
 
 	/**
-	 * The name of a specific {@link CombatState}.
-	 */
-	private static final String STATE_NAME = "Combat";
-
-	/**
 	 * Holds the instance of a attack {@link Button}.
 	 */
 	private final String attackButton;
@@ -48,7 +43,7 @@ public final class CombatState extends CoreGameState {
 	 *            The ID of this {@link CombatState}
 	 */
 	public CombatState(GameController game, int id, Attack model) {
-		super(game, STATE_NAME, id, model);
+		super(game, model.getName(), id, model);
 		this.attackButton = "attack";
 
 		model.addObserver(this);

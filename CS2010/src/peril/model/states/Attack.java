@@ -4,9 +4,20 @@ import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
 import peril.model.board.links.ModelLink;
+import peril.views.slick.states.gameStates.CombatState;
 
 public class Attack extends ModelState {
+	
+	/**
+	 * The name of a specific {@link CombatState}.
+	 */
+	private static final String STATE_NAME = "Combat";
 
+	public Attack() {
+		super(STATE_NAME);
+		// TODO Auto-generated constructor stub
+	}
+	
 	@Override
 	public boolean select(ModelCountry country, GameController api) {
 

@@ -28,11 +28,6 @@ import peril.views.slick.board.SlickCountry;
 public final class MovementState extends CoreGameState {
 
 	/**
-	 * The name of a specific {@link MovementState}.
-	 */
-	private static final String STATE_NAME = "Movement";
-
-	/**
 	 * Holds the instance of the fortify {@link Button}.
 	 */
 	private final String fortifyButton;
@@ -52,7 +47,7 @@ public final class MovementState extends CoreGameState {
 	 * 
 	 */
 	public MovementState(GameController game, int id, Fortify model) {
-		super(game, STATE_NAME, id, model);
+		super(game, model.getName(), id, model);
 		this.fortifyButton = "fortify";
 		path = new LinkedList<>();
 

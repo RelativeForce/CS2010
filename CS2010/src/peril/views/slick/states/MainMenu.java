@@ -333,7 +333,7 @@ public final class MainMenu extends InteractiveState {
 		// Iterate through each save and check if it exists in the current maps
 		// directory, If it does then add it to the saves list.
 		for (SaveFile file : SaveFile.values()) {
-			if (file.existsIn(game.getDirectory().getMapsPath() + mapName)) {
+			if (file.existsIn(game.getDirectory().asMapPath(mapName))) {
 				saves.add(file.name, file);
 			}
 		}

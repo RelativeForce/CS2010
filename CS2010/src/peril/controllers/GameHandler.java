@@ -13,6 +13,7 @@ import peril.model.board.ModelBoard;
 import peril.model.board.ModelCountry;
 import peril.model.states.Attack;
 import peril.model.states.Fortify;
+import peril.model.states.ModelState;
 import peril.model.states.Reinforce;
 import peril.model.states.Setup;
 import peril.views.View;
@@ -263,6 +264,23 @@ public final class GameHandler implements GameController {
 	@Override
 	public Directory getDirectory() {
 		return game.assets;
+	}
+
+	@Override
+	public ModelState getCurrentState() {
+		
+		final ModelStateHelper states = game.states;
+		final View view = game.view;
+		
+		if (view.isCurrentState(states.reinforce)) {
+			return states.reinforce;
+		} else if (view.isCurrentState(states.attack)) {
+			return states.attack;
+		} else if (view.isCurrentState(states.fortify)) {
+			return states.fortify;
+		}
+		
+		return null;
 	}
 
 }

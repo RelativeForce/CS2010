@@ -3,31 +3,36 @@ package peril;
 import java.io.File;
 import peril.controllers.*;
 import peril.helpers.*;
+import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
+import peril.model.board.ModelContinent;
 import peril.model.states.Attack;
 import peril.model.states.Fortify;
+import peril.model.states.ModelState;
 import peril.model.states.Reinforce;
 import peril.model.states.Setup;
 import peril.views.View;
 import peril.views.slick.SlickGame;
 
 /**
- * Encapsulate the main game logic for Peril. This also extends
- * {@link StateBasedGame}.
+ * Encapsulate the main game logic for Peril.
  * 
  * @author Joshua_Eddy
+ * 
+ * @version 1.01.01
+ * @since 2018-02-06
  *
  */
 public final class Game {
 
 	/**
 	 * The {@link PlayerHelper} that holds all this {@link Game}s
-	 * {@link SlickPlayer}s.
+	 * {@link ModelPlayer}s.
 	 */
 	public final PlayerHelper players;
 
 	/**
-	 * The instance of the {@link SlickBoard} used for this game.
+	 * The {@link ModelBoard} used for this game.
 	 */
 	public final ModelBoard board;
 
@@ -37,17 +42,27 @@ public final class Game {
 	 */
 	public final DirectoryHelper assets;
 
+	/**
+	 * The {@link ModelStateHelper} that contains all this {@link ModelState}s.
+	 */
 	public final ModelStateHelper states;
 
 	/**
-	 * The {@link AIController} that allows the user/AI to interact with the
+	 * The {@link View} that displays this {@link Game} on screen.
+	 */
+	public final View view;
+
+	/**
+	 * The {@link GameController} that allows the {@link View} to interact with the
 	 * {@link Game}.
 	 */
 	private final GameController game;
-	
-	private final AIController ai;
 
-	public final View view;
+	/**
+	 * The {@link AIController} that allows the AIs to interact with the
+	 * {@link Game}.
+	 */
+	private final AIController ai;
 
 	/**
 	 * The current turn of the {@link Game}. Initially zero;
@@ -59,31 +74,27 @@ public final class Game {
 	 */
 	private Game(View view) {
 
+		this.view = view;
+
 		// Holds the path of the peril assets
-		StringBuilder assetsPath = new StringBuilder(new File(System.getProperty("user.dir")).getPath())
+		final StringBuilder assetsPath = new StringBuilder(new File(System.getProperty("user.dir")).getPath())
 				.append(File.separatorChar).append("assets");
 
 		this.assets = new DirectoryHelper(assetsPath.toString());
-
 		this.game = new GameHandler(this);
 		this.ai = new AIHandler(this);
-
-		// Construct the board with the initial name.
 		this.board = new ModelBoard("NOT ASSIGNED");
-
 		this.players = new PlayerHelper(this);
 
-		Setup setup = new Setup();
-		Attack attack = new Attack();
-		Fortify fortify = new Fortify();
-		Reinforce reinforce = new Reinforce();
-
+		// Construct model states
+		final Setup setup = new Setup();
+		final Attack attack = new Attack();
+		final Fortify fortify = new Fortify();
+		final Reinforce reinforce = new Reinforce();
 		this.states = new ModelStateHelper(attack, reinforce, setup, fortify);
 
 		// Set the initial round to zero
 		this.currentRound = 0;
-
-		this.view = view;
 
 	}
 
@@ -120,6 +131,9 @@ public final class Game {
 
 	}
 
+	/**
+	 * Starts the {@link Game}.
+	 */
 	public void start() {
 
 		try {
@@ -131,16 +145,26 @@ public final class Game {
 
 	}
 
+	/**
+	 * Retrieves the {@link AIController} for the {@link Game}.
+	 * 
+	 * @return {@link AIController}
+	 */
 	public AIController getAIController() {
 		return ai;
 	}
 
+	/**
+	 * Retrieves the {@link GameController} for the {@link Game}.
+	 * 
+	 * @return {@link GameController}
+	 */
 	public GameController getGameController() {
 		return game;
 	}
 
 	/**
-	 * Checks all the {@link SlickContinent}s on the {@link SlickBoard} to see if
+	 * Checks all the {@link ModelContinent}s on the {@link ModelBoard} to see if
 	 * they are ruled. This is o(n^2) complexity
 	 */
 	public void checkContinentRulership() {
@@ -159,8 +183,8 @@ public final class Game {
 	}
 
 	/**
-	 * Checks if there is only one {@link SlickPlayer} in play. If this is the case
-	 * then that {@link SlickPlayer} has won.
+	 * Checks if there is only one {@link ModelPlayer} in play. If this is the case
+	 * then that {@link ModelPlayer} has won.
 	 */
 	public void checkWinner() {
 		if (players.numberOfPlayers() == 1) {

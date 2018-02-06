@@ -1,4 +1,4 @@
-package peril.model;
+package peril.model.consumables;
 
 import peril.controllers.api.Country;
 import peril.controllers.api.Player;

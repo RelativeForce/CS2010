@@ -1,6 +1,8 @@
-package peril.model;
+package peril.model.consumables;
 
 import java.util.Observable;
+
+import peril.model.ModelPlayer;
 
 /**
  * This class Models a Consumable item that {@link ModelPlayer}s can use.

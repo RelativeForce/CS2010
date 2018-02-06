@@ -133,7 +133,7 @@ public final class MenuHelper {
 		}
 		
 		// If the visible menu is not clicked
-		if(!visible.isClicked(click)) {
+		if(!visible.isVisible() || !visible.isClicked(click)) {
 			return false;
 		}
 		

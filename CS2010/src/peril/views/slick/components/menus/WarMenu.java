@@ -487,14 +487,14 @@ public class WarMenu extends Menu {
 	public void selectMaxUnits() {
 
 		ModelArmy army = attacker.model.getArmy();
-		
+
 		ModelUnit unit = army.getStrongestUnit();
-		
-		while(attackingSquad.size() < MAX_ATTACK_SQUAD_SIZE && army.getNumberOfUnits() > 1) {
-			
-			if(army.hasUnit(unit)) {
+
+		while (attackingSquad.size() < MAX_ATTACK_SQUAD_SIZE && army.getNumberOfUnits() > 1) {
+
+			if (army.hasUnit(unit)) {
 				moveToAttackSquad(unit);
-			}else {
+			} else {
 				unit = army.getStrongestUnit();
 			}
 		}
@@ -777,8 +777,13 @@ public class WarMenu extends Menu {
 
 					returnSquadToArmy(attackingSquad, attackingArmy);
 					attackingArmy.remove(defendingUnit);
+
 				}
 
+				if (getAliveUnits(attackingSquad) + attackingArmy.getNumberOfUnits() == 1) {
+					getButton(attackButton).hide();
+				}
+				
 				attacker.totalArmy.remove(defendingUnit);
 
 			}

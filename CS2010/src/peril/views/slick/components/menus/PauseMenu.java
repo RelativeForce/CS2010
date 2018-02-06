@@ -67,29 +67,32 @@ public class PauseMenu extends Menu {
 	 *            The {@link Game} the {@link PauseMenu} is associated with.
 	 */
 	public PauseMenu(Point position, GameController game) {
-		super(NAME, game, new Region(300, 300, position));
+		super(NAME, game, new Region(600, 600, position));
 
 		this.saveButton = "save";
 		this.showSaveOption = false;
-
+		
+		final Font toggleFont = new Font("Arial", Color.black, 20);
+		
 		// Construct music toggle
-		this.toggleMusic = new VisualList<>(new Point(position.x + (getWidth() / 4), position.y + 70), 30, 15, 2, 5);
+		this.toggleMusic = new VisualList<>(new Point(position.x + (getWidth() / 4), position.y + (getHeight() / 4)),
+				60, 30, 2, 10);
 		this.toggleMusic.add(Toggle.ON.toString, Toggle.ON);
 		this.toggleMusic.add(Toggle.OFF.toString, Toggle.OFF);
-		this.toggleMusic.setFont(new Font("Arial", Color.black, 10));
+		this.toggleMusic.setFont(toggleFont);
 
 		// Construct all links toggle
-		this.toggleAllLinks = new VisualList<>(new Point(position.x + ((getWidth() * 3) / 4), position.y + 70), 30, 15,
-				2, 5);
+		this.toggleAllLinks = new VisualList<>(
+				new Point(position.x + ((getWidth() * 3) / 4), position.y + (getHeight() / 4)), 60, 30, 2, 10);
 		this.toggleAllLinks.add(Toggle.OFF.toString, Toggle.OFF);
 		this.toggleAllLinks.add(Toggle.ON.toString, Toggle.ON);
-		this.toggleAllLinks.setFont(new Font("Arial", Color.black, 10));
+		this.toggleAllLinks.setFont(toggleFont);
 
-		this.textFont = new Font("Arial", Color.black, 10);
+		this.textFont = new Font("Arial", Color.black, 20);
 
 		// Construct save file list
-		this.saveFiles = new VisualList<>(new Point(position.x + (getWidth() / 2), position.y + 120), 90, 15, 3, 5);
-		this.saveFiles.setFont(new Font("Arial", Color.black, 10));
+		this.saveFiles = new VisualList<>(new Point(position.x + (getWidth() / 2), position.y + 250), 180, 30, 3, 10);
+		this.saveFiles.setFont(toggleFont);
 	}
 
 	/**
@@ -252,7 +255,7 @@ public class PauseMenu extends Menu {
 
 		String save = "Save Game:";
 
-		textFont.draw(g, save, getPosition().x - textFont.getWidth(save) + (getWidth() / 2) - 5, getPosition().y + 120);
+		textFont.draw(g, save, getPosition().x - textFont.getWidth(save) + (getWidth() / 2) - 10, getPosition().y + 240);
 
 		saveFiles.draw(g);
 	}
@@ -266,7 +269,7 @@ public class PauseMenu extends Menu {
 	private void addSaveFile(SaveFile file) {
 
 		final String mapPath = game.getDirectory().asMapPath(game.getModelBoard().getName());
-		
+
 		// If the save file does not currently exist display to the user that it is
 		// empty
 		final String text = file.name + (file.existsIn(mapPath) ? "" : " - Empty");

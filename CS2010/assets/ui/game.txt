@@ -32,12 +32,12 @@ button,War Menu,19,xButton.png,30,30,335,15,close
 image,War Menu,warMenu.png,400,400,0,0
 
 // Pause Menu
-button,Pause Menu,10,exitGameButton.png,90,40,180,215,exit
-button,Pause Menu,12,mainMenuButton.png,90,40,30,215,menu
-button,Pause Menu,11,saveButton.png,60,30,85,135,save
-button,Pause Menu,18,xButton.png,30,30,245,10,close
-button,Pause Menu,20,challengesButton.png,90,40,180,180,challenges
-image,Pause Menu,pauseMenu.png,300,300,0,0
+button,Pause Menu,10,exitGameButton.png,180,80,360,430,exit
+button,Pause Menu,12,mainMenuButton.png,180,80,60,430,menu
+button,Pause Menu,11,saveButton.png,120,70,170,270,save
+button,Pause Menu,18,xButton.png,60,60,490,20,close
+button,Pause Menu,20,challengesButton.png,180,80,360,360,challenges
+image,Pause Menu,pauseMenu.png,600,600,0,0
 
 // End Screen
 button,End,12,mainMenuButton.png,90,40,100,100,menu

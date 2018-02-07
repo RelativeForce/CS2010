@@ -48,7 +48,7 @@ public final class Ocelot extends AI {
 	 */
 	@Override
 	public boolean processReinforce(AIController api) {
-		while(api.getCurrentPlayer().getDistributableArmySize()!=0) {
+		while(api.getCurrentPlayer().getDistributableArmyStrength()!=0) {
 			api.forEachCountry(country -> {
 				if(api.getCurrentPlayer().equals(country.getOwner())) {
 					api.select(country);

@@ -11,6 +11,7 @@ import org.newdawn.slick.Graphics;
 import peril.Game;
 import peril.controllers.GameController;
 import peril.views.slick.Button;
+import peril.views.slick.Font;
 import peril.views.slick.Point;
 import peril.views.slick.Region;
 import peril.views.slick.Viewable;
@@ -32,7 +33,7 @@ public class HelpMenu extends Menu {
 	 * page the current page will not link to anything.
 	 */
 	public static final int NULL_PAGE = -1;
-	
+
 	/**
 	 * The uniquely identifying string name of the {@link HelpMenu}.
 	 */
@@ -41,12 +42,12 @@ public class HelpMenu extends Menu {
 	/**
 	 * The width of the {@link HelpMenu}
 	 */
-	private static final int WIDTH = 400;
+	private static final int WIDTH = 600;
 
 	/**
 	 * The height of the {@link HelpMenu}.
 	 */
-	private static final int HEIGHT = 400;
+	private static final int HEIGHT = 600;
 
 	/**
 	 * The padding in the horizontal direction between the edge of the
@@ -59,6 +60,11 @@ public class HelpMenu extends Menu {
 	 * {@link HelpMenu} and the edge of the {@link TextField}.
 	 */
 	private static final int PADDING_Y = HEIGHT / 10;
+
+	/**
+	 * The {@link Font} that the title of the {@link HelpPage} is drawn in.
+	 */
+	private final Font titleFont;
 
 	/**
 	 * Whether or not this {@link HelpMenu} has been initialised or not.
@@ -120,6 +126,7 @@ public class HelpMenu extends Menu {
 		this.numberOfPages = 0;
 		this.previous = "previous";
 		this.next = "next";
+		this.titleFont = new Font("Arial", Color.white, 20);
 	}
 
 	/**
@@ -288,7 +295,7 @@ public class HelpMenu extends Menu {
 		}
 
 		if (numberOfPages != 0) {
-			g.drawString(pageNumber + "/" + numberOfPages, getPosition().x + PADDING_X,
+			titleFont.draw(g, pageNumber + "/" + numberOfPages, getPosition().x + PADDING_X,
 					getPosition().y + getHeight() - PADDING_Y);
 		}
 
@@ -436,6 +443,7 @@ public class HelpMenu extends Menu {
 			text.init();
 			temp.forEach(line -> text.addText(line));
 			temp.clear();
+			titleFont.init();
 		}
 
 		/**
@@ -444,7 +452,7 @@ public class HelpMenu extends Menu {
 		@Override
 		public void draw(Graphics g) {
 			g.setColor(Color.white);
-			g.drawString(title, text.getPosition().x, text.getPosition().y - 25);
+			titleFont.draw(g, title, text.getPosition().x, text.getPosition().y - titleFont.getHeight());
 			text.draw(g);
 		}
 

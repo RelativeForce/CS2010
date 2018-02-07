@@ -48,25 +48,14 @@ public final class Ocelot extends AI {
 	 */
 	@Override
 	public boolean processReinforce(AIController api) {
-
-		Map<Integer, Country> countries = getReinforceWeightings(api);
-
-		int highest = Integer.MIN_VALUE;
-
-		// Find the highest weight
-		for (int value : countries.keySet()) {
-			highest = value > highest ? value : highest;
+		while(api.getCurrentPlayer().getDistributableArmySize()!=0) {
+			api.forEachCountry(country -> {
+				if(api.getCurrentPlayer().equals(country.getOwner())) {
+					api.select(country);
+					api.reinforce();
+				}
+			});
 		}
-
-		// If there is no weighting the there must be no friendly countries meaning this
-		// AI has been invoked at an invalid time.
-		if (highest == Integer.MIN_VALUE) {
-			throw new IllegalStateException("There are no countries");
-		}
-
-		// Select the country with the highest weight then reinforce it.
-		api.select(countries.get(highest));
-		api.reinforce();
 
 		return true;
 
@@ -198,7 +187,7 @@ public final class Ocelot extends AI {
 			if (current.equals(country.getOwner())) {
 
 				// The default weight of this country
-				final int defaultValue = -country.getArmySize();
+				final int defaultValue = -country.getArmyStrength();
 
 				// The current value.
 				int value = defaultValue;
@@ -206,13 +195,13 @@ public final class Ocelot extends AI {
 				// Iterate through all the country's neighbours.
 				for (Country neighbour : country.getNeighbours()) {
 					if (!current.equals(neighbour.getOwner())) {
-						value += neighbour.getArmySize();
+						value += neighbour.getArmyStrength();
 					}
 				}
 
 				// If the current country is an internal country.
 				if (value == defaultValue) {
-					if (country.getArmySize() > 1) {
+					if (country.getArmyStrength() > 1) {
 						internal.add(country);
 					}
 				} else {
@@ -222,46 +211,6 @@ public final class Ocelot extends AI {
 		});
 	}
 
-	/**
-	 * Retrieves the weighting for a country that the {@link Ocelot} may reinforce.
-	 * 
-	 * @param api
-	 *            The {@link AIController} that this {@link AI} will use to query the
-	 *            state of the game.
-	 * @return weighting
-	 */
-	private Map<Integer, Country> getReinforceWeightings(AIController api) {
-
-		Map<Integer, Country> countries = new HashMap<>();
-		Player current = api.getCurrentPlayer();
-
-		// Get the weightings of each country on the board.
-		api.forEachCountry(country -> {
-
-			// If the country is friendly.
-			if (current.equals(country.getOwner())) {
-
-				int value = -country.getArmySize();
-
-				// Iterate through all the neighbour countries.
-				for (Country neighbour : country.getNeighbours()) {
-
-					// If the neighbour is an enemy country.
-					if (!current.equals(neighbour.getOwner())) {
-						value += neighbour.getArmySize();
-					}
-				}
-
-				// If the current country has enemy countries.
-				if (value != -country.getArmySize()) {
-					countries.put(value, country);
-				}
-
-			}
-		});
-
-		return countries;
-	}
 
 	/**
 	 * Retrieves the weighting for a country that the {@link Ocelot} may attack.
@@ -279,15 +228,15 @@ public final class Ocelot extends AI {
 
 		api.forEachCountry(country -> {
 
-			if (current.equals(country.getOwner()) && country.getArmySize() > 1) {
+			if (current.equals(country.getOwner()) && country.getArmyStrength() > 1) {
 
 				for (Country neighbour : country.getNeighbours()) {
 
-					int value = country.getArmySize();
+					int value = country.getArmyStrength();
 
 					if (!current.equals(neighbour.getOwner())) {
 
-						value -= neighbour.getArmySize();
+						value -= neighbour.getArmyStrength();
 
 						countries.put(value, new Entry(country, neighbour));
 					}

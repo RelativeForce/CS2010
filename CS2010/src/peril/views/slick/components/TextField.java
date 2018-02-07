@@ -57,7 +57,7 @@ public final class TextField implements Component {
 		this.position = position;
 		this.width = width;
 		this.height = height;
-		this.font = new Font("Arial", Color.black, 15);
+		this.font = new Font("Arial", Color.black, 30);
 		this.lines = new ArrayList<>();
 	}
 

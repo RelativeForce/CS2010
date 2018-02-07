@@ -6,6 +6,7 @@ import org.newdawn.slick.Graphics;
 import peril.Challenge;
 import peril.Game;
 import peril.controllers.GameController;
+import peril.views.slick.Font;
 import peril.views.slick.Point;
 import peril.views.slick.Region;
 import peril.views.slick.components.TextField;
@@ -40,6 +41,8 @@ public final class ChallengeMenu extends Menu {
 	 */
 	private final int paddingY;
 
+	private final Font titleFont;
+
 	/**
 	 * Constructs a new {@link ChallengeMenu}.
 	 * 
@@ -49,11 +52,12 @@ public final class ChallengeMenu extends Menu {
 	 *            The {@link Game} this {@link ChallengeMenu} is a part of.
 	 */
 	public ChallengeMenu(Point position, GameController game) {
-		super(NAME, game, new Region(350, 300, position));
+		super(NAME, game, new Region(600, 600, position));
 		this.paddingX = (getWidth() / 12);
 		this.paddingY = (getHeight() / 8);
 		this.text = new TextField(getWidth() - (paddingX * 2), getHeight() - (paddingY * 2),
 				new Point(getPosition().x + paddingX, getPosition().y + paddingY));
+		this.titleFont = new Font("Arial", Color.white, 30);
 	}
 
 	/**
@@ -62,6 +66,7 @@ public final class ChallengeMenu extends Menu {
 	@Override
 	public void init() {
 		text.init();
+		titleFont.init();
 		refreshChallenges();
 	}
 
@@ -78,8 +83,7 @@ public final class ChallengeMenu extends Menu {
 
 		super.draw(g);
 
-		g.setColor(Color.white);
-		g.drawString("Challenges", getPosition().x + paddingX, getPosition().y + 10);
+		titleFont.draw(g, "Challenges", getPosition().x + paddingX, getPosition().y + 30);
 
 		text.draw(g);
 
@@ -111,7 +115,8 @@ public final class ChallengeMenu extends Menu {
 		text.clear();
 
 		// List all the challenges
-		game.getChallenges().forEach(challenge -> text.addText(challenge.toString() + " - Reward: " + challenge.reward + " Units"));
+		game.getChallenges()
+				.forEach(challenge -> text.addText(challenge.toString() + " - Reward: " + challenge.reward + " Units"));
 
 	}
 

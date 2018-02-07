@@ -40,6 +40,12 @@ public final class SetupState extends CoreGameState {
 
 		model.addObserver(this);
 	}
+	
+	@Override
+	public void enter(GameContainer gc, StateBasedGame sbg) {
+		super.enter(gc, sbg);
+		menus.hideSaveOption();
+	}
 
 	/**
 	 * Renders this {@link SetupState}.

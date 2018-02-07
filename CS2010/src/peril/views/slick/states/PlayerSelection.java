@@ -306,6 +306,7 @@ public final class PlayerSelection extends InteractiveState {
 	 *            {@link VisualList} selector.
 	 */
 	private void populateSelector(VisualList<AI> selector) {
+
 		for (AI ai : game.getAIs()) {
 			selector.add(ai.name, ai);
 		}

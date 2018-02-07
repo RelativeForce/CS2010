@@ -13,11 +13,6 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.ai.AI;
-<<<<<<< HEAD
-import peril.ai.Monkey;
-import peril.ai.Ocelot;
-=======
->>>>>>> refs/heads/developer
 import peril.controllers.GameController;
 import peril.helpers.PlayerHelper;
 import peril.views.slick.Font;
@@ -311,22 +306,10 @@ public final class PlayerSelection extends InteractiveState {
 	 *            {@link VisualList} selector.
 	 */
 	private void populateSelector(VisualList<AI> selector) {
-<<<<<<< HEAD
-		allAI.forEach((AIName, AI) -> selector.add(AIName, AI));
-	}
 
-	/**
-	 * Defines all the {@link AI} that are available for the user to select.
-	 */
-	private void addAllAI() {
-		allAI.put("Monkey", new Monkey(game.getAIController()));
-		allAI.put("Ocelot", new Ocelot(game.getAIController()));
-		allAI.put("None", AI.USER);
-=======
 		for (AI ai : game.getAIs()) {
 			selector.add(ai.name, ai);
 		}
->>>>>>> refs/heads/developer
 	}
 
 }

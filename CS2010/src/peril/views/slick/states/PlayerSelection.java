@@ -1,7 +1,6 @@
 package peril.views.slick.states;
 
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.newdawn.slick.Color;
@@ -14,8 +13,11 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.ai.AI;
+<<<<<<< HEAD
 import peril.ai.Monkey;
 import peril.ai.Ocelot;
+=======
+>>>>>>> refs/heads/developer
 import peril.controllers.GameController;
 import peril.helpers.PlayerHelper;
 import peril.views.slick.Font;
@@ -38,12 +40,6 @@ public final class PlayerSelection extends InteractiveState {
 	 * The name of this {@link PlayerSelection}.
 	 */
 	private static final String NAME = "Select";
-
-	/**
-	 * The {@link Map} that contains all the {@link AI} that are available for the
-	 * user to select.
-	 */
-	private final Map<String, AI> allAI;
 
 	/**
 	 * The {@link Map} of {@link SlickPlayer} number to there associated
@@ -74,11 +70,10 @@ public final class PlayerSelection extends InteractiveState {
 	 * @param id
 	 *            The id of this {@link PlayerSelection}.
 	 */
-	public PlayerSelection(GameController game,  int id) {
+	public PlayerSelection(GameController game, int id) {
 		super(game, NAME, id, HelpMenu.NULL_PAGE);
 
 		this.playButton = "play";
-		this.allAI = new IdentityHashMap<>();
 		this.selectors = new HashMap<>();
 		this.players = new VisualList<>(new Point(100, 100), 20, 24, 3, 5);
 		this.width = 100;
@@ -86,7 +81,6 @@ public final class PlayerSelection extends InteractiveState {
 
 		players.setFont(new Font("Arial", Color.black, 19));
 
-		addAllAI();
 		addSelectors();
 
 		super.addComponent(players);
@@ -194,6 +188,10 @@ public final class PlayerSelection extends InteractiveState {
 	 */
 	public void loadGame() throws SlickException {
 
+		// Reset the board
+		game.resetGame();
+		game.getModelBoard().reset();
+
 		// Iterate through the number of players the player has selected
 		for (int index = 1; index <= players.getSelected(); index++) {
 
@@ -210,11 +208,9 @@ public final class PlayerSelection extends InteractiveState {
 			slick.modelView.addPlayer(player);
 
 		}
-		// Reset the board
-		game.getModelBoard().reset();
-		slick.reSize(width, height);
 
 		// Load the game
+		slick.reSize(width, height);
 		slick.enterState(slick.states.loadingScreen);
 	}
 
@@ -315,6 +311,7 @@ public final class PlayerSelection extends InteractiveState {
 	 *            {@link VisualList} selector.
 	 */
 	private void populateSelector(VisualList<AI> selector) {
+<<<<<<< HEAD
 		allAI.forEach((AIName, AI) -> selector.add(AIName, AI));
 	}
 
@@ -325,6 +322,11 @@ public final class PlayerSelection extends InteractiveState {
 		allAI.put("Monkey", new Monkey(game.getAIController()));
 		allAI.put("Ocelot", new Ocelot(game.getAIController()));
 		allAI.put("None", AI.USER);
+=======
+		for (AI ai : game.getAIs()) {
+			selector.add(ai.name, ai);
+		}
+>>>>>>> refs/heads/developer
 	}
 
 }

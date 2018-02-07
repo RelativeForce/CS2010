@@ -7,9 +7,14 @@ import peril.controllers.api.Country;
 import peril.controllers.api.Player;
 
 /**
- * The API for all AI interactions with the game states.
+ * The API for all AI interactions with the game. This API is unable to directly
+ * change any aspects of the game but it does serve as proxy between the AI and
+ * the user controlled {@link Player}s.
  * 
  * @author Joshua_Eddy
+ * 
+ * @version 1.01.01
+ * @since 2018-02-06
  *
  */
 public interface AIController {
@@ -36,6 +41,12 @@ public interface AIController {
 	 *            {@link Consumer} of type {@link Country}.
 	 */
 	void forEachCountry(Consumer<Country> task);
+
+	/**
+	 * Reinforces the {@link Country} selected using
+	 * {@link AIController#select(Country)} with one unit.
+	 */
+	void reinforce();
 
 	/**
 	 * Performs an attack from the first {@link Country} to the second
@@ -81,16 +92,10 @@ public interface AIController {
 	boolean isPathBetween(Country a, Country b);
 
 	/**
-	 * Reinforces the {@link Country} selected using
-	 * {@link AIController#select(Country)} with one unit.
-	 */
-	void reinforce();
-
-	/**
 	 * Clears the currently selected {@link Country}(s) from all the states.
 	 */
 	void clearSelected();
-	
+
 	/**
 	 * Retrieves the current {@link Player}.
 	 * 

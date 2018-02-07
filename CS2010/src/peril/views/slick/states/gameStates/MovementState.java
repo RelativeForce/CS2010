@@ -1,4 +1,4 @@
-package peril.views.slick.states.gameStates.multiSelectState;
+package peril.views.slick.states.gameStates;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -25,12 +25,7 @@ import peril.views.slick.board.SlickCountry;
  * @author Joshua_Eddy, Joseph_Rolli
  *
  */
-public final class MovementState extends MultiSelectState {
-
-	/**
-	 * The name of a specific {@link MovementState}.
-	 */
-	private static final String STATE_NAME = "Movement";
+public final class MovementState extends CoreGameState {
 
 	/**
 	 * Holds the instance of the fortify {@link Button}.
@@ -52,7 +47,7 @@ public final class MovementState extends MultiSelectState {
 	 * 
 	 */
 	public MovementState(GameController game, int id, Fortify model) {
-		super(game, STATE_NAME, id, model);
+		super(game, model.getName(), id, model);
 		this.fortifyButton = "fortify";
 		path = new LinkedList<>();
 

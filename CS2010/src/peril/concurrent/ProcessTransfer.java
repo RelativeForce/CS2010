@@ -4,18 +4,22 @@ import java.util.Queue;
 import java.util.concurrent.LinkedTransferQueue;
 
 /**
- * A multi-thread safe queue that allows {@link Action}s to be passed from
- * thread to thread.
+ * A thread safe queue that allows {@link Action}s to be passed from
+ * thread to thread. This object uses the singleton pattern and is accessible
+ * via {@link ProcessTransfer#getInstane()}.
  * 
  * @author Joshua_Eddy
+ * @version 1.01.01
+ * @since 2018-02-06
+ * @see LinkedTransferQueue
  *
  */
-public class ProcessTransfer {
+public final class ProcessTransfer {
 
 	/**
 	 * The singleton instance of {@link ProcessTransfer}.
 	 */
-	private static ProcessTransfer instance = new ProcessTransfer();
+	private final static ProcessTransfer INSTANCE = new ProcessTransfer();
 
 	/**
 	 * This {@link Queue} holds instructions stored as objects for the background
@@ -25,7 +29,7 @@ public class ProcessTransfer {
 	 * @see Queue
 	 * @see LinkedTransferQueue
 	 */
-	private Queue<Action<?>> buffer;
+	private final Queue<Action<?>> buffer;
 
 	/**
 	 * Constructs the single {@link ProcessTransfer}.
@@ -80,7 +84,7 @@ public class ProcessTransfer {
 	 * @return {@link ProcessTransfer}
 	 */
 	public static ProcessTransfer getInstane() {
-		return instance;
+		return INSTANCE;
 	}
 
 }

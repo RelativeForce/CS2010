@@ -133,7 +133,7 @@ public final class MenuHelper {
 		}
 		
 		// If the visible menu is not clicked
-		if(!visible.isClicked(click)) {
+		if(!visible.isVisible() || !visible.isClicked(click)) {
 			return false;
 		}
 		
@@ -373,17 +373,23 @@ public final class MenuHelper {
 				+ "the enemy country, the last defending unit of the enemy country will desert and join the player's army.");
 
 	}
-
 	
 	public void refreshChallenges() {
 		((ChallengeMenu) menus.get(ChallengeMenu.NAME)).refreshChallenges();
 	}
 	
+	public void attack() {
+		WarMenu warMenu = (WarMenu) menus.get(WarMenu.NAME);
+		warMenu.attack();
+	}
+	
 	public void autoAttack() {
+		
 		WarMenu warMenu = (WarMenu) menus.get(WarMenu.NAME);
 		show(WarMenu.NAME);
-		warMenu.selectMaxDice();
+		warMenu.selectMaxUnits();
 		warMenu.attack();
+		
 	}
 
 	public boolean isPaused() {

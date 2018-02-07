@@ -4,10 +4,12 @@ import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
 
 /**
- * An objective that a {@link SlickPlayer} can complete to gain a bonus.
+ * An objective that a {@link ModelPlayer} can complete to gain a bonus.
  * 
  * @author Joshua_Eddy
  *
+ * @version 1.01.01
+ * @since 2018-02-06
  */
 public abstract class Challenge {
 
@@ -44,14 +46,14 @@ public abstract class Challenge {
 	}
 
 	/**
-	 * Checks if specified {@link SlickPlayer} has completed an {@link Challenge} or not.
-	 * If the {@link Challenge} has been completed then the specified {@link SlickPlayer}
-	 * will receive a reward.
+	 * Checks if specified {@link ModelPlayer} has completed an {@link Challenge} or
+	 * not. If the {@link Challenge} has been completed then the specified
+	 * {@link ModelPlayer} will receive a reward.
 	 * 
 	 * @param player
-	 *            {@link SlickPlayer} that will be checked.
+	 *            {@link ModelPlayer} that will be checked.
 	 * @param board
-	 *            The {@link SlickBoard} the {@link SlickPlayer} is on.
+	 *            The {@link SlickBoard} the {@link ModelPlayer} is on.
 	 * @return <code>boolean</code> {@link Challenge} completion status.
 	 */
 	public abstract boolean hasCompleted(ModelPlayer player, ModelBoard board);

@@ -8,6 +8,9 @@ import java.io.PrintWriter;
  * Encapsulates the behaviour of writing text to a file.
  * 
  * @author Joshua_Eddy
+ * 
+ * @version 1.01.01
+ * @since 2018-02-06
  *
  */
 public class TextFileWriter {

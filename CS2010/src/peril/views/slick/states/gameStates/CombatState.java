@@ -1,4 +1,4 @@
-package peril.views.slick.states.gameStates.multiSelectState;
+package peril.views.slick.states.gameStates;
 
 import java.util.Observable;
 
@@ -18,7 +18,6 @@ import peril.views.slick.Button;
 import peril.views.slick.Point;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
-import peril.views.slick.states.gameStates.CoreGameState;
 
 /**
  * Encapsulates the behaviour of the 'Combat' state of the game. In this state
@@ -28,12 +27,7 @@ import peril.views.slick.states.gameStates.CoreGameState;
  * @author Joseph_Rolli, Joshua_Eddy
  *
  */
-public final class CombatState extends MultiSelectState {
-
-	/**
-	 * The name of a specific {@link CombatState}.
-	 */
-	private static final String STATE_NAME = "Combat";
+public final class CombatState extends CoreGameState {
 
 	/**
 	 * Holds the instance of a attack {@link Button}.
@@ -49,7 +43,7 @@ public final class CombatState extends MultiSelectState {
 	 *            The ID of this {@link CombatState}
 	 */
 	public CombatState(GameController game, int id, Attack model) {
-		super(game, STATE_NAME, id, model);
+		super(game, model.getName(), id, model);
 		this.attackButton = "attack";
 
 		model.addObserver(this);

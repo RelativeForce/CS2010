@@ -27,9 +27,9 @@ button,Setup,17,pauseButton.png,90,40,250,5,pause
 image,Setup,setUpStateBox.png,200,130,5,5
 
 // War Menu
-button,War Menu,6,attackButton.png,90,40,55,300,war
+button,War Menu,6,attackButton.png,90,40,155,200,war
 button,War Menu,19,xButton.png,30,30,335,15,close
-image,War Menu,warMenu.png,300,400,0,0
+image,War Menu,warMenu.png,400,400,0,0
 
 // Pause Menu
 button,Pause Menu,10,exitGameButton.png,90,40,180,215,exit

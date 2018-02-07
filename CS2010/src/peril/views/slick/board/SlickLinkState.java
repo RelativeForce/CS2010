@@ -48,26 +48,6 @@ public enum SlickLinkState {
 			g.setColor(temp);
 			
 		}
-	},FORTIFIED(ModelLinkState.FORTIFIED) {
-		
-		@Override
-		public void draw(Graphics g, Point a, Point b) {
-			
-			final Color temp = g.getColor();
-			final float line = g.getLineWidth();
-
-			g.setColor(Color.cyan);
-			g.setLineWidth(3);
-
-			final Point middle = Point.getMiddle(a, b);
-			
-			g.drawLine(a.x, a.y, middle.x, middle.y);
-			
-
-			g.setLineWidth(line);
-			g.setColor(temp);
-			
-		}
 	};
 
 	public final ModelLinkState model;

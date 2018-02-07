@@ -173,13 +173,13 @@ public enum SlickHazard {
 	/**
 	 * Initialises all the {@link Image} icons of the {@link SlickHazard}s.
 	 * 
-	 * @param uiPath
+	 * @param harazrdsPath
 	 *            The path to the folder with the icon image files in.
 	 */
-	public static void initIcons(String uiPath) {
+	public static void initIcons(String harazrdsPath) {
 
 		for (SlickHazard hazard : SlickHazard.values()) {
-			hazard.initIcon(uiPath);
+			hazard.initIcon(harazrdsPath);
 		}
 
 	}

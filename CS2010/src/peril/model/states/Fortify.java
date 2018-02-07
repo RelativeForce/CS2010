@@ -10,8 +10,18 @@ import peril.model.ModelPlayer;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
+import peril.views.slick.states.gameStates.MovementState;
 
 public class Fortify extends ModelState {
+	
+	/**
+	 * The name of a specific {@link MovementState}.
+	 */
+	private static final String STATE_NAME = "Movement";
+
+	public Fortify() {
+		super(STATE_NAME);
+	}
 
 	@Override
 	public boolean select(ModelCountry country, GameController api) {
@@ -235,28 +245,35 @@ public class Fortify extends ModelState {
 	 * Moves one unit from the primary {@link SlickCountry} to the secondary
 	 * {@link SlickCountry}.
 	 */
-	public void fortify(ModelUnit unit) {
+	public void fortify() {
 
-		ModelCountry primary = getSelected(0);
-		ModelCountry target = getSelected(1);
-
+		final ModelCountry primary = getSelected(0);
+		final ModelCountry target = getSelected(1);
+		
 		// If there is two countries highlighted
 		if (primary != null && target != null) {
+			
+			// Holds the army of the primary country
+			final ModelArmy primaryArmy = primary.getArmy();
+
+			// Holds the army of the target country
+			final ModelArmy targetArmy = target.getArmy();
+
+			// Whether of not there is a unit selected in the current country's army.
+			final boolean unitSelected = primary.getArmy().getSelected() != null;
+
+			// If there is a selected unit fortify the country with that otherwise use the
+			// weakest unit in the army.
+			final ModelUnit unit = unitSelected ? primary.getArmy().getSelected() : primary.getArmy().getWeakestUnit();
 
 			// If the army of the primary highlighted country is larger that 1 unit in size
-			if (primary.getArmy().getStrength() > unit.strength) {
-
-				// Holds the army of the primary country
-				ModelArmy primaryArmy = primary.getArmy();
-
-				// Holds the army of the target country
-				ModelArmy targetArmy = target.getArmy();
+			if (primary.getArmy().getNumberOfUnits() > 1) {
 
 				// Move the unit.
-				targetArmy.setStrength(targetArmy.getStrength() + unit.strength);
-				primaryArmy.setStrength(primaryArmy.getStrength() - unit.strength);
+				primaryArmy.remove(unit);
+				targetArmy.add(unit);
 
-				if (primaryArmy.getStrength() == 1) {
+				if (primaryArmy.getNumberOfUnits() == 1) {
 					deselectAll();
 				}
 			} else {

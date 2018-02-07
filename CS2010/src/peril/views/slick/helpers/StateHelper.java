@@ -12,11 +12,11 @@ import peril.views.slick.states.InteractiveState;
 import peril.views.slick.states.LoadingScreen;
 import peril.views.slick.states.MainMenu;
 import peril.views.slick.states.PlayerSelection;
+import peril.views.slick.states.gameStates.CombatState;
 import peril.views.slick.states.gameStates.CoreGameState;
+import peril.views.slick.states.gameStates.MovementState;
 import peril.views.slick.states.gameStates.ReinforcementState;
 import peril.views.slick.states.gameStates.SetupState;
-import peril.views.slick.states.gameStates.multiSelectState.CombatState;
-import peril.views.slick.states.gameStates.multiSelectState.MovementState;
 
 /**
  * A helper class for {@link Game} this object stores the instances of the

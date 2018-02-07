@@ -110,14 +110,14 @@ public enum ModelHazard {
 			int casualties = maxCasualties == 0 ? 1 : generator.nextInt(maxCasualties - (maxCasualties / 4)) + 1;
 
 			// Check whether the army will be below the minimum size.
-			if (currentSize - casualties < 1) {
+			if (currentSize - casualties <= 1) {
 
 				// Set the army to the minimum size.
-				army.setStrength(1);
+				army.setWeakest();
 			} else {
 
 				// Remove the dead regiments.
-				army.setStrength(currentSize - casualties);
+				army.remove(casualties);
 			}
 
 		}

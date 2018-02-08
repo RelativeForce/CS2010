@@ -471,7 +471,7 @@ public class SlickGame extends StateBasedGame implements View {
 
 	@Override
 	public FileParser getMapLoader(String mapPath, SaveFile save) {
-		return new MapReader(mapPath, game, save);
+		return new MapReader(mapPath, game, save, agc.getScreenWidth(), agc.getScreenHeight());
 	}
 
 	@Override

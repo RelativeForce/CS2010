@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
-
 import peril.Challenge;
 import peril.Game;
 import peril.ai.AI;
@@ -44,17 +43,6 @@ public final class MapReader extends FileParser {
 	private final Set<ModelContinent> continents;
 
 	/**
-	 * The image of the {@link SlickBoard}.
-	 */
-	private final Image normalMap;
-
-	/**
-	 * Holds the {@link Image} which denotes the shapes of the
-	 * {@link SlickCountry}s.
-	 */
-	private final Image countryMap;
-
-	/**
 	 * The {@link List} of all the {@link SlickCountry}s on the {@link SlickBoard}.
 	 */
 	private final Map<String, SlickCountry> countries;
@@ -66,9 +54,28 @@ public final class MapReader extends FileParser {
 	 */
 	private final GameController game;
 
+	private final String mapName;
+
 	private final SlickModelView view;
 
 	private final SlickGame slickGame;
+
+	private final int screenWidth;
+
+	private final int screenHeight;
+
+	private boolean loadedMap;
+
+	/**
+	 * The image of the {@link SlickBoard}.
+	 */
+	private Image normalMap;
+
+	/**
+	 * Holds the {@link Image} which denotes the shapes of the
+	 * {@link SlickCountry}s.
+	 */
+	private Image countryMap;
 
 	/**
 	 * Constructs a new {@link MapReader}.
@@ -81,28 +88,23 @@ public final class MapReader extends FileParser {
 	 *            details file from the directory path}.
 	 * @param file
 	 *            The file that will contain this map.
+	 * @param screenWidth
+	 *            The width of the screen displaying the game.
+	 * @param screenHeight
+	 *            The height of the screen displaying the game.
 	 */
-	public MapReader(String mapName, GameController game, SaveFile file) {
+	public MapReader(String mapName, GameController game, SaveFile file, int screenWidth, int screenHeight) {
 		super(game.getDirectory().asMapPath(mapName), game.getDirectory(), file.filename);
 
 		this.continents = new HashSet<>();
 		this.countries = new HashMap<>();
 		this.game = game;
-
+		this.mapName = mapName;
 		this.slickGame = (SlickGame) game.getView();
 		this.view = (SlickModelView) game.getView().getModelView();
-
-		this.normalMap = ImageReader.getImage(directory.asMapPath(mapName) + "normal.png");
-		this.countryMap = ImageReader.getImage(directory.asMapPath(mapName) + "countries.png");
-
-		final SlickBoard board = this.view.getVisual(game.getModelBoard());
-
-		if (board != null) {
-			
-			// Set the normal map as the visual image of the visual representation.
-			board.setPosition(new Point(0, 0));
-			board.swapImage(normalMap);
-		}
+		this.loadedMap = false;
+		this.screenHeight = screenHeight;
+		this.screenWidth = screenWidth;
 
 	}
 
@@ -112,44 +114,12 @@ public final class MapReader extends FileParser {
 	public void parseLine() {
 
 		if (!isFinished()) {
-			// Split the line by ','
-			String[] details = lines[index].split(",");
 
-			// The first section of the line denotes the type of instruction.
-			String type = details[0];
-
-			// Parse the line differently based on the type of instruction.
-			switch (type) {
-			case "Country":
-				parseCountry(details);
-				break;
-			case "Unit":
-				parseUnit(details);
-				break;
-			case "Link":
-				parseLink(details);
-				break;
-			case "Continent":
-				parseContinent(details);
-				break;
-			case "State":
-				parseState(details);
-				break;
-			case "Player":
-				parsePlayer(details);
-				break;
-			case "ArmySize":
-				parseArmySize(details);
-				break;
-			case "CountriesOwned":
-				parseCountriesOwned(details);
-				break;
-			case "ContinentsOwned":
-				parseContinentsOwned(details);
-				break;
+			if (!loadedMap) {
+				loadMapImage();
+			} else {
+				parseLineType();
 			}
-
-			index++;
 
 			if (isFinished()) {
 				// Set the boards continents
@@ -159,6 +129,97 @@ public final class MapReader extends FileParser {
 
 	}
 
+	/**
+	 * Discerns the type of element that the current line specifies.
+	 */
+	private void parseLineType() {
+
+		// Split the line by ','
+		String[] details = lines[index].split(",");
+
+		// The first section of the line denotes the type of instruction.
+		String type = details[0];
+
+		// Parse the line differently based on the type of instruction.
+		switch (type) {
+		case "Country":
+			parseCountry(details);
+			break;
+		case "Unit":
+			parseUnit(details);
+			break;
+		case "Link":
+			parseLink(details);
+			break;
+		case "Continent":
+			parseContinent(details);
+			break;
+		case "State":
+			parseState(details);
+			break;
+		case "Player":
+			parsePlayer(details);
+			break;
+		case "ArmySize":
+			parseArmySize(details);
+			break;
+		case "CountriesOwned":
+			parseCountriesOwned(details);
+			break;
+		case "ContinentsOwned":
+			parseContinentsOwned(details);
+			break;
+		}
+
+		index++;
+
+	}
+
+	/**
+	 * Loads the map {@link Image} from memory.
+	 */
+	private void loadMapImage() {
+
+		final Image tempNormalMap = ImageReader.getImage(directory.asMapPath(mapName) + "normal.png");
+		final Image tempCountryMap = ImageReader.getImage(directory.asMapPath(mapName) + "countries.png");
+
+		float scaleFactor = 1;
+
+		if (screenWidth < tempNormalMap.getWidth()) {
+			scaleFactor = (float) screenWidth / (float) tempNormalMap.getWidth();
+		} else if (screenHeight < tempNormalMap.getHeight()) {
+			scaleFactor = (float) screenHeight / (float) tempNormalMap.getHeight();
+		}
+
+		final int newWidth = (int) ((float) tempNormalMap.getWidth() * scaleFactor);
+		final int newHeight = (int) ((float) tempNormalMap.getHeight() * scaleFactor);
+
+		this.normalMap = tempNormalMap;
+		this.countryMap = tempCountryMap;
+
+		// this.normalMap = ImageReader.resizeImage(tempNormalMap, newWidth, newHeight);
+		// this.countryMap = ImageReader.resizeImage(tempCountryMap, newWidth,
+		// newHeight);
+
+		final SlickBoard board = this.view.getVisual(game.getModelBoard());
+
+		if (board != null) {
+
+			// Set the normal map as the visual image of the visual representation.
+			board.setPosition(new Point(0, 0));
+			board.swapImage(normalMap);
+		}
+
+		loadedMap = true;
+
+	}
+
+	/**
+	 * Parsed a <code>String</code> array into the details into a new
+	 * {@link SlickUnit}.
+	 * 
+	 * @param details
+	 */
 	private void parseUnit(String[] details) {
 
 		int UNIT_LENGTH = 4;

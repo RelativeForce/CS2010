@@ -227,21 +227,21 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		}
 
 	}
-	
+
 	private void tradeSelectedUnitUp() {
-		
-		if(selected.get(0) == null) {
+
+		if (selected.get(0) == null) {
 			return;
 		}
-		
+
 		ModelArmy army = selected.get(0).model.getArmy();
-		
-		if(army.getSelected() == null) {
+
+		if (army.getSelected() == null) {
 			return;
 		}
-		
+
 		army.tradeUp(army.getSelected());
-		
+
 	}
 
 	/**
@@ -444,7 +444,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 */
 	protected final void drawPlayerName(Graphics g) {
 		SlickPlayer p = slick.modelView.getVisual(game.getCurrentModelPlayer());
-		g.drawImage(p.getImage(), 15, 45);
+		g.drawImage(p.getImage(), 20, 80);
 	}
 
 	/**
@@ -632,7 +632,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 				// Define the hazards visual details
 				Image hazard = country.getHazard();
-				hazard = hazard.getScaledCopy(30, 30);
+				hazard = hazard.getScaledCopy(60, 60);
 
 				final int hazardX = x + (country.getWidth() / 2) + (hazard.getWidth() / 2) + country.getArmyOffset().x;
 				final int hazardY = y + (country.getHeight() / 2) - hazard.getHeight() + country.getArmyOffset().y;

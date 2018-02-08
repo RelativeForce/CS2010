@@ -733,6 +733,9 @@ public class WarMenu extends Menu {
 		// Get the size of the smaller set of dice.
 		int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length
 				: attackerDiceRolls.length;
+		
+		// Copy the attacking squad to this holding variable.
+		final LinkedList<SquadMember> attackingSquad = new LinkedList<>(this.attackingSquad);
 
 		// Compare each attacking dice roll against the defending dice roll
 		for (int i = 0; i < diceToCheck; i++) {

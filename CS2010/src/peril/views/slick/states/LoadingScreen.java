@@ -3,6 +3,7 @@ package peril.views.slick.states;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Music;
@@ -12,6 +13,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.controllers.GameController;
 import peril.io.FileParser;
+import peril.views.slick.Font;
 import peril.views.slick.Point;
 import peril.views.slick.Viewable;
 import peril.views.slick.components.ProgressBar;
@@ -66,6 +68,8 @@ public final class LoadingScreen extends InteractiveState {
 	 */
 	private final ProgressBar progressBar;
 
+	private final Font textFont;
+
 	/**
 	 * Constructs a new {@link LoadingScreen}.
 	 * 
@@ -80,6 +84,7 @@ public final class LoadingScreen extends InteractiveState {
 		this.readers = new ArrayList<>();
 		this.progressBar = new ProgressBar(new Point(0, 0), 100, 20);
 		super.addComponent(progressBar);
+		this.textFont = new Font("Arial", Color.red, 25);
 	}
 
 	/**
@@ -117,6 +122,8 @@ public final class LoadingScreen extends InteractiveState {
 		// Set the music.
 		music = slick.music.read("loading");
 
+		textFont.init();
+
 	}
 
 	/**
@@ -129,6 +136,15 @@ public final class LoadingScreen extends InteractiveState {
 		drawButtons(g);
 
 		progressBar.draw(g);
+
+		if (index == readers.size()) {
+
+			final String text = "Finishing up";
+			final int x = (gc.getWidth() / 2) - (textFont.getWidth(text) / 2);
+			final int y = progressBar.getPosition().y + (progressBar.getHeight() / 2) - (textFont.getHeight() / 2);
+
+			textFont.draw(g, text, x, y);
+		}
 
 		g.destroy();
 
@@ -210,9 +226,9 @@ public final class LoadingScreen extends InteractiveState {
 		firstState = null;
 
 		slick.menus.refreshSaveFiles();
-		
+
 		slick.centerBoard();
-		
+
 	}
 
 	/**

@@ -55,8 +55,8 @@ public final class ReinforcementState extends CoreGameState {
 	public ReinforcementState(GameController game, int id, Reinforce model) {
 		super(game, model.getName(), id, model);
 		this.reinforceButton = "reinforce";
-		this.unitFont = new Font("Arial", Color.white, 50);
-		this.textFont = new Font("Arial", Color.white, 20);
+		this.unitFont = new Font("Arial", Color.white, 80);
+		this.textFont = new Font("Arial", Color.white, 40);
 
 		model.addObserver(this);
 	}
@@ -106,9 +106,10 @@ public final class ReinforcementState extends CoreGameState {
 		super.drawPlayerName(g);
 
 		String units = Integer.toString(game.getCurrentModelPlayer().distributableArmy.getStrength());
+		
+		unitFont.draw(g, units, 300 - (unitFont.getWidth(units) / 2), 90);
 
-		unitFont.draw(g, units, 150 - (unitFont.getWidth(units) / 2), 45);
-		textFont.draw(g, "UNITS", 150 - (textFont.getWidth("UNITS") / 2), 95);
+		textFont.draw(g, "UNITS", 300 - (textFont.getWidth("UNITS") / 2), 90 + unitFont.getHeight());
 
 		super.drawPopups(g);
 		menus.draw(g);

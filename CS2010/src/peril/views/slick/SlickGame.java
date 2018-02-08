@@ -336,7 +336,7 @@ public class SlickGame extends StateBasedGame implements View {
 
 			String path = playersPath + "player" + index + "Icon.png";
 
-			playerIcons.put(index, ImageReader.getImage(path).getScaledCopy(90, 40));
+			playerIcons.put(index, ImageReader.getImage(path).getScaledCopy(180, 80));
 
 		}
 

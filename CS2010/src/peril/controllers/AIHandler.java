@@ -1,5 +1,7 @@
 package peril.controllers;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import peril.Game;
@@ -60,14 +62,14 @@ public final class AIHandler implements AIController {
 
 		// Cast to a model country
 		final ModelCountry checkedCountry = (ModelCountry) country;
-		
+
 		// The current model state
 		final ModelState state = game.getGameController().getCurrentState();
-		
+
 		// If the state is null then the current state is not a game state.
-		if(state != null) {
+		if (state != null) {
 			return state.select(checkedCountry, game.getGameController());
-		}else {
+		} else {
 			throw new IllegalStateException("The current state is not a valid game state.");
 		}
 	}
@@ -189,6 +191,70 @@ public final class AIHandler implements AIController {
 	@Override
 	public Player getCurrentPlayer() {
 		return game.players.getCurrent();
+	}
+
+	/**
+	 * Performs a {@link Consumer} task on every {@link Country} that is owned by
+	 * the specified {@link Player}.
+	 */
+	@Override
+	public void forEachFriendlyCountry(Player player, Consumer<Country> task) {
+
+		// Check parameters
+		if (player == null) {
+			throw new NullPointerException("Player cannot be null.");
+		} else if (task == null) {
+			throw new NullPointerException("Task cannot be null.");
+		}
+
+		// Iterate over every country on the board
+		getBoard().getCountries().forEach(country -> {
+
+			// If the country is owned by the current player perform the task.
+			if (player.equals(country.getOwner())) {
+				task.accept(country);
+			}
+		});
+
+	}
+
+	/**
+	 * Retrieves all the {@link Player}s that are currently active in the game.
+	 */
+
+	@Override
+	public Set<? extends Player> getPlayers() {
+
+		final Set<Player> players = new HashSet<>();
+
+		// Add all the current players to the set of players
+		game.getGameController().forEachModelPlayer(player -> players.add(player));
+
+		return players;
+	}
+
+	/**
+	 * Performs a {@link Consumer} task on every {@link Country} that is not owned
+	 * by the {@link Player} owner of the specified {@link Country} and is a
+	 * neighbour of that {@link Country}.
+	 */
+
+	@Override
+	public void forEachEnemyNeighbour(Country country, Consumer<Country> task) {
+
+		if (country.getOwner() == null) {
+			throw new NullPointerException("The specifed country must be rulled by a player.");
+		}
+
+		// Iterate over every neighbour of the specified country
+		country.getNeighbours().forEach(neighbour -> {
+			
+			// If the neighbour is an enemy country then perform the task.
+			if (!country.getOwner().equals(neighbour.getOwner())) {
+				task.accept(neighbour);
+			}
+		});
+
 	}
 
 }

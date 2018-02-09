@@ -7,8 +7,8 @@ package peril.controllers;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.01
- * @since 2018-02-06
+ * @version 1.01.02
+ * @since 2018-02-09
  *
  */
 public interface Directory {
@@ -79,5 +79,12 @@ public interface Directory {
 	 * @return Map file path
 	 */
 	String asMapPath(String mapName);
+
+	/**
+	 * The file path to the folder containing the splash page frames.
+	 * 
+	 * @return Splash file path
+	 */
+	String getSplashPath();
 
 }

@@ -10,16 +10,11 @@ import peril.controllers.Directory;
  * @author Joshua_Eddy
  * 
  * @see Directory
- * @version 1.01.01
- * @since 2018-02-06
+ * @version 1.01.02
+ * @since 2018-02-09
  *
  */
 public final class DirectoryHelper implements Directory {
-
-	/**
-	 * The path to the assets directory.
-	 */
-	private final String base;
 
 	/**
 	 * The name of the user interface folder.
@@ -65,6 +60,16 @@ public final class DirectoryHelper implements Directory {
 	 * interface folder.
 	 */
 	private static final String HAZARDS = "hazards";
+
+	/**
+	 * The name of the folder containing the frames of the splash screen.
+	 */
+	private static final String SPLASH = "splash";
+	
+	/**
+	 * The path to the assets directory.
+	 */
+	private final String base;
 
 	/**
 	 * Constructs a new {@link DirectoryHelper}.
@@ -119,6 +124,11 @@ public final class DirectoryHelper implements Directory {
 	@Override
 	public String asMapPath(String mapName) {
 		return getMapsPath() + mapName + fileSeperator();
+	}
+	
+	@Override
+	public String getSplashPath() {
+		return getUIPath() + SPLASH + fileSeperator();
 	}
 
 	/**

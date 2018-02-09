@@ -1,5 +1,6 @@
 package peril.controllers;
 
+import java.util.Set;
 import java.util.function.Consumer;
 
 import peril.controllers.api.Board;
@@ -13,8 +14,8 @@ import peril.controllers.api.Player;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.01
- * @since 2018-02-06
+ * @version 1.01.02
+ * @since 2018-02-08
  *
  */
 public interface AIController {
@@ -102,4 +103,33 @@ public interface AIController {
 	 * @return {@link Player}
 	 */
 	Player getCurrentPlayer();
+
+	/**
+	 * Performs a {@link Consumer} task on every {@link Country} that is owned by
+	 * the specified {@link Player}.
+	 * 
+	 * @param player
+	 *            {@link Player}
+	 * @param task
+	 *            {@link Consumer}
+	 */
+	void forEachFriendlyCountry(Player player, Consumer<Country> task);
+
+	/**
+	 * Retrieves all the {@link Player}s that are currently active in the game.
+	 * 
+	 * @return {@link Set} of {@link Player}s
+	 */
+	Set<? extends Player> getPlayers();
+
+	/**
+	 * Performs a {@link Consumer} task on every {@link Country} that is not owned
+	 * by the {@link Player} owner of the specified {@link Country} and is a
+	 * neighbour of that {@link Country}.
+	 * 
+	 * @param country {@link Country}
+	 * @param task {@link Consumer}
+	 */
+	void forEachEnemyNeighbour(Country country, Consumer<Country> task);
+
 }

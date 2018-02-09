@@ -109,7 +109,21 @@ public final class ProgressBar implements Component {
 	 * Increments the progress of the {@link ProgressBar}.
 	 */
 	public void increment() {
+
+		if (progress == total) {
+			return;
+		}
+
 		progress++;
+	}
+
+	/**
+	 * Retrieves the height of the {@link ProgressBar}.
+	 * 
+	 * @return int
+	 */
+	public int getHeight() {
+		return height;
 	}
 
 	/**

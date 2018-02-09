@@ -80,6 +80,8 @@ public class WarMenu extends Menu {
 	 * 
 	 */
 	private final Font resultFont;
+	
+	private final Font armyFont;
 
 	/**
 	 * The id of the {@link Button} that will be clicked to attack enemy
@@ -121,13 +123,14 @@ public class WarMenu extends Menu {
 	 * 
 	 */
 	public WarMenu(Point position, GameController game) {
-		super(NAME, game, new Region(400, 400, position));
+		super(NAME, game, new Region(600, 600, position));
 
 		this.random = new Random();
 		this.headingFont = new Font("Arial", Color.red, 28);
 		this.textFont = new Font("Arial", Color.red, 40);
 		this.countryFont = new Font("Arial", Color.black, 20);
 		this.resultFont = new Font("Arial", Color.black, 15);
+		this.armyFont = new Font("Arial", Color.cyan, 25);
 		this.dice = new Dice();
 		this.attackButton = "war";
 		this.attackingSquad = new LinkedList<>();
@@ -160,6 +163,7 @@ public class WarMenu extends Menu {
 		countryFont.init();
 		resultFont.init();
 		dice.init();
+		armyFont.init();
 
 	}
 
@@ -256,7 +260,7 @@ public class WarMenu extends Menu {
 
 	private void drawNormalCombat() {
 		Point position = new Point(this.getPosition().x + (this.getWidth() / 4) - SlickUnit.WIDTH,
-				this.getPosition().y + 170);
+				this.getPosition().y + 250);
 
 		drawSquad(attackingSquad, position);
 
@@ -270,7 +274,7 @@ public class WarMenu extends Menu {
 
 		dice.draw();
 
-		drawArmyPool(frame, new Point(getPosition().x + (getWidth() / 2), getPosition().y + getHeight() - 90));
+		drawArmyPool(frame, new Point(getPosition().x + (getWidth() / 2), getPosition().y + getHeight() - 120));
 	}
 
 	private void drawArmyPool(Frame frame, Point position) {
@@ -294,15 +298,13 @@ public class WarMenu extends Menu {
 
 			final int numberOfCurrent = model.getNumberOf(unit.model);
 
-			frame.setColor(Color.lightGray);
-
 			final String number = Integer.toString(numberOfCurrent);
 
-			final int fontX = x + (SlickUnit.WIDTH / 2) - (countryFont.getWidth(number) / 2);
-			final int fontY = y + (SlickUnit.HEIGHT / 2) - (countryFont.getHeight() / 2);
+			final int fontX = x + (SlickUnit.WIDTH / 2) - (armyFont.getWidth(number) / 2);
+			final int fontY = y + (SlickUnit.HEIGHT / 2) - (armyFont.getHeight() / 2);
 
 			frame.draw(unitButton);
-			frame.draw(countryFont, number, fontX, fontY);
+			frame.draw(armyFont, number, fontX, fontY);
 
 			x += 50;
 
@@ -346,7 +348,7 @@ public class WarMenu extends Menu {
 				final int top = y;
 				final int bottom = y + SlickUnit.HEIGHT;
 
-				frame.setColor(Color.cyan);
+				frame.setColor(Color.red);
 				frame.drawLine(new Point(left, top), new Point(right, bottom));
 				frame.drawLine(new Point(left, bottom), new Point(right, top));
 
@@ -561,7 +563,7 @@ public class WarMenu extends Menu {
 		// The position of the top defender dice
 		final int defendX = this.getPosition().x + ((this.getWidth() * 3) / 4);
 
-		final int y = this.getPosition().y + 170;
+		final int y = this.getPosition().y + 250;
 
 		// Display the dice that we rolled
 		dice.set(attackerDiceRolls, defenderDiceRolls, new Point(attackX, y), new Point(defendX, y));
@@ -635,16 +637,18 @@ public class WarMenu extends Menu {
 	 */
 	private void drawArmySizes() {
 
+		final int yOffset = 190;
+		
 		String attackingArmy = Integer
 				.toString(attacker.model.getArmy().getStrength() + getSquadStrength(attackingSquad));
 
 		frame.draw(textFont, attackingArmy, getPosition().x + (getWidth() / 4) - (textFont.getWidth(attackingArmy) / 2),
-				getPosition().y + 120);
+				getPosition().y + yOffset);
 
 		String enemyArmy = "" + enemy.model.getArmy().getStrength();
 
 		frame.draw(textFont, enemyArmy, getPosition().x + ((getWidth() * 3) / 4) - (textFont.getWidth(enemyArmy) / 2),
-				getPosition().y + 120);
+				getPosition().y + yOffset);
 
 	}
 
@@ -666,6 +670,9 @@ public class WarMenu extends Menu {
 	 *            {@link Graphics}
 	 */
 	private void drawTitle() {
+		
+		final int yOffset = 170;
+		
 		String vs = "VS";
 		String attackerStr = attacker.model.getName();
 		String enemyStr = enemy.model.getName();
@@ -676,9 +683,9 @@ public class WarMenu extends Menu {
 		int attackerX = centreX - (getWidth() / 4) - (countryFont.getWidth(attackerStr) / 2);
 		int enemyX = centreX + (getWidth() / 4) - (countryFont.getWidth(enemyStr) / 2);
 
-		frame.draw(headingFont, vs, vsX, getPosition().y + 100);
-		frame.draw(countryFont, attackerStr, attackerX, getPosition().y + 100);
-		frame.draw(countryFont, enemyStr, enemyX, getPosition().y + 100);
+		frame.draw(headingFont, vs, vsX, getPosition().y + yOffset);
+		frame.draw(countryFont, attackerStr, attackerX, getPosition().y + yOffset);
+		frame.draw(countryFont, enemyStr, enemyX, getPosition().y + yOffset);
 
 	}
 
@@ -700,7 +707,7 @@ public class WarMenu extends Menu {
 
 		int centreX = getPosition().x + (getWidth() / 2);
 		int x = centreX + offset - (player.getWidth() / 2);
-		frame.draw(player.getImage(), x, this.getPosition().y + 55);
+		frame.draw(player.getImage(), x, this.getPosition().y + 120);
 	}
 
 	/**
@@ -726,6 +733,9 @@ public class WarMenu extends Menu {
 		// Get the size of the smaller set of dice.
 		int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length
 				: attackerDiceRolls.length;
+		
+		// Copy the attacking squad to this holding variable.
+		final LinkedList<SquadMember> attackingSquad = new LinkedList<>(this.attackingSquad);
 
 		// Compare each attacking dice roll against the defending dice roll
 		for (int i = 0; i < diceToCheck; i++) {

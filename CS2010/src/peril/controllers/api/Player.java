@@ -5,8 +5,8 @@ package peril.controllers.api;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.01
- * @since 2018-02-06
+ * @version 1.01.02
+ * @since 2018-02-11
  *
  */
 public interface Player {
@@ -16,6 +16,8 @@ public interface Player {
 	 * {@link Player} owns combined.
 	 * 
 	 * @return Total army strength.
+	 * 
+	 * @deprecated use {@link Player#getTotalArmy()} then {@link Army#getStrength()}
 	 */
 	int getTotalArmyStrength();
 
@@ -38,7 +40,27 @@ public interface Player {
 	 * distribute during the reinforce state of the game.
 	 * 
 	 * @return Distribute-able army strength
+	 * 
+	 * @deprecated use {@link Player#getDistributableArmy()} then {@link Army#getStrength()}
 	 */
 	int getDistributableArmyStrength();
+
+	/**
+	 * Retrieves the {@link Army} that this {@link Player} has available to
+	 * distribute during the reinforce state of the game.
+	 * 
+	 * @return Distribute-able {@link Army}
+	 * 
+	 */
+	Army getDistributableArmy();
+
+	/**
+	 * Retrieves all the units in the {@link Country}s that this {@link Player} owns
+	 * combined.
+	 * 
+	 * @return Total {@link Army}.
+	 * 
+	 */
+	Army getTotalArmy();
 
 }

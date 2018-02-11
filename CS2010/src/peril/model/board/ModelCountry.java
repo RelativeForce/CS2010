@@ -106,6 +106,7 @@ public final class ModelCountry extends Observable implements Country, Observer 
 	/**
 	 * Returns the strength of this {@link ModelCountry}'s {@link ModelArmy}.
 	 */
+	@Override
 	public int getArmyStrength() {
 		return army.getStrength();
 	}
@@ -115,6 +116,7 @@ public final class ModelCountry extends Observable implements Country, Observer 
 	 * 
 	 * @return {@link ModelCountry#army}.
 	 */
+	@Override
 	public ModelArmy getArmy() {
 		return army;
 	}
@@ -124,6 +126,7 @@ public final class ModelCountry extends Observable implements Country, Observer 
 	 * 
 	 * @return {@link Set} of type {@link ModelCountry}.
 	 */
+	@Override
 	public Set<ModelCountry> getNeighbours() {
 		return neighbours.keySet();
 	}
@@ -239,6 +242,7 @@ public final class ModelCountry extends Observable implements Country, Observer 
 	 * 
 	 * @return {@link ModelCountry#ruler}.
 	 */
+	@Override
 	public Player getOwner() {
 		return ruler;
 	}

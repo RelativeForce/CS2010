@@ -1,12 +1,17 @@
 package peril.model.board;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Set;
+
 import peril.Update;
+import peril.controllers.api.Army;
+import peril.controllers.api.Unit;
 import peril.helpers.UnitHelper;
 
 /**
@@ -16,7 +21,7 @@ import peril.helpers.UnitHelper;
  * @author Joshua_Eddy
  *
  */
-public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
+public final class ModelArmy extends Observable implements Iterable<ModelUnit>, Army {
 
 	/**
 	 * Contains the {@link ModelUnit}s that this {@link ModelArmy} consists of.
@@ -177,11 +182,11 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 		for (int index = 0; index < numberOfUnit; index++) {
 			remove(unit);
 		}
-		
-		for(int index = 0; index < numberOfAbove; index++) {
+
+		for (int index = 0; index < numberOfAbove; index++) {
 			add(above);
 		}
-		
+
 		generateUnits(remainder).forEach(smaller -> add(smaller));
 
 		return true;
@@ -372,6 +377,22 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit> {
 		}
 
 		return number;
+	}
+
+	@Override
+	public Set<? extends Unit> getUnits() {
+		// Copy the key set into a new map so that this army cannot be modified.
+		return new HashSet<Unit>(units.keySet());
+	}
+
+	@Override
+	public int getNumberOf(Unit unit) {
+		return getNumberOf((ModelUnit) unit);
+	}
+
+	@Override
+	public boolean hasUnit(Unit unit) {
+		return hasUnit((ModelUnit) unit);
 	}
 
 }

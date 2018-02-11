@@ -7,18 +7,27 @@ import java.util.Set;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.01
- * @since 2018-02-06
+ * @version 1.01.02
+ * @since 2018-02-11
  *
  */
 public interface Country {
 
 	/**
+	 * @deprecated use {@link Country#getArmy()} then {@link Army#getStrength()}
+	 * 
 	 * Returns the strength of this {@link Country}'s army.
 	 * 
 	 * @return strength of army.
 	 */
 	int getArmyStrength();
+	
+	/**
+	 * Returns this {@link Country}'s {@link Army}.
+	 * 
+	 * @return {@link Army}
+	 */
+	Army getArmy();
 
 	/**
 	 * Retrieves the {@link Player} the rules <code>this</code> {@link Country}.

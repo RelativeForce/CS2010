@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
@@ -14,6 +13,7 @@ import peril.Game;
 import peril.controllers.GameController;
 import peril.io.FileParser;
 import peril.views.slick.Font;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.Viewable;
 import peril.views.slick.components.ProgressBar;
@@ -130,12 +130,13 @@ public final class LoadingScreen extends InteractiveState {
 	 * Renders the {@link LoadingScreen}.S
 	 */
 	@Override
-	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+	public void render(GameContainer gc, Frame frame) {
 
-		drawImages(g);
-		drawButtons(g);
+		drawImages();
+		drawButtons();
 
-		progressBar.draw(g);
+		progressBar.draw(frame);
+		
 
 		if (index == readers.size()) {
 
@@ -143,11 +144,8 @@ public final class LoadingScreen extends InteractiveState {
 			final int x = (gc.getWidth() / 2) - (textFont.getWidth(text) / 2);
 			final int y = progressBar.getPosition().y + (progressBar.getHeight() / 2) - (textFont.getHeight() / 2);
 
-			textFont.draw(g, text, x, y);
+			frame.draw(textFont, text, x, y);
 		}
-
-		g.destroy();
-
 	}
 
 	/**

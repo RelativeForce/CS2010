@@ -199,8 +199,13 @@ public final class Region {
 
 					if (a.isInside(new Point(x, y)) && b.isInside(new Point(x, y))) {
 						overlap = true;
+						break;
 					}
 
+				}
+				
+				if(overlap) {
+					break;
 				}
 			}
 

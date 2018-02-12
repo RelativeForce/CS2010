@@ -1,9 +1,8 @@
 package peril.views.slick.board;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-
 import peril.model.board.links.ModelLinkState;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 
 public enum SlickLinkState {
@@ -11,41 +10,41 @@ public enum SlickLinkState {
 	OPEN(ModelLinkState.OPEN) {
 
 		@Override
-		public void draw(Graphics g, Point a, Point b) {
+		public void draw(Frame frame, Point a, Point b) {
 
-			final Color temp = g.getColor();
-			final float line = g.getLineWidth();
+			final Color temp = frame.getColor();
+			final float line = frame.getLineWidth();
 
-			g.setColor(Color.green);
-			g.setLineWidth(3);
+			frame.setColor(Color.green);
+			frame.setLineWidth(3);
 
 			final Point middle = Point.getMiddle(a, b);
 			
-			g.drawLine(a.x, a.y, middle.x, middle.y);
+			frame.drawLine(a, middle);
 			
 
-			g.setLineWidth(line);
-			g.setColor(temp);
+			frame.setLineWidth(line);
+			frame.setColor(temp);
 			
 		}
 	},BLOCKADE(ModelLinkState.BLOCKADE) {
 		
 		@Override
-		public void draw(Graphics g, Point a, Point b) {
+		public void draw(Frame frame, Point a, Point b) {
 			
-			final Color temp = g.getColor();
-			final float line = g.getLineWidth();
+			final Color temp = frame.getColor();
+			final float line = frame.getLineWidth();;
 
-			g.setColor(Color.red);
-			g.setLineWidth(3);
-
+			frame.setColor(Color.red);
+			frame.setLineWidth(3);
+			
 			final Point middle = Point.getMiddle(a, b);
 			
-			g.drawLine(a.x, a.y, middle.x, middle.y);
+			frame.drawLine(a, middle);
 			
 
-			g.setLineWidth(line);
-			g.setColor(temp);
+			frame.setLineWidth(line);
+			frame.setColor(temp);
 			
 		}
 	};
@@ -56,6 +55,6 @@ public enum SlickLinkState {
 		this.model = model;
 	}
 
-	public abstract void draw(Graphics g, Point a, Point b);
+	public abstract void draw(Frame frame, Point a, Point b);
 
 }

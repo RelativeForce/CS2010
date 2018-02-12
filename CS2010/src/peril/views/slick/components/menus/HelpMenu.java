@@ -12,6 +12,7 @@ import peril.Game;
 import peril.controllers.GameController;
 import peril.views.slick.Button;
 import peril.views.slick.Font;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.Region;
 import peril.views.slick.Viewable;
@@ -283,19 +284,19 @@ public class HelpMenu extends Menu {
 	 * this with do nothing.
 	 */
 	@Override
-	public void draw(Graphics g) {
+	public void draw(Frame frame) {
 		if (!isVisible())
 			return;
 
-		super.draw(g);
+		super.draw(frame);
 
 		// Draw the current page
 		if (pages.containsKey(currentPage)) {
-			pages.get(currentPage).draw(g);
+			pages.get(currentPage).draw(frame);
 		}
 
 		if (numberOfPages != 0) {
-			titleFont.draw(g, pageNumber + "/" + numberOfPages, getPosition().x + PADDING_X,
+			frame.draw(titleFont, pageNumber + "/" + numberOfPages, getPosition().x + PADDING_X,
 					getPosition().y + getHeight() - PADDING_Y);
 		}
 
@@ -450,10 +451,10 @@ public class HelpMenu extends Menu {
 		 * Draws this {@link HelpPage}.
 		 */
 		@Override
-		public void draw(Graphics g) {
-			g.setColor(Color.white);
-			titleFont.draw(g, title, text.getPosition().x, text.getPosition().y - titleFont.getHeight());
-			text.draw(g);
+		public void draw(Frame frame) {
+			frame.setColor(Color.white);
+			frame.draw(titleFont, title, text.getPosition().x, text.getPosition().y - titleFont.getHeight());
+			text.draw(frame);
 		}
 
 		/**

@@ -9,7 +9,9 @@ import org.newdawn.slick.Graphics;
 import peril.Update;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelUnit;
+import peril.views.slick.EventListener;
 import peril.views.slick.Font;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.SlickModelView;
 
@@ -162,7 +164,7 @@ public final class SlickArmy implements Observer {
 	/**
 	 * Draws this {@link SlickArmy} at a position on screen.
 	 * 
-	 * @param g
+	 * @param frame
 	 *            {@link Graphics}
 	 * @param position
 	 *            {@link Point}
@@ -170,15 +172,15 @@ public final class SlickArmy implements Observer {
 	 *            {@link SlickPlayer}
 	 * @param view
 	 */
-	public void draw(Graphics g, Point position, SlickPlayer ruler, SlickModelView view) {
+	public void draw(Frame frame, Point position, SlickPlayer ruler, SlickModelView view) {
 
 		collapsedFont.init();
 		expandedFont.init();
 
 		if (expanded) {
-			drawExpanded(g, position, ruler, view);
+			drawExpanded(frame, position, ruler, view);
 		} else {
-			drawCollapsed(g, position, ruler);
+			drawCollapsed(frame, position, ruler);
 		}
 
 	}
@@ -200,7 +202,7 @@ public final class SlickArmy implements Observer {
 	 * different types of unit in this {@link SlickArmy} and how many of them there
 	 * are.
 	 * 
-	 * @param g
+	 * @param frame
 	 *            {@link Graphics}
 	 * @param position
 	 *            {@link Point}
@@ -208,7 +210,7 @@ public final class SlickArmy implements Observer {
 	 *            {@link SlickPlayer}
 	 * @param view
 	 */
-	public void drawExpanded(Graphics g, Point position, SlickPlayer ruler, SlickModelView view) {
+	public void drawExpanded(Frame frame, Point position, SlickPlayer ruler, SlickModelView view) {
 
 		final SlickUnit slickSelected = view.getVisual(selected);
 
@@ -234,12 +236,12 @@ public final class SlickArmy implements Observer {
 				final int width = SlickUnit.WIDTH + (2 * xPadding);
 				final int height = SlickUnit.HEIGHT + (2 * yPadding);
 
-				g.setColor(Color.cyan);
-				g.fillRect(x - xPadding, y - yPadding, width, height);
+				frame.setColor(Color.cyan);
+				frame.fillRect(x - xPadding, y - yPadding, width, height);
 			}
 
 			// Draw the unit.
-			drawUnit(g, unit);
+			drawUnit(frame, unit);
 
 			x += PADDING;
 
@@ -278,31 +280,31 @@ public final class SlickArmy implements Observer {
 	 * Draws this {@link SlickArmy} in it collapsed view which just shows the
 	 * strength of the army.
 	 * 
-	 * @param g
+	 * @param frame
 	 *            {@link Graphics}
 	 * @param position
 	 *            {@link Point}
 	 * @param ruler
 	 *            {@link SlickPlayer}
 	 */
-	private void drawCollapsed(Graphics g, Point position, SlickPlayer ruler) {
+	private void drawCollapsed(Frame frame, Point position, SlickPlayer ruler) {
 
 		// Draw a background oval with the rulers colour. If no ruler found default to
 		// light grey.
 		if (ruler != null) {
-			g.setColor(ruler.color);
+			frame.setColor(ruler.color);
 		} else {
-			g.setColor(Color.lightGray);
+			frame.setColor(Color.lightGray);
 		}
 
 		// Holds the size of the current countries army
 		final int troopNumber = model.getStrength();
 
-		drawArmyOval(position, troopNumber, g);
+		drawArmyOval(position, troopNumber, frame);
 
 		// Draw a string representing the number of troops
 		// within that army at (x,y).
-		collapsedFont.draw(g, Integer.toString(troopNumber), position.x, position.y);
+		frame.draw(collapsedFont, Integer.toString(troopNumber), position.x, position.y);
 
 	}
 
@@ -314,16 +316,16 @@ public final class SlickArmy implements Observer {
 	 *            {@link Point}
 	 * @param size
 	 *            size of the {@link ModelArmy}
-	 * @param g
+	 * @param frame
 	 *            {@link Graphics}
 	 */
-	private void drawArmyOval(Point position, int size, Graphics g) {
+	private void drawArmyOval(Point position, int size, Frame frame) {
 
 		int width = getOvalWidth(size);
 
 		int offset = width / 5;
 
-		g.fillOval(position.x - offset, position.y - 3, width, 25);
+		frame.fillOval(position.x - offset, position.y - 3, width, 25);
 
 	}
 
@@ -334,26 +336,51 @@ public final class SlickArmy implements Observer {
 	 *            {@link Point}
 	 * @param unit
 	 *            {@link ModelUnit}
-	 * @param g
+	 * @param frame
 	 *            {@link Graphics}
 	 * @param view
 	 * 
 	 */
-	private void drawUnit(Graphics g, SlickUnit unit) {
+	private void drawUnit(Frame frame, SlickUnit unit) {
 
 		final int numberOfCurrent = model.getNumberOf(unit.model);
 		final Point position = unit.getPosition();
 
-		g.setColor(Color.lightGray);
+		frame.setColor(Color.lightGray);
 
-		g.drawImage(unit.getImage(), position.x, position.y);
+		frame.draw(unit, new EventListener() {
+			
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+			
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
+				
+				// Select the unit then flag the fact a unit has been clicked.
+				model.select(unit.model);
+				
+			}
+			
+			@Override
+			public void draw(Frame frame) {
+				frame.draw(unit.getImage(), position.x, position.y);
+			}
+			
+			@Override
+			public void buttonPress(int key, Point mouse) {
+				// Do nothing
+				
+			}
+		});
 
 		final String number = Integer.toString(numberOfCurrent);
 		
 		final int x = position.x + (SlickUnit.WIDTH / 2) - (expandedFont.getWidth(number) / 2);
 		final int y = position.y + (SlickUnit.HEIGHT / 2) - (expandedFont.getHeight() / 2);
 
-		expandedFont.draw(g, number, x, y);
+		frame.draw(expandedFont, number, x, y);
 
 	}
 

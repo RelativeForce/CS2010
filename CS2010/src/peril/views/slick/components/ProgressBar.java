@@ -1,7 +1,6 @@
 package peril.views.slick.components;
 
-import org.newdawn.slick.Graphics;
-
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 
 /**
@@ -139,17 +138,17 @@ public final class ProgressBar implements Component {
 	/**
 	 * Draws the {@link ProgressBar} to screen.
 	 */
-	public void draw(Graphics g) {
+	public void draw(Frame frame) {
 
 		// Calculate the current progress on screen
 		int currentProgress = (progress * width) / total;
 
 		// Draw the empty bar
-		g.drawRect(position.x, position.y, width, height);
+		frame.drawRect(position.x, position.y, width, height);
 
 		// Draw the progress
 		if (currentProgress > 0) {
-			g.fillRect(position.x, position.y, currentProgress, height);
+			frame.fillRect(position.x, position.y, currentProgress, height);
 		}
 
 	}

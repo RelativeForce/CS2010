@@ -14,6 +14,7 @@ import peril.controllers.GameController;
 import peril.helpers.UnitHelper;
 import peril.model.states.Fortify;
 import peril.views.slick.Button;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.board.SlickCountry;
 
@@ -68,24 +69,23 @@ public final class MovementState extends CoreGameState {
 	 * Render the {@link MovementState}.
 	 */
 	@Override
-	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		super.render(gc, sbg, g);
+	public void render(GameContainer gc, Frame frame){
+		super.render(gc, frame);
 
-		g.setLineWidth(3f);
+		frame.setLineWidth(3f);
 
-		super.drawPlayerName(g);
-		super.drawAllLinks(g);
+		super.drawPlayerName(frame);
+		super.drawAllLinks(frame);
 
-		this.drawPath(g);
+		this.drawPath(frame);
 
-		super.drawArmies(g);
-		super.drawImages(g);
-		super.drawButtons(g);
-		super.drawPlayerName(g);
-		super.drawPopups(g);
-		menus.draw(g);
+		super.drawArmies(frame);
+		super.drawImages();
+		super.drawButtons();
+		super.drawPlayerName(frame);
+		super.drawPopups(frame);
+		menus.draw(frame);
 
-		g.destroy();
 	}
 
 	@Override
@@ -116,23 +116,23 @@ public final class MovementState extends CoreGameState {
 	/**
 	 * Draws the path between the primary and secondary {@link SlickCountry}s.
 	 * 
-	 * @param g
+	 * @param frame
 	 *            {@link Graphics}
 	 */
-	public void drawPath(Graphics g) {
+	public void drawPath(Frame frame) {
 
 		Point previous = null;
 
-		g.setLineWidth(3f);
+		frame.setLineWidth(3f);
 		// Assign the line colour.
-		g.setColor(Color.white);
+		frame.setColor(Color.white);
 
 		for (SlickCountry country : path) {
 
 			Point current = super.getCenterArmyPosition(country);
 
 			if (previous != null) {
-				g.drawLine(previous.x, previous.y, current.x, current.y);
+				frame.drawLine(previous, current);
 			}
 
 			previous = current;

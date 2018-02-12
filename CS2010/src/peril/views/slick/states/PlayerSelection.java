@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
@@ -15,7 +14,9 @@ import peril.Game;
 import peril.ai.AI;
 import peril.controllers.GameController;
 import peril.helpers.PlayerHelper;
+import peril.views.slick.EventListener;
 import peril.views.slick.Font;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.components.lists.VisualList;
@@ -133,26 +134,67 @@ public final class PlayerSelection extends InteractiveState {
 	@Override
 	public void parseButton(int key, char c, Point mousePosition) {
 		// TODO Auto-generated method stub
-
 	}
 
 	/**
 	 * Renders this {@link PlayerSelection}.
 	 */
 	@Override
-	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+	public void render(GameContainer gc, Frame frame) {
 
-		super.drawImages(g);
+		drawImages();
+		drawButtons();
 
-		super.drawButtons(g);
+		frame.draw(players, new EventListener() {
+			
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+			
+			@Override
+			public void mouseClick(Point mouse,  int button) {
+				players.click(mouse);				
+			}
+			
+			@Override
+			public void buttonPress(int key, Point mouse) {
+				// Do nothing
+			}
 
-		players.draw(g);
+			@Override
+			public void draw(Frame frame) {
+				players.draw(frame);
+			}
+		});
 
 		selectors.forEach((playerNumber, selector) -> {
 
 			if (selector.isVisible()) {
 
-				selector.draw(g);
+				frame.draw(selector, new EventListener() {
+					
+					@Override
+					public void mouseHover(Point mouse, int delta) {
+						// Do nothing
+					}
+					
+					@Override
+					public void mouseClick(Point mouse,  int button) {
+						selector.click(mouse);				
+					}
+					
+					@Override
+					public void buttonPress(int key, Point mouse) {
+						// Do nothing
+					}
+
+					@Override
+					public void draw(Frame frame) {
+						selector.draw(frame);
+					}
+				});
+				
 
 				Image playerIcon = slick.getPlayerIcon(playerNumber);
 
@@ -160,12 +202,10 @@ public final class PlayerSelection extends InteractiveState {
 
 				final int y = selector.getPosition().y - playerIcon.getHeight() - 10;
 
-				g.drawImage(playerIcon, x, y);
+				frame.draw(playerIcon, x, y);
 			}
 
 		});
-
-		g.destroy();
 
 	}
 

@@ -21,6 +21,11 @@ public final class Frame {
 
 	public Frame(Graphics g) {
 		planes = new ArrayList<>();
+
+		// Add the base plane
+		final LinkedList<Entry> newPlane = new LinkedList<>();
+		planes.add(newPlane);
+
 		this.g = g;
 	}
 
@@ -29,14 +34,37 @@ public final class Frame {
 	}
 
 	public void draw(Clickable item, EventListener listener) {
-		
+		addToPlane(new Entry(item, listener));
 	}
-	
+
 	public void draw(Button button) {
-		addToPlane(button);
-		g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y);
+
+		final Entry entry = new Entry(button, new EventListener() {
+
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
+				button.click();
+			}
+
+			@Override
+			public void buttonPress(int Key, Point mouse) {
+				// Do nothing
+			}
+
+			@Override
+			public void draw(Frame frame) {
+				g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y);
+			}
+		});
+
+		addToPlane(entry);
 	}
-	
+
 	public void draw(Image image, int x, int y) {
 		g.drawImage(image, x, y);
 	}
@@ -49,16 +77,24 @@ public final class Frame {
 		g.setColor(color);
 	}
 
-	public boolean click(Point click) {
+	public void setBackground(Color color) {
+		g.setBackground(color);
+	}
+
+	public void setLineWidth(float width) {
+		g.setLineWidth(width);
+	}
+
+	public boolean click(Point click, int button) {
 
 		boolean clickProcessed = false;
 
 		for (int planeIndex = planes.size() - 1; planeIndex >= 0; planeIndex--) {
 
-			for (Entry button : planes.get(planeIndex)) {
+			for (Entry entry : planes.get(planeIndex)) {
 
-				if (button.item.isClicked(click)) {
-					button.handler.mouseClick(click);
+				if (entry.item.isClicked(click)) {
+					entry.handler.mouseClick(click, button);
 					clickProcessed = true;
 					break;
 				}
@@ -72,55 +108,76 @@ public final class Frame {
 		return clickProcessed;
 
 	}
-	
-	private void addToPlane(Button button) {
+
+	private void addToPlane(Entry entry) {
 
 		boolean placed = false;
 
-		final Entry entry = new Entry(button, new EventListener() {
+		/**
+		 * Iterate over each plane starting at top and working to the bottom.
+		 */
+		for (int planeIndex = planes.size() - 1; planeIndex >= 0; planeIndex--) {
 
-			@Override
-			public void mouseHover(Point mouse, int delta) {
-				// Do nothing
-			}
-
-			@Override
-			public void mouseClick(Point mouse) {
-				button.click();
-			}
-
-			@Override
-			public void buttonPress(int Key, Point mouse) {
-				// Do nothing
-			}
-		});
-
-		for (LinkedList<Entry> plane : planes) {
-
+			// Whether or not the entry has collided with anything on the current plane.
 			boolean collided = false;
 
-			for (Entry planeButton : plane) {
+			// Holds the current plane.
+			final LinkedList<Entry> plane = planes.get(planeIndex);
 
-				if (Region.overlap(button.getRegion(), planeButton.item.getRegion())) {
+			// Iterate through every element on the current plane and check if the entry
+			// collides with them.
+			for (Entry planeEntry : plane) {
+
+				if (Region.overlap(entry.item.getRegion(), planeEntry.item.getRegion())) {
 					collided = true;
+					break;
 				}
 
 			}
 
-			if (!collided) {
-				placed = true;
-				plane.add(entry);
+			// If the entry collided with the current plane then place it on the plane
+			// above.
+			if (collided) {
 
-				break;
+				// If the current plane is the top plane add another plane.
+				if (planeIndex == planes.size() - 1) {
+					final LinkedList<Entry> newPlane = new LinkedList<>();
+					planes.add(newPlane);
+				}
+
+				// Add the entry to the plane above the current one.
+				planes.get(planeIndex + 1).add(entry);
+				placed = true;
 			}
 		}
 
 		if (!placed) {
-
-			final LinkedList<Entry> newPlane = new LinkedList<>();
-			newPlane.add(entry);
-			planes.add(newPlane);
+			planes.get(0).add(entry);
 		}
+
+		entry.handler.draw(this);
+
+	}
+
+	public void fillRect(int x, int y, int width, int height) {
+		g.fillRect(x, y, width, height);
+	}
+
+	public Color getColor() {
+		return g.getColor();
+	}
+
+	public float getLineWidth() {
+		return g.getLineWidth();
+	}
+
+	public void fillOval(int x, int y, int width, int height) {
+		g.fillOval(x, y, width, height);
+
+	}
+
+	public void drawRect(int x, int y, int width, int height) {
+		g.drawRect(x, y, width, height);
 	}
 
 	private final class Entry {

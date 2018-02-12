@@ -5,6 +5,7 @@ import org.newdawn.slick.Graphics;
 
 import peril.views.slick.Clickable;
 import peril.views.slick.Font;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.Region;
 
@@ -59,12 +60,12 @@ public class ScrollBar extends Clickable implements Component {
 	 * @param g
 	 *            {@link Graphics}.
 	 */
-	public void draw(Graphics g) {
+	public void draw(Frame frame) {
 		if (visible) {
-			g.setColor(Color.darkGray);
-			g.fillRect(getPosition().x, getPosition().y, getWidth(), getHeight());
-			drawNumbers(g);
-			slider.draw(g);
+			frame.setColor(Color.darkGray);
+			frame.fillRect(getPosition().x, getPosition().y, getWidth(), getHeight());
+			drawNumbers(frame);
+			slider.draw(frame);
 		}
 	}
 
@@ -98,13 +99,14 @@ public class ScrollBar extends Clickable implements Component {
 	}
 
 	/**
-	 * Moves the slider of the {@link ScrollBar} along the Bar, rounding down an index.
+	 * Moves the slider of the {@link ScrollBar} along the Bar, rounding down an
+	 * index.
 	 */
 	public void moveSlider(Point clickPosition) {
 		int newPosition = clickPosition.y;
 		int space = Math.floorDiv(newPosition, spacing);
-		slider.setPosition(new Point(slider.getPosition().x, space*spacing));
-		index = 1 + Math.floorDiv((slider.getPosition().y-getPosition().y), spacing);
+		slider.setPosition(new Point(slider.getPosition().x, space * spacing));
+		index = 1 + Math.floorDiv((slider.getPosition().y - getPosition().y), spacing);
 
 	}
 
@@ -115,15 +117,11 @@ public class ScrollBar extends Clickable implements Component {
 	 * @param g
 	 *            {@link Graphics}
 	 */
-	private void drawNumbers(Graphics g) {
+	private void drawNumbers(Frame frame) {
 
-		float yLabelPosition = getPosition().y;
+		for (int i = 0; i <= maxValue - 1; i++) {
 
-		for (int i = 0; i <= maxValue-1; i++) {
-
-			textFont.draw(g, String.valueOf(i+1),getPosition().x + getWidth(), 
-					(spacing * i)+getPosition().y);
-			yLabelPosition += spacing;
+			frame.draw(textFont, String.valueOf(i + 1), getPosition().x + getWidth(), (spacing * i) + getPosition().y);
 
 		}
 
@@ -136,9 +134,9 @@ public class ScrollBar extends Clickable implements Component {
 			super(new Region(width, height, position));
 		}
 
-		public void draw(Graphics g) {
-			g.setColor(Color.lightGray);
-			g.fillRect(this.getPosition().x, this.getPosition().y, this.getWidth(), this.getHeight());
+		public void draw(Frame frame) {
+			frame.setColor(Color.lightGray);
+			frame.fillRect(this.getPosition().x, this.getPosition().y, this.getWidth(), this.getHeight());
 		}
 	}
 

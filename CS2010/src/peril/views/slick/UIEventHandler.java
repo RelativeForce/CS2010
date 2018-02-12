@@ -75,7 +75,7 @@ public class UIEventHandler implements MouseListener, KeyListener {
 
 	@Override
 	public void mousePressed(int button, int x, int y) {
-		game.getCurrentState().parseClick(button, new Point(x, y));
+		game.getCurrentState().click(new Point(x, y), button);
 	}
 
 	@Override

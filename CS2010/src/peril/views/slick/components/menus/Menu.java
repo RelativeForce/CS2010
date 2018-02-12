@@ -11,6 +11,7 @@ import peril.controllers.GameController;
 import peril.views.slick.Button;
 import peril.views.slick.Clickable;
 import peril.views.slick.Container;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.Region;
 import peril.views.slick.SlickGame;
@@ -122,13 +123,13 @@ public abstract class Menu extends Clickable implements Container, Component {
 	 * @param g
 	 *            {@link Graphics}
 	 */
-	public void draw(Graphics g) {
+	public void draw(Frame frame) {
 		if (visible) {
 
-			images.forEach(image -> g.drawImage(image.getImage(), image.getPosition().x, image.getPosition().y));
+			images.forEach(image -> frame.draw(image.getImage(), image.getPosition().x, image.getPosition().y));
 			buttons.forEach((buttonId, button) -> {
 				if (button.isVisible()) {
-					g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y);
+					frame.draw(button);
 				}
 			});
 		}

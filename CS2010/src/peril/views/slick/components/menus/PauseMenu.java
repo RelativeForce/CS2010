@@ -9,6 +9,7 @@ import peril.io.MapWriter;
 import peril.io.SaveFile;
 import peril.views.slick.Button;
 import peril.views.slick.Font;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.Region;
 import peril.views.slick.components.lists.VisualList;
@@ -110,19 +111,19 @@ public class PauseMenu extends Menu {
 	 * @param g
 	 *            {@link Graphics}
 	 */
-	public void draw(Graphics g) {
+	public void draw(Frame frame) {
 
-		super.draw(g);
+		super.draw(frame);
 
 		if (isVisible()) {
 
-			g.setColor(Color.white);
+			frame.setColor(Color.white);
 
 			if (showSaveOption) {
-				drawSaveOption(g);
+				drawSaveOption(frame);
 			}
 
-			drawMusicToggle(g);
+			drawMusicToggle(frame);
 
 		}
 
@@ -227,37 +228,37 @@ public class PauseMenu extends Menu {
 	/**
 	 * Draws the music toggle on the {@link PauseMenu}.
 	 * 
-	 * @param g
+	 * @param frametextFont
 	 *            {@link Graphics}
 	 */
-	private void drawMusicToggle(Graphics g) {
+	private void drawMusicToggle(Frame frame) {
 
 		String music = "Music:";
 
 		String links = "Links:";
 
-		textFont.draw(g, music, toggleMusic.getPosition().x - textFont.getWidth(music) - 5,
+		frame.draw(textFont, music, toggleMusic.getPosition().x - textFont.getWidth(music) - 5,
 				toggleMusic.getPosition().y);
-		textFont.draw(g, links, toggleAllLinks.getPosition().x - textFont.getWidth(links) - 5,
+		frame.draw(textFont, links, toggleAllLinks.getPosition().x - textFont.getWidth(links) - 5,
 				toggleAllLinks.getPosition().y);
 
-		toggleMusic.draw(g);
-		toggleAllLinks.draw(g);
+		toggleMusic.draw(frame);
+		toggleAllLinks.draw(frame);
 	}
 
 	/**
 	 * Draws the save option menu on the {@link PauseMenu}.
 	 * 
-	 * @param g
+	 * @param frame
 	 *            {@link Graphics}
 	 */
-	private void drawSaveOption(Graphics g) {
+	private void drawSaveOption(Frame frame) {
 
 		String save = "Save Game:";
 
-		textFont.draw(g, save, getPosition().x - textFont.getWidth(save) + (getWidth() / 2) - 10, getPosition().y + 240);
+		frame.draw(textFont, save, getPosition().x - textFont.getWidth(save) + (getWidth() / 2) - 10, getPosition().y + 240);
 
-		saveFiles.draw(g);
+		saveFiles.draw(frame);
 	}
 
 	/**

@@ -7,6 +7,7 @@ import peril.Challenge;
 import peril.Game;
 import peril.controllers.GameController;
 import peril.views.slick.Font;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.Region;
 import peril.views.slick.components.TextField;
@@ -74,18 +75,18 @@ public final class ChallengeMenu extends Menu {
 	 * Draws this {@link ChallengeMenu}.
 	 */
 	@Override
-	public void draw(Graphics g) {
+	public void draw(Frame frame) {
 
 		// If the menu is invisible don't draw anything
 		if (!isVisible()) {
 			return;
 		}
 
-		super.draw(g);
+		super.draw(frame);
 
-		titleFont.draw(g, "Challenges", getPosition().x + paddingX, getPosition().y + 30);
+		frame.draw(titleFont, "Challenges", getPosition().x + paddingX, getPosition().y + 30);
 
-		text.draw(g);
+		text.draw(frame);
 
 	}
 

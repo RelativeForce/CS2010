@@ -19,6 +19,7 @@ import peril.controllers.GameController;
 import peril.views.slick.Button;
 import peril.views.slick.Clickable;
 import peril.views.slick.Container;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.SlickGame;
 import peril.views.slick.Viewable;
@@ -45,6 +46,8 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 * associated with.
 	 */
 	protected final GameController game;
+
+	private Frame frame;
 
 	protected final SlickGame slick;
 
@@ -154,6 +157,13 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 */
 	public abstract void parseClick(int button, Point click);
 
+	public void click(Point mouse,  int button) {
+
+		if (frame != null)
+			frame.click(mouse, button);
+
+	}
+
 	/**
 	 * Processes a button press on this {@link InteractiveState}.
 	 * 
@@ -208,7 +218,14 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 *            accelerated canvas provided by LWJGL.
 	 */
 	@Override
-	public abstract void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException;
+	public final void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+
+		frame = new Frame(g);
+		render(gc, frame);
+
+	}
+
+	public abstract void render(GameContainer gc, Frame frame);
 
 	/**
 	 * Called when the state is first created, before slick2d's game loop commences.
@@ -310,10 +327,10 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 * @param g
 	 *            {@link Graphics}
 	 */
-	protected void drawButtons(Graphics g) {
+	protected void drawButtons() {
 		buttons.forEach((id, button) -> {
 			if (button.isVisible()) {
-				g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y);
+				frame.draw(button);
 			}
 		});
 	}
@@ -336,8 +353,8 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 * @param g
 	 *            {@link Graphics}
 	 */
-	protected void drawImages(Graphics g) {
-		images.forEach(image -> g.drawImage(image.getImage(), image.getPosition().x, image.getPosition().y));
+	protected void drawImages() {
+		images.forEach(image -> frame.draw(image.getImage(), image.getPosition().x, image.getPosition().y));
 	}
 
 	/**

@@ -29,7 +29,6 @@ button,Setup,4,playButton.png,180,80,205,80,play
 button,Setup,8,autoButton.png,180,80,20,80,auto
 button,Setup,13,helpButton.png,80,80,410,5,help
 button,Setup,17,pauseButton.png,180,80,490,5,pause
-button,Setup,24,pauseButton.png,180,80,670,5,stats
 image,Setup,setUpStateBox.png,400,250,5,5
 
 // War Menu
@@ -59,3 +58,22 @@ button,Help,16,leftButton.png,40,150,10,210,previous
 // Challenge Menu
 button,Challenge Menu,21,xButton.png,60,60,490,10,close
 image,Challenge Menu,toolTipBox.png,600,600,0,0
+
+// Stats Menu
+button,Stats Menu,25,xButton.png,60,60,490,10,close
+image,Stats Menu,statsMenu.png,600,600,0,0
+
+//Unit Menu
+button,Unit Menu,25,xButton.png,60,60,490,10,close
+image,Unit Menu,toolTipBox.png,600,600,0,0
+
+
+//Upgrade Menu
+button,Upgrade Menu,25,xButton.png,60,60,490,10,close
+image,Upgrade Menu,toolTipBox.png,600,600,0,0
+
+
+//Points Menu
+button,Points Menu,25,xButton.png,60,60,490,10,close
+image,Points Menu,toolTipBox.png,600,600,0,0
+

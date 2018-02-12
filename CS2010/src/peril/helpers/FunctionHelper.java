@@ -97,6 +97,8 @@ public class FunctionHelper {
 			return openWebsite();
 		case 24:
 			return showStatsMenu();
+		case 25:
+			return hideStatsMenu();
 		}
 
 		// If no action was returned then the function code was invalid.

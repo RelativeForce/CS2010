@@ -80,7 +80,7 @@ public class WarMenu extends Menu {
 	 * 
 	 */
 	private final Font resultFont;
-	
+
 	private final Font armyFont;
 
 	/**
@@ -109,8 +109,6 @@ public class WarMenu extends Menu {
 	 * The {@link ModelPlayer} that is ruling the defending {@link ModelCountry}.
 	 */
 	private SlickPlayer enemyRuler;
-
-	private Frame frame;
 
 	private final Consumer<SlickUnit> poolClick;
 
@@ -230,27 +228,25 @@ public class WarMenu extends Menu {
 	/**
 	 * Draws the {@link War Menu} on the screen.
 	 */
-	public void draw(Graphics g) {
+	public void draw(Frame frame) {
 
-		super.draw(g);
+		super.draw(frame);
 
 		if (isVisible()) {
-
-			frame = new Frame(g);
 
 			final int size = attackingSquad.size() + attacker.model.getArmy().getNumberOfUnits();
 
 			// Attacker has failed to conquer country
 			if (size == 1) {
-				failedConquer();
+				failedConquer(frame);
 			}
 			// Attacker has conquered country
 			else if (attacker.model.getRuler().equals(enemy.model.getRuler())) {
-				succesfulConquer();
+				succesfulConquer(frame);
 			}
 			// Normal Combat
 			else {
-				drawNormalCombat();
+				drawNormalCombat(frame);
 			}
 
 			// drawArmySizes(g);
@@ -258,21 +254,21 @@ public class WarMenu extends Menu {
 		}
 	}
 
-	private void drawNormalCombat() {
+	private void drawNormalCombat(Frame frame) {
 		Point position = new Point(this.getPosition().x + (this.getWidth() / 4) - SlickUnit.WIDTH,
 				this.getPosition().y + 250);
 
-		drawSquad(attackingSquad, position);
+		drawSquad(attackingSquad, position, frame);
 
-		drawPlayer(enemyRuler, (getWidth() / 4));
+		drawPlayer(enemyRuler, (getWidth() / 4), frame);
 
-		drawPlayer(attackingRuler, -(getWidth() / 4));
+		drawPlayer(attackingRuler, -(getWidth() / 4), frame);
 
-		drawTitle();
+		drawTitle(frame);
 
-		drawArmySizes();
+		drawArmySizes(frame);
 
-		dice.draw();
+		dice.draw(frame);
 
 		drawArmyPool(frame, new Point(getPosition().x + (getWidth() / 2), getPosition().y + getHeight() - 120));
 	}
@@ -294,7 +290,7 @@ public class WarMenu extends Menu {
 			final SlickUnit unit = slick.modelView.getVisual(current);
 
 			final Button unitButton = new Button(new Point(x, y), unit.getImage(), new Action<>(unit, poolClick),
-					"squadClick");
+					"poolClick");
 
 			final int numberOfCurrent = model.getNumberOf(unit.model);
 
@@ -329,7 +325,7 @@ public class WarMenu extends Menu {
 
 	}
 
-	private void drawSquad(List<SquadMember> squad, Point topUnit) {
+	private void drawSquad(List<SquadMember> squad, Point topUnit, Frame frame) {
 
 		int x = topUnit.x;
 		int y = topUnit.y;
@@ -379,11 +375,7 @@ public class WarMenu extends Menu {
 	 * Processes a click at a {@link Point} position on this {@link WarMenu}.
 	 */
 	public void parseClick(Point click) {
-
-		if (!frame.click(click)) {
-			clickedButton(click);
-		}
-
+		clickedButton(click);
 	}
 
 	/**
@@ -580,7 +572,7 @@ public class WarMenu extends Menu {
 	 * @param g
 	 *            {@link Graphics}
 	 */
-	private void failedConquer() {
+	private void failedConquer(Frame frame) {
 		String failure = "has insufficient units to attack.";
 
 		frame.draw(countryFont, attacker.model.getName(),
@@ -590,10 +582,10 @@ public class WarMenu extends Menu {
 		frame.draw(resultFont, failure, getPosition().x + (getWidth() / 2) - (resultFont.getWidth(failure) / 2),
 				getPosition().y + (getHeight() / 2));
 
-		drawPlayer(attackingRuler, -(getWidth() / 4));
-		drawPlayer(enemyRuler, (getWidth() / 4));
+		drawPlayer(attackingRuler, -(getWidth() / 4), frame);
+		drawPlayer(enemyRuler, (getWidth() / 4), frame);
 
-		drawTitle();
+		drawTitle(frame);
 
 	}
 
@@ -604,7 +596,7 @@ public class WarMenu extends Menu {
 	 * @param g
 	 *            {@link Graphics}.
 	 */
-	private void succesfulConquer() {
+	private void succesfulConquer(Frame frame) {
 
 		// Draw the attacking country's name
 		frame.draw(countryFont, attacker.model.getName(),
@@ -621,10 +613,10 @@ public class WarMenu extends Menu {
 				getPosition().x + (getWidth() / 2) - (countryFont.getWidth(enemy.model.getName()) / 2),
 				getPosition().y + (getHeight() / 2) + 30);
 
-		drawPlayer(attackingRuler, -(getWidth() / 4));
-		drawPlayer(enemyRuler, (getWidth() / 4));
+		drawPlayer(attackingRuler, -(getWidth() / 4), frame);
+		drawPlayer(enemyRuler, (getWidth() / 4), frame);
 
-		drawTitle();
+		drawTitle(frame);
 
 	}
 
@@ -635,10 +627,10 @@ public class WarMenu extends Menu {
 	 * @param g
 	 *            {@link Graphics}
 	 */
-	private void drawArmySizes() {
+	private void drawArmySizes(Frame frame) {
 
 		final int yOffset = 190;
-		
+
 		String attackingArmy = Integer
 				.toString(attacker.model.getArmy().getStrength() + getSquadStrength(attackingSquad));
 
@@ -669,10 +661,10 @@ public class WarMenu extends Menu {
 	 * @param frame2
 	 *            {@link Graphics}
 	 */
-	private void drawTitle() {
-		
+	private void drawTitle(Frame frame) {
+
 		final int yOffset = 170;
-		
+
 		String vs = "VS";
 		String attackerStr = attacker.model.getName();
 		String enemyStr = enemy.model.getName();
@@ -699,7 +691,7 @@ public class WarMenu extends Menu {
 	 * @param offset
 	 *            The string offset
 	 */
-	private void drawPlayer(SlickPlayer player, int offset) {
+	private void drawPlayer(SlickPlayer player, int offset, Frame frame) {
 
 		if (player == null) {
 			return;
@@ -733,7 +725,7 @@ public class WarMenu extends Menu {
 		// Get the size of the smaller set of dice.
 		int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length
 				: attackerDiceRolls.length;
-		
+
 		// Copy the attacking squad to this holding variable.
 		final LinkedList<SquadMember> attackingSquad = new LinkedList<>(this.attackingSquad);
 
@@ -793,7 +785,7 @@ public class WarMenu extends Menu {
 				if (getAliveUnits(attackingSquad) + attackingArmy.getNumberOfUnits() == 1) {
 					getButton(attackButton).hide();
 				}
-				
+
 				attacker.totalArmy.remove(defendingUnit);
 
 			}
@@ -899,7 +891,7 @@ public class WarMenu extends Menu {
 		/**
 		 * Draws this {@link Dice}.
 		 */
-		public void draw() {
+		public void draw(Frame frame) {
 			display.forEach((position, dice) -> frame.draw(dice, position.x, position.y));
 		}
 

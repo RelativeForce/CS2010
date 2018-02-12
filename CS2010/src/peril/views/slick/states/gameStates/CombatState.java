@@ -15,6 +15,7 @@ import peril.model.board.ModelCountry;
 import peril.model.board.links.ModelLinkState;
 import peril.model.states.Attack;
 import peril.views.slick.Button;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
@@ -66,24 +67,24 @@ public final class CombatState extends CoreGameState {
 	 * name and then the enemy {@link SlickCountry}.
 	 */
 	@Override
-	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+	public void render(GameContainer gc, Frame frame)  {
 
-		super.render(gc, sbg, g);
+		super.render(gc, frame);
 
-		super.drawAllLinks(g);
+		super.drawAllLinks(frame);
 
-		this.drawValidTargets(g);
+		this.drawValidTargets(frame);
 
-		super.drawArmies(g);
-		super.drawPlayerName(g);
-		super.drawImages(g);
-		super.drawButtons(g);
-		super.drawPlayerName(g);
-		super.drawPopups(g);
+		super.drawArmies(frame);
+		super.drawPlayerName(frame);
+		super.drawImages();
+		super.drawButtons();
+		super.drawPlayerName(frame);
+		super.drawPopups(frame);
 
-		menus.draw(g);
+		menus.draw(frame);
 
-		g.destroy();
+
 	}
 
 	/**
@@ -147,10 +148,10 @@ public final class CombatState extends CoreGameState {
 	 * Draws a line between the {@link CoreGameState#getSelected()} and or all its
 	 * valid targets.
 	 * 
-	 * @param g
+	 * @param frame
 	 *            {@link Graphics}
 	 */
-	private void drawValidTargets(Graphics g) {
+	private void drawValidTargets(Frame frame) {
 
 		// If there is a country highlighted.
 		if (!selected.isEmpty()) {
@@ -158,7 +159,7 @@ public final class CombatState extends CoreGameState {
 			SlickCountry highlighted = selected.get(0);
 
 			// Assign the line colour.
-			g.setColor(Color.white);
+			frame.setColor(Color.white);
 
 			for (ModelCountry modelNeighbour : highlighted.model.getNeighbours()) {
 
@@ -171,7 +172,7 @@ public final class CombatState extends CoreGameState {
 					Point enemy = super.getCenterArmyPosition(neighbour);
 					Point selected = super.getCenterArmyPosition(highlighted);
 
-					g.drawLine(enemy.x, enemy.y + 5, selected.x, selected.y + 5);
+					frame.drawLine(enemy, selected);
 				}
 			}
 

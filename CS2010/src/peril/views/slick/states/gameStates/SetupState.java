@@ -13,6 +13,7 @@ import peril.Game;
 import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
 import peril.model.states.Setup;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.board.SlickCountry;
 
@@ -51,17 +52,16 @@ public final class SetupState extends CoreGameState {
 	 * Renders this {@link SetupState}.
 	 */
 	@Override
-	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		super.render(gc, sbg, g);
+	public void render(GameContainer gc, Frame frame){
+		super.render(gc, frame);
 
-		super.drawAllLinks(g);
-		super.drawArmies(g);
-		super.drawImages(g);
-		super.drawButtons(g);
-		super.drawPopups(g);
-		menus.draw(g);
-
-		g.destroy();
+		super.drawAllLinks(frame);
+		super.drawArmies(frame);
+		super.drawImages();
+		super.drawButtons();
+		super.drawPopups(frame);
+		
+		menus.draw(frame);
 
 	}
 

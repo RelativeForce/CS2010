@@ -18,6 +18,7 @@ import peril.controllers.GameController;
 import peril.model.ModelPlayer;
 import peril.views.slick.Button;
 import peril.views.slick.Font;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.Viewable;
 import peril.views.slick.board.SlickPlayer;
@@ -153,14 +154,13 @@ public class EndState extends InteractiveState {
 	 * Render the {@link EndState}.
 	 */
 	@Override
-	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+	public void render(GameContainer gc, Frame frame) {
 
-		drawImages(g);
-		drawButtons(g);
+		drawImages();
+		drawButtons();
 
-		drawPodium(g, gc.getWidth(), gc.getHeight());
+		drawPodium(frame, gc.getWidth(), gc.getHeight());
 
-		g.destroy();
 	}
 
 	/**
@@ -248,18 +248,18 @@ public class EndState extends InteractiveState {
 	/**
 	 * Draws the podium on the screen.
 	 * 
-	 * @param g
+	 * @param frame
 	 *            {@link Graphics}
 	 * @param width
 	 *            Width of the {@link GameContainer}
 	 * @param height
 	 *            Height of the {@link GameContainer}
 	 */
-	private void drawPodium(Graphics g, int width, int height) {
+	private void drawPodium(Frame frame, int width, int height) {
 
 		// Iterate through each player on the podium.
 		for (int index = 0; index < podium.size(); index++) {
-			drawPlayer(g, podium.get(index), podiumPositions.get(index + 1));
+			drawPlayer(frame, podium.get(index), podiumPositions.get(index + 1));
 		}
 
 	}
@@ -267,15 +267,15 @@ public class EndState extends InteractiveState {
 	/**
 	 * Draws a {@link SlickPlayer} at a position on screen.
 	 * 
-	 * @param g
+	 * @param frame
 	 *            {@link Graphics}
 	 * @param player
 	 *            {@link SlickPlayer} to be drawn
 	 * @param position
 	 *            {@link Point} position the player will be drawn
 	 */
-	private void drawPlayer(Graphics g, SlickPlayer player, Point position) {
-		g.drawImage(player.getImage(), position.x - (player.getWidth() / 2), position.y - (player.getHeight() / 2));
+	private void drawPlayer(Frame frame, SlickPlayer player, Point position) {
+		frame.draw(player.getImage(), position.x - (player.getWidth() / 2), position.y - (player.getHeight() / 2));
 	}
 
 	public void forEachLoser(Consumer<ModelPlayer> task) {

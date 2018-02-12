@@ -2,13 +2,13 @@ package peril.views.slick.states;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.controllers.GameController;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.components.menus.HelpMenu;
 import peril.views.slick.io.ImageReader;
@@ -70,8 +70,8 @@ public class Opening extends InteractiveState {
 	}
 
 	@Override
-	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		splash.draw();
+	public void render(GameContainer gc, Frame frame) {
+		//splash.draw();
 	}
 	
 	@Override

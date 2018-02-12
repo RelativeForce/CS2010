@@ -2,6 +2,7 @@ package peril.views.slick.components;
 
 import org.newdawn.slick.Graphics;
 
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.states.InteractiveState;
 
@@ -26,7 +27,7 @@ public interface Component {
 	 * @param g
 	 *            {@link Graphics}
 	 */
-	void draw(Graphics g);
+	void draw(Frame frame);
 
 	/**
 	 * Changes the {@link Point} position of the {@link Component} to the one

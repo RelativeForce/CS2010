@@ -22,7 +22,11 @@ import peril.controllers.GameController;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
 import peril.model.states.ModelState;
+import peril.views.slick.Clickable;
+import peril.views.slick.EventListener;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
+import peril.views.slick.Region;
 import peril.views.slick.board.*;
 import peril.views.slick.components.lists.ToolTipList;
 import peril.views.slick.components.menus.Menu;
@@ -127,11 +131,11 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * Renders this {@link CoreGameState} which is the {@link SlickBoard}.
 	 */
 	@Override
-	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+	public void render(GameContainer gc, Frame frame) {
 
-		drawBoard(g);
+		drawBoard(frame);
 
-		g.setLineWidth(3f);
+		frame.setLineWidth(3f);
 
 	}
 
@@ -439,12 +443,12 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * Draws the {@link SlickPlayer}'s name in the {@link SlickPlayer}'s
 	 * {@link Color}.
 	 * 
-	 * @param g
+	 * @param frame
 	 *            {@link Graphics}
 	 */
-	protected final void drawPlayerName(Graphics g) {
+	protected final void drawPlayerName(Frame frame) {
 		SlickPlayer p = slick.modelView.getVisual(game.getCurrentModelPlayer());
-		g.drawImage(p.getImage(), 20, 80);
+		frame.draw(p.getImage(), 20, 80);
 	}
 
 	/**
@@ -467,34 +471,23 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 			// Get the country that is clicked.
 			SlickCountry clicked = board.getCountry(click);
 
-			/*
-			 * If the board was clicked with the left mouse and it is a valid country to
-			 * highlight then highlight the clicked country, otherwise de-selected the
-			 * highlighted country.
-			 */
-			if (button == Input.MOUSE_LEFT_BUTTON) {
-				model.select(clicked == null ? null : clicked.model, game);
-			} else if (button == Input.MOUSE_RIGHT_BUTTON) {
-				model.deselectAll();
-			}
-
 		}
 	}
 
 	/**
 	 * Draws all the links between all the {@link SlickCountry}s.
 	 * 
-	 * @param g
+	 * @param frame
 	 *            {@link Graphics}
 	 */
-	protected final void drawAllLinks(Graphics g) {
+	protected final void drawAllLinks(Frame frame) {
 
 		// If the links are toggled off do nothing
 		if (!menus.linksVisible()) {
 			return;
 		}
 
-		g.setColor(Color.black);
+		frame.setColor(Color.black);
 
 		// Get all the countries from the board.
 		game.forEachModelCountry(model -> {
@@ -513,7 +506,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 				final SlickLinkState link = slick.modelView.getVisual(model.getLinkTo(modelNeighbour).getState());
 
 				// Draw the link
-				link.draw(g, countryPosition, neighbourPosition);
+				link.draw(frame, countryPosition, neighbourPosition);
 
 			});
 		});
@@ -524,10 +517,10 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * Draws the {@link ToolTipList} containing the pop ups of the
 	 * {@link CoreGameState} on screen.
 	 * 
-	 * @param g
+	 * @param frame
 	 */
-	protected final void drawPopups(Graphics g) {
-		toolTipList.draw(g);
+	protected final void drawPopups(Frame frame) {
+		toolTipList.draw(frame);
 	}
 
 	/**
@@ -555,11 +548,11 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * Draws the {@link army} in its current state over the {@link SlickCountry} it
 	 * is located.
 	 * 
-	 * @param g
+	 * @param frame
 	 *            A graphics context that can be used to render primitives to the
 	 *            accelerated canvas provided by LWJGL.
 	 */
-	protected final void drawArmies(Graphics g) {
+	protected final void drawArmies(Frame frame) {
 
 		// Iterate across every country on the game board.
 		game.getModelBoard().getContinents().values().forEach(continent -> continent.getCountries().forEach(model -> {
@@ -570,7 +563,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 			final SlickPlayer ruler = slick.modelView.getVisual(country.model.getRuler());
 
-			army.draw(g, country.getArmyPosition(), ruler, slick.modelView);
+			army.draw(frame, country.getArmyPosition(), ruler, slick.modelView);
 
 		}));
 	}
@@ -599,53 +592,49 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	/**
 	 * Draws this {@link SlickBoard} on screen.
 	 * 
-	 * @param g
+	 * @param frame
 	 *            {@link Graphics}
 	 */
-	private void drawBoard(Graphics g) {
+	private void drawBoard(Frame frame) {
 
 		SlickBoard board = slick.modelView.getVisual(game.getModelBoard());
 
-		// If the board has a visual representation, render it in the graphics context.
-		if (board.hasImage()) {
-			g.drawImage(board.getImage(), board.getPosition().x, board.getPosition().y);
-		}
+		frame.draw(board, new EventListener() {
 
-		// Holds the hazards that will be drawn on screen.
-		Map<Point, Image> hazards = new HashMap<>();
-
-		// For every country on the board.
-		board.model.forEachCountry(model -> {
-
-			SlickCountry country = slick.modelView.getVisual(model);
-
-			final int x = country.getPosition().x;
-			final int y = country.getPosition().y;
-
-			// Draw the image of the country on top of the board.
-			if (country.hasImage()) {
-				g.drawImage(country.getImage(), x, y);
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
 			}
 
-			// If a hazard has occurred
-			if (country.hasHazard()) {
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
 
-				// Define the hazards visual details
-				Image hazard = country.getHazard();
-				hazard = hazard.getScaledCopy(60, 60);
+				// Get the country that is clicked.
+				SlickCountry clicked = board.getCountry(mouse);
 
-				final int hazardX = x + (country.getWidth() / 2) + (hazard.getWidth() / 2) + country.getArmyOffset().x;
-				final int hazardY = y + (country.getHeight() / 2) - hazard.getHeight() + country.getArmyOffset().y;
+				/*
+				 * If the board was clicked with the left mouse and it is a valid country to
+				 * highlight then highlight the clicked country, otherwise de-selected the
+				 * highlighted country.
+				 */
+				if (mouseButton == Input.MOUSE_LEFT_BUTTON) {
+					model.select(clicked == null ? null : clicked.model, game);
+				} else if (mouseButton == Input.MOUSE_RIGHT_BUTTON) {
+					model.deselectAll();
+				}
 
-				// Add the hazard to the map to be drawn.
-				hazards.put(new Point(hazardX, hazardY), hazard);
 			}
 
-		});
+			@Override
+			public void draw(Frame frame) {
+				board.draw(frame, game, slick, model);
+			}
 
-		// Draw all the hazards on screen.
-		hazards.forEach((position, hazardIcon) -> {
-			g.drawImage(hazardIcon, position.x, position.y);
+			@Override
+			public void buttonPress(int key, Point mouse) {
+				// TODO Auto-generated method stub
+
+			}
 		});
 
 	}

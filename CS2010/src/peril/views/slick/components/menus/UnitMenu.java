@@ -9,6 +9,7 @@ import peril.io.MapWriter;
 import peril.io.SaveFile;
 import peril.views.slick.Button;
 import peril.views.slick.Font;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.Region;
 import peril.views.slick.components.lists.VisualList;
@@ -60,16 +61,16 @@ public class UnitMenu extends Menu {
 	/**
 	 * Draws the {@link UnitMenu} on screen.
 	 * 
-	 * @param g
+	 * @param f
 	 *            {@link Graphics}
 	 */
-	public void draw(Graphics g) {
+	public void draw(Frame f) {
 
-		super.draw(g);
+		super.draw(f);
 
 		if (isVisible()) {
 
-			g.setColor(Color.white);
+			f.setColor(Color.white);
 
 		}
 

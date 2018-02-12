@@ -1,8 +1,11 @@
+//type,State,case,assetname,scalex,scaley,posx,posy,name
+
 // Reinforcement State
 button,Reinforcement,0,reinforceButton.png,180,80,10,800,reinforce
 button,Reinforcement,1,endButton.png,180,80,20,155,end
 button,Reinforcement,13,helpButton.png,80,80,410,5,help
 button,Reinforcement,17,pauseButton.png,180,80,490,5,pause
+button,Reinforcement,24,pauseButton.png,180,80,670,5,stats
 image,Reinforcement,reinforceStateBox.png,400,250,5,5
 
 // Movement State
@@ -10,6 +13,7 @@ button,Movement,5,fortifyButton.png,180,80,10,800,fortify
 button,Movement,3,endButton.png,180,80,20,155,end
 button,Movement,13,helpButton.png,80,80,410,5,help
 button,Movement,17,pauseButton.png,180,80,490,5,pause
+button,Movement,24,pauseButton.png,180,80,670,5,stats
 image,Movement,movementStateBox.png,400,250,5,5
 
 // Combat State
@@ -17,6 +21,7 @@ button,Combat,2,endButton.png,180,80,20,155,end
 button,Combat,9,attackButton.png,180,80,10,800,attack
 button,Combat,13,helpButton.png,80,80,410,5,help
 button,Combat,17,pauseButton.png,180,80,490,5,pause
+button,Combat,24,pauseButton.png,180,80,670,5,stats
 image,Combat,combatStateBox.png,400,250,5,5
 
 // Setup State
@@ -24,6 +29,7 @@ button,Setup,4,playButton.png,180,80,205,80,play
 button,Setup,8,autoButton.png,180,80,20,80,auto
 button,Setup,13,helpButton.png,80,80,410,5,help
 button,Setup,17,pauseButton.png,180,80,490,5,pause
+button,Setup,24,pauseButton.png,180,80,670,5,stats
 image,Setup,setUpStateBox.png,400,250,5,5
 
 // War Menu

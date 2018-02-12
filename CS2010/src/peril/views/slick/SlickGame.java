@@ -293,7 +293,7 @@ public class SlickGame extends StateBasedGame implements View {
 
 		// Set the containers that ui elements will be loaded into.
 		Container[] containers = new Container[] { challengeMenu, helpMenu, pauseMenu, loadingScreen, warMenu, mainMenu,
-				combat, setup, reinforcement, movement, end, playerSelection };
+				combat, setup, reinforcement, movement, end, playerSelection,statsMenu, unitMenu, upgradeMenu, pointsMenu };
 
 		this.io = new IOHelper(game, containers);
 
@@ -418,6 +418,11 @@ public class SlickGame extends StateBasedGame implements View {
 	@Override
 	public void toggleWarMenu(boolean state) {
 		toggleMenu(state, WarMenu.NAME);
+	}
+	
+	@Override
+	public void toggleStatsMenu(boolean state) {
+		toggleMenu(state, StatsMenu.NAME);
 	}
 
 	@Override

@@ -49,8 +49,6 @@ public final class MenuHelper {
 		this.menus.put(upgradeMenu.getName(), upgradeMenu);
 		this.menus.put(pointsmenu.getName(), pointsmenu);
 
-
-
 		this.visible = null;
 	}
 

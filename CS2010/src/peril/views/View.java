@@ -40,6 +40,8 @@ public interface View {
 	void togglePauseMenu(boolean state);
 
 	void toggleWarMenu(boolean state);
+	
+	void toggleStatsMenu(boolean state);
 
 	void save();
 

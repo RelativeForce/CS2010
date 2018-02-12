@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import peril.concurrent.Action;
 import peril.controllers.GameController;
+import peril.views.slick.components.menus.UnitMenu;
 
 /**
  * 
@@ -99,6 +100,19 @@ public class FunctionHelper {
 			return showStatsMenu();
 		case 25:
 			return hideStatsMenu();
+		case 26:
+			return showPointsMenu();
+		case 27:
+			return hidePointsMenu();
+		case 28:
+			return showUpgradeMenu();
+		case 29:
+			return hideUpgradeMenu();
+		case 30:
+			return showUnitMenu();
+		case 31:
+			return hideUnitMenu();
+
 		}
 
 		// If no action was returned then the function code was invalid.
@@ -381,5 +395,59 @@ public class FunctionHelper {
 	 */
 	private Action<?> hideStatsMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleStatsMenu(false));
+	}
+	
+	/**
+	 * Retrieves the {@link Action} that opens the {@link PointsMenu} window.
+	 * 
+	 * @return
+	 */
+	private Action<?> showPointsMenu() {
+		return new Action<GameController>(game, game -> game.getView().togglePointsMenu(true));
+	}
+
+	/**
+	 * Retrieves the {@link Action} that closes the {@link PointsMenu} window.
+	 * 
+	 * @return
+	 */
+	private Action<?> hidePointsMenu() {
+		return new Action<GameController>(game, game -> game.getView().togglePointsMenu(false));
+	}
+	
+	/**
+	 * Retrieves the {@link Action} that opens the {@link UnitMenu} window.
+	 * 
+	 * @return
+	 */
+	private Action<?> showUnitMenu() {
+		return new Action<GameController>(game, game -> game.getView().toggleUnitMenu(true));
+	}
+
+	/**
+	 * Retrieves the {@link Action} that closes the {@link UnitMenu} window.
+	 * 
+	 * @return
+	 */
+	private Action<?> hideUnitMenu() {
+		return new Action<GameController>(game, game -> game.getView().toggleUnitMenu(false));
+	}
+	
+	/**
+	 * Retrieves the {@link Action} that opens the {@link UpgradeMenu} window.
+	 * 
+	 * @return
+	 */
+	private Action<?> showUpgradeMenu() {
+		return new Action<GameController>(game, game -> game.getView().toggleUpgradeMenu(true));
+	}
+
+	/**
+	 * Retrieves the {@link Action} that closes the {@link UpgradeMenu} window.
+	 * 
+	 * @return
+	 */
+	private Action<?> hideUpgradeMenu() {
+		return new Action<GameController>(game, game -> game.getView().toggleUpgradeMenu(false));
 	}
 }

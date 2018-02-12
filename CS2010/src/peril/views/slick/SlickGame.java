@@ -434,6 +434,21 @@ public class SlickGame extends StateBasedGame implements View {
 	public void toggleHelpMenu(boolean state) {
 		toggleMenu(state, HelpMenu.NAME);
 	}
+	
+	@Override
+	public void togglePointsMenu(boolean state) {
+		toggleMenu(state, PointsMenu.NAME);
+	}
+	
+	@Override
+	public void toggleUpgradeMenu(boolean state) {
+		toggleMenu(state, PointsMenu.NAME);
+	}
+	
+	@Override
+	public void toggleUnitMenu(boolean state) {
+		toggleMenu(state, PointsMenu.NAME);
+	}
 
 	private void toggleMenu(boolean state, String menuName) {
 		if (state) {

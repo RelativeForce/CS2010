@@ -42,6 +42,12 @@ public interface View {
 	void toggleWarMenu(boolean state);
 	
 	void toggleStatsMenu(boolean state);
+	
+	void togglePointsMenu(boolean state);
+	
+	void toggleUnitMenu(boolean state);
+	
+	void toggleUpgradeMenu(boolean state);
 
 	void save();
 
@@ -76,5 +82,6 @@ public interface View {
 	int getArmyOffsetX(ModelCountry country);
 
 	int getArmyOffsetY(ModelCountry country);
+
 
 }

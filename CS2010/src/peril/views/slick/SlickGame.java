@@ -67,6 +67,8 @@ public class SlickGame extends StateBasedGame implements View {
 	public MusicHelper music;
 
 	public final SlickModelView modelView;
+	
+	public MiniMap miniMap;
 
 	/**
 	 * Holds all the {@link SlickPlayer}'s {@link Image} icons in this {@link Game}.
@@ -108,9 +110,9 @@ public class SlickGame extends StateBasedGame implements View {
 
 		final Directory directory = game.getDirectory();
 
-		states.init(this);
-
 		modelView.init(game);
+		
+		states.init(this, modelView.getVisual(game.getModelBoard()));
 
 		SlickHazard.initIcons(directory.getHazardsPath());
 
@@ -265,9 +267,8 @@ public class SlickGame extends StateBasedGame implements View {
 		final UpgradeMenu upgradeMenu = new UpgradeMenu(new Point(100, 100), game);
 		final PointsMenu pointsMenu = new PointsMenu(new Point(100, 100), game);
 
-
-
-		this.menus = new MenuHelper(pauseMenu, warMenu, helpMenu, challengeMenu, statsMenu, unitMenu, upgradeMenu, pointsMenu);
+		this.menus = new MenuHelper(pauseMenu, warMenu, helpMenu, challengeMenu, statsMenu, unitMenu, upgradeMenu,
+				pointsMenu);
 
 		// Initialise the slick states.
 		final MainMenu mainMenu = new MainMenu(game, 0);
@@ -503,6 +504,15 @@ public class SlickGame extends StateBasedGame implements View {
 	@Override
 	public void AIattack() {
 		menus.autoAttack();
+	}
+
+	
+	public int getScreenWidth() {
+		return agc.getScreenWidth();
+	}
+
+	public int getScreenHeight() {
+		return agc.getScreenHeight();
 	}
 
 }

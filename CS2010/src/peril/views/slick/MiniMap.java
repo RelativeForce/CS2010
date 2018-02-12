@@ -5,6 +5,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 import peril.model.board.ModelBoard;
+import peril.views.slick.board.SlickBoard;
 import peril.views.slick.components.Component;
 
 /**
@@ -19,7 +20,7 @@ public class MiniMap extends Clickable implements Component {
 
 	private final Window window;
 
-	private final Image map;
+	private final SlickBoard board;
 
 	private final int screenWidth;
 	private final int screenHeight;
@@ -33,13 +34,15 @@ public class MiniMap extends Clickable implements Component {
 	 * @param region
 	 *            {@link Region}
 	 */
-	public MiniMap(Image map, int screenWidth, int screenHeight) {
-		super(new Region(map.getScaledCopy(WIDTH, HEIGHT)));
+	public MiniMap(SlickBoard board, int screenWidth, int screenHeight) {
+		super(new Region(WIDTH, HEIGHT, new Point(screenWidth - WIDTH, 0)));
 
-		this.map = map.getScaledCopy(WIDTH, HEIGHT);
+		this.board = board;
+		this.screenWidth = screenWidth;
+		this.screenHeight = screenHeight;
 
-		final float scaleWidth = (float) map.getWidth() / screenWidth;
-		final float scaleHeight = (float) map.getHeight() / screenHeight;
+		final float scaleWidth = (float) board.getWidth() / screenWidth;
+		final float scaleHeight = (float) board.getHeight() / screenHeight;
 
 		// The relative dimensions of the window based on the size of the map compared
 		// to the size of the screen.
@@ -47,8 +50,7 @@ public class MiniMap extends Clickable implements Component {
 		final int windowHeight = (int) (scaleHeight * HEIGHT);
 
 		this.window = new Window(windowWidth, windowHeight);
-		this.screenWidth = screenWidth;
-		this.screenHeight = screenHeight;
+		
 	}
 
 	@Override
@@ -57,11 +59,11 @@ public class MiniMap extends Clickable implements Component {
 	}
 
 	@Override
-	public void draw(Graphics g) {
-		g.drawImage(map, getPosition().x, getPosition().y);
-		g.setLineWidth(5f); //thicc
-		g.setColor(Color.red);
-		g.drawRect(getPosition().x, getPosition().y, getWidth(), getHeight());
+	public void draw(Frame frame) {
+		frame.draw(board.getImage(), getPosition().x, getPosition().y);
+		frame.setLineWidth(5f); // thicc
+		frame.setColor(Color.red);
+		frame.drawRect(getPosition().x, getPosition().y, getWidth(), getHeight());
 	}
 
 	/**
@@ -92,9 +94,9 @@ public class MiniMap extends Clickable implements Component {
 		}
 
 		@Override
-		public void draw(Graphics g) {
-			// TODO Auto-generated method stub
-
+		public void draw(Frame frame) {
+			frame.setLineWidth(3);
+			frame.drawRect(getPosition().x, getPosition().y, getWidth(), getHeight());
 		}
 
 	}

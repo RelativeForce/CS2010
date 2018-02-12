@@ -25,6 +25,7 @@ import peril.model.states.ModelState;
 import peril.views.slick.Clickable;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
+import peril.views.slick.MiniMap;
 import peril.views.slick.Point;
 import peril.views.slick.Region;
 import peril.views.slick.board.*;
@@ -57,6 +58,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * The {@link MenuHelper} that contains all the {@link Menu}s.
 	 */
 	protected final MenuHelper menus;
+	
+	private MiniMap miniMap;
 
 	/**
 	 * Holds all the {@link SlickCountry}s that are currently selected by this
@@ -232,6 +235,10 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 	}
 
+	public void setMiniMap(MiniMap miniMap) {
+		this.miniMap = miniMap;
+	}
+	
 	private void tradeSelectedUnitUp() {
 
 		if (selected.get(0) == null) {

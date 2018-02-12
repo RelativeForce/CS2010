@@ -1,16 +1,13 @@
 package peril.views.slick.states.gameStates;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Random;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
@@ -22,12 +19,10 @@ import peril.controllers.GameController;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
 import peril.model.states.ModelState;
-import peril.views.slick.Clickable;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
 import peril.views.slick.MiniMap;
 import peril.views.slick.Point;
-import peril.views.slick.Region;
 import peril.views.slick.board.*;
 import peril.views.slick.components.lists.ToolTipList;
 import peril.views.slick.components.menus.Menu;
@@ -58,7 +53,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * The {@link MenuHelper} that contains all the {@link Menu}s.
 	 */
 	protected final MenuHelper menus;
-	
+
 	private MiniMap miniMap;
 
 	/**
@@ -128,6 +123,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 				getMusic().play();
 			}
 		}
+		
+		miniMap.repositionWindow();
 	}
 
 	/**
@@ -238,7 +235,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	public void setMiniMap(MiniMap miniMap) {
 		this.miniMap = miniMap;
 	}
-	
+
 	private void tradeSelectedUnitUp() {
 
 		if (selected.get(0) == null) {
@@ -592,6 +589,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		// If the board actually moved.
 		if (actualVector.x != 0 || actualVector.y != 0) {
 			panElements(actualVector);
+			miniMap.repositionWindow();
 		}
 
 	}
@@ -644,6 +642,31 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 			}
 		});
 
+	}
+
+	protected void drawMiniMap(Frame frame) {
+		frame.draw(miniMap, new EventListener() {
+
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
+				miniMap.parseClick(mouse);
+			}
+
+			@Override
+			public void draw(Frame frame) {
+				miniMap.draw(frame);
+			}
+
+			@Override
+			public void buttonPress(int key, Point mouse) {
+				// Do nothing
+			}
+		});
 	}
 
 	/**

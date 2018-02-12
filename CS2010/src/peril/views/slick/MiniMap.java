@@ -18,7 +18,7 @@ import peril.views.slick.components.Component;
  */
 public class MiniMap extends Clickable implements Component {
 
-	private final Window window;
+	private Window window;
 
 	private final SlickBoard board;
 
@@ -26,7 +26,7 @@ public class MiniMap extends Clickable implements Component {
 	private final int screenHeight;
 
 	private static final int WIDTH = 400;
-	private static final int HEIGHT = 300;
+	private static final int HEIGHT = 250;
 
 	/**
 	 * Constructs a MiniMap
@@ -41,8 +41,14 @@ public class MiniMap extends Clickable implements Component {
 		this.screenWidth = screenWidth;
 		this.screenHeight = screenHeight;
 
-		final float scaleWidth = (float) board.getWidth() / screenWidth;
-		final float scaleHeight = (float) board.getHeight() / screenHeight;
+		reScale();
+
+	}
+
+	public void reScale() {
+
+		final float scaleWidth = (float) screenWidth / board.getWidth();
+		final float scaleHeight = (float) screenHeight / board.getHeight();
 
 		// The relative dimensions of the window based on the size of the map compared
 		// to the size of the screen.
@@ -50,7 +56,9 @@ public class MiniMap extends Clickable implements Component {
 		final int windowHeight = (int) (scaleHeight * HEIGHT);
 
 		this.window = new Window(windowWidth, windowHeight);
-		
+
+		repositionWindow();
+
 	}
 
 	@Override
@@ -60,10 +68,78 @@ public class MiniMap extends Clickable implements Component {
 
 	@Override
 	public void draw(Frame frame) {
-		frame.draw(board.getImage(), getPosition().x, getPosition().y);
-		frame.setLineWidth(5f); // thicc
+		frame.draw(board.getImage().getScaledCopy(WIDTH, HEIGHT), getPosition().x, getPosition().y);
+		frame.setLineWidth(5f); //
 		frame.setColor(Color.red);
 		frame.drawRect(getPosition().x, getPosition().y, getWidth(), getHeight());
+
+		frame.draw(window, new EventListener() {
+
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
+
+				repositionWindow(mouse);
+
+			}
+
+			@Override
+			public void draw(Frame frame) {
+				window.draw(frame);
+
+			}
+
+			@Override
+			public void buttonPress(int key, Point mouse) {
+				// Do nothing
+
+			}
+		});
+	}
+
+	private void repositionWindow(Point click) {
+
+		int windowX = (click.x - (window.getWidth() / 2));
+		int windowY = (click.y - (window.getHeight() / 2));
+
+		final int minX = getPosition().x;
+		final int maxX = minX + WIDTH - window.getWidth();
+
+		windowX = windowX < minX ? minX : windowX;
+		windowX = windowX > maxX ? maxX : windowX;
+
+		final int minY = getPosition().y;
+		final int maxY = minY + HEIGHT - window.getHeight();
+
+		windowY = windowY < minY ? minY : windowY;
+		windowY = windowY > maxY ? maxY : windowY;
+
+		final float scaleWidth = (float) board.getWidth() / WIDTH;
+		final float scaleHeight = (float) board.getHeight() / HEIGHT;
+
+		final int boardVectorX = (int) (((float) (window.getPosition().x - windowX)) * scaleWidth);
+		final int boardVectorY = (int) (((float) (window.getPosition().y - windowY)) * scaleHeight);
+
+		board.move(new Point(boardVectorX, boardVectorY), screenWidth, screenHeight);
+
+		window.setPosition(new Point(windowX, windowY));
+
+	}
+
+	public void repositionWindow() {
+
+		final float scaleWidth = (float) WIDTH / board.getWidth();
+		final float scaleHeight = (float) HEIGHT / board.getHeight();
+
+		final int x = getPosition().x + (int) ((float) (0 - board.getPosition().x) * scaleWidth);
+		final int y = getPosition().y + (int) ((float) (0 - board.getPosition().y) * scaleHeight);
+
+		window.setPosition(new Point(x, y));
+
 	}
 
 	/**
@@ -71,7 +147,7 @@ public class MiniMap extends Clickable implements Component {
 	 * @param click
 	 */
 	public void parseClick(Point click) {
-
+		repositionWindow(click);
 	}
 
 	/**
@@ -84,7 +160,6 @@ public class MiniMap extends Clickable implements Component {
 
 		private Window(int width, int height) {
 			super(new Region(width, height, new Point(0, 0)));
-
 		}
 
 		@Override
@@ -96,7 +171,8 @@ public class MiniMap extends Clickable implements Component {
 		@Override
 		public void draw(Frame frame) {
 			frame.setLineWidth(3);
-			frame.drawRect(getPosition().x, getPosition().y, getWidth(), getHeight());
+			frame.drawRect(Window.this.getPosition().x, Window.this.getPosition().y, Window.this.getWidth(),
+					Window.this.getHeight());
 		}
 
 	}

@@ -67,7 +67,7 @@ public class SlickGame extends StateBasedGame implements View {
 	public MusicHelper music;
 
 	public final SlickModelView modelView;
-	
+
 	public MiniMap miniMap;
 
 	/**
@@ -111,7 +111,7 @@ public class SlickGame extends StateBasedGame implements View {
 		final Directory directory = game.getDirectory();
 
 		modelView.init(game);
-		
+
 		states.init(this, modelView.getVisual(game.getModelBoard()));
 
 		SlickHazard.initIcons(directory.getHazardsPath());
@@ -294,7 +294,8 @@ public class SlickGame extends StateBasedGame implements View {
 
 		// Set the containers that ui elements will be loaded into.
 		Container[] containers = new Container[] { challengeMenu, helpMenu, pauseMenu, loadingScreen, warMenu, mainMenu,
-				combat, setup, reinforcement, movement, end, playerSelection,statsMenu, unitMenu, upgradeMenu, pointsMenu };
+				combat, setup, reinforcement, movement, end, playerSelection, statsMenu, unitMenu, upgradeMenu,
+				pointsMenu };
 
 		this.io = new IOHelper(game, containers);
 
@@ -420,7 +421,7 @@ public class SlickGame extends StateBasedGame implements View {
 	public void toggleWarMenu(boolean state) {
 		toggleMenu(state, WarMenu.NAME);
 	}
-	
+
 	@Override
 	public void toggleStatsMenu(boolean state) {
 		toggleMenu(state, StatsMenu.NAME);
@@ -511,13 +512,16 @@ public class SlickGame extends StateBasedGame implements View {
 		menus.autoAttack();
 	}
 
-	
 	public int getScreenWidth() {
 		return agc.getScreenWidth();
 	}
 
 	public int getScreenHeight() {
 		return agc.getScreenHeight();
+	}
+
+	public void initMiniMap() {
+		states.addMiniMap(modelView.getVisual(game.getModelBoard()), this);
 	}
 
 }

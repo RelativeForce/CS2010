@@ -139,13 +139,18 @@ public class StateHelper {
 		game.addState(reinforcement);
 		game.addState(combat);
 		game.addState(movement);
+	
+	}
+	
+	public void addMiniMap(SlickBoard slickBoard, SlickGame game) {
 		
 		final MiniMap miniMap = new MiniMap(slickBoard, game.getScreenWidth(), game.getScreenHeight());
+		
 		setup.setMiniMap(miniMap);
 		reinforcement.setMiniMap(miniMap);
 		combat.setMiniMap(miniMap);
 		movement.setMiniMap(miniMap);
-
+		
 	}
 
 	/**

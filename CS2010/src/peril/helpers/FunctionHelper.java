@@ -95,6 +95,8 @@ public class FunctionHelper {
 			return leavePlayerSelect();
 		case 23:
 			return openWebsite();
+		case 24:
+			return showStatsMenu();
 		}
 
 		// If no action was returned then the function code was invalid.
@@ -359,5 +361,23 @@ public class FunctionHelper {
 	 */
 	private Action<?> hideHelpMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleHelpMenu(false));
+	}
+	
+	/**
+	 * Retrieves the {@link Action} that opens the {@link StatsMenu} window.
+	 * 
+	 * @return
+	 */
+	private Action<?> showStatsMenu() {
+		return new Action<GameController>(game, game -> game.getView().toggleStatsMenu(true));
+	}
+
+	/**
+	 * Retrieves the {@link Action} that closes the {@link StatsMenu} window.
+	 * 
+	 * @return
+	 */
+	private Action<?> hideStatsMenu() {
+		return new Action<GameController>(game, game -> game.getView().toggleStatsMenu(false));
 	}
 }

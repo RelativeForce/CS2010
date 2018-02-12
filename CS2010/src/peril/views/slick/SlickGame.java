@@ -260,8 +260,14 @@ public class SlickGame extends StateBasedGame implements View {
 		final PauseMenu pauseMenu = new PauseMenu(new Point(100, 100), game);
 		final HelpMenu helpMenu = new HelpMenu(new Point(100, 100), game);
 		final ChallengeMenu challengeMenu = new ChallengeMenu(new Point(100, 100), game);
+		final StatsMenu statsMenu = new StatsMenu(new Point(100, 100), game);
+		final UnitMenu unitMenu = new UnitMenu(new Point(100, 100), game);
+		final UpgradeMenu upgradeMenu = new UpgradeMenu(new Point(100, 100), game);
+		final PointsMenu pointsMenu = new PointsMenu(new Point(100, 100), game);
 
-		this.menus = new MenuHelper(pauseMenu, warMenu, helpMenu, challengeMenu);
+
+
+		this.menus = new MenuHelper(pauseMenu, warMenu, helpMenu, challengeMenu, statsMenu, unitMenu, upgradeMenu, pointsMenu);
 
 		// Initialise the slick states.
 		final MainMenu mainMenu = new MainMenu(game, 0);

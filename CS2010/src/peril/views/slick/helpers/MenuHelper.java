@@ -37,13 +37,19 @@ public final class MenuHelper {
 	 *            The {@link ChallengeMenu} that displays the {@link Challenge}s to
 	 *            the user.
 	 */
-	public MenuHelper(PauseMenu pauseMenu, WarMenu warMenu, HelpMenu helpMenu, ChallengeMenu challengeMenu) {
+	public MenuHelper(PauseMenu pauseMenu, WarMenu warMenu, HelpMenu helpMenu, ChallengeMenu challengeMenu, StatsMenu statsMenu, UnitMenu unitMenu, UpgradeMenu upgradeMenu, PointsMenu pointsmenu) {
 
 		this.menus = new IdentityHashMap<>();
 		this.menus.put(pauseMenu.getName(), pauseMenu);
 		this.menus.put(warMenu.getName(), warMenu);
 		this.menus.put(helpMenu.getName(), helpMenu);
 		this.menus.put(challengeMenu.getName(), challengeMenu);
+		this.menus.put(statsMenu.getName(), statsMenu);
+		this.menus.put(unitMenu.getName(), unitMenu);
+		this.menus.put(upgradeMenu.getName(), upgradeMenu);
+		this.menus.put(pointsmenu.getName(), pointsmenu);
+
+
 
 		this.visible = null;
 	}

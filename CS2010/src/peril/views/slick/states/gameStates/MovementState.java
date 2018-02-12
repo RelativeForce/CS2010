@@ -83,6 +83,8 @@ public final class MovementState extends CoreGameState {
 		super.drawImages();
 		super.drawButtons();
 		super.drawPlayerName(frame);
+		
+		super.drawMiniMap(frame);
 		super.drawPopups(frame);
 		menus.draw(frame);
 

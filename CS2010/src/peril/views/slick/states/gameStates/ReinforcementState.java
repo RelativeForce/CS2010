@@ -111,6 +111,8 @@ public final class ReinforcementState extends CoreGameState {
 
 		frame.draw(textFont, "UNITS", 300 - (textFont.getWidth("UNITS") / 2), 90 + unitFont.getHeight());
 
+		super.drawMiniMap(frame);
+		
 		super.drawPopups(frame);
 		menus.draw(frame);
 

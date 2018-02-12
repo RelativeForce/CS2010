@@ -208,6 +208,7 @@ public final class MapReader extends FileParser {
 			// Set the normal map as the visual image of the visual representation.
 			board.setPosition(new Point(0, 0));
 			board.swapImage(normalMap);
+			slickGame.initMiniMap();
 		}
 
 		loadedMap = true;

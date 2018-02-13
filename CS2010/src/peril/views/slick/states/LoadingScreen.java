@@ -226,8 +226,8 @@ public final class LoadingScreen extends InteractiveState {
 	 * Processes a button press on this {@link LoadingScreen}.
 	 */
 	@Override
-	public void parseButton(int key, char c, Point mousePosition) {
-		// DO NOTHING
+	public void parseButton(Frame frame, int key, Point mousePosition) {
+		frame.pressButton(key, mousePosition);
 	}
 
 	/**

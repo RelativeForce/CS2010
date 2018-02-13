@@ -271,6 +271,7 @@ public class SlickGame extends StateBasedGame implements View {
 				pointsMenu);
 
 		// Initialise the slick states.
+		final Opening opening = new Opening(game, 12);
 		final MainMenu mainMenu = new MainMenu(game, 0);
 		final PlayerSelection playerSelection = new PlayerSelection(game, 1);
 		final EndState end = new EndState(game, 6);
@@ -289,7 +290,7 @@ public class SlickGame extends StateBasedGame implements View {
 		board.addObserver(combat);
 		board.addObserver(movement);
 
-		this.states = new StateHelper(mainMenu, combat, reinforcement, setup, movement, end, loadingScreen,
+		this.states = new StateHelper(opening, mainMenu, combat, reinforcement, setup, movement, end, loadingScreen,
 				playerSelection);
 
 		// Set the containers that ui elements will be loaded into.

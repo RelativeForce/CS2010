@@ -22,8 +22,8 @@ import peril.helpers.UnitHelper;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.01
- * @since 2018-02-12
+ * @version 1.01.02
+ * @since 2018-02-13
  * 
  * @see Observable
  * @see Iterable
@@ -557,6 +557,39 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	@Override
 	public boolean hasUnit(Unit unit) {
 		return hasUnit((ModelUnit) unit);
+	}
+
+	@Override
+	public boolean tradeUnitsUp() {
+
+		// If there are no units then trade up failed.
+		if (units.isEmpty()) {
+			return false;
+		}
+
+		// Holds whether any units have been traded up.
+		boolean hasTraded = false;
+
+		// Holds the current unit starting with the weakest.
+		ModelUnit current = getWeakestUnit();
+
+		/*
+		 * Iterate over all the units in this army starting at the weakest and working
+		 * up in terms of strength and attempt to trade each of them up.
+		 */
+		while (current != null) {
+
+			if (hasUnit(current)) {
+				if (tradeUp(current)) {
+					hasTraded = true;
+				}
+			}
+
+			current = UnitHelper.getInstance().getUnitAbove(current);
+
+		}
+
+		return hasTraded;
 	}
 
 }

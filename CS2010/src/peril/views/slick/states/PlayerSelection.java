@@ -6,6 +6,7 @@ import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
@@ -106,8 +107,8 @@ public final class PlayerSelection extends InteractiveState {
 	 * Processes a button press on this {@link PlayerSelection}.
 	 */
 	@Override
-	public void parseButton(int key, char c, Point mousePosition) {
-		// Do nothing
+	public void parseButton(Frame frame, int key, Point mousePosition) {
+		frame.pressButton(key, mousePosition);
 	}
 
 	/**
@@ -120,21 +121,32 @@ public final class PlayerSelection extends InteractiveState {
 		drawButtons();
 
 		frame.draw(players, new EventListener() {
-			
+
 			@Override
 			public void mouseHover(Point mouse, int delta) {
 				// Do nothing
 			}
-			
+
 			@Override
-			public void mouseClick(Point mouse,  int button) {
-				players.click(mouse);		
+			public void mouseClick(Point mouse, int button) {
+				players.click(mouse);
 				confingureSelectors();
 			}
-			
+
 			@Override
 			public void buttonPress(int key, Point mouse) {
-				// Do nothing
+
+				if (players.isClicked(mouse)) {
+
+					if (key == Input.KEY_UP) {
+						players.up();
+						confingureSelectors();
+					} else if (key == Input.KEY_DOWN) {
+						players.down();
+						confingureSelectors();
+					}
+				}
+
 			}
 
 			@Override
@@ -148,20 +160,28 @@ public final class PlayerSelection extends InteractiveState {
 			if (selector.isVisible()) {
 
 				frame.draw(selector, new EventListener() {
-					
+
 					@Override
 					public void mouseHover(Point mouse, int delta) {
 						// Do nothing
 					}
-					
+
 					@Override
-					public void mouseClick(Point mouse,  int button) {
-						selector.click(mouse);				
+					public void mouseClick(Point mouse, int button) {
+						selector.click(mouse);
 					}
-					
+
 					@Override
 					public void buttonPress(int key, Point mouse) {
-						// Do nothing
+						
+						if (selector.isClicked(mouse)) {
+
+							if (key == Input.KEY_UP) {
+								selector.up();
+							} else if (key == Input.KEY_DOWN) {
+								selector.down();
+							}
+						}
 					}
 
 					@Override
@@ -169,7 +189,7 @@ public final class PlayerSelection extends InteractiveState {
 						selector.draw(frame);
 					}
 				});
-				
+
 				Image playerIcon = slick.getPlayerIcon(playerNumber);
 
 				final int x = selector.getPosition().x + (selector.getWidth() / 2) - (playerIcon.getWidth() / 2);
@@ -246,13 +266,17 @@ public final class PlayerSelection extends InteractiveState {
 	 */
 	private void addSelectors() {
 
+		
+		for(int playerIndex = 2; playerIndex <= PlayerHelper.MAX_PLAYERS; playerIndex++) {
+			players.add(Integer.toString(playerIndex), playerIndex);
+		}
+		
 		for (int index = 1; index <= PlayerHelper.MAX_PLAYERS; index++) {
 
 			VisualList<AI> selector = new VisualList<>(new Point(100, 100), 100, 24, 5, 5);
 
 			populateSelector(selector);
 
-			players.add(Integer.toString(index + 1), index + 1);
 			selectors.put(index, selector);
 			super.addComponent(selector);
 

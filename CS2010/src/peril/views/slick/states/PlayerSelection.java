@@ -266,13 +266,17 @@ public final class PlayerSelection extends InteractiveState {
 	 */
 	private void addSelectors() {
 
+		
+		for(int playerIndex = 2; playerIndex <= PlayerHelper.MAX_PLAYERS; playerIndex++) {
+			players.add(Integer.toString(playerIndex), playerIndex);
+		}
+		
 		for (int index = 1; index <= PlayerHelper.MAX_PLAYERS; index++) {
 
 			VisualList<AI> selector = new VisualList<>(new Point(100, 100), 100, 24, 5, 5);
 
 			populateSelector(selector);
 
-			players.add(Integer.toString(index + 1), index + 1);
 			selectors.put(index, selector);
 			super.addComponent(selector);
 

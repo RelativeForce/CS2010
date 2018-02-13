@@ -41,44 +41,43 @@ public class Opening extends InteractiveState {
 			frame = ImageReader.getImage(splashPath + index + ".png");
 
 			if (frame != null) {
-				
+
 				// Scale the frame
 				frame = frame.getScaledCopy(gc.getScreenWidth(), gc.getScreenHeight());
-				
+
 				// Add the frame to the splash screen.
 				splash.addFrame(frame, frameRate);
-				
+
 				index++;
 			}
 
-		// If frame is null then there are no more frames.
+			// If frame is null then there are no more frames.
 		} while (frame != null);
-		
+
 		// Set the splash to finish at the final frame.
 		splash.stopAt(index);
 
 	}
 
 	@Override
-	public void parseButton(int key, char c, Point mousePosition) {
-		// Do nothing
+	public void parseButton(Frame frame, int key, Point mousePosition) {
+		frame.pressButton(key, mousePosition);
 	}
 
 	@Override
 	public void render(GameContainer gc, Frame frame) {
-		//splash.draw();
+		// splash.draw();
 	}
-	
+
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		super.update(gc, sbg, delta);
-		
+
 		// If the splash page has finished enter the main menu
-		if(splash.isStopped()) {
+		if (splash.isStopped()) {
 			game.getView().enterMainMenu();
 		}
-		
-		
+
 	}
 
 	@Override

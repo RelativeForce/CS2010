@@ -141,13 +141,14 @@ public final class MainMenu extends InteractiveState {
 
 			@Override
 			public void buttonPress(int key, Point mouse) {
-
-				if (key == Input.KEY_UP) {
-					maps.up();
-					checkSaves();
-				} else if (key == Input.KEY_DOWN) {
-					maps.down();
-					checkSaves();
+				if (maps.isClicked(mouse)) {
+					if (key == Input.KEY_UP) {
+						maps.up();
+						checkSaves();
+					} else if (key == Input.KEY_DOWN) {
+						maps.down();
+						checkSaves();
+					}
 				}
 			}
 
@@ -172,12 +173,15 @@ public final class MainMenu extends InteractiveState {
 
 			@Override
 			public void buttonPress(int key, Point mouse) {
-				if (key == Input.KEY_UP) {
-					saves.up();
-					checkSaves();
-				} else if (key == Input.KEY_DOWN) {
-					saves.down();
-					checkSaves();
+
+				if (saves.isClicked(mouse)) {
+					if (key == Input.KEY_UP) {
+						saves.up();
+						checkSaves();
+					} else if (key == Input.KEY_DOWN) {
+						saves.down();
+						checkSaves();
+					}
 				}
 			}
 
@@ -192,7 +196,9 @@ public final class MainMenu extends InteractiveState {
 	 * Processes a button press on this {@link MainMenu}.
 	 */
 	@Override
-	public void parseButton(int key, char c, Point mousePosition) {
+	public void parseButton(Frame frame, int key, Point mousePosition) {
+
+		frame.pressButton(key, mousePosition);
 
 		if (key == Input.KEY_ENTER) {
 			// Attempt to load the map

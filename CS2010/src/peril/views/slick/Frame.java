@@ -91,27 +91,32 @@ public final class Frame {
 	}
 
 	public boolean click(Point click, int button) {
+		
+		Entry clicked = getClicked(click);
+		
+		if(clicked == null) {
+			return false;
+		}
+		
+		clicked.handler.mouseClick(click, button);
 
-		boolean clickProcessed = false;
+		return true;
 
+	}
+	
+	private Entry getClicked(Point mouse) {
+		
 		for (int planeIndex = planes.size() - 1; planeIndex >= 0; planeIndex--) {
 
 			for (Entry entry : planes.get(planeIndex)) {
 
-				if (entry.item.isClicked(click)) {
-					entry.handler.mouseClick(click, button);
-					clickProcessed = true;
-					break;
+				if (entry.item.isClicked(mouse)) {
+					return entry;
 				}
 			}
-
-			if (clickProcessed) {
-				break;
-			}
 		}
-
-		return clickProcessed;
-
+		
+		return null;
 	}
 
 	private void addToPlane(Entry entry) {
@@ -189,6 +194,10 @@ public final class Frame {
 		if (!planes.isEmpty()) {
 			planes.clear();
 		}
+	}
+
+	public void pressButton(int key, Point mousePosition) {
+		planes.forEach(plane -> plane.forEach(entry -> entry.handler.buttonPress(key, mousePosition)));
 	}
 
 	private final class Entry {

@@ -101,7 +101,7 @@ public final class CombatState extends CoreGameState {
 	}
 	
 	@Override
-	public void parseButton(int key, char c, Point mousePosition) {
+	public void parseButton(Frame frame,int key, Point mousePosition) {
 		
 		if(key == Input.KEY_B) {
 			
@@ -116,7 +116,7 @@ public final class CombatState extends CoreGameState {
 		}
 		
 		
-		super.parseButton(key, c, mousePosition);
+		super.parseButton(frame, key, mousePosition);
 	}
 
 	/**

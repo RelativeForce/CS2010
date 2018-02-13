@@ -193,7 +193,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * Processes a button click on a {@link CoreGameState}.
 	 */
 	@Override
-	public void parseButton(int key, char c, Point mousePosition) {
+	public void parseButton(Frame frame, int key, Point mousePosition) {
 
 		// Movement increment
 		int increment = 50;

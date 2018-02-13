@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import peril.ai.*;
+import peril.controllers.AIController;
 import peril.controllers.GameController;
 
 /**
@@ -13,9 +14,9 @@ import peril.controllers.GameController;
  * 
  * @author James_Rowntree
  * 
- * @since 2018-02-06
+ * @since 2018-02-13
  * 
- * @version 1.01.01
+ * @version 1.01.02
  *
  */
 public final class AIHelper implements Iterable<AI> {
@@ -50,8 +51,26 @@ public final class AIHelper implements Iterable<AI> {
 	 * Defines all the {@link AI} that are available for the user to select.
 	 */
 	private void addAll() {
-		ai.put("Monkey", new Monkey(game.getAIController()));
-		ai.put("None", AI.USER);
+
+		// AI controller api
+		final AIController api = game.getAIController();
+		
+		// Define all AIs
+		final AI user = AI.USER;
+		final Monkey monkey = new Monkey(api);
+		final FinalBoss finalBoss = new FinalBoss(api);
+		final Goat goat = new Goat(api);
+		final Duckling duckling = new Duckling(api);
+		final Ocelot ocelot = new Ocelot(api);
+
+		// Add AIs to ai map
+		ai.put(user.name, user);
+		ai.put(monkey.name, monkey);
+		ai.put(finalBoss.name, finalBoss);
+		ai.put(goat.name, goat);
+		ai.put(duckling.name, duckling);
+		ai.put(ocelot.name, ocelot);
+
 	}
 
 	/**

@@ -303,16 +303,6 @@ public class HelpMenu extends Menu {
 	}
 
 	/**
-	 * Processes a click at a {@link Point} position on this {@link Button}.
-	 * 
-	 * @param click
-	 *            {@link Point}
-	 */
-	public void parseClick(Point click) {
-		super.clickedButton(click);
-	}
-
-	/**
 	 * Moves the {@link Button} and {@link Viewable}s of the {@link HelpMenu}.
 	 */
 	@Override

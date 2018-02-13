@@ -83,5 +83,15 @@ public interface View {
 
 	int getArmyOffsetY(ModelCountry country);
 
+	int getScreenWidth();
+
+	int getScreenHeight();
+
+	int getWindowWidth();
+
+	int getWindowHeight();
+
+	boolean isFullScreen();
+
 
 }

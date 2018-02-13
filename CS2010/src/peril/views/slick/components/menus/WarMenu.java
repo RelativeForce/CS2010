@@ -372,13 +372,6 @@ public class WarMenu extends Menu {
 	}
 
 	/**
-	 * Processes a click at a {@link Point} position on this {@link WarMenu}.
-	 */
-	public void parseClick(Point click) {
-		clickedButton(click);
-	}
-
-	/**
 	 * Processes the attack between 2 highlighted {@link ModelCountry}s and see if
 	 * they are eligible to 'fight'.
 	 */

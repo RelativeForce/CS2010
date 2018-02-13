@@ -13,7 +13,6 @@ import peril.views.slick.Font;
 import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.Viewable;
-import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.components.menus.HelpMenu;
 
 /**
@@ -66,25 +65,7 @@ public final class Credits extends InteractiveState {
 		creditsFont = new Font("Arial", Color.black, 20);
 		menuButton = "menu";
 		
-	}
-
-	/**
-	 * Processes a mouse click at a {@link Point} position on this {@link Credits}.
-	 */
-	@Override
-	public void parseClick(int button, Point click) {
-		// TODO Auto-generated method stub
-		super.clickedButton(click);
-	}
-	
-	/**
-	 * Adds an {@link Viewable} image to this {@link Credits}.
-	 */
-	@Override
-	public void addImage(Viewable image) {
-		super.addImage(image);
-	}
-	
+	}	
 	
 	/**
 	 * Initialise the visual elements of the {@link Credits}.

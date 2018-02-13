@@ -20,7 +20,6 @@ import peril.views.slick.Button;
 import peril.views.slick.Font;
 import peril.views.slick.Frame;
 import peril.views.slick.Point;
-import peril.views.slick.Viewable;
 import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.components.menus.HelpMenu;
 
@@ -66,12 +65,7 @@ public class EndState extends InteractiveState {
 	 * {@link Game}.
 	 */
 	private final String exitButton;
-
-	/**
-	 * The background {@link Viewable} of the {@link EndState}.
-	 */
-	private Viewable background;
-
+	
 	/**
 	 * Holds the {@link Point} position of the players in the {@link EndState}.
 	 */
@@ -114,23 +108,6 @@ public class EndState extends InteractiveState {
 		}
 
 		podium.push(player);
-	}
-
-	/**
-	 * Processes a mouse click at a {@link Point} position on this {@link EndState}.
-	 */
-	@Override
-	public void parseClick(int button, Point click) {
-		super.clickedButton(click);
-	}
-
-	/**
-	 * Adds an {@link Viewable} image to this {@link EndState}.
-	 */
-	@Override
-	public void addImage(Viewable image) {
-		background = image;
-		super.addImage(image);
 	}
 
 	/**
@@ -190,9 +167,6 @@ public class EndState extends InteractiveState {
 		}
 
 		int padding = 20;
-
-		// Scale background image based on screen size.
-		background.scale(gc.getWidth(), gc.getHeight());
 
 		// Reposition menu button based on screen size.
 		int menuX = gc.getWidth() - getButton(menuButton).getWidth() - padding;
@@ -282,4 +256,6 @@ public class EndState extends InteractiveState {
 		podium.forEach(loser -> task.accept(loser.model));
 	}
 
+
+	
 }

@@ -4,5 +4,4 @@ button,Select,22,playButton.png,90,40,515,450,play
 button,Main Menu,23,goat32.png,30,30,575,15,website
 
 // asset_type,state_name,asset_file_name,width,height,x,y
-image,loading screen,perilLogo.png,-,-,0,0
 image,Main Menu,perilLogo.png,500,340,60,0

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
@@ -18,6 +19,7 @@ import peril.views.slick.Point;
 import peril.views.slick.Viewable;
 import peril.views.slick.components.ProgressBar;
 import peril.views.slick.components.menus.HelpMenu;
+import peril.views.slick.io.ImageReader;
 import peril.views.slick.states.gameStates.CoreGameState;
 import peril.views.slick.states.gameStates.SetupState;
 
@@ -56,7 +58,7 @@ public final class LoadingScreen extends InteractiveState {
 	/**
 	 * The background {@link Viewable} of the {@link LoadingScreen}.
 	 */
-	private Viewable background;
+	private Image background;
 
 	/**
 	 * The {@link Music} that will be played during the loading state.
@@ -88,24 +90,13 @@ public final class LoadingScreen extends InteractiveState {
 	}
 
 	/**
-	 * Adds a {@link Viewable} to this {@link LoadingScreen}. The last
-	 * {@link Viewable} added will be the background {@link Image} of the
-	 * {@link LoadingScreen} and will be scaled to fill the screen.
-	 */
-	@Override
-	public void addImage(Viewable image) {
-		background = image;
-		super.addImage(image);
-	}
-
-	/**
 	 * Enters the {@link LoadingScreen} state.
 	 */
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 
 		// Scale the background image to fill the screen.
-		background.scale(gc.getWidth(), gc.getHeight());
+		background = ImageReader.getImage(game.getDirectory().getUIPath() + "perilLogo.png").getScaledCopy(gc.getWidth(), gc.getHeight());
 
 		changeMusic(gc);
 
@@ -132,6 +123,8 @@ public final class LoadingScreen extends InteractiveState {
 	@Override
 	public void render(GameContainer gc, Frame frame) {
 
+		frame.draw(background, 0, 0);
+		
 		drawImages();
 		drawButtons();
 
@@ -227,14 +220,6 @@ public final class LoadingScreen extends InteractiveState {
 
 		slick.centerBoard();
 
-	}
-
-	/**
-	 * Processes a mouse click on this {@link LoadingScreen}.
-	 */
-	@Override
-	public void parseClick(int button, Point click) {
-		super.clickedButton(click);
 	}
 
 	/**

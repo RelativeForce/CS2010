@@ -60,11 +60,6 @@ public class Opening extends InteractiveState {
 	}
 
 	@Override
-	public void parseClick(int button, Point click) {
-		// Do nothing
-	}
-
-	@Override
 	public void parseButton(int key, char c, Point mousePosition) {
 		// Do nothing
 	}

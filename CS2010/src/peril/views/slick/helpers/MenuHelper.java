@@ -123,29 +123,27 @@ public final class MenuHelper {
 		return ((PauseMenu) menus.get(PauseMenu.NAME)).showAllLinks();
 	}
 
-	/**
-	 * If the currently visible menu has been clicked
-	 * 
-	 * @param click
-	 * @return
-	 */
-	public boolean clicked(Point click) {
-
-		// If there is no visible menu
-		if (visible == null) {
-			return false;
-		}
-
-		// If the visible menu is not clicked
-		if (!visible.isVisible() || !visible.isClicked(click)) {
-			return false;
-		}
-
-		visible.parseClick(click);
-
-		return true;
-
-	}
+//	/**
+//	 * If the currently visible menu has been clicked
+//	 * 
+//	 * @param click
+//	 * @return
+//	 */
+//	public boolean clicked(Point click) {
+//
+//		// If there is no visible menu
+//		if (visible == null) {
+//			return false;
+//		}
+//
+//		// If the visible menu is not clicked
+//		if (!visible.isVisible() || !visible.isClicked(click)) {
+//			return false;
+//		}
+//
+//		return true;
+//
+//	}
 
 	public void showSaveOption() {
 		((PauseMenu) menus.get(PauseMenu.NAME)).showSaveOption();
@@ -233,7 +231,7 @@ public final class MenuHelper {
 
 				@Override
 				public void mouseClick(Point mouse, int button) {
-					visible.parseClick(mouse);
+					// Do nothing
 				}
 
 				@Override

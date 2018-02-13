@@ -142,22 +142,6 @@ public class PauseMenu extends Menu {
 	}
 
 	/**
-	 * Processed the click on the toggle music buttons.
-	 */
-	public void parseClick(Point click) {
-
-		if (!toggleMusic.click(click)) {
-			if (!toggleAllLinks.click(click)) {
-				if (!saveFiles.click(click)) {
-					clickedButton(click);
-				}
-			}
-		} else {
-			slick.toggleMusic(toggleMusic.getSelected().toggle);
-		}
-	}
-
-	/**
 	 * Moves all the components in this {@link PauseMenu}.
 	 */
 	@Override

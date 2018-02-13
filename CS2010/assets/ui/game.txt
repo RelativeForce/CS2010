@@ -56,7 +56,7 @@ image,Pause Menu,pauseMenu.png,600,600,0,0
 // End Screen
 button,End,12,mainMenuButton.png,90,40,100,100,menu
 button,End,10,exitGameButton.png,90,40,200,100,exit
-image,End,finishScreen.png,-,-,0,0
+image,End,finishScreen.png,w,w,0,0
 
 // Help Menu
 image,Help,toolTipBox.png,600,600,0,0

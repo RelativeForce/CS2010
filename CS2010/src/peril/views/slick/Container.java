@@ -28,16 +28,6 @@ public interface Container {
 	void addImage(Viewable image);
 
 	/**
-	 * Processes a click at a specified {@link Point} on this {@link Container}.
-	 * 
-	 * @param click
-	 *            {@link Point} relative to the {@link Game} origin.
-	 * @return <code>boolean</code> whether a {@link Button} in this
-	 *         {@link Container} was clicked or not.
-	 */
-	boolean clickedButton(Point click);
-
-	/**
 	 * Retrieves a uniquely identifying string that denotes this {@link Container}.
 	 * 
 	 * @return name of this {@link Container}.

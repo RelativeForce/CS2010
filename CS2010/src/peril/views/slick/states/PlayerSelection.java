@@ -103,37 +103,11 @@ public final class PlayerSelection extends InteractiveState {
 	}
 
 	/**
-	 * Processes a click at a specified {@link Point} position on this
-	 * {@link PlayerHelper}.
-	 */
-	@Override
-	public void parseClick(int button, Point click) {
-
-		if (!super.clickedButton(click)) {
-
-			// If they click the players list is clicked then configure the selectors.
-			if (players.click(click)) {
-				confingureSelectors();
-			} else {
-
-				for (VisualList<AI> selector : selectors.values()) {
-
-					if (selector.click(click)) {
-						break;
-					}
-
-				}
-			}
-		}
-
-	}
-
-	/**
 	 * Processes a button press on this {@link PlayerSelection}.
 	 */
 	@Override
 	public void parseButton(int key, char c, Point mousePosition) {
-		// TODO Auto-generated method stub
+		// Do nothing
 	}
 
 	/**
@@ -154,7 +128,8 @@ public final class PlayerSelection extends InteractiveState {
 			
 			@Override
 			public void mouseClick(Point mouse,  int button) {
-				players.click(mouse);				
+				players.click(mouse);		
+				confingureSelectors();
 			}
 			
 			@Override
@@ -195,7 +170,6 @@ public final class PlayerSelection extends InteractiveState {
 					}
 				});
 				
-
 				Image playerIcon = slick.getPlayerIcon(playerNumber);
 
 				final int x = selector.getPosition().x + (selector.getWidth() / 2) - (playerIcon.getWidth() / 2);

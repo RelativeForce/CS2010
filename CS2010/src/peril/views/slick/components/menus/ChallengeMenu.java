@@ -1,8 +1,6 @@
 package peril.views.slick.components.menus;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-
 import peril.Challenge;
 import peril.Game;
 import peril.controllers.GameController;
@@ -88,14 +86,6 @@ public final class ChallengeMenu extends Menu {
 
 		text.draw(frame);
 
-	}
-
-	/**
-	 * Processes a click at a {@link Point} position on this {@link ChallengeMenu}.
-	 */
-	@Override
-	public void parseClick(Point click) {
-		super.clickedButton(click);
 	}
 
 	/**

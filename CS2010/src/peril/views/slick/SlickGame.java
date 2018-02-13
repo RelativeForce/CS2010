@@ -526,15 +526,33 @@ public class SlickGame extends StateBasedGame implements View {
 	public void AIattack() {
 		menus.autoAttack();
 	}
-
+	
+	@Override
 	public int getScreenWidth() {
 		return agc.getScreenWidth();
 	}
-
+	
+	@Override
 	public int getScreenHeight() {
 		return agc.getScreenHeight();
 	}
+	
+	@Override
+	public boolean isFullScreen() {
+		return agc.isFullscreen();
+	}
+	
+	@Override
+	public int getWindowWidth() {
+		return agc.getWidth();
+	}
+	
+	@Override
+	public int getWindowHeight() {
+		return agc.getHeight();
+	}
 
+	
 	public void initMiniMap() {
 		states.addMiniMap(modelView.getVisual(game.getModelBoard()), this);
 	}

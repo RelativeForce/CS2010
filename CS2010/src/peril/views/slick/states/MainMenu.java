@@ -136,6 +136,7 @@ public final class MainMenu extends InteractiveState {
 			@Override
 			public void mouseClick(Point mouse, int button) {
 				maps.click(mouse);
+				checkSaves();
 			}
 
 			@Override
@@ -185,21 +186,6 @@ public final class MainMenu extends InteractiveState {
 				saves.draw(frame);
 			}
 		});
-	}
-
-	/**
-	 * Processed a mouse click on this {@link MainMenu}.
-	 */
-	@Override
-	public void parseClick(int button, Point click) {
-
-		if (!super.clickedButton(click)) {
-			if (!maps.click(click)) {
-				saves.click(click);
-			} else {
-				checkSaves();
-			}
-		}
 	}
 
 	/**
@@ -385,7 +371,7 @@ public final class MainMenu extends InteractiveState {
 	 * @author Joshua_Eddy
 	 *
 	 */
-	private class Map {
+	private final class Map {
 
 		/**
 		 * The name of the {@link Map}.

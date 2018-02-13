@@ -17,16 +17,21 @@ public final class Frame {
 
 	private final ArrayList<LinkedList<Entry>> planes;
 
-	public final Graphics g;
+	public Graphics g;
 
-	public Frame(Graphics g) {
+	public Frame() {
 		planes = new ArrayList<>();
+	}
+
+	public void newFrame(Graphics g) {
+		this.g = g;
+
+		clear();
 
 		// Add the base plane
 		final LinkedList<Entry> newPlane = new LinkedList<>();
 		planes.add(newPlane);
 
-		this.g = g;
 	}
 
 	public void drawLine(Point a, Point b) {
@@ -178,6 +183,12 @@ public final class Frame {
 
 	public void drawRect(int x, int y, int width, int height) {
 		g.drawRect(x, y, width, height);
+	}
+
+	private void clear() {
+		if (!planes.isEmpty()) {
+			planes.clear();
+		}
 	}
 
 	private final class Entry {

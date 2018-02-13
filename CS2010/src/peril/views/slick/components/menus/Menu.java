@@ -87,14 +87,6 @@ public abstract class Menu extends Clickable implements Container, Component {
 	public abstract void init();
 
 	/**
-	 * Processes a mouse click at a specified {@link Point} on the screen.
-	 * 
-	 * @param click
-	 *            {@link Point}
-	 */
-	public abstract void parseClick(Point click);
-
-	/**
 	 * Retrieves whether this menu is visible of not.
 	 * 
 	 * @return <code>boolean</code>
@@ -218,27 +210,6 @@ public abstract class Menu extends Clickable implements Container, Component {
 		image.setPosition(new Point(current.x + menuPosition.x, current.y + menuPosition.y));
 
 		images.add(image);
-	}
-
-	/**
-	 * Processes a click at a specified {@link Point} on the {@link Button}s in the
-	 * {@link Menu}.
-	 */
-	@Override
-	public boolean clickedButton(Point click) {
-
-		if (visible) {
-			// Iterate through every button on the menu and is a button is clicked
-			for (Button b : buttons.values()) {
-
-				// If the button is clicked process a click on that button.
-				if (b.isClicked(click)) {
-					b.click();
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	/**

@@ -253,41 +253,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	}
 
 	/**
-	 * Processes a click at a specified {@link Point} on this {@link CoreGameState}.
-	 */
-	@Override
-	public void parseClick(int button, Point click) {
-
-		// If the player hasn't clicked the pause menu
-		if (!menus.clicked(click))
-
-			// If the player hasn't clicked a UI Button in the state, they must've clicked
-			// board.
-			if (!super.clickedButton(click)) {
-
-				// holds whether a unit was clicked.
-				boolean unitClicked = false;
-
-				for (final SlickCountry country : selected) {
-
-					final SlickArmy army = slick.modelView.getVisual(country.model.getArmy());
-
-					if (army.isClicked(click, country.getArmyPosition(), slick.modelView)) {
-						unitClicked = true;
-					}
-
-				}
-
-				// If there was no unit clicked.
-				if (!unitClicked) {
-					clickBoard(button, click);
-				}
-
-			}
-
-	}
-
-	/**
 	 * Retrieves the {@link Music} played by this {@link CoreGameState}.
 	 */
 	@Override

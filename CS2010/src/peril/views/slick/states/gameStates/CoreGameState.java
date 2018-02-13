@@ -203,15 +203,19 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		switch (key) {
 		case Input.KEY_UP:
 			slick.modelView.getVisual(game.getModelBoard()).move(new Point(0, +increment), width, height);
+			miniMap.repositionWindow();
 			break;
 		case Input.KEY_DOWN:
 			slick.modelView.getVisual(game.getModelBoard()).move(new Point(0, -increment), width, height);
+			miniMap.repositionWindow();
 			break;
 		case Input.KEY_LEFT:
 			slick.modelView.getVisual(game.getModelBoard()).move(new Point(+increment, 0), width, height);
+			miniMap.repositionWindow();
 			break;
 		case Input.KEY_RIGHT:
 			slick.modelView.getVisual(game.getModelBoard()).move(new Point(-increment, 0), width, height);
+			miniMap.repositionWindow();
 			break;
 		case Input.KEY_ESCAPE:
 			menus.show(PauseMenu.NAME);
@@ -418,29 +422,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	protected final void drawPlayerName(Frame frame) {
 		SlickPlayer p = slick.modelView.getVisual(game.getCurrentModelPlayer());
 		frame.draw(p.getImage(), 20, 80);
-	}
-
-	/**
-	 * Simulates a click at a {@link Point} on the {@link SlickBoard} and highlights
-	 * the {@link SlickCountry} that clicked.
-	 * 
-	 * @param click
-	 *            {@link Point}
-	 * @param button
-	 *            The mouse button that was clicked.
-	 */
-	protected final void clickBoard(int button, Point click) {
-
-		// Holds the game board
-		SlickBoard board = slick.modelView.getVisual(game.getModelBoard());
-
-		// If there is a game board
-		if (board != null) {
-
-			// Get the country that is clicked.
-			SlickCountry clicked = board.getCountry(click);
-
-		}
 	}
 
 	/**

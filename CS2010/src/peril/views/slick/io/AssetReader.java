@@ -2,48 +2,78 @@ package peril.views.slick.io;
 
 import org.newdawn.slick.Image;
 
-import peril.Game;
 import peril.concurrent.Action;
 import peril.controllers.GameController;
 import peril.helpers.FunctionHelper;
 import peril.io.FileParser;
 import peril.views.slick.Button;
-import peril.views.slick.Clickable;
 import peril.views.slick.Container;
 import peril.views.slick.Point;
 import peril.views.slick.Viewable;
-import peril.views.slick.states.InteractiveState;
 
 /**
- * Reads all the {@link Viewable} and {@link Clickable} specified by the user
- * interface assets details file and puts them in their specified
- * {@link InteractiveState}s.
+ * Reads all the visual elements in a specified assets details file and adds
+ * them in their specified {@link Container}s. Use
+ * {@link AssetReader#parseLine()} process one line of the file.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-13
+ * @version 1.01.01
+ * 
+ * @see Container
+ * @see Image
+ * @see Button
+ * @see FunctionHelper
  *
  */
 public final class AssetReader extends FileParser {
 
 	/**
-	 * The {@link CoreGameState}s that will be populated when
-	 * {@link AssetReader#read()} is performed.
+	 * The string that denotes whether a asset should be scaled to the size of the
+	 * containing window.
+	 */
+	private static final String SCALE_TO_WINDOW = "w";
+
+	/**
+	 * The string that denotes whether a asset should not be scaled.
+	 */
+	private static final String DONT_SCALE = "-";
+
+	/**
+	 * The string that denotes whether a line should be parsed as a {@link Button}.
+	 */
+	private static final String BUTTON = "button";
+
+	/**
+	 * The string that denotes whether a line should be parsed as a
+	 * {@link Viewable}.
+	 */
+	private static final String IMAGE = "image";
+
+	/**
+	 * The {@link Container}s that the parsed assets will be placed in.
 	 */
 	private final Container[] containers;
 
 	/**
-	 * Holds the {@link FunctionHelper} that contains the functions that buttons
-	 * will execute.
+	 * Holds the {@link FunctionHelper} that contains the functions that
+	 * {@link Button}s will execute.
 	 */
 	private final FunctionHelper functionHandler;
+
+	/**
+	 * The {@link GameController} that allows access to the game.
+	 */
+	private final GameController game;
 
 	/**
 	 * Constructs a new {@link AssetReader}.
 	 * 
 	 * @param containers
-	 *            The {@link Container}s that will be populated when
-	 *            {@link AssetReader#read()} is performed.
+	 *            The {@link Container}s that the parsed assets will be placed in.
 	 * @param game
-	 *            The {@link Game} this {@link AssetReader} will be used by.
+	 *            The {@link GameController} that allows access to the game.
 	 * @param filename
 	 *            The file name of the assets file.
 	 */
@@ -52,31 +82,32 @@ public final class AssetReader extends FileParser {
 
 		// Check params
 		if (containers.length == 0) {
-			throw new NullPointerException("CoreGameState array cannot be empty.");
+			throw new NullPointerException("Containers array cannot be empty.");
 		}
 
 		this.functionHandler = new FunctionHelper(game);
 		this.containers = containers;
+		this.game = game;
 	}
 
 	/**
 	 * Parses a line of the assets file and selects what action should be taken.
-	 * 
-	 * @param line
-	 *            Line of the assets file to be parsed.
 	 */
 	@Override
 	public void parseLine() {
 
-		if (index != lines.length) {
+		// If there is another line to parse
+		if (!isFinished()) {
 
-			String[] details = lines[index].split(",");
+			// The current line details.
+			final String[] details = lines[index].split(",");
 
+			// Distinguish which type of line the current line is.
 			switch (details[0]) {
-			case "button":
+			case BUTTON:
 				parseButton(details);
 				break;
-			case "image":
+			case IMAGE:
 				parseImage(details);
 			default:
 				// Invalid line - do nothing
@@ -93,7 +124,7 @@ public final class AssetReader extends FileParser {
 	 * 
 	 * @param details
 	 *            <code>String[]</code> containing the details that specify the
-	 *            {@link Image}.
+	 *            {@link Viewable}.
 	 */
 	private void parseImage(String[] details) {
 
@@ -106,7 +137,7 @@ public final class AssetReader extends FileParser {
 		}
 
 		// The file path of the image
-		String filePath = directory.getUIPath() + details[2];
+		final String filePath = directory.getUIPath() + details[2];
 
 		// Holds the scaled image
 		final Image asset = parseAsset(filePath, details[3], details[4]);
@@ -123,13 +154,15 @@ public final class AssetReader extends FileParser {
 	}
 
 	/**
-	 * Parses an <code>String[]</code> into a new {@link Button} which
+	 * Parses an <code>String[]</code> into a new {@link Button}.
 	 * 
 	 * @param details
+	 *            <code>String[]</code> containing the details that specify the
+	 *            {@link Button}.
 	 */
 	private void parseButton(String[] details) {
 
-		int BUTTON_LENGTH = 9;
+		final int BUTTON_LENGTH = 9;
 
 		// Check there is the correct number of details
 		if (details.length != BUTTON_LENGTH) {
@@ -152,6 +185,7 @@ public final class AssetReader extends FileParser {
 		// Holds the image of the button.
 		final Point position = parsePosition(details[6], details[7]);
 
+		// The id of the button
 		final String id = details[8];
 
 		// Add the button to the container
@@ -180,35 +214,29 @@ public final class AssetReader extends FileParser {
 		try {
 			asset = ImageReader.getImage(filePath);
 		} catch (Exception e) {
-			throw new IllegalArgumentException(filePath + " is not a valid path");
+			throw new IllegalArgumentException("Line " + index + ": " + filePath + " is not a valid path");
 		}
 
-		// If the width is a dash then don't scale the width
-		if (!widthStr.equals("-")) {
+		// Scale the width accordingly
+		if (widthStr.equals(DONT_SCALE)) {
+			width = asset.getWidth();
+		} else if (widthStr.equals(SCALE_TO_WINDOW)) {
+			width = game.getView().getWindowWidth();
+		} else {
 			width = parseDimension(widthStr);
-		} else {
-			width = 0;
 		}
 
-		// If the width is a dash then don't scale the height
-		if (!heightStr.equals("-")) {
+		// Scale the height accordingly
+		if (heightStr.equals(DONT_SCALE)) {
+			height = asset.getHeight();
+		} else if (heightStr.equals(SCALE_TO_WINDOW)) {
+			height = game.getView().getWindowHeight();
+		} else {
 			height = parseDimension(heightStr);
-		} else {
-			height = 0;
 		}
 
-		// If width and height are zero don't scale the image.
-		if (width != 0 && height != 0) {
-
-			// Check both the width an height for the scaled assets
-			width = width == 0 ? asset.getWidth() : width;
-			height = height == 0 ? asset.getHeight() : height;
-
-			// Scale the assets to the desired dimensions.
-			asset = asset.getScaledCopy(width, height);
-		}
-
-		return asset;
+		// Return the scaled copy
+		return asset.getScaledCopy(width, height);
 
 	}
 
@@ -216,9 +244,9 @@ public final class AssetReader extends FileParser {
 	 * Parses a {@link Point} from an x and y.
 	 * 
 	 * @param xStr
-	 *            x position
+	 *            x position as string
 	 * @param yStr
-	 *            y position
+	 *            y position as string
 	 * @return {@link Point} position on screen.
 	 */
 	private Point parsePosition(String xStr, String yStr) {
@@ -230,14 +258,14 @@ public final class AssetReader extends FileParser {
 		try {
 			x = Integer.parseInt(xStr);
 		} catch (Exception e) {
-			throw new IllegalArgumentException(xStr + " is not a valid x coordinate");
+			throw new IllegalArgumentException("Line " + index + ": " + xStr + " is not a valid x coordinate");
 		}
 
 		// Parse y coordinate
 		try {
 			y = Integer.parseInt(yStr);
 		} catch (Exception e) {
-			throw new IllegalArgumentException(yStr + " is not a valid y coordinate");
+			throw new IllegalArgumentException("Line " + index + ": " + yStr + " is not a valid y coordinate");
 		}
 
 		return new Point(x, y);
@@ -249,7 +277,8 @@ public final class AssetReader extends FileParser {
 	 * {@link FunctionHelper}.
 	 * 
 	 * @param functionCodeStr
-	 * @return {@link Action} associated with a code.
+	 *            function code
+	 * @return {@link Action} associated with the function code.
 	 */
 	private Action<?> parseFunction(String functionCodeStr) {
 
@@ -259,7 +288,7 @@ public final class AssetReader extends FileParser {
 		try {
 			functionCode = Integer.parseInt(functionCodeStr);
 		} catch (Exception e) {
-			throw new IllegalArgumentException(functionCodeStr + " is not a valid function code");
+			throw new IllegalArgumentException("Line " + index + ": " + functionCodeStr + " is not a valid function code");
 		}
 
 		return functionHandler.get(functionCode);
@@ -267,9 +296,10 @@ public final class AssetReader extends FileParser {
 	}
 
 	/**
-	 * Parses a dimension of a scaled {@link Image}.
+	 * Parses a dimension of a {@link Image} from a specified string.
 	 * 
 	 * @param dimension
+	 *            The dimension of the image.
 	 * @return
 	 */
 	private int parseDimension(String dimensionStr) {
@@ -280,12 +310,12 @@ public final class AssetReader extends FileParser {
 		try {
 			dimension = Integer.parseInt(dimensionStr);
 		} catch (Exception e) {
-			throw new IllegalArgumentException(dimensionStr + " is not a valid scaled dimension.");
+			throw new IllegalArgumentException("Line " + index + ": " + dimensionStr + " is not a valid scaled dimension.");
 		}
 
 		// Check the dimension is valid.
 		if (dimension <= 0) {
-			throw new IllegalArgumentException("Dimension cannot be <= zero");
+			throw new IllegalArgumentException("Line " + index + ": " + "Dimension cannot be <= zero");
 		}
 
 		return dimension;
@@ -309,7 +339,7 @@ public final class AssetReader extends FileParser {
 			}
 		}
 
-		throw new NullPointerException("State: " + name + " is not assigned to a game state.");
+		throw new NullPointerException("Line " + index + ": " + "State: " + name + " is not assigned to a game state.");
 	}
 
 }

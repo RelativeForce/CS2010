@@ -11,23 +11,25 @@ import peril.controllers.api.Player;
 import peril.model.ModelPlayer;
 
 /**
- * Encapsulates the behaviour of a continent on the {@link ModelBoard}.
- * Continents;<br>
- * <ul>
- * <li>Group {@link ModelCountry}s</li>
- * <li>Apply a special visual effect when all the {@link ModelCountry}s with in
- * it are ruled by the same {@link Player}.</li>
- * <li>Award {@link Player} with bonuses when they rule all the
- * {@link ModelCountry}s within.</li>
- * </ul>
+ * Encapsulates the behaviour of a continent on the {@link ModelBoard} which
+ * consists of a {@link Set} of {@link ModelCountry}s.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-13
+ * @version 1.01.01
+ * 
+ * @see ModelCountry
+ * @see Observable
+ * @see Observer
+ * @see Continent
  *
  */
 public final class ModelContinent extends Observable implements Continent, Observer {
 
 	/**
-	 * The {@link ModelHazard} that may affect this {@link ModelContinent}.
+	 * The {@link ModelHazard} that will effect the {@link ModelCountry} at the end
+	 * of each round.
 	 */
 	public final ModelHazard hazard;
 
@@ -37,23 +39,26 @@ public final class ModelContinent extends Observable implements Continent, Obser
 	private final Set<ModelCountry> countries;
 
 	/**
-	 * The {@link name} of the {@link ModelContinent}.
+	 * The name of the {@link ModelContinent}.
 	 */
 	private final String name;
 
 	/**
-	 * The current {@link Player} that rules all {@link ModelCountry}s in this
+	 * The current {@link ModelPlayer} that rules all {@link ModelCountry}s in this
 	 * {@link ModelContinent}. If all the {@link ModelCountry}s in this
 	 * {@link ModelContinent} are NOT ruled by the same {@link Player} then this is
 	 * <code>null</code>. This is determined in {@link ModelContinent#isRuled()}.
-	 * 
 	 */
 	private ModelPlayer ruler;
 
 	/**
-	 * Constructs a new {@link ModelContinent}.
+	 * Constructs a new {@link ModelContinent} with no default ruler.
 	 * 
-	 * @param countries
+	 * @param hazard
+	 *            The {@link ModelHazard} that will effect the {@link ModelCountry}
+	 *            at the end of each round.
+	 * @param name
+	 *            The name of the {@link ModelContinent}.
 	 */
 	public ModelContinent(ModelHazard hazard, String name) {
 
@@ -65,17 +70,40 @@ public final class ModelContinent extends Observable implements Continent, Obser
 	}
 
 	/**
+	 * Iterates through all the @{@link ModelCountry}s in the {@link ModelContinent}
+	 * and performs their end of round operations.
+	 */
+	public void endRound() {
+		countries.forEach(currentCountry -> currentCountry.endRound(hazard));
+	}
+
+	/**
 	 * Adds a {@link ModelCountry} to the {@link ModelContinent}.
 	 * 
 	 * @param country
+	 *            The {@link ModelCountry} that is to be added.
 	 */
 	public void addCountry(ModelCountry country) {
+
 		countries.add(country);
 
+		// Add this continent as an observer of the country so that when its changed the
+		// continent is also changed.
 		country.addObserver(this);
 
 		setChanged();
 		notifyObservers(new Update("countries", countries));
+	}
+
+	/**
+	 * Updates this {@link ModelContinent} from an {@link Observable} changes.
+	 */
+	@Override
+	public void update(Observable o, Object arg) {
+		if (o instanceof ModelCountry) {
+			setChanged();
+			notifyObservers();
+		}
 	}
 
 	/**
@@ -99,9 +127,6 @@ public final class ModelContinent extends Observable implements Continent, Obser
 		// Check if this country is ruled.
 		checkRuler();
 
-		setChanged();
-		notifyObservers(new Update("ruler", ruler));
-
 		return ruler != null;
 	}
 
@@ -118,14 +143,6 @@ public final class ModelContinent extends Observable implements Continent, Obser
 	}
 
 	/**
-	 * Iterates through all the @{@link ModelCountry}s in the {@link ModelContinent}
-	 * and performs their end of round operations.
-	 */
-	public void endRound() {
-		countries.forEach(currentCountry -> currentCountry.endRound(hazard));
-	}
-
-	/**
 	 * Retrieve the {@link Set} of {@link ModelCountry}s for this
 	 * {@link ModelContinent}.
 	 * 
@@ -136,7 +153,19 @@ public final class ModelContinent extends Observable implements Continent, Obser
 	}
 
 	/**
-	 * Checks if this {@link ModelContinent} is ruled by a single {@link Player}.
+	 * Retrieves the {@link Player} owner of this€ {@link Continent}.
+	 */
+	@Override
+	public Player getOwner() {
+
+		checkRuler();
+
+		return ruler;
+	}
+
+	/**
+	 * Checks if this {@link ModelContinent} is ruled by a single
+	 * {@link ModelPlayer}.
 	 */
 	private void checkRuler() {
 
@@ -171,21 +200,9 @@ public final class ModelContinent extends Observable implements Continent, Obser
 
 		}
 
+		setChanged();
+		notifyObservers(new Update("ruler", ruler));
+
 	}
 
-	/**
-	 * Retrieves the {@link Player} owner of this€ {@link Continent}.
-	 */
-	@Override
-	public Player getOwner() {
-		return ruler;
-	}
-
-	@Override
-	public void update(Observable o, Object arg) {
-		if (o instanceof ModelCountry) {
-			setChanged();
-			notifyObservers();
-		}
-	}
 }

@@ -13,6 +13,12 @@ import peril.model.board.ModelArmy;
  * all of the tracked statistics about a player.
  * 
  * @author Joshua_Eddy, Ezekiel_Trinidad
+ * 
+ * @since 2018-02-13
+ * @version 1.01.01
+ * 
+ * @see Player
+ * @see Observable
  *
  */
 public final class ModelPlayer extends Observable implements Player {
@@ -155,6 +161,7 @@ public final class ModelPlayer extends Observable implements Player {
 	/**
 	 * Retrieves the total size of this {@link ModelPlayer}s army.
 	 */
+	@Override
 	public int getTotalArmyStrength() {
 		return totalArmy.getStrength();
 	}

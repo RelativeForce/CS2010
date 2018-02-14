@@ -9,18 +9,22 @@ import java.util.Observer;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import peril.Game;
 import peril.Update;
 import peril.controllers.api.Board;
 import peril.controllers.api.Country;
 
 /**
- * Encapsulates the behaviour of the the game board in the {@link Game}. This
- * realises {@link Viewable} allowing it to be displayed by the
- * {@link UserInterface}.
+ * Encapsulates the behaviour of the the game board. The board consists of many
+ * {@link ModelContinent}s.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-13
+ * @version 1.01.01
  *
+ * @see Board
+ * @see Observable
+ * @see Observer
  */
 public final class ModelBoard extends Observable implements Board, Observer {
 
@@ -42,8 +46,6 @@ public final class ModelBoard extends Observable implements Board, Observer {
 	/**
 	 * Constructs a {@link ModelBoard}.
 	 * 
-	 * @param game
-	 *            The {@link Game} this {@link ModelBoard} is a part of.
 	 * @param name
 	 *            The name of the {@link ModelBoard}.
 	 */
@@ -57,7 +59,7 @@ public final class ModelBoard extends Observable implements Board, Observer {
 	 * Sets this {@link ModelBoard}'s {@link List} of {@link ModelContinent}s.
 	 * 
 	 * @param newContinents
-	 *            new {@link List} of {@link ModelContinent}s.
+	 *            {@link List} of {@link ModelContinent}s.
 	 */
 	public void setContinents(Set<ModelContinent> newContinents) {
 
@@ -66,8 +68,11 @@ public final class ModelBoard extends Observable implements Board, Observer {
 		}
 
 		reset();
+
+		// Copy the new continents into the board continents
 		newContinents.forEach(continent -> continents.put(continent.getName(), continent));
 
+		// Sum the countries
 		for (ModelContinent continent : newContinents) {
 			numberOfCountries += continent.getCountries().size();
 			continent.addObserver(this);
@@ -91,7 +96,7 @@ public final class ModelBoard extends Observable implements Board, Observer {
 
 	/**
 	 * Iterates through each {@link ModelContinent} in the {@link ModelBoard} and
-	 * {@link ModelContinent#executeTurn()}.
+	 * {@link ModelContinent#endRound()}.
 	 */
 	public void endRound() {
 		continents.values().forEach(continent -> continent.endRound());
@@ -140,8 +145,8 @@ public final class ModelBoard extends Observable implements Board, Observer {
 	}
 
 	/**
-	 * Clear all the {@link ModelContinent}s from the {@link Game} thus deleting all
-	 * the {@link ModelCountry}s and reseting the {@link ModelBoard} to its initial
+	 * Clear all the {@link ModelContinent}s thus deleting all the
+	 * {@link ModelCountry}s and reseting the {@link ModelBoard} to its initial
 	 * state.
 	 */
 	public void reset() {
@@ -166,11 +171,11 @@ public final class ModelBoard extends Observable implements Board, Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		if(o instanceof ModelContinent) {
+		if (o instanceof ModelContinent) {
 			setChanged();
 			notifyObservers();
 		}
-		
+
 	}
 
 }

@@ -19,7 +19,7 @@ import peril.model.board.ModelCountry;
  * @author Joshua_Eddy
  * 
  * @since 2018-02-14
- * @version 1.01.01
+ * @version 1.01.02
  * 
  * @see Observable
  *
@@ -53,11 +53,14 @@ public abstract class ModelState extends Observable {
 	 * <code>null</code> then this should return <code>false</code>.
 	 * 
 	 * @param country
-	 *            {@link ModelCountry}
+	 *            The {@link ModelCountry} that can be selected.
+	 * @param game
+	 *            The {@link GameController} that allows this {@link ModelState} to
+	 *            query the state of the game.
 	 * @return Whether or not the specified {@link ModelCountry} has been selected
 	 *         by this {@link ModelState}.
 	 */
-	public abstract boolean select(ModelCountry country, GameController api);
+	public abstract boolean select(ModelCountry country, GameController game);
 
 	/**
 	 * Retrieves the name of a specific {@link ModelState}.
@@ -107,8 +110,8 @@ public abstract class ModelState extends Observable {
 	}
 
 	/**
-	 * Swaps the ruler of a specified {@link ModelCountry} for a
-	 * new {@link ModelPlayer}.
+	 * Swaps the ruler of a specified {@link ModelCountry} for a new
+	 * {@link ModelPlayer}.
 	 * 
 	 * @param country
 	 *            {@link ModelCountry}
@@ -157,7 +160,8 @@ public abstract class ModelState extends Observable {
 	}
 
 	/**
-	 * Set the {@link ModelCountry} as the selected {@link ModelCountry} at the specified index. 
+	 * Set the {@link ModelCountry} as the selected {@link ModelCountry} at the
+	 * specified index.
 	 */
 	protected final void addSelected(ModelCountry country, int index) {
 

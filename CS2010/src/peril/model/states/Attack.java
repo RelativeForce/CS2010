@@ -1,40 +1,65 @@
 package peril.model.states;
 
 import peril.controllers.GameController;
+import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
 import peril.model.board.links.ModelLink;
-import peril.views.slick.states.gameStates.CombatState;
 
-public class Attack extends ModelState {
-	
+/**
+ * 
+ * The logic of the {@link ModelState} where the current {@link ModelPlayer} can
+ * select any of their {@link ModelCountry}s and then a {@link ModelCountry}
+ * that is directly linked to the {@link ModelPlayer} that is ruled by an enemy
+ * {@link ModelPlayer}.
+ * 
+ * @author Joshua_Eddy
+ * 
+ * @since 2018-02-14
+ * @version 1.01.01
+ * 
+ * @see ModelState
+ *
+ */
+public final class Attack extends ModelState {
+
 	/**
-	 * The name of a specific {@link CombatState}.
+	 * The name of the {@link Attack} state.
 	 */
 	private static final String STATE_NAME = "Combat";
 
+	/**
+	 * Constructs a new {@link Attack}.
+	 */
 	public Attack() {
 		super(STATE_NAME);
-		// TODO Auto-generated constructor stub
 	}
-	
+
+	/**
+	 * During {@link Attack} the current {@link ModelPlayer} can select any of their
+	 * {@link ModelCountry}s and then a {@link ModelCountry} that is directly linked
+	 * to the {@link ModelPlayer} that is ruled by an enemy {@link ModelPlayer}.
+	 */
 	@Override
 	public boolean select(ModelCountry country, GameController api) {
 
-		final boolean selectPrimary = selectPrimary(country, api);
-		final boolean selectSecondary = selectSecondary(country);
+		// Whether the country is a valid primary country.
+		final boolean validPrimary = selectPrimary(country, api);
+
+		// Whether the country is a valid secondary country.
+		final boolean validSecondary = selectSecondary(country);
 
 		// If it a valid primary or secondary country
-		if (selectPrimary || selectSecondary) {
+		if (validPrimary || validSecondary) {
 
-			// If the country is a valid primary then the old primary is de-highlighted
-			if (selectPrimary && !selectSecondary) {
+			// If the country is a valid primary then the old primary is de-selected.
+			if (validPrimary && !validSecondary) {
 
 				deselectAt(0);
 				addSelected(country, 0);
 			}
-			// Otherwise the the secondary is de-highlighted and then the country is
-			// highlighted.
+			// Otherwise the current secondary is de-selected and then the country is
+			// selected.
 			else {
 				deselectAt(1);
 				addSelected(country, 1);
@@ -44,43 +69,13 @@ public class Attack extends ModelState {
 		}
 
 		deselectAll();
-
 		return false;
 	}
 
 	/**
-	 * The specified {@link ModelCountry} is a valid primary {@link ModelCountry}
-	 * if:
-	 * <ul>
-	 * <li>Is <strong>NOT</strong> null</li>
-	 * <li>It is ruled by the current player.</li>
-	 * </ul>
-	 */
-	private boolean selectPrimary(ModelCountry country, GameController api) {
-		return country != null && api.getCurrentModelPlayer().equals(country.getRuler());
-	}
-
-	/**
-	 * The specified {@link ModelCountry} is a valid primary {@link ModelCountry}
-	 * if:
-	 * <ul>
-	 * <li>Is <strong>NOT</strong> null</li>
-	 * <li>It is a valid target of the primary {@link ModelCountry}.</li>
-	 * </ul>
-	 */
-	private boolean selectSecondary(ModelCountry country) {
-
-		if (country == null) {
-			return false;
-		}
-
-		return getPrimary() != null && isValidTarget(getPrimary(), country);
-	}
-
-	/**
-	 * Retrieves the secondary selected {@link ModelCountry}.
+	 * Retrieves the primary selected {@link ModelCountry}.
 	 * 
-	 * @return Primary selected {@link ModelCountry}
+	 * @return Primary selected {@link ModelCountry}.
 	 */
 	public ModelCountry getPrimary() {
 		return getSelected(0);
@@ -89,7 +84,7 @@ public class Attack extends ModelState {
 	/**
 	 * Retrieves the secondary selected {@link ModelCountry}.
 	 * 
-	 * @return Primary selected {@link ModelCountry}
+	 * @return Secondary selected {@link ModelCountry}.
 	 */
 	public ModelCountry getSecondary() {
 		return getSelected(1);
@@ -100,9 +95,9 @@ public class Attack extends ModelState {
 	 * targets for the primary {@link ModelCountry}.
 	 * 
 	 * @param primary
-	 *            is the primary {@link ModelCountry}
+	 *            The primary {@link ModelCountry}.
 	 * @param target
-	 *            is the second {@link ModelCountry}
+	 *            The target {@link ModelCountry}.
 	 * @return <code>boolean</code> if it is a valid target.
 	 */
 	public boolean isValidTarget(ModelCountry primary, ModelCountry target) {
@@ -116,16 +111,20 @@ public class Attack extends ModelState {
 			if (primary.isNeighbour(target)) {
 
 				// If the army size of the primary country is greater than 1.
-				if (primary.getArmy().getStrength() > 1) {
+				if (primary.getArmy().getNumberOfUnits() > 1) {
 
+					// Holds the link between the two countries.
 					final ModelLink link = primary.getLinkTo(target);
 
 					// Whether a unit can be transfer between the primary and the target.
 					boolean canTranfer = false;
 
-					// Iterate over all the units in the army
+					/*
+					 * Iterate over all the units in the army and if any can be transfered across
+					 * the link.
+					 */
 					for (ModelUnit unit : primary.getArmy()) {
-						
+
 						// If the current unit can be transfered.
 						if (link.canTransfer(unit, primary, target)) {
 							canTranfer = true;
@@ -133,7 +132,7 @@ public class Attack extends ModelState {
 						}
 					}
 
-					// If there is a unit that can be transfered.
+					// If there is a unit that can be transfered then it is a valid target.
 					if (canTranfer) {
 						return true;
 					}
@@ -143,6 +142,48 @@ public class Attack extends ModelState {
 
 		// If any of the conditions are not met then the target is not valid.
 		return false;
+	}
+
+	/**
+	 * Retrieves whether or not the specified {@link ModelCountry} could be selected
+	 * as the {@link Attack}'s primary {@link ModelCounrty}.
+	 * 
+	 * @param country
+	 *            The {@link ModelCountry} that could be selected.
+	 * @param game
+	 *            The {@link GameController} that allows this {@link Attack} to
+	 *            query the state of the game.
+	 * @return Whether or not the specified {@link ModelCountry} could be selected.
+	 */
+	private boolean selectPrimary(ModelCountry country, GameController game) {
+
+		// If the country is null then it cannot be selected.
+		if (country == null) {
+			return false;
+		}
+
+		// If the country is ruler by the current player then it is valid primary.
+		return game.getCurrentModelPlayer().equals(country.getRuler());
+	}
+
+	/**
+	 * Retrieves whether or not the specified {@link ModelCountry} could be selected
+	 * as the {@link Attack}'s secondary {@link ModelCounrty}.
+	 * 
+	 * @param country
+	 *            The {@link ModelCountry} that could be selected.
+	 * @return Whether or not the specified {@link ModelCountry} could be selected.
+	 */
+	private boolean selectSecondary(ModelCountry country) {
+
+		// If the country is null then it cannot be selected.
+		if (country == null) {
+			return false;
+		}
+
+		// If there is a primary selected and the country is a valid target then the
+		// country is a valid secondary.
+		return getPrimary() != null && isValidTarget(getPrimary(), country);
 	}
 
 }

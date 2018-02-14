@@ -71,7 +71,7 @@ public enum ModelHazard {
 		this.maxCasualties = maxCasualties;
 		this.chance = chance;
 		this.name = name;
-		generator = new Random();
+		this.generator = new Random();
 	}
 
 	/**
@@ -95,19 +95,19 @@ public enum ModelHazard {
 	public boolean act(ModelArmy army) {
 
 		// Calculate whether this hazard will occur.
-		boolean occur = chance > generator.nextInt(100);
+		final boolean occur = chance > generator.nextInt(100);
 
 		// If the environmental hazard occurs.
 		if (occur) {
 
 			// Holds the current size of the army.
-			int currentSize = army.getStrength();
+			final int currentSize = army.getStrength();
 
 			// Holds the max amount of units this hazard can kill
-			int maxCasualties = (this.maxCasualties * currentSize) / 100;
+			final int maxCasualties = (this.maxCasualties * currentSize) / 100;
 
 			// Generate a random proportion of the army to kill.
-			int casualties = maxCasualties == 0 ? 1 : generator.nextInt(maxCasualties - (maxCasualties / 4)) + 1;
+			final int casualties = maxCasualties == 0 ? 1 : generator.nextInt(maxCasualties - (maxCasualties / 4)) + 1;
 
 			// Check whether the army will be below the minimum size.
 			if (currentSize - casualties <= 1) {

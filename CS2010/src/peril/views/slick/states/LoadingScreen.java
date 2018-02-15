@@ -146,8 +146,7 @@ public final class LoadingScreen extends InteractiveState {
 	 * {@link SetupState} when all the {@link FileParser}s are finished.
 	 */
 	@Override
-	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-		super.update(gc, sbg, delta);
+	public void update(GameContainer gc, int delta, Frame frame){
 
 		// If the index is equal to the size of the readers list then the last reader is
 		// finished.

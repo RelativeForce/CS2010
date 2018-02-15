@@ -24,6 +24,7 @@ import peril.views.slick.SlickGame;
 import peril.views.slick.Viewable;
 import peril.views.slick.components.Component;
 import peril.views.slick.components.menus.HelpMenu;
+import peril.views.slick.states.gameStates.CoreGameState;
 
 /**
  * 
@@ -113,6 +114,8 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 
 	public abstract void render(GameContainer gc, Frame frame);
 	
+	public abstract void update(GameContainer gc, int delta, Frame frame);
+	
 	/**
 	 * Processes a button press on this {@link InteractiveState}.
 	 * 
@@ -164,10 +167,33 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 *            The amount of time thats passed in millisecond since last update
 	 */
 	@Override
-	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+	public final void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+		frame.updateFrame(delta);
+		update(gc, delta, frame);
+	}
+	
+	/**
+	 * Adds a String as a tool tip to this {@link CoreGameState} to be displayed to
+	 * the user.
+	 * 
+	 * @param toolTip
+	 *            <code>String</code>
+	 */
+	public final void showToolTip(String toolTip, Point position) {
+
+		// Display the tool tip for 8 seconds
+		frame.addToolTip(toolTip, position, 2000);
 
 	}
+	
 
+	@Override
+	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		super.leave(container, game);
+		
+		frame.clearToolTips();
+	}
+	
 	/**
 	 * Called when the state is entered, before slick2d's game loop commences.
 	 * 
@@ -258,8 +284,14 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	@Override
 	public final void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
+		// Refresh the frame.
 		frame.newFrame(g);
+		
+		// Render the frame
 		render(gc, frame);
+		
+		// Draw the tool tips
+		frame.drawToolTips();
 
 	}
 
@@ -323,6 +355,10 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 		images.forEach(image -> frame.draw(image.getImage(), image.getPosition().x, image.getPosition().y));
 	}
 
+	protected final void clearToolTips() {
+		frame.clearToolTips();
+	}
+	
 	/**
 	 * Changes the {@link Music} that is currently playing for the {@link Music} of
 	 * the {@link Game#getCurrentState()}.

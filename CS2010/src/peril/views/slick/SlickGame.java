@@ -394,7 +394,7 @@ public class SlickGame extends StateBasedGame implements View {
 			throw new IllegalStateException("ToolTips may only be shown in game.");
 		}
 
-		((CoreGameState) getCurrentState()).showToolTip(text);
+		((CoreGameState) getCurrentState()).showToolTip(text, new Point(300, 300));
 
 	}
 
@@ -437,17 +437,17 @@ public class SlickGame extends StateBasedGame implements View {
 	public void toggleHelpMenu(boolean state) {
 		toggleMenu(state, HelpMenu.NAME);
 	}
-	
+
 	@Override
 	public void togglePointsMenu(boolean state) {
 		toggleMenu(state, PointsMenu.NAME);
 	}
-	
+
 	@Override
 	public void toggleUpgradeMenu(boolean state) {
 		toggleMenu(state, PointsMenu.NAME);
 	}
-	
+
 	@Override
 	public void toggleUnitMenu(boolean state) {
 		toggleMenu(state, PointsMenu.NAME);
@@ -527,33 +527,32 @@ public class SlickGame extends StateBasedGame implements View {
 	public void AIattack() {
 		menus.autoAttack();
 	}
-	
+
 	@Override
 	public int getScreenWidth() {
 		return agc.getScreenWidth();
 	}
-	
+
 	@Override
 	public int getScreenHeight() {
 		return agc.getScreenHeight();
 	}
-	
+
 	@Override
 	public boolean isFullScreen() {
 		return agc.isFullscreen();
 	}
-	
+
 	@Override
 	public int getWindowWidth() {
 		return agc.getWidth();
 	}
-	
+
 	@Override
 	public int getWindowHeight() {
 		return agc.getHeight();
 	}
 
-	
 	public void initMiniMap() {
 		states.addMiniMap(modelView.getVisual(game.getModelBoard()), this);
 	}

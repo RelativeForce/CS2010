@@ -92,6 +92,11 @@ public final class Credits extends InteractiveState {
 		background.scale(gc.getWidth(), gc.getHeight());
 	}
 
+	@Override
+	public void update(GameContainer gc, int delta, Frame frame) {
+		// Do nothing
+	}
+	
 	/**
 	 * Processes a button press on this {@link Credits}.
 	 */

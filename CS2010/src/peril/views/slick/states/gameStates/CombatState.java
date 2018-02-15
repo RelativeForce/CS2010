@@ -67,7 +67,7 @@ public final class CombatState extends CoreGameState {
 	 * name and then the enemy {@link SlickCountry}.
 	 */
 	@Override
-	public void render(GameContainer gc, Frame frame)  {
+	public void render(GameContainer gc, Frame frame) {
 
 		super.render(gc, frame);
 
@@ -81,11 +81,8 @@ public final class CombatState extends CoreGameState {
 		super.drawButtons();
 		super.drawPlayerName(frame);
 		super.drawMiniMap(frame);
-		
-		super.drawPopups(frame);
 
 		menus.draw(frame);
-
 
 	}
 
@@ -93,29 +90,27 @@ public final class CombatState extends CoreGameState {
 	 * Updates this {@link CombatState}.
 	 */
 	@Override
-	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-		super.update(gc, sbg, delta);
-
+	public final void update(GameContainer gc, int delta, Frame frame) {
+		super.update(gc, delta, frame);
 		game.processAI(delta);
-		
+
 	}
-	
+
 	@Override
-	public void parseButton(Frame frame,int key, Point mousePosition) {
-		
-		if(key == Input.KEY_B) {
-			
+	public void parseButton(Frame frame, int key, Point mousePosition) {
+
+		if (key == Input.KEY_B) {
+
 			final ModelCountry primary = model.getSelected(0);
 			final ModelCountry secondary = model.getSelected(1);
-			
-			if(primary != null && secondary != null) {
-				
+
+			if (primary != null && secondary != null) {
+
 				secondary.getLinkTo(primary).setState(ModelLinkState.BLOCKADE, 3);
-				
+
 			}
 		}
-		
-		
+
 		super.parseButton(frame, key, mousePosition);
 	}
 

@@ -66,8 +66,7 @@ public class Opening extends InteractiveState {
 	}
 
 	@Override
-	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-		super.update(gc, sbg, delta);
+	public void update(GameContainer gc, int delta, Frame frame) {
 
 		SplashState current = states.get(index);
 

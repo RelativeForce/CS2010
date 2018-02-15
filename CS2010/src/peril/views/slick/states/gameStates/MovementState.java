@@ -85,15 +85,13 @@ public final class MovementState extends CoreGameState {
 		super.drawPlayerName(frame);
 		
 		super.drawMiniMap(frame);
-		super.drawPopups(frame);
 		menus.draw(frame);
 
 	}
 
 	@Override
-	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-		super.update(gc, sbg, delta);
-
+	public void update(GameContainer gc, int delta, Frame frame){
+		super.update(gc, delta, frame);
 		game.processAI(delta);
 	}
 

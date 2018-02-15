@@ -113,15 +113,13 @@ public final class ReinforcementState extends CoreGameState {
 
 		super.drawMiniMap(frame);
 		
-		super.drawPopups(frame);
 		menus.draw(frame);
 
 	}
 
 	@Override
-	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-		super.update(gc, sbg, delta);
-
+	public final void update(GameContainer gc, int delta, Frame frame) {
+		super.update(gc, delta, frame);
 		game.processAI(delta);
 	}
 

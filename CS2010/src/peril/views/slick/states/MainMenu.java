@@ -255,7 +255,7 @@ public final class MainMenu extends InteractiveState {
 	 * visual assets of the main menu are loaded in from memory.
 	 */
 	@Override
-	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+	public void update(GameContainer gc, int delta, Frame frame) {
 
 		if (!slick.io.mainMenuLoader.isFinished()) {
 			slick.io.mainMenuLoader.parseLine();

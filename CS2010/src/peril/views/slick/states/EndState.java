@@ -182,6 +182,11 @@ public class EndState extends InteractiveState {
 		setPodiumPositions(gc);
 	}
 
+	@Override
+	public void update(GameContainer gc, int delta, Frame frame) {
+		// Do Nothing
+	}
+	
 	/**
 	 * Performs the exit state operations specific to the {@link EndState}.
 	 */

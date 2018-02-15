@@ -8,6 +8,8 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
+import peril.views.slick.components.TextField;
+
 /**
  * <h3>Basic Description</h3>
  * <p>
@@ -35,8 +37,8 @@ import org.newdawn.slick.Image;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-13
- * @version 1.01.01
+ * @since 2018-02-15
+ * @version 1.02.01
  * 
  * @see Clickable
  * @see Point
@@ -53,6 +55,12 @@ public final class Frame {
 	private final List<List<Entry>> planes;
 
 	/**
+	 * The {@link List} of all the {@link ToolTip}s that are drawn on the
+	 * {@link Frame}.
+	 */
+	private final List<ToolTip> toolTips;
+
+	/**
 	 * The {@link Graphics} of the current frame.
 	 */
 	public Graphics g;
@@ -62,6 +70,7 @@ public final class Frame {
 	 */
 	public Frame() {
 		planes = new ArrayList<>();
+		toolTips = new LinkedList<>();
 	}
 
 	/**
@@ -80,6 +89,76 @@ public final class Frame {
 		final LinkedList<Entry> newPlane = new LinkedList<>();
 		planes.add(newPlane);
 
+	}
+
+	/**
+	 * Updates the {@link Frame} on how many milliseconds have passed since the last
+	 * time {@link Frame#newFrame(Graphics)} was called.
+	 * 
+	 * @param delta
+	 *            How many milliseconds have passed since the last time
+	 *            {@link Frame#newFrame(Graphics)} was called.
+	 */
+	public void updateFrame(int delta) {
+
+		List<ToolTip> toRemove = new LinkedList<>();
+
+		toolTips.forEach(toolTip -> {
+			
+			// If the tool tip has elapsed remove it.
+			if (toolTip.elapse(delta)) {
+				toRemove.add(toolTip);
+			}
+		});
+		
+		toRemove.forEach(toolTip -> toolTips.remove(toolTip));
+	}
+
+	/**
+	 * Clears all the tool tips from this frame.
+	 */
+	public void clearToolTips() {
+		if (!toolTips.isEmpty()) {
+			toolTips.clear();
+		}
+	}
+
+	/**
+	 * Adds a tool tip to be displayed for a specified duration at a specified
+	 * {@link Point} position.
+	 * 
+	 * @param message
+	 *            The message of the tool tip.
+	 * @param position
+	 *            The position of the tool tip.
+	 * @param duration
+	 *            The number of milliseconds this tool tip will be displayed for.
+	 */
+	public void addToolTip(String message, Point position, long duration) {
+		toolTips.add(new ToolTip(message, position, duration));
+	}
+
+	/**
+	 * Moves all the {@link ToolTip} currently being displayed on this {@link Frame}
+	 * by a specified {@link Point} vector.
+	 * 
+	 * @param vector
+	 *            The {@link Point} vector the tool tips will be moved in.
+	 */
+	public void panToolTips(Point vector) {
+
+		toolTips.forEach(toolTip -> {
+			final Point current = toolTip.getPosition();
+			toolTip.setPosition(new Point(current.x + vector.x, current.y + vector.y));
+		});
+
+	}
+
+	/**
+	 * Draws all the {@link ToolTip} on the {@link Frame}.
+	 */
+	public void drawToolTips() {
+		toolTips.forEach(toolTip -> toolTip.draw(this));
 	}
 
 	/**
@@ -456,4 +535,132 @@ public final class Frame {
 
 	}
 
+	/**
+	 * 
+	 * Encapsulates the behaviours of a tool tip that will be displayed over the
+	 * {@link Frame}.
+	 * 
+	 * @author Joshua_Eddy
+	 * 
+	 * @since 2018-02-15
+	 * @version 1.01.01
+	 *
+	 */
+	private final class ToolTip {
+
+		/**
+		 * The {@link TextField} that displays the message to the user.
+		 */
+		private final TextField text;
+
+		/**
+		 * The {@link Delay} before this {@link ToolTip} will be disappear.
+		 */
+		private final Delay delay;
+
+		/**
+		 * Constructs a new {@link ToolTip}.
+		 * 
+		 * @param message
+		 *            The message to be displayed on the {@link ToolTip}.
+		 * @param position
+		 *            The {@link Point} position of the {@link ToolTip}.
+		 * @param duration
+		 *            The number of milliseconds this {@link ToolTip} will be displayed
+		 *            for.
+		 */
+		public ToolTip(String message, Point position, long duration) {
+			text = new TextField(200, 80, position);
+			delay = new Delay(duration);
+
+			text.init();
+			text.addText(message);
+		}
+
+		/**
+		 * Retrieves whether or not this {@link ToolTip} should disappear or not.
+		 * 
+		 * @param delta
+		 *            The number of milliseconds between the last frame and this one.
+		 * @return Whether or not this {@link ToolTip} should disappear or not.
+		 */
+		public boolean elapse(int delta) {
+			return delay.hasElapsed(delta);
+		}
+
+		/**
+		 * Draws the {@link ToolTip} on the specified {@link Frame}.
+		 * 
+		 * @param frame
+		 *            The {@link Frame} the {@link ToolTip} will be drawn on.
+		 */
+		public void draw(Frame frame) {
+			text.draw(frame);
+		}
+
+		/**
+		 * Sets the {@link Point} position of the {@link ToolTip}.
+		 * 
+		 * @param position
+		 *            The new {@link Point} position of the {@link ToolTip}.
+		 */
+		public void setPosition(Point position) {
+			text.setPosition(position);
+		}
+
+		/**
+		 * Retrieves the {@link Point} position of the {@link ToolTip}.
+		 * 
+		 * @return The {@link Point} position of the {@link ToolTip}.
+		 */
+		public Point getPosition() {
+			return text.getPosition();
+		}
+
+	}
+
+	/**
+	 * Encapsulates the behaviour of a time delay.
+	 * 
+	 * @author Joshua_Eddy
+	 * 
+	 * @since 2018-02-15
+	 * @version 1.01.01
+	 *
+	 */
+	private final class Delay {
+
+		/**
+		 * The time in milliseconds before this {@link Delay} has elapsed.
+		 */
+		private long time;
+
+		/**
+		 * Constructs a new {@link Delay}.
+		 * 
+		 * @param time
+		 *            The number of {@link Delay#hasElapsed()} executions before this
+		 *            {@link Delay} has elapsed.
+		 */
+		public Delay(long time) {
+			if (time <= 0) {
+				throw new IllegalArgumentException("Delay time cannot be <= zero.");
+			}
+			this.time = time;
+		}
+
+		/**
+		 * Reduces {@link Delay#time} and retrieves whether it has elapsed or not.
+		 * 
+		 * @param delta
+		 *            The time that has passed in milliseconds
+		 * 
+		 * @return Whether this {@link Delay} has elapsed or not.
+		 */
+		public boolean hasElapsed(int delta) {
+			time -= delta;
+			return time <= 0;
+		}
+
+	}
 }

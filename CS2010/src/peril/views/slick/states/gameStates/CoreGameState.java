@@ -24,7 +24,6 @@ import peril.views.slick.Frame;
 import peril.views.slick.MiniMap;
 import peril.views.slick.Point;
 import peril.views.slick.board.*;
-import peril.views.slick.components.lists.ToolTipList;
 import peril.views.slick.components.menus.Menu;
 import peril.views.slick.components.menus.PauseMenu;
 import peril.views.slick.helpers.MenuHelper;
@@ -74,11 +73,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	private Point panDirection;
 
 	/**
-	 * Holds the tool tip that will be displayed to the user.
-	 */
-	private final ToolTipList toolTipList;
-
-	/**
 	 * Constructs a new {@link CoreGameState}.
 	 * 
 	 * @param game
@@ -97,11 +91,9 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		this.menus = slick.menus;
 		this.model = model;
 		this.panDirection = null;
-		this.toolTipList = new ToolTipList(new Point(210, 60));
 		this.backgroundMusic = new ArrayList<>();
 		this.selected = new ArrayList<>();
 
-		super.addComponent(toolTipList);
 	}
 
 	/**
@@ -143,15 +135,11 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * Updates this {@link CoreGameState} between frames.
 	 */
 	@Override
-	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-		super.update(gc, sbg, delta);
-
-		// Elapse the time of the tool tips.
-		toolTipList.elapseTime(delta);
+	public void update(GameContainer gc, int delta, Frame frame){
 
 		// If there is no menu visible and there is a pan direction, pan.
 		if (panDirection != null && !menus.menuVisible()) {
-			pan(panDirection);
+			frame.panToolTips(pan(panDirection));
 		}
 	}
 
@@ -179,7 +167,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
 		super.leave(container, game);
 
-		toolTipList.clear();
+		super.clearToolTips();
 
 		collapseSelected();
 
@@ -262,24 +250,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	@Override
 	public final Music getMusic() {
 		return backgroundMusic.get(new Random().nextInt(backgroundMusic.size()));
-	}
-
-	/**
-	 * Adds a String as a tool tip to this {@link CoreGameState} to be displayed to
-	 * the user.
-	 * 
-	 * @param toolTip
-	 *            <code>String</code>
-	 */
-	public final void showToolTip(String toolTip) {
-
-		if (toolTip == null) {
-			throw new NullPointerException("Popup cannot be null.");
-		}
-
-		// Display the tool tip for 8 seconds
-		toolTipList.add(toolTip, 8000);
-
 	}
 
 	/**
@@ -464,16 +434,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	}
 
 	/**
-	 * Draws the {@link ToolTipList} containing the pop ups of the
-	 * {@link CoreGameState} on screen.
-	 * 
-	 * @param frame
-	 */
-	protected final void drawPopups(Frame frame) {
-		toolTipList.draw(frame);
-	}
-
-	/**
 	 * Retrieves the centre of the oval behind the {@link Amry} of a specified
 	 * {@link SlickCountry}.
 	 * 
@@ -524,19 +484,21 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * 
 	 * @param panVector
 	 */
-	private void pan(Point panVector) {
+	private Point pan(Point panVector) {
 
-		int width = slick.getContainer().getWidth();
-		int height = slick.getContainer().getHeight();
+		final int width = slick.getContainer().getWidth();
+		final int height = slick.getContainer().getHeight();
 
 		// The vector the board actually moved along.
-		Point actualVector = slick.modelView.getVisual(game.getModelBoard()).move(panDirection, width, height);
+		final Point actualVector = slick.modelView.getVisual(game.getModelBoard()).move(panDirection, width, height);
 
 		// If the board actually moved.
 		if (actualVector.x != 0 || actualVector.y != 0) {
 			panElements(actualVector);
 			miniMap.repositionWindow();
 		}
+		
+		return actualVector;
 
 	}
 

@@ -211,6 +211,11 @@ public final class PlayerSelection extends InteractiveState {
 		return null;
 	}
 
+	@Override
+	public void update(GameContainer gc, int delta, Frame frame) {
+		// Do nothing
+	}
+	
 	/**
 	 * Load the game based on the current state of the elements in this
 	 * {@link PlayerSelection}.

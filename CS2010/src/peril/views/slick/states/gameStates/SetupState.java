@@ -39,7 +39,7 @@ public final class SetupState extends CoreGameState {
 
 		model.addObserver(this);
 	}
-	
+
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
@@ -50,17 +50,17 @@ public final class SetupState extends CoreGameState {
 	 * Renders this {@link SetupState}.
 	 */
 	@Override
-	public void render(GameContainer gc, Frame frame){
+	public void render(GameContainer gc, Frame frame) {
 		super.render(gc, frame);
 
 		super.drawAllLinks(frame);
 		super.drawArmies(frame);
 		super.drawImages();
 		super.drawButtons();
-		
+
 		super.drawMiniMap(frame);
 		super.drawPopups(frame);
-		
+
 		menus.draw(frame);
 
 	}
@@ -69,7 +69,7 @@ public final class SetupState extends CoreGameState {
 	 * Parses a button press on this {@link SetupState}.
 	 */
 	@Override
-	public void parseButton(int key, char c, Point mousePosition) {
+	public void parseButton(Frame frame, int key, Point mousePosition) {
 
 		ModelCountry highlighted = model.getSelected(0);
 
@@ -106,7 +106,7 @@ public final class SetupState extends CoreGameState {
 			}
 		}
 
-		super.parseButton(key, c, mousePosition);
+		super.parseButton(frame, key, mousePosition);
 
 	}
 
@@ -121,7 +121,7 @@ public final class SetupState extends CoreGameState {
 	@Override
 	public void update(Observable o, Object arg) {
 		super.update(o, arg);
-	
+
 		// Do any updates when a country is selected.
 
 	}

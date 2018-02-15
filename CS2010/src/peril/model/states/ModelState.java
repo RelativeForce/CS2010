@@ -1,23 +1,38 @@
 package peril.model.states;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Observable;
 
 import peril.Update;
 import peril.controllers.GameController;
-import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;
+import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
 
+/**
+ * 
+ * A state of the core game play loop where many {@link ModelCountry}s can be
+ * selected and the sub-types define which {@link ModelCountry}s can be
+ * selected.
+ * 
+ * @author Joshua_Eddy
+ * 
+ * @since 2018-02-14
+ * @version 1.01.02
+ * 
+ * @see Observable
+ *
+ */
 public abstract class ModelState extends Observable {
 
 	/**
-	 * The current {@link SlickCountry} that the player has highlighted.
+	 * The currently selected {@link ModelCountry}s.
 	 */
-	private LinkedList<ModelCountry> selected;
+	private final List<ModelCountry> selected;
 
 	/**
-	 * Holds the name of a specific {@link ModelState}.
+	 * Holds the name of this {@link ModelState}.
 	 */
 	private final String stateName;
 
@@ -25,38 +40,114 @@ public abstract class ModelState extends Observable {
 	 * Constructs an new {@link ModelState}.
 	 * 
 	 * @param stateName
-	 *            Name of the {@link ModelState}.
+	 *            The name of the {@link ModelState}.
 	 */
 	public ModelState(String stateName) {
-		selected = new LinkedList<>();
+		this.selected = new LinkedList<>();
 		this.stateName = stateName;
 	}
 
 	/**
+	 * Determines whether or not the specified {@link ModelCountry} has been
+	 * selected by this {@link ModelState}. If the specified {@link ModelCountry} is
+	 * <code>null</code> then this should return <code>false</code>.
+	 * 
+	 * @param country
+	 *            The {@link ModelCountry} that can be selected.
+	 * @param game
+	 *            The {@link GameController} that allows this {@link ModelState} to
+	 *            query the state of the game.
+	 * @return Whether or not the specified {@link ModelCountry} has been selected
+	 *         by this {@link ModelState}.
+	 */
+	public abstract boolean select(ModelCountry country, GameController game);
+
+	/**
 	 * Retrieves the name of a specific {@link ModelState}.
 	 * 
-	 * @return State name
+	 * @return The name of the {@link ModelState}.
 	 */
-	public String getName() {
+	public final String getName() {
 		return stateName;
 	}
 
 	/**
-	 * Sets the currently selected {@link SlickCountry} as <code>null</code>.
+	 * Removes all the currently selected {@link ModelCountry}s from this
+	 * {@link ModelState}.
 	 */
 	public final void deselectAll() {
 
-		selected.clear();
+		if (!selected.isEmpty()) {
+			selected.clear();
+		}
 
 		setChanged();
 		notifyObservers(new Update("selected", selected));
 	}
 
 	/**
-	 * Sets the currently selected {@link SlickCountry} as <code>null</code>.
+	 * Returns a the current highlighted {@link SlickCountry} in this state.
+	 * 
+	 */
+	public final ModelCountry getSelected(int index) {
+
+		// If the index maps to a selected country.
+		if (selected.isEmpty() || index >= selected.size()) {
+			return null;
+		}
+
+		return selected.get(index);
+	}
+
+	/**
+	 * Returns the current number of currently selected {@link ModelCountry}s in
+	 * this {@link ModelState}.
+	 * 
+	 * @return Current number of currently selected {@link ModelCountry}s.
+	 */
+	public final int numberOfSelected() {
+		return selected.size();
+	}
+
+	/**
+	 * Swaps the ruler of a specified {@link ModelCountry} for a new
+	 * {@link ModelPlayer}.
+	 * 
+	 * @param country
+	 *            {@link ModelCountry}
+	 * @param newRuler
+	 *            The new {@link ModelPlayer} ruler of the {@link ModelCountry}.
+	 */
+	public final void swapRuler(ModelCountry country, ModelPlayer newRuler) {
+
+		// Holds the old ruler of the country
+		ModelPlayer oldRuler = country.getRuler();
+
+		// If the country has a ruler reduce the number of countries that player owns by
+		// one.
+		if (oldRuler != null) {
+			oldRuler.setCountriesRuled(oldRuler.getCountriesRuled() - 1);
+			oldRuler.totalArmy.remove(country.getArmy().getStrength());
+		}
+
+		// Reassign the ruler of the country.
+		country.setRuler(newRuler);
+
+		// If the country has a new ruler increase the number of countries that player
+		// owns by one.
+		if (newRuler != null) {
+			newRuler.setCountriesRuled(newRuler.getCountriesRuled() + 1);
+			newRuler.totalArmy.add(ModelArmy.generateUnits(country.getArmy().getStrength()));
+		}
+
+	}
+
+	/**
+	 * Sets the currently selected {@link ModelCountry} as <code>null</code>.
 	 */
 	protected final void deselectAt(int index) {
 
+		// If the index does not map to a selected country do nothing.
 		if (selected.isEmpty() || index < 0 || index > selected.size() - 1) {
 			return;
 		}
@@ -69,81 +160,15 @@ public abstract class ModelState extends Observable {
 	}
 
 	/**
-	 * Returns a the current highlighted {@link SlickCountry} in this state.
-	 * 
+	 * Set the {@link ModelCountry} as the selected {@link ModelCountry} at the
+	 * specified index.
 	 */
-	public ModelCountry getSelected(int index) {
-		if (selected.isEmpty() || index >= selected.size()) {
-			return null;
-		}
-
-		return selected.get(index);
-	}
-
-	/**
-	 * Set the current {@link SlickCountry} that the player has highlighted.
-	 */
-	protected void addSelected(ModelCountry country, int index) {
+	protected final void addSelected(ModelCountry country, int index) {
 
 		selected.add(index, country);
 
 		setChanged();
 		notifyObservers(new Update("selected", selected));
-	}
-
-	/**
-	 * Returns the current number of currently selected {@link ModelCountry}s in
-	 * this {@link ModelState}.
-	 * 
-	 * @return int
-	 */
-	public final int numberOfSelected() {
-		return selected.size();
-	}
-
-	/**
-	 * Determines whether or not the specified {@link SlickCountry} has been
-	 * selected by this {@link CoreGameState}. If the specified {@link SlickCountry}
-	 * is <code>null</code> then this should return <code>false</code>.
-	 * 
-	 * @param country
-	 *            {@link SlickCountry}
-	 * @return Whether or not the specified {@link SlickCountry} has been selected
-	 *         by this {@link ModelState}.
-	 */
-	public abstract boolean select(ModelCountry country, GameController api);
-
-	/**
-	 * Swaps the {@link SlickPlayer} ruler of a specified {@link SlickCountry} for a
-	 * new {@link player}.
-	 * 
-	 * @param country
-	 *            {@link SlickCountry}
-	 * @param newRuler
-	 *            {@link SlickPlayer} new ruler of the {@link SlickCountry}.
-	 */
-	public void swapRuler(ModelCountry country, ModelPlayer newRuler) {
-
-		// Holds the old ruler of the country
-		ModelPlayer oldRuler = country.getRuler();
-
-		// If the country has a ruler reduce the number of countries that player owns by
-		// one.
-		if (oldRuler != null) {
-			oldRuler.setCountriesRuled(oldRuler.getCountriesRuled() - 1);
-			oldRuler.totalArmy.remove(UnitHelper.getInstance().getWeakest());
-		}
-
-		// Reassign the ruler of the country.
-		country.setRuler(newRuler);
-
-		// If the country has a new ruler increase the number of countries that player
-		// owns by one.
-		if (newRuler != null) {
-			newRuler.setCountriesRuled(newRuler.getCountriesRuled() + 1);
-			newRuler.totalArmy.add(UnitHelper.getInstance().getWeakest());
-		}
-
 	}
 
 }

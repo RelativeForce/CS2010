@@ -20,13 +20,6 @@ import peril.controllers.api.Player;
 public final class Monkey extends AI {
 
 	/**
-	 * The number of milliseconds between each action of this {@link Monkey}. If
-	 * this is zero or lower then the then the {@link Monkey} will perform its
-	 * actions at the frame rate of the display.
-	 */
-	private static final int SPEED = 100;
-
-	/**
 	 * The name of this {@link Monkey}.
 	 */
 	private static final String NAME = "Monkey";
@@ -39,7 +32,7 @@ public final class Monkey extends AI {
 	 *            state of the game.
 	 */
 	public Monkey(AIController api) {
-		super(NAME, SPEED, api);
+		super(NAME, MAX_SPEED, api);
 	}
 
 	/**

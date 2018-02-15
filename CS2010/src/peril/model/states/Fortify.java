@@ -1,44 +1,69 @@
 package peril.model.states;
 
+import java.util.Deque;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 
 import peril.controllers.GameController;
-import peril.controllers.api.Player;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
-import peril.views.slick.states.gameStates.MovementState;
+import peril.model.board.links.ModelLink;
 
-public class Fortify extends ModelState {
-	
+/**
+ * The logic for the {@link ModelState} where current {@link ModelPlayer} can
+ * select one of their {@link ModelCountry}s then another provided that there is
+ * a path of friendly {@link ModelCountry}s between the two
+ * {@link ModelCountry}.
+ * 
+ * @author Joshua_Eddy
+ * 
+ * @since 2018-02-14
+ * @version 1.01.01
+ *
+ * @see ModelState
+ */
+public final class Fortify extends ModelState {
+
 	/**
-	 * The name of a specific {@link MovementState}.
+	 * The name of the {@link Fortify} state.
 	 */
 	private static final String STATE_NAME = "Movement";
 
+	/**
+	 * Constructs an new {@link Fortify}.
+	 */
 	public Fortify() {
 		super(STATE_NAME);
 	}
 
+	/**
+	 * During the {@link Fortify} state the current {@link ModelPlayer} can select
+	 * one of their {@link ModelCountry}s then another provided that there is a path
+	 * of friendly {@link ModelCountry}s between the two {@link ModelCountry}.
+	 */
 	@Override
-	public boolean select(ModelCountry country, GameController api) {
+	public boolean select(ModelCountry country, GameController game) {
 
-		final boolean selectPrimary = selectPrimary(country, api);
-		final boolean selectSecondary = selectSecondary(country, api);
+		// Whether the country is a valid primary country.
+		final boolean validPrimary = selectPrimary(country, game);
+
+		// Whether the country is a valid secondary country.
+		final boolean validSecondary = selectSecondary(country, game);
 
 		// If it a valid primary or secondary country
-		if (selectPrimary || selectSecondary) {
+		if (validPrimary || validSecondary) {
 
-			// If the country is a valid primary then the old primary is de-highlighted
-			if (selectPrimary && !selectSecondary) {
+			// If the country is a valid primary then the old primary is de-selected
+			if (validPrimary && !validSecondary) {
 				deselectAt(0);
 				addSelected(country, 0);
 			}
-			// Otherwise the the secondary is de-highlighted and then the country is
-			// highlighted.
+			// Otherwise the the secondary is de-selected and then the country is
+			// selected.
 			else {
 				deselectAt(1);
 				addSelected(country, 1);
@@ -52,6 +77,15 @@ public class Fortify extends ModelState {
 	}
 
 	/**
+	 * Retrieves the primary selected {@link ModelCountry}.
+	 * 
+	 * @return Primary selected {@link ModelCountry}
+	 */
+	public ModelCountry getPrimary() {
+		return getSelected(0);
+	}
+
+	/**
 	 * Retrieves the secondary selected {@link ModelCountry}.
 	 * 
 	 * @return Secondary selected {@link ModelCountry}
@@ -61,218 +95,70 @@ public class Fortify extends ModelState {
 	}
 
 	/**
-	 * Retrieves the secondary selected {@link ModelCountry}.
-	 * 
-	 * @return Primary selected {@link ModelCountry}
-	 */
-	public ModelCountry getPrimary() {
-		return getSelected(0);
-	}
-
-	/**
-	 * Retrieves the path between two path between two {@link ModelCountry}s.
+	 * Retrieves the path between two path between two {@link ModelCountry}s ruled
+	 * by the same {@link ModelPlayer}.
 	 * 
 	 * @param start
-	 *            {@link ModelCountry}
+	 *            The {@link ModelCountry} where the path will begin.
 	 * @param target
-	 *            {@link ModelCountry}
-	 * @return
+	 *            The {@link ModelCountry} where the path will end.
+	 * @return The path of {@link ModelCountry}s between the two specified
+	 *         {@link ModelCountry}s.
 	 */
-	public Stack<ModelCountry> getPathBetween(ModelCountry start, ModelCountry target, final ModelUnit unit) {
+	public List<ModelCountry> getPathBetween(ModelCountry start, ModelCountry target, ModelUnit unit) {
 
 		// Holds the path from the friendly country to the target country.
-		Stack<ModelCountry> path = new Stack<ModelCountry>();
+		final LinkedList<ModelCountry> path = new LinkedList<ModelCountry>();
 
 		// Holds all the traversed countries
-		Set<ModelCountry> traversed = new HashSet<>();
+		final Set<ModelCountry> traversed = new HashSet<>();
 
 		// If the target belongs to the current player.
 		if (target != null && target.getRuler() == start.getRuler()) {
 
-			// If there is a path between the highlighted and the target add the points to
-			// the drawn path.
+			// Populate the path between the start and the target.
 			isPath(path, traversed, start, target, unit);
 		}
 
+		// Return the path as a list so that it is clear which end is the start.
 		return path;
 
 	}
 
 	/**
-	 * A {@link ModelCountry} is valid to be primary selected if:
-	 * <ul>
-	 * <li>It is <strong>NOT</strong> null.</li>
-	 * <li>Has the same ruler as the current {@link Player}.</li>
-	 * <li>There is not a current primary {@link ModelCountry} <strong>OR</strong>
-	 * the specified {@link ModelCountry} is <strong>NOT</strong> a
-	 * {@link MovementState#isValidLink(ModelCountry)}</li>
-	 * </ul>
-	 */
-	protected boolean selectPrimary(ModelCountry country, GameController api) {
-
-		if (country == null) {
-
-			return false;
-		}
-
-		// Holds the current player
-		ModelPlayer player = api.getCurrentModelPlayer();
-
-		// Holds the ruler of the country
-		ModelPlayer ruler = country.getRuler();
-
-		return getPrimary() == null && player.equals(ruler) && country.getArmy().getStrength() > 1;
-
-	}
-
-	/**
-	 * A {@link ModelCountry} is valid to be secondary selected if:
-	 * <ul>
-	 * <li>It is <strong>NOT</strong> null.</li>
-	 * <li>Has the same ruler as the current {@link Player}.</li>
-	 * <li>The specified {@link ModelCountry} is a
-	 * {@link MovementState#isValidLink(ModelCountry)}</li>
-	 * </ul>
-	 */
-	protected boolean selectSecondary(ModelCountry country, GameController api) {
-
-		if (country == null || getPrimary() == null) {
-
-			return false;
-		}
-
-		// Holds the current player
-		final ModelPlayer player = api.getCurrentModelPlayer();
-
-		// Holds the ruler of the country
-		final ModelPlayer ruler = country.getRuler();
-
-		// The country is different to the primary and has the same ruler as the player.
-		final boolean friendlyModelCountry = player.equals(ruler) && getPrimary() != country;
-
-		if (friendlyModelCountry) {
-
-			// Iterate over all the units in the army
-			for (ModelUnit current : getPrimary().getArmy()) {
-				
-				// The path between the current primary and the specified country.
-				final Stack<ModelCountry> path = getPathBetween(getPrimary(), country, current);
-
-				// If there is a path
-				if (!path.isEmpty()) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-
-	}
-
-	/**
-	 * This method will using a set of traversed nodes recursively perform a depth
-	 * first search from one node to another. The children of each node are added to
-	 * the
-	 * 
-	 * @param travsersed
-	 *            {@link Set} of {@link ModelCountry} that have been traversed.
-	 * @param country
-	 *            {@link ModelCountry} currently being checked.
-	 * @param target
-	 *            {@link ModelCountry} the is to be reached.
-	 * @return Whether the current {@link ModelCountry} is on the path to the target
-	 *         {@link ModelCountry}.
-	 */
-	private boolean isPath(Stack<ModelCountry> path, Set<ModelCountry> travsersed, ModelCountry current,
-			ModelCountry traget, final ModelUnit unit) {
-
-		// Add the current country to the path
-		path.push(current);
-
-		// Holds the children of the current country that have the same ruler.
-		Set<ModelCountry> validChildren = new HashSet<>();
-
-		// Iterate through all the neighbours that the current country has
-		for (ModelCountry country : current.getNeighbours()) {
-
-			/*
-			 * If the target country is a neighbour of the current country add it to the
-			 * path then return true. This will result in all the parents of the current
-			 * node to return true also.
-			 */
-			if (country.equals(traget)) {
-				path.push(country);
-				return true;
-			}
-
-			// If the country has not already been traversed and has the same ruler.
-			if (!travsersed.contains(country) && current.getRuler() == country.getRuler()
-					&& current.getLinkTo(country).canTransfer(unit, current, country)) {
-				validChildren.add(country);
-				travsersed.add(country);
-			}
-
-		}
-
-		/*
-		 * If there are no valid children then this path is a dead end. Due to this pop
-		 * the current country from the path and return false.
-		 */
-		if (validChildren.isEmpty()) {
-			path.pop();
-			return false;
-		}
-
-		/*
-		 * Iterate through each valid child and if the child is a part of the path
-		 * return true.
-		 */
-		for (ModelCountry child : validChildren) {
-			if (isPath(path, travsersed, child, traget, unit)) {
-				return true;
-			}
-		}
-
-		/*
-		 * This will only be performed if the non of the children have valid reached the
-		 * target. There for the current country is not on the path to the target.
-		 */
-		path.pop();
-		return false;
-	}
-
-	/**
-	 * Moves one unit from the primary {@link SlickCountry} to the secondary
-	 * {@link SlickCountry}.
+	 * Moves one unit from the primary {@link ModelCountry} to the secondary
+	 * {@link ModelCountry} along the path between them determined by
+	 * {@link Fortify#getPathBetween(ModelCountry, ModelCountry, ModelUnit)}.
 	 */
 	public void fortify() {
 
 		final ModelCountry primary = getSelected(0);
 		final ModelCountry target = getSelected(1);
-		
-		// If there is two countries highlighted
+
+		// If there is two countries selected.
 		if (primary != null && target != null) {
-			
+
 			// Holds the army of the primary country
 			final ModelArmy primaryArmy = primary.getArmy();
 
-			// Holds the army of the target country
-			final ModelArmy targetArmy = target.getArmy();
-
 			// Whether of not there is a unit selected in the current country's army.
-			final boolean unitSelected = primary.getArmy().getSelected() != null;
+			final boolean unitSelected = primaryArmy.getSelected() != null;
 
 			// If there is a selected unit fortify the country with that otherwise use the
 			// weakest unit in the army.
-			final ModelUnit unit = unitSelected ? primary.getArmy().getSelected() : primary.getArmy().getWeakestUnit();
+			final ModelUnit unit = unitSelected ? primaryArmy.getSelected() : primaryArmy.getWeakestUnit();
 
-			// If the army of the primary highlighted country is larger that 1 unit in size
-			if (primary.getArmy().getNumberOfUnits() > 1) {
+			// If the primary army is larger that 1 unit in size and has at least one of the
+			// specified unit.
+			if (primaryArmy.getNumberOfUnits() > 1 && primaryArmy.getNumberOf(unit) > 0) {
 
-				// Move the unit.
-				primaryArmy.remove(unit);
-				targetArmy.add(unit);
+				// The path between the two countries.
+				final List<ModelCountry> path = getPathBetween(primary, target, unit);
 
+				// Transfer the unit along the path
+				transferAlongPath(path, unit);
+
+				// If there is one unit left in the primary army then de-select the countries.
 				if (primaryArmy.getNumberOfUnits() == 1) {
 					deselectAll();
 				}
@@ -284,6 +170,249 @@ public class Fortify extends ModelState {
 			// DO NOTHING
 		}
 
+	}
+
+	/**
+	 * Transfers the specified {@link ModelUnit} across all the {@link ModelLink}
+	 * between all the {@link ModelCountry}s on the path.
+	 * 
+	 * @param path
+	 *            The {@link List} of {@link ModelCountry}s that connect two
+	 *            {@link ModelCountry}s.
+	 * @param unit
+	 *            The {@link ModelUnit} that will be transfered across the path.
+	 */
+	private void transferAlongPath(List<ModelCountry> path, ModelUnit unit) {
+
+		// Holds the country that was before the current country in the path.
+		ModelCountry previous = null;
+
+		// Iterate over every country in the path an move the unit from the previous
+		// country to the next.
+		for (ModelCountry current : path) {
+
+			// If this is not the first country in the path.
+			if (previous != null) {
+
+				// The link between the previous and current country.
+				final ModelLink link = previous.getLinkTo(current);
+
+				// Transfer the unit.
+				link.transferBetween(unit, previous, current);
+
+			}
+
+			// Set the current as the previous.
+			previous = current;
+
+		}
+	}
+
+	/**
+	 * Retrieves whether or not the specified {@link ModelCountry} could be selected
+	 * as the {@link Fortify}'s primary {@link ModelCounrty}.
+	 * 
+	 * @param country
+	 *            The {@link ModelCountry} that could be selected.
+	 * @param game
+	 *            The {@link GameController} that allows this {@link Attack} to
+	 *            query the state of the game.
+	 * @return Whether or not the specified {@link ModelCountry} could be selected.
+	 */
+	private boolean selectPrimary(ModelCountry country, GameController game) {
+
+		// If the country is null then it is not a valid primary.
+		if (country == null) {
+			return false;
+		}
+
+		// Whether the country is ruled by the current player.
+		final boolean ruledByCurrentPlayer = game.getCurrentModelPlayer().equals(country.getRuler());
+
+		// Whether the country's army has enough units to fortify another country once.
+		final boolean hasEnoughUnits = country.getArmy().getNumberOfUnits() > 1;
+
+		// Whether there is no primary currently selected.
+		final boolean noPrimary = getPrimary() == null;
+
+		// Return whether all the criteria were met or not.
+		return noPrimary && ruledByCurrentPlayer && hasEnoughUnits;
+
+	}
+
+	/**
+	 * Retrieves whether or not the specified {@link ModelCountry} could be selected
+	 * as the {@link Fortify}'s secondary {@link ModelCounrty}.
+	 * 
+	 * @param country
+	 *            The {@link ModelCountry} that could be selected.
+	 * @param game
+	 *            The {@link GameController} that allows this {@link Attack} to
+	 *            query the state of the game.
+	 * @return Whether or not the specified {@link ModelCountry} could be selected.
+	 */
+	private boolean selectSecondary(ModelCountry country, GameController game) {
+
+		if (country == null || getPrimary() == null) {
+			return false;
+		}
+
+		// Whether the country is ruled by the current player.
+		final boolean ruledByCurrentPlayer = game.getCurrentModelPlayer().equals(country.getRuler());
+
+		// Whether the country is different to the primary and has the same ruler as the
+		// player.
+		final boolean friendlyCountry = ruledByCurrentPlayer && getPrimary() != country;
+
+		// If the country is a friendly country check return whether any units could be
+		// transfered between them.
+		return friendlyCountry ? canTransfer(country) : false;
+
+	}
+
+	/**
+	 * Retrieves whether or not {@link ModelUnit}s can be transfered between the
+	 * currently selected primary {@link ModelCountry} and the specified
+	 * {@link ModelCountry}.
+	 * 
+	 * @param country
+	 *            The {@link ModelCountry} that could be selected.
+	 * @return Whether or not {@link ModelUnit}s can be transfered between the
+	 *         currently selected primary {@link ModelCountry} and the specified
+	 *         {@link ModelCountry}.
+	 */
+	private boolean canTransfer(ModelCountry country) {
+
+		// Holds the current primary country
+		final ModelCountry primary = getPrimary();
+
+		// Holds the army of the primary country
+		final ModelArmy primaryArmy = primary.getArmy();
+
+		/*
+		 * If the user has selected a model unit check check if that unit can be
+		 * Transfered. Otherwise check if any of the units in the army can be
+		 * transfered.
+		 */
+		if (primaryArmy.getSelected() != null) {
+
+			// Holds the currently selected model unit from the army.
+			final ModelUnit unit = primaryArmy.getSelected();
+
+			// If there is a path then the unit can be transfered.
+			return !getPathBetween(primary, country, unit).isEmpty();
+
+		} else {
+
+			// Iterate over all the units in the army an see if at least one can be
+			// transfered.
+			for (ModelUnit unit : primaryArmy) {
+
+				// The path between the current primary and the specified country.
+				final List<ModelCountry> path = getPathBetween(primary, country, unit);
+
+				// If there is a path
+				if (!path.isEmpty()) {
+					return true;
+				}
+			}
+
+			// If non of the units could be transfered return false;
+			return false;
+		}
+
+	}
+
+	/**
+	 * This method will using a {@link Set} of traversed nodes (aka
+	 * {@link ModelCountry}) recursively perform a depth first search from one node
+	 * to another. If a link between two {@link ModelCountry}s does not allow the
+	 * specified {@link ModelUnit} to be transfered
+	 * ({@link ModelLink#canTransfer(ModelUnit, ModelCountry, ModelCountry)}) then
+	 * the link will to be used in the path.
+	 * 
+	 * @param path
+	 *            The current path of the search.
+	 * @param travsersed
+	 *            The {@link Set} of {@link ModelCountry} that have already been
+	 *            traversed.
+	 * @param current
+	 *            The {@link ModelCountry} currently being checked.
+	 * @param target
+	 *            The {@link ModelCountry} that will result in the path being
+	 *            complete.
+	 * @param unit
+	 *            The unit that will be transfered across the path.
+	 * @return Whether the current {@link ModelCountry} is on the path to the target
+	 *         {@link ModelCountry}.
+	 * 
+	 * @see ModelLink
+	 * @see Deque
+	 */
+	private boolean isPath(Deque<ModelCountry> path, Set<ModelCountry> travsersed, ModelCountry current,
+			ModelCountry target, ModelUnit unit) {
+
+		// Add the current country to the path
+		path.push(current);
+
+		// Holds the children of the current country that can be traversed.
+		final Set<ModelCountry> validChildren = new HashSet<>();
+
+		// Iterate through all the neighbours that the current country has
+		for (ModelCountry country : current.getNeighbours()) {
+
+			/*
+			 * If the target country is a neighbour of the current country add it to the
+			 * path then return true. This will result in all the parents of the current
+			 * node to return true also.
+			 */
+			if (country.equals(target)) {
+				path.push(country);
+				return true;
+			}
+
+			// If the country has not already been traversed and has the same ruler.
+			if (!travsersed.contains(country) && current.getRuler() == country.getRuler()) {
+
+				// Holds the links between the two countries.
+				final ModelLink link = current.getLinkTo(country);
+
+				// If the unit can be transfered over the link then set the country as a valid
+				// child and set it as traversed.
+				if (link.canTransfer(unit, current, country)) {
+					validChildren.add(country);
+					travsersed.add(country);
+				}
+			}
+
+		}
+
+		/*
+		 * If there are no valid children then this path is at dead end. Due to this pop
+		 * the current country from the path and return false signifying that the
+		 * current county is not on the path.
+		 */
+		if (validChildren.isEmpty()) {
+			path.pop();
+			return false;
+		}
+
+		/*
+		 * Iterate through each valid child and if the child is a part of the path
+		 * return true signifying that the current county is on the path.
+		 */
+		for (ModelCountry child : validChildren) {
+			if (isPath(path, travsersed, child, target, unit)) {
+				return true;
+			}
+		}
+
+		/*
+		 * This will only be performed if non of the children have reached the target.
+		 * Therefore the current country is not on the path to the target.
+		 */
+		path.pop();
+		return false;
 	}
 
 }

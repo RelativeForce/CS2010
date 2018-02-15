@@ -13,6 +13,7 @@ import peril.views.slick.states.EndState;
 import peril.views.slick.states.InteractiveState;
 import peril.views.slick.states.LoadingScreen;
 import peril.views.slick.states.MainMenu;
+import peril.views.slick.states.Opening;
 import peril.views.slick.states.PlayerSelection;
 import peril.views.slick.states.gameStates.CombatState;
 import peril.views.slick.states.gameStates.CoreGameState;
@@ -73,6 +74,8 @@ public class StateHelper {
 	 * will be in the game.
 	 */
 	public final PlayerSelection playerSelection;
+	
+	public final Opening opening;
 
 	/**
 	 * Constructs a new {@link StateHelper}.
@@ -102,8 +105,9 @@ public class StateHelper {
 	 *            The {@link PlayerSelection} that allows the user to select how
 	 *            many players will be in the game.
 	 */
-	public StateHelper(MainMenu mainMenu, CombatState combat, ReinforcementState reinforcement, SetupState setup,
+	public StateHelper(Opening opening,MainMenu mainMenu, CombatState combat, ReinforcementState reinforcement, SetupState setup,
 			MovementState movement, EndState end, LoadingScreen loadingScreen, PlayerSelection playerSelection) {
+		this.opening = opening;
 		this.mainMenu = mainMenu;
 		this.end = end;
 		this.combat = combat;
@@ -128,7 +132,8 @@ public class StateHelper {
 	 */
 	public void init(SlickGame game, SlickBoard slickBoard) throws SlickException {
 
-		// Add menu state to the game container.
+		// Add starting state to the game container.
+		//game.addState(opening);
 		game.addState(mainMenu);
 		game.addState(playerSelection);
 		game.addState(loadingScreen);

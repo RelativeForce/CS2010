@@ -16,7 +16,7 @@ import peril.views.slick.states.gameStates.CoreGameState;
  *
  * @see MouseListener
  */
-public class UIEventHandler implements MouseListener, KeyListener {
+public final class UIEventHandler implements MouseListener, KeyListener {
 
 	/**
 	 * The instance of the {@link Game} that this {@link UIEventHandler} assists.
@@ -85,16 +85,27 @@ public class UIEventHandler implements MouseListener, KeyListener {
 
 	@Override
 	public void mouseWheelMoved(int change) {
+		
+		int key = change > 0 ? Input.KEY_UP : Input.KEY_DOWN;
+		
+		buttonPress(key);
+		
 	}
 
 	@Override
 	public void keyPressed(int key, char c) {
-		Input input = game.getContainer().getInput();
-		game.getCurrentState().parseButton(key, c, new Point(input.getAbsoluteMouseX(), input.getAbsoluteMouseY()));
+		buttonPress(key);
 	}
 
 	@Override
 	public void keyReleased(int key, char c) {
+	}
+	
+	private void buttonPress(int key) {
+		
+		Input input = game.getContainer().getInput();
+		game.getCurrentState().parseButton(key, new Point(input.getAbsoluteMouseX(), input.getAbsoluteMouseY()));
+		
 	}
 
 }

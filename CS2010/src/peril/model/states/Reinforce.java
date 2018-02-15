@@ -1,41 +1,61 @@
 package peril.model.states;
 
 import peril.controllers.GameController;
-import peril.controllers.api.Player;
 import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;
+import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
-import peril.views.slick.states.gameStates.ReinforcementState;
 
-public class Reinforce extends ModelState {
-	
+/**
+ * The logic for the {@link ModelState} where the current {@link ModelPlayer}
+ * can select one of their {@link ModelCountry}s and reinforce the
+ * {@link ModelCountry}'s {@link ModelArmy} with {@link ModelUnit}(s).
+ * 
+ * @author Joshua_Eddy
+ * 
+ * @since 2018-02-14
+ * @version 1.01.01
+ * 
+ * @see ModelState
+ *
+ */
+public final class Reinforce extends ModelState {
+
 	/**
-	 * The name of a specific {@link ReinforcementState}.
+	 * The name of the {@link Reinforce} state.
 	 */
 	private static final String STATE_NAME = "Reinforcement";
 
+	/**
+	 * Constructs a new {@link Reinforce}.
+	 */
 	public Reinforce() {
 		super(STATE_NAME);
 	}
 
 	/**
-	 * The {@link SlickCountry} that is to be selected must be owned by the current
-	 * {@link Player} in order to be selected.
+	 * During {@link Reinforce} only one {@link ModelCountry} can be selected at
+	 * once and that {@link ModelCountry} most be ruled by the current
+	 * {@link ModelPlayer} as specified by
+	 * {@link GameController#getCurrentModelPlayer()}.
 	 */
-	public boolean select(ModelCountry country, GameController api) {
+	@Override
+	public boolean select(ModelCountry country, GameController game) {
 
+		// If the country is not null.
 		if (country != null) {
 
 			// Holds the current player
-			ModelPlayer player = api.getCurrentModelPlayer();
+			final ModelPlayer player = game.getCurrentModelPlayer();
 
 			// Holds the ruler of the country
-			ModelPlayer ruler = country.getRuler();
+			final ModelPlayer ruler = country.getRuler();
 
+			// If the current player rules the country.
 			if (player.equals(ruler)) {
 
-				// De-select the current selected
+				// De-select the current selected country.
 				deselectAll();
 
 				// Select the new country
@@ -43,10 +63,6 @@ public class Reinforce extends ModelState {
 				return true;
 
 			}
-
-		} else {
-			deselectAll();
-			return true;
 		}
 
 		deselectAll();
@@ -54,49 +70,55 @@ public class Reinforce extends ModelState {
 	}
 
 	/**
-	 * Reinforces the selected {@link SlickCountry}.
+	 * Reinforces the currently selected {@link ModelCountry}.
+	 * 
+	 * @param game
+	 *            The {@link GameController} that allows this {@link Reinforce} to
+	 *            query the state of the game.
 	 */
 	public void reinforce(GameController game) {
 
 		// Holds the currently highlighted country
-		ModelCountry highlightedCountry = getSelected(0);
+		final ModelCountry selectedCountry = getSelected(0);
 
 		// Holds the current player.
-		ModelPlayer player = game.getCurrentModelPlayer();
+		final ModelPlayer player = game.getCurrentModelPlayer();
 
-		// If there is a country highlighted.
-		if (highlightedCountry != null) {
+		// If there is a country selected.
+		if (selectedCountry != null) {
 
-			// If the player has any units to place
+			// If the player has any units to distribute.
 			if (player.distributableArmy.getNumberOfUnits() > 0) {
 
-				ModelPlayer ruler = highlightedCountry.getRuler();
+				// Holds the ruler of the specified country
+				final ModelPlayer ruler = selectedCountry.getRuler();
 
-				// If the highlighted country has a ruler and it is that player
-				if (ruler != null && ruler.equals(player)) {
+				// If the selected country's ruler is the current player.
+				if (player.equals(ruler)) {
 
+					// Holds the weakest unit in the game.
 					final ModelUnit weakest = UnitHelper.getInstance().getWeakest();
-					
+
 					// Remove the unit from the list of units to place.
 					player.distributableArmy.remove(weakest);
 					player.totalArmy.add(weakest);
-					
+
 					// Get that country's army and increase its size by one.
-					highlightedCountry.getArmy().add(weakest);
-					
+					selectedCountry.getArmy().add(weakest);
+
+					// Check if any challenges have been completed.
 					game.checkChallenges();
 
-
 				} else {
-					System.out.println(player.toString() + " does not rule this country");
+					throw new IllegalStateException(player.toString() + " does not rule this country");
 				}
 
 			} else {
-				System.out.println("No units to distribute.");
+				throw new IllegalStateException("No units to distribute.");
 			}
 
 		} else {
-			System.out.println("No country selected.");
+			throw new IllegalStateException("No country selected.");
 		}
 
 	}

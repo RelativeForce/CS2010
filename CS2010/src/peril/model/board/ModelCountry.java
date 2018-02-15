@@ -1,6 +1,7 @@
 package peril.model.board;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
@@ -15,38 +16,29 @@ import peril.model.board.links.ModelLink;
 import peril.model.board.links.ModelLinkState;
 
 /**
- * Encapsulates the behaviour of a Country. Countries:
- * <ul>
- * <li>Have and manage {@link ModelArmy}s.</li>
- * <li>Have a name.</li>
- * <li>Depend of the countries they are linked to.</li>
- * <li>Have a {@link Player} that rules them.</li>
- * </ul>
+ * Encapsulates the behaviour of a country that has a {@link ModelArmy}.
  * 
  * @author Joshua_Eddy, James_Rowntree
  * 
- * @see java.util.LinkedList
- * @see Java.util.List
+ * @since 2018-02-14
+ * @version 1.01.01
+ * 
+ * @see Observable
+ * @see Observer
+ * @see Country
  *
  */
 public final class ModelCountry extends Observable implements Country, Observer {
 
 	/**
-	 * Holds the {@link Player} that rules this {@link ModelCountry}.
-	 */
-	private ModelPlayer ruler;
-
-	/**
-	 * Holds the {@link ModelCountry}(s) that this country is linked to.
-	 * 
-	 * @see java.util.List
+	 * Holds the {@link ModelCountry}s that this {@link ModelCountry} is linked to.
+	 * The link between each of the {@link ModelCountry}s is defined by
+	 * {@link ModelLink}.
 	 */
 	private final Map<ModelCountry, ModelLink> neighbours;
 
 	/**
-	 * Holds the army occupying this {@link ModelCountry}.
-	 * 
-	 * @see ModelArmy {@link ModelArmy}
+	 * Holds the {@link ModelArmy} at this {@link ModelCountry}.
 	 */
 	private final ModelArmy army;
 
@@ -59,6 +51,11 @@ public final class ModelCountry extends Observable implements Country, Observer 
 	 * The {@link ModelColor} of this {@link ModelCountry} in the level file.
 	 */
 	private final ModelColor color;
+
+	/**
+	 * Holds the {@link ModelPlayer} that rules this {@link ModelCountry}.
+	 */
+	private ModelPlayer ruler;
 
 	/**
 	 * Constructs a new {@link ModelCountry} with a specified army offset.
@@ -77,79 +74,26 @@ public final class ModelCountry extends Observable implements Country, Observer 
 		this.name = name;
 		this.color = color;
 
+		// Add this country as an observer of the army so that the country knows when it
+		// is changed.
 		this.army.addObserver(this);
 
 	}
 
 	/**
-	 * Returns the name of the {@link ModelCountry}.
-	 * 
-	 * @return name.
+	 * Performs the end round operation for this {@link ModelCountry}.
 	 */
-	public String getName() {
-		return name;
-	}
+	public void endRound(ModelHazard hazard) {
 
-	/**
-	 * Sets the current {@link Ruler} of this {@link ModelCountry}.
-	 * 
-	 * @param ruler
-	 *            {@link ModelPlayer}
-	 */
-	public void setRuler(ModelPlayer ruler) {
-		this.ruler = ruler;
+		neighbours.forEach((counrty, link) -> link.elapse());
 
+		// Holds whether the hazard has occurred or not.
+		boolean occurred = hazard.act(army);
+
+		// If the hazard occurred update the most recent hazard.
 		setChanged();
-		notifyObservers(new Update("ruler", ruler));
-	}
+		notifyObservers(new Update("hazard", occurred ? hazard : null));
 
-	/**
-	 * Returns the strength of this {@link ModelCountry}'s {@link ModelArmy}.
-	 */
-	@Override
-	public int getArmyStrength() {
-		return army.getStrength();
-	}
-
-	/**
-	 * Retrieves the {@link ModelArmy} at this {@link ModelCountry}.
-	 * 
-	 * @return {@link ModelCountry#army}.
-	 */
-	@Override
-	public ModelArmy getArmy() {
-		return army;
-	}
-
-	/**
-	 * Retrieves the {@link ModelCountry#neighbours}.
-	 * 
-	 * @return {@link Set} of type {@link ModelCountry}.
-	 */
-	@Override
-	public Set<ModelCountry> getNeighbours() {
-		return neighbours.keySet();
-	}
-
-	/**
-	 * Retrieves the {@link ModelColor} for this {@link ModelCountry}.
-	 * 
-	 * @return {@link ModelColor}
-	 */
-	public ModelColor getColor() {
-		return color;
-	}
-
-	/**
-	 * Checks if the {@link ModelCountry} is a neighbour of this
-	 * {@link ModelCountry}.
-	 * 
-	 * @param country
-	 *            {@link ModelCountry} to check
-	 * @return Whether it is a neighbour or not.
-	 */
-	public boolean isNeighbour(ModelCountry country) {
-		return neighbours.keySet().contains(country);
 	}
 
 	/**
@@ -199,6 +143,88 @@ public final class ModelCountry extends Observable implements Country, Observer 
 	}
 
 	/**
+	 * Sets the current {@link Ruler} of this {@link ModelCountry}.
+	 * 
+	 * @param ruler
+	 *            {@link ModelPlayer}
+	 */
+	public void setRuler(ModelPlayer ruler) {
+		this.ruler = ruler;
+
+		setChanged();
+		notifyObservers(new Update("ruler", ruler));
+	}
+
+	/**
+	 * Updates this {@link ModelCountry}.
+	 */
+	@Override
+	public void update(Observable o, Object arg) {
+		if (o instanceof ModelArmy || o instanceof ModelLink) {
+			setChanged();
+			notifyObservers();
+		}
+	}
+
+	/**
+	 * Returns the strength of this {@link ModelCountry}'s {@link ModelArmy}.
+	 */
+	@Override
+	public int getArmyStrength() {
+		return army.getStrength();
+	}
+
+	/**
+	 * Checks if the {@link ModelCountry} is a neighbour of this
+	 * {@link ModelCountry}.
+	 * 
+	 * @param country
+	 *            {@link ModelCountry} to check
+	 * @return Whether it is a neighbour or not.
+	 */
+	public boolean isNeighbour(ModelCountry country) {
+		return neighbours.keySet().contains(country);
+	}
+
+	/**
+	 * Retrieves the name of the {@link ModelCountry}.
+	 * 
+	 * @return name The name of the {@link ModelCountry}.
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Retrieves the {@link ModelArmy} at this {@link ModelCountry}.
+	 * 
+	 * @return {@link ModelCountry#army}.
+	 */
+	@Override
+	public ModelArmy getArmy() {
+		return army;
+	}
+
+	/**
+	 * Retrieves the {@link ModelCountry#neighbours}.
+	 * 
+	 * @return {@link Set} of type {@link ModelCountry}.
+	 */
+	@Override
+	public Set<ModelCountry> getNeighbours() {
+		return new HashSet<>(neighbours.keySet());
+	}
+
+	/**
+	 * Retrieves the {@link ModelColor} for this {@link ModelCountry}.
+	 * 
+	 * @return {@link ModelColor}
+	 */
+	public ModelColor getColor() {
+		return color;
+	}
+
+	/**
 	 * Retrieves the {@link ModelLink} between this {@link ModelCountry} and the
 	 * specified {@link ModelCountry}.
 	 * 
@@ -211,23 +237,7 @@ public final class ModelCountry extends Observable implements Country, Observer 
 	}
 
 	/**
-	 * Performs the end round operation for this {@link ModelCountry}.
-	 */
-	public void endRound(ModelHazard hazard) {
-
-		neighbours.forEach((counrty, link) -> link.elapse());
-
-		// Holds whether the hazard has occurred or not.
-		boolean occurred = hazard.act(army);
-
-		// If the hazard occurred update the most recent hazard.
-		setChanged();
-		notifyObservers(new Update("hazard", occurred ? hazard : null));
-
-	}
-
-	/**
-	 * Retrieves the {@link Player} the rules <code>this</code>
+	 * Retrieves the {@link ModelPlayer} the rules <code>this</code>
 	 * {@link ModelCountry}.
 	 * 
 	 * @return {@link ModelCountry#ruler}.
@@ -237,25 +247,15 @@ public final class ModelCountry extends Observable implements Country, Observer 
 	}
 
 	/**
-	 * Retrieves the {@link Player} the rules <code>this</code>
+	 * Retrieves the {@link ModelPlayer} the rules <code>this</code>
 	 * {@link ModelCountry}.
 	 * 
-	 * @return {@link ModelCountry#ruler}.
+	 * @return The {@link ModelPlayer} the rules <code>this</code>
+	 *         {@link ModelCountry}.
 	 */
 	@Override
 	public Player getOwner() {
 		return ruler;
-	}
-
-	/**
-	 * Updates this {@link ModelCountry}.
-	 */
-	@Override
-	public void update(Observable o, Object arg) {
-		if (o instanceof ModelArmy || o instanceof ModelLink) {
-			setChanged();
-			notifyObservers();
-		}
 	}
 
 }

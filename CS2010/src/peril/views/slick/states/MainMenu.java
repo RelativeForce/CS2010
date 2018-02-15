@@ -2,7 +2,6 @@ package peril.views.slick.states;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
@@ -11,7 +10,9 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.controllers.GameController;
 import peril.io.SaveFile;
 import peril.io.TextFileReader;
+import peril.views.slick.EventListener;
 import peril.views.slick.Font;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.components.lists.VisualList;
 import peril.views.slick.components.menus.HelpMenu;
@@ -86,7 +87,7 @@ public final class MainMenu extends InteractiveState {
 		uiLoaded = false;
 
 		// Read the maps file containing the pre-load details of each map.
-		mapsFile = TextFileReader.scanFile(game.getMapsPath(), "maps.txt");
+		mapsFile = TextFileReader.scanFile(game.getDirectory().getMapsPath(), "maps.txt");
 
 		// Holds the y of all the menus
 		int menuY = 415;
@@ -116,37 +117,75 @@ public final class MainMenu extends InteractiveState {
 	 * Renders this {@link MainMenu} on screen.
 	 */
 	@Override
-	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+	public void render(GameContainer gc, Frame frame) {
 
-		g.setBackground(Color.black);
-		g.setLineWidth(3f);
+		frame.setBackground(Color.black);
+		frame.setLineWidth(3f);
 
-		drawImages(g);
-		drawButtons(g);
+		drawImages();
+		drawButtons();
 
-		textFont.draw(g, "Map: ", maps.getPosition().x, maps.getPosition().y - textFont.getHeight());
-		maps.draw(g);
+		frame.draw(textFont, "Map: ", maps.getPosition().x, maps.getPosition().y - textFont.getHeight());
+		frame.draw(maps, new EventListener() {
 
-		textFont.draw(g, "Load: ", saves.getPosition().x, saves.getPosition().y - textFont.getHeight());
-		saves.draw(g);
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
 
-		g.destroy();
-
-	}
-
-	/**
-	 * Processed a mouse click on this {@link MainMenu}.
-	 */
-	@Override
-	public void parseClick(int button, Point click) {
-
-		if (!super.clickedButton(click)) {
-			if (!maps.click(click)) {
-				saves.click(click);
-			} else {
+			@Override
+			public void mouseClick(Point mouse, int button) {
+				maps.click(mouse);
 				checkSaves();
 			}
-		}
+
+			@Override
+			public void buttonPress(int key, Point mouse) {
+
+				if (key == Input.KEY_UP) {
+					maps.up();
+					checkSaves();
+				} else if (key == Input.KEY_DOWN) {
+					maps.down();
+					checkSaves();
+				}
+			}
+
+			@Override
+			public void draw(Frame frame) {
+				maps.draw(frame);
+			}
+		});
+
+		frame.draw(textFont, "Load: ", saves.getPosition().x, saves.getPosition().y - textFont.getHeight());
+		frame.draw(saves, new EventListener() {
+
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+
+			@Override
+			public void mouseClick(Point mouse, int button) {
+				saves.click(mouse);
+			}
+
+			@Override
+			public void buttonPress(int key, Point mouse) {
+				if (key == Input.KEY_UP) {
+					saves.up();
+					checkSaves();
+				} else if (key == Input.KEY_DOWN) {
+					saves.down();
+					checkSaves();
+				}
+			}
+
+			@Override
+			public void draw(Frame frame) {
+				saves.draw(frame);
+			}
+		});
 	}
 
 	/**
@@ -161,20 +200,6 @@ public final class MainMenu extends InteractiveState {
 				loadGame();
 			} catch (SlickException e) {
 
-			}
-		} else if (key == Input.KEY_UP) {
-			if (maps.isClicked(mousePosition)) {
-				maps.up();
-				checkSaves();
-			} else if (saves.isClicked(mousePosition)) {
-				saves.up();
-			}
-		} else if (key == Input.KEY_DOWN) {
-			if (maps.isClicked(mousePosition)) {
-				maps.down();
-				checkSaves();
-			} else if (saves.isClicked(mousePosition)) {
-				saves.down();
 			}
 		}
 	}
@@ -208,7 +233,7 @@ public final class MainMenu extends InteractiveState {
 		checkSaves();
 
 		changeMusic(gc);
-		
+
 		slick.modelView.clear();
 		game.getModelBoard().reset();
 
@@ -268,7 +293,7 @@ public final class MainMenu extends InteractiveState {
 			uiLoaded = true;
 		}
 
-		slick.states.loadingScreen.addReader(slick.getMapLoader(game.getMapsPath() + map.name, saves.getSelected()));
+		slick.states.loadingScreen.addReader(slick.getMapLoader(map.name, saves.getSelected()));
 
 		// Loads the game assets and move into the set up state
 		if (saves.getSelected() == SaveFile.DEFAULT) {
@@ -333,7 +358,7 @@ public final class MainMenu extends InteractiveState {
 		// Iterate through each save and check if it exists in the current maps
 		// directory, If it does then add it to the saves list.
 		for (SaveFile file : SaveFile.values()) {
-			if (file.existsIn(game.getMapsPath() + mapName)) {
+			if (file.existsIn(game.getDirectory().asMapPath(mapName))) {
 				saves.add(file.name, file);
 			}
 		}
@@ -346,7 +371,7 @@ public final class MainMenu extends InteractiveState {
 	 * @author Joshua_Eddy
 	 *
 	 */
-	private class Map {
+	private final class Map {
 
 		/**
 		 * The name of the {@link Map}.

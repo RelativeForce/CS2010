@@ -1,9 +1,21 @@
 package peril.views.slick.board;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
+
 import peril.Game;
+import peril.controllers.GameController;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelContinent;
+import peril.model.states.ModelState;
+import peril.views.slick.Clickable;
+import peril.views.slick.EventListener;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
+import peril.views.slick.SlickGame;
 import peril.views.slick.SlickModelView;
 import peril.views.slick.Viewable;
 
@@ -15,7 +27,7 @@ import peril.views.slick.Viewable;
  * @author Joshua_Eddy
  *
  */
-public final class SlickBoard extends Viewable {
+public final class SlickBoard extends Clickable {
 
 	public final ModelBoard model;
 
@@ -42,7 +54,7 @@ public final class SlickBoard extends Viewable {
 	 *            The name of the {@link SlickBoard}.
 	 */
 	public SlickBoard(ModelBoard model, SlickModelView view) {
-		super(new Point(0, 0));
+		super();
 		this.model = model;
 		this.view = view;
 		this.lockedX = false;
@@ -75,6 +87,53 @@ public final class SlickBoard extends Viewable {
 		this.lockedY = true;
 	}
 
+	public void draw(Frame frame, GameController game, SlickGame slick, ModelState state) {
+		SlickBoard board = slick.modelView.getVisual(game.getModelBoard());
+
+		// If the board has a visual representation, render it in the graphics context.
+		if (board.hasImage()) {
+			frame.draw(board.getImage(), board.getPosition().x, board.getPosition().y);
+		}
+
+		// Holds the hazards that will be drawn on screen.
+		Map<Point, Image> hazards = new HashMap<>();
+
+		// For every country on the board.
+		board.model.forEachCountry(modelCountry -> {
+
+			SlickCountry country = slick.modelView.getVisual(modelCountry);
+
+			final int x = country.getPosition().x;
+			final int y = country.getPosition().y;
+
+			// Draw the image of the country on top of the board.
+			if (country.hasImage()) {
+				frame.draw(country.getImage(), x, y);
+				
+			}
+
+			// If a hazard has occurred
+			if (country.hasHazard()) {
+
+				// Define the hazards visual details
+				Image hazard = country.getHazard();
+				hazard = hazard.getScaledCopy(60, 60);
+
+				final int hazardX = x + (country.getWidth() / 2) + (hazard.getWidth() / 2) + country.getArmyOffset().x;
+				final int hazardY = y + (country.getHeight() / 2) - hazard.getHeight() + country.getArmyOffset().y;
+
+				// Add the hazard to the map to be drawn.
+				hazards.put(new Point(hazardX, hazardY), hazard);
+			}
+
+		});
+
+		// Draw all the hazards on screen.
+		hazards.forEach((position, hazardIcon) -> {
+			frame.draw(hazardIcon, position.x, position.y);
+		});
+	}
+	
 	/**
 	 * Retrieves a {@link SlickCountry} that is specified by the parameter
 	 * {@link Point}.

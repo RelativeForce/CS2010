@@ -8,6 +8,8 @@ import java.util.Map;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
+import peril.views.slick.Font;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.components.Component;
 
@@ -20,6 +22,8 @@ import peril.views.slick.components.Component;
  */
 public class ToolTipList implements Component {
 
+	private final Font text;
+	
 	/**
 	 * Holds the text tool tip that will be displayed to the use and its assigned
 	 * delay until it is removed from the users view.
@@ -39,31 +43,32 @@ public class ToolTipList implements Component {
 	public ToolTipList(Point position) {
 		this.toolTips = new IdentityHashMap<>();
 		this.position = position;
+		this.text = new Font("Arial", Color.black, 20);
 	}
 
 	/**
 	 * Draws this {@link ToolTipList} on screen.
 	 * 
-	 * @param g
+	 * @param frame
 	 *            {@link Graphics}
 	 */
-	public void draw(Graphics g) {
+	public void draw(Frame frame) {
 
 		int x = position.x;
 		int y = position.y;
 
 		// Draw a box back drop
-		g.setColor(Color.lightGray);
-		g.fillRect(x, y, 400, toolTips.size() * 20);
+		frame.setColor(Color.lightGray);
+		frame.fillRect(x, y, 400, toolTips.size() * 20);
 
 		// Add padding
 		x += 2;
 		y += 2;
 
 		// Draw each challenge on screen.
-		g.setColor(Color.black);
+		frame.setColor(Color.black);
 		for (String element : toolTips.keySet()) {
-			g.drawString(element, x, y);
+			frame.draw(text,element, x, y);
 			y += 15;
 		}
 
@@ -74,7 +79,7 @@ public class ToolTipList implements Component {
 	 */
 	@Override
 	public void init() {
-		// Do nothing as there are no fonts or etc.
+		text.init();
 	}
 
 	/**

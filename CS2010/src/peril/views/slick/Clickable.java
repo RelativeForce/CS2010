@@ -16,7 +16,7 @@ public abstract class Clickable extends Viewable {
 	/**
 	 * The {@link Region} that this encompasses on the screen.
 	 */
-	private Region region;
+	private volatile Region region;
 
 	/**
 	 * Constructs a new {@link Clickable}.
@@ -26,7 +26,7 @@ public abstract class Clickable extends Viewable {
 	 * @param position
 	 *            The {@link Point} position of the {@link Clickable}.
 	 */
-	public Clickable(Region region) {		
+	public Clickable(Region region) {
 		super(region.getPosition());
 		this.region = region;
 	}
@@ -46,6 +46,10 @@ public abstract class Clickable extends Viewable {
 		this.region = region;
 	}
 
+	public Clickable() {
+		super(new Point(0, 0));
+	}
+
 	/**
 	 * Whether or not a mouse click at a specified {@link Point} will be inside this
 	 * objects {@link Clickable#region}. If the {@link Region} is <code>null</code>
@@ -56,7 +60,7 @@ public abstract class Clickable extends Viewable {
 	 * @return Clicked or not.
 	 */
 	public boolean isClicked(Point point) {
-		return region.isInside(point);
+		return hasRegion() ? region.isInside(point) : false;
 	}
 
 	/**
@@ -75,7 +79,7 @@ public abstract class Clickable extends Viewable {
 	 */
 	@Override
 	public Point getPosition() {
-		return region.getPosition();
+		return hasRegion() ? region.getPosition() : super.getPosition();
 	}
 
 	/**
@@ -86,7 +90,9 @@ public abstract class Clickable extends Viewable {
 	 */
 	public void setPosition(Point position) {
 		super.setPosition(position);
-		region.setPosition(position);
+
+		if (hasRegion())
+			region.setPosition(position);
 	}
 
 	/**
@@ -96,7 +102,7 @@ public abstract class Clickable extends Viewable {
 	 * @return <code>int</code>
 	 */
 	public int getWidth() {
-		return region.getWidth();
+		return hasRegion() ? region.getWidth() : 0;
 	}
 
 	/**
@@ -106,7 +112,33 @@ public abstract class Clickable extends Viewable {
 	 * @return <code>int</code>
 	 */
 	public int getHeight() {
-		return region.getHeight();
+		return hasRegion() ? region.getHeight() : 0;
+	}
+
+	public boolean hasRegion() {
+		return region != null;
+	}
+
+	@Override
+	public void swapImage(Image image) {
+		super.swapImage(image);
+		swapRegion(image);
+	}
+
+	@Override
+	public void replaceImage(Image image) {
+		super.replaceImage(image);
+		swapRegion(image);
+
+	}
+
+	private void swapRegion(Image image) {
+		final Point current = getPosition();
+
+		this.region = new Region(image);
+
+		this.setPosition(current);
+
 	}
 
 }

@@ -1,12 +1,10 @@
 package peril.views.slick.states;
 
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
@@ -14,11 +12,11 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.ai.AI;
-import peril.ai.Ernie;
-import peril.ai.Monkey;
 import peril.controllers.GameController;
 import peril.helpers.PlayerHelper;
+import peril.views.slick.EventListener;
 import peril.views.slick.Font;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.components.lists.VisualList;
@@ -38,12 +36,6 @@ public final class PlayerSelection extends InteractiveState {
 	 * The name of this {@link PlayerSelection}.
 	 */
 	private static final String NAME = "Select";
-
-	/**
-	 * The {@link Map} that contains all the {@link AI} that are available for the
-	 * user to select.
-	 */
-	private final Map<String, AI> allAI;
 
 	/**
 	 * The {@link Map} of {@link SlickPlayer} number to there associated
@@ -74,11 +66,10 @@ public final class PlayerSelection extends InteractiveState {
 	 * @param id
 	 *            The id of this {@link PlayerSelection}.
 	 */
-	public PlayerSelection(GameController game,  int id) {
+	public PlayerSelection(GameController game, int id) {
 		super(game, NAME, id, HelpMenu.NULL_PAGE);
 
 		this.playButton = "play";
-		this.allAI = new IdentityHashMap<>();
 		this.selectors = new HashMap<>();
 		this.players = new VisualList<>(new Point(100, 100), 20, 24, 3, 5);
 		this.width = 100;
@@ -86,7 +77,6 @@ public final class PlayerSelection extends InteractiveState {
 
 		players.setFont(new Font("Arial", Color.black, 19));
 
-		addAllAI();
 		addSelectors();
 
 		super.addComponent(players);
@@ -113,70 +103,83 @@ public final class PlayerSelection extends InteractiveState {
 	}
 
 	/**
-	 * Processes a click at a specified {@link Point} position on this
-	 * {@link PlayerHelper}.
-	 */
-	@Override
-	public void parseClick(int button, Point click) {
-
-		if (!super.clickedButton(click)) {
-
-			// If they click the players list is clicked then configure the selectors.
-			if (players.click(click)) {
-				confingureSelectors();
-			} else {
-
-				for (VisualList<AI> selector : selectors.values()) {
-
-					if (selector.click(click)) {
-						break;
-					}
-
-				}
-			}
-		}
-
-	}
-
-	/**
 	 * Processes a button press on this {@link PlayerSelection}.
 	 */
 	@Override
 	public void parseButton(int key, char c, Point mousePosition) {
-		// TODO Auto-generated method stub
-
+		// Do nothing
 	}
 
 	/**
 	 * Renders this {@link PlayerSelection}.
 	 */
 	@Override
-	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+	public void render(GameContainer gc, Frame frame) {
 
-		super.drawImages(g);
+		drawImages();
+		drawButtons();
 
-		super.drawButtons(g);
+		frame.draw(players, new EventListener() {
+			
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+			
+			@Override
+			public void mouseClick(Point mouse,  int button) {
+				players.click(mouse);		
+				confingureSelectors();
+			}
+			
+			@Override
+			public void buttonPress(int key, Point mouse) {
+				// Do nothing
+			}
 
-		players.draw(g);
+			@Override
+			public void draw(Frame frame) {
+				players.draw(frame);
+			}
+		});
 
 		selectors.forEach((playerNumber, selector) -> {
 
 			if (selector.isVisible()) {
 
-				selector.draw(g);
+				frame.draw(selector, new EventListener() {
+					
+					@Override
+					public void mouseHover(Point mouse, int delta) {
+						// Do nothing
+					}
+					
+					@Override
+					public void mouseClick(Point mouse,  int button) {
+						selector.click(mouse);				
+					}
+					
+					@Override
+					public void buttonPress(int key, Point mouse) {
+						// Do nothing
+					}
 
+					@Override
+					public void draw(Frame frame) {
+						selector.draw(frame);
+					}
+				});
+				
 				Image playerIcon = slick.getPlayerIcon(playerNumber);
 
 				final int x = selector.getPosition().x + (selector.getWidth() / 2) - (playerIcon.getWidth() / 2);
 
 				final int y = selector.getPosition().y - playerIcon.getHeight() - 10;
 
-				g.drawImage(playerIcon, x, y);
+				frame.draw(playerIcon, x, y);
 			}
 
 		});
-
-		g.destroy();
 
 	}
 
@@ -194,6 +197,10 @@ public final class PlayerSelection extends InteractiveState {
 	 */
 	public void loadGame() throws SlickException {
 
+		// Reset the board
+		game.resetGame();
+		game.getModelBoard().reset();
+
 		// Iterate through the number of players the player has selected
 		for (int index = 1; index <= players.getSelected(); index++) {
 
@@ -210,11 +217,9 @@ public final class PlayerSelection extends InteractiveState {
 			slick.modelView.addPlayer(player);
 
 		}
-		// Reset the board
-		game.getModelBoard().reset();
-		slick.reSize(width, height);
 
 		// Load the game
+		slick.reSize(width, height);
 		slick.enterState(slick.states.loadingScreen);
 	}
 
@@ -315,16 +320,10 @@ public final class PlayerSelection extends InteractiveState {
 	 *            {@link VisualList} selector.
 	 */
 	private void populateSelector(VisualList<AI> selector) {
-		allAI.forEach((AIName, AI) -> selector.add(AIName, AI));
-	}
 
-	/**
-	 * Defines all the {@link AI} that are available for the user to select.
-	 */
-	private void addAllAI() {
-		allAI.put("Monkey", new Monkey(game.getAIController()));
-		allAI.put("None", AI.USER);
-		allAI.put("Ernie", new Ernie(game.getAIController()));
+		for (AI ai : game.getAIs()) {
+			selector.add(ai.name, ai);
+		}
 	}
 
 }

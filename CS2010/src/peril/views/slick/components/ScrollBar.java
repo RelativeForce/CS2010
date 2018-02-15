@@ -5,13 +5,14 @@ import org.newdawn.slick.Graphics;
 
 import peril.views.slick.Clickable;
 import peril.views.slick.Font;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.Region;
 
 /**
  * Encapsulates the behaviour of a ScrollBar
  * 
- * @author Ezekiel_Trinidad, Joshua_Eddy
+ * @author Ezekiel_Trinidad, Joshua_Eddy, Joseph Rolli
  */
 public class ScrollBar extends Clickable implements Component {
 
@@ -41,16 +42,16 @@ public class ScrollBar extends Clickable implements Component {
 	 * @param width
 	 *            The width of the {@link ScrollBar}.
 	 * @param height
-	 *            The width of the {@link ScrollBar}.
+	 *            The height of the {@link ScrollBar}.
 	 */
 	public ScrollBar(Point position, int width, int height, int maxValue) {
 		super(new Region(width, height, position));
 		this.visible = true;
 		this.textFont = new Font("Arial", Color.white, 12);
 		this.maxValue = maxValue;
-		index = 0;
-		spacing = getWidth() / (maxValue);
-		slider = new Slider(new Point(position.x, position.y), spacing, height);
+		index = 1;
+		spacing = getHeight() / (maxValue);
+		slider = new Slider(new Point(position.x, position.y), width, spacing);
 	}
 
 	/**
@@ -59,12 +60,12 @@ public class ScrollBar extends Clickable implements Component {
 	 * @param g
 	 *            {@link Graphics}.
 	 */
-	public void draw(Graphics g) {
+	public void draw(Frame frame) {
 		if (visible) {
-			g.setColor(Color.darkGray);
-			g.fillRect(getPosition().x, getPosition().y, getWidth(), getHeight());
-			drawNumbers(g);
-			slider.draw(g);
+			frame.setColor(Color.darkGray);
+			frame.fillRect(getPosition().x, getPosition().y, getWidth(), getHeight());
+			drawNumbers(frame);
+			slider.draw(frame);
 		}
 	}
 
@@ -83,14 +84,13 @@ public class ScrollBar extends Clickable implements Component {
 	 * @param newPosition
 	 * 
 	 */
-	public void processMouseDrag(Point newPosition) {
+	public void processMouseClick(Point clickPosition) {
 		// check that when starting to drag it starts at the oldPosition
-		if (isClicked(newPosition)) {
+		if (isClicked(clickPosition)) {
 			// Test if its being clicked or not
-			System.out.println("THE SLIDER IS BEING Dragged");
-
-			int change = (newPosition.x - slider.getPosition().x) / slider.getWidth();
-			moveSlider(change);
+			moveSlider(clickPosition);
+			System.out.println("THE SLIDER HAS BEEN CLICKED");
+			System.out.println("SliderY:" + slider.getPosition().y + "Index:" + index);
 		}
 	}
 
@@ -99,36 +99,15 @@ public class ScrollBar extends Clickable implements Component {
 	}
 
 	/**
-	 * Moves the slider of the {@link ScrollBar} along the Bar
+	 * Moves the slider of the {@link ScrollBar} along the Bar, rounding down an
+	 * index.
 	 */
-	public void moveSlider(int change) {
-		// moves to the right
-		if (change > 0) {
+	public void moveSlider(Point clickPosition) {
+		int newPosition = clickPosition.y;
+		int space = Math.floorDiv(newPosition, spacing);
+		slider.setPosition(new Point(slider.getPosition().x, space * spacing));
+		index = 1 + Math.floorDiv((slider.getPosition().y - getPosition().y), spacing);
 
-			if ((index + change) < maxValue) {
-				index += change;
-				slider.setPosition(
-						new Point(slider.getPosition().x + (slider.getWidth() * change), slider.getPosition().y));
-			} else {
-				index = maxValue - 1;
-				slider.setPosition(
-						new Point(this.getPosition().x + this.getWidth() - slider.getWidth(), slider.getPosition().y));
-			}
-		}
-		// moves to the left
-		else if (change < 0) {
-
-			if ((index - change) > 0) {
-				index -= change;
-				slider.setPosition(
-						new Point(slider.getPosition().x + (slider.getWidth() * change), slider.getPosition().y));
-
-			} else {
-				index = 0;
-				slider.setPosition(new Point(this.getPosition().x, slider.getPosition().y));
-			}
-		}
-		// set new position of slider
 	}
 
 	/**
@@ -138,15 +117,11 @@ public class ScrollBar extends Clickable implements Component {
 	 * @param g
 	 *            {@link Graphics}
 	 */
-	private void drawNumbers(Graphics g) {
+	private void drawNumbers(Frame frame) {
 
-		float xLabelPosition = getPosition().x;
+		for (int i = 0; i <= maxValue - 1; i++) {
 
-		for (int i = 1; i <= maxValue; i++) {
-
-			textFont.draw(g, String.valueOf(i), xLabelPosition - (textFont.getWidth(String.valueOf(i)) / 2),
-					getPosition().y + getHeight());
-			xLabelPosition += spacing;
+			frame.draw(textFont, String.valueOf(i + 1), getPosition().x + getWidth(), (spacing * i) + getPosition().y);
 
 		}
 
@@ -159,9 +134,9 @@ public class ScrollBar extends Clickable implements Component {
 			super(new Region(width, height, position));
 		}
 
-		public void draw(Graphics g) {
-			g.setColor(Color.lightGray);
-			g.fillRect(this.getPosition().x, this.getPosition().y, this.getWidth(), this.getHeight());
+		public void draw(Frame frame) {
+			frame.setColor(Color.lightGray);
+			frame.fillRect(this.getPosition().x, this.getPosition().y, this.getWidth(), this.getHeight());
 		}
 	}
 

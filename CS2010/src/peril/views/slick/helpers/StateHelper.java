@@ -3,7 +3,9 @@ package peril.views.slick.helpers;
 import org.newdawn.slick.SlickException;
 
 import peril.Game;
+import peril.views.slick.MiniMap;
 import peril.views.slick.SlickGame;
+import peril.views.slick.board.SlickBoard;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.components.menus.WarMenu;
@@ -12,11 +14,11 @@ import peril.views.slick.states.InteractiveState;
 import peril.views.slick.states.LoadingScreen;
 import peril.views.slick.states.MainMenu;
 import peril.views.slick.states.PlayerSelection;
+import peril.views.slick.states.gameStates.CombatState;
 import peril.views.slick.states.gameStates.CoreGameState;
+import peril.views.slick.states.gameStates.MovementState;
 import peril.views.slick.states.gameStates.ReinforcementState;
 import peril.views.slick.states.gameStates.SetupState;
-import peril.views.slick.states.gameStates.multiSelectState.CombatState;
-import peril.views.slick.states.gameStates.multiSelectState.MovementState;
 
 /**
  * A helper class for {@link Game} this object stores the instances of the
@@ -45,14 +47,14 @@ public class StateHelper {
 	public final SetupState setup;
 
 	/**
-	 * The {@link ReinforcementState} that allows the {@link SlickPlayer} to distribute
-	 * their {@link ModelArmy} to the {@link SlickCountry}s they rule.
+	 * The {@link ReinforcementState} that allows the {@link SlickPlayer} to
+	 * distribute their {@link ModelArmy} to the {@link SlickCountry}s they rule.
 	 */
 	public final ReinforcementState reinforcement;
 
 	/**
-	 * The {@link MovementState} which lets the user move {@link ModelArmy}s from one
-	 * {@link SlickCountry} to another.
+	 * The {@link MovementState} which lets the user move {@link ModelArmy}s from
+	 * one {@link SlickCountry} to another.
 	 */
 	public final MovementState movement;
 
@@ -81,14 +83,15 @@ public class StateHelper {
 	 *            The state that displays combat to the user. This is heavily
 	 *            couples with {@link WarMenu}.
 	 * @param reinforcement
-	 *            The {@link ReinforcementState} that allows the {@link SlickPlayer} to
-	 *            distribute their {@link ModelArmy} to the {@link SlickCountry}s they rule.
+	 *            The {@link ReinforcementState} that allows the {@link SlickPlayer}
+	 *            to distribute their {@link ModelArmy} to the {@link SlickCountry}s
+	 *            they rule.
 	 * @param setup
 	 *            The {@link SetupState} that will allow the user to set up which
 	 *            {@link SlickPlayer} owns which {@link SlickCountry}.
 	 * @param movement
-	 *            The {@link MovementState} which lets the user move {@link ModelArmy}s
-	 *            from one {@link SlickCountry} to another.
+	 *            The {@link MovementState} which lets the user move
+	 *            {@link ModelArmy}s from one {@link SlickCountry} to another.
 	 * @param end
 	 *            The {@link EndState} that displays the results of the
 	 *            {@link Game}.
@@ -119,22 +122,35 @@ public class StateHelper {
 	 * 
 	 * @param container
 	 * @param game
+	 * @param slickBoard
 	 * @param eventHandler
 	 * @throws SlickException
 	 */
-	public void init(SlickGame game) throws SlickException {
+	public void init(SlickGame game, SlickBoard slickBoard) throws SlickException {
 
-		// Add starting state to the game container.
+		// Add menu state to the game container.
 		game.addState(mainMenu);
 		game.addState(playerSelection);
 		game.addState(loadingScreen);
+		game.addState(end);
 
-		// Add all other states to game container.
+		// Add all the game states to game container.
 		game.addState(setup);
 		game.addState(reinforcement);
 		game.addState(combat);
 		game.addState(movement);
-		game.addState(end);
+	
+	}
+	
+	public void addMiniMap(SlickBoard slickBoard, SlickGame game) {
+		
+		final MiniMap miniMap = new MiniMap(slickBoard, game.getScreenWidth(), game.getScreenHeight());
+		
+		setup.setMiniMap(miniMap);
+		reinforcement.setMiniMap(miniMap);
+		combat.setMiniMap(miniMap);
+		movement.setMiniMap(miniMap);
+		
 	}
 
 	/**

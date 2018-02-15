@@ -1,9 +1,9 @@
 package peril.model.board;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 
 import peril.Update;
 import peril.controllers.api.Continent;
@@ -32,9 +32,9 @@ public final class ModelContinent extends Observable implements Continent, Obser
 	public final ModelHazard hazard;
 
 	/**
-	 * Holds the {@link Countries} that comprise this {@link ModelContinent}.
+	 * Holds the {@link ModelCountry} that comprise this {@link ModelContinent}.
 	 */
-	private final List<ModelCountry> countries;
+	private final Set<ModelCountry> countries;
 
 	/**
 	 * The {@link name} of the {@link ModelContinent}.
@@ -57,7 +57,7 @@ public final class ModelContinent extends Observable implements Continent, Obser
 	 */
 	public ModelContinent(ModelHazard hazard, String name) {
 
-		this.countries = new LinkedList<ModelCountry>();
+		this.countries = new HashSet<ModelCountry>();
 		this.hazard = hazard;
 		this.ruler = null;
 		this.name = name;
@@ -71,9 +71,9 @@ public final class ModelContinent extends Observable implements Continent, Obser
 	 */
 	public void addCountry(ModelCountry country) {
 		countries.add(country);
-		
+
 		country.addObserver(this);
-		
+
 		setChanged();
 		notifyObservers(new Update("countries", countries));
 	}
@@ -126,12 +126,12 @@ public final class ModelContinent extends Observable implements Continent, Obser
 	}
 
 	/**
-	 * Retrieve the {@link List} of {@link ModelCountry}s for this
+	 * Retrieve the {@link Set} of {@link ModelCountry}s for this
 	 * {@link ModelContinent}.
 	 * 
-	 * @return {@link List} of {@link ModelCountry}s
+	 * @return {@link Set} of {@link ModelCountry}s
 	 */
-	public List<ModelCountry> getCountries() {
+	public Set<ModelCountry> getCountries() {
 		return countries;
 	}
 
@@ -181,10 +181,9 @@ public final class ModelContinent extends Observable implements Continent, Obser
 		return ruler;
 	}
 
-	
 	@Override
 	public void update(Observable o, Object arg) {
-		if(o instanceof ModelCountry) {
+		if (o instanceof ModelCountry) {
 			setChanged();
 			notifyObservers();
 		}

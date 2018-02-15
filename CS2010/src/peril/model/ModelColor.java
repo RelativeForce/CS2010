@@ -4,22 +4,25 @@ package peril.model;
  * An 8 bit RGB colour.
  * 
  * @author Joshua_Eddy
+ * 
+ * @version 1.01.01
+ * @since 2018-02-11
  *
  */
-public class ModelColor {
+public final class ModelColor {
 
 	/**
-	 * The 3 bit red level.
+	 * The 3 bit red level of the {@link ModelColor}.
 	 */
 	public final int red;
 
 	/**
-	 * The 3 bit green level.
+	 * The 3 bit green level of the {@link ModelColor}.
 	 */
 	public final int green;
 
 	/**
-	 * The 3 bit blue level.
+	 * The 3 bit blue level of the {@link ModelColor}.
 	 */
 	public final int blue;
 

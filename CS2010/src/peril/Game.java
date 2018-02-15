@@ -1,37 +1,38 @@
 package peril;
 
 import java.io.File;
-import java.util.Random;
-
 import peril.controllers.*;
 import peril.helpers.*;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
-import peril.model.board.ModelCountry;
+import peril.model.board.ModelContinent;
 import peril.model.states.Attack;
 import peril.model.states.Fortify;
+import peril.model.states.ModelState;
 import peril.model.states.Reinforce;
 import peril.model.states.Setup;
 import peril.views.View;
 import peril.views.slick.SlickGame;
 
 /**
- * Encapsulate the main game logic for Peril. This also extends
- * {@link StateBasedGame}.
+ * Encapsulate the main game logic for Peril.
  * 
- * @author Joshua_Eddy
+ * @author Joshua_Eddy, James_Rowntree
+ * 
+ * @version 1.01.02
+ * @since 2018-02-06
  *
  */
 public final class Game {
 
 	/**
 	 * The {@link PlayerHelper} that holds all this {@link Game}s
-	 * {@link SlickPlayer}s.
+	 * {@link ModelPlayer}s.
 	 */
 	public final PlayerHelper players;
 
 	/**
-	 * The instance of the {@link SlickBoard} used for this game.
+	 * The {@link ModelBoard} used for this game.
 	 */
 	public final ModelBoard board;
 
@@ -41,15 +42,32 @@ public final class Game {
 	 */
 	public final DirectoryHelper assets;
 
+	/**
+	 * The {@link ModelStateHelper} that contains all this {@link ModelState}s.
+	 */
 	public final ModelStateHelper states;
 
 	/**
-	 * The {@link AIController} that allows the user/AI to interact with the
+	 * The {@link View} that displays this {@link Game} on screen.
+	 */
+	public final View view;
+
+	/**
+	 * The {@link AIHelper} for this game.
+	 */
+	public final AIHelper aiHelper;
+
+	/**
+	 * The {@link GameController} that allows the {@link View} to interact with the
 	 * {@link Game}.
 	 */
-	private final RequestHandler api;
+	private final GameController game;
 
-	public final View view;
+	/**
+	 * The {@link AIController} that allows the AIs to interact with the
+	 * {@link Game}.
+	 */
+	private final AIController ai;
 
 	/**
 	 * The current turn of the {@link Game}. Initially zero;
@@ -61,46 +79,27 @@ public final class Game {
 	 */
 	private Game(View view) {
 
+		this.view = view;
 		// Holds the path of the peril assets
-		StringBuilder assetsPath = new StringBuilder(new File(System.getProperty("user.dir")).getPath())
+		final StringBuilder assetsPath = new StringBuilder(new File(System.getProperty("user.dir")).getPath())
 				.append(File.separatorChar).append("assets");
 
 		this.assets = new DirectoryHelper(assetsPath.toString());
-
-		this.api = new RequestHandler(this);
-
-		// Construct the board with the initial name.
+		this.game = new GameHandler(this);
+		this.ai = new AIHandler(this);
 		this.board = new ModelBoard("NOT ASSIGNED");
-
 		this.players = new PlayerHelper(this);
+		this.aiHelper = new AIHelper(game);
 
-		Setup setup = new Setup();
-		Attack attack = new Attack();
-		Fortify fortify = new Fortify();
-		Reinforce reinforce = new Reinforce();
-
+		// Construct model states
+		final Setup setup = new Setup();
+		final Attack attack = new Attack();
+		final Fortify fortify = new Fortify();
+		final Reinforce reinforce = new Reinforce();
 		this.states = new ModelStateHelper(attack, reinforce, setup, fortify);
 
 		// Set the initial round to zero
 		this.currentRound = 0;
-
-		this.view = view;
-
-	}
-
-	/**
-	 * Distributes the countries between the {@link Game#players} equally.
-	 */
-	public void autoDistributeCountries() {
-
-		players.forEach(player -> {
-			player.setCountriesRuled(0);
-			player.setContinentsRuled(0);
-			player.totalArmy.setStrength(0);
-		});
-
-		// Iterate through each country on the board.
-		board.forEachCountry(country -> assignPlayer(country));
 
 	}
 
@@ -137,10 +136,13 @@ public final class Game {
 
 	}
 
+	/**
+	 * Starts the {@link Game}.
+	 */
 	public void start() {
 
 		try {
-			view.init(api);
+			view.init(game);
 			view.start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -148,16 +150,26 @@ public final class Game {
 
 	}
 
+	/**
+	 * Retrieves the {@link AIController} for the {@link Game}.
+	 * 
+	 * @return {@link AIController}
+	 */
 	public AIController getAIController() {
-		return api;
-	}
-
-	public GameController getGameController() {
-		return api;
+		return ai;
 	}
 
 	/**
-	 * Checks all the {@link SlickContinent}s on the {@link SlickBoard} to see if
+	 * Retrieves the {@link GameController} for the {@link Game}.
+	 * 
+	 * @return {@link GameController}
+	 */
+	public GameController getGameController() {
+		return game;
+	}
+
+	/**
+	 * Checks all the {@link ModelContinent}s on the {@link ModelBoard} to see if
 	 * they are ruled. This is o(n^2) complexity
 	 */
 	public void checkContinentRulership() {
@@ -176,8 +188,8 @@ public final class Game {
 	}
 
 	/**
-	 * Checks if there is only one {@link SlickPlayer} in play. If this is the case
-	 * then that {@link SlickPlayer} has won.
+	 * Checks if there is only one {@link ModelPlayer} in play. If this is the case
+	 * then that {@link ModelPlayer} has won.
 	 */
 	public void checkWinner() {
 		if (players.numberOfPlayers() == 1) {
@@ -192,58 +204,4 @@ public final class Game {
 		board.endRound();
 		currentRound++;
 	}
-
-	/**
-	 * Assigns a {@link SlickPlayer} ruler to a {@link SlickCountry} using a
-	 * parameter {@link Random}.
-	 * 
-	 * @param country
-	 *            {@link SlickCountry} that is to be ruled.
-	 */
-	private void assignPlayer(ModelCountry country) {
-
-		// Holds whether the country has assigned a player ruler.
-		boolean set = false;
-
-		while (!set) {
-
-			// Holds the number of players in the game.
-			int numberOfPlayers = players.numberOfPlayers();
-
-			// Get the player at the random index.
-			ModelPlayer player = players.getRandomPlayer();
-
-			// Holds the number of countries on the board.
-			int numberOfCountries = board.getNumberOfCountries();
-
-			// Holds the maximum countries this player can own so that all the players nd up
-			// with the same number of countries.
-			int maxCountries;
-
-			/*
-			 * If the number of countries on this board can be equally divided between the
-			 * players then set the max number of countries of that a player can own to the
-			 * equal amount for each player. Otherwise set the max number of countries of
-			 * that a player can own to one above the normal proportion so the to account
-			 * for the left over countries.
-			 */
-			if (numberOfCountries % numberOfPlayers == 0) {
-				maxCountries = numberOfCountries / numberOfPlayers;
-			} else {
-				maxCountries = numberOfCountries / numberOfPlayers + 1;
-			}
-
-			// If the player owns more that their fair share of the maps countries assign
-			// the player again.
-			if (player.getCountriesRuled() < maxCountries) {
-				set = true;
-				country.setRuler(player);
-				player.setCountriesRuled(player.getCountriesRuled() + 1);
-				player.totalArmy.add(1);
-			}
-
-		}
-
-	}
-
 }

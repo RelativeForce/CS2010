@@ -1,55 +1,87 @@
+//type,State,case,assetname,scalex,scaley,posx,posy,name
+
 // Reinforcement State
-button,Reinforcement,0,reinforceButton.png,90,40,10,800,reinforce
-button,Reinforcement,1,endButton.png,90,40,15,80,end
-button,Reinforcement,13,helpButton.png,40,40,210,5,help
-button,Reinforcement,17,pauseButton.png,90,40,250,5,pause
-image,Reinforcement,reinforceStateBox.png,200,130,5,5
+button,Reinforcement,0,reinforceButton.png,180,80,10,800,reinforce
+button,Reinforcement,1,endButton.png,180,80,20,155,end
+button,Reinforcement,13,helpButton.png,80,80,410,5,help
+button,Reinforcement,17,pauseButton.png,180,80,490,5,pause
+button,Reinforcement,24,statsButton.png,180,80,670,5,stats
+button,Reinforcement,26,pointsButton.png,180,80,850,5,points
+button,Reinforcement,30,unitButton.png,180,80,1030,5,units
+button,Reinforcement,28,upgradeButton.png,180,80,1210,5,upgrades
+image,Reinforcement,reinforceStateBox.png,400,250,5,5
 
 // Movement State
-button,Movement,5,fortifyButton.png,90,40,10,800,fortify
-button,Movement,3,endButton.png,90,40,15,80,end
-button,Movement,13,helpButton.png,40,40,210,5,help
-button,Movement,17,pauseButton.png,90,40,250,5,pause
-image,Movement,movementStateBox.png,200,130,5,5
+button,Movement,5,fortifyButton.png,180,80,10,800,fortify
+button,Movement,3,endButton.png,180,80,20,155,end
+button,Movement,13,helpButton.png,80,80,410,5,help
+button,Movement,17,pauseButton.png,180,80,490,5,pause
+button,Movement,24,statsButton.png,180,80,670,5,stats
+button,Movement,26,pointsButton.png,180,80,850,5,points
+button,Movement,30,unitButton.png,180,80,1030,5,units
+button,Movement,28,upgradeButton.png,180,80,1210,5,upgrades
+image,Movement,movementStateBox.png,400,250,5,5
 
 // Combat State
-button,Combat,2,endButton.png,90,40,15,80,end
-button,Combat,9,attackButton.png,90,40,10,800,attack
-button,Combat,13,helpButton.png,40,40,210,5,help
-button,Combat,17,pauseButton.png,90,40,250,5,pause
-image,Combat,combatStateBox.png,200,130,5,5
+button,Combat,2,endButton.png,180,80,20,155,end
+button,Combat,9,attackButton.png,180,80,10,800,attack
+button,Combat,13,helpButton.png,80,80,410,5,help
+button,Combat,17,pauseButton.png,180,80,490,5,pause
+button,Combat,24,statsButton.png,180,80,670,5,stats
+button,Combat,26,pointsButton.png,180,80,850,5,points
+button,Combat,30,unitButton.png,180,80,1030,5,units
+button,Combat,28,upgradeButton.png,180,80,1210,5,upgrades
+image,Combat,combatStateBox.png,400,250,5,5
 
 // Setup State
-button,Setup,4,playButton.png,90,40,105,80,play
-button,Setup,8,autoButton.png,90,40,15,80,auto
-button,Setup,13,helpButton.png,40,40,210,5,help
-button,Setup,17,pauseButton.png,90,40,250,5,pause
-image,Setup,setUpStateBox.png,200,130,5,5
+button,Setup,4,playButton.png,180,80,205,80,play
+button,Setup,8,autoButton.png,180,80,20,80,auto
+button,Setup,13,helpButton.png,80,80,410,5,help
+button,Setup,17,pauseButton.png,180,80,490,5,pause
+image,Setup,setUpStateBox.png,400,250,5,5
 
 // War Menu
-button,War Menu,6,attackButton.png,90,40,55,300,war
-button,War Menu,19,xButton.png,30,30,335,15,close
-image,War Menu,warMenu.png,300,400,0,0
+button,War Menu,6,attackButton.png,160,70,220,300,war
+button,War Menu,19,xButton.png,60,60,510,20,close
+image,War Menu,warMenu.png,600,600,0,0
 
 // Pause Menu
-button,Pause Menu,10,exitGameButton.png,90,40,180,215,exit
-button,Pause Menu,12,mainMenuButton.png,90,40,30,215,menu
-button,Pause Menu,11,saveButton.png,60,30,85,135,save
-button,Pause Menu,18,xButton.png,30,30,245,10,close
-button,Pause Menu,20,challengesButton.png,90,40,180,180,challenges
-image,Pause Menu,pauseMenu.png,300,300,0,0
+button,Pause Menu,10,exitGameButton.png,180,80,360,430,exit
+button,Pause Menu,12,mainMenuButton.png,180,80,60,430,menu
+button,Pause Menu,11,saveButton.png,120,70,170,270,save
+button,Pause Menu,18,xButton.png,60,60,490,20,close
+button,Pause Menu,20,challengesButton.png,180,80,360,360,challenges
+image,Pause Menu,pauseMenu.png,600,600,0,0
 
 // End Screen
 button,End,12,mainMenuButton.png,90,40,100,100,menu
 button,End,10,exitGameButton.png,90,40,200,100,exit
-image,End,finishScreen.png,-,-,0,0
+image,End,finishScreen.png,w,w,0,0
 
 // Help Menu
-image,Help,toolTipBox.png,400,400,0,0
-button,Help,14,xButton.png,30,30,340,10,close
-button,Help,15,rightButton.png,25,100,367,140,next
-button,Help,16,leftButton.png,25,100,8,140,previous
+image,Help,toolTipBox.png,600,600,0,0
+button,Help,14,xButton.png,40,40,515,15,close
+button,Help,15,rightButton.png,40,150,550,210,next
+button,Help,16,leftButton.png,40,150,10,210,previous
 
 // Challenge Menu
-button,Challenge Menu,21,xButton.png,30,30,295,5,close
-image,Challenge Menu,toolTipBox.png,350,300,0,0
+button,Challenge Menu,21,xButton.png,60,60,490,10,close
+image,Challenge Menu,toolTipBox.png,600,600,0,0
+
+// Stats Menu
+button,Stats Menu,25,xButton.png,60,60,490,10,close
+image,Stats Menu,stats.png,600,600,0,0
+
+//Unit Menu
+button,Unit Menu,31,xButton.png,60,60,490,10,close
+image,Unit Menu,toolTipBox.png,600,600,0,0
+
+//Upgrade Menu
+button,Upgrade Menu,29,xButton.png,60,60,490,10,close
+image,Upgrade Menu,toolTipBox.png,600,600,0,0
+
+
+//Points Menu
+button,Points Menu,27,xButton.png,60,60,490,10,close
+image,Points Menu,toolTipBox.png,600,600,0,0
+

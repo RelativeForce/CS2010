@@ -7,6 +7,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 import peril.views.slick.Font;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 
 /**
@@ -57,7 +58,7 @@ public final class TextField implements Component {
 		this.position = position;
 		this.width = width;
 		this.height = height;
-		this.font = new Font("Arial", Color.black, 15);
+		this.font = new Font("Arial", Color.black, 23);
 		this.lines = new ArrayList<>();
 	}
 
@@ -145,10 +146,10 @@ public final class TextField implements Component {
 	 * @param g
 	 *            {@link Graphics}
 	 */
-	public void draw(Graphics g) {
+	public void draw(Frame frame) {
 
-		g.setColor(Color.lightGray);
-		g.fillRect(position.x, position.y, width, height);
+		frame.setColor(Color.lightGray);
+		frame.fillRect(position.x, position.y, width, height);
 
 		int padding = 15;
 		int x = position.x + padding;
@@ -156,7 +157,7 @@ public final class TextField implements Component {
 		int numberOfLines = (height - padding) / font.getHeight();
 
 		for (int index = 0; index < (lines.size() > numberOfLines ? numberOfLines : lines.size()); index++) {
-			font.draw(g, lines.get(index), x, y);
+			frame.draw(font, lines.get(index), x, y);
 			y += font.getHeight();
 		}
 

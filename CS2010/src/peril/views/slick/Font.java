@@ -1,8 +1,11 @@
 package peril.views.slick;
 
-import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.font.effects.ColorEffect;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
 
 /**
  * Encapsulates a font on the screen.
@@ -13,9 +16,9 @@ import org.newdawn.slick.Graphics;
 public class Font {
 
 	/**
-	 * The {@link TrueTypeFont} for this {@link Font}.
+	 * The {@link UnicodeFont} for this {@link Font}.
 	 */
-	private TrueTypeFont ttFont;
+	private UnicodeFont uFont;
 
 	/**
 	 * The {@link Color} of the {@link Font}.
@@ -59,11 +62,22 @@ public class Font {
 	/**
 	 * Initialises this {@link Font}.
 	 */
+	@SuppressWarnings("unchecked")
 	public void init() {
 
 		if (!initialised) {
 			java.awt.Font font = new java.awt.Font(fontName, java.awt.Font.PLAIN, fontSize);
-			ttFont = new TrueTypeFont(font, false);
+			uFont = new UnicodeFont(font);
+
+			uFont.getEffects().add(new ColorEffect(new java.awt.Color(color.r, color.g, color.b)));
+			uFont.addAsciiGlyphs();
+
+			try {
+				uFont.loadGlyphs();
+			} catch (SlickException e) {
+				e.printStackTrace();
+			}
+
 			initialised = true;
 		}
 
@@ -89,7 +103,7 @@ public class Font {
 
 		// Set the new font and color.
 		g.setColor(color);
-		g.setFont(ttFont);
+		g.setFont(uFont);
 
 		// Draw the text
 		g.drawString(text, x, y);
@@ -116,16 +130,29 @@ public class Font {
 	 * @return
 	 */
 	public int getWidth(String text) {
-		return ttFont.getWidth(text);
+		return uFont.getWidth(text);
 	}
 
 	/**
 	 * Retrieves the line height of this {@link Font}.
 	 * 
 	 * @return
+	 * 
+	 * @deprecated use {@link Font#getHeight(String)}
 	 */
 	public int getHeight() {
-		return ttFont.getHeight();
+		return uFont.getHeight("moo");
+	}
+
+	/**
+	 * Retrieves the line height of this {@link Font} for a specified string.
+	 * 
+	 * @param text
+	 * @return Height of the text
+	 * 
+	 */
+	public int getHeight(String text) {
+		return uFont.getHeight(text);
 	}
 
 	/**

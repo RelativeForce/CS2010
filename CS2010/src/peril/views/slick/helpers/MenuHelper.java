@@ -3,11 +3,11 @@ package peril.views.slick.helpers;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.newdawn.slick.Graphics;
-
 import peril.Challenge;
 import peril.Game;
 import peril.model.board.ModelHazard;
+import peril.views.slick.EventListener;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.components.menus.*;
 
@@ -37,13 +37,17 @@ public final class MenuHelper {
 	 *            The {@link ChallengeMenu} that displays the {@link Challenge}s to
 	 *            the user.
 	 */
-	public MenuHelper(PauseMenu pauseMenu, WarMenu warMenu, HelpMenu helpMenu, ChallengeMenu challengeMenu) {
+	public MenuHelper(PauseMenu pauseMenu, WarMenu warMenu, HelpMenu helpMenu, ChallengeMenu challengeMenu, StatsMenu statsMenu, UnitMenu unitMenu, UpgradeMenu upgradeMenu, PointsMenu pointsmenu) {
 
 		this.menus = new IdentityHashMap<>();
 		this.menus.put(pauseMenu.getName(), pauseMenu);
 		this.menus.put(warMenu.getName(), warMenu);
 		this.menus.put(helpMenu.getName(), helpMenu);
 		this.menus.put(challengeMenu.getName(), challengeMenu);
+		this.menus.put(statsMenu.getName(), statsMenu);
+		this.menus.put(unitMenu.getName(), unitMenu);
+		this.menus.put(upgradeMenu.getName(), upgradeMenu);
+		this.menus.put(pointsmenu.getName(), pointsmenu);
 
 		this.visible = null;
 	}
@@ -100,17 +104,17 @@ public final class MenuHelper {
 	}
 
 	public void hide(String menuName) {
-		
-		if(visible != null && visible.getName().equals(menuName)) {
+
+		if (visible != null && visible.getName().equals(menuName)) {
 			hideVisible();
 		}
-		
+
 	}
-	
+
 	public void save() {
 		((PauseMenu) menus.get(PauseMenu.NAME)).save();
 	}
-	
+
 	public boolean menuVisible() {
 		return visible != null;
 	}
@@ -119,46 +123,44 @@ public final class MenuHelper {
 		return ((PauseMenu) menus.get(PauseMenu.NAME)).showAllLinks();
 	}
 
-	/**
-	 * If the currently visible menu has been clicked
-	 * 
-	 * @param click
-	 * @return
-	 */
-	public boolean clicked(Point click) {
-		
-		// If there is no visible menu
-		if(visible == null) {
-			return false;
-		}
-		
-		// If the visible menu is not clicked
-		if(!visible.isClicked(click)) {
-			return false;
-		}
-		
-		visible.parseClick(click);
-		
-		return true;
-	
-	}
-	
+//	/**
+//	 * If the currently visible menu has been clicked
+//	 * 
+//	 * @param click
+//	 * @return
+//	 */
+//	public boolean clicked(Point click) {
+//
+//		// If there is no visible menu
+//		if (visible == null) {
+//			return false;
+//		}
+//
+//		// If the visible menu is not clicked
+//		if (!visible.isVisible() || !visible.isClicked(click)) {
+//			return false;
+//		}
+//
+//		return true;
+//
+//	}
+
 	public void showSaveOption() {
 		((PauseMenu) menus.get(PauseMenu.NAME)).showSaveOption();
 	}
-	
+
 	public void hideSaveOption() {
 		((PauseMenu) menus.get(PauseMenu.NAME)).hideSaveOption();
 	}
-	
+
 	public void nextHelpPage() {
 		((HelpMenu) menus.get(HelpMenu.NAME)).nextPage();
 	}
-	
+
 	public void previousHelpPage() {
 		((HelpMenu) menus.get(HelpMenu.NAME)).previousPage();
 	}
-	
+
 	public void clearMenus() {
 		((WarMenu) menus.get(WarMenu.NAME)).clear();
 	}
@@ -216,11 +218,32 @@ public final class MenuHelper {
 	/**
 	 * Draws the currently visible {@link Menu}.
 	 * 
-	 * @param g
+	 * @param frame
 	 */
-	public void draw(Graphics g) {
+	public void draw(Frame frame) {
 		if (visible != null) {
-			visible.draw(g);
+			frame.draw(visible, new EventListener() {
+
+				@Override
+				public void mouseHover(Point mouse, int delta) {
+					// Do nothing
+				}
+
+				@Override
+				public void mouseClick(Point mouse, int button) {
+					// Do nothing
+				}
+
+				@Override
+				public void buttonPress(int key, Point mouse) {
+					// Do nothing
+				}
+
+				@Override
+				public void draw(Frame frame) {
+					visible.draw(frame);
+				}
+			});
 		}
 	}
 
@@ -374,16 +397,22 @@ public final class MenuHelper {
 
 	}
 
-	
 	public void refreshChallenges() {
 		((ChallengeMenu) menus.get(ChallengeMenu.NAME)).refreshChallenges();
 	}
-	
+
+	public void attack() {
+		WarMenu warMenu = (WarMenu) menus.get(WarMenu.NAME);
+		warMenu.attack();
+	}
+
 	public void autoAttack() {
+
 		WarMenu warMenu = (WarMenu) menus.get(WarMenu.NAME);
 		show(WarMenu.NAME);
-		warMenu.selectMaxDice();
+		warMenu.selectMaxUnits();
 		warMenu.attack();
+
 	}
 
 	public boolean isPaused() {

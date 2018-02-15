@@ -1,109 +1,157 @@
 package peril.model.board;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Set;
+
 import peril.Update;
+import peril.controllers.api.Army;
+import peril.controllers.api.Unit;
 import peril.helpers.UnitHelper;
 
 /**
- * Encapsulates the behaviours of a collection of units. This will be aggregated
- * by the {@link WarMenu} and composes the {@link ModelCountry}.
+ * Encapsulates the behaviour of a collection of {@link ModelUnit}s. This army
+ * is {@link Iterable} and will iterate through all the {@link ModelUnit} types
+ * it contains, to get the number of each type of {@link ModelUnit} use
+ * {@link ModelArmy#getNumberOf(ModelUnit)}.
  * 
  * @author Joshua_Eddy
+ * 
+ * @version 1.01.01
+ * @since 2018-02-12
+ * 
+ * @see Observable
+ * @see Iterable
+ * @see Army
+ * @see UnitHelper
  *
  */
-public final class ModelArmy extends Observable {
+public final class ModelArmy extends Observable implements Iterable<ModelUnit>, Army {
 
 	/**
-	 * The size of the army.
-	 */
-	private int strength;
-
-	/**
-	 * Contains the {@link ModelUnit}s that this {@link ModelArmy} consists of.
+	 * Contains the {@link ModelUnit}s that this {@link ModelArmy} consists of. The
+	 * value of each key is the number of that {@link ModelUnit} in the
+	 * {@link ModelArmy}.
 	 */
 	private final Map<ModelUnit, Integer> units;
 
 	/**
-	 * Constructs a new {@link ModelArmy} with strength of 1.
+	 * Holds the currently selected {@link ModelUnit}.
+	 */
+	private ModelUnit selected;
+
+	/**
+	 * Constructs a new empty {@link ModelArmy}.
 	 */
 	public ModelArmy() {
-		this(1);
+		this(0);
 	}
 
 	/**
-	 * Constructs a new {@link ModelArmy} of a specified strength.
+	 * Constructs an new {@link ModelArmy} with a specified strength.
 	 * 
 	 * @param strength
-	 *            The size of the {@link ModelArmy}. Must be greater than zero.
+	 *            The strength of the {@link ModelArmy}.
 	 */
 	public ModelArmy(int strength) {
+
 		units = new HashMap<>();
-		setStrength(strength);
-		computeUnits();
+		selected = null;
+
+		populateArmy(strength);
 	}
 
 	/**
-	 * Assigns a new strength to this {@link ModelArmy} overwriting the old value.
+	 * Retrieves the combined strength of all the {@link ModelUnit}s in this
+	 * {@link ModelArmy}.
 	 * 
-	 * @param strength
-	 *            The new size of the {@link ModelArmy}. Must be greater than zero.
-	 */
-	public void setStrength(int strength) {
-		if (strength < 0) {
-			throw new IllegalArgumentException("Size must be greater than zero");
-		}
-		this.strength = strength;
-		computeUnits();
-
-		setChanged();
-		notifyObservers(new Update("size", strength));
-
-	}
-
-	/**
-	 * Retrieves the size of the {@link ModelArmy}.
-	 * 
-	 * @return
+	 * @return Strength of the {@link ModelArmy}.
 	 */
 	public int getStrength() {
+
+		int strength = 0;
+
+		for (ModelUnit unit : units.keySet()) {
+			strength += units.get(unit) * unit.strength;
+		}
+
 		return strength;
 	}
 
 	/**
-	 * Adds a specified number of units to this {@link ModelArmy}.
+	 * Retrieves the currently selected {@link ModelUnit}.
 	 * 
-	 * @param amount
-	 *            of units to add to this {@link ModelArmy}
+	 * @return {@link ModelUnit} or null if there is no {@link ModelUnit} selected.
 	 */
-	public void add(int amount) {
-		strength += amount;
-
-		computeUnits();
-
-		setChanged();
-		notifyObservers(new Update("size", strength));
+	public ModelUnit getSelected() {
+		return selected;
 	}
 
 	/**
-	 * Removes a specified amount of units from this {@link ModelArmy}.
+	 * Selects a specified unit from this {@link ModelArmy}.
 	 * 
-	 * @param amount
-	 *            of units to remove.
+	 * @param unit
+	 *            {@link ModelUnit}
+	 * @return Returns whether the {@link ModelUnit} was selected or not.
 	 */
-	public void remove(int amount) {
-		if (strength - amount < 0) {
-			throw new IllegalStateException("Army size cannot be less than zero");
+	public boolean select(ModelUnit unit) {
+
+		// If the unit is in this army then it can be selected.
+		if (units.containsKey(unit)) {
+
+			setSelected(unit);
+			return true;
+
 		}
 
-		// Change to the army
-		strength -= amount;
+		// If the unit is not in the army then de-select the current one.
+		setSelected(null);
+		return false;
+	}
 
-		computeUnits();
+	/**
+	 * De-selected the currently selected {@link ModelUnit}.
+	 */
+	public void deselect() {
+		setSelected(null);
+	}
 
+	/**
+	 * Removes a specified {@link ModelUnit} from this {@link ModelArmy}.
+	 * 
+	 * @param unit
+	 *            The {@link ModelUnit} that is to be removed. NOT NULL
+	 */
+	public void remove(ModelUnit unit) {
+
+		/*
+		 * If the unit is in the army then remove it, otherwise remove the units
+		 * strength.
+		 */
+		if (units.containsKey(unit)) {
+
+			/*
+			 * If there is only one of the specified unit type then remove the entry in the
+			 * units map.
+			 */
+			if (units.get(unit) == 1) {
+				units.remove(unit);
+			} else {
+				units.replace(unit, units.get(unit) - 1);
+			}
+		} else {
+			remove(unit.strength);
+		}
+
+		// Notify observers.
 		setChanged();
-		notifyObservers(new Update("size", strength));
+		notifyObservers();
+
 	}
 
 	/**
@@ -112,75 +160,403 @@ public final class ModelArmy extends Observable {
 	 * 
 	 * @param unit
 	 *            {@link ModelArmy}
-	 * @return
+	 * @return Whether a specific type of {@link ModelUnit} is currently in this
+	 *         {@link ModelArmy}.
 	 */
 	public boolean hasUnit(ModelUnit unit) {
+
+		/*
+		 * If the unit is not in the map or if the unit is in the map and there is zero
+		 * of the unit type, return false.
+		 */
 		return units.get(unit) != null && units.get(unit) != 0;
 	}
 
 	/**
-	 * Retrieves a number of a specific type of {@link ModelUnit} that are currently
-	 * in this {@link ModelArmy}.
+	 * Retrieves a number of a specific {@link ModelUnit} that are currently in this
+	 * {@link ModelArmy}.
 	 * 
 	 * @param unit
-	 *            {@link ModelUnit}.
-	 * @return
+	 *            {@link ModelUnit} that is in the {@link ModelArmy}. Use
+	 *            {@link ModelArmy#hasUnit(ModelUnit)} to determine this.
+	 * @return Number of a specific {@link ModelUnit}
 	 */
-	public int getUnit(ModelUnit unit) {
+	public int getNumberOf(ModelUnit unit) {
 		return units.get(unit);
+	}
+
+	/**
+	 * Trades the {@link ModelUnit}s of the specified type for as many of the
+	 * {@link ModelUnit} above them according to
+	 * {@link UnitHelper#getUnitAbove(ModelUnit)} as possible. <br>
+	 * <br>
+	 * Will return false if:
+	 * <ul>
+	 * <li>There is no {@link ModelUnit} above.</li>
+	 * <li>There is not enough of that {@link ModelUnit} in the {@link ModelArmy} to
+	 * make one of the above {@link ModelUnit}.</li>
+	 * <li>The unit is not in the {@link ModelArmy}.</li>
+	 * </ul>
+	 * 
+	 * 
+	 * @param unit
+	 *            {@link ModelUnit} to trade up.
+	 * @return Whether or not the {@link ModelUnit} was traded up or not.
+	 */
+	public boolean tradeUp(ModelUnit unit) {
+
+		// If the unit is not in this army.
+		if (!hasUnit(unit)) {
+			return false;
+		}
+
+		// Holds the unit above the specified unit.
+		final ModelUnit above = UnitHelper.getInstance().getUnitAbove(unit);
+
+		// If there is no unit above the specified unit.
+		if (above == null) {
+			return false;
+		}
+
+		// The current number of the specified unit.
+		final int numberOfUnit = units.get(unit);
+
+		// The current combine strength of all the specified units.
+		final int strengthCombined = numberOfUnit * unit.strength;
+
+		// Whether the combined strength of all the units is enough to make one of the
+		// unit above.
+		final boolean strongerThanAbove = strengthCombined > above.strength;
+
+		// If the combined strength of all the units is not enough to make one of the
+		// unit above.
+		if (!strongerThanAbove) {
+			return false;
+		}
+
+		// The number of the unit above that can be made.
+		final int numberOfAbove = strengthCombined / above.strength;
+
+		// The number of remaining unit strength left by creating the units above.
+		final int remainder = strengthCombined % above.strength;
+
+		// Remove all the specified units from the army
+		for (int index = 0; index < numberOfUnit; index++) {
+			remove(unit);
+		}
+
+		// Add the number of the above unit that can be created.
+		for (int index = 0; index < numberOfAbove; index++) {
+			add(above);
+		}
+
+		// Convert the remaining strength into units and then add them to the army.
+		generateUnits(remainder).forEach(smaller -> add(smaller));
+
+		return true;
+
 	}
 
 	/**
 	 * Returns the number of different types of {@link ModelUnit}s in this
 	 * {@link ModelArmy}.
 	 * 
-	 * @return
+	 * @return Variety of {@link ModelUnit}s.
 	 */
-	public int getUnitType() {
-
-		int numberOfUnitTypes = 0;
-
-		for (int unitAmount : units.values()) {
-			if (unitAmount > 0)
-				numberOfUnitTypes++;
-		}
-
-		return numberOfUnitTypes;
+	public int getVarietyOfUnits() {
+		return units.size();
 	}
 
 	/**
-	 * Determines the units that this {@link ModelArmy} can contain.
+	 * Retrieves the {@link Iterator} for this {@link ModelArmy} of all the
+	 * {@link ModelUnit}s inside. The number of each {@link ModelUnit} in specific
+	 * can be found using {@link ModelArmy#getNumberOf(ModelUnit)}.
 	 */
-	private void computeUnits() {
+	@Override
+	public Iterator<ModelUnit> iterator() {
+		return units.keySet().iterator();
+	}
 
-		// Clear the current list of units.
+	/**
+	 * Adds a {@link ModelUnit} to this {@link ModelArmy}.
+	 * 
+	 * @param unit
+	 *            {@link ModelUnit} to add.
+	 */
+	public void add(ModelUnit unit) {
+
+		// The number of the specified unit currently in the army
+		final int currentNumber = units.get(unit) == null ? 0 : units.get(unit);
+
+		// Set the new number of the specified unit.
+		units.put(unit, currentNumber + 1);
+
+		setChanged();
+		notifyObservers();
+
+	}
+
+	/**
+	 * Adds a {@link List} of {@link ModelUnit}s to this {@link ModelArmy}.
+	 * 
+	 * @param unitList
+	 *            {@link List} of {@link ModelUnit}s to add.
+	 */
+	public void add(List<ModelUnit> unitList) {
+
+		// Iterate through all the units and add them to the army.
+		unitList.forEach(unit -> add(unit));
+	}
+
+	/**
+	 * Set strength of this {@link ModelArmy} and the {@link ModelUnit}s will be
+	 * generated using {@link ModelArmy#generateUnits(int)}.
+	 * 
+	 * @param strength
+	 *            The new strength of the {@link ModelArmy}.
+	 */
+	public void setStrength(int strength) {
+
+		// Check the parameters.
+		if (strength < 0) {
+			throw new IllegalArgumentException("New strength can not be less than zero.");
+		}
+
+		// Clear the units from the army.
+		clearUnits();
+
+		// Populate the army with new units.
+		populateArmy(strength);
+
+		// Notify the observers that the army has changed.
+		setChanged();
+		notifyObservers();
+
+	}
+
+	/**
+	 * Set this {@link ModelArmy} to have one of the weakest {@link ModelUnit}
+	 * according to {@link UnitHelper#getWeakest()}.
+	 */
+	public void setWeakest() {
+
+		// Remove all the units
+		clearUnits();
+
+		// Set the army to its weakest not empty value.
+		units.put(UnitHelper.getInstance().getWeakest(), 1);
+
+		setChanged();
+		notifyObservers();
+
+	}
+
+	/**
+	 * Retrieves the weakest {@link ModelUnit} in this {@link ModelArmy}.
+	 * 
+	 * @return Weakest {@link ModelUnit} in this {@link ModelArmy}.
+	 */
+	public ModelUnit getWeakestUnit() {
+
+		/**
+		 * Starting from the weakest unit currently in the game step up in strength
+		 * until a unit of the current type is in the army.
+		 */
+
+		ModelUnit current = UnitHelper.getInstance().getWeakest();
+
+		while (current != null) {
+
+			if (hasUnit(current)) {
+				return current;
+			} else {
+				current = UnitHelper.getInstance().getUnitAbove(current);
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Retrieves the strongest {@link ModelUnit} in this {@link ModelArmy}.
+	 * 
+	 * @return Strongest {@link ModelUnit} in this {@link ModelArmy}.
+	 */
+	public ModelUnit getStrongestUnit() {
+
+		/**
+		 * Starting from the strongest unit currently in the game step down in strength
+		 * until a unit of the current type is in the army.
+		 */
+		ModelUnit current = UnitHelper.getInstance().getStrongest();
+
+		while (current != null) {
+			if (hasUnit(current)) {
+				return current;
+			} else {
+				current = UnitHelper.getInstance().getUnitBelow(current);
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Removes a amount of {@link ModelUnit} strength from this {@link ModelArmy}.
+	 * If the loss in strength would reduce the {@link ModelArmy}'s strength to less
+	 * than zero then the {@link ModelArmy} will be emptied.
+	 * 
+	 * @param strength
+	 *            The amount of {@link ModelUnit} strength to remove.
+	 */
+	public void remove(int strength) {
+
+		// The strength of the army post strength removal.
+		final int newStrength = getStrength() - strength;
+
+		// If the new strength of the army is more that one of the weakest units then
+		// populate the army. Otherwise clear the army.
+		if (newStrength >= UnitHelper.getInstance().getWeakest().strength) {
+			populateArmy(newStrength);
+		} else {
+			clearUnits();
+		}
+
+		// Notify observers of the change.
+		setChanged();
+		notifyObservers();
+
+	}
+
+	/**
+	 * Removes all the {@link ModelUnit}s from this {@link ModelArmy} provided there
+	 * are {@link ModelUnit}s to remove.
+	 */
+	private void clearUnits() {
+
+		// Clear the current map of units if there are units to clear.
 		if (!units.isEmpty())
 			units.clear();
 
-		int armySize = strength;
+	}
+
+	/**
+	 * Sets the selected {@link ModelUnit}.
+	 * 
+	 * @param unit
+	 *            {@link ModelUnit}
+	 */
+	private void setSelected(ModelUnit unit) {
+
+		selected = unit;
+
+		// Notify observers that the selected has changed.
+		setChanged();
+		notifyObservers(new Update("selected", selected));
+
+	}
+
+	/**
+	 * Re-populates this {@link ModelArmy} based on the specified new strength of
+	 * the {@link ModelArmy}.
+	 * 
+	 * @param strength
+	 *            The new strength of this {@link ModelArmy}.
+	 */
+	private void populateArmy(int strength) {
+
+		// De-select the currently selected unit.
+		deselect();
+
+		// Clear the current list of units.
+		clearUnits();
+
+		// Generate the units then add them to the current army.
+		add(generateUnits(strength));
+
+	}
+
+	/**
+	 * Generates a {@link List} of {@link ModelUnit}s who's combined strength is
+	 * equal to the specified strength. This method will prioritise the strongest
+	 * {@link ModelUnit}s first according to {@link UnitHelper#getStrongest()}. The
+	 * Specified strength should not be or result in a strength lower than the
+	 * weakest {@link ModelUnit}'s strength according to
+	 * {@link UnitHelper#getWeakest()}.
+	 * 
+	 * @param strength
+	 *            The combined strength of the {@link List} of {@link ModelUnit}s.
+	 * 
+	 * @return {@link List} of {@link ModelUnit}.
+	 */
+	public static List<ModelUnit> generateUnits(int strength) {
+
+		// List that will contain the generated units.
+		final List<ModelUnit> units = new LinkedList<>();
 
 		// Holds the current strongest unit that is smaller than the army size.
 		ModelUnit unit = UnitHelper.getInstance().getStrongest();
 
-		// While the army can be further divided.
-		while (armySize > 0) {
+		// The strength remaining to construct units
+		int remianingStrength = strength;
 
-			// If the unit is null then there is no unit weaker than the previous.
+		// While the army can be further divided.
+		while (remianingStrength > 0) {
+
+			// If the unit is null then there is no unit weaker than the previous but there
+			// is still strength remaining then throw an exception as there is no way to use
+			// the strength.
 			if (unit == null) {
 				throw new IllegalStateException("There is not unit teir that the army can be divide further into.");
 			}
 
-			// If the current unit fits into the army add the max number of that unit to the
+			// If the current unit fits into the army add one of that unit to the
 			// army that can be fit.
-			if (unit.strength <= armySize) {
-				units.put(unit, armySize / unit.strength);
-				armySize = armySize % unit.strength;
+			if (unit.strength <= remianingStrength) {
+				units.add(unit);
+				remianingStrength -= unit.strength;
+			} else {
+				// Move to the unit below in strength.
+				unit = UnitHelper.getInstance().getUnitBelow(unit);
 			}
-
-			// Move to the unit below.
-			unit = UnitHelper.getInstance().getUnitBelow(unit);
 
 		}
 
+		return units;
+
 	}
+
+	/**
+	 * Retrieves the number of {@link ModelUnit}s in this {@link ModelArmy}.
+	 * 
+	 * @return Number of {@link ModelUnit}s
+	 */
+	public int getNumberOfUnits() {
+
+		int number = 0;
+
+		// Iterate through all the numbers of each unit type and add them up.
+		for (Integer amount : units.values()) {
+			number += amount;
+		}
+
+		return number;
+	}
+
+	@Override
+	public Set<? extends Unit> getUnits() {
+		// Copy the key set into a new map so that this army cannot be modified.
+		return new HashSet<Unit>(units.keySet());
+	}
+
+	@Override
+	public int getNumberOf(Unit unit) {
+		return getNumberOf((ModelUnit) unit);
+	}
+
+	@Override
+	public boolean hasUnit(Unit unit) {
+		return hasUnit((ModelUnit) unit);
+	}
+
 }

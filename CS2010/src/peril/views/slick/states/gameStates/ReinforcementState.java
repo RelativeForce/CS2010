@@ -4,7 +4,6 @@ import java.util.Observable;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -13,6 +12,7 @@ import peril.controllers.GameController;
 import peril.model.states.Reinforce;
 import peril.views.slick.Button;
 import peril.views.slick.Font;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
@@ -20,18 +20,13 @@ import peril.views.slick.board.SlickPlayer;
 /**
  * Encapsulates the behaviour of the Reinforcement {@link CoreGameState} where
  * the {@link SlickPlayer} places their units from
- * {@link SlickPlayer#getDistributableArmySize()} on their
+ * {@link SlickPlayer#getDistributableArmyStrength()} on their
  * {@link SlickCountry}s.
  * 
  * @author Joseph_Rolli, Joshua_Eddy
  *
  */
 public final class ReinforcementState extends CoreGameState {
-
-	/**
-	 * The name of a specific {@link ReinforcementState}.
-	 */
-	private static final String STATE_NAME = "Reinforcement";
 
 	/**
 	 * The {@link Font} for displaying the {@link Player's} available units to
@@ -58,10 +53,10 @@ public final class ReinforcementState extends CoreGameState {
 	 *            The ID of this {@link ReinforcementState}
 	 */
 	public ReinforcementState(GameController game, int id, Reinforce model) {
-		super(game, STATE_NAME, id, model);
+		super(game, model.getName(), id, model);
 		this.reinforceButton = "reinforce";
-		this.unitFont = new Font("Arial", Color.white, 50);
-		this.textFont = new Font("Arial", Color.white, 20);
+		this.unitFont = new Font("Arial", Color.white, 80);
+		this.textFont = new Font("Arial", Color.white, 40);
 
 		model.addObserver(this);
 	}
@@ -101,24 +96,26 @@ public final class ReinforcementState extends CoreGameState {
 	 * Renders this {@link ReinforcementState} on screen.
 	 */
 	@Override
-	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		super.render(gc, sbg, g);
+	public void render(GameContainer gc, Frame frame) {
+		super.render(gc, frame);
 
-		super.drawAllLinks(g);
-		super.drawArmies(g);
-		super.drawImages(g);
-		super.drawButtons(g);
-		super.drawPlayerName(g);
+		super.drawAllLinks(frame);
+		super.drawArmies(frame);
+		super.drawImages();
+		super.drawButtons();
+		super.drawPlayerName(frame);
 
 		String units = Integer.toString(game.getCurrentModelPlayer().distributableArmy.getStrength());
 
-		unitFont.draw(g, units, 150 - (unitFont.getWidth(units) / 2), 45);
-		textFont.draw(g, "UNITS", 150 - (textFont.getWidth("UNITS") / 2), 95);
+		frame.draw(unitFont, units, 300 - (unitFont.getWidth(units) / 2), 90);
 
-		super.drawPopups(g);
-		menus.draw(g);
+		frame.draw(textFont, "UNITS", 300 - (textFont.getWidth("UNITS") / 2), 90 + unitFont.getHeight());
 
-		g.destroy();
+		super.drawMiniMap(frame);
+		
+		super.drawPopups(frame);
+		menus.draw(frame);
+
 	}
 
 	@Override

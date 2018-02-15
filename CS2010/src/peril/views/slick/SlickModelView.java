@@ -11,6 +11,7 @@ import peril.model.board.ModelContinent;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelHazard;
 import peril.model.board.ModelUnit;
+import peril.model.board.links.ModelLinkState;
 import peril.model.states.ModelState;
 import peril.views.ModelView;
 import peril.views.slick.board.SlickArmy;
@@ -18,6 +19,7 @@ import peril.views.slick.board.SlickBoard;
 import peril.views.slick.board.SlickContinent;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickHazard;
+import peril.views.slick.board.SlickLinkState;
 import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.board.SlickUnit;
 import peril.views.slick.states.gameStates.CoreGameState;
@@ -32,9 +34,10 @@ public final class SlickModelView implements ModelView {
 	private final Map<ModelArmy, SlickArmy> armies;
 	private final Map<ModelPlayer, SlickPlayer> players;
 	private final Map<ModelUnit, SlickUnit> units;
+	private final Map<ModelLinkState, SlickLinkState> links;
 
 	private boolean isInitialised;
-
+	
 	public SlickModelView() {
 		countries = new IdentityHashMap<>();
 		continents = new IdentityHashMap<>();
@@ -44,6 +47,7 @@ public final class SlickModelView implements ModelView {
 		boards = new IdentityHashMap<>();
 		players = new IdentityHashMap<>();
 		units = new IdentityHashMap<>();
+		links = new IdentityHashMap<>();
 		isInitialised = false;
 	}
 
@@ -105,6 +109,10 @@ public final class SlickModelView implements ModelView {
 
 			for (SlickHazard hazard : SlickHazard.values()) {
 				addHazard(hazard);
+			}
+			
+			for(SlickLinkState link : SlickLinkState.values()) {
+				addLinkState(link);
 			}
 
 		}
@@ -229,6 +237,26 @@ public final class SlickModelView implements ModelView {
 
 		hazards.put(slickHazard.model, slickHazard);
 
+	}
+
+	@Override
+	public SlickLinkState getVisual(ModelLinkState link) {		
+		return links.get(link);
+	}
+
+	@Override
+	public void addLinkState(Object linkState) {
+		
+		checkInitialised();
+
+		if (!(linkState instanceof SlickLinkState)) {
+			throw new IllegalArgumentException("The specifed hazard is not a slick2d hazard.");
+		}
+
+		SlickLinkState slickLinkState = (SlickLinkState) linkState;
+
+		links.put(slickLinkState.model, slickLinkState);
+		
 	}
 
 }

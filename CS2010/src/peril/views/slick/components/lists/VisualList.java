@@ -8,6 +8,7 @@ import org.newdawn.slick.Graphics;
 
 import peril.views.slick.Clickable;
 import peril.views.slick.Font;
+import peril.views.slick.Frame;
 import peril.views.slick.Point;
 import peril.views.slick.Region;
 import peril.views.slick.components.Component;
@@ -237,19 +238,19 @@ public class VisualList<T> extends Clickable implements Component {
 	 * @param g
 	 *            {@link Graphics}
 	 */
-	public void draw(Graphics g) {
+	public void draw(Frame frame) {
 
 		if (!visible) {
 			return;
 		}
 
-		g.setColor(Color.white);
+		frame.setColor(Color.white);
 
 		int x = this.getPosition().x;
 		int y = this.getPosition().y;
 
 		// Draws the background menu box.
-		g.fillRect(x, y, getWidth(), getHeight());
+		frame.fillRect(x, y, getWidth(), getHeight());
 
 		// Draw the map names in the game.
 		for (Element element : elements) {
@@ -259,7 +260,7 @@ public class VisualList<T> extends Clickable implements Component {
 			if (index >= topElementIndex && index < topElementIndex + elementsInView) {
 
 				element.setPosition(new Point(x, y));
-				element.draw(g, font, padding);
+				element.draw(frame, font, padding);
 				y += height;
 			}
 		}
@@ -270,7 +271,7 @@ public class VisualList<T> extends Clickable implements Component {
 			int selectedIndex = elements.indexOf(selected);
 
 			if (selectedIndex >= topElementIndex && selectedIndex < topElementIndex + elementsInView) {
-				g.drawImage(selected.getImage(), selected.getPosition().x, selected.getPosition().y);
+				frame.draw(selected.getImage(), selected.getPosition().x, selected.getPosition().y);
 			}
 
 		}
@@ -428,8 +429,8 @@ public class VisualList<T> extends Clickable implements Component {
 		 *            The number of pixels to the left of this {@link Element}s
 		 *            {@link Point} position this will be displayed.
 		 */
-		public void draw(Graphics g, Font font, int padding) {
-			font.draw(g, text, this.getPosition().x + padding, this.getPosition().y);
+		public void draw(Frame frame, Font font, int padding) {
+			frame.draw(font, text, this.getPosition().x + padding, this.getPosition().y);
 		}
 	}
 

@@ -1,12 +1,14 @@
 package peril.model.board;
 
+import peril.controllers.api.Unit;
+
 /**
  * A unit that is part of a {@link ModelArmy}.
  * 
  * @author Joshua_Eddy
  *
  */
-public final class ModelUnit implements Comparable<ModelUnit> {
+public final class ModelUnit implements Comparable<ModelUnit>, Unit {
 
 	/**
 	 * The strength of this {@link ModelUnit}.
@@ -52,6 +54,32 @@ public final class ModelUnit implements Comparable<ModelUnit> {
 		}
 
 		return 0;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		
+		if(other instanceof ModelUnit) {
+			
+			ModelUnit otherUnit = (ModelUnit) other;
+			
+			if(strength == otherUnit.strength && name.equals(otherUnit.name) && fileName.equals(otherUnit.fileName)) {
+				return true;
+			}
+		}
+		
+		
+		return false;
+	}
+	
+	@Override
+	protected ModelUnit clone() {
+		return new ModelUnit(name, strength, fileName);
+	}
+	
+	@Override
+	public int getStrength() {
+		return strength;
 	}
 
 }

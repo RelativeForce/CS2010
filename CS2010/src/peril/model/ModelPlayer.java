@@ -4,13 +4,13 @@ import java.util.Observable;
 
 import peril.Update;
 import peril.ai.AI;
+import peril.controllers.api.Army;
 import peril.controllers.api.Player;
 import peril.model.board.ModelArmy;
 
 /**
- * The internal representation of a user of the system. This object will hold
- * all of the details about a users game such as the number of {@link ModelCountry}s
- * that user has.
+ * The internal representation of a player of the game. This object will hold
+ * all of the tracked statistics about a player.
  * 
  * @author Joshua_Eddy, Ezekiel_Trinidad
  *
@@ -25,12 +25,15 @@ public final class ModelPlayer extends Observable implements Player {
 	/**
 	 * The total {@link ModelArmy} of the {@link ModelPlayer}.
 	 * 
+	 * @see ModelArmy
 	 */
 	public final ModelArmy totalArmy;
 
 	/**
-	 * The {@link ModelArmy} to be distributed by the {@link ModelPlayer} at the start of the
-	 * next turn.
+	 * The {@link ModelArmy} to be distributed by the {@link ModelPlayer} at the
+	 * start of the next turn.
+	 * 
+	 * @see ModelArmy
 	 * 
 	 */
 	public final ModelArmy distributableArmy;
@@ -38,8 +41,16 @@ public final class ModelPlayer extends Observable implements Player {
 	/**
 	 * The {@link AI} that will control this {@link ModelPlayer}. Assigned
 	 * {@link AI#USER} for a user controlled player.
+	 * 
+	 * @see AI
+	 * @see AI#USER
 	 */
 	public final AI ai;
+
+	/**
+	 * The amount of points the {@link ModelPlayer} has to spend.
+	 */
+	private int points;
 
 	/**
 	 * The number of the {@link ModelCountry}s the {@link ModelPlayer} owns.
@@ -56,25 +67,30 @@ public final class ModelPlayer extends Observable implements Player {
 	 * 
 	 * @param number
 	 *            The number of this player
+	 * @param ai
+	 *            The {@link AI} that will control this {@link ModelPlayer}.
+	 *            Assigned {@link AI#USER} for a user controlled player.
 	 */
 	public ModelPlayer(int number, AI ai) {
 		this.countries = 0;
 		this.continents = 0;
-		this.distributableArmy = new ModelArmy(0);
-		this.totalArmy = new ModelArmy(0);
+		this.distributableArmy = new ModelArmy();
+		this.totalArmy = new ModelArmy();
 		this.ai = ai;
 		this.number = number;
+		this.points = 0;
 	}
 
 	/**
 	 * Sets the {@link ModelCountry}s owned by the {@link ModelPlayer}.
 	 * 
 	 * @param countriesRuled
-	 *            The number of {@link ModelCountry}s the {@link ModelPlayer} now owns.
+	 *            The number of {@link ModelCountry}s the {@link ModelPlayer} now
+	 *            owns.
 	 */
 	public void setCountriesRuled(int countriesRuled) {
 		countries = countriesRuled;
-		
+
 		notifyObservers(new Update("countries", countries));
 	}
 
@@ -83,6 +99,7 @@ public final class ModelPlayer extends Observable implements Player {
 	 * 
 	 * @return countries Number of {@link ModelCountry}s.
 	 */
+	@Override
 	public int getCountriesRuled() {
 		return countries;
 	}
@@ -91,11 +108,12 @@ public final class ModelPlayer extends Observable implements Player {
 	 * Sets the {@link ModelContinent}s ruled by the {@link ModelPlayer}.
 	 * 
 	 * @param continentsRuled
-	 *            The number of {@link ModelContinent}s the {@link ModelPlayer} now owns.
+	 *            The number of {@link ModelContinent}s the {@link ModelPlayer} now
+	 *            owns.
 	 */
 	public void setContinentsRuled(int continentsRuled) {
 		continents = continentsRuled;
-		
+
 		notifyObservers(new Update("continents", continentsRuled));
 	}
 
@@ -123,11 +141,11 @@ public final class ModelPlayer extends Observable implements Player {
 
 		totalArmy.setStrength(0);
 		distributableArmy.setStrength(0);
-		
+
 		// Reset countries ruled.
 		countries = 0;
 		notifyObservers(new Update("countries", countries));
-		
+
 		// Reset continents ruled.
 		continents = 0;
 		notifyObservers(new Update("continents", continents));
@@ -137,7 +155,7 @@ public final class ModelPlayer extends Observable implements Player {
 	/**
 	 * Retrieves the total size of this {@link ModelPlayer}s army.
 	 */
-	public int getTotalArmySize() {
+	public int getTotalArmyStrength() {
 		return totalArmy.getStrength();
 	}
 
@@ -145,8 +163,41 @@ public final class ModelPlayer extends Observable implements Player {
 	 * Retrieves the distribute-able army size.
 	 */
 	@Override
-	public int getDistributableArmySize() {
+	public int getDistributableArmyStrength() {
 		return distributableArmy.getStrength();
+	}
+
+	/**
+	 * Retrieves the amount of points this {@link ModelPlayer} has.
+	 */
+	public int getPoints() {
+		return this.points;
+	}
+
+	/**
+	 * Sets the amount of points this {@link ModelPlayer} has.
+	 * 
+	 * @param points
+	 *            The new amount of points the {@link ModelPlayer} will have.
+	 */
+	public void setPoints(int points) {
+		this.points = points;
+	}
+
+	/**
+	 * Retrieves the distribute-able {@link Army} of this {@link ModelPlayer}.
+	 */
+	@Override
+	public Army getDistributableArmy() {
+		return distributableArmy;
+	}
+
+	/**
+	 * Retrieves the total {@link Army} of this {@link ModelPlayer}.
+	 */
+	@Override
+	public Army getTotalArmy() {
+		return totalArmy;
 	}
 
 }

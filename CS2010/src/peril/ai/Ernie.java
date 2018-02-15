@@ -30,6 +30,7 @@ public class Ernie extends AI {
 			Map<Integer, Country> countries = new HashMap<>();
 			Player current = api.getCurrentPlayer();
 			
+			if (current.equals(country.getOwner())) {
 			int highest = Integer.MIN_VALUE;
 			
 			api.forEachCountry(country -> {
@@ -46,10 +47,12 @@ public class Ernie extends AI {
 			}
 			
 			
+			
 		api.select(countries.get(highest));
 		api.reinforce();
 	
 		return true;
+	}
 	}
 
 	@Override

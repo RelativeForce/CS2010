@@ -7,7 +7,7 @@ import peril.controllers.GameController;
 import peril.helpers.FunctionHelper;
 import peril.io.FileParser;
 import peril.views.slick.Container;
-import peril.views.slick.components.Button;
+import peril.views.slick.util.Button;
 import peril.views.slick.util.Point;
 import peril.views.slick.util.Viewable;
 

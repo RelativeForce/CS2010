@@ -554,7 +554,16 @@ public class SlickGame extends StateBasedGame implements View {
 	}
 
 	public void initMiniMap() {
-		states.addMiniMap(modelView.getVisual(game.getModelBoard()), this);
+
+		final SlickBoard board = modelView.getVisual(game.getModelBoard());
+
+		// Change the window to the specified size.
+		if (board.getWidth() >= agc.getScreenWidth() || board.getHeight() >= agc.getScreenHeight()) {
+			states.addMiniMap(board, this);
+		} else {
+			states.removeMiniMap();
+		}
+
 	}
 
 }

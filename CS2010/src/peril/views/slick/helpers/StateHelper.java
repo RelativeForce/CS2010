@@ -157,6 +157,16 @@ public class StateHelper {
 		movement.setMiniMap(miniMap);
 		
 	}
+	
+	public void removeMiniMap() {
+		
+		setup.setMiniMap(null);
+		reinforcement.setMiniMap(null);
+		combat.setMiniMap(null);
+		movement.setMiniMap(null);
+		
+		
+	}
 
 	/**
 	 * Retrieves the {@link CoreGameState} game state that the game can be saved in

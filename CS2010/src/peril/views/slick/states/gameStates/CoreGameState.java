@@ -553,6 +553,11 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	}
 
 	protected void drawMiniMap(Frame frame) {
+		
+		if(miniMap == null) {
+			return;
+		}
+		
 		frame.draw(miniMap, new EventListener() {
 
 			@Override

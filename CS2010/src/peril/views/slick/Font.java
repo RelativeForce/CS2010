@@ -8,22 +8,20 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
 /**
- * Encapsulates a font on the screen.
+ * Encapsulates the behaviours of a font that can be used to display text on
+ * screen. This font must be initialised using {@link Font#init()}.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-16
+ * @version 1.01.01
+ * 
+ * @see Color
+ * @see UnicodeFont
+ * @see Graphics
  *
  */
-public class Font {
-
-	/**
-	 * The {@link UnicodeFont} for this {@link Font}.
-	 */
-	private UnicodeFont uFont;
-
-	/**
-	 * The {@link Color} of the {@link Font}.
-	 */
-	private Color color;
+public final class Font {
 
 	/**
 	 * Holds the font size of this {@link Font}.
@@ -41,6 +39,16 @@ public class Font {
 	private boolean initialised;
 
 	/**
+	 * The {@link UnicodeFont} for this {@link Font}.
+	 */
+	private UnicodeFont uFont;
+
+	/**
+	 * The {@link Color} of the {@link Font}.
+	 */
+	private Color color;
+
+	/**
 	 * Constructs the new {@link Font}.
 	 * 
 	 * @param fontName
@@ -48,8 +56,7 @@ public class Font {
 	 * @param color
 	 *            The {@link Color} of the {@link Font}.
 	 * @param fontSize
-	 *            The <code>int</code> size of the {@link Font}. Seems to break over
-	 *            56
+	 *            The <code>int</code> size of the {@link Font}.
 	 */
 	public Font(String fontName, Color color, int fontSize) {
 		this.color = color;
@@ -65,17 +72,26 @@ public class Font {
 	@SuppressWarnings("unchecked")
 	public void init() {
 
+		// If the font is not already.
 		if (!initialised) {
-			java.awt.Font font = new java.awt.Font(fontName, java.awt.Font.PLAIN, fontSize);
+
+			// Create a AWT font from the parameters the user defined.
+			final java.awt.Font font = new java.awt.Font(fontName, java.awt.Font.PLAIN, fontSize);
+
+			// Use the AWT font to construct a unicode font.
 			uFont = new UnicodeFont(font);
 
-			uFont.getEffects().add(new ColorEffect(new java.awt.Color(color.r, color.g, color.b)));
-			uFont.addAsciiGlyphs();
+			// The colour effect that makes the font visible.
+			final ColorEffect effect = new ColorEffect(new java.awt.Color(color.r, color.g, color.b));
+			uFont.getEffects().add(effect);
 
+			// Load the glyphs from the default location.
 			try {
+				uFont.addAsciiGlyphs();
 				uFont.loadGlyphs();
 			} catch (SlickException e) {
 				e.printStackTrace();
+				throw new IllegalStateException("Font Exception - Failed to load glyphs from memory.");
 			}
 
 			initialised = true;
@@ -98,17 +114,18 @@ public class Font {
 	 */
 	public void draw(Graphics g, String text, float x, float y) {
 
-		Color originalColour = g.getColor();
-		org.newdawn.slick.Font originalFont = g.getFont();
+		// Store the current colour and font of the graphics
+		final Color originalColour = g.getColor();
+		final org.newdawn.slick.Font originalFont = g.getFont();
 
-		// Set the new font and color.
+		// Set the new font and colour.
 		g.setColor(color);
 		g.setFont(uFont);
 
 		// Draw the text
 		g.drawString(text, x, y);
 
-		// Revert the font an color back to original font and color.
+		// Revert the font an colour back to original font and colour.
 		g.setColor(originalColour);
 		g.setFont(originalFont);
 
@@ -134,21 +151,21 @@ public class Font {
 	}
 
 	/**
-	 * Retrieves the line height of this {@link Font}.
+	 * Retrieves the line height of the '|' in this {@link Font}. For a more
+	 * accurate height use {@link Font#getHeight(String)}.
 	 * 
-	 * @return
-	 * 
-	 * @deprecated use {@link Font#getHeight(String)}
+	 * @return The height of the text.
 	 */
 	public int getHeight() {
-		return uFont.getHeight("moo");
+		return uFont.getHeight("|");
 	}
 
 	/**
 	 * Retrieves the line height of this {@link Font} for a specified string.
 	 * 
 	 * @param text
-	 * @return Height of the text
+	 *            The text that will be displayed in this {@link Font}.
+	 * @return The height of the text.
 	 * 
 	 */
 	public int getHeight(String text) {

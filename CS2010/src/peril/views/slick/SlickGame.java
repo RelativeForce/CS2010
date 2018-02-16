@@ -12,7 +12,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.Game;
 import peril.controllers.Directory;
 import peril.controllers.GameController;
 import peril.helpers.PlayerHelper;
@@ -25,41 +24,56 @@ import peril.model.states.ModelState;
 import peril.views.ModelView;
 import peril.views.View;
 import peril.views.slick.board.SlickBoard;
+import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickHazard;
 import peril.views.slick.board.SlickPlayer;
-import peril.views.slick.components.MiniMap;
 import peril.views.slick.components.menus.*;
-import peril.views.slick.helpers.IOHelper;
-import peril.views.slick.helpers.MenuHelper;
-import peril.views.slick.helpers.MusicHelper;
-import peril.views.slick.helpers.StateHelper;
+import peril.views.slick.helpers.*;
 import peril.views.slick.io.ImageReader;
 import peril.views.slick.io.MapReader;
 import peril.views.slick.states.*;
 import peril.views.slick.states.gameStates.*;
 import peril.views.slick.util.Point;
 
-public class SlickGame extends StateBasedGame implements View {
+/**
+ * The Slick 2D {@link View} that displays the game to the user. This is the
+ * facade between the main game and the Slick 2D visual representation. The main
+ * game should not interact with anything bar the {@link View} and
+ * {@link ModelView}.
+ * 
+ * @author Joshua_Eddy
+ * 
+ * @since 2018-02-16
+ * @version 1.01.01
+ * 
+ * @see StateBasedGame
+ * @see View
+ *
+ */
+public final class SlickGame extends StateBasedGame implements View {
 
 	/**
-	 * The {@link AppGameContainer} that contains this {@link Game}.
+	 * The {@link SlickModelView} that maps the model objects to their slick object
+	 * counterparts.
+	 * 
+	 * @see ModelView
 	 */
-	private final AppGameContainer agc;
+	public final SlickModelView modelView;
 
 	/**
-	 * The {@link StateHelper} that holds all this {@link Game}'s states.
+	 * The {@link StateHelper} that holds all this game's {@link InteractiveState}s.
 	 */
 	public StateHelper states;
 
 	/**
 	 * The {@link IOHelper} that holds the input out put objects of the
-	 * {@link Game}.
+	 * {@link SlickGame}.
 	 */
 	public IOHelper io;
 
 	/**
 	 * The {@link MenuHelper} that holds all the {@link Menu}s for this
-	 * {@link Game}.
+	 * {@link SlickGame}.
 	 */
 	public MenuHelper menus;
 
@@ -67,10 +81,6 @@ public class SlickGame extends StateBasedGame implements View {
 	 * The {@link MusicHelper} the handles music and looping songs.
 	 */
 	public MusicHelper music;
-
-	public final SlickModelView modelView;
-
-	public MiniMap miniMap;
 
 	/**
 	 * Holds all the {@link SlickPlayer}'s {@link Image} icons in this {@link Game}.
@@ -82,8 +92,23 @@ public class SlickGame extends StateBasedGame implements View {
 	 */
 	private final Color[] colors;
 
+	/**
+	 * The {@link AppGameContainer} that contains this {@link SlickGame}.
+	 */
+	private final AppGameContainer agc;
+
+	/**
+	 * The {@link GameController} that allows the {@link SlickGame} to communicate
+	 * with the game model.
+	 */
 	private GameController game;
 
+	/**
+	 * Constructs a new {@link SlickGame}.
+	 * 
+	 * @param title
+	 *            The title to be displayed at the top of the game window.
+	 */
 	public SlickGame(String title) {
 		super(title);
 
@@ -110,24 +135,30 @@ public class SlickGame extends StateBasedGame implements View {
 	@Override
 	public void initStatesList(GameContainer container) throws SlickException {
 
+		// The assets directory
 		final Directory directory = game.getDirectory();
 
+		// Initialise the model view
 		modelView.init(game);
 
+		// Initialise the states
 		states.init(this, modelView.getVisual(game.getModelBoard()));
 
+		// Initialise the hazard icons
 		SlickHazard.initIcons(directory.getHazardsPath());
 
+		// Initialise the player icons.
 		initPlayers(directory.getPlayersPath());
 
-		UIEventHandler eventHandler = new UIEventHandler(this);
+		// The event handler that handles the input events on the window.
+		final UIEventHandler eventHandler = new UIEventHandler(this);
 
-		// Assign Key and Mouse Listener as the UIEventhandler
+		// Assign Key and Mouse Listener as the event listener
 		container.getInput().addKeyListener(eventHandler);
 		container.getInput().addMouseListener(eventHandler);
 
-		// Hide FPS counter
-		container.setShowFPS(false);
+		// Hide FPS counter and enable v sync
+		container.setShowFPS(true);
 		container.setVSync(true);
 	}
 
@@ -143,9 +174,9 @@ public class SlickGame extends StateBasedGame implements View {
 	}
 
 	/**
-	 * Changes the dimensions of the {@link Game#agc} to the dimensions specified.
-	 * If the new dimensions are larger than the displays dimensions then this will
-	 * cause the game to go full screen.
+	 * Changes the dimensions of the {@link AppGameContainer} to the dimensions
+	 * specified. If the new dimensions are larger than the displays dimensions then
+	 * this will cause the game to go full screen.
 	 * 
 	 * @param width
 	 *            <code>int</code> new width of the screen.
@@ -162,13 +193,18 @@ public class SlickGame extends StateBasedGame implements View {
 			agc.setDisplayMode(width, height, false);
 		}
 
+		// Centre the menus based on the new screen position.
 		menus.center(agc.getWidth() / 2, agc.getHeight() / 2);
 
 	}
 
+	/**
+	 * Moves the current {@link SlickBoard} to the centre of the screen.
+	 */
 	@Override
 	public void centerBoard() {
 
+		// Holds the current slick board.
 		final SlickBoard board = modelView.getVisual(game.getModelBoard());
 
 		// Unlock both x and y panning
@@ -177,14 +213,14 @@ public class SlickGame extends StateBasedGame implements View {
 		// The centre position of the board
 		final int x = ((agc.getWidth() - board.getWidth()) / 2);
 		final int y = ((agc.getHeight() - board.getHeight()) / 2);
-
 		board.setPosition(new Point(x, y));
 
-		// Lock panning if the board is to small for the screen.
+		// Lock panning if the board is to small for the screen in width.
 		if (board.getWidth() <= agc.getWidth()) {
 			board.lockX();
 		}
 
+		// Lock panning if the board is to small for the screen in height.
 		if (board.getHeight() <= agc.getHeight()) {
 			board.lockY();
 		}
@@ -192,65 +228,50 @@ public class SlickGame extends StateBasedGame implements View {
 	}
 
 	/**
-	 * Enters the next {@link InteractiveState} of the {@link Game}.
+	 * Enters the next {@link InteractiveState} of the {@link SlickGame}.
 	 * 
 	 * @param nextState
+	 *            Next {@link InteractiveState}.
 	 */
 	public void enterState(InteractiveState nextState) {
 		this.enterState(nextState.getID());
 	}
 
 	/**
-	 * Retrieves the current {@link InteractiveState} of the {@link Game}. This will
-	 * throw {@link IllegalArgumentException} if the {@link GameState} is not a
-	 * {@link InteractiveState}.
+	 * Starts the game. This performs {@link AppGameContainer#start()}.
 	 */
-	@Override
-	public InteractiveState getCurrentState() {
-
-		// Holds the current game state.
-		GameState state = super.getCurrentState();
-
-		// If the current state is a CoreGameState return it as a InteractiveState
-		if (state instanceof InteractiveState) {
-			return (InteractiveState) state;
-		}
-		throw new IllegalStateException(state.getID() + " is not a valid state as it is not a InteractiveState.");
-	}
-
-	/**
-	 * Retrieves whether or not the music is on or off.
-	 * 
-	 * @return <code>boolean</code>
-	 */
-	public boolean isMusicOn() {
-		return getContainer().getMusicVolume() == 1f;
-	}
-
 	@Override
 	public void start() throws Exception {
 
-		// Construct the container for the game as a Slick2D state based game.
+		// Start the container for the game as a Slick2D state based game.
 		try {
 			agc.start();
 		} catch (SlickException e) {
 			e.printStackTrace();
-			throw new IllegalStateException("The game must have a game container.");
+			throw new IllegalStateException("The game container failed to start.");
 		}
 
 	}
 
+	/**
+	 * Initialises this {@link SlickGame}.
+	 */
 	@Override
 	public void init(GameController game) throws Exception {
+
+		// Null check.
+		if (game == null) {
+			throw new NullPointerException("The game controller cannot be null.");
+		}
+
 		this.game = game;
 
+		// The assets directory
 		final Directory directory = game.getDirectory();
 
-		// Construct the container for the game as a Slick2D state based game.
 		try {
-
-			// Set the icons of the game
-			String[] icons = new String[] { directory.getUIPath() + "goat16.png",
+			// Set the icons of the game window
+			final String[] icons = new String[] { directory.getUIPath() + "goat16.png",
 					directory.getUIPath() + "goat32.png" };
 			agc.setIcons(icons);
 
@@ -259,7 +280,7 @@ public class SlickGame extends StateBasedGame implements View {
 			throw new IllegalStateException("The game must have a game container.");
 		}
 
-		// Initialise games overlay menus
+		// Initialise games menus.
 		final WarMenu warMenu = new WarMenu(new Point(100, 100), game);
 		final PauseMenu pauseMenu = new PauseMenu(new Point(100, 100), game);
 		final HelpMenu helpMenu = new HelpMenu(new Point(100, 100), game);
@@ -269,6 +290,7 @@ public class SlickGame extends StateBasedGame implements View {
 		final UpgradeMenu upgradeMenu = new UpgradeMenu(new Point(100, 100), game);
 		final PointsMenu pointsMenu = new PointsMenu(new Point(100, 100), game);
 
+		// Add all the menus to the menu helper.
 		this.menus = new MenuHelper(pauseMenu, warMenu, helpMenu, challengeMenu, statsMenu, unitMenu, upgradeMenu,
 				pointsMenu);
 
@@ -285,54 +307,41 @@ public class SlickGame extends StateBasedGame implements View {
 		final CombatState combat = new CombatState(game, 4, game.getAttack());
 		final MovementState movement = new MovementState(game, 5, game.getFortify());
 
-		// Subscribe the states to the board
+		// Subscribe the core game states to the board
 		final ModelBoard board = game.getModelBoard();
 		board.addObserver(setup);
 		board.addObserver(reinforcement);
 		board.addObserver(combat);
 		board.addObserver(movement);
 
+		// Add all the states to the state helper.
 		this.states = new StateHelper(opening, mainMenu, combat, reinforcement, setup, movement, end, loadingScreen,
 				playerSelection);
 
-		// Set the containers that ui elements will be loaded into.
-		Container[] containers = new Container[] { challengeMenu, helpMenu, pauseMenu, loadingScreen, warMenu, mainMenu,
-				combat, setup, reinforcement, movement, end, playerSelection, statsMenu, unitMenu, upgradeMenu,
-				pointsMenu };
+		// Set the containers that visual elements will be loaded into.
+		final Container[] containers = new Container[] { challengeMenu, helpMenu, pauseMenu, loadingScreen, warMenu,
+				mainMenu, combat, setup, reinforcement, movement, end, playerSelection, statsMenu, unitMenu,
+				upgradeMenu, pointsMenu };
 
+		// User the containers to create the IO helper.
 		this.io = new IOHelper(game, containers);
 
+		// Create the help pages using the states.
 		this.menus.createHelpPages(states);
 
+		// Create the music helper.
 		this.music = new MusicHelper(this, directory.getMusicPath());
 
 	}
 
+	/**
+	 * Set the {@link ModelPlayer} as the winner by adding them to the top of the
+	 * podium.
+	 */
 	@Override
 	public void setWinner(ModelPlayer winner) {
 		states.end.addToTop(modelView.getVisual(winner));
 		enterState(states.end.getID());
-	}
-
-	@Override
-	public boolean isCurrentState(ModelState state) {
-
-		if (getCurrentState() instanceof CoreGameState) {
-			return ((CoreGameState) getCurrentState()).model == state;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Retrieves the {@link Image} icon for a {@link SlickPlayer}
-	 * 
-	 * @param player
-	 *            {@link SlickPlayer}
-	 * @return {@link Image} icon.
-	 */
-	public Image getPlayerIcon(int player) {
-		return playerIcons.get(player);
 	}
 
 	/**
@@ -354,52 +363,68 @@ public class SlickGame extends StateBasedGame implements View {
 	}
 
 	/**
-	 * Retrieves the {@link Color} associated with a {@link SlickPlayer}
-	 * 
-	 * @param playerNumber
-	 * @return
+	 * Causes the {@link SlickGame} to display an attack to the user.
 	 */
-	public Color getColor(int playerNumber) {
-		return colors[playerNumber - 1];
-	}
-
 	@Override
 	public void attack() {
 		menus.autoAttack();
 	}
 
+	/**
+	 * Save the game to the file specified by the pause menu.
+	 */
+	@Override
+	public void save() {
+		menus.save();
+	}
+
+	/**
+	 * Exits the game using {@link AppGameContainer#exit()}.
+	 */
+	@Override
+	public void exit() {
+		agc.exit();
+	}
+
+	/**
+	 * Change the help menu page.
+	 */
 	@Override
 	public void setHelpMenuPage(int pageId) {
 		menus.changeHelpPage(pageId);
-
 	}
 
-	@Override
-	public ModelView getModelView() {
-		return modelView;
-	}
-
+	/**
+	 * Update the challenges on the challenge menu.
+	 */
 	@Override
 	public void updateChallenges() {
 		menus.refreshChallenges();
 	}
 
+	/**
+	 * Add a {@link ModelPlayer} to the podium.
+	 */
 	@Override
 	public void addLoser(ModelPlayer player) {
 		states.end.addToTop(modelView.getVisual(player));
 	}
 
+	/**
+	 * Show a tool tip on the current {@link InteractiveState}.
+	 */
 	@Override
 	public void showToolTip(String text) {
 
-		if (!(getCurrentState() instanceof CoreGameState)) {
-			throw new IllegalStateException("ToolTips may only be shown in game.");
-		}
+		// TODO Change default tool tip position based on state.
 
-		((CoreGameState) getCurrentState()).showToolTip(text, new Point(300, 300));
+		getCurrentState().showToolTip(text, new Point(300, 300));
 
 	}
 
+	/**
+	 * Loads the game by entering the loading screen.
+	 */
 	@Override
 	public void loadGame() throws SlickException {
 		if (getCurrentState() == states.playerSelection) {
@@ -410,153 +435,135 @@ public class SlickGame extends StateBasedGame implements View {
 
 	}
 
+	/**
+	 * Toggle the visibility of the challenge menu.
+	 */
 	@Override
 	public void toggleChallengeMenu(boolean state) {
 		toggleMenu(state, ChallengeMenu.NAME);
 	}
 
+	/**
+	 * Toggle the visibility of the pause menu.
+	 */
 	@Override
 	public void togglePauseMenu(boolean state) {
 		toggleMenu(state, PauseMenu.NAME);
 	}
 
+	/**
+	 * Toggle the visibility of the war menu.
+	 */
 	@Override
 	public void toggleWarMenu(boolean state) {
 		toggleMenu(state, WarMenu.NAME);
 	}
 
+	/**
+	 * Toggle the visibility of the stats menu.
+	 */
 	@Override
 	public void toggleStatsMenu(boolean state) {
 		toggleMenu(state, StatsMenu.NAME);
 	}
 
-	@Override
-	public void save() {
-		menus.save();
-	}
-
+	/**
+	 * Toggle the visibility of the help menu.
+	 */
 	@Override
 	public void toggleHelpMenu(boolean state) {
 		toggleMenu(state, HelpMenu.NAME);
 	}
 
+	/**
+	 * Toggle the visibility of the points menu.
+	 */
 	@Override
 	public void togglePointsMenu(boolean state) {
 		toggleMenu(state, PointsMenu.NAME);
 	}
 
+	/**
+	 * Toggle the visibility of the upgrade menu.
+	 */
 	@Override
 	public void toggleUpgradeMenu(boolean state) {
 		toggleMenu(state, PointsMenu.NAME);
 	}
 
+	/**
+	 * Toggle the visibility of the unit menu.
+	 */
 	@Override
 	public void toggleUnitMenu(boolean state) {
 		toggleMenu(state, PointsMenu.NAME);
 	}
 
-	private void toggleMenu(boolean state, String menuName) {
-		if (state) {
-			menus.show(menuName);
-		} else {
-			menus.hide(menuName);
-		}
-	}
-
+	/**
+	 * Moves to the next help page.
+	 */
 	@Override
 	public void nextHelpPage() {
 		menus.nextHelpPage();
 
 	}
 
+	/**
+	 * Moves to the previous help page.
+	 */
 	@Override
 	public void previousHelpPage() {
 		menus.previousHelpPage();
 	}
 
-	@Override
-	public void exit() {
-		getContainer().exit();
-	}
-
+	/**
+	 * Enter the main menu.
+	 */
 	@Override
 	public void enterMainMenu() {
 		enterState(states.mainMenu);
 	}
 
+	/**
+	 * Enter the reinforce state.
+	 */
 	@Override
 	public void enterReinforce() {
 		enterState(states.reinforcement);
 	}
 
+	/**
+	 * Enter the combat state.
+	 */
 	@Override
 	public void enterCombat() {
 		enterState(states.combat);
 	}
 
+	/**
+	 * Enter the fortify state.
+	 */
 	@Override
 	public void enterFortify() {
 		enterState(states.movement);
 
 	}
 
-	@Override
-	public FileParser getMapLoader(String mapPath, SaveFile save) {
-		return new MapReader(mapPath, game, save, agc.getScreenWidth(), agc.getScreenHeight());
-	}
-
+	/**
+	 * Performs a {@link Consumer} on every {@link SlickPlayer} on the podium.
+	 */
 	@Override
 	public void forEachLoser(Consumer<ModelPlayer> task) {
 		states.end.forEachLoser(task);
 	}
 
-	@Override
-	public boolean isPaused() {
-		return menus.isPaused();
-	}
-
-	@Override
-	public int getArmyOffsetX(ModelCountry country) {
-		return modelView.getVisual(country).getArmyOffset().x;
-	}
-
-	@Override
-	public int getArmyOffsetY(ModelCountry country) {
-		return modelView.getVisual(country).getArmyOffset().y;
-	}
-
-	@Override
-	public void AIattack() {
-		menus.autoAttack();
-	}
-
-	@Override
-	public int getScreenWidth() {
-		return agc.getScreenWidth();
-	}
-
-	@Override
-	public int getScreenHeight() {
-		return agc.getScreenHeight();
-	}
-
-	@Override
-	public boolean isFullScreen() {
-		return agc.isFullscreen();
-	}
-
-	@Override
-	public int getWindowWidth() {
-		return agc.getWidth();
-	}
-
-	@Override
-	public int getWindowHeight() {
-		return agc.getHeight();
-	}
-
+	/**
+	 * Sets the Mini-Map on the board but if the map is smaller than the screen
+	 * remove the mini-map.
+	 */
 	public void initMiniMap() {
 
+		// Holds the slick board
 		final SlickBoard board = modelView.getVisual(game.getModelBoard());
 
 		// Change the window to the specified size.
@@ -566,6 +573,177 @@ public class SlickGame extends StateBasedGame implements View {
 			states.removeMiniMap();
 		}
 
+	}
+
+	/**
+	 * Performs a AI attack where the squad is auto selected.
+	 */
+	@Override
+	public void AIattack() {
+		menus.autoAttack();
+	}
+
+	/**
+	 * Returns the y coordinate of the {@link SlickCountry} army offset.
+	 */
+	@Override
+	public int getArmyOffsetX(ModelCountry country) {
+		return modelView.getVisual(country).getArmyOffset().x;
+	}
+
+	/**
+	 * Returns the x coordinate of the {@link SlickCountry} army offset.
+	 */
+	@Override
+	public int getArmyOffsetY(ModelCountry country) {
+		return modelView.getVisual(country).getArmyOffset().y;
+	}
+
+	/**
+	 * Returns the screen width of the {@link AppGameContainer}.
+	 */
+	@Override
+	public int getScreenWidth() {
+		return agc.getScreenWidth();
+	}
+
+	/**
+	 * Returns the screen height of the {@link AppGameContainer}.
+	 */
+	@Override
+	public int getScreenHeight() {
+		return agc.getScreenHeight();
+	}
+
+	/**
+	 * Returns the width of the {@link AppGameContainer}.
+	 */
+	@Override
+	public int getWindowWidth() {
+		return agc.getWidth();
+	}
+
+	/**
+	 * Returns the height of the {@link AppGameContainer}.
+	 */
+	@Override
+	public int getWindowHeight() {
+		return agc.getHeight();
+	}
+
+	/**
+	 * Returns whether the {@link AppGameContainer} is full screen or not.
+	 */
+	@Override
+	public boolean isFullScreen() {
+		return agc.isFullscreen();
+	}
+
+	/**
+	 * Returns whether the pause menu is displays on screen.
+	 */
+	@Override
+	public boolean isPaused() {
+		return menus.isPaused();
+	}
+
+	/**
+	 * Retrieves whether or not the music is on or off.
+	 * 
+	 * @return <code>boolean</code>
+	 */
+	public boolean isMusicOn() {
+		return getContainer().getMusicVolume() == 1f;
+	}
+
+	/**
+	 * Check if the current state is a {@link CoreGameState} and if so check if the
+	 * current state's {@link ModelState} is the same as the specified one.
+	 */
+	@Override
+	public boolean isCurrentState(ModelState state) {
+
+		// Return if the current core game states model is the current state.
+		if (getCurrentState() instanceof CoreGameState) {
+			return ((CoreGameState) getCurrentState()).model == state;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Retrieves the {@link Image} icon for a {@link SlickPlayer}
+	 * 
+	 * @param player
+	 *            {@link SlickPlayer}
+	 * @return {@link Image} icon.
+	 */
+	public Image getPlayerIcon(int player) {
+		return playerIcons.get(player);
+	}
+
+	/**
+	 * Retrieves the {@link Color} associated with a {@link SlickPlayer}
+	 * 
+	 * @param playerNumber
+	 * @return
+	 */
+	public Color getColor(int playerNumber) {
+		return colors[playerNumber - 1];
+	}
+
+	/**
+	 * Retrieves the {@link SlickModelView} of this {@link SlickGame}.
+	 */
+	@Override
+	public ModelView getModelView() {
+		return modelView;
+	}
+
+	/**
+	 * Retrieves the {@link MapReader} that will load the map.
+	 */
+	@Override
+	public FileParser getMapLoader(String mapPath, SaveFile save) {
+		return new MapReader(mapPath, game, save, agc.getScreenWidth(), agc.getScreenHeight());
+	}
+
+	/**
+	 * Retrieves the current {@link InteractiveState} of the {@link SlickGame}. This
+	 * will throw {@link IllegalArgumentException} if the {@link GameState} is not a
+	 * {@link InteractiveState}.
+	 * 
+	 * @return The current {@link InteractiveState}.
+	 */
+	@Override
+	public InteractiveState getCurrentState() {
+
+		// Holds the current game state.
+		GameState state = super.getCurrentState();
+
+		// If the current state is a CoreGameState return it as a InteractiveState
+		if (state instanceof InteractiveState) {
+			return (InteractiveState) state;
+		}
+		throw new IllegalStateException(state.getID() + " is not a valid state as it is not a InteractiveState.");
+	}
+
+	/**
+	 * Toggles the visibility of a {@link Menu} specified by its name.
+	 * 
+	 * @param state
+	 *            The visibility of the {@link Menu}
+	 * @param menuName
+	 *            The name of the menu.
+	 */
+	private void toggleMenu(boolean state, String menuName) {
+
+		// If the menu should be visible.
+		if (state) {
+			menus.show(menuName);
+		} else {
+			menus.hide(menuName);
+		}
 	}
 
 }

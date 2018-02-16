@@ -22,12 +22,12 @@ public final class TextField implements Component {
 	/**
 	 * {@link List} of the lines in this {@link TextField}.
 	 */
-	private List<String> lines;
+	private final List<String> lines;
 
 	/**
 	 * The {@link Font} of this {@link TextField}.
 	 */
-	private Font font;
+	private final Font font;
 
 	/**
 	 * The {@link Font} of this {@link TextField}.
@@ -35,31 +35,36 @@ public final class TextField implements Component {
 	private Point position;
 
 	/**
-	 * The width of this {@link TextField}.
+	 * The maximum width of this {@link TextField}.
+	 */
+	private final int maxWidth;
+
+	/**
+	 * The padding between the text and the board of the backing box.
+	 */
+	private final int padding;
+
+	/**
+	 * The actual width of the {@link TextField}.
 	 */
 	private int width;
 
 	/**
-	 * THe height of the {@link TextField}.
-	 */
-	private int height;
-
-	/**
 	 * Constructs a new {@link TextField}.
 	 * 
-	 * @param width
-	 *            of the {@link TextField}.
-	 * @param height
-	 *            of the {@link TextField}.
+	 * @param maxWidth
+	 *            The maximum width of the {@link TextField}.
 	 * @param position
-	 *            {@link Point} of the {@link TextField}.
+	 *            The {@link Point} position of the {@link TextField}.
 	 */
-	public TextField(int width, int height, Point position) {
+	public TextField(int maxWidth, Point position) {
 		this.position = position;
-		this.width = width;
-		this.height = height;
-		this.font = new Font("Arial", Color.black, 23);
+		this.padding = 15;
+		this.maxWidth = maxWidth;
+		this.width = 0;
+		this.font = new Font("Arial", Color.black, 25);
 		this.lines = new ArrayList<>();
+
 	}
 
 	/**
@@ -91,9 +96,6 @@ public final class TextField implements Component {
 		// Separate the text by word
 		final String[] words = text.split(lineWrap);
 
-		// The maximum width of a line in the text field
-		final int maxWidth = width - 30;
-
 		// Holds the line currently being created.
 		StringBuilder line = new StringBuilder();
 
@@ -102,22 +104,30 @@ public final class TextField implements Component {
 		for (String word : words) {
 
 			// Holds the current line if the current word was added.
-			final String testLine = line.toString() + " " + word;
+			final String testLine = line.toString() + lineWrap + word;
+
+			final int lineWidth = font.getWidth(testLine);
+
+			if (width < lineWidth && lineWidth <= maxWidth - (2 * padding)) {
+				width = lineWidth;
+			}
 
 			// If the line with the word added is larger than max width end the current line
 			// and and start the next.
-			if (font.getWidth(testLine) >= maxWidth) {
+			if (lineWidth >= maxWidth - (2 * padding)) {
 
 				lines.add(line.toString());
 				line = new StringBuilder();
+				width = maxWidth;
 
 			}
 
 			if (!line.toString().isEmpty()) {
-				line.append(' ');
+				line.append(lineWrap);
 			}
 
 			line.append(word);
+
 		}
 
 		// Add the last line to the list of lines.
@@ -148,15 +158,16 @@ public final class TextField implements Component {
 	 */
 	public void draw(Frame frame) {
 
+		int y = position.y + padding;
+		final int x = position.x + padding;
+		final int height = (lines.size() * font.getHeight()) + (padding * 2);
+
+		// Draw the font on the back found.
 		frame.setColor(Color.lightGray);
 		frame.fillRect(position.x, position.y, width, height);
 
-		int padding = 15;
-		int x = position.x + padding;
-		int y = position.y + padding;
-		int numberOfLines = (height - padding) / font.getHeight();
-
-		for (int index = 0; index < (lines.size() > numberOfLines ? numberOfLines : lines.size()); index++) {
+		// Draw the text on screen.
+		for (int index = 0; index < lines.size(); index++) {
 			frame.draw(font, lines.get(index), x, y);
 			y += font.getHeight();
 		}

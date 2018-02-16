@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-
 import peril.Game;
 import peril.controllers.GameController;
 import peril.views.slick.Button;
@@ -170,7 +168,7 @@ public class HelpMenu extends Menu {
 		}
 
 		// Construct the text feild that will show this page.
-		TextField text = new TextField(WIDTH - (PADDING_X * 2), HEIGHT - (PADDING_Y * 2),
+		TextField text = new TextField(WIDTH - (PADDING_X * 2),
 				new Point(this.getPosition().x + PADDING_X, this.getPosition().y + PADDING_Y));
 
 		// Construct the help page
@@ -443,7 +441,7 @@ public class HelpMenu extends Menu {
 		@Override
 		public void draw(Frame frame) {
 			frame.setColor(Color.white);
-			frame.draw(titleFont, title, text.getPosition().x, text.getPosition().y - titleFont.getHeight());
+			frame.draw(titleFont, title, text.getPosition().x, text.getPosition().y - (titleFont.getHeight() * 2));
 			text.draw(frame);
 		}
 

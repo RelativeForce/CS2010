@@ -54,7 +54,7 @@ public final class ChallengeMenu extends Menu {
 		super(NAME, game, new Region(600, 600, position));
 		this.paddingX = (getWidth() / 12);
 		this.paddingY = (getHeight() / 8);
-		this.text = new TextField(getWidth() - (paddingX * 2), getHeight() - (paddingY * 2),
+		this.text = new TextField(getWidth() - (paddingX * 2),
 				new Point(getPosition().x + paddingX, getPosition().y + paddingY));
 		this.titleFont = new Font("Arial", Color.white, 30);
 	}

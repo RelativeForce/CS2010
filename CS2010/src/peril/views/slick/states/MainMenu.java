@@ -196,10 +196,9 @@ public final class MainMenu extends InteractiveState {
 	 * Processes a button press on this {@link MainMenu}.
 	 */
 	@Override
-	public void parseButton(Frame frame, int key, Point mousePosition) {
-
-		frame.pressButton(key, mousePosition);
-
+	public void parseButton(int key, Point mousePosition) {
+		super.parseButton(key, mousePosition);
+		
 		if (key == Input.KEY_ENTER) {
 			// Attempt to load the map
 			try {

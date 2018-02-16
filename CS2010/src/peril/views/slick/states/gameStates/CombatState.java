@@ -97,8 +97,9 @@ public final class CombatState extends CoreGameState {
 	}
 
 	@Override
-	public void parseButton(Frame frame, int key, Point mousePosition) {
-
+	public void parseButton(int key, Point mousePosition) {
+		super.parseButton(key, mousePosition);
+		
 		if (key == Input.KEY_B) {
 
 			final ModelCountry primary = model.getSelected(0);
@@ -110,8 +111,6 @@ public final class CombatState extends CoreGameState {
 
 			}
 		}
-
-		super.parseButton(frame, key, mousePosition);
 	}
 
 	/**

@@ -181,12 +181,14 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * Processes a button click on a {@link CoreGameState}.
 	 */
 	@Override
-	public void parseButton(Frame frame, int key, Point mousePosition) {
-
+	public void parseButton(int key, Point mousePosition) {
+		super.parseButton(key, mousePosition);
+		
+		
 		// Movement increment
-		int increment = 50;
-		int width = slick.getContainer().getWidth();
-		int height = slick.getContainer().getHeight();
+		final int increment = 50;
+		final int width = slick.getContainer().getWidth();
+		final int height = slick.getContainer().getHeight();
 
 		switch (key) {
 		case Input.KEY_UP:

@@ -12,7 +12,6 @@ import peril.views.slick.Frame;
 import peril.views.slick.components.menus.HelpMenu;
 import peril.views.slick.util.Button;
 import peril.views.slick.util.Font;
-import peril.views.slick.util.Point;
 import peril.views.slick.util.Viewable;
 
 /**
@@ -95,14 +94,6 @@ public final class Credits extends InteractiveState {
 	@Override
 	public void update(GameContainer gc, int delta, Frame frame) {
 		// Do nothing
-	}
-	
-	/**
-	 * Processes a button press on this {@link Credits}.
-	 */
-	@Override
-	public void parseButton(Frame frame, int key, Point mousePosition) {
-		frame.pressButton(key, mousePosition);
 	}
 
 	/**

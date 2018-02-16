@@ -14,7 +14,6 @@ import peril.controllers.GameController;
 import peril.views.slick.Frame;
 import peril.views.slick.components.menus.HelpMenu;
 import peril.views.slick.io.ImageReader;
-import peril.views.slick.util.Point;
 
 public class Opening extends InteractiveState {
 
@@ -53,11 +52,6 @@ public class Opening extends InteractiveState {
 
 		});
 
-	}
-
-	@Override
-	public void parseButton(Frame frame, int key, Point mousePosition) {
-		frame.pressButton(key, mousePosition);
 	}
 
 	@Override

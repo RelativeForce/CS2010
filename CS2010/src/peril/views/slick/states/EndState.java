@@ -120,14 +120,6 @@ public class EndState extends InteractiveState {
 	}
 
 	/**
-	 * Processes a button press on this {@link EndState}.
-	 */
-	@Override
-	public void parseButton(Frame frame, int key, Point mousePosition) {
-		frame.pressButton(key, mousePosition);
-	}
-
-	/**
 	 * Render the {@link EndState}.
 	 */
 	@Override

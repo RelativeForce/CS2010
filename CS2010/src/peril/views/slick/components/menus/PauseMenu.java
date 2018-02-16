@@ -2,11 +2,13 @@ package peril.views.slick.components.menus;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 
 import peril.Game;
 import peril.controllers.GameController;
 import peril.io.MapWriter;
 import peril.io.SaveFile;
+import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
 import peril.views.slick.components.VisualList;
 import peril.views.slick.util.Button;
@@ -72,9 +74,9 @@ public class PauseMenu extends Menu {
 
 		this.saveButton = "save";
 		this.showSaveOption = false;
-		
+
 		final Font toggleFont = new Font("Arial", Color.black, 20);
-		
+
 		// Construct music toggle
 		this.toggleMusic = new VisualList<>(new Point(position.x + (getWidth() / 4), position.y + (getHeight() / 4)),
 				60, 30, 2, 10);
@@ -123,7 +125,7 @@ public class PauseMenu extends Menu {
 				drawSaveOption(frame);
 			}
 
-			drawMusicToggle(frame);
+			drawToggles(frame);
 
 		}
 
@@ -215,7 +217,7 @@ public class PauseMenu extends Menu {
 	 * @param frametextFont
 	 *            {@link Graphics}
 	 */
-	private void drawMusicToggle(Frame frame) {
+	private void drawToggles(Frame frame) {
 
 		String music = "Music:";
 
@@ -226,8 +228,78 @@ public class PauseMenu extends Menu {
 		frame.draw(textFont, links, toggleAllLinks.getPosition().x - textFont.getWidth(links) - 5,
 				toggleAllLinks.getPosition().y);
 
-		toggleMusic.draw(frame);
-		toggleAllLinks.draw(frame);
+		// Draw the music toggle.
+		frame.draw(toggleMusic, new EventListener() {
+
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
+				toggleMusic.click(mouse);
+				checkMusicState();
+			}
+
+			@Override
+			public void draw(Frame frame) {
+				toggleMusic.draw(frame);
+			}
+
+			@Override
+			public void buttonPress(int key, Point mouse) {
+				if (toggleMusic.isClicked(mouse)) {
+
+					if (key == Input.KEY_UP) {
+						toggleMusic.up();
+						checkMusicState();
+					} else if (key == Input.KEY_DOWN) {
+						toggleMusic.down();
+						checkMusicState();
+					}
+					
+				}
+
+			}
+			
+			private void checkMusicState() {
+				game.getView().toggleMusic(toggleMusic.getSelected().toggle);
+			}
+		});
+
+		// Draw the links toggle.
+		frame.draw(toggleAllLinks, new EventListener() {
+
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
+				toggleAllLinks.click(mouse);
+			}
+
+			@Override
+			public void draw(Frame frame) {
+				toggleAllLinks.draw(frame);
+			}
+
+			@Override
+			public void buttonPress(int key, Point mouse) {
+				if (toggleAllLinks.isClicked(mouse)) {
+
+					if (key == Input.KEY_UP) {
+						toggleAllLinks.up();
+					} else if (key == Input.KEY_DOWN) {
+						toggleAllLinks.down();
+					}
+				}
+
+			}
+		});
+
 	}
 
 	/**
@@ -240,9 +312,39 @@ public class PauseMenu extends Menu {
 
 		String save = "Save Game:";
 
-		frame.draw(textFont, save, getPosition().x - textFont.getWidth(save) + (getWidth() / 2) - 10, getPosition().y + 240);
+		frame.draw(textFont, save, getPosition().x - textFont.getWidth(save) + (getWidth() / 2) - 10,
+				getPosition().y + 240);
 
-		saveFiles.draw(frame);
+		frame.draw(saveFiles, new EventListener() {
+
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
+				saveFiles.click(mouse);
+			}
+
+			@Override
+			public void draw(Frame frame) {
+				saveFiles.draw(frame);
+			}
+
+			@Override
+			public void buttonPress(int key, Point mouse) {
+				if (saveFiles.isClicked(mouse)) {
+
+					if (key == Input.KEY_UP) {
+						saveFiles.up();
+					} else if (key == Input.KEY_DOWN) {
+						saveFiles.down();
+					}
+				}
+
+			}
+		});
 	}
 
 	/**

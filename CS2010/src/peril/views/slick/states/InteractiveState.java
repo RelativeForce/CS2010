@@ -115,17 +115,6 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	public abstract void render(GameContainer gc, Frame frame);
 	
 	public abstract void update(GameContainer gc, int delta, Frame frame);
-	
-	/**
-	 * Processes a button press on this {@link InteractiveState}.
-	 * 
-	 * @param key
-	 *            <code>int</code> key code
-	 * @param mousePosition
-	 *            The {@link Point} position of the mouse relative to the
-	 *            {@link GameContainer}.
-	 */
-	public abstract void parseButton(Frame frame, int key, Point mousePosition);
 
 	/**
 	 * 
@@ -230,8 +219,8 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 *            The {@link Point} position of the mouse relative to the
 	 *            {@link GameContainer}.
 	 */
-	public final void parseButton(int key, Point mousePosition) {
-		parseButton(frame, key, mousePosition);
+	public void parseButton(int key, Point mousePosition) {
+		frame.pressButton(key, mousePosition);
 	}
 
 	/**

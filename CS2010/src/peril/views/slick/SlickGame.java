@@ -44,7 +44,7 @@ import peril.views.slick.util.Point;
  * @author Joshua_Eddy
  * 
  * @since 2018-02-16
- * @version 1.01.01
+ * @version 1.01.02
  * 
  * @see StateBasedGame
  * @see View
@@ -705,7 +705,7 @@ public final class SlickGame extends StateBasedGame implements View {
 	 */
 	@Override
 	public FileParser getMapLoader(String mapPath, SaveFile save) {
-		return new MapReader(mapPath, game, save, agc.getScreenWidth(), agc.getScreenHeight());
+		return new MapReader(mapPath, game, save);
 	}
 
 	/**

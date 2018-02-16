@@ -186,7 +186,18 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 
 	}
 	
-
+	/**
+	 * Assigns the pan direction of the {@link InteractiveState}.
+	 * 
+	 * @param mousePosition
+	 *            {@link Point} position of the mouse.
+	 */
+	public void parseMouse(Point mousePosition) {
+		
+		// TODO Add support for mouse overing.
+		
+	}
+	
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
 		super.leave(container, game);

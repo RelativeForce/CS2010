@@ -259,6 +259,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 *            {@link Point} position of the mouse.
 	 */
 	public void parseMouse(Point mousePosition) {
+		super.parseMouse(mousePosition);
 
 		// Holds the dimensions of the game container.
 		int screenWidth = slick.getContainer().getWidth();

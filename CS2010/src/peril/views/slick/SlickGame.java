@@ -27,6 +27,7 @@ import peril.views.View;
 import peril.views.slick.board.SlickBoard;
 import peril.views.slick.board.SlickHazard;
 import peril.views.slick.board.SlickPlayer;
+import peril.views.slick.components.MiniMap;
 import peril.views.slick.components.menus.*;
 import peril.views.slick.helpers.IOHelper;
 import peril.views.slick.helpers.MenuHelper;

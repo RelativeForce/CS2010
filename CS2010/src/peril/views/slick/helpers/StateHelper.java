@@ -3,11 +3,11 @@ package peril.views.slick.helpers;
 import org.newdawn.slick.SlickException;
 
 import peril.Game;
-import peril.views.slick.MiniMap;
 import peril.views.slick.SlickGame;
 import peril.views.slick.board.SlickBoard;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
+import peril.views.slick.components.MiniMap;
 import peril.views.slick.components.menus.WarMenu;
 import peril.views.slick.states.EndState;
 import peril.views.slick.states.InteractiveState;

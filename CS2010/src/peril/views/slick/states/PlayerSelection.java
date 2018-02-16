@@ -16,12 +16,12 @@ import peril.ai.AI;
 import peril.controllers.GameController;
 import peril.helpers.PlayerHelper;
 import peril.views.slick.EventListener;
-import peril.views.slick.Font;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
 import peril.views.slick.board.SlickPlayer;
-import peril.views.slick.components.lists.VisualList;
+import peril.views.slick.components.VisualList;
 import peril.views.slick.components.menus.HelpMenu;
+import peril.views.slick.util.Font;
+import peril.views.slick.util.Point;
 
 /**
  * The {@link InteractiveState} that allows the user to select the number of

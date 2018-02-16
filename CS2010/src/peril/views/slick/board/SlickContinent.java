@@ -2,10 +2,10 @@ package peril.views.slick.board;
 
 import peril.model.board.ModelContinent;
 import peril.model.board.ModelCountry;
-import peril.views.slick.Clickable;
-import peril.views.slick.Point;
 import peril.views.slick.board.SlickCountry;
-import peril.views.slick.Region;
+import peril.views.slick.util.Clickable;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Region;
 import peril.views.slick.SlickModelView;
 
 /**

@@ -11,11 +11,11 @@ import peril.controllers.GameController;
 import peril.io.SaveFile;
 import peril.io.TextFileReader;
 import peril.views.slick.EventListener;
-import peril.views.slick.Font;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
-import peril.views.slick.components.lists.VisualList;
+import peril.views.slick.components.VisualList;
 import peril.views.slick.components.menus.HelpMenu;
+import peril.views.slick.util.Font;
+import peril.views.slick.util.Point;
 
 /**
  * Encapsulates the behaviour of the main menu.

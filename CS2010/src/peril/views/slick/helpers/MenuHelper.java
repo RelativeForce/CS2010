@@ -8,8 +8,8 @@ import peril.Game;
 import peril.model.board.ModelHazard;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
 import peril.views.slick.components.menus.*;
+import peril.views.slick.util.Point;
 
 /**
  * A helper class that holds all the {@link Menu}s for the {@link Game}.

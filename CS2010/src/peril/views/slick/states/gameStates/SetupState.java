@@ -12,8 +12,8 @@ import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
 import peril.model.states.Setup;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
 import peril.views.slick.board.SlickCountry;
+import peril.views.slick.util.Point;
 
 /**
  * The state where the user selects which player gets what

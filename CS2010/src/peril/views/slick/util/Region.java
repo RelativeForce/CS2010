@@ -1,4 +1,4 @@
-package peril.views.slick;
+package peril.views.slick.util;
 
 import java.util.List;
 import org.newdawn.slick.Color;

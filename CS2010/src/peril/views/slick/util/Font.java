@@ -1,4 +1,4 @@
-package peril.views.slick;
+package peril.views.slick.util;
 
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;

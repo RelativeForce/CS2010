@@ -6,10 +6,10 @@ import peril.concurrent.Action;
 import peril.controllers.GameController;
 import peril.helpers.FunctionHelper;
 import peril.io.FileParser;
-import peril.views.slick.Button;
 import peril.views.slick.Container;
-import peril.views.slick.Point;
-import peril.views.slick.Viewable;
+import peril.views.slick.components.Button;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Viewable;
 
 /**
  * Reads all the visual elements in a specified assets details file and adds

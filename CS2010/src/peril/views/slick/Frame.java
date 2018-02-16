@@ -8,7 +8,12 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
+import peril.views.slick.components.Button;
 import peril.views.slick.components.TextField;
+import peril.views.slick.util.Clickable;
+import peril.views.slick.util.Font;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Region;
 
 /**
  * <h3>Basic Description</h3>

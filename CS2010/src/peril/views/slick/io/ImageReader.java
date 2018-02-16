@@ -16,8 +16,8 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.ImageBuffer;
 
-import peril.views.slick.Region;
 import peril.views.slick.board.SlickBoard;
+import peril.views.slick.util.Region;
 
 /**
  * Reads an image using a specified file path.

@@ -7,12 +7,12 @@ import peril.Game;
 import peril.controllers.GameController;
 import peril.io.MapWriter;
 import peril.io.SaveFile;
-import peril.views.slick.Button;
-import peril.views.slick.Font;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
-import peril.views.slick.Region;
-import peril.views.slick.components.lists.VisualList;
+import peril.views.slick.components.Button;
+import peril.views.slick.components.VisualList;
+import peril.views.slick.util.Font;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Region;
 
 /**
  * Encapsulates the behaviour of a Pause Menu

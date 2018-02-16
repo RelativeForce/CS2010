@@ -13,10 +13,10 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.controllers.GameController;
 import peril.helpers.UnitHelper;
 import peril.model.states.Fortify;
-import peril.views.slick.Button;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
 import peril.views.slick.board.SlickCountry;
+import peril.views.slick.components.Button;
+import peril.views.slick.util.Point;
 
 /**
  * Encapsulates the behaviour of the 'Movement' state of the game. In this state

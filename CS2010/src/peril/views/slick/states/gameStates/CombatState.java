@@ -14,11 +14,11 @@ import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
 import peril.model.board.links.ModelLinkState;
 import peril.model.states.Attack;
-import peril.views.slick.Button;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
+import peril.views.slick.components.Button;
+import peril.views.slick.util.Point;
 
 /**
  * Encapsulates the behaviour of the 'Combat' state of the game. In this state

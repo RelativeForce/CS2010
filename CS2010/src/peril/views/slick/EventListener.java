@@ -1,5 +1,7 @@
 package peril.views.slick;
 
+import peril.views.slick.util.Point;
+
 public interface EventListener {
 
 	void mouseClick(Point mouse, int mouseButton);

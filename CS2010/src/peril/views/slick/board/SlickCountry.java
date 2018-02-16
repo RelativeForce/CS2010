@@ -10,10 +10,10 @@ import peril.Update;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelHazard;
-import peril.views.slick.Clickable;
-import peril.views.slick.Point;
-import peril.views.slick.Region;
 import peril.views.slick.SlickModelView;
+import peril.views.slick.util.Clickable;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Region;
 
 /**
  * Encapsulates the behaviour of a Country. Countries:

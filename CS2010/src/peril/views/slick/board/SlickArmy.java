@@ -10,10 +10,10 @@ import peril.Update;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelUnit;
 import peril.views.slick.EventListener;
-import peril.views.slick.Font;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
 import peril.views.slick.SlickModelView;
+import peril.views.slick.util.Font;
+import peril.views.slick.util.Point;
 
 /**
  * The slick view for {@link ModelArmy}. This observes the {@link ModelArmy} and

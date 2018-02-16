@@ -20,12 +20,12 @@ import peril.model.ModelColor;
 import peril.model.ModelPlayer;
 import peril.model.board.*;
 import peril.model.board.links.*;
-import peril.views.slick.Point;
-import peril.views.slick.Region;
 import peril.views.slick.SlickGame;
 import peril.views.slick.SlickModelView;
 import peril.views.slick.board.*;
 import peril.views.slick.states.InteractiveState;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Region;
 
 /**
  * Reader the map from a specified file and uses that to construct the

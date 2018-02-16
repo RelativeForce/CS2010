@@ -4,6 +4,8 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.MouseListener;
 
+import peril.views.slick.util.Point;
+
 /**
  * Handles all the input interactions that the user will cause using the
  * {@link SlickGame}.

@@ -16,15 +16,15 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.controllers.GameController;
-import peril.views.slick.Button;
 import peril.views.slick.Container;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
 import peril.views.slick.SlickGame;
-import peril.views.slick.Viewable;
+import peril.views.slick.components.Button;
 import peril.views.slick.components.Component;
 import peril.views.slick.components.menus.HelpMenu;
 import peril.views.slick.states.gameStates.CoreGameState;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Viewable;
 
 /**
  * 

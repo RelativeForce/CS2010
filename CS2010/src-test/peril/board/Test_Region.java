@@ -8,8 +8,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import peril.views.slick.Point;
-import peril.views.slick.Region;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Region;
 
 /**
  * Tests {@link Region}. In specific the ability for the {@link Region} to store

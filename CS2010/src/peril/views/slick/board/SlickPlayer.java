@@ -4,8 +4,8 @@ import org.newdawn.slick.Color;
 
 import peril.ai.AI;
 import peril.model.ModelPlayer;
-import peril.views.slick.Point;
-import peril.views.slick.Viewable;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Viewable;
 
 /**
  * The internal representation of a user of the system. This object will hold

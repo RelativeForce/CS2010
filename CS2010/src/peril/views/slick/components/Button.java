@@ -1,8 +1,11 @@
-package peril.views.slick;
+package peril.views.slick.components;
 
 import org.newdawn.slick.Image;
 
 import peril.concurrent.Action;
+import peril.views.slick.util.Clickable;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Region;
 
 /**
  * Encapsulates the behaviour of a button on screen. This button can be clicked

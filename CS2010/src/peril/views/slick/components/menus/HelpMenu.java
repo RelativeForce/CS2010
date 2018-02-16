@@ -8,14 +8,14 @@ import java.util.Map;
 import org.newdawn.slick.Color;
 import peril.Game;
 import peril.controllers.GameController;
-import peril.views.slick.Button;
-import peril.views.slick.Font;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
-import peril.views.slick.Region;
-import peril.views.slick.Viewable;
+import peril.views.slick.components.Button;
 import peril.views.slick.components.Component;
 import peril.views.slick.components.TextField;
+import peril.views.slick.util.Font;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Region;
+import peril.views.slick.util.Viewable;
 
 /**
  * Encapsulates the behaviour of a help window that displays information to the

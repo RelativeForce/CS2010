@@ -3,8 +3,8 @@ package peril.views.slick.board;
 import org.newdawn.slick.Image;
 
 import peril.model.board.ModelUnit;
-import peril.views.slick.Clickable;
-import peril.views.slick.Region;
+import peril.views.slick.util.Clickable;
+import peril.views.slick.util.Region;
 
 public class SlickUnit extends Clickable{
 	

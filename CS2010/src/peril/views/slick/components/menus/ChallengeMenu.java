@@ -4,11 +4,11 @@ import org.newdawn.slick.Color;
 import peril.Challenge;
 import peril.Game;
 import peril.controllers.GameController;
-import peril.views.slick.Font;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
-import peril.views.slick.Region;
 import peril.views.slick.components.TextField;
+import peril.views.slick.util.Font;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Region;
 
 /**
  * Displays the {@link Challenge}s of the {@link Game} to the user.

@@ -13,15 +13,15 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.controllers.GameController;
 import peril.io.FileParser;
-import peril.views.slick.Font;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
-import peril.views.slick.Viewable;
 import peril.views.slick.components.ProgressBar;
 import peril.views.slick.components.menus.HelpMenu;
 import peril.views.slick.io.ImageReader;
 import peril.views.slick.states.gameStates.CoreGameState;
 import peril.views.slick.states.gameStates.SetupState;
+import peril.views.slick.util.Font;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Viewable;
 
 /**
  * 

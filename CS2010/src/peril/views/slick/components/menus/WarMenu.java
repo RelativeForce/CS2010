@@ -16,19 +16,19 @@ import org.newdawn.slick.Image;
 import peril.concurrent.Action;
 import peril.controllers.GameController;
 import peril.helpers.UnitHelper;
-import peril.views.slick.Button;
-import peril.views.slick.Font;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
 import peril.model.ModelPlayer;
-import peril.views.slick.Region;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.board.SlickUnit;
+import peril.views.slick.components.Button;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
 import peril.views.slick.io.ImageReader;
+import peril.views.slick.util.Font;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Region;
 
 /**
  * Encapsulates all the game combat logic.

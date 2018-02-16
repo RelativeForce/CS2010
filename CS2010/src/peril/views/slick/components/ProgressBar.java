@@ -1,7 +1,7 @@
 package peril.views.slick.components;
 
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
+import peril.views.slick.util.Point;
 
 /**
  * Encapsulates the behaviours of a progress bar that can be displayed on

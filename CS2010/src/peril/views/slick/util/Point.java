@@ -1,4 +1,4 @@
-package peril.views.slick;
+package peril.views.slick.util;
 
 /**
  * A coordinate that has an x and y value. Immutable pattern

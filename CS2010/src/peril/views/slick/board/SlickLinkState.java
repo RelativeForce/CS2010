@@ -3,7 +3,7 @@ package peril.views.slick.board;
 import org.newdawn.slick.Color;
 import peril.model.board.links.ModelLinkState;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
+import peril.views.slick.util.Point;
 
 public enum SlickLinkState {
 

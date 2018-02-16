@@ -2,12 +2,12 @@ package peril.views.slick.components;
 
 import org.newdawn.slick.Color;
 import peril.model.board.ModelBoard;
-import peril.views.slick.Clickable;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
-import peril.views.slick.Region;
 import peril.views.slick.board.SlickBoard;
+import peril.views.slick.util.Clickable;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Region;
 
 /**
  * This class models a MiniMap that will display the entirety of the

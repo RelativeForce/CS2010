@@ -21,13 +21,13 @@ import peril.model.board.ModelCountry;
 import peril.model.states.ModelState;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
 import peril.views.slick.board.*;
 import peril.views.slick.components.MiniMap;
 import peril.views.slick.components.menus.Menu;
 import peril.views.slick.components.menus.PauseMenu;
 import peril.views.slick.helpers.MenuHelper;
 import peril.views.slick.states.InteractiveState;
+import peril.views.slick.util.Point;
 
 /**
  * A {@link InteractiveState} which displays the {@link SlickBoard} to the user.

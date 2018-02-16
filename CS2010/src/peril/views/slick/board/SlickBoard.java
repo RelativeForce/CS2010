@@ -11,13 +11,13 @@ import peril.controllers.GameController;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelContinent;
 import peril.model.states.ModelState;
-import peril.views.slick.Clickable;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
 import peril.views.slick.SlickGame;
 import peril.views.slick.SlickModelView;
-import peril.views.slick.Viewable;
+import peril.views.slick.util.Clickable;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Viewable;
 
 /**
  * Encapsulates the behaviour of the the game board in the {@link Game}. This

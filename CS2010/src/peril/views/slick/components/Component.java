@@ -3,8 +3,8 @@ package peril.views.slick.components;
 import org.newdawn.slick.Graphics;
 
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
 import peril.views.slick.states.InteractiveState;
+import peril.views.slick.util.Point;
 
 /**
  * Defines the default behaviour of a visual component that cane be used in an

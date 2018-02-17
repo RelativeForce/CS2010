@@ -5,18 +5,21 @@ import peril.model.board.ModelHazard;
 import peril.views.slick.io.ImageReader;
 
 /**
- * These may occur once a turn and will kill a random percentage of the army
- * stationed an {@link SlickContinent}. Each type of EnvironmentalHazard has a
- * percentage chance that wit will occur in a given turn.
+ * The visual representation of a {@link ModelHazard}. Each value of
+ * {@link ModelHazard} has a visual {@link SlickHazard}
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-17
+ * @version 1.01.01
+ * 
+ * @see ModelHazard
  *
  */
 public enum SlickHazard {
 
 	/**
-	 * A VOLCANIC_ERUPTION has a 10% chance of occurring and may kill up to 20% of
-	 * the units in an {@link Army}.
+	 * The visual representation of {@link ModelHazard#VOLCANIC_ERUPTION}.
 	 */
 	VOLCANIC_ERUPTION(ModelHazard.VOLCANIC_ERUPTION) {
 
@@ -26,8 +29,7 @@ public enum SlickHazard {
 		private Image icon;
 
 		/**
-		 * Retrieves the {@link Image} icon of an
-		 * {@link SlickHazard#VOLCANIC_ERUPTION}.
+		 * Retrieves the {@link Image} icon of an {@link SlickHazard#VOLCANIC_ERUPTION}.
 		 */
 		@Override
 		public Image getIcon() {
@@ -49,8 +51,7 @@ public enum SlickHazard {
 
 	},
 	/**
-	 * A TORNADO has a 12% chance of occurring and may kill up to 30% of the units
-	 * in an {@link Army}.
+	 * The visual representation of {@link ModelHazard#TORNADO}.
 	 */
 	TORNADO(ModelHazard.TORNADO) {
 
@@ -81,8 +82,7 @@ public enum SlickHazard {
 		}
 	},
 	/**
-	 * A HURRICANE has a 20% chance of occurring and may kill up to 10% of the units
-	 * in an {@link Army}.
+	 * The visual representation of {@link ModelHazard#HURRICANE}.
 	 */
 	HURRICANE(ModelHazard.HURRICANE) {
 		/**
@@ -112,8 +112,7 @@ public enum SlickHazard {
 		}
 	},
 	/**
-	 * A TSUNAMI has a 17% chance of occurring and may kill up to 40% of the units
-	 * in an {@link Army}.
+	 * The visual representation of {@link ModelHazard#TSUNAMI}.
 	 */
 	TSUNAMI(ModelHazard.TSUNAMI) {
 
@@ -144,32 +143,22 @@ public enum SlickHazard {
 		}
 	};
 
+	/**
+	 * The {@link ModelHazard} this {@link SlickHazard} displays to the user.
+	 */
 	public final ModelHazard model;
 
 	/**
 	 * Constructs an {@link SlickHazard}.
 	 * 
-	 * @param maxCasualties
-	 *            The maximum percentage of a {@link Amry} that this
-	 *            {@link SlickHazard} will kill.
-	 * @param chance
-	 *            Percentage chance that wit will occur in a given turn.
-	 * @param name
-	 *            The <code>String</code> representation of the
-	 *            {@link SlickHazard}.
+	 * @param model
+	 *            The {@link ModelHazard} this {@link SlickHazard} displays to the
+	 *            user.
 	 */
 	private SlickHazard(ModelHazard model) {
 		this.model = model;
 	}
 
-	/**
-	 * Retrieves the {@link Image} icon that represents this
-	 * {@link SlickHazard}.
-	 * 
-	 * @return <code>boolean</code>
-	 */
-	public abstract Image getIcon();
-	
 	/**
 	 * Initialises all the {@link Image} icons of the {@link SlickHazard}s.
 	 * 
@@ -185,10 +174,17 @@ public enum SlickHazard {
 	}
 
 	/**
+	 * Retrieves the {@link Image} icon that represents this {@link SlickHazard}.
+	 * 
+	 * @return The {@link Image} icon that represents this {@link SlickHazard}
+	 */
+	public abstract Image getIcon();
+
+	/**
 	 * Initialises the {@link Image} icon for an {@link SlickHazard}.
 	 * 
 	 * @param uiPath
-	 *            The path to the folder with the icon image files in.
+	 *            The path to the folder with the icon {@link Image} files in.
 	 */
 	protected abstract void initIcon(String uiPath);
 }

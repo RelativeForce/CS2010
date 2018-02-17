@@ -16,27 +16,27 @@ import peril.views.slick.util.Point;
 import peril.views.slick.util.Region;
 
 /**
- * Encapsulates the behaviour of a Country. Countries:
- * <ul>
- * <li>Have and manage {@link ModelArmy}s.</li>
- * <li>Have a name.</li>
- * <li>Depend of the countries they are linked to.</li>
- * <li>Have a {@link SlickPlayer} that rules them.</li>
- * </ul>
+ * The visual representation of a {@link ModelCountry} which observes an
+ * aggregated {@link ModelCountry} and is updated when the model version is.
  * 
  * @author Joshua_Eddy, James_Rowntree
  * 
- * @see java.util.LinkedList
- * @see Java.util.List
+ * @since 2018-02-17
+ * @version 1.01.01
+ * 
+ * @see LinkedList
+ * @see List
+ * @see Clickable
+ * @see Observer
+ * @see ModelCountry
  *
  */
-public class SlickCountry extends Clickable implements Observer {
+public final class SlickCountry extends Clickable implements Observer {
 
 	/**
-	 * Holds the {@link Image} icon of the {@link SlickHazard} that has most
-	 * recently occurred on the {@link SlickCountry}.
+	 * The {@link ModelCountry} that this {@link SlickCountry} displays.
 	 */
-	private Image hazardIcon;
+	public final ModelCountry model;
 
 	/**
 	 * The {@link Point} offset from the centre of the this {@link SlickCountry}
@@ -45,26 +45,28 @@ public class SlickCountry extends Clickable implements Observer {
 	private final Point armyOffset;
 
 	/**
-	 * The {@link ModelCountry} that this {@link SlickCountry} displays.
-	 */
-	public final ModelCountry model;
-
-	/**
 	 * The {@link SlickModelView} that is used to map the {@link ModelCountry} to
 	 * {@link SlickCountry}.
 	 */
 	private final SlickModelView view;
 
 	/**
+	 * Holds the {@link Image} icon of the {@link SlickHazard} that has most
+	 * recently occurred on the {@link SlickCountry}.
+	 */
+	private Image hazardIcon;
+
+	/**
 	 * Constructs a new {@link SlickCountry} with no army offset.
 	 * 
-	 * @param name
-	 *            of the {@link SlickCountry}
 	 * @param region
-	 *            {@link Region} of the country on screen.
-	 * @param color
-	 *            The colour that denotes this {@link SlickCountry} in the countries
-	 *            image.
+	 *            The {@link Region} of the country on screen.
+	 * @param model
+	 *            The {@link ModelCountry} that this {@link SlickCountry} displays.
+	 * @param view
+	 *            The {@link SlickModelView} that is used to map the
+	 *            {@link ModelCountry} to {@link SlickCountry}.
+	 * 
 	 */
 	public SlickCountry(Region region, ModelCountry model, SlickModelView view) {
 		this(region, new Point(0, 0), model, view);
@@ -73,57 +75,44 @@ public class SlickCountry extends Clickable implements Observer {
 	/**
 	 * Constructs a new {@link SlickCountry} with a specified army offset.
 	 * 
-	 * @param name
-	 *            of the {@link SlickCountry}
 	 * @param region
-	 *            {@link Region} of the country on screen.
-	 * @param color
-	 *            The colour that denotes this {@link SlickCountry} in the countries
-	 *            image.
+	 *            The {@link Region} of the country on screen.
+	 * 
 	 * @param armyOffset
-	 *            The {@link Point} offset from this {@link SlickCountry}'s center.
+	 *            The {@link Point} offset from this {@link SlickCountry}'s centre.
+	 * @param model
+	 *            The {@link ModelCountry} that this {@link SlickCountry} displays.
+	 * @param view
+	 *            The {@link SlickModelView} that is used to map the
+	 *            {@link ModelCountry} to {@link SlickCountry}.
 	 */
 	public SlickCountry(Region region, Point armyOffset, ModelCountry model, SlickModelView view) {
 		super(region);
-		this.hazardIcon = null;
+
 		this.armyOffset = armyOffset;
 		this.model = model;
 		this.view = view;
+		this.hazardIcon = null;
 
 		model.addObserver(this);
 
-		if (model.getRuler() == null) {
-			changeColour(Color.white);
-		} else {
-			changeColour(view.getVisual(model.getRuler()).color);
-		}
+		changeColour(model.getRuler() == null ? Color.white : view.getVisual(model.getRuler()).color);
 
 	}
 
+	/**
+	 * Changes the {@link Color} of this {@link SlickCountry}.
+	 * 
+	 * @param newColor
+	 *            The new {@link Color}.
+	 */
 	public void changeColour(Color newColor) {
 		this.replaceImage(getRegion().convert(newColor));
 	}
 
 	/**
-	 * Sets the current {@link Ruler} of this {@link SlickCountry}.
-	 * 
-	 * @param ruler
-	 *            {@link SlickPlayer}
-	 * 
+	 * Updates this {@link SlickCountry} from the {@link ModelCountry}.
 	 */
-	private void updateRuler(Update update) {
-
-		if (update.newValue == null) {
-			changeColour(Color.white);
-		} else if (update.newValue instanceof ModelPlayer) {
-			changeColour(view.getVisual((ModelPlayer) update.newValue).color);
-		} else {
-			throw new IllegalArgumentException(
-					"For ruler update, newValue must be an instance of peril.views.slick.Player");
-		}
-
-	}
-
 	@Override
 	public void update(Observable o, Object arg) {
 
@@ -154,27 +143,12 @@ public class SlickCountry extends Clickable implements Observer {
 		}
 	}
 
-	private void updateHazard(Update update) {
-
-		if (update.newValue == null) {
-			hazardIcon = null;
-		} else if (update.newValue instanceof ModelHazard) {
-
-			SlickHazard h = view.getVisual((ModelHazard) update.newValue);
-
-			if (h != null) {
-				hazardIcon = h.getIcon();
-			}
-		} else {
-			throw new IllegalArgumentException("For hazard update, newValue must be an Image.");
-		}
-
-	}
-
-	public boolean hasHazard() {
-		return hazardIcon != null;
-	}
-
+	/**
+	 * Retrieves the {@link Point} vector of the {@link SlickArmy} from the center
+	 * of the {@link SlickCountry}.
+	 * 
+	 * @return The {@link Point} vector of the {@link SlickArmy}.
+	 */
 	public Point getArmyOffset() {
 		return armyOffset;
 	}
@@ -183,7 +157,7 @@ public class SlickCountry extends Clickable implements Observer {
 	 * Retrieves the {@link Point} position that an {@link ModelArmy} will be
 	 * displayed at on the screen relative to the top left corner.
 	 * 
-	 * @return
+	 * @return The army's {@link Point} position.
 	 */
 	public Point getArmyPosition() {
 
@@ -194,8 +168,67 @@ public class SlickCountry extends Clickable implements Observer {
 		return new Point(x, y);
 	}
 
+	/**
+	 * Retrieves the hazard icon over the {@link SlickHazard}.
+	 * 
+	 * @return The hazard icon {@link Image}.
+	 */
 	public Image getHazard() {
 		return hazardIcon;
+	}
+
+	/**
+	 * Retrieves whether there current is {@link Image} icon over the
+	 * {@link SlickCountry}.
+	 * 
+	 * @return Whether or not there current is {@link Image} icon over the
+	 *         {@link SlickCountry}.
+	 */
+	public boolean hasHazard() {
+		return hazardIcon != null;
+	}
+
+	/**
+	 * Updates the current {@link SlickHazard} that is displayed over this
+	 * {@link SlickCountry}.
+	 * 
+	 * @param update
+	 *            The {@link Update} that specifies the new {@link SlickHazard}.
+	 */
+	private void updateHazard(Update update) {
+
+		if (update.newValue == null) {
+			hazardIcon = null;
+		} else if (update.newValue instanceof ModelHazard) {
+
+			final SlickHazard hazard = view.getVisual((ModelHazard) update.newValue);
+
+			if (hazard != null) {
+				hazardIcon = hazard.getIcon();
+			}
+		} else {
+			throw new IllegalArgumentException("For hazard update, newValue must be an Image.");
+		}
+
+	}
+
+	/**
+	 * Updates the current {@link SlickPlayer} of this {@link SlickCountry}.
+	 * 
+	 * @param update
+	 *            The {@link Update} that specifies the new ruler.
+	 */
+	private void updateRuler(Update update) {
+
+		if (update.newValue == null) {
+			changeColour(Color.white);
+		} else if (update.newValue instanceof ModelPlayer) {
+			changeColour(view.getVisual((ModelPlayer) update.newValue).color);
+		} else {
+			throw new IllegalArgumentException(
+					"For ruler update, newValue must be an instance of peril.views.slick.Player");
+		}
+
 	}
 
 }

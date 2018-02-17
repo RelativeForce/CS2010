@@ -8,9 +8,7 @@ import peril.views.slick.util.Point;
 import peril.views.slick.util.Viewable;
 
 /**
- * The internal representation of a user of the system. This object will hold
- * all of the details about a users game such as the number of
- * {@link ModelCountry}s that user has.
+ * The visual representation of a {@link ModelPlayer}.
  * 
  * @author Joshua_Eddy, Ezekiel_Trinidad
  *
@@ -18,8 +16,8 @@ import peril.views.slick.util.Viewable;
 public final class SlickPlayer extends Viewable {
 
 	/**
-	 * The {@link Color} of this {@link SlickPlayer}s overlay on the
-	 * {@link UserInterface}.
+	 * The {@link Color} of this {@link SlickPlayer}'s {@link SlickCountry}s on the
+	 * screen.
 	 */
 	public final Color color;
 
@@ -32,9 +30,10 @@ public final class SlickPlayer extends Viewable {
 	 * Constructs a new {@link SlickPlayer}.
 	 * 
 	 * @param number
-	 *            The number of this player
+	 *            The number of this player.
 	 * @param color
-	 *            The {@link Color} of this {@link SlickPlayer}'s {@link SlickCountry}s.
+	 *            The {@link Color} of this {@link SlickPlayer}'s
+	 *            {@link SlickCountry}s.
 	 * @param ai
 	 *            The {@link AI} that controls this {@link SlickPlayer}.
 	 */

@@ -1,7 +1,9 @@
 package peril.views.slick;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.newdawn.slick.AppGameContainer;
@@ -43,8 +45,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-16
- * @version 1.01.02
+ * @since 2018-02-17
+ * @version 1.01.03
  * 
  * @see StateBasedGame
  * @see View
@@ -290,9 +292,19 @@ public final class SlickGame extends StateBasedGame implements View {
 		final UpgradeMenu upgradeMenu = new UpgradeMenu(new Point(100, 100), game);
 		final PointsMenu pointsMenu = new PointsMenu(new Point(100, 100), game);
 
+		// Holds all the menus
+		final Set<Menu> menus = new HashSet<>();
+		menus.add(warMenu);
+		menus.add(pauseMenu);
+		menus.add(helpMenu);
+		menus.add(challengeMenu);
+		menus.add(statsMenu);
+		menus.add(unitMenu);
+		menus.add(upgradeMenu);
+		menus.add(pointsMenu);
+
 		// Add all the menus to the menu helper.
-		this.menus = new MenuHelper(pauseMenu, warMenu, helpMenu, challengeMenu, statsMenu, unitMenu, upgradeMenu,
-				pointsMenu);
+		this.menus = new MenuHelper(menus);
 
 		// Initialise the slick states.
 		final Opening opening = new Opening(game, 12);
@@ -319,9 +331,24 @@ public final class SlickGame extends StateBasedGame implements View {
 				playerSelection);
 
 		// Set the containers that visual elements will be loaded into.
-		final Container[] containers = new Container[] { challengeMenu, helpMenu, pauseMenu, loadingScreen, warMenu,
-				mainMenu, combat, setup, reinforcement, movement, end, playerSelection, statsMenu, unitMenu,
-				upgradeMenu, pointsMenu };
+
+		final Set<Container> containers = new HashSet<>();
+		containers.add(challengeMenu);
+		containers.add(helpMenu);
+		containers.add(pauseMenu);
+		containers.add(loadingScreen);
+		containers.add(warMenu);
+		containers.add(mainMenu);
+		containers.add(combat);
+		containers.add(setup);
+		containers.add(reinforcement);
+		containers.add(movement);
+		containers.add(end);
+		containers.add(playerSelection);
+		containers.add(statsMenu);
+		containers.add(unitMenu);
+		containers.add(upgradeMenu);
+		containers.add(pointsMenu);
 
 		// User the containers to create the IO helper.
 		this.io = new IOHelper(game, containers);

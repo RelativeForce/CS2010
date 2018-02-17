@@ -1,21 +1,27 @@
 package peril.views.slick.helpers;
 
-import peril.Game;
+import java.util.Set;
+
 import peril.controllers.GameController;
 import peril.io.SaveFile;
-import peril.io.FileParser;
 import peril.io.MapWriter;
 import peril.views.slick.Container;
+import peril.views.slick.SlickGame;
 import peril.views.slick.io.AssetReader;
 
 /**
- * This is a helper class of {@link Game} which holds all the input output class
- * instances for the {@link Game}.
+ * This is a helper class of {@link SlickGame} which holds all the input/output
+ * objects.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-17
+ * @version 1.01.01
  *
+ * @see AssetReader
+ * @see SlickGame
  */
-public class IOHelper {
+public final class IOHelper {
 
 	/**
 	 * The {@link AssetReader} that loads all the {@link InteractiveState}'s assets
@@ -24,7 +30,7 @@ public class IOHelper {
 	public final AssetReader gameLoader;
 
 	/**
-	 * The {@link AssetReader} that loads all the game visuals from memory.
+	 * The {@link AssetReader} that loads all the main menu game from memory.
 	 */
 	public final AssetReader mainMenuLoader;
 
@@ -32,12 +38,13 @@ public class IOHelper {
 	 * Constructs a new {@link IOHelper}.
 	 * 
 	 * @param game
-	 *            The instance of {@link Game} that this {@link IOHelper} helps.
+	 *            The {@link GameController} that allows the {@link IOHelper} to
+	 *            interact with the game.
 	 * @param containers
-	 *            {@link Container}s that the {@link FileParser}s may add elements
+	 *            The {@link Container}s that the {@link AssetReader}s may add elements
 	 *            to.
 	 */
-	public IOHelper(GameController game, Container[] containers) {
+	public IOHelper(GameController game, Set<Container> containers) {
 		this.mainMenuLoader = new AssetReader(containers, "menu.txt", game);
 		this.gameLoader = new AssetReader(containers, "game.txt", game);
 	}
@@ -47,9 +54,10 @@ public class IOHelper {
 	 * {@link SaveFile}.
 	 * 
 	 * @param game
-	 *            {@link Game}
+	 *            The {@link GameController} that allows the {@link IOHelper} to
+	 *            interact with the game.
 	 * @param file
-	 *            {@link SaveFile}
+	 *            The {@link SaveFile} that the game will be saved to.
 	 */
 	public void saveBoard(GameController game, SaveFile file) {
 		new MapWriter(game, file).write();

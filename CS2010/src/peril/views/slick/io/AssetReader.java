@@ -1,5 +1,9 @@
 package peril.views.slick.io;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import org.newdawn.slick.Image;
 
 import peril.concurrent.Action;
@@ -18,8 +22,8 @@ import peril.views.slick.util.Viewable;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-13
- * @version 1.01.01
+ * @since 2018-02-17
+ * @version 1.01.02
  * 
  * @see Container
  * @see Image
@@ -52,9 +56,10 @@ public final class AssetReader extends FileParser {
 	private static final String IMAGE = "image";
 
 	/**
-	 * The {@link Container}s that the parsed assets will be placed in.
+	 * The {@link Map} of {@link Container}'s names to {@link Container}s that the
+	 * parsed assets will be placed in.
 	 */
-	private final Container[] containers;
+	private final Map<String, Container> containers;
 
 	/**
 	 * Holds the {@link FunctionHelper} that contains the functions that
@@ -77,16 +82,19 @@ public final class AssetReader extends FileParser {
 	 * @param filename
 	 *            The file name of the assets file.
 	 */
-	public AssetReader(Container[] containers, String filename, GameController game) {
+	public AssetReader(Set<Container> containers, String filename, GameController game) {
 		super(game.getDirectory().getUIPath(), game.getDirectory(), filename);
 
-		// Check params
-		if (containers.length == 0) {
+		// Check parameters
+		if (containers == null) {
 			throw new NullPointerException("Containers array cannot be empty.");
 		}
 
 		this.functionHandler = new FunctionHelper(game);
-		this.containers = containers;
+
+		this.containers = new HashMap<>();
+		containers.forEach(container -> this.containers.put(container.getName(), container));
+
 		this.game = game;
 	}
 
@@ -146,7 +154,7 @@ public final class AssetReader extends FileParser {
 		final Point position = parsePosition(details[5], details[6]);
 
 		// Get the state by name
-		final Container container = getContainerByName(details[1]);
+		final Container container = getContainer(details[1]);
 
 		// Add the image to the container
 		container.addImage(new Viewable(asset, position));
@@ -171,7 +179,7 @@ public final class AssetReader extends FileParser {
 		}
 
 		// Holds the container that the button will be added to.
-		final Container container = getContainerByName(details[1]);
+		final Container container = getContainer(details[1]);
 
 		// Holds the function of the button.
 		final Action<?> function = parseFunction(details[2]);
@@ -277,8 +285,8 @@ public final class AssetReader extends FileParser {
 	 * {@link FunctionHelper}.
 	 * 
 	 * @param functionCodeStr
-	 *            function code
-	 * @return {@link Action} associated with the function code.
+	 *            The function code as a string
+	 * @return The {@link Action} associated with the function code.
 	 */
 	private Action<?> parseFunction(String functionCodeStr) {
 
@@ -288,7 +296,8 @@ public final class AssetReader extends FileParser {
 		try {
 			functionCode = Integer.parseInt(functionCodeStr);
 		} catch (Exception e) {
-			throw new IllegalArgumentException("Line " + index + ": " + functionCodeStr + " is not a valid function code");
+			throw new IllegalArgumentException(
+					"Line " + index + ": " + functionCodeStr + " is not a valid function code");
 		}
 
 		return functionHandler.get(functionCode);
@@ -299,8 +308,8 @@ public final class AssetReader extends FileParser {
 	 * Parses a dimension of a {@link Image} from a specified string.
 	 * 
 	 * @param dimension
-	 *            The dimension of the image.
-	 * @return
+	 *            The dimension of the {@link Image} as a string.
+	 * @return The dimension of the {@link Image}
 	 */
 	private int parseDimension(String dimensionStr) {
 
@@ -310,7 +319,8 @@ public final class AssetReader extends FileParser {
 		try {
 			dimension = Integer.parseInt(dimensionStr);
 		} catch (Exception e) {
-			throw new IllegalArgumentException("Line " + index + ": " + dimensionStr + " is not a valid scaled dimension.");
+			throw new IllegalArgumentException(
+					"Line " + index + ": " + dimensionStr + " is not a valid scaled dimension.");
 		}
 
 		// Check the dimension is valid.
@@ -322,24 +332,22 @@ public final class AssetReader extends FileParser {
 	}
 
 	/**
-	 * Retrieves a game state with a specified id.
+	 * Retrieves a {@link Container} with a specified name.
 	 * 
 	 * @param name
-	 *            {@link CoreGameState#getStateName()}
-	 * @return {@link CoreGameState} with the specified name.
+	 *            The name of the {@link Container}.
+	 * @return The {@link Container} with a specified name.
 	 */
-	private Container getContainerByName(String name) {
+	private Container getContainer(String name) {
 
-		// Iterate through all game states in the reader.
-		for (Container container : containers) {
+		final Container container = containers.get(name);
 
-			// Return the state that has the specified name.
-			if (container.getName().equals(name)) {
-				return container;
-			}
+		// If no container was found with the specified name.
+		if (container == null) {
+			throw new NullPointerException("Line " + index + ": " + name + " is not assigned to an asset container.");
 		}
 
-		throw new NullPointerException("Line " + index + ": " + "State: " + name + " is not assigned to a game state.");
+		return container;
 	}
 
 }

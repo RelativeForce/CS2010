@@ -46,7 +46,7 @@ import peril.views.slick.util.Point;
  * @author Joshua_Eddy
  * 
  * @since 2018-02-17
- * @version 1.01.03
+ * @version 1.01.04
  * 
  * @see StateBasedGame
  * @see View
@@ -144,7 +144,7 @@ public final class SlickGame extends StateBasedGame implements View {
 		modelView.init(game);
 
 		// Initialise the states
-		states.init(this, modelView.getVisual(game.getModelBoard()));
+		states.init(this);
 
 		// Initialise the hazard icons
 		SlickHazard.initIcons(directory.getHazardsPath());
@@ -594,8 +594,8 @@ public final class SlickGame extends StateBasedGame implements View {
 		final SlickBoard board = modelView.getVisual(game.getModelBoard());
 
 		// Change the window to the specified size.
-		if (board.getWidth() >= agc.getScreenWidth() || board.getHeight() >= agc.getScreenHeight()) {
-			states.addMiniMap(board, this);
+		if (board.getWidth() >= getScreenWidth() || board.getHeight() >= getScreenHeight()) {
+			states.addMiniMap(board, getScreenWidth(), getScreenHeight());
 		} else {
 			states.removeMiniMap();
 		}

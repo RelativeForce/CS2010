@@ -3,28 +3,33 @@ package peril.views.slick.util;
 import org.newdawn.slick.Image;
 
 /**
- * Encapsulates the behaviour of being clicked by the mouse. Any object that
- * extends this will be able to be clicked by the mouse.
+ * Encapsulates the behaviour of an {@link Viewable} object that can clicked by
+ * the mouse. This object wraps {@link Region} under a {@link Viewable} so that
+ * the object can be both seen and clicked.
  * 
  * @author Joshua_Eddy
  * 
- * @see Viewable
+ * @since 2018-02-17
+ * @version 1.01.01
  *
+ * @see Viewable
+ * @see Region
+ * @see Image
  */
 public abstract class Clickable extends Viewable {
 
 	/**
-	 * The {@link Region} that this encompasses on the screen.
+	 * The {@link Region} that this encompasses on the screen. This should be the
+	 * {@link Region} version of the {@link Viewable#getImage()}. However if the
+	 * {@link Image} is <code>null</code> the region may be not <code>null</code>.
 	 */
-	private volatile Region region;
+	private Region region;
 
 	/**
-	 * Constructs a new {@link Clickable}.
+	 * Constructs a new {@link Clickable} with no {@link image}.
 	 * 
 	 * @param region
-	 *            {@link Region} that can be clicked.
-	 * @param position
-	 *            The {@link Point} position of the {@link Clickable}.
+	 *            The {@link Region} that can be clicked.
 	 */
 	public Clickable(Region region) {
 		super(region.getPosition());
@@ -32,12 +37,10 @@ public abstract class Clickable extends Viewable {
 	}
 
 	/**
-	 * Constructs a new {@link Clickable}.
+	 * Constructs a new {@link Clickable} with an {@link image}.
 	 * 
 	 * @param region
-	 *            {@link Region} that can be clicked.
-	 * @param position
-	 *            The {@link Point} position of the {@link Clickable}.
+	 *            The {@link Region} that can be clicked.
 	 * @param image
 	 *            The {@link Image} of this {@link Clickable}
 	 */
@@ -46,53 +49,47 @@ public abstract class Clickable extends Viewable {
 		this.region = region;
 	}
 
+	/**
+	 * Constructs a empty {@link Clickable} item with no {@link Region} or
+	 * {@link image}.
+	 */
 	public Clickable() {
 		super(new Point(0, 0));
 	}
 
 	/**
-	 * Whether or not a mouse click at a specified {@link Point} will be inside this
-	 * objects {@link Clickable#region}. If the {@link Region} is <code>null</code>
-	 * then this will return <code>false</code>.
-	 * 
-	 * @param point
-	 *            {@link Point}
-	 * @return Clicked or not.
-	 */
-	public boolean isClicked(Point point) {
-		return hasRegion() ? region.isInside(point) : false;
-	}
-
-	/**
-	 * Retrieves the {@link Region} at this {@link Clickable}.
-	 * 
-	 * @return {@link Region}
-	 */
-	public Region getRegion() {
-		return region;
-	}
-
-	/**
-	 * Retrieves the {@link Point} position of this {@link Clickable}. If the
-	 * {@link Region} of this {@link Clickable} is not null retrieve the
-	 * {@link Point} position of the {@link Region}.
-	 */
-	@Override
-	public Point getPosition() {
-		return hasRegion() ? region.getPosition() : super.getPosition();
-	}
-
-	/**
-	 * Sets the {@link Point} position of this {@link Clickable}.
+	 * Sets the {@link Point} position of this {@link Clickable} and {@link Region}.
 	 * 
 	 * @param position
-	 *            {@link Point}
+	 *            The new {@link Point} position of the {@link Clickable} and
+	 *            {@link Region}.
 	 */
 	public void setPosition(Point position) {
 		super.setPosition(position);
 
+		// If the clickable has a region change that regions position.
 		if (hasRegion())
 			region.setPosition(position);
+	}
+
+	/**
+	 * Swaps the current {@link Image} of the {@link Clickable} with another and
+	 * also replaces the {@link Region} as well.
+	 */
+	@Override
+	public final void swapImage(Image image) {
+		super.swapImage(image);
+		swapRegion(image);
+	}
+
+	/**
+	 * Replaces the current {@link Image} of the {@link Clickable} with another and
+	 * also replaces the {@link Region} as well.
+	 */
+	@Override
+	public final void replaceImage(Image image) {
+		super.replaceImage(image);
+		swapRegion(image);
 	}
 
 	/**
@@ -101,8 +98,8 @@ public abstract class Clickable extends Viewable {
 	 * 
 	 * @return <code>int</code>
 	 */
-	public int getWidth() {
-		return hasRegion() ? region.getWidth() : 0;
+	public final int getWidth() {
+		return hasRegion() ? region.getWidth() : super.getWidth();
 	}
 
 	/**
@@ -111,32 +108,67 @@ public abstract class Clickable extends Viewable {
 	 * 
 	 * @return <code>int</code>
 	 */
-	public int getHeight() {
-		return hasRegion() ? region.getHeight() : 0;
+	public final int getHeight() {
+		return hasRegion() ? region.getHeight() : super.getHeight();
 	}
 
-	public boolean hasRegion() {
+	/**
+	 * Retrieves whether or not the {@link Clickable} has a {@link Region}.
+	 * 
+	 * @return Whether or not the {@link Clickable} has a {@link Region}.
+	 */
+	public final boolean hasRegion() {
 		return region != null;
 	}
 
-	@Override
-	public void swapImage(Image image) {
-		super.swapImage(image);
-		swapRegion(image);
+	/**
+	 * Whether or not a mouse click at a specified {@link Point} will be inside this
+	 * objects {@link Region}. If the {@link Region} is <code>null</code> then this
+	 * will return <code>false</code>.
+	 * 
+	 * @param point
+	 *            The {@link Point} position of the mouse.
+	 * @return Whether the {@link Region} was clicked or not.
+	 */
+	public final boolean isClicked(Point point) {
+		return hasRegion() ? region.isInside(point) : false;
 	}
 
+	/**
+	 * Retrieves the {@link Point} position of this {@link Clickable}. If the
+	 * {@link Region} of this {@link Clickable} is not null retrieve the
+	 * {@link Point} position of the {@link Region}.
+	 * 
+	 * @return The {@link Point} of the {@link Clickable}
+	 */
 	@Override
-	public void replaceImage(Image image) {
-		super.replaceImage(image);
-		swapRegion(image);
-
+	public final Point getPosition() {
+		return hasRegion() ? region.getPosition() : super.getPosition();
 	}
 
+	/**
+	 * Retrieves the {@link Region} at this {@link Clickable}.
+	 * 
+	 * @return The {@link Region} of this {@link Clickable}.
+	 */
+	public final Region getRegion() {
+		return region;
+	}
+
+	/**
+	 * Generates a {@link Region} from the specified {@link Image} and uses that
+	 * region to replace the current one.
+	 * 
+	 * @param image
+	 *            The new {@link Image} of the {@link Clickable}.
+	 */
 	private void swapRegion(Image image) {
+
+		// Holds the current position of the region.
 		final Point current = getPosition();
 
+		// Generate the new region and return it to the current position.
 		this.region = new Region(image);
-
 		this.setPosition(current);
 
 	}

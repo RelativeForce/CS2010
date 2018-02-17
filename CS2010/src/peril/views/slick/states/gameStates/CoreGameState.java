@@ -34,8 +34,9 @@ import peril.views.slick.util.Point;
  * This is an {@link Observer} to a {@link ModelState}.
  * 
  * @author Joseph_Rolli, Joshua_Eddy
- * @version 1.01.01
- * @since 2018-02-05
+ * 
+ * @since 2018-02-17
+ * @version 1.01.02
  * 
  * @see InteractiveState
  * @see Observer
@@ -53,8 +54,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 */
 	protected final MenuHelper menus;
 
-	private MiniMap miniMap;
-
 	/**
 	 * Holds all the {@link SlickCountry}s that are currently selected by this
 	 * {@link CoreGameState}.
@@ -71,6 +70,11 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * The {@link Point} pan direction vector this state will pan at.
 	 */
 	private Point panDirection;
+
+	/**
+	 * The {@link MiniMap} that is currently displayed over the {@link SlickBoard}.
+	 */
+	private MiniMap miniMap;
 
 	/**
 	 * Constructs a new {@link CoreGameState}.
@@ -97,6 +101,24 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	}
 
 	/**
+	 * Sets the {@link MiniMap} that the {@link CoreGameState} displays.
+	 * 
+	 * @param miniMap
+	 *            The {@link MiniMap} that the {@link CoreGameState} displays.
+	 */
+	public final void setMiniMap(MiniMap miniMap) {
+		this.miniMap = miniMap;
+	}
+
+	/**
+	 * Retrieves the {@link Music} played by this {@link CoreGameState}.
+	 */
+	@Override
+	public final Music getMusic() {
+		return backgroundMusic.get(new Random().nextInt(backgroundMusic.size()));
+	}
+
+	/**
 	 * Enters this {@link CoreGameState}.
 	 */
 	@Override
@@ -115,7 +137,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 				getMusic().play();
 			}
 		}
-		
+
 		miniMap.repositionWindow();
 	}
 
@@ -135,7 +157,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * Updates this {@link CoreGameState} between frames.
 	 */
 	@Override
-	public void update(GameContainer gc, int delta, Frame frame){
+	public void update(GameContainer gc, int delta, Frame frame) {
 
 		// If there is no menu visible and there is a pan direction, pan.
 		if (panDirection != null && !menus.menuVisible()) {
@@ -183,8 +205,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	@Override
 	public void parseButton(int key, Point mousePosition) {
 		super.parseButton(key, mousePosition);
-		
-		
+
 		// Movement increment
 		final int increment = 50;
 		final int width = slick.getContainer().getWidth();
@@ -224,34 +245,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 		}
 
-	}
-
-	public void setMiniMap(MiniMap miniMap) {
-		this.miniMap = miniMap;
-	}
-
-	private void tradeSelectedUnitUp() {
-
-		if (selected.get(0) == null) {
-			return;
-		}
-
-		ModelArmy army = selected.get(0).model.getArmy();
-
-		if (army.getSelected() == null) {
-			return;
-		}
-
-		army.tradeUp(army.getSelected());
-
-	}
-
-	/**
-	 * Retrieves the {@link Music} played by this {@link CoreGameState}.
-	 */
-	@Override
-	public final Music getMusic() {
-		return backgroundMusic.get(new Random().nextInt(backgroundMusic.size()));
 	}
 
 	/**
@@ -482,6 +475,63 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	}
 
 	/**
+	 * If there is a {@link MiniMap} then display then draw it.
+	 * 
+	 * @param frame
+	 *            The {@link Frame} that will display the {@link MiniMap} to the
+	 *            user.
+	 */
+	protected final void drawMiniMap(Frame frame) {
+
+		if (miniMap == null) {
+			return;
+		}
+
+		frame.draw(miniMap, new EventListener() {
+
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
+				miniMap.parseClick(mouse);
+			}
+
+			@Override
+			public void draw(Frame frame) {
+				miniMap.draw(frame);
+			}
+
+			@Override
+			public void buttonPress(int key, Point mouse) {
+				// Do nothing
+			}
+		});
+	}
+
+	/**
+	 * Performs the {@link ModelArmy#tradeUnitsUp()} on the selected
+	 * {@link SlickCountry}(s).
+	 */
+	private void tradeSelectedUnitUp() {
+
+		if (selected.get(0) == null) {
+			return;
+		}
+
+		ModelArmy army = selected.get(0).model.getArmy();
+
+		if (army.getSelected() == null) {
+			return;
+		}
+
+		army.tradeUp(army.getSelected());
+
+	}
+
+	/**
 	 * Pans the {@link Game#board} according to the
 	 * {@link CoreGameState#panDirection}.
 	 * 
@@ -500,7 +550,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 			panElements(actualVector);
 			miniMap.repositionWindow();
 		}
-		
+
 		return actualVector;
 
 	}
@@ -526,7 +576,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 			public void mouseClick(Point mouse, int mouseButton) {
 
 				// Get the country that is clicked.
-				SlickCountry clicked = board.getCountry(mouse);
+				final SlickCountry clicked = board.getCountry(mouse);
 
 				/*
 				 * If the board was clicked with the left mouse and it is a valid country to
@@ -543,39 +593,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 			@Override
 			public void draw(Frame frame) {
-				board.draw(frame, game, slick, model);
-			}
-
-			@Override
-			public void buttonPress(int key, Point mouse) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-
-	}
-
-	protected void drawMiniMap(Frame frame) {
-		
-		if(miniMap == null) {
-			return;
-		}
-		
-		frame.draw(miniMap, new EventListener() {
-
-			@Override
-			public void mouseHover(Point mouse, int delta) {
-				// Do nothing
-			}
-
-			@Override
-			public void mouseClick(Point mouse, int mouseButton) {
-				miniMap.parseClick(mouse);
-			}
-
-			@Override
-			public void draw(Frame frame) {
-				miniMap.draw(frame);
+				board.draw(frame);
 			}
 
 			@Override
@@ -583,6 +601,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 				// Do nothing
 			}
 		});
+
 	}
 
 	/**

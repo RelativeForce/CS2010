@@ -10,7 +10,7 @@ import org.newdawn.slick.Image;
  * @author Joshua_Eddy
  * 
  * @since 2018-02-17
- * @version 1.01.01
+ * @version 1.01.02
  *
  * @see Viewable
  * @see Region
@@ -131,7 +131,7 @@ public abstract class Clickable extends Viewable {
 	 * @return Whether the {@link Region} was clicked or not.
 	 */
 	public final boolean isClicked(Point point) {
-		return hasRegion() ? region.isInside(point) : false;
+		return hasRegion() ? region.isValid(point) : false;
 	}
 
 	/**

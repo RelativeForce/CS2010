@@ -6,21 +6,39 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.ImageBuffer;
 
 /**
- * Denotes the region of pixels given by a {@link BufferedImage} and a
- * {@link Color}.
+ * This denotes the region of pixels given on screen where each pixel is given a
+ * boolean value based on a predetermined set of conditions. The way that this
+ * object is constructed defines these conditions. When
+ * {@link Region#isValid(Point)} is called the boolean returned will be based on
+ * the pixels validity defined upon {@link Region} construction.
  * 
  * <br>
- * Member class: {@link Reducer}
+ * <br>
+ * The {@link Reducer} takes the {@link Region} defined by the {@link Image} and
+ * reduces the size of the {@link Region} so that there is the minimum memory
+ * over head.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-17
+ * @version 1.01.01
+ * 
+ * @see Image
+ * @see Reducer
  *
  */
 public final class Region {
 
 	/**
+	 * The default transparency of the {@link Color}ed pixel on the {@link Region}
+	 * equivalent {@link Image}. Bounds: 0 - 255
+	 */
+	private static final int DEFAULT_TRANSPARENCY = 180;
+
+	/**
 	 * The <code>boolean[]</code> where if a pixel from the specified {@link Image}
-	 * is the specified {@link Color} the it is assigned true, otherwise it is
-	 * false.
+	 * is valid then it is assigned true, otherwise it is false. The valid value for
+	 * a pixel is determined by how the {@link Region} is constructed.
 	 */
 	private final boolean[] object;
 
@@ -35,36 +53,48 @@ public final class Region {
 	private int height;
 
 	/**
-	 * The {@link Point} vector from the (0,0) of the image this {@link Region} is a
-	 * part of to (0,0) of this {@link Region}.
+	 * The {@link Point} position of this {@link Region} on screen.
 	 */
 	private Point position;
 
 	/**
-	 * Constructs a new {@link Region} using an {@link Image}.
+	 * Constructs a new {@link Region} using an {@link Image} where the valid pixel
+	 * value is any value except transparent.
 	 * 
 	 * @param image
-	 *            {@link Image} that contains the {@link Region} of the of a
+	 *            The {@link Image} that will be converted to a {@link Region}.
+	 */
+	public Region(Image image) {
+		this(getRegion(image), image.getWidth(), image.getHeight());
+	}
+
+	/**
+	 * Constructs a new {@link Region} using an {@link Image} where the valid pixel
+	 * value is the specified {@link Color}.
+	 * 
+	 * @param image
+	 *            The {@link Image} that contains the {@link Region} of the of a
 	 *            specified {@link Color}.
 	 * @param colour
-	 *            {@link Color} of the specified {@link Region}.
+	 *            The {@link Color} of the specified {@link Region}.
 	 */
 	public Region(Image image, Color colour) {
 		this(getRegion(image, colour), image.getWidth(), image.getHeight());
 	}
 
 	/**
-	 * Constructs a combined {@link Region}. Only used by
-	 * {@link Region#combine(List)}.
+	 * Constructs a combined {@link Region} where the valid pixel value is
+	 * <code>true</code> as the specified <code>boolean[]</code> is already 'not
+	 * reduced' region.
 	 * 
 	 * @param object
-	 *            <code>boolean[]</code> where if a pixel from the specified
-	 *            {@link BufferedImage} is the specified {@link Color} the it is
-	 *            assigned true, otherwise it is false.
+	 *            The <code>boolean[]</code> where if a pixel from the specified
+	 *            {@link Image} is valid then it is assigned true, otherwise it is
+	 *            false.
 	 * @param width
-	 *            This width of the image this region is a part of.
+	 *            This width of the image this {@link Region} is a part of.
 	 * @param height
-	 *            This height of the image this region is a part of.
+	 *            This height of the image this {@link Region} is a part of.
 	 * 
 	 */
 	public Region(boolean[] object, int width, int height) {
@@ -72,24 +102,15 @@ public final class Region {
 	}
 
 	/**
-	 * Constructs a new {@link Region} using an {@link Image}.
-	 * 
-	 * @param image
-	 *            {@link Image}
-	 */
-	public Region(Image image) {
-		this(getRegion(image), image.getWidth(), image.getHeight());
-	}
-
-	/**
-	 * Constructs a new {@link Region} that is a rectangle.
+	 * Constructs a new {@link Region} that is a rectangle where the whole region is
+	 * the valid value by definition.
 	 * 
 	 * @param width
-	 *            <code>int</code> width of the rectangle.
+	 *            The <code>int</code> width of the rectangular {@link Region}.
 	 * @param height
-	 *            <code>int</code> height of the rectangle.
+	 *            The <code>int</code> height of the rectangular {@link Region}.
 	 * @param position
-	 *            {@link Point}
+	 *            The {@link Point} position of the {@link Region}.
 	 */
 	public Region(int width, int height, Point position) {
 
@@ -110,12 +131,14 @@ public final class Region {
 	 * Combines a {@link List} of {@link Region} into ONE {@link Region}.
 	 * 
 	 * @param list
-	 *            {@link List} of {@link Region}s to be combined.
+	 *            The {@link List} of {@link Region}s to be combined.
 	 * @param width
-	 *            <code>int</code> width of the space the {@link Region} is in.
+	 *            The <code>int</code> width of the space the {@link Region}s are
+	 *            in.
 	 * @param height
-	 *            <code>int</code> height of the space the {@link Region} is in.
-	 * @return {@link Region}
+	 *            The <code>int</code> height of the space the {@link Region}s are
+	 *            in.
+	 * @return The combined {@link Region}.
 	 */
 	public static Region combine(List<Region> list, int width, int height) {
 
@@ -134,7 +157,7 @@ public final class Region {
 		final boolean[] base = new boolean[width * height];
 
 		// Iterate through all the regions in the list.
-		for (final Region region : list) {
+		for (Region region : list) {
 
 			// Iterate through every element in the region.
 			for (int y = 0; y < region.height; y++) {
@@ -166,8 +189,11 @@ public final class Region {
 	 * pixel level.
 	 * 
 	 * @param a
+	 *            {@link Region} A
 	 * @param b
-	 * @return
+	 *            {@link Region} B
+	 * @return Whether the two specified {@link Region}s overlap or not at the pixel
+	 *         level.
 	 */
 	public static boolean overlap(Region a, Region b) {
 
@@ -197,14 +223,14 @@ public final class Region {
 
 				for (int y = minY; y < maxY; y++) {
 
-					if (a.isInside(new Point(x, y)) && b.isInside(new Point(x, y))) {
+					if (a.isValid(new Point(x, y)) && b.isValid(new Point(x, y))) {
 						overlap = true;
 						break;
 					}
 
 				}
-				
-				if(overlap) {
+
+				if (overlap) {
 					break;
 				}
 			}
@@ -215,32 +241,24 @@ public final class Region {
 	}
 
 	/**
-	 * Retrieves whether or not the specified {@link Point} is inside this region.
+	 * Sets the {@link Point} of this {@link Region}.
 	 * 
-	 * @param point
-	 *            {@link Point}
-	 * @return <code>boolean</code>
+	 * @param position
+	 *            The {@link Point} of this {@link Region}.
 	 */
-	public boolean isInside(Point point) {
+	public void setPosition(Point position) {
 
-		// Null param check.
-		if (point == null) {
-			throw new IllegalArgumentException("Point cannot be null");
+		if (position == null) {
+			throw new NullPointerException("Position cannot be null.");
 		}
 
-		// If the x and y are out side the bounds of the region return false;
-		if (point.x < position.x || point.x >= position.x + width || point.y < position.y
-				|| point.y >= position.y + height) {
-			return false;
-		}
-
-		return object[getIndex(point.x - position.x, point.y - position.y, height)];
+		this.position = position;
 	}
 
 	/**
 	 * Retrieves the {@link Point} position of the {@link Region}.
 	 * 
-	 * @return {@link Point}
+	 * @return The {@link Point} position of the {@link Region}.
 	 */
 	public Point getPosition() {
 		return position;
@@ -265,35 +283,68 @@ public final class Region {
 	}
 
 	/**
-	 * Retrieves the boolean object that represents the {@link Region}.
+	 * Retrieves whether or not the specified {@link Point} is inside this
+	 * {@link Region} and if it is then whether the pixel at that position has a
+	 * valid value based on the conditions that were defined when the {@link Region}
+	 * was constructed.
 	 * 
-	 * @return <code>boolean[][]</code>
+	 * @param point
+	 *            The {@link Point} to be validated.
+	 * @return The validity of the specified {@link Point} position.
+	 */
+	public boolean isValid(Point point) {
+
+		// Null parameter check.
+		if (point == null) {
+			throw new IllegalArgumentException("Point cannot be null");
+		}
+
+		// If the x and y are out side the bounds of the region return false;
+		if (point.x < position.x || point.x >= position.x + width || point.y < position.y
+				|| point.y >= position.y + height) {
+			return false;
+		}
+
+		// Return the value of the pixel.
+		return object[getIndex(point.x - position.x, point.y - position.y, height)];
+	}
+
+	/**
+	 * Retrieves the <code>boolean[]</code> where if a pixel from the specified
+	 * {@link Image} is valid then it is assigned true, otherwise it is false. The
+	 * valid value for a pixel is determined by how the {@link Region} is
+	 * constructed.
+	 * 
+	 * @return <code>boolean[]</code>
 	 */
 	public boolean[] getObject() {
 		return object;
 	}
 
 	/**
-	 * Converts this {@link Region} into a {@link Image} that is stored on
-	 * {@link Viewable#image}.
+	 * Converts this {@link Region} into a {@link Image} where all the valid pixels
+	 * in the {@link Region} are set to the specified {@link Color} at the
+	 * {@link Region#DEFAULT_TRANSPARENCY}.
 	 * 
-	 * @param region
-	 *            {@link Region}
-	 * @return {@link Image}
+	 * @param color
+	 *            The {@link Color} of the {@link Region} in the {@link Image}.
+	 * @return The {@link Image} equivalent of the {@link Region}.
 	 */
 	public Image convert(Color color) {
-		return convert(color, 180);
+		return convert(color, DEFAULT_TRANSPARENCY);
 	}
 
 	/**
-	 * Converts this {@link Region} into a {@link Image} that is stored on
-	 * {@link Viewable#image}.
+	 * Converts this {@link Region} into a {@link Image} where all the valid pixels
+	 * in the {@link Region} are set to the specified {@link Color} at the specified
+	 * transparency.
 	 * 
-	 * @param region
-	 *            {@link Region}
+	 * @param color
+	 *            The {@link Color} of the {@link Region} in the {@link Image}.
 	 * @param transparency
-	 *            The transparency of the image.
-	 * @return {@link Image}
+	 *            The transparency of the {@link Color} for each valid pixel in the
+	 *            {@link Region}.
+	 * @return The {@link Image} equivalent of the {@link Region}.
 	 */
 	public Image convert(Color color, int transparency) {
 
@@ -324,18 +375,18 @@ public final class Region {
 	}
 
 	/**
-	 * Sets the {@link Region#position}
+	 * Retrieves the index of a specified coordinate inside the
+	 * {@link Region#object}.
 	 * 
-	 * @param position
-	 *            {@link Point}
+	 * @param x
+	 *            The x coordinate of the position.
+	 * @param y
+	 *            The y coordinate of the position.
+	 * @param height
+	 *            The height of the {@link Region#object}.
 	 */
-	public void setPosition(Point position) {
-
-		if (position == null) {
-			throw new NullPointerException("Position cannot be null.");
-		}
-
-		this.position = position;
+	private static int getIndex(int x, int y, int height) {
+		return (x * height) + y;
 	}
 
 	/**
@@ -344,7 +395,7 @@ public final class Region {
 	 * it is false.
 	 * 
 	 * @param image
-	 *            {@link Image}
+	 *            The {@link Image} to be converted into an {@link Image}.
 	 * @return <code>boolean[][]</code>
 	 */
 	private static boolean[] getRegion(Image image) {
@@ -354,16 +405,16 @@ public final class Region {
 	/**
 	 * Retrieves a <code>boolean[]</code> where if a pixel from the specified
 	 * {@link Image} is the specified {@link Color} the it is assigned true,
-	 * otherwise it is false <br>
+	 * otherwise it is false<br>
 	 * <strong>OR</strong> if the specified colour is null,<br>
 	 * Retrieves a <code>boolean[][]</code> where if a pixel from the specified
 	 * {@link Image} is not {@link Color#transparent} it is assigned true, otherwise
 	 * it is false.
 	 * 
 	 * @param image
-	 *            {@link Image}
+	 *            The {@link Image} to be converted into an {@link Image}.
 	 * @param color
-	 *            {@link Color}
+	 *            The {@link Color} that is valid.
 	 * @return <code>boolean[][]</code>
 	 */
 	private static boolean[] getRegion(Image image, Color color) {
@@ -373,7 +424,7 @@ public final class Region {
 		final int imageWidth = image.getWidth();
 
 		// Holds the array of booleans initially all elements are set to false
-		boolean[] object = new boolean[imageWidth * imageHeight];
+		final boolean[] object = new boolean[imageWidth * imageHeight];
 
 		/*
 		 * Iterate through all pixel in the image and if a pixel is the same colour as
@@ -386,14 +437,8 @@ public final class Region {
 				 * If the colour is null then filter out all the pixels that are transparent
 				 * otherwise filter out all the pixels that are NOT the specified colour.
 				 */
-				if (color == null) {
-					if (!image.getColor(x, y).equals(Color.transparent)) {
-						object[getIndex(x, y, imageHeight)] = true;
-					}
-				} else {
-					if (color.equals(image.getColor(x, y))) {
-						object[getIndex(x, y, imageHeight)] = true;
-					}
+				if (!image.getColor(x, y).equals(color == null ? Color.transparent : color)) {
+					object[getIndex(x, y, imageHeight)] = true;
 				}
 
 			}
@@ -403,56 +448,25 @@ public final class Region {
 	}
 
 	/**
-	 * Retrieves the index of a specified coordinate inside the
-	 * {@link Region#object}.
-	 * 
-	 * @param x
-	 * @param y
-	 * @param height
-	 *            of the {@link Region#object}
-	 */
-	private static int getIndex(int x, int y, int height) {
-		return (x * height) + y;
-	}
-
-	/**
-	 * Designed to reduce a <code>boolean[]</code> from a specified <code>int</code>
-	 * width and <code>int</code> height to the smallest possible
-	 * <code>boolean[]</code> without loosing any data. This will minimise the
-	 * storage space an increase the efficiency greatly. It also helps construct the
-	 * parent class {@link Region}.<br>
-	 * Using {@link Reducer#reduce()}<br>
-	 * Resembles the factory pattern.
+	 * The helper is designed to reduce a <code>boolean[]</code> from a specified
+	 * width and height to the smallest possible <code>boolean[]</code> without
+	 * loosing any data. This will minimise the storage space an increase the
+	 * efficiency greatly. It also helps construct the parent class {@link Region}.
 	 * 
 	 * @author Joshua_Eddy
+	 * 
+	 * @since 2018-02-17
+	 * @version 1.01.01
+	 * 
+	 * @see Reducer#reduce()
 	 *
 	 */
 	private final class Reducer {
 
 		/**
-		 * Holds the lower x boundary.
-		 */
-		private int lowerXBoundary;
-
-		/**
-		 * Holds the upper x boundary.
-		 */
-		private int upperXBoundary;
-
-		/**
-		 * Holds the upper y boundary.
-		 */
-		private int upperYBoundary;
-
-		/**
-		 * Holds the lower y boundary.
-		 */
-		private int lowerYBoundary;
-
-		/**
 		 * The array that this {@link Reducer} will shrink to save memory space.
 		 */
-		private boolean[] toReduce;
+		private final boolean[] toReduce;
 
 		/**
 		 * The initial height of the {@link Region}.
@@ -465,6 +479,26 @@ public final class Region {
 		private final int initialWidth;
 
 		/**
+		 * Holds the lower x boundary.
+		 */
+		private int lowerXBoundary;
+
+		/**
+		 * Holds the upper x boundary.
+		 */
+		private int upperXBoundary;
+
+		/**
+		 * Holds the lower y boundary.
+		 */
+		private int lowerYBoundary;
+
+		/**
+		 * Holds the upper y boundary.
+		 */
+		private int upperYBoundary;
+
+		/**
 		 * Constructs a new {@link Reducer}.Reduces a specified <code>boolean[]</code>
 		 * from the specified width and height to the its smallest possible size without
 		 * loss of data. This also assigns {@link Region#width}, {@link Region#height},
@@ -473,12 +507,10 @@ public final class Region {
 		 * @param toReduce
 		 *            The <code>boolean[]</code> to reduce in size.
 		 * @param width
-		 *            Initial <code>int</code> width of the <code>boolean[][]</code>
-		 *            array.
+		 *            The initial width of the <code>boolean[]</code> array.
 		 * @param height
-		 *            Initial <code>int</code> height of the <code>boolean[][]</code>
-		 *            array.
-		 * @return <code>boolean[][]</code> reduced array.
+		 *            The initial height of the <code>boolean[]</code> array.
+		 * @return <code>boolean[]</code> reduced array.
 		 */
 		public Reducer(boolean[] toReduce, int width, int height) {
 
@@ -497,13 +529,12 @@ public final class Region {
 		}
 
 		/**
-		 * Shrinks the size of a specified <code>boolean[][]</code> to its smallest
+		 * Shrinks the size of a specified <code>boolean[]</code> to its smallest
 		 * possible size based on {@link Reducer#lowerXBoundary},
 		 * {@link Reducer#lowerYBoundary}, {@link Reducer#upperXBoundary} and
-		 * {@link Reducer#upperYBoundary}. Assigns {@link Region#x} and
-		 * {@link Region#y}.
+		 * {@link Reducer#upperYBoundary}. Assigns {@link Region#position}.
 		 * 
-		 * @return <code>boolean[][]</code> smallest version of the specified array.
+		 * @return <code>boolean[]</code> smallest version of the specified array.
 		 */
 		public boolean[] reduce() {
 
@@ -580,12 +611,11 @@ public final class Region {
 		}
 
 		/**
-		 * Assigns {@link Region#lowerXBoundary} by iterating through all the columns in
-		 * the specified row.
+		 * Assigns {@link Reducer#lowerXBoundary} by iterating through all the columns
+		 * in the specified row.
 		 * 
 		 * @param rowNum
-		 *            <code>int</code> index of the row currently being processed by
-		 *            {@link Reducer#setXBoundaries(boolean[][], int, int)}.
+		 *            The <code>int</code> index of the row currently being processed.
 		 */
 		private void getLowerXBoundary(int rowNum) {
 
@@ -605,12 +635,11 @@ public final class Region {
 		}
 
 		/**
-		 * Assigns {@link Region#upperXBoundary} by iterating through all the columns in
-		 * the specified row.
+		 * Assigns {@link Reducer#upperXBoundary} by iterating through all the columns
+		 * in the specified row.
 		 * 
 		 * @param rowNum
-		 *            <code>int</code> index of the row currently being processed by
-		 *            {@link Reducer#setXBoundaries(boolean[][], int, int)}.
+		 *            The <code>int</code> index of the row currently being processed.
 		 */
 		private void getUpperXBoundary(int rowNum) {
 
@@ -630,12 +659,12 @@ public final class Region {
 		}
 
 		/**
-		 * Assigns {@link Region#upperYBoundary} by iterating through all the rows in
+		 * Assigns {@link Reducer#upperYBoundary} by iterating through all the rows in
 		 * the specified column.
 		 *
 		 * @param colNum
-		 *            <code>int</code> index of the column currently being processed by
-		 *            {@link Reducer#setYBoundaries(boolean[][], int, int)}.
+		 *            The <code>int</code> index of the column currently being
+		 *            processed.
 		 */
 		private void getUpperYBoundary(int colNum) {
 
@@ -654,12 +683,12 @@ public final class Region {
 		}
 
 		/**
-		 * Assigns {@link Region#lowerYBoundary} by iterating through all the rows in
+		 * Assigns {@link Reducer#lowerYBoundary} by iterating through all the rows in
 		 * the specified column.
 		 * 
 		 * @param colNum
-		 *            <code>int</code> index of the column currently being processed by
-		 *            {@link Reducer#setYBoundaries(boolean[][], int, int)}.
+		 *            The <code>int</code> index of the column currently being
+		 *            processed.
 		 */
 		private void getLowerYBoundary(int colNum) {
 			// Iterate through each row on the current column from the bottom.

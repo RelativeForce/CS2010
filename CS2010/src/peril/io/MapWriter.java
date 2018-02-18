@@ -16,10 +16,10 @@ import peril.model.states.ModelState;
  * 
  * @author Joshua_Eddy
  *
- * @version 1.01.02
+ * @version 1.01.03
  * @since 2018-02-18
  */
-public class MapWriter {
+public final class MapWriter {
 
 	/**
 	 * The {@link TextFileWriter} that creates the save file.
@@ -163,6 +163,9 @@ public class MapWriter {
 		line.append(',');
 
 		line.append(isActive);
+		line.append(',');
+
+		line.append(player.getPoints());
 
 		return line.toString();
 
@@ -196,15 +199,15 @@ public class MapWriter {
 		line.append(',');
 		line.append(neighbour.getName());
 		line.append(',');
-		
+
 		final ModelLink link = country.getLinkTo(neighbour);
-		
+
 		line.append(link.getDefaultState().name);
 		line.append(',');
 		line.append(link.getState().name);
 		line.append(',');
 		line.append(Integer.toString(link.getDuration()));
-		
+
 		writer.writeLine(line.toString());
 
 	}

@@ -556,12 +556,12 @@ public final class MapReader extends FileParser {
 		} catch (Exception ex) {
 			throw new IllegalArgumentException("Line " + index + ": " + details[5] + " is not a duration.");
 		}
-		
+
 		// If the duration is longer than zero rounds.
-		if(duration > 0) {
+		if (duration > 0) {
 			link.setState(currentLinkState, duration);
 		}
-		
+
 		country1.addNeighbour(country2, link);
 
 	}
@@ -579,7 +579,7 @@ public final class MapReader extends FileParser {
 	 */
 	private void parsePlayer(String[] details) {
 
-		final int STATE_LENGTH = 4;
+		final int STATE_LENGTH = 5;
 
 		// Check there is the correct number of details
 		if (details.length != STATE_LENGTH) {
@@ -613,11 +613,21 @@ public final class MapReader extends FileParser {
 			throw new IllegalArgumentException("Line " + index + ": " + details[3] + " is not a valid player state.");
 		}
 
+		// Holds the strength of the players distrubutable army.
+		int points;
+
+		try {
+			points = Integer.parseInt(details[4]);
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Line " + index + ": " + details[4] + " is not a valid number of points.");
+		}
+
 		// Holds the slick player.
 		final SlickPlayer player = new SlickPlayer(playerNumber, slickGame.getColor(playerNumber), AI.USER);
 
 		// Set the state of the player
 		player.model.distributableArmy.setStrength(armyStrength);
+		player.model.setPoints(points);
 		player.replaceImage(slickGame.getPlayerIcon(playerNumber));
 
 		// Add to the view

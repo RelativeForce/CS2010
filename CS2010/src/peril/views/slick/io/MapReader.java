@@ -36,8 +36,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-16
- * @version 1.01.01
+ * @since 2018-02-18
+ * @version 1.01.02
  * 
  * @see FileParser
  * @see SaveFile
@@ -354,13 +354,7 @@ public final class MapReader extends FileParser {
 		}
 
 		// Holds the strength of the army
-		int armyStrength;
-
-		try {
-			armyStrength = Integer.parseInt(details[3]);
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Line " + index + ": " + details[3] + " is not a valid army size.");
-		}
+		final ModelArmy tempArmy = parseArmy(details[3]);
 
 		// Holds the army x and y offset.
 		int xOffset;
@@ -391,8 +385,8 @@ public final class MapReader extends FileParser {
 			// Set the ruler
 			model.setRuler(ruler);
 			ruler.setCountriesRuled(ruler.getCountriesRuled() + 1);
+			ruler.totalArmy.merge(tempArmy);
 
-			ModelArmy.generateUnits(armyStrength).forEach(unit -> ruler.totalArmy.add(unit));
 		}
 
 		// Gets the region by colour.
@@ -405,7 +399,7 @@ public final class MapReader extends FileParser {
 		final SlickArmy army = new SlickArmy(country.model.getArmy());
 
 		// Set the army strength
-		country.model.getArmy().setStrength(armyStrength);
+		country.model.getArmy().merge(tempArmy);
 
 		// Add the country to the view.
 		view.addCountry(country);
@@ -416,6 +410,61 @@ public final class MapReader extends FileParser {
 		// Construct a new country and add the country to the list of countries.
 		countries.put(name, country);
 
+	}
+
+	/**
+	 * Processes an a string into a {@link ModelArmy}.
+	 * 
+	 * @param armyStr
+	 *            The string representation of a {@link ModelArmy}.
+	 * @return The {@link ModelArmy} specified by the string.
+	 */
+	private ModelArmy parseArmy(String armyStr) {
+
+		// The army all the units will be added to.
+		final ModelArmy army = new ModelArmy();
+
+		// Holds all the unitName:number pairs
+		final String[] unitPairs = armyStr.split("-");
+
+		// Iterate over all of the unit pairs and parse them into units.
+		for (String unitPair : unitPairs) {
+
+			// Holds the current unit pair which should have two elements.
+			final String[] unitPairElements = unitPair.split(":");
+
+			if (unitPairElements.length != 2) {
+				throw new IllegalArgumentException("Line " + index + ": " + unitPair
+						+ " is not a valid unit pair. Unit pairs sould be 'unitName:number'.");
+			}
+
+			// Holds the elements of the unit pair.
+			final String unitName = unitPairElements[0];
+			final String numberStr = unitPairElements[1];
+
+			// Parse the number of units.
+			final int number;
+			try {
+				number = Integer.parseInt(numberStr);
+			} catch (Exception e) {
+				throw new IllegalArgumentException(
+						"Line " + index + ": " + numberStr + " is not a valid number of " + unitName + ".");
+			}
+
+			// Retrieve  the model unit with the name specifed by the pair.
+			final ModelUnit unit = UnitHelper.getInstance().get(unitName);
+
+			if (unit == null) {
+				throw new IllegalArgumentException("Line " + index + ": " + unitName + " is not a valid unit name.");
+			}
+
+			// Add the number amount of the unit to the army.
+			for (int index = 0; index < number; index++) {
+				army.add(unit);
+			}
+		}
+
+		return army;
 	}
 
 	/**
@@ -619,7 +668,8 @@ public final class MapReader extends FileParser {
 		try {
 			points = Integer.parseInt(details[4]);
 		} catch (Exception e) {
-			throw new IllegalArgumentException("Line " + index + ": " + details[4] + " is not a valid number of points.");
+			throw new IllegalArgumentException(
+					"Line " + index + ": " + details[4] + " is not a valid number of points.");
 		}
 
 		// Holds the slick player.

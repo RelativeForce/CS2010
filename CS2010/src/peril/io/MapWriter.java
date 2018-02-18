@@ -5,6 +5,7 @@ import peril.controllers.GameController;
 import peril.helpers.UnitHelper;
 import peril.model.ModelColor;
 import peril.model.ModelPlayer;
+import peril.model.board.ModelArmy;
 import peril.model.board.ModelContinent;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
@@ -275,7 +276,7 @@ public final class MapWriter {
 		line.append(',');
 
 		// Army Size
-		line.append(country.getArmy().getStrength());
+		line.append(parseArmy(country.getArmy()));
 		line.append(',');
 
 		// Army offset
@@ -286,6 +287,38 @@ public final class MapWriter {
 
 		// Player ruler
 		line.append(country.getRuler() != null ? country.getRuler().number : '-');
+
+		return line.toString();
+	}
+
+	/**
+	 * Processes a {@link ModelArmy} into a string that can be written to the map
+	 * file.
+	 * 
+	 * @param army
+	 *            The {@link ModelArmy} to be parsed.
+	 * @return String representation of the specified {@link ModelArmy}.
+	 */
+	private String parseArmy(ModelArmy army) {
+
+		final StringBuilder line = new StringBuilder();
+		
+		//Whether the current unit is the first.
+		boolean firstUnit = true;
+
+		// Iterate over every unit in the army.
+		for (ModelUnit unit : army) {
+
+			if (!firstUnit) {
+				line.append('-');
+			}
+
+			line.append(unit.name);
+			line.append(':');
+			line.append(army.getNumberOf(unit));
+
+			firstUnit = false;
+		}
 
 		return line.toString();
 	}

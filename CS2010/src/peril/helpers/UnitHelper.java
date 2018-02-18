@@ -9,6 +9,12 @@ import peril.model.board.ModelUnit;
  * Stores the {@link ModelUnit}s that are currently in use. Singleton
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-18
+ * @version 1.01.01
+ * 
+ * @see ModelUnit
+ * @see LinkedList
  *
  */
 public final class UnitHelper {
@@ -124,6 +130,24 @@ public final class UnitHelper {
 		for (ModelUnit unit : units) {
 			task.accept(unit);
 		}
+	}
+
+	/**
+	 * Retrieves the {@link ModelUnit} with the specified name.
+	 * 
+	 * @param name
+	 *            The name of the {@link ModelUnit}.
+	 * @return The {@link ModelUnit} with the specified name.
+	 */
+	public ModelUnit get(String name) {
+
+		for (ModelUnit unit : units) {
+			if (unit.name.equals(name)) {
+				return unit;
+			}
+		}
+
+		return null;
 	}
 
 	/**

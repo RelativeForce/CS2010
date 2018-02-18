@@ -280,7 +280,7 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	public final void showToolTip(String toolTip, Point position) {
 
 		// Display the tool tip for 8 seconds
-		frame.addToolTip(toolTip, position, 2000);
+		frame.addToolTip(toolTip, position, 8000);
 
 	}
 

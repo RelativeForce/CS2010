@@ -109,13 +109,13 @@ public final class Frame {
 		List<ToolTip> toRemove = new LinkedList<>();
 
 		toolTips.forEach(toolTip -> {
-			
+
 			// If the tool tip has elapsed remove it.
 			if (toolTip.elapse(delta)) {
 				toRemove.add(toolTip);
 			}
 		});
-		
+
 		toRemove.forEach(toolTip -> toolTips.remove(toolTip));
 	}
 
@@ -140,7 +140,14 @@ public final class Frame {
 	 *            The number of milliseconds this tool tip will be displayed for.
 	 */
 	public void addToolTip(String message, Point position, long duration) {
-		toolTips.add(new ToolTip(message, position, duration));
+
+		final ToolTip tt = new ToolTip(message, position, duration);
+
+		final Point toolTipPos = new Point(position.x, position.y + (toolTips.size() * tt.getHeight()));
+		
+		tt.setPosition(toolTipPos);
+
+		toolTips.add(tt);
 	}
 
 	/**
@@ -622,6 +629,14 @@ public final class Frame {
 			return text.getPosition();
 		}
 
+		/**
+		 * Retrieves the height of this {@link ToolTip}.
+		 * 
+		 * @return The height of this {@link ToolTip}.
+		 */
+		public int getHeight() {
+			return text.getHeight();
+		}
 	}
 
 	/**

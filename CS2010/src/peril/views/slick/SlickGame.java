@@ -444,13 +444,10 @@ public final class SlickGame extends StateBasedGame implements View {
 	public void showToolTip(String text) {
 
 		if(getCurrentState() instanceof CoreGameState) {
-			getCurrentState().showToolTip(text, new Point(300, 300));
+			getCurrentState().showToolTip(text, new Point(410, 150));
 		}else {
-			getCurrentState().showToolTip(text, new Point(300, 300));
+			getCurrentState().showToolTip(text, new Point(0, 0));
 		}
-
-		
-
 	}
 
 	/**

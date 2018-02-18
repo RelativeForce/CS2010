@@ -44,7 +44,7 @@ public final class PlayerSelection extends InteractiveState {
 	 * The name of this {@link PlayerSelection}.
 	 */
 	private static final String NAME = "Select";
-	
+
 	private static final String AI_TEXT = "AI: ";
 
 	private final VisualList<AI> aiList;
@@ -54,6 +54,8 @@ public final class PlayerSelection extends InteractiveState {
 	 * the game.
 	 */
 	private final VisualList<Integer> numberOfPlayers;
+
+	private final VisualList<Integer> aiSpeeds;
 
 	private final List<Player> players;
 
@@ -87,7 +89,7 @@ public final class PlayerSelection extends InteractiveState {
 
 		this.width = 100;
 		this.height = 100;
-		this.topPlayer = new Point((MainMenu.WIDTH / 4), MainMenu.HEIGHT / 3);
+		this.topPlayer = new Point((MainMenu.WIDTH / 3), MainMenu.HEIGHT / 3);
 		this.players = new LinkedList<>();
 		this.selected = null;
 
@@ -97,14 +99,33 @@ public final class PlayerSelection extends InteractiveState {
 		this.aiList.setFont(listFont);
 		populateAIList();
 
-		this.numberOfPlayers = new VisualList<>(new Point(200, 130), 20, 24, 3, 5);
+		this.numberOfPlayers = new VisualList<>(new Point(100, topPlayer.y), 20, 24, 3, 5);
 		this.numberOfPlayers.setFont(listFont);
 		populatePlayers();
+
+		this.aiSpeeds = new VisualList<>(new Point(100, topPlayer.y + 110), 50, 24, 4, 5);
+		this.aiSpeeds.setFont(listFont);
+		populateAISpeeds();
 
 		textFont = new Font("Arial", Color.white, 20);
 
 		super.addComponent(aiList);
 		super.addComponent(numberOfPlayers);
+		super.addComponent(aiSpeeds);
+
+	}
+
+	private void populateAISpeeds() {
+
+		final int factor = 80;
+
+		for (int i = 0; i < 4; i++) {
+
+			final int speed = AI.MAX_SPEED + (i * factor);
+
+			aiSpeeds.add(Integer.toString(speed), speed);
+
+		}
 
 	}
 
@@ -114,8 +135,10 @@ public final class PlayerSelection extends InteractiveState {
 
 		textFont.init();
 
-		final Image icon = ImageReader.getImage(game.getDirectory().getButtonsPath() + "change.png").getScaledCopy(50,
-				50);
+		final Image changeIcon = ImageReader.getImage(game.getDirectory().getButtonsPath() + "change.png")
+				.getScaledCopy(50, 50);
+		final Image confirmIcon = ImageReader.getImage(game.getDirectory().getButtonsPath() + "confirm.png")
+				.getScaledCopy(50, 50);
 
 		players.forEach(p -> {
 
@@ -131,12 +154,12 @@ public final class PlayerSelection extends InteractiveState {
 
 			final int changeIconX = x + playerIcon.getWidth() + textFont.getWidth(AI_TEXT) + 15 + aiList.getWidth();
 
-			final int changeIconY = y - (icon.getHeight() / 2);
+			final int changeIconY = y - (changeIcon.getHeight() / 2);
 
-			p.change = new Clickable(icon);
+			p.change = new Clickable(changeIcon);
 			p.change.setPosition(new Point(changeIconX, changeIconY));
 
-			p.confirm = new Clickable(icon);
+			p.confirm = new Clickable(confirmIcon);
 			p.confirm.setPosition(new Point(changeIconX, changeIconY));
 
 			p.replaceImage(playerIcon);
@@ -151,12 +174,14 @@ public final class PlayerSelection extends InteractiveState {
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
+
 		aiList.hide();
 
-		// numberOfPlayers.setPosition(new Point((gc.getWidth() / 6) -
-		// numberOfPlayers.getWidth() - 10, gc.getHeight() / 2));
-
 		resetPlayers();
+
+		changeAISpeed(AI.MAX_SPEED);
+		aiSpeeds.setSelected((Integer) AI.MAX_SPEED);
+
 	}
 
 	private void populatePlayers() {
@@ -185,6 +210,8 @@ public final class PlayerSelection extends InteractiveState {
 		drawNumberOfPlayers(frame);
 
 		drawPlayers(frame);
+
+		drawAISpeeds(frame);
 
 	}
 
@@ -237,8 +264,8 @@ public final class PlayerSelection extends InteractiveState {
 
 		final String text = "Number of Players:";
 
-		frame.draw(textFont, text, numberOfPlayers.getPosition().x - textFont.getWidth(text) - 5,
-				numberOfPlayers.getPosition().y);
+		frame.draw(textFont, text, numberOfPlayers.getPosition().x,
+				numberOfPlayers.getPosition().y - textFont.getHeight(text));
 
 		frame.draw(numberOfPlayers, new EventListener() {
 
@@ -274,6 +301,53 @@ public final class PlayerSelection extends InteractiveState {
 				numberOfPlayers.draw(frame);
 			}
 		});
+	}
+
+	private void drawAISpeeds(Frame frame) {
+
+		final String text = "AI speed:";
+
+		frame.draw(textFont, text, aiSpeeds.getPosition().x, aiSpeeds.getPosition().y - textFont.getHeight(text));
+
+		frame.draw(aiSpeeds, new EventListener() {
+
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
+				aiSpeeds.click(mouse);
+				changeAISpeed(aiSpeeds.getSelected());
+			}
+
+			@Override
+			public void draw(Frame frame) {
+				aiSpeeds.draw(frame);
+			}
+
+			@Override
+			public void buttonPress(int key, Point mouse) {
+
+				if (aiSpeeds.isClicked(mouse)) {
+
+					if (key == Input.KEY_UP) {
+						aiSpeeds.up();
+						changeAISpeed(aiSpeeds.getSelected());
+					} else if (key == Input.KEY_DOWN) {
+						aiSpeeds.down();
+						changeAISpeed(aiSpeeds.getSelected());
+					}
+				}
+			}
+
+		});
+
+	}
+
+	private void changeAISpeed(int newSpeed) {
+		game.getAIs().forEach(ai -> ai.setSpeed(newSpeed));
 	}
 
 	private void drawPlayers(Frame frame) {

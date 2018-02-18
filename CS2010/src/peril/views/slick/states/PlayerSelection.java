@@ -29,6 +29,11 @@ import peril.views.slick.util.Point;
  * {@link SlickPlayer}s.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-18
+ * @version 1.01.02
+ * 
+ * @see InteractiveState
  *
  */
 public final class PlayerSelection extends InteractiveState {
@@ -45,18 +50,20 @@ public final class PlayerSelection extends InteractiveState {
 	private final Map<Integer, VisualList<AI>> selectors;
 
 	/**
-	 * The string id of the play button.
-	 */
-	private final String playButton;
-
-	/**
 	 * The {@link VisualList} of the number of {@link SlickPlayer}s that can be in
-	 * the {@link Game}.
+	 * the game.
 	 */
 	private final VisualList<Integer> players;
 
+	/**
+	 * The width of the map that the page will load after the players have been set.
+	 */
 	private int width;
 
+	/**
+	 * The height of the map that the page will load after the players have been
+	 * set.
+	 */
 	private int height;
 
 	/**
@@ -69,8 +76,7 @@ public final class PlayerSelection extends InteractiveState {
 	 */
 	public PlayerSelection(GameController game, int id) {
 		super(game, NAME, id, HelpMenu.NULL_PAGE);
-
-		this.playButton = "play";
+		
 		this.selectors = new HashMap<>();
 		this.players = new VisualList<>(new Point(100, 100), 20, 24, 3, 5);
 		this.width = 100;
@@ -96,11 +102,6 @@ public final class PlayerSelection extends InteractiveState {
 		// Set the positions and visibility of the selectors.
 		positionSelectors(gc);
 		confingureSelectors();
-
-		// Set the position of the play button.
-		getButton(playButton).setPosition(new Point(gc.getWidth() - 10 - getButton(playButton).getWidth(),
-				gc.getHeight() - 10 - getButton(playButton).getHeight()));
-
 	}
 
 	/**
@@ -165,7 +166,7 @@ public final class PlayerSelection extends InteractiveState {
 
 					@Override
 					public void buttonPress(int key, Point mouse) {
-						
+
 						if (selector.isClicked(mouse)) {
 
 							if (key == Input.KEY_UP) {
@@ -182,7 +183,7 @@ public final class PlayerSelection extends InteractiveState {
 					}
 				});
 
-				Image playerIcon = slick.getPlayerIcon(playerNumber);
+				final Image playerIcon = slick.getPlayerIcon(playerNumber);
 
 				final int x = selector.getPosition().x + (selector.getWidth() / 2) - (playerIcon.getWidth() / 2);
 
@@ -207,7 +208,7 @@ public final class PlayerSelection extends InteractiveState {
 	public void update(GameContainer gc, int delta, Frame frame) {
 		// Do nothing
 	}
-	
+
 	/**
 	 * Load the game based on the current state of the elements in this
 	 * {@link PlayerSelection}.
@@ -222,10 +223,10 @@ public final class PlayerSelection extends InteractiveState {
 		for (int index = 1; index <= players.getSelected(); index++) {
 
 			// The colour assigned to that player.
-			Color color = slick.getColor(index);
+			final Color color = slick.getColor(index);
 
 			// Set the player with the AI that the user selected.
-			SlickPlayer player = new SlickPlayer(index, color, selectors.get(index).getSelected());
+			final SlickPlayer player = new SlickPlayer(index, color, selectors.get(index).getSelected());
 
 			// Set the player Icon for that player.
 			player.replaceImage(slick.getPlayerIcon(index));
@@ -240,6 +241,17 @@ public final class PlayerSelection extends InteractiveState {
 		slick.enterState(slick.states.loadingScreen);
 	}
 
+	/**
+	 * Assigns the size the window will resize to after the player has selected the
+	 * players.
+	 * 
+	 * @param width
+	 *            The width of the map that the page will load after the players
+	 *            have been set.
+	 * @param height
+	 *            The height of the map that the page will load after the players
+	 *            have been set.
+	 */
 	public void setScreenSize(int width, int height) {
 
 		// Check width
@@ -263,11 +275,10 @@ public final class PlayerSelection extends InteractiveState {
 	 */
 	private void addSelectors() {
 
-		
-		for(int playerIndex = 2; playerIndex <= PlayerHelper.MAX_PLAYERS; playerIndex++) {
+		for (int playerIndex = 2; playerIndex <= PlayerHelper.MAX_PLAYERS; playerIndex++) {
 			players.add(Integer.toString(playerIndex), playerIndex);
 		}
-		
+
 		for (int index = 1; index <= PlayerHelper.MAX_PLAYERS; index++) {
 
 			VisualList<AI> selector = new VisualList<>(new Point(100, 100), 100, 24, 5, 5);

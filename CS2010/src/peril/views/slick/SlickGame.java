@@ -45,8 +45,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-17
- * @version 1.01.04
+ * @since 2018-02-18
+ * @version 1.01.05
  * 
  * @see StateBasedGame
  * @see View
@@ -122,7 +122,7 @@ public final class SlickGame extends StateBasedGame implements View {
 		// Construct the container for the game as a Slick2D state based game.
 		try {
 			agc = new AppGameContainer(this);
-			agc.setDisplayMode(620, 500, false);
+			agc.setDisplayMode(MainMenu.WIDTH, MainMenu.HEIGHT, false);
 			agc.setTargetFrameRate(60);
 		} catch (SlickException e) {
 			e.printStackTrace();

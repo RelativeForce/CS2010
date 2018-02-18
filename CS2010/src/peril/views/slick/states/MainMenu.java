@@ -22,8 +22,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-17
- * @version 1.01.01
+ * @since 2018-02-18
+ * @version 1.01.02
  * 
  * @see InteractiveState
  *
@@ -31,19 +31,19 @@ import peril.views.slick.util.Point;
 public final class MainMenu extends InteractiveState {
 
 	/**
-	 * The name of a specific {@link InteractiveState}.
-	 */
-	private static final String STATE_NAME = "Main Menu";
-
-	/**
 	 * The width of the main menu window.
 	 */
-	private static final int WIDTH = 620;
+	public static final int WIDTH = 900;
 
 	/**
 	 * The height of the main menu window.
 	 */
-	private static final int HEIGHT = 500;
+	public static final int HEIGHT = 700;
+
+	/**
+	 * The name of a specific {@link InteractiveState}.
+	 */
+	private static final String STATE_NAME = "Main Menu";
 
 	/**
 	 * Holds the contents of the maps.txt file.
@@ -93,18 +93,18 @@ public final class MainMenu extends InteractiveState {
 		mapsFile = TextFileReader.scanFile(game.getDirectory().getMapsPath(), "maps.txt");
 
 		// Holds the y of all the menus
-		final int menuY = 415;
+		final int menuY = 580;
 
-		maps = new VisualList<>(new Point(15, menuY), 110, 24, 3, 10);
-		saves = new VisualList<>(new Point(130, menuY), 80, 18, 4, 10);
+		maps = new VisualList<>(new Point(15, menuY), 180, 36, 3, 10);
+		saves = new VisualList<>(new Point(215, menuY), 160, 27, 4, 10);
 
 		// Populate the visual lists.
 		getMaps();
 
 		// Initialise the fonts;
-		final Font listFont = new Font("Arial", Color.black, 19);
-		final Font savesFont = new Font("Arial", Color.black, 14);
-		textFont = new Font("Calibri", Color.red, 18);
+		final Font listFont = new Font("Arial", Color.black, 30);
+		final Font savesFont = new Font("Arial", Color.black, 25);
+		textFont = new Font("Arial", Color.red, 35);
 
 		// Assign list fonts
 		maps.setFont(listFont);

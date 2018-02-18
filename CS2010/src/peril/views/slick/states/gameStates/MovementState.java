@@ -12,6 +12,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.controllers.GameController;
 import peril.helpers.UnitHelper;
+import peril.model.board.ModelCountry;
 import peril.model.states.Fortify;
 import peril.views.slick.Frame;
 import peril.views.slick.board.SlickCountry;
@@ -69,7 +70,7 @@ public final class MovementState extends CoreGameState {
 	 * Render the {@link MovementState}.
 	 */
 	@Override
-	public void render(GameContainer gc, Frame frame){
+	public void render(GameContainer gc, Frame frame) {
 		super.render(gc, frame);
 
 		frame.setLineWidth(3f);
@@ -83,14 +84,14 @@ public final class MovementState extends CoreGameState {
 		super.drawImages();
 		super.drawButtons();
 		super.drawPlayerName(frame);
-		
+
 		super.drawMiniMap(frame);
 		menus.draw(frame);
 
 	}
 
 	@Override
-	public void update(GameContainer gc, int delta, Frame frame){
+	public void update(GameContainer gc, int delta, Frame frame) {
 		super.update(gc, delta, frame);
 		game.processAI(delta);
 	}
@@ -145,8 +146,8 @@ public final class MovementState extends CoreGameState {
 	 */
 	@Override
 	public void parseMouse(Point mousePosition) {
-		this.checkPath(mousePosition);
 		super.parseMouse(mousePosition);
+		this.checkPath(mousePosition);
 	}
 
 	/**
@@ -158,8 +159,10 @@ public final class MovementState extends CoreGameState {
 	 */
 	public void checkPath(Point mousePosition) {
 
+		final ModelCountry primary = model.getSelected(0);
+
 		// If there is a highlighted country.
-		if (model.getSelected(0) != null && model.getSelected(0).getArmy().getStrength() > 1) {
+		if (primary != null && primary.getArmy().getNumberOfUnits() > 1) {
 
 			// Holds the country the user is hovering over.
 			SlickCountry target = slick.modelView.getVisual(game.getModelBoard()).getCountry(mousePosition);
@@ -168,8 +171,10 @@ public final class MovementState extends CoreGameState {
 
 				path.clear();
 
-				((Fortify) model).getPathBetween(model.getSelected(0), target.model, UnitHelper.getInstance().getWeakest())
-						.forEach(country -> path.add(slick.modelView.getVisual(country)));
+				List<ModelCountry> path = ((Fortify) model).getPathBetween(primary, target.model,
+						primary.getArmy().getWeakestUnit());
+
+				path.forEach(country -> this.path.add(slick.modelView.getVisual(country)));
 			}
 		}
 	}
@@ -214,10 +219,7 @@ public final class MovementState extends CoreGameState {
 			getButton(fortifyButton).show();
 
 			path.clear();
-
-			((Fortify) model).getPathBetween(selected.get(0).model, selected.get(1).model, UnitHelper.getInstance().getWeakest())
-					.forEach(country -> path.add(slick.modelView.getVisual(country)));
-
+			
 			moveFortifyButton(selected.get(1));
 		} else {
 			getButton(fortifyButton).hide();

@@ -12,8 +12,11 @@ import peril.model.board.ModelUnit;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.01
- * @since 2018-02-06
+ * @version 1.01.02
+ * @since 2018-02-18
+ * 
+ * @see Observable
+ * @see ModelLinkState
  *
  */
 public final class ModelLink extends Observable {
@@ -117,10 +120,20 @@ public final class ModelLink extends Observable {
 	 *            {@link ModelCountry}
 	 * @param destination
 	 *            {@link ModelCountry}
-	 * @return boolean
+	 * @return Whether or not a {@link ModelUnit} can be transfered along this
+	 *         {@link ModelLinkState} between the two {@link ModelCountry}s.
 	 */
 	public boolean canTransfer(ModelUnit unit, ModelCountry origin, ModelCountry destination) {
 		return current.canTransfer(unit, origin, destination);
+	}
+
+	/**
+	 * Retrieves the remaining duration of the current {@link ModelLinkState}.
+	 * 
+	 * @return The duration of the current {@link ModelLinkState}.
+	 */
+	public int getDuration() {
+		return duration;
 	}
 
 	/**
@@ -130,6 +143,15 @@ public final class ModelLink extends Observable {
 	 */
 	public ModelLinkState getState() {
 		return current;
+	}
+
+	/**
+	 * Retrieves the default {@link ModelLinkState} of this {@link ModelLink}.
+	 * 
+	 * @return The default {@link ModelLinkState}.
+	 */
+	public ModelLinkState getDefaultState() {
+		return defaultState;
 	}
 
 	/**

@@ -9,8 +9,8 @@ import peril.model.board.ModelUnit;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.01
- * @since 2018-02-06
+ * @version 1.01.02
+ * @since 2018-02-18
  *
  */
 public enum ModelLinkState {
@@ -64,6 +64,26 @@ public enum ModelLinkState {
 	 */
 	private ModelLinkState(String name) {
 		this.name = name;
+
+	}
+
+	/**
+	 * Retrieves the {@link ModelLinkState} with the specified name.
+	 * 
+	 * @param name
+	 *            The name of a {@link ModelLinkState}.
+	 * @return The {@link ModelLinkState} with the specified name.
+	 */
+	public static ModelLinkState get(String name) {
+
+		// Iterate over all the model link states.
+		for (ModelLinkState linkState : values()) {
+			if (linkState.name.equals(name)) {
+				return linkState;
+			}
+		}
+
+		return null;
 
 	}
 

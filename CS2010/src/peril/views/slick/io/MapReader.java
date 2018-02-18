@@ -508,34 +508,61 @@ public final class MapReader extends FileParser {
 	private void parseLink(String[] details) {
 
 		// The correct number of elements in the details array.
-		final int LINK_LENGTH = 3;
+		final int LINK_LENGTH = 6;
 
 		if (details.length != LINK_LENGTH) {
 			throw new IllegalArgumentException(
 					"Line " + index + ": Incorrect number of elements, there should be " + LINK_LENGTH + ".");
 		}
 
+		// Check the country is defined.
+		if (countries.get(details[1]) == null) {
+			throw new IllegalArgumentException("Line " + index + ": " + details[1] + " is not a defined country.");
+		}
+
 		// Holds the first country in the link.
 		final ModelCountry country1 = countries.get(details[1]).model;
 
 		// Check the country is defined.
-		if (country1 == null) {
-			throw new IllegalArgumentException("Line " + index + ": " + details[1] + " is not a defined country.");
+		if (countries.get(details[2]) == null) {
+			throw new IllegalArgumentException("Line " + index + ": " + details[2] + " is not a defined country.");
 		}
 
 		// Holds the second country in the link.
 		final ModelCountry country2 = countries.get(details[2]).model;
 
-		// Check the country is defined.
-		if (country2 == null) {
-			throw new IllegalArgumentException("Line " + index + ": " + details[2] + " is not a defined country.");
+		// Holds the default model link state of the model link
+		final ModelLinkState defaultLinkState = ModelLinkState.get(details[3]);
+
+		if (defaultLinkState == null) {
+			throw new IllegalArgumentException("Line " + index + ": " + details[3] + " is not a model link state.");
 		}
 
-		// Set the link as open by default.
-		country1.addNeighbour(country2, new ModelLink(ModelLinkState.OPEN));
-		country2.addNeighbour(country1, new ModelLink(ModelLinkState.OPEN));
+		// The link between the two countries.
+		final ModelLink link = new ModelLink(defaultLinkState);
 
-		// TODO Denote link type in level file.
+		// Holds the default model link state of the model link
+		final ModelLinkState currentLinkState = ModelLinkState.get(details[4]);
+
+		if (currentLinkState == null) {
+			throw new IllegalArgumentException("Line " + index + ": " + details[4] + " is not a model link state.");
+		}
+
+		int duration;
+
+		// Parse the duration of the link's current state.
+		try {
+			duration = Integer.parseInt(details[5]);
+		} catch (Exception ex) {
+			throw new IllegalArgumentException("Line " + index + ": " + details[5] + " is not a duration.");
+		}
+		
+		// If the duration is longer than zero rounds.
+		if(duration > 0) {
+			link.setState(currentLinkState, duration);
+		}
+		
+		country1.addNeighbour(country2, link);
 
 	}
 

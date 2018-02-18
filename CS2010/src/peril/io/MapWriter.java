@@ -1,8 +1,5 @@
 package peril.io;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import peril.Challenge;
 import peril.controllers.GameController;
 import peril.helpers.UnitHelper;
@@ -11,6 +8,7 @@ import peril.model.ModelPlayer;
 import peril.model.board.ModelContinent;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
+import peril.model.board.links.ModelLink;
 import peril.model.states.ModelState;
 
 /**
@@ -18,15 +16,10 @@ import peril.model.states.ModelState;
  * 
  * @author Joshua_Eddy
  *
- * @version 1.01.01
- * @since 2018-02-06
+ * @version 1.01.02
+ * @since 2018-02-18
  */
 public class MapWriter {
-
-	/**
-	 * Holds all the links that have been written into the file.
-	 */
-	private final Set<String> savedLinks;
 
 	/**
 	 * The {@link TextFileWriter} that creates the save file.
@@ -49,7 +42,6 @@ public class MapWriter {
 	 *            The {@link SaveFile} that will be written to.
 	 */
 	public MapWriter(GameController game, SaveFile file) {
-		this.savedLinks = new HashSet<>();
 		this.game = game;
 
 		// The file path for the map
@@ -198,24 +190,23 @@ public class MapWriter {
 	private void parseLink(ModelCountry country, ModelCountry neighbour) {
 
 		StringBuilder line = new StringBuilder();
-		StringBuilder potentialDuplicate = new StringBuilder();
 
 		line.append("Link,");
 		line.append(country.getName());
 		line.append(',');
 		line.append(neighbour.getName());
+		line.append(',');
+		
+		final ModelLink link = country.getLinkTo(neighbour);
+		
+		line.append(link.getDefaultState().name);
+		line.append(',');
+		line.append(link.getState().name);
+		line.append(',');
+		line.append(Integer.toString(link.getDuration()));
+		
+		writer.writeLine(line.toString());
 
-		potentialDuplicate.append("Link,");
-		potentialDuplicate.append(neighbour.getName());
-		potentialDuplicate.append(',');
-		potentialDuplicate.append(country.getName());
-
-		// Check if the link has already been written into the file.
-		if (!savedLinks.contains(potentialDuplicate.toString())) {
-			String lineStr = line.toString();
-			writer.writeLine(lineStr);
-			savedLinks.add(lineStr);
-		}
 	}
 
 	/**

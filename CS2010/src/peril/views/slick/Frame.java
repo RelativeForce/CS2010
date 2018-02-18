@@ -575,7 +575,7 @@ public final class Frame {
 		 *            for.
 		 */
 		public ToolTip(String message, Point position, long duration) {
-			text = new TextField(400, position);
+			text = new TextField(800, position);
 			delay = new Delay(duration);
 
 			text.init();

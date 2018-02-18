@@ -443,9 +443,13 @@ public final class SlickGame extends StateBasedGame implements View {
 	@Override
 	public void showToolTip(String text) {
 
-		// TODO Change default tool tip position based on state.
+		if(getCurrentState() instanceof CoreGameState) {
+			getCurrentState().showToolTip(text, new Point(300, 300));
+		}else {
+			getCurrentState().showToolTip(text, new Point(300, 300));
+		}
 
-		getCurrentState().showToolTip(text, new Point(300, 300));
+		
 
 	}
 

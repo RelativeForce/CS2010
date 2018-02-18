@@ -20,8 +20,8 @@ import org.newdawn.slick.ImageBuffer;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-17
- * @version 1.01.01
+ * @since 2018-02-18
+ * @version 1.01.02
  * 
  * @see Image
  * @see Reducer
@@ -437,8 +437,14 @@ public final class Region {
 				 * If the colour is null then filter out all the pixels that are transparent
 				 * otherwise filter out all the pixels that are NOT the specified colour.
 				 */
-				if (!image.getColor(x, y).equals(color == null ? Color.transparent : color)) {
-					object[getIndex(x, y, imageHeight)] = true;
+				if (color == null) {
+					if (!image.getColor(x, y).equals(Color.transparent)) {
+						object[getIndex(x, y, imageHeight)] = true;
+					}
+				} else {
+					if (color.equals(image.getColor(x, y))) {
+						object[getIndex(x, y, imageHeight)] = true;
+					}
 				}
 
 			}

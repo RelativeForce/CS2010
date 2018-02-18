@@ -7,8 +7,8 @@ package peril.controllers;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.02
- * @since 2018-02-09
+ * @version 1.01.03
+ * @since 2018-02-18
  *
  */
 public interface Directory {
@@ -87,4 +87,9 @@ public interface Directory {
 	 */
 	String getSplashPath();
 
+	/**
+	 * The file path to the folder containing the text files.
+	 * @return Text file path
+	 */
+	String getTextPath();
 }

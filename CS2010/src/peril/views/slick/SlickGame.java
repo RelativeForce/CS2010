@@ -46,7 +46,7 @@ import peril.views.slick.util.Point;
  * @author Joshua_Eddy
  * 
  * @since 2018-02-18
- * @version 1.01.05
+ * @version 1.01.06
  * 
  * @see StateBasedGame
  * @see View
@@ -354,7 +354,7 @@ public final class SlickGame extends StateBasedGame implements View {
 		this.io = new IOHelper(game, containers);
 
 		// Create the help pages using the states.
-		this.menus.createHelpPages(states);
+		this.menus.createHelpPages(states, directory);
 
 		// Create the music helper.
 		this.music = new MusicHelper(this, directory.getMusicPath());

@@ -1,7 +1,7 @@
 package peril.views.slick.states;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -20,6 +20,8 @@ import peril.views.slick.Frame;
 import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.components.VisualList;
 import peril.views.slick.components.menus.HelpMenu;
+import peril.views.slick.io.ImageReader;
+import peril.views.slick.util.Clickable;
 import peril.views.slick.util.Font;
 import peril.views.slick.util.Point;
 
@@ -42,18 +44,24 @@ public final class PlayerSelection extends InteractiveState {
 	 * The name of this {@link PlayerSelection}.
 	 */
 	private static final String NAME = "Select";
+	
+	private static final String AI_TEXT = "AI: ";
 
-	/**
-	 * The {@link Map} of {@link SlickPlayer} number to there associated
-	 * {@link VisualList} that selects the {@link AI} for that player.
-	 */
-	private final Map<Integer, VisualList<AI>> selectors;
+	private final VisualList<AI> aiList;
 
 	/**
 	 * The {@link VisualList} of the number of {@link SlickPlayer}s that can be in
 	 * the game.
 	 */
-	private final VisualList<Integer> players;
+	private final VisualList<Integer> numberOfPlayers;
+
+	private final List<Player> players;
+
+	private final Point topPlayer;
+
+	private final Font textFont;
+
+	private Player selected;
 
 	/**
 	 * The width of the map that the page will load after the players have been set.
@@ -76,17 +84,64 @@ public final class PlayerSelection extends InteractiveState {
 	 */
 	public PlayerSelection(GameController game, int id) {
 		super(game, NAME, id, HelpMenu.NULL_PAGE);
-		
-		this.selectors = new HashMap<>();
-		this.players = new VisualList<>(new Point(100, 100), 20, 24, 3, 5);
+
 		this.width = 100;
 		this.height = 100;
+		this.topPlayer = new Point((MainMenu.WIDTH / 4), MainMenu.HEIGHT / 3);
+		this.players = new LinkedList<>();
+		this.selected = null;
 
-		players.setFont(new Font("Arial", Color.black, 19));
+		final Font listFont = new Font("Arial", Color.black, 19);
 
-		addSelectors();
+		this.aiList = new VisualList<>(new Point(400, 100), 100, 24, 5, 5);
+		this.aiList.setFont(listFont);
+		populateAIList();
 
-		super.addComponent(players);
+		this.numberOfPlayers = new VisualList<>(new Point(200, 130), 20, 24, 3, 5);
+		this.numberOfPlayers.setFont(listFont);
+		populatePlayers();
+
+		textFont = new Font("Arial", Color.white, 20);
+
+		super.addComponent(aiList);
+		super.addComponent(numberOfPlayers);
+
+	}
+
+	@Override
+	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
+		super.init(gc, sbg);
+
+		textFont.init();
+
+		final Image icon = ImageReader.getImage(game.getDirectory().getButtonsPath() + "change.png").getScaledCopy(50,
+				50);
+
+		players.forEach(p -> {
+
+			final Image playerIcon = slick.getPlayerIcon(p.number);
+
+			final int x = topPlayer.x;
+
+			final int y = topPlayer.y + ((p.number - 1) * playerIcon.getHeight()) + 20;
+
+			final int playerIconY = y - (playerIcon.getHeight() / 2);
+
+			final Point position = new Point(x, playerIconY);
+
+			final int changeIconX = x + playerIcon.getWidth() + textFont.getWidth(AI_TEXT) + 15 + aiList.getWidth();
+
+			final int changeIconY = y - (icon.getHeight() / 2);
+
+			p.change = new Clickable(icon);
+			p.change.setPosition(new Point(changeIconX, changeIconY));
+
+			p.confirm = new Clickable(icon);
+			p.confirm.setPosition(new Point(changeIconX, changeIconY));
+
+			p.replaceImage(playerIcon);
+			p.setPosition(position);
+		});
 
 	}
 
@@ -96,12 +151,24 @@ public final class PlayerSelection extends InteractiveState {
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
+		aiList.hide();
 
-		players.setPosition(new Point((gc.getWidth() / 6) - players.getWidth() - 10, gc.getHeight() / 2));
+		// numberOfPlayers.setPosition(new Point((gc.getWidth() / 6) -
+		// numberOfPlayers.getWidth() - 10, gc.getHeight() / 2));
 
-		// Set the positions and visibility of the selectors.
-		positionSelectors(gc);
-		confingureSelectors();
+		resetPlayers();
+	}
+
+	private void populatePlayers() {
+
+		for (int index = 1; index <= PlayerHelper.MAX_PLAYERS; index++) {
+			players.add(new Player(index));
+
+			if (index >= PlayerHelper.MIN_PLAYERS) {
+				numberOfPlayers.add(Integer.toString(index), index);
+			}
+		}
+
 	}
 
 	/**
@@ -113,7 +180,67 @@ public final class PlayerSelection extends InteractiveState {
 		drawImages();
 		drawButtons();
 
-		frame.draw(players, new EventListener() {
+		drawAIList(frame);
+
+		drawNumberOfPlayers(frame);
+
+		drawPlayers(frame);
+
+	}
+
+	private void drawAIList(Frame frame) {
+
+		if (!aiList.isVisible()) {
+			return;
+		}
+
+		frame.draw(aiList, new EventListener() {
+
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
+
+				aiList.click(mouse);
+
+				if (selected != null) {
+					selected.ai = aiList.getSelected();
+				}
+			}
+
+			@Override
+			public void draw(Frame frame) {
+				aiList.draw(frame);
+			}
+
+			@Override
+			public void buttonPress(int key, Point mouse) {
+
+				if (aiList.isClicked(mouse)) {
+
+					if (key == Input.KEY_UP) {
+						aiList.up();
+					} else if (key == Input.KEY_DOWN) {
+						aiList.down();
+					}
+				}
+
+			}
+		});
+	}
+
+	private void drawNumberOfPlayers(Frame frame) {
+
+		final String text = "Number of Players:";
+
+		frame.draw(textFont, text, numberOfPlayers.getPosition().x - textFont.getWidth(text) - 5,
+				numberOfPlayers.getPosition().y);
+
+		frame.draw(numberOfPlayers, new EventListener() {
 
 			@Override
 			public void mouseHover(Point mouse, int delta) {
@@ -122,21 +249,21 @@ public final class PlayerSelection extends InteractiveState {
 
 			@Override
 			public void mouseClick(Point mouse, int button) {
-				players.click(mouse);
-				confingureSelectors();
+				numberOfPlayers.click(mouse);
+				configurePlayers();
 			}
 
 			@Override
 			public void buttonPress(int key, Point mouse) {
 
-				if (players.isClicked(mouse)) {
+				if (numberOfPlayers.isClicked(mouse)) {
 
 					if (key == Input.KEY_UP) {
-						players.up();
-						confingureSelectors();
+						numberOfPlayers.up();
+						configurePlayers();
 					} else if (key == Input.KEY_DOWN) {
-						players.down();
-						confingureSelectors();
+						numberOfPlayers.down();
+						configurePlayers();
 					}
 				}
 
@@ -144,55 +271,82 @@ public final class PlayerSelection extends InteractiveState {
 
 			@Override
 			public void draw(Frame frame) {
-				players.draw(frame);
+				numberOfPlayers.draw(frame);
 			}
 		});
+	}
 
-		selectors.forEach((playerNumber, selector) -> {
+	private void drawPlayers(Frame frame) {
 
-			if (selector.isVisible()) {
+		for (Player player : players) {
 
-				frame.draw(selector, new EventListener() {
+			if (player.inPlay) {
+
+				frame.draw(player, new EventListener() {
 
 					@Override
 					public void mouseHover(Point mouse, int delta) {
-						// Do nothing
 					}
 
 					@Override
-					public void mouseClick(Point mouse, int button) {
-						selector.click(mouse);
+					public void mouseClick(Point mouse, int mouseButton) {
+
+					}
+
+					@Override
+					public void draw(Frame frame) {
+						frame.draw(player.getImage(), player.getPosition().x, player.getPosition().y);
+
+						final String text = AI_TEXT + (selected == player ? "" : player.ai.name);
+						final int x = player.getPosition().x + player.getWidth() + 10;
+						final int y = player.getPosition().y + (player.getHeight() / 2)
+								- (textFont.getHeight(AI_TEXT) / 2);
+
+						frame.draw(textFont, text, x, y);
+
+						drawChangeIcon(frame);
+
 					}
 
 					@Override
 					public void buttonPress(int key, Point mouse) {
 
-						if (selector.isClicked(mouse)) {
-
-							if (key == Input.KEY_UP) {
-								selector.up();
-							} else if (key == Input.KEY_DOWN) {
-								selector.down();
-							}
-						}
 					}
 
-					@Override
-					public void draw(Frame frame) {
-						selector.draw(frame);
+					private void drawChangeIcon(Frame frame) {
+
+						frame.draw(player.change, new EventListener() {
+
+							@Override
+							public void mouseHover(Point mouse, int delta) {
+								// Do nothing
+							}
+
+							@Override
+							public void mouseClick(Point mouse, int mouseButton) {
+								changeSelected(selected == player ? null : player);
+							}
+
+							@Override
+							public void draw(Frame frame) {
+
+								final Clickable icon = selected != player ? player.change : player.confirm;
+
+								frame.draw(icon.getImage(), icon.getPosition().x, icon.getPosition().y);
+							}
+
+							@Override
+							public void buttonPress(int key, Point mouse) {
+								// Do nothing
+							}
+						});
+
 					}
 				});
 
-				final Image playerIcon = slick.getPlayerIcon(playerNumber);
-
-				final int x = selector.getPosition().x + (selector.getWidth() / 2) - (playerIcon.getWidth() / 2);
-
-				final int y = selector.getPosition().y - playerIcon.getHeight() - 10;
-
-				frame.draw(playerIcon, x, y);
 			}
 
-		});
+		}
 
 	}
 
@@ -220,20 +374,22 @@ public final class PlayerSelection extends InteractiveState {
 		game.getModelBoard().reset();
 
 		// Iterate through the number of players the player has selected
-		for (int index = 1; index <= players.getSelected(); index++) {
+		for (Player player : players) {
 
-			// The colour assigned to that player.
-			final Color color = slick.getColor(index);
+			if (player.inPlay) {
 
-			// Set the player with the AI that the user selected.
-			final SlickPlayer player = new SlickPlayer(index, color, selectors.get(index).getSelected());
+				// The colour assigned to that player.
+				final Color color = slick.getColor(player.number);
 
-			// Set the player Icon for that player.
-			player.replaceImage(slick.getPlayerIcon(index));
+				// Set the player with the AI that the user selected.
+				final SlickPlayer slickPlayer = new SlickPlayer(player.number, color, player.ai);
 
-			game.addPlayer(player.model);
-			slick.modelView.addPlayer(player);
+				// Set the player Icon for that player.
+				slickPlayer.replaceImage(slick.getPlayerIcon(player.number));
 
+				game.addPlayer(slickPlayer.model);
+				slick.modelView.addPlayer(slickPlayer);
+			}
 		}
 
 		// Load the game
@@ -270,78 +426,40 @@ public final class PlayerSelection extends InteractiveState {
 	}
 
 	/**
-	 * Adds the {@link VisualList} selectors to {@link PlayerSelection#selectors}
-	 * that allow the user to select which {@link AI} {@link SlickPlayer}s have.
-	 */
-	private void addSelectors() {
-
-		for (int playerIndex = 2; playerIndex <= PlayerHelper.MAX_PLAYERS; playerIndex++) {
-			players.add(Integer.toString(playerIndex), playerIndex);
-		}
-
-		for (int index = 1; index <= PlayerHelper.MAX_PLAYERS; index++) {
-
-			VisualList<AI> selector = new VisualList<>(new Point(100, 100), 100, 24, 5, 5);
-
-			populateSelector(selector);
-
-			selectors.put(index, selector);
-			super.addComponent(selector);
-
-		}
-
-	}
-
-	/**
 	 * Configures which {@link PlayerSelection#selectors} are visible based on the
-	 * selected value of {@link PlayerSelection#players}.
+	 * selected value of {@link PlayerSelection#numberOfPlayers}.
 	 */
-	private void confingureSelectors() {
+	private void resetPlayers() {
 
-		selectors.forEach((playerNumber, selector) -> {
-
-			if (playerNumber <= players.getSelected()) {
-				selector.show();
-			} else {
-				selector.hide();
-			}
-
+		players.forEach(player -> {
+			player.inPlay = player.number <= PlayerHelper.MIN_PLAYERS;
+			player.ai = AI.USER;
 		});
 
 	}
 
-	/**
-	 * Sets the position of the {@link PlayerSelection#selectors} based on the
-	 * dimensions of the specified {@link GameContainer}.
-	 * 
-	 * @param gc
-	 *            {@link GameContainer}
-	 */
-	private void positionSelectors(GameContainer gc) {
-		selectors.forEach((playerNumber, selector) -> selector.setPosition(getSelectorPosition(playerNumber, gc)));
+	private void changeSelected(Player player) {
+		selected = player;
+
+		if (selected == null) {
+			aiList.hide();
+		} else {
+
+			final int x = player.getPosition().x + player.getWidth() + textFont.getWidth(AI_TEXT) + 10;
+			final int y = player.getPosition().y + (player.getHeight() / 2) - (aiList.getHeight() / 2);
+
+			aiList.setSelected(player.ai);
+
+			aiList.setPosition(new Point(x, y));
+			aiList.show();
+		}
+
 	}
 
-	/**
-	 * Retrieves the {@link Point} position of a {@link PlayerSelection#selectors}
-	 * element based on the specified {@link SlickPlayer} number and the
-	 * {@link GameContainer}.
-	 * 
-	 * @param playerNumber
-	 *            {@link SlickPlayer} number
-	 * @param gc
-	 *            {@link GameContainer}
-	 * @return {@link Point}
-	 */
-	private Point getSelectorPosition(int playerNumber, GameContainer gc) {
-
-		int width = gc.getWidth();
-		int height = gc.getHeight();
-
-		// All the selectors have the same Y
-		int selectorY = height / 2;
-
-		return new Point((width * (playerNumber)) / (PlayerHelper.MAX_PLAYERS + 2), selectorY);
-
+	private void configurePlayers() {
+		players.forEach(player -> {
+			player.inPlay = player.number <= numberOfPlayers.getSelected();
+		});
 	}
 
 	/**
@@ -351,11 +469,31 @@ public final class PlayerSelection extends InteractiveState {
 	 * @param selector
 	 *            {@link VisualList} selector.
 	 */
-	private void populateSelector(VisualList<AI> selector) {
+	private void populateAIList() {
 
 		for (AI ai : game.getAIs()) {
-			selector.add(ai.name, ai);
+			aiList.add(ai.name, ai);
 		}
+	}
+
+	private final class Player extends Clickable {
+
+		public final int number;
+
+		public AI ai;
+
+		public boolean inPlay;
+
+		public Clickable change;
+
+		public Clickable confirm;
+
+		public Player(int playerNumber) {
+			this.number = playerNumber;
+			this.ai = AI.USER;
+			this.inPlay = false;
+		}
+
 	}
 
 }

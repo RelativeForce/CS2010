@@ -9,14 +9,14 @@ import org.newdawn.slick.Image;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-17
- * @version 1.01.02
+ * @since 2018-02-18
+ * @version 1.02.01
  *
  * @see Viewable
  * @see Region
  * @see Image
  */
-public abstract class Clickable extends Viewable {
+public class Clickable extends Viewable {
 
 	/**
 	 * The {@link Region} that this encompasses on the screen. This should be the
@@ -55,6 +55,17 @@ public abstract class Clickable extends Viewable {
 	 */
 	public Clickable() {
 		super(new Point(0, 0));
+	}
+
+	/**
+	 * Constructs a new {@link Clickable} using an {@link Image}.
+	 * 
+	 * @param image
+	 *            The image that will be converted into a {@link Clickable}.
+	 */
+	public Clickable(Image image) {
+		super(image, new Point(0, 0));
+		this.region = new Region(image);
 	}
 
 	/**

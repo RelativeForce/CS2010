@@ -11,6 +11,11 @@ import peril.views.slick.util.Viewable;
  * The visual representation of a {@link ModelPlayer}.
  * 
  * @author Joshua_Eddy, Ezekiel_Trinidad
+ * 
+ * @since 2018-02-18
+ * @version 1.01.01
+ * 
+ * @see Viewable
  *
  */
 public final class SlickPlayer extends Viewable {

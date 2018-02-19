@@ -123,13 +123,13 @@ public class WarMenu extends Menu {
 	 * 
 	 */
 	public WarMenu(Point position, GameController game) {
-		super(NAME, game, new Region(600, 600, position));
+		super(NAME, game, new Region(800, 600, position));
 
 		this.random = new Random();
 		this.headingFont = new Font("Arial", Color.red, 30);
 		this.textFont = new Font("Arial", Color.red, 40);
 		this.countryFont = new Font("Arial", Color.black, 37);
-		this.resultFont = new Font("Arial", Color.black, 35);
+		this.resultFont = new Font("Arial", Color.black, 30);
 		this.armyFont = new Font("Arial", Color.red, 50);
 		this.dice = new Dice();
 		this.attackButton = "war";
@@ -595,24 +595,29 @@ public class WarMenu extends Menu {
 	 */
 	private void succesfulConquer(Frame frame) {
 
-		// Draw the attacking country's name
-		frame.draw(countryFont, attacker.model.getName(),
-				getPosition().x + (getWidth() / 2) - (countryFont.getWidth(attacker.model.getName()) / 2),
-				getPosition().y + (getHeight() / 2) - 30);
+		// Draw the result text.
+		final String success = "has conquered";
+		final int resultX = getPosition().x + (getWidth() / 2) - (resultFont.getWidth(success) / 2);
+		final int resultY = getPosition().y + (getHeight() / 2);
+		frame.draw(resultFont, success, resultX, resultY);
 
-		// Draw text
-		String success = "has conquered";
-		frame.draw(resultFont, success, getPosition().x + (getWidth() / 2) - (resultFont.getWidth(success) / 2),
-				getPosition().y + (getHeight() / 2));
+		// Draw the attacking country's name
+		final String attackerName = attacker.model.getName();
+		final int attackerX = getPosition().x + (getWidth() / 2) - (countryFont.getWidth(attackerName) / 2);
+		final int attackerY = getPosition().y + (getHeight() / 2) - ((countryFont.getHeight(attackerName) * 3) / 2);
+		frame.draw(countryFont, attackerName, attackerX, attackerY);
 
 		// Draw the defending country's name
-		frame.draw(countryFont, enemy.model.getName(),
-				getPosition().x + (getWidth() / 2) - (countryFont.getWidth(enemy.model.getName()) / 2),
-				getPosition().y + (getHeight() / 2) + 30);
+		final String conqueredName = enemy.model.getName();
+		final int conqueredX = getPosition().x + (getWidth() / 2) - (countryFont.getWidth(conqueredName) / 2);
+		final int conqueredY = getPosition().y + (getHeight() / 2) + ((countryFont.getHeight(attackerName) * 3) / 2);
+		frame.draw(countryFont, conqueredName, conqueredX, conqueredY);
 
+		// Draw the player icons
 		drawPlayer(attackingRuler, -(getWidth() / 4), frame);
 		drawPlayer(enemyRuler, (getWidth() / 4), frame);
 
+		// Draw the country titles
 		drawTitle(frame);
 
 	}
@@ -800,6 +805,10 @@ public class WarMenu extends Menu {
 	 */
 	private final class Dice {
 
+		private static final int WIDTH = SlickUnit.WIDTH - 20;
+
+		private static final int HEIGHT = SlickUnit.HEIGHT - 20;
+
 		/**
 		 * Holds the dice that will be displayed on screen.
 		 */
@@ -840,38 +849,40 @@ public class WarMenu extends Menu {
 			clear();
 
 			for (Integer roll : attackerDiceRolls) {
-				display.put(new Point(attackX, attackY), defaultDice.get(roll));
+				display.put(new Point(attackX, attackY + 10), defaultDice.get(roll));
 				attackY += SlickUnit.HEIGHT;
 			}
 
 			for (Integer roll : defenderDiceRolls) {
-				display.put(new Point(defendX, defendY), defaultDice.get(roll));
+				display.put(new Point(defendX, defendY + 10), defaultDice.get(roll));
 				defendY += SlickUnit.HEIGHT;
 			}
 
 			int boxWidth = 10;
 
-			Region box = new Region(boxWidth, SlickUnit.HEIGHT, new Point(0, 0));
+			final Region box = new Region(boxWidth, HEIGHT, new Point(0, 0));
 
-			Image redBox = box.convert(Color.red, 255);
+			final Image redBox = box.convert(Color.red, 255);
 
-			Image greenBox = box.convert(Color.green, 255);
+			final Image greenBox = box.convert(Color.green, 255);
 
 			// Get the size of the smaller set of dice.
-			int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length
+			final int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length
 					: attackerDiceRolls.length;
 
 			// Compare each attacking dice roll against the defending dice roll
 			for (int i = 0; i < diceToCheck; i++) {
 
-				boolean attackerWon = attackerDiceRolls[i] > defenderDiceRolls[i];
+				final boolean attackerWon = attackerDiceRolls[i] > defenderDiceRolls[i];
 
 				// Display defender box
-				Point defend = new Point(defendTop.x - boxWidth - 3, defendTop.y + (i * (SlickUnit.WIDTH + 2)));
+				final Point defend = new Point(defendTop.x - boxWidth - 3,
+						defendTop.y + (i * (SlickUnit.HEIGHT + 2)) + 10);
 				display.put(defend, attackerWon ? redBox : greenBox);
 
 				// Display attacker box
-				Point attack = new Point(attackTop.x + SlickUnit.WIDTH + 3, attackTop.y + (i * (SlickUnit.WIDTH + 2)));
+				final Point attack = new Point(attackTop.x + WIDTH + 3,
+						attackTop.y + (i * (SlickUnit.HEIGHT + 2)) + 10);
 				display.put(attack, attackerWon ? greenBox : redBox);
 			}
 
@@ -881,9 +892,13 @@ public class WarMenu extends Menu {
 		 * Initialises this {@link Dice}.
 		 */
 		public void init() {
-			for (int i = 1; i <= 6; i++) {
-				this.defaultDice.put(i, ImageReader.getImage(game.getDirectory().getDicePath() + "dice" + i + ".png")
-						.getScaledCopy(SlickUnit.WIDTH, SlickUnit.HEIGHT));
+
+			// Iterate over all the values of a dice and import the dice's image.
+			for (int index = 1; index <= 6; index++) {
+
+				final Image dice = ImageReader.getImage(game.getDirectory().getDicePath() + "dice" + index + ".png");
+
+				this.defaultDice.put(index, dice.getScaledCopy(WIDTH, HEIGHT));
 			}
 		}
 

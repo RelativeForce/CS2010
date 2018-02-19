@@ -41,9 +41,9 @@ button,Setup,17,pauseButton.png,180,80,490,5,pause
 image,Setup,setUpStateBox.png,400,250,5,5
 
 // War Menu
-button,War Menu,6,attackButton.png,160,70,220,300,war
-button,War Menu,19,xButton.png,60,60,510,20,close
-image,War Menu,warMenu.png,600,600,0,0
+button,War Menu,6,attackButton.png,160,70,320,300,war
+button,War Menu,19,xButton.png,60,60,690,20,close
+image,War Menu,warMenu.png,800,600,0,0
 
 // Pause Menu
 button,Pause Menu,10,exitGameButton.png,180,80,360,430,exit
@@ -54,8 +54,8 @@ button,Pause Menu,20,challengesButton.png,180,80,360,360,challenges
 image,Pause Menu,pauseMenu.png,600,600,0,0
 
 // End Screen
-button,End,12,mainMenuButton.png,90,40,100,100,menu
-button,End,10,exitGameButton.png,90,40,200,100,exit
+button,End,12,mainMenuButton.png,180,80,100,100,menu
+button,End,10,exitGameButton.png,180,80,200,100,exit
 image,End,finishScreen.png,w,w,0,0
 
 // Help Menu

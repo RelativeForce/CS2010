@@ -409,14 +409,14 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		game.forEachModelCountry(model -> {
 
 			// The position of the current country's army.
-			final Point countryPosition = getCenterArmyPosition(slick.modelView.getVisual(model));
+			final Point countryPosition = slick.modelView.getVisual(model).getArmyPosition();
 
 			// For each neighbour of that country draw the link from the neighbour to the
 			// current country
 			model.getNeighbours().forEach(modelNeighbour -> {
 
 				// The position of the neighbour's army.
-				final Point neighbourPosition = getCenterArmyPosition(slick.modelView.getVisual(modelNeighbour));
+				final Point neighbourPosition = slick.modelView.getVisual(modelNeighbour).getArmyPosition();
 
 				// The link from the country to its neighbour
 				final SlickLinkState link = slick.modelView.getVisual(model.getLinkTo(modelNeighbour).getState());
@@ -427,27 +427,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 			});
 		});
 
-	}
-
-	/**
-	 * Retrieves the centre of the oval behind the {@link Amry} of a specified
-	 * {@link SlickCountry}.
-	 * 
-	 * @param country
-	 *            {@link SlickCountry}
-	 * @return {@link Point} position
-	 */
-	protected final Point getCenterArmyPosition(SlickCountry country) {
-
-		Point armyPos = country.getArmyPosition();
-
-		SlickArmy army = slick.modelView.getVisual(country.model.getArmy());
-
-		// Add the distance to the centre of the oval.
-		int x = armyPos.x + (army.getOvalWidth((army.model.getStrength()) * 4) / 5);
-		int y = armyPos.y + 12;
-
-		return new Point(x, y);
 	}
 
 	/**

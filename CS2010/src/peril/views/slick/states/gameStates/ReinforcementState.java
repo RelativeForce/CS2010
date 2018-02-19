@@ -13,6 +13,7 @@ import peril.model.states.Reinforce;
 import peril.views.slick.Frame;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
+import peril.views.slick.board.SlickUnit;
 import peril.views.slick.util.Button;
 import peril.views.slick.util.Font;
 import peril.views.slick.util.Point;
@@ -55,8 +56,8 @@ public final class ReinforcementState extends CoreGameState {
 	public ReinforcementState(GameController game, int id, Reinforce model) {
 		super(game, model.getName(), id, model);
 		this.reinforceButton = "reinforce";
-		this.unitFont = new Font("Arial", Color.white, 80);
-		this.textFont = new Font("Arial", Color.white, 40);
+		this.unitFont = new Font("Arial", Color.white, 100);
+		this.textFont = new Font("Arial", Color.white, 60);
 
 		model.addObserver(this);
 	}
@@ -107,9 +108,9 @@ public final class ReinforcementState extends CoreGameState {
 
 		String units = Integer.toString(game.getCurrentModelPlayer().distributableArmy.getStrength());
 
-		frame.draw(unitFont, units, 300 - (unitFont.getWidth(units) / 2), 90);
+		frame.draw(unitFont, units, 295 - (unitFont.getWidth(units) / 2), 70);
 
-		frame.draw(textFont, "UNITS", 300 - (textFont.getWidth("UNITS") / 2), 90 + unitFont.getHeight());
+		frame.draw(textFont, "UNITS", 295 - (textFont.getWidth("UNITS") / 2), 50 + unitFont.getHeight());
 
 		super.drawMiniMap(frame);
 		
@@ -132,10 +133,10 @@ public final class ReinforcementState extends CoreGameState {
 	 */
 	private void moveReinforceButton(SlickCountry country) {
 
-		Point armyPosition = getCenterArmyPosition(country);
+		Point armyPosition = country.getArmyPosition();
 
 		int x = armyPosition.x;
-		int y = armyPosition.y + 25;
+		int y = armyPosition.y + SlickUnit.HEIGHT;
 
 		getButton(reinforceButton).setPosition(new Point(x, y));
 

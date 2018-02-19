@@ -116,6 +116,8 @@ public class WarMenu extends Menu {
 
 	private final List<SquadMember> attackingSquad;
 
+	private final Font yourArmyFont;
+
 	/**
 	 * Constructs a new {@link WarMenu}.
 	 * 
@@ -124,13 +126,14 @@ public class WarMenu extends Menu {
 		super(NAME, game, new Region(600, 600, position));
 
 		this.random = new Random();
-		this.headingFont = new Font("Arial", Color.red, 28);
+		this.headingFont = new Font("Arial", Color.red, 30);
 		this.textFont = new Font("Arial", Color.red, 40);
-		this.countryFont = new Font("Arial", Color.black, 20);
-		this.resultFont = new Font("Arial", Color.black, 15);
-		this.armyFont = new Font("Arial", Color.cyan, 25);
+		this.countryFont = new Font("Arial", Color.black, 37);
+		this.resultFont = new Font("Arial", Color.black, 35);
+		this.armyFont = new Font("Arial", Color.red, 50);
 		this.dice = new Dice();
 		this.attackButton = "war";
+		this.yourArmyFont = new Font("Arial", Color.black, 25);
 		this.attackingSquad = new LinkedList<>();
 
 		poolClick = new Consumer<SlickUnit>() {
@@ -162,6 +165,7 @@ public class WarMenu extends Menu {
 		resultFont.init();
 		dice.init();
 		armyFont.init();
+		yourArmyFont.init();
 
 	}
 
@@ -277,11 +281,11 @@ public class WarMenu extends Menu {
 
 		ModelArmy model = attacker.model.getArmy();
 
-		int x = position.x - ((model.getVarietyOfUnits() - 1) * 50) - (SlickUnit.WIDTH / 2);
+		int x = position.x - (((model.getVarietyOfUnits() - 1) * SlickUnit.WIDTH) / 2) - (SlickUnit.WIDTH / 2);
 		int y = position.y - (SlickUnit.HEIGHT / 2);
 
-		frame.draw(countryFont, "Your Army:", position.x - (countryFont.getWidth("Your Army:") / 2),
-				y - (countryFont.getHeight() * 2));
+		frame.draw(yourArmyFont, "Your Army:", position.x - (yourArmyFont.getWidth("Your Army:") / 2),
+				y - (yourArmyFont.getHeight()));
 
 		// For each unit in the army
 		for (ModelUnit current : model) {
@@ -302,7 +306,7 @@ public class WarMenu extends Menu {
 			frame.draw(unitButton);
 			frame.draw(armyFont, number, fontX, fontY);
 
-			x += 50;
+			x += SlickUnit.WIDTH + 10;
 
 		}
 
@@ -656,7 +660,9 @@ public class WarMenu extends Menu {
 	 */
 	private void drawTitle(Frame frame) {
 
-		final int yOffset = 170;
+		final int yOffset = 150;
+
+		int y = getPosition().y + yOffset;
 
 		String vs = "VS";
 		String attackerStr = attacker.model.getName();
@@ -668,9 +674,9 @@ public class WarMenu extends Menu {
 		int attackerX = centreX - (getWidth() / 4) - (countryFont.getWidth(attackerStr) / 2);
 		int enemyX = centreX + (getWidth() / 4) - (countryFont.getWidth(enemyStr) / 2);
 
-		frame.draw(headingFont, vs, vsX, getPosition().y + yOffset);
-		frame.draw(countryFont, attackerStr, attackerX, getPosition().y + yOffset);
-		frame.draw(countryFont, enemyStr, enemyX, getPosition().y + yOffset);
+		frame.draw(headingFont, vs, vsX, y);
+		frame.draw(countryFont, attackerStr, attackerX, y);
+		frame.draw(countryFont, enemyStr, enemyX, y);
 
 	}
 
@@ -692,7 +698,7 @@ public class WarMenu extends Menu {
 
 		int centreX = getPosition().x + (getWidth() / 2);
 		int x = centreX + offset - (player.getWidth() / 2);
-		frame.draw(player.getImage(), x, this.getPosition().y + 120);
+		frame.draw(player.getImage(), x, this.getPosition().y + 80);
 	}
 
 	/**

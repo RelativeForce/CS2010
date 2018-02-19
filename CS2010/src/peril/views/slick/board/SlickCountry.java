@@ -21,8 +21,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Joshua_Eddy, James_Rowntree
  * 
- * @since 2018-02-17
- * @version 1.01.01
+ * @since 2018-02-19
+ * @version 1.01.02
  * 
  * @see LinkedList
  * @see List
@@ -51,10 +51,16 @@ public final class SlickCountry extends Clickable implements Observer {
 	private final SlickModelView view;
 
 	/**
-	 * Holds the {@link Image} icon of the {@link SlickHazard} that has most
+	 * Holds the {@link Clickable} icon of the {@link SlickHazard} that has most
 	 * recently occurred on the {@link SlickCountry}.
 	 */
-	private Image hazardIcon;
+	private Clickable hazardIcon;
+
+	/**
+	 * Holds the {@link SlickHazard} that has most recently occurred on the
+	 * {@link SlickCountry}.
+	 */
+	private SlickHazard hazard;
 
 	/**
 	 * Constructs a new {@link SlickCountry} with no army offset.
@@ -93,6 +99,7 @@ public final class SlickCountry extends Clickable implements Observer {
 		this.model = model;
 		this.view = view;
 		this.hazardIcon = null;
+		this.hazard = null;
 
 		model.addObserver(this);
 
@@ -169,11 +176,20 @@ public final class SlickCountry extends Clickable implements Observer {
 	}
 
 	/**
+	 * Retrieves the {@link SlickHazard} on this {@link SlickCountry}.
+	 * 
+	 * @return The {@link SlickHazard}.
+	 */
+	public SlickHazard getHazard() {
+		return hazard;
+	}
+
+	/**
 	 * Retrieves the hazard icon over the {@link SlickHazard}.
 	 * 
-	 * @return The hazard icon {@link Image}.
+	 * @return The hazard icon {@link Clickable}.
 	 */
-	public Image getHazard() {
+	public Clickable getHazardIcon() {
 		return hazardIcon;
 	}
 
@@ -204,7 +220,8 @@ public final class SlickCountry extends Clickable implements Observer {
 			final SlickHazard hazard = view.getVisual((ModelHazard) update.newValue);
 
 			if (hazard != null) {
-				hazardIcon = hazard.getIcon();
+				this.hazardIcon = new Clickable(hazard.getIcon());
+				this.hazard = hazard;
 			}
 		} else {
 			throw new IllegalArgumentException("For hazard update, newValue must be an Image.");

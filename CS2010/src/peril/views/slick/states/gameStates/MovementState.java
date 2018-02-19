@@ -11,7 +11,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.controllers.GameController;
-import peril.helpers.UnitHelper;
 import peril.model.board.ModelCountry;
 import peril.model.states.Fortify;
 import peril.views.slick.Frame;
@@ -130,7 +129,7 @@ public final class MovementState extends CoreGameState {
 
 		for (SlickCountry country : path) {
 
-			Point current = super.getCenterArmyPosition(country);
+			Point current = country.getArmyPosition();
 
 			if (previous != null) {
 				frame.drawLine(previous, current);
@@ -188,7 +187,7 @@ public final class MovementState extends CoreGameState {
 	 */
 	private void moveFortifyButton(SlickCountry country) {
 
-		Point armyPosition = getCenterArmyPosition(country);
+		Point armyPosition = country.getArmyPosition();
 
 		int x = armyPosition.x;
 		int y = armyPosition.y + 25;

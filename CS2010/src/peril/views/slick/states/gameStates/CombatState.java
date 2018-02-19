@@ -99,7 +99,7 @@ public final class CombatState extends CoreGameState {
 	@Override
 	public void parseButton(int key, Point mousePosition) {
 		super.parseButton(key, mousePosition);
-		
+
 		if (key == Input.KEY_B) {
 
 			final ModelCountry primary = model.getSelected(0);
@@ -159,14 +159,14 @@ public final class CombatState extends CoreGameState {
 
 			for (ModelCountry modelNeighbour : highlighted.model.getNeighbours()) {
 
-				SlickCountry neighbour = slick.modelView.getVisual(modelNeighbour);
+				final SlickCountry neighbour = slick.modelView.getVisual(modelNeighbour);
 
 				// if it is a valid target highlight the country and draw a line from the
 				// highlighted country to the neighbour country.
 				if (((Attack) model).isValidTarget(highlighted.model, modelNeighbour)) {
 
-					Point enemy = super.getCenterArmyPosition(neighbour);
-					Point selected = super.getCenterArmyPosition(highlighted);
+					final Point enemy = neighbour.getArmyPosition();
+					final Point selected = highlighted.getArmyPosition();
 
 					frame.drawLine(enemy, selected);
 				}
@@ -184,10 +184,10 @@ public final class CombatState extends CoreGameState {
 	 */
 	private void moveAttackButton(SlickCountry primary, SlickCountry target) {
 
-		Point p1 = getCenterArmyPosition(primary);
-		Point p2 = getCenterArmyPosition(target);
-		int x = ((p2.x - p1.x) / 2) + p1.x;
-		int y = ((p2.y - p1.y) / 2) + p1.y;
+		final Point p1 = primary.getArmyPosition();
+		final Point p2 = target.getArmyPosition();
+		final int x = ((p2.x - p1.x) / 2) + p1.x;
+		final int y = ((p2.y - p1.y) / 2) + p1.y;
 
 		getButton(attackButton).setPosition(new Point(x, y));
 

@@ -45,8 +45,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-18
- * @version 1.01.06
+ * @since 2018-02-19
+ * @version 1.01.07
  * 
  * @see StateBasedGame
  * @see View
@@ -444,7 +444,7 @@ public final class SlickGame extends StateBasedGame implements View {
 	public void showToolTip(String text) {
 
 		if(getCurrentState() instanceof CoreGameState) {
-			getCurrentState().showToolTip(text, new Point(410, 150));
+			getCurrentState().showToolTip(text, new Point(410, 100));
 		}else {
 			getCurrentState().showToolTip(text, new Point(0, 0));
 		}

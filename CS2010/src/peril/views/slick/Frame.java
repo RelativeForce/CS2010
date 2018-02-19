@@ -42,8 +42,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-15
- * @version 1.02.01
+ * @since 2018-02-19
+ * @version 1.02.02
  * 
  * @see Clickable
  * @see Point
@@ -141,10 +141,17 @@ public final class Frame {
 	 */
 	public void addToolTip(String message, Point position, long duration) {
 
+		// If the message is already being displayed, dont display it again.
+		for (ToolTip temp : toolTips) {
+			if (temp.messaage.equals(message)) {
+				return;
+			}
+		}
+
 		final ToolTip tt = new ToolTip(message, position, duration);
 
 		final Point toolTipPos = new Point(position.x, position.y + (toolTips.size() * tt.getHeight()));
-		
+
 		tt.setPosition(toolTipPos);
 
 		toolTips.add(tt);
@@ -554,11 +561,16 @@ public final class Frame {
 	 * 
 	 * @author Joshua_Eddy
 	 * 
-	 * @since 2018-02-15
-	 * @version 1.01.01
+	 * @since 2018-02-19
+	 * @version 1.01.02
 	 *
 	 */
 	private final class ToolTip {
+
+		/**
+		 * The message this {@link ToolTip} displays.
+		 */
+		public final String messaage;
 
 		/**
 		 * The {@link TextField} that displays the message to the user.
@@ -582,11 +594,11 @@ public final class Frame {
 		 *            for.
 		 */
 		public ToolTip(String message, Point position, long duration) {
-			text = new TextField(800, position);
-			delay = new Delay(duration);
-
-			text.init();
-			text.addText(message);
+			this.text = new TextField(800, position);
+			this.delay = new Delay(duration);
+			this.messaage = message;
+			this.text.init();
+			this.text.addText(message);
 		}
 
 		/**

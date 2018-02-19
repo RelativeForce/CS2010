@@ -15,6 +15,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Update;
+import peril.ai.AI;
 import peril.controllers.GameController;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
@@ -158,10 +159,13 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 */
 	@Override
 	public void update(GameContainer gc, int delta, Frame frame) {
-
 		// If there is no menu visible and there is a pan direction, pan.
 		if (panDirection != null && !menus.menuVisible()) {
-			frame.panToolTips(pan(panDirection));
+
+			final int x = (panDirection.x * delta) / gc.getFPS();
+			final int y = (panDirection.y * delta) / gc.getFPS();
+
+			frame.panToolTips(pan(new Point(x, y)));
 		}
 	}
 
@@ -208,34 +212,22 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 		// Movement increment
 		final int increment = 50;
-		final int width = slick.getContainer().getWidth();
-		final int height = slick.getContainer().getHeight();
 
 		switch (key) {
 		case Input.KEY_UP:
-			slick.modelView.getVisual(game.getModelBoard()).move(new Point(0, +increment), width, height);
-			miniMap.repositionWindow();
+			pan(new Point(0, +increment));
 			break;
 		case Input.KEY_DOWN:
-			slick.modelView.getVisual(game.getModelBoard()).move(new Point(0, -increment), width, height);
-			miniMap.repositionWindow();
+			pan(new Point(0, -increment));
 			break;
 		case Input.KEY_LEFT:
-			slick.modelView.getVisual(game.getModelBoard()).move(new Point(+increment, 0), width, height);
-			miniMap.repositionWindow();
+			pan(new Point(+increment, 0));
 			break;
 		case Input.KEY_RIGHT:
-			slick.modelView.getVisual(game.getModelBoard()).move(new Point(-increment, 0), width, height);
-			miniMap.repositionWindow();
+			pan(new Point(-increment, 0));
 			break;
 		case Input.KEY_ESCAPE:
 			menus.show(PauseMenu.NAME);
-			break;
-		case Input.KEY_E:
-			expandSelected();
-			break;
-		case Input.KEY_C:
-			collapseSelected();
 			break;
 		case Input.KEY_T:
 			tradeSelectedUnitUp();
@@ -265,7 +257,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		int yPadding = screenHeight / 10;
 
 		// The pixels per frame the state will pan at.
-		int panSpeed = 4;
+		int panSpeed = 100;
 
 		int x = 0;
 		int y = 0;
@@ -522,7 +514,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		final int height = slick.getContainer().getHeight();
 
 		// The vector the board actually moved along.
-		final Point actualVector = slick.modelView.getVisual(game.getModelBoard()).move(panDirection, width, height);
+		final Point actualVector = slick.modelView.getVisual(game.getModelBoard()).move(panVector, width, height);
 
 		// If the board actually moved.
 		if (actualVector.x != 0 || actualVector.y != 0) {
@@ -554,6 +546,10 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 			@Override
 			public void mouseClick(Point mouse, int mouseButton) {
 
+				if(game.getCurrentModelPlayer().ai != AI.USER) {
+					return;
+				}
+				
 				// Get the country that is clicked.
 				final SlickCountry clicked = board.getCountry(mouse);
 

@@ -25,6 +25,7 @@ import peril.views.slick.board.*;
 import peril.views.slick.components.MiniMap;
 import peril.views.slick.components.menus.Menu;
 import peril.views.slick.components.menus.PauseMenu;
+import peril.views.slick.components.menus.StatsMenu;
 import peril.views.slick.helpers.MenuHelper;
 import peril.views.slick.states.InteractiveState;
 import peril.views.slick.util.Point;
@@ -35,8 +36,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joseph_Rolli, Joshua_Eddy
  * 
- * @since 2018-02-17
- * @version 1.01.02
+ * @since 2018-02-19
+ * @version 1.01.03
  * 
  * @see InteractiveState
  * @see Observer
@@ -383,11 +384,33 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * {@link Color}.
 	 * 
 	 * @param frame
-	 *            {@link Graphics}
+	 *            {@link Frame}
 	 */
 	protected final void drawPlayerName(Frame frame) {
 		SlickPlayer p = slick.modelView.getVisual(game.getCurrentModelPlayer());
-		frame.draw(p.getImage(), 20, 80);
+		frame.draw(p, new EventListener() {
+
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
+				slick.menus.show(StatsMenu.NAME);
+
+			}
+
+			@Override
+			public void draw(Frame frame) {
+				frame.draw(p.getImage(), p.getPosition().x, p.getPosition().y);
+			}
+
+			@Override
+			public void buttonPress(int key, Point mouse) {
+				// Do nothing
+			}
+		});
 	}
 
 	/**

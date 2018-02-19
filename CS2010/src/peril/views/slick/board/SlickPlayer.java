@@ -44,7 +44,7 @@ public final class SlickPlayer extends Clickable {
 	 */
 	public SlickPlayer(int number, Color color, AI ai) {
 		super();
-		setPosition(new Point(15, 45));
+		setPosition(new Point(20, 80));
 		this.model = new ModelPlayer(number, ai);
 		this.color = color;
 	}

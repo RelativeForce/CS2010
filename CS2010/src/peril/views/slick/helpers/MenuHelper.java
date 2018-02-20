@@ -300,13 +300,17 @@ public final class MenuHelper {
 	 */
 	public boolean isPaused() {
 
+		if(visible == null) {
+			return false;
+		}
+		
 		final PauseMenu pause = (PauseMenu) menus.get(PauseMenu.NAME);
 
 		if (pause == null) {
 			throw new NullPointerException("There is no pause menu in this menu helper.");
 		}
 
-		return pause.isVisible();
+		return visible == pause;
 	}
 
 	/**

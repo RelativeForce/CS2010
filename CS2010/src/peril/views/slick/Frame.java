@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
@@ -42,8 +43,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-15
- * @version 1.02.01
+ * @since 2018-02-19
+ * @version 1.02.03
  * 
  * @see Clickable
  * @see Point
@@ -70,6 +71,8 @@ public final class Frame {
 	 */
 	public Graphics g;
 
+	public GameContainer gc;
+
 	/**
 	 * Constructs a new {@link Frame};
 	 */
@@ -84,9 +87,12 @@ public final class Frame {
 	 * 
 	 * @param g
 	 *            {@link Graphics} of the new frame.
+	 * @param gc
+	 *            The {@link GameContainer}
 	 */
-	public void newFrame(Graphics g) {
+	public void newFrame(Graphics g, GameContainer gc) {
 		this.g = g;
+		this.gc = gc;
 
 		clear();
 
@@ -109,13 +115,13 @@ public final class Frame {
 		List<ToolTip> toRemove = new LinkedList<>();
 
 		toolTips.forEach(toolTip -> {
-			
+
 			// If the tool tip has elapsed remove it.
 			if (toolTip.elapse(delta)) {
 				toRemove.add(toolTip);
 			}
 		});
-		
+
 		toRemove.forEach(toolTip -> toolTips.remove(toolTip));
 	}
 
@@ -140,7 +146,21 @@ public final class Frame {
 	 *            The number of milliseconds this tool tip will be displayed for.
 	 */
 	public void addToolTip(String message, Point position, long duration) {
-		toolTips.add(new ToolTip(message, position, duration));
+
+		// If the message is already being displayed, dont display it again.
+		for (ToolTip temp : toolTips) {
+			if (temp.messaage.equals(message)) {
+				return;
+			}
+		}
+
+		final ToolTip tt = new ToolTip(message, position, duration);
+
+		final Point toolTipPos = new Point(position.x, position.y + (toolTips.size() * tt.getHeight()));
+
+		tt.setPosition(toolTipPos);
+
+		toolTips.add(tt);
 	}
 
 	/**
@@ -194,8 +214,17 @@ public final class Frame {
 	 */
 	public void draw(Clickable item, EventListener listener) {
 
-		// Add the object to the planes.
-		addToPlanes(new Entry(item, listener));
+		final int left = item.getPosition().x;
+		final int top = item.getPosition().y;
+		final int right = left + item.getWidth();
+		final int bottom = left + item.getHeight();
+
+		if (left < gc.getWidth() && right > 0 && top < gc.getHeight() && bottom > 0) {
+
+			// Add the object to the planes.
+			addToPlanes(new Entry(item, listener));
+		}
+
 	}
 
 	/**
@@ -206,32 +235,41 @@ public final class Frame {
 	 */
 	public void draw(Button button) {
 
-		// Holds the entry that only processes click operations.
-		final Entry entry = new Entry(button, new EventListener() {
+		final int left = button.getPosition().x;
+		final int top = button.getPosition().y;
+		final int right = left + button.getWidth();
+		final int bottom = left + button.getHeight();
 
-			@Override
-			public final void mouseHover(Point mouse, int delta) {
-				// Do nothing
-			}
+		if (left < gc.getWidth() && right > 0 && top < gc.getHeight() && bottom > 0) {
 
-			@Override
-			public final void mouseClick(Point mouse, int mouseButton) {
-				button.click();
-			}
+			// Holds the entry that only processes click operations.
+			final Entry entry = new Entry(button, new EventListener() {
 
-			@Override
-			public final void buttonPress(int Key, Point mouse) {
-				// Do nothing
-			}
+				@Override
+				public final void mouseHover(Point mouse, int delta) {
+					// Do nothing
+				}
 
-			@Override
-			public final void draw(Frame frame) {
-				// Draw the button image.
-				g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y);
-			}
-		});
+				@Override
+				public final void mouseClick(Point mouse, int mouseButton) {
+					button.click();
+				}
 
-		addToPlanes(entry);
+				@Override
+				public final void buttonPress(int Key, Point mouse) {
+					// Do nothing
+				}
+
+				@Override
+				public final void draw(Frame frame) {
+					// Draw the button image.
+					g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y);
+				}
+			});
+
+			addToPlanes(entry);
+		}
+
 	}
 
 	/**
@@ -547,11 +585,16 @@ public final class Frame {
 	 * 
 	 * @author Joshua_Eddy
 	 * 
-	 * @since 2018-02-15
-	 * @version 1.01.01
+	 * @since 2018-02-19
+	 * @version 1.01.02
 	 *
 	 */
 	private final class ToolTip {
+
+		/**
+		 * The message this {@link ToolTip} displays.
+		 */
+		public final String messaage;
 
 		/**
 		 * The {@link TextField} that displays the message to the user.
@@ -575,11 +618,11 @@ public final class Frame {
 		 *            for.
 		 */
 		public ToolTip(String message, Point position, long duration) {
-			text = new TextField(400, position);
-			delay = new Delay(duration);
-
-			text.init();
-			text.addText(message);
+			this.text = new TextField(800, position);
+			this.delay = new Delay(duration);
+			this.messaage = message;
+			this.text.init();
+			this.text.addText(message);
 		}
 
 		/**
@@ -622,6 +665,14 @@ public final class Frame {
 			return text.getPosition();
 		}
 
+		/**
+		 * Retrieves the height of this {@link ToolTip}.
+		 * 
+		 * @return The height of this {@link ToolTip}.
+		 */
+		public int getHeight() {
+			return text.getHeight();
+		}
 	}
 
 	/**

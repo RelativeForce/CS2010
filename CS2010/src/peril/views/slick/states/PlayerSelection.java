@@ -154,9 +154,9 @@ public final class PlayerSelection extends InteractiveState {
 		textFont.init();
 
 		// Load the icons for the screen actions.
-		final Image changeIcon = ImageReader.getImage(game.getDirectory().getButtonsPath() + "change.png")
+		final Image changeIcon = ImageReader.getImage(game.getDirectory().getButtonsPath() + "editButton.png")
 				.getScaledCopy(50, 50);
-		final Image confirmIcon = ImageReader.getImage(game.getDirectory().getButtonsPath() + "confirm.png")
+		final Image confirmIcon = ImageReader.getImage(game.getDirectory().getButtonsPath() + "tickButton.png")
 				.getScaledCopy(50, 50);
 
 		// Iterate over each player and initialise it.

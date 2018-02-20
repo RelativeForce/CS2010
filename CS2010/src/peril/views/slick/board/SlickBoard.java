@@ -2,11 +2,9 @@ package peril.views.slick.board;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.newdawn.slick.Image;
-
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelContinent;
+import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
 import peril.views.slick.SlickModelView;
 import peril.views.slick.util.Clickable;
@@ -17,8 +15,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-17
- * @version 1.01.01
+ * @since 2018-02-19
+ * @version 1.01.02
  * 
  * @see Clickable
  * @see ModelBoard
@@ -140,7 +138,7 @@ public final class SlickBoard extends Clickable {
 		}
 
 		// Holds the hazards that will be drawn on screen.
-		final Map<Point, Image> hazards = new HashMap<>();
+		final Map<Clickable,SlickHazard > hazards = new HashMap<>();
 
 		// For every country on the board.
 		model.forEachCountry(modelCountry -> {
@@ -160,20 +158,50 @@ public final class SlickBoard extends Clickable {
 			if (country.hasHazard()) {
 
 				// Define the hazards visual details
-				final Image hazard = country.getHazard().getScaledCopy(60, 60);
+				final SlickHazard hazard = country.getHazard();
+				final Clickable icon = country.getHazardIcon();
 
-				final int hazardX = x + (country.getWidth() / 2) + (hazard.getWidth() / 2) + country.getArmyOffset().x;
-				final int hazardY = y + (country.getHeight() / 2) - hazard.getHeight() + country.getArmyOffset().y;
+				final int hazardX = country.getArmyPosition().x + icon.getWidth() + 10;
+				final int hazardY = country.getArmyPosition().y - (icon.getHeight() / 2);
+
+				icon.setPosition(new Point(hazardX, hazardY));
 
 				// Add the hazard to the map to be drawn.
-				hazards.put(new Point(hazardX, hazardY), hazard);
+				hazards.put(icon,hazard );
 			}
 
 		});
 
 		// Draw all the hazards on screen.
-		hazards.forEach((position, hazardIcon) -> {
-			frame.draw(hazardIcon, position.x, position.y);
+		hazards.forEach((icon, hazard )-> {
+
+			frame.draw(icon, new EventListener() {
+
+				@Override
+				public void mouseHover(Point mouse, int delta) {
+					// Do nothing
+
+				}
+
+				@Override
+				public void mouseClick(Point mouse, int mouseButton) {
+					
+					final String text = hazard.model.name + " - upto " + hazard.model.maxCasualties + "% casualties at " + hazard.model.chance + "% chance";
+					
+					frame.addToolTip(text, new Point(icon.getPosition().x, icon.getPosition().y - 70), 5000);
+				}
+
+				@Override
+				public void draw(Frame frame) {
+					frame.draw(icon.getImage(), icon.getPosition().x, icon.getPosition().y);
+				}
+
+				@Override
+				public void buttonPress(int key, Point mouse) {
+					// Do nothing
+				}
+			});
+
 		});
 	}
 

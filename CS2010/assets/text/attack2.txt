@@ -1,0 +1,6 @@
+Help: War pt.1
+The war menu displays a war between the two highlighted countries. The attacking army must be larger than one unit, as one unit is required for the defense of the country at all times.
+
+The attacker will have a choice of 1 to 3 dices to attack with, depending on the size of their army. The more dices rolled will result in a higher chance of winning.
+The number of dice corresponds to the number of units of the army that will be sent to attack the enemy player's army.
+The defending army can roll a maximum of 2 dice but the defending unit will win if the dice rolled are the same.

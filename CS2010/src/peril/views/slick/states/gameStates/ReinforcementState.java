@@ -13,6 +13,7 @@ import peril.model.states.Reinforce;
 import peril.views.slick.Frame;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
+import peril.views.slick.board.SlickUnit;
 import peril.views.slick.util.Button;
 import peril.views.slick.util.Font;
 import peril.views.slick.util.Point;
@@ -44,6 +45,8 @@ public final class ReinforcementState extends CoreGameState {
 	 */
 	private final String reinforceButton;
 
+	private String upgradeButton;
+
 	/**
 	 * Constructs a new {@link ReinforcementState}.
 	 * 
@@ -55,8 +58,9 @@ public final class ReinforcementState extends CoreGameState {
 	public ReinforcementState(GameController game, int id, Reinforce model) {
 		super(game, model.getName(), id, model);
 		this.reinforceButton = "reinforce";
-		this.unitFont = new Font("Arial", Color.white, 80);
-		this.textFont = new Font("Arial", Color.white, 40);
+		this.upgradeButton = "upgrades";
+		this.unitFont = new Font("Arial", Color.white, 100);
+		this.textFont = new Font("Arial", Color.white, 60);
 
 		model.addObserver(this);
 	}
@@ -69,6 +73,7 @@ public final class ReinforcementState extends CoreGameState {
 		super.enter(gc, sbg);
 		menus.showSaveOption();
 		getButton(reinforceButton).hide();
+		getButton(upgradeButton).hide();
 	}
 
 	/**
@@ -107,12 +112,12 @@ public final class ReinforcementState extends CoreGameState {
 
 		String units = Integer.toString(game.getCurrentModelPlayer().distributableArmy.getStrength());
 
-		frame.draw(unitFont, units, 300 - (unitFont.getWidth(units) / 2), 90);
+		frame.draw(unitFont, units, 295 - (unitFont.getWidth(units) / 2), 70);
 
-		frame.draw(textFont, "UNITS", 300 - (textFont.getWidth("UNITS") / 2), 90 + unitFont.getHeight());
+		frame.draw(textFont, "UNITS", 295 - (textFont.getWidth("UNITS") / 2), 50 + unitFont.getHeight());
 
 		super.drawMiniMap(frame);
-		
+
 		menus.draw(frame);
 
 	}
@@ -132,10 +137,10 @@ public final class ReinforcementState extends CoreGameState {
 	 */
 	private void moveReinforceButton(SlickCountry country) {
 
-		Point armyPosition = getCenterArmyPosition(country);
+		Point armyPosition = country.getArmyPosition();
 
 		int x = armyPosition.x;
-		int y = armyPosition.y + 25;
+		int y = armyPosition.y + (SlickUnit.HEIGHT / 2) + 5;
 
 		getButton(reinforceButton).setPosition(new Point(x, y));
 
@@ -146,8 +151,8 @@ public final class ReinforcementState extends CoreGameState {
 	 */
 	@Override
 	protected void panElements(Point panVector) {
-		Point current = getButton(reinforceButton).getPosition();
-		getButton(reinforceButton).setPosition(new Point(current.x + panVector.x, current.y + panVector.y));
+		panButton(getButton(upgradeButton), panVector);
+		panButton(getButton(reinforceButton), panVector);
 	}
 
 	@Override
@@ -158,6 +163,13 @@ public final class ReinforcementState extends CoreGameState {
 		// In either case there should be no full state update.
 		if (getButton(reinforceButton) == null) {
 			return;
+		}
+
+		// If this is the primary country
+		if (selected.size() > 0) {
+			showUpgradeButton(getButton(upgradeButton));
+		}else {
+			getButton(upgradeButton).hide();
 		}
 
 		if (selected.size() == 1 && game.getCurrentModelPlayer().distributableArmy.getStrength() > 0) {

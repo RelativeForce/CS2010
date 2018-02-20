@@ -5,10 +5,8 @@ button,Reinforcement,0,reinforceButton.png,180,80,10,800,reinforce
 button,Reinforcement,1,endButton.png,180,80,20,155,end
 button,Reinforcement,13,helpButton.png,80,80,410,5,help
 button,Reinforcement,17,pauseButton.png,180,80,490,5,pause
-button,Reinforcement,24,statsButton.png,180,80,670,5,stats
-button,Reinforcement,26,pointsButton.png,180,80,850,5,points
-button,Reinforcement,30,unitButton.png,180,80,1030,5,units
-button,Reinforcement,28,upgradeButton.png,180,80,1210,5,upgrades
+button,Reinforcement,30,unitButton.png,180,80,850,5,units
+button,Reinforcement,28,upgradeButton.png,180,80,1030,5,upgrades
 image,Reinforcement,reinforceStateBox.png,400,250,5,5
 
 // Movement State
@@ -16,10 +14,8 @@ button,Movement,5,fortifyButton.png,180,80,10,800,fortify
 button,Movement,3,endButton.png,180,80,20,155,end
 button,Movement,13,helpButton.png,80,80,410,5,help
 button,Movement,17,pauseButton.png,180,80,490,5,pause
-button,Movement,24,statsButton.png,180,80,670,5,stats
-button,Movement,26,pointsButton.png,180,80,850,5,points
-button,Movement,30,unitButton.png,180,80,1030,5,units
-button,Movement,28,upgradeButton.png,180,80,1210,5,upgrades
+button,Movement,30,unitButton.png,180,80,850,5,units
+button,Movement,28,upgradeButton.png,180,80,1030,5,upgrades
 image,Movement,movementStateBox.png,400,250,5,5
 
 // Combat State
@@ -27,10 +23,8 @@ button,Combat,2,endButton.png,180,80,20,155,end
 button,Combat,9,attackButton.png,180,80,10,800,attack
 button,Combat,13,helpButton.png,80,80,410,5,help
 button,Combat,17,pauseButton.png,180,80,490,5,pause
-button,Combat,24,statsButton.png,180,80,670,5,stats
-button,Combat,26,pointsButton.png,180,80,850,5,points
 button,Combat,30,unitButton.png,180,80,1030,5,units
-button,Combat,28,upgradeButton.png,180,80,1210,5,upgrades
+button,Combat,28,upgradeButton.png,180,80,1030,5,upgrades
 image,Combat,combatStateBox.png,400,250,5,5
 
 // Setup State
@@ -41,9 +35,9 @@ button,Setup,17,pauseButton.png,180,80,490,5,pause
 image,Setup,setUpStateBox.png,400,250,5,5
 
 // War Menu
-button,War Menu,6,attackButton.png,160,70,220,300,war
-button,War Menu,19,xButton.png,60,60,510,20,close
-image,War Menu,warMenu.png,600,600,0,0
+button,War Menu,6,attackButton.png,160,70,320,300,war
+button,War Menu,19,xButton.png,60,60,690,20,close
+image,War Menu,warMenu.png,800,600,0,0
 
 // Pause Menu
 button,Pause Menu,10,exitGameButton.png,180,80,360,430,exit
@@ -54,8 +48,8 @@ button,Pause Menu,20,challengesButton.png,180,80,360,360,challenges
 image,Pause Menu,pauseMenu.png,600,600,0,0
 
 // End Screen
-button,End,12,mainMenuButton.png,90,40,100,100,menu
-button,End,10,exitGameButton.png,90,40,200,100,exit
+button,End,12,mainMenuButton.png,180,80,100,100,menu
+button,End,10,exitGameButton.png,180,80,200,100,exit
 image,End,finishScreen.png,w,w,0,0
 
 // Help Menu
@@ -77,11 +71,7 @@ button,Unit Menu,31,xButton.png,60,60,490,10,close
 image,Unit Menu,toolTipBox.png,600,600,0,0
 
 //Upgrade Menu
-button,Upgrade Menu,29,xButton.png,60,60,490,10,close
-image,Upgrade Menu,toolTipBox.png,600,600,0,0
+button,Upgrade Menu,29,xButton.png,60,60,680,10,close
+image,Upgrade Menu,toolTipBox.png,800,600,0,0
 
-
-//Points Menu
-button,Points Menu,27,xButton.png,60,60,490,10,close
-image,Points Menu,toolTipBox.png,600,600,0,0
 

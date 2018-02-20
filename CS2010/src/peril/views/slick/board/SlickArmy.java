@@ -20,8 +20,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-17
- * @version 1.01.01
+ * @since 2018-02-19
+ * @version 1.01.02
  * 
  * @see Observer
  * @see ModelArmy
@@ -32,7 +32,7 @@ public final class SlickArmy implements Observer {
 	/**
 	 * The padding between {@link SlickUnit}s in the expanded view.
 	 */
-	private static final int PADDING = 50;
+	private static final int PADDING = SlickUnit.WIDTH + 10;
 
 	/**
 	 * The {@link ModelArmy} this {@link SlickArmy} will observe and display.
@@ -73,8 +73,8 @@ public final class SlickArmy implements Observer {
 
 		this.model = model;
 		this.expanded = false;
-		this.collapsedFont = new Font("Arial", Color.white, 17);
-		this.expandedFont = new Font("Arial", Color.cyan, 25);
+		this.collapsedFont = new Font("Arial", Color.white, 50);
+		this.expandedFont = new Font("Arial", Color.red, 50);
 		this.selected = null;
 
 		model.addObserver(this);
@@ -163,7 +163,7 @@ public final class SlickArmy implements Observer {
 				final int height = SlickUnit.HEIGHT + (2 * yPadding);
 
 				frame.setColor(Color.cyan);
-				frame.fillRect(x - xPadding, y - yPadding, width, height);
+				frame.fillOval(x - xPadding, y - yPadding, width, height);
 			}
 
 			// Draw the unit.
@@ -200,18 +200,6 @@ public final class SlickArmy implements Observer {
 			drawCollapsed(frame, position, ruler);
 		}
 
-	}
-
-	/**
-	 * Retrieves the width of the oval that will be displayed behind the army of a
-	 * country.
-	 * 
-	 * @param armyStrength
-	 *            The strength of the {@link ModelArmy}.
-	 * @return The width of oval in pixels.
-	 */
-	public int getOvalWidth(int armyStrength) {
-		return (((int) Math.log10(armyStrength)) + 1) * 15;
 	}
 
 	/**
@@ -319,9 +307,15 @@ public final class SlickArmy implements Observer {
 
 		drawArmyOval(position, troopNumber, frame);
 
+		final String troopStr = Integer.toString(troopNumber);
+
+		final int textWidth = collapsedFont.getWidth(troopStr);
+
+		final int textHeight = collapsedFont.getHeight(troopStr);
+
 		// Draw a string representing the number of troops
 		// within that army at (x,y).
-		frame.draw(collapsedFont, Integer.toString(troopNumber), position.x, position.y);
+		frame.draw(collapsedFont, troopStr, position.x - (textWidth / 2), position.y - (textHeight / 2) - 5);
 
 	}
 
@@ -339,11 +333,11 @@ public final class SlickArmy implements Observer {
 	 */
 	private void drawArmyOval(Point position, int strength, Frame frame) {
 
-		final int width = getOvalWidth(strength);
+		final int width = collapsedFont.getWidth(Integer.toString(strength)) + 15;
 
-		final int offset = width / 5;
+		final int height = collapsedFont.getHeight(Integer.toString(strength)) + 10;
 
-		frame.fillOval(position.x - offset, position.y - 3, width, 25);
+		frame.fillOval(position.x - (width / 2), position.y - (height / 2) , width, height);
 
 	}
 

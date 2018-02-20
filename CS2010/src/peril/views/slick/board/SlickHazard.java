@@ -10,8 +10,8 @@ import peril.views.slick.io.ImageReader;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-17
- * @version 1.01.01
+ * @since 2018-02-19
+ * @version 1.01.02
  * 
  * @see ModelHazard
  *
@@ -46,7 +46,7 @@ public enum SlickHazard {
 		 */
 		@Override
 		protected void initIcon(String uiPath) {
-			icon = ImageReader.getImage(uiPath + "volcanoIcon.png");
+			icon = ImageReader.getImage(uiPath + "volcanoIcon.png").getScaledCopy(WIDTH, HEIGHT);
 		}
 
 	},
@@ -78,7 +78,7 @@ public enum SlickHazard {
 		 */
 		@Override
 		protected void initIcon(String uiPath) {
-			icon = ImageReader.getImage(uiPath + "tornadoIcon.png");
+			icon = ImageReader.getImage(uiPath + "tornadoIcon.png").getScaledCopy(WIDTH, HEIGHT);
 		}
 	},
 	/**
@@ -108,7 +108,7 @@ public enum SlickHazard {
 		 */
 		@Override
 		protected void initIcon(String uiPath) {
-			icon = ImageReader.getImage(uiPath + "hurricaneIcon.png");
+			icon = ImageReader.getImage(uiPath + "hurricaneIcon.png").getScaledCopy(WIDTH, HEIGHT);
 		}
 	},
 	/**
@@ -139,9 +139,19 @@ public enum SlickHazard {
 		 */
 		@Override
 		protected void initIcon(String uiPath) {
-			icon = ImageReader.getImage(uiPath + "tsunamiIcon.png");
+			icon = ImageReader.getImage(uiPath + "tsunamiIcon.png").getScaledCopy(WIDTH, HEIGHT);
 		}
 	};
+
+	/**
+	 * The width of the {@link SlickHazard} icons on screen.
+	 */
+	private static final int WIDTH = 60;
+
+	/**
+	 * The height of the {@link SlickHazard} icons on screen.
+	 */
+	private static final int HEIGHT = 60;
 
 	/**
 	 * The {@link ModelHazard} this {@link SlickHazard} displays to the user.

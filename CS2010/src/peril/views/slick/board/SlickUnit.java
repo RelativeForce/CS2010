@@ -11,8 +11,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-17
- * @version 1.01.01
+ * @since 2018-02-19
+ * @version 1.01.02
  * 
  * @see ModelUnit
  * @see Clickable
@@ -24,14 +24,14 @@ public final class SlickUnit extends Clickable {
 	 * 
 	 * @see Clickable
 	 */
-	public static final int WIDTH = 50;
+	public static final int WIDTH = 80;
 
 	/**
 	 * The width of a {@link SlickUnit}s {@link Image}.
 	 * 
 	 * @see Clickable
 	 */
-	public static final int HEIGHT = 50;
+	public static final int HEIGHT = 80;
 
 	/**
 	 * The {@link ModelUnit} this {@link SlickUnit} displays.

@@ -4,21 +4,21 @@ import org.newdawn.slick.Color;
 
 import peril.ai.AI;
 import peril.model.ModelPlayer;
+import peril.views.slick.util.Clickable;
 import peril.views.slick.util.Point;
-import peril.views.slick.util.Viewable;
 
 /**
  * The visual representation of a {@link ModelPlayer}.
  * 
- * @author Joshua_Eddy, Ezekiel_Trinidad
+ * @author Joshua_Eddy, Ezekiel_Trinidad, Joseph_Rolli
  * 
- * @since 2018-02-18
- * @version 1.01.01
+ * @since 2018-02-19
+ * @version 1.01.02
  * 
- * @see Viewable
+ * @see Clickable
  *
  */
-public final class SlickPlayer extends Viewable {
+public final class SlickPlayer extends Clickable {
 
 	/**
 	 * The {@link Color} of this {@link SlickPlayer}'s {@link SlickCountry}s on the
@@ -43,7 +43,8 @@ public final class SlickPlayer extends Viewable {
 	 *            The {@link AI} that controls this {@link SlickPlayer}.
 	 */
 	public SlickPlayer(int number, Color color, AI ai) {
-		super(new Point(15, 45));
+		super();
+		setPosition(new Point(20, 80));
 		this.model = new ModelPlayer(number, ai);
 		this.color = color;
 	}

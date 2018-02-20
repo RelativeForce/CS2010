@@ -1,0 +1,222 @@
+Unit,soldier,1,soldierIcon.png
+Unit,car,5,carIcon.png
+Unit,tank,15,tankIcon.png
+Player,1,7,0,0,0,true,0
+Player,2,0,0,0,0,true,0
+State,Reinforcement,1,0
+Country,Middle East,050000000,soldier:1,0,0,2
+Country,Siam,050000100,soldier:1,-10,-30,2
+Country,China,000250250,soldier:1,0,0,2
+Country,Kamchatka,000250000,soldier:1,-40,-50,1
+Country,Afghanistan,000250200,soldier:1,0,0,2
+Country,India,050000050,soldier:1,0,0,1
+Country,Ural,000200150,soldier:1,-20,20,2
+Country,Siberia,000200200,soldier:1,0,0,1
+Country,Irkutsk,000250050,soldier:1,0,0,1
+Country,Mongolia,000250100,soldier:1,0,0,2
+Country,Japan,000250150,soldier:1,10,0,2
+Country,Yakutsk,000200250,soldier:1,0,0,2
+Country,Great Britain,000100150,soldier:1,5,0,2
+Country,Scandinavia,000100200,soldier:1,-30,0,1
+Country,N Europe,000150000,soldier:1,0,0,2
+Country,W Europe,000150050,soldier:1,0,0,2
+Country,Ukraine,000100250,soldier:1,0,0,1
+Country,S Europe,000150100,soldier:1,0,-20,2
+Country,Iceland,000100100,soldier:1,-10,-10,2
+Country,Congo,000200000,soldier:1,0,0,1
+Country,N Africa,000150150,soldier:1,0,0,1
+Country,Madagascar,000200100,soldier:1,-10,-10,2
+Country,E Africa,000150250,soldier:1,0,0,2
+Country,SouthAfrica,000200050,soldier:1,-10,0,2
+Country,Egypt,000150200,soldier:1,0,0,2
+Country,Brazil,000050250,soldier:1,0,0,2
+Country,Peru,000100000,soldier:1,10,0,1
+Country,Argentina,000100050,soldier:1,-20,-30,1
+Country,Venezuela,000050200,soldier:1,-20,-10,1
+Country,New Guinea,050000200,soldier:1,0,0,1
+Country,Indonesia,050000150,soldier:1,10,-10,1
+Country,E Australia,050050000,soldier:1,30,0,1
+Country,W Australia,050000250,soldier:1,0,0,2
+Country,C America,000050150,soldier:1,0,-30,1
+Country,Greenland,000000150,soldier:1,0,-10,2
+Country,Quebec,000050000,soldier:1,-20,-20,2
+Country,NW Canada,000000100,soldier:1,-30,15,1
+Country,Alaska,000000050,soldier:1,-15,-30,1
+Country,W USA,000050050,soldier:1,0,0,1
+Country,Alberta,000000200,soldier:1,0,0,1
+Country,Ontario,000000250,soldier:1,0,0,1
+Country,E USA,000050100,soldier:1,0,0,1
+Continent,Asia,Volcanic Eruption,Middle East-Siam-China-Kamchatka-Afghanistan-India-Ural-Siberia-Irkutsk-Mongolia-Japan-Yakutsk
+Continent,Europe,Tsunami,Great Britain-Scandinavia-N Europe-W Europe-Ukraine-S Europe-Iceland
+Continent,Africa,Hurricane,Congo-N Africa-Madagascar-E Africa-SouthAfrica-Egypt
+Continent,SouthAmerica,Tornado,Brazil-Peru-Argentina-Venezuela
+Continent,Australia,Tsunami,New Guinea-Indonesia-E Australia-W Australia
+Continent,NorthAmerica,Hurricane,C America-Greenland-Quebec-NW Canada-Alaska-W USA-Alberta-Ontario-E USA
+Link,Middle East,Afghanistan,Open,Open,0
+Link,Middle East,India,Open,Open,0
+Link,Middle East,E Africa,Open,Open,0
+Link,Middle East,Egypt,Open,Open,0
+Link,Middle East,S Europe,Open,Open,0
+Link,Middle East,Ukraine,Open,Open,0
+Link,Siam,China,Open,Open,0
+Link,Siam,India,Open,Open,0
+Link,Siam,Indonesia,Open,Open,0
+Link,China,Siam,Open,Open,0
+Link,China,Afghanistan,Open,Open,0
+Link,China,India,Open,Open,0
+Link,China,Ural,Open,Open,0
+Link,China,Siberia,Open,Open,0
+Link,China,Mongolia,Open,Open,0
+Link,Kamchatka,Japan,Open,Open,0
+Link,Kamchatka,Irkutsk,Open,Open,0
+Link,Kamchatka,Mongolia,Open,Open,0
+Link,Kamchatka,Yakutsk,Open,Open,0
+Link,Afghanistan,Middle East,Open,Open,0
+Link,Afghanistan,China,Open,Open,0
+Link,Afghanistan,India,Open,Open,0
+Link,Afghanistan,Ural,Open,Open,0
+Link,Afghanistan,Ukraine,Open,Open,0
+Link,India,Middle East,Open,Open,0
+Link,India,Siam,Open,Open,0
+Link,India,China,Open,Open,0
+Link,India,Afghanistan,Open,Open,0
+Link,Ural,China,Open,Open,0
+Link,Ural,Afghanistan,Open,Open,0
+Link,Ural,Siberia,Open,Open,0
+Link,Ural,Ukraine,Open,Open,0
+Link,Siberia,China,Open,Open,0
+Link,Siberia,Ural,Open,Open,0
+Link,Siberia,Irkutsk,Open,Open,0
+Link,Siberia,Mongolia,Open,Open,0
+Link,Siberia,Yakutsk,Open,Open,0
+Link,Irkutsk,Kamchatka,Open,Open,0
+Link,Irkutsk,Siberia,Open,Open,0
+Link,Irkutsk,Mongolia,Open,Open,0
+Link,Irkutsk,Yakutsk,Open,Open,0
+Link,Mongolia,China,Open,Open,0
+Link,Mongolia,Kamchatka,Open,Open,0
+Link,Mongolia,Siberia,Open,Open,0
+Link,Mongolia,Japan,Open,Open,0
+Link,Mongolia,Irkutsk,Open,Open,0
+Link,Japan,Kamchatka,Open,Open,0
+Link,Japan,Mongolia,Open,Open,0
+Link,Yakutsk,Kamchatka,Open,Open,0
+Link,Yakutsk,Siberia,Open,Open,0
+Link,Yakutsk,Irkutsk,Open,Open,0
+Link,Great Britain,W Europe,Open,Open,0
+Link,Great Britain,Scandinavia,Open,Open,0
+Link,Great Britain,N Europe,Open,Open,0
+Link,Great Britain,Iceland,Open,Open,0
+Link,Scandinavia,Great Britain,Open,Open,0
+Link,Scandinavia,N Europe,Open,Open,0
+Link,Scandinavia,Ukraine,Open,Open,0
+Link,Scandinavia,Iceland,Open,Open,0
+Link,N Europe,Great Britain,Open,Open,0
+Link,N Europe,W Europe,Open,Open,0
+Link,N Europe,Scandinavia,Open,Open,0
+Link,N Europe,S Europe,Open,Open,0
+Link,N Europe,Ukraine,Open,Open,0
+Link,W Europe,N Africa,Open,Open,0
+Link,W Europe,Great Britain,Open,Open,0
+Link,W Europe,N Europe,Open,Open,0
+Link,W Europe,S Europe,Open,Open,0
+Link,Ukraine,Middle East,Open,Open,0
+Link,Ukraine,Afghanistan,Open,Open,0
+Link,Ukraine,Scandinavia,Open,Open,0
+Link,Ukraine,N Europe,Open,Open,0
+Link,Ukraine,Ural,Open,Open,0
+Link,Ukraine,S Europe,Open,Open,0
+Link,S Europe,Middle East,Open,Open,0
+Link,S Europe,N Africa,Open,Open,0
+Link,S Europe,W Europe,Open,Open,0
+Link,S Europe,N Europe,Open,Open,0
+Link,S Europe,Egypt,Open,Open,0
+Link,S Europe,Ukraine,Open,Open,0
+Link,Iceland,Greenland,Open,Open,0
+Link,Iceland,Great Britain,Open,Open,0
+Link,Iceland,Scandinavia,Open,Open,0
+Link,Congo,N Africa,Open,Open,0
+Link,Congo,E Africa,Open,Open,0
+Link,Congo,SouthAfrica,Open,Open,0
+Link,N Africa,Brazil,Open,Open,0
+Link,N Africa,Congo,Open,Open,0
+Link,N Africa,W Europe,Open,Open,0
+Link,N Africa,E Africa,Open,Open,0
+Link,N Africa,Egypt,Open,Open,0
+Link,N Africa,S Europe,Open,Open,0
+Link,Madagascar,E Africa,Open,Open,0
+Link,Madagascar,SouthAfrica,Open,Open,0
+Link,E Africa,Middle East,Open,Open,0
+Link,E Africa,Congo,Open,Open,0
+Link,E Africa,N Africa,Open,Open,0
+Link,E Africa,Madagascar,Open,Open,0
+Link,E Africa,SouthAfrica,Open,Open,0
+Link,E Africa,Egypt,Open,Open,0
+Link,SouthAfrica,Congo,Open,Open,0
+Link,SouthAfrica,Madagascar,Open,Open,0
+Link,SouthAfrica,E Africa,Open,Open,0
+Link,Egypt,Middle East,Open,Open,0
+Link,Egypt,N Africa,Open,Open,0
+Link,Egypt,E Africa,Open,Open,0
+Link,Egypt,S Europe,Open,Open,0
+Link,Brazil,Peru,Open,Open,0
+Link,Brazil,N Africa,Open,Open,0
+Link,Brazil,Argentina,Open,Open,0
+Link,Brazil,Venezuela,Open,Open,0
+Link,Peru,Brazil,Open,Open,0
+Link,Peru,Argentina,Open,Open,0
+Link,Peru,Venezuela,Open,Open,0
+Link,Argentina,Peru,Open,Open,0
+Link,Argentina,Brazil,Open,Open,0
+Link,Venezuela,C America,Open,Open,0
+Link,Venezuela,Peru,Open,Open,0
+Link,Venezuela,Brazil,Open,Open,0
+Link,New Guinea,Indonesia,Open,Open,0
+Link,New Guinea,E Australia,Open,Open,0
+Link,New Guinea,W Australia,Open,Open,0
+Link,Indonesia,Siam,Open,Open,0
+Link,Indonesia,New Guinea,Open,Open,0
+Link,Indonesia,W Australia,Open,Open,0
+Link,E Australia,New Guinea,Open,Open,0
+Link,E Australia,W Australia,Open,Open,0
+Link,W Australia,New Guinea,Open,Open,0
+Link,W Australia,Indonesia,Open,Open,0
+Link,W Australia,E Australia,Open,Open,0
+Link,C America,W USA,Open,Open,0
+Link,C America,E USA,Open,Open,0
+Link,C America,Venezuela,Open,Open,0
+Link,Greenland,Quebec,Open,Open,0
+Link,Greenland,NW Canada,Open,Open,0
+Link,Greenland,Ontario,Open,Open,0
+Link,Greenland,Iceland,Open,Open,0
+Link,Quebec,Greenland,Open,Open,0
+Link,Quebec,Ontario,Open,Open,0
+Link,Quebec,E USA,Open,Open,0
+Link,NW Canada,Greenland,Open,Open,0
+Link,NW Canada,Alaska,Open,Open,0
+Link,NW Canada,Alberta,Open,Open,0
+Link,NW Canada,Ontario,Open,Open,0
+Link,Alaska,NW Canada,Open,Open,0
+Link,Alaska,Alberta,Open,Open,0
+Link,W USA,C America,Open,Open,0
+Link,W USA,Alberta,Open,Open,0
+Link,W USA,Ontario,Open,Open,0
+Link,W USA,E USA,Open,Open,0
+Link,Alberta,NW Canada,Open,Open,0
+Link,Alberta,Alaska,Open,Open,0
+Link,Alberta,W USA,Open,Open,0
+Link,Alberta,Ontario,Open,Open,0
+Link,Ontario,Greenland,Open,Open,0
+Link,Ontario,Quebec,Open,Open,0
+Link,Ontario,NW Canada,Open,Open,0
+Link,Ontario,W USA,Open,Open,0
+Link,Ontario,Alberta,Open,Open,0
+Link,Ontario,E USA,Open,Open,0
+Link,E USA,C America,Open,Open,0
+Link,E USA,Quebec,Open,Open,0
+Link,E USA,W USA,Open,Open,0
+Link,E USA,Ontario,Open,Open,0
+ArmySize,60,5
+ArmySize,80,10
+CountriesOwned,30,5
+CountriesOwned,38,10

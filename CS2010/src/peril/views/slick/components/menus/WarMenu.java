@@ -16,6 +16,7 @@ import org.newdawn.slick.Image;
 import peril.concurrent.Action;
 import peril.controllers.GameController;
 import peril.helpers.UnitHelper;
+import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
 import peril.model.ModelPlayer;
 import peril.views.slick.board.SlickCountry;
@@ -26,6 +27,7 @@ import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
 import peril.views.slick.io.ImageReader;
 import peril.views.slick.util.Button;
+import peril.views.slick.util.Clickable;
 import peril.views.slick.util.Font;
 import peril.views.slick.util.Point;
 import peril.views.slick.util.Region;
@@ -46,6 +48,11 @@ public class WarMenu extends Menu {
 	private final static int MAX_ATTACK_SQUAD_SIZE = 3;
 
 	private final static int MAX_DEFEND_SQUAD_SIZE = 2;
+	
+	/**
+	 * The number of points awarded for conquering a country.
+	 */
+	private final static int CONQURE_POINTS = 2;
 
 	/**
 	 * The {@link Dice} displaying dice interactions on screen.
@@ -112,40 +119,38 @@ public class WarMenu extends Menu {
 
 	private final Consumer<SlickUnit> poolClick;
 
-	private final Consumer<SquadMember> squadClick;
-
 	private final List<SquadMember> attackingSquad;
+
+	private final Font yourArmyFont;
+
+	private Point squadTop;
 
 	/**
 	 * Constructs a new {@link WarMenu}.
 	 * 
 	 */
 	public WarMenu(Point position, GameController game) {
-		super(NAME, game, new Region(600, 600, position));
+		super(NAME, game, new Region(800, 600, position));
 
 		this.random = new Random();
-		this.headingFont = new Font("Arial", Color.red, 28);
+		this.headingFont = new Font("Arial", Color.red, 30);
 		this.textFont = new Font("Arial", Color.red, 40);
-		this.countryFont = new Font("Arial", Color.black, 20);
-		this.resultFont = new Font("Arial", Color.black, 15);
-		this.armyFont = new Font("Arial", Color.cyan, 25);
+		this.countryFont = new Font("Arial", Color.black, 37);
+		this.resultFont = new Font("Arial", Color.black, 30);
+		this.armyFont = new Font("Arial", Color.red, 50);
 		this.dice = new Dice();
 		this.attackButton = "war";
+		this.yourArmyFont = new Font("Arial", Color.black, 25);
 		this.attackingSquad = new LinkedList<>();
 
-		poolClick = new Consumer<SlickUnit>() {
+		this.squadTop = new Point(this.getPosition().x + (this.getWidth() / 4) - SlickUnit.WIDTH,
+				this.getPosition().y + 250);
+
+		this.poolClick = new Consumer<SlickUnit>() {
 
 			@Override
 			public void accept(SlickUnit unit) {
 				moveToAttackSquad(unit.model);
-			}
-		};
-
-		squadClick = new Consumer<SquadMember>() {
-
-			@Override
-			public void accept(SquadMember unit) {
-				returnUnitToAttackingArmy(unit);
 			}
 		};
 
@@ -162,6 +167,7 @@ public class WarMenu extends Menu {
 		resultFont.init();
 		dice.init();
 		armyFont.init();
+		yourArmyFont.init();
 
 	}
 
@@ -171,6 +177,16 @@ public class WarMenu extends Menu {
 
 		if (member.isAlive) {
 			attacker.model.getArmy().add(member.unit.model);
+		}
+
+		int x = squadTop.x;
+		int y = squadTop.y;
+
+		for (SquadMember sqd : attackingSquad) {
+
+			sqd.setPosition(new Point(x, y));
+
+			y += SlickUnit.HEIGHT;
 		}
 
 		// If all the alive units have been removed hide the attack button and clear the
@@ -188,7 +204,11 @@ public class WarMenu extends Menu {
 
 		if (attackingSquad.size() <= MAX_ATTACK_SQUAD_SIZE - 1 && attacker.model.getArmy().getNumberOfUnits() > 1) {
 			attacker.model.getArmy().remove(unit);
-			attackingSquad.add(new SquadMember(slick.modelView.getVisual(unit), true));
+
+			SquadMember member = new SquadMember(slick.modelView.getVisual(unit), true);
+			member.setPosition(new Point(squadTop.x, squadTop.y + (attackingSquad.size() * SlickUnit.HEIGHT)));
+
+			attackingSquad.add(member);
 		}
 
 		getButton(attackButton).show();
@@ -232,33 +252,30 @@ public class WarMenu extends Menu {
 
 		super.draw(frame);
 
-		if (isVisible()) {
-
-			final int size = attackingSquad.size() + attacker.model.getArmy().getNumberOfUnits();
-
-			// Attacker has failed to conquer country
-			if (size == 1) {
-				failedConquer(frame);
-			}
-			// Attacker has conquered country
-			else if (attacker.model.getRuler().equals(enemy.model.getRuler())) {
-				succesfulConquer(frame);
-			}
-			// Normal Combat
-			else {
-				drawNormalCombat(frame);
-			}
-
-			// drawArmySizes(g);
-
+		if (!isVisible()) {
+			return;
 		}
+
+		final int size = attackingSquad.size() + attacker.model.getArmy().getNumberOfUnits();
+
+		// Attacker has failed to conquer country
+		if (size == 1) {
+			failedConquer(frame);
+		}
+		// Attacker has conquered country
+		else if (attacker.model.getRuler().equals(enemy.model.getRuler())) {
+			succesfulConquer(frame);
+		}
+		// Normal Combat
+		else {
+			drawNormalCombat(frame);
+		}
+
 	}
 
 	private void drawNormalCombat(Frame frame) {
-		Point position = new Point(this.getPosition().x + (this.getWidth() / 4) - SlickUnit.WIDTH,
-				this.getPosition().y + 250);
 
-		drawSquad(attackingSquad, position, frame);
+		drawSquad(attackingSquad, frame);
 
 		drawPlayer(enemyRuler, (getWidth() / 4), frame);
 
@@ -277,11 +294,11 @@ public class WarMenu extends Menu {
 
 		ModelArmy model = attacker.model.getArmy();
 
-		int x = position.x - ((model.getVarietyOfUnits() - 1) * 50) - (SlickUnit.WIDTH / 2);
+		int x = position.x - (((model.getVarietyOfUnits() - 1) * SlickUnit.WIDTH) / 2) - (SlickUnit.WIDTH / 2);
 		int y = position.y - (SlickUnit.HEIGHT / 2);
 
-		frame.draw(countryFont, "Your Army:", position.x - (countryFont.getWidth("Your Army:") / 2),
-				y - (countryFont.getHeight() * 2));
+		frame.draw(yourArmyFont, "Your Army:", position.x - (yourArmyFont.getWidth("Your Army:") / 2),
+				y - (yourArmyFont.getHeight()));
 
 		// For each unit in the army
 		for (ModelUnit current : model) {
@@ -302,7 +319,7 @@ public class WarMenu extends Menu {
 			frame.draw(unitButton);
 			frame.draw(armyFont, number, fontX, fontY);
 
-			x += 50;
+			x += SlickUnit.WIDTH + 10;
 
 		}
 
@@ -317,6 +334,9 @@ public class WarMenu extends Menu {
 
 		getButton(attackButton).hide();
 
+		this.squadTop = new Point(this.getPosition().x + (this.getWidth() / 4) - SlickUnit.WIDTH,
+				this.getPosition().y + 250);
+
 		attacker = slick.modelView.getVisual(game.getAttack().getSelected(0));
 		enemy = slick.modelView.getVisual(game.getAttack().getSelected(1));
 
@@ -325,16 +345,39 @@ public class WarMenu extends Menu {
 
 	}
 
-	private void drawSquad(List<SquadMember> squad, Point topUnit, Frame frame) {
+	private void drawSquad(List<SquadMember> squad, Frame frame) {
 
-		int x = topUnit.x;
-		int y = topUnit.y;
+		int x = squadTop.x;
+		int y = squadTop.y;
 
 		// Draw each member in the squad
 		for (SquadMember member : squad) {
 
 			// Draw the unit
-			frame.draw(new Button(new Point(x, y), member.unit.getImage(), new Action<>(member, squadClick), "squad"));
+
+			frame.draw(member, new EventListener() {
+
+				@Override
+				public void mouseHover(Point mouse, int delta) {
+					// Do nothing
+				}
+
+				@Override
+				public void mouseClick(Point mouse, int mouseButton) {
+					returnUnitToAttackingArmy(member);
+				}
+
+				@Override
+				public void draw(Frame frame) {
+					frame.draw(member.getImage(), member.getPosition().x, member.getPosition().y);
+				}
+
+				@Override
+				public void buttonPress(int key, Point mouse) {
+					// Do Nothing
+
+				}
+			});
 
 			// If the member is dead then draw a cross over it.
 			if (!member.isAlive) {
@@ -412,6 +455,10 @@ public class WarMenu extends Menu {
 					game.getAttack().deselectAll();
 
 					attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
+
+					attackingPlayer.setCountriesTaken(attackingPlayer.getCountriesTaken() + 1);
+					
+					attackingPlayer.setPoints(attackingPlayer.getPoints() + CONQURE_POINTS);
 
 					game.checkContinentRulership();
 
@@ -570,7 +617,7 @@ public class WarMenu extends Menu {
 
 		frame.draw(countryFont, attacker.model.getName(),
 				getPosition().x + (getWidth() / 2) - (countryFont.getWidth(attacker.model.getName()) / 2),
-				getPosition().y + (getHeight() / 2) - 30);
+				getPosition().y + (getHeight() / 2) - 45);
 
 		frame.draw(resultFont, failure, getPosition().x + (getWidth() / 2) - (resultFont.getWidth(failure) / 2),
 				getPosition().y + (getHeight() / 2));
@@ -591,24 +638,29 @@ public class WarMenu extends Menu {
 	 */
 	private void succesfulConquer(Frame frame) {
 
-		// Draw the attacking country's name
-		frame.draw(countryFont, attacker.model.getName(),
-				getPosition().x + (getWidth() / 2) - (countryFont.getWidth(attacker.model.getName()) / 2),
-				getPosition().y + (getHeight() / 2) - 30);
+		// Draw the result text.
+		final String success = "has conquered";
+		final int resultX = getPosition().x + (getWidth() / 2) - (resultFont.getWidth(success) / 2);
+		final int resultY = getPosition().y + (getHeight() / 2);
+		frame.draw(resultFont, success, resultX, resultY);
 
-		// Draw text
-		String success = "has conquered";
-		frame.draw(resultFont, success, getPosition().x + (getWidth() / 2) - (resultFont.getWidth(success) / 2),
-				getPosition().y + (getHeight() / 2));
+		// Draw the attacking country's name
+		final String attackerName = attacker.model.getName();
+		final int attackerX = getPosition().x + (getWidth() / 2) - (countryFont.getWidth(attackerName) / 2);
+		final int attackerY = getPosition().y + (getHeight() / 2) - ((countryFont.getHeight(attackerName) * 3) / 2);
+		frame.draw(countryFont, attackerName, attackerX, attackerY);
 
 		// Draw the defending country's name
-		frame.draw(countryFont, enemy.model.getName(),
-				getPosition().x + (getWidth() / 2) - (countryFont.getWidth(enemy.model.getName()) / 2),
-				getPosition().y + (getHeight() / 2) + 30);
+		final String conqueredName = enemy.model.getName();
+		final int conqueredX = getPosition().x + (getWidth() / 2) - (countryFont.getWidth(conqueredName) / 2);
+		final int conqueredY = getPosition().y + (getHeight() / 2) + ((countryFont.getHeight(attackerName) * 3) / 2);
+		frame.draw(countryFont, conqueredName, conqueredX, conqueredY);
 
+		// Draw the player icons
 		drawPlayer(attackingRuler, -(getWidth() / 4), frame);
 		drawPlayer(enemyRuler, (getWidth() / 4), frame);
 
+		// Draw the country titles
 		drawTitle(frame);
 
 	}
@@ -656,7 +708,9 @@ public class WarMenu extends Menu {
 	 */
 	private void drawTitle(Frame frame) {
 
-		final int yOffset = 170;
+		final int yOffset = 150;
+
+		int y = getPosition().y + yOffset;
 
 		String vs = "VS";
 		String attackerStr = attacker.model.getName();
@@ -668,9 +722,9 @@ public class WarMenu extends Menu {
 		int attackerX = centreX - (getWidth() / 4) - (countryFont.getWidth(attackerStr) / 2);
 		int enemyX = centreX + (getWidth() / 4) - (countryFont.getWidth(enemyStr) / 2);
 
-		frame.draw(headingFont, vs, vsX, getPosition().y + yOffset);
-		frame.draw(countryFont, attackerStr, attackerX, getPosition().y + yOffset);
-		frame.draw(countryFont, enemyStr, enemyX, getPosition().y + yOffset);
+		frame.draw(headingFont, vs, vsX, y);
+		frame.draw(countryFont, attackerStr, attackerX, y);
+		frame.draw(countryFont, enemyStr, enemyX, y);
 
 	}
 
@@ -692,7 +746,7 @@ public class WarMenu extends Menu {
 
 		int centreX = getPosition().x + (getWidth() / 2);
 		int x = centreX + offset - (player.getWidth() / 2);
-		frame.draw(player.getImage(), x, this.getPosition().y + 120);
+		frame.draw(player.getImage(), x, this.getPosition().y + 80);
 	}
 
 	/**
@@ -794,6 +848,10 @@ public class WarMenu extends Menu {
 	 */
 	private final class Dice {
 
+		private static final int WIDTH = SlickUnit.WIDTH - 20;
+
+		private static final int HEIGHT = SlickUnit.HEIGHT - 20;
+
 		/**
 		 * Holds the dice that will be displayed on screen.
 		 */
@@ -834,38 +892,40 @@ public class WarMenu extends Menu {
 			clear();
 
 			for (Integer roll : attackerDiceRolls) {
-				display.put(new Point(attackX, attackY), defaultDice.get(roll));
+				display.put(new Point(attackX, attackY + 10), defaultDice.get(roll));
 				attackY += SlickUnit.HEIGHT;
 			}
 
 			for (Integer roll : defenderDiceRolls) {
-				display.put(new Point(defendX, defendY), defaultDice.get(roll));
+				display.put(new Point(defendX, defendY + 10), defaultDice.get(roll));
 				defendY += SlickUnit.HEIGHT;
 			}
 
 			int boxWidth = 10;
 
-			Region box = new Region(boxWidth, SlickUnit.HEIGHT, new Point(0, 0));
+			final Region box = new Region(boxWidth, HEIGHT, new Point(0, 0));
 
-			Image redBox = box.convert(Color.red, 255);
+			final Image redBox = box.convert(Color.red, 255);
 
-			Image greenBox = box.convert(Color.green, 255);
+			final Image greenBox = box.convert(Color.green, 255);
 
 			// Get the size of the smaller set of dice.
-			int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length
+			final int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length
 					: attackerDiceRolls.length;
 
 			// Compare each attacking dice roll against the defending dice roll
 			for (int i = 0; i < diceToCheck; i++) {
 
-				boolean attackerWon = attackerDiceRolls[i] > defenderDiceRolls[i];
+				final boolean attackerWon = attackerDiceRolls[i] > defenderDiceRolls[i];
 
 				// Display defender box
-				Point defend = new Point(defendTop.x - boxWidth - 3, defendTop.y + (i * (SlickUnit.WIDTH + 2)));
+				final Point defend = new Point(defendTop.x - boxWidth - 3,
+						defendTop.y + (i * (SlickUnit.HEIGHT + 2)) + 10);
 				display.put(defend, attackerWon ? redBox : greenBox);
 
 				// Display attacker box
-				Point attack = new Point(attackTop.x + SlickUnit.WIDTH + 3, attackTop.y + (i * (SlickUnit.WIDTH + 2)));
+				final Point attack = new Point(attackTop.x + WIDTH + 3,
+						attackTop.y + (i * (SlickUnit.HEIGHT + 2)) + 10);
 				display.put(attack, attackerWon ? greenBox : redBox);
 			}
 
@@ -875,9 +935,13 @@ public class WarMenu extends Menu {
 		 * Initialises this {@link Dice}.
 		 */
 		public void init() {
-			for (int i = 1; i <= 6; i++) {
-				this.defaultDice.put(i, ImageReader.getImage(game.getDirectory().getDicePath() + "dice" + i + ".png")
-						.getScaledCopy(SlickUnit.WIDTH, SlickUnit.HEIGHT));
+
+			// Iterate over all the values of a dice and import the dice's image.
+			for (int index = 1; index <= 6; index++) {
+
+				final Image dice = ImageReader.getImage(game.getDirectory().getDicePath() + "dice" + index + ".png");
+
+				this.defaultDice.put(index, dice.getScaledCopy(WIDTH, HEIGHT));
 			}
 		}
 
@@ -897,7 +961,7 @@ public class WarMenu extends Menu {
 
 	}
 
-	private final class SquadMember {
+	private final class SquadMember extends Clickable {
 
 		public final SlickUnit unit;
 
@@ -907,6 +971,8 @@ public class WarMenu extends Menu {
 
 			this.unit = unit;
 			this.isAlive = isAlive;
+
+			replaceImage(unit.getImage());
 
 		}
 

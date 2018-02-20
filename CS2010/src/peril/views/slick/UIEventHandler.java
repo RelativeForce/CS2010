@@ -81,7 +81,12 @@ public final class UIEventHandler implements MouseListener, KeyListener {
 	public void mousePressed(int button, int x, int y) {
 
 		// The current state will process the mouse press and release.
-		game.getCurrentState().click(new Point(x, y), button);
+		try {
+			game.getCurrentState().click(new Point(x, y), button);
+
+		} catch (Exception e) {
+			game.showToolTip(e.getMessage());
+		}
 	}
 
 	@Override
@@ -121,7 +126,12 @@ public final class UIEventHandler implements MouseListener, KeyListener {
 	private void buttonPress(int key) {
 
 		Input input = game.getContainer().getInput();
-		game.getCurrentState().parseButton(key, new Point(input.getAbsoluteMouseX(), input.getAbsoluteMouseY()));
+
+		try {
+			game.getCurrentState().parseButton(key, new Point(input.getAbsoluteMouseX(), input.getAbsoluteMouseY()));
+		} catch (Exception e) {
+			game.showToolTip(e.getMessage());
+		}
 
 	}
 

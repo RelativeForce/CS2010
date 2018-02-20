@@ -43,10 +43,10 @@ import peril.views.slick.util.Point;
  * game should not interact with anything bar the {@link View} and
  * {@link ModelView}.
  * 
- * @author Joshua_Eddy
+ * @author Joshua_Eddy, Joseph Rolli
  * 
- * @since 2018-02-18
- * @version 1.01.05
+ * @since 2018-02-19
+ * @version 1.01.08
  * 
  * @see StateBasedGame
  * @see View
@@ -290,7 +290,6 @@ public final class SlickGame extends StateBasedGame implements View {
 		final StatsMenu statsMenu = new StatsMenu(new Point(100, 100), game);
 		final UnitMenu unitMenu = new UnitMenu(new Point(100, 100), game);
 		final UpgradeMenu upgradeMenu = new UpgradeMenu(new Point(100, 100), game);
-		final PointsMenu pointsMenu = new PointsMenu(new Point(100, 100), game);
 
 		// Holds all the menus
 		final Set<Menu> menus = new HashSet<>();
@@ -301,7 +300,6 @@ public final class SlickGame extends StateBasedGame implements View {
 		menus.add(statsMenu);
 		menus.add(unitMenu);
 		menus.add(upgradeMenu);
-		menus.add(pointsMenu);
 
 		// Add all the menus to the menu helper.
 		this.menus = new MenuHelper(menus);
@@ -348,13 +346,12 @@ public final class SlickGame extends StateBasedGame implements View {
 		containers.add(statsMenu);
 		containers.add(unitMenu);
 		containers.add(upgradeMenu);
-		containers.add(pointsMenu);
 
 		// User the containers to create the IO helper.
 		this.io = new IOHelper(game, containers);
 
 		// Create the help pages using the states.
-		this.menus.createHelpPages(states);
+		this.menus.createHelpPages(states, directory);
 
 		// Create the music helper.
 		this.music = new MusicHelper(this, directory.getMusicPath());
@@ -443,10 +440,11 @@ public final class SlickGame extends StateBasedGame implements View {
 	@Override
 	public void showToolTip(String text) {
 
-		// TODO Change default tool tip position based on state.
-
-		getCurrentState().showToolTip(text, new Point(300, 300));
-
+		if(getCurrentState() instanceof CoreGameState) {
+			getCurrentState().showToolTip(text, new Point(410, 100));
+		}else {
+			getCurrentState().showToolTip(text, new Point(0, 0));
+		}
 	}
 
 	/**
@@ -503,19 +501,11 @@ public final class SlickGame extends StateBasedGame implements View {
 	}
 
 	/**
-	 * Toggle the visibility of the points menu.
-	 */
-	@Override
-	public void togglePointsMenu(boolean state) {
-		toggleMenu(state, PointsMenu.NAME);
-	}
-
-	/**
 	 * Toggle the visibility of the upgrade menu.
 	 */
 	@Override
 	public void toggleUpgradeMenu(boolean state) {
-		toggleMenu(state, PointsMenu.NAME);
+		toggleMenu(state, UpgradeMenu.NAME);
 	}
 
 	/**
@@ -523,7 +513,7 @@ public final class SlickGame extends StateBasedGame implements View {
 	 */
 	@Override
 	public void toggleUnitMenu(boolean state) {
-		toggleMenu(state, PointsMenu.NAME);
+		toggleMenu(state, UnitMenu.NAME);
 	}
 
 	/**

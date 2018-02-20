@@ -93,6 +93,8 @@ public final class TextField implements Component {
 	 */
 	public void addText(String text, String lineWrap) {
 
+		final int maxWidth = this.maxWidth - (2 * padding);
+
 		// Separate the text by word
 		final String[] words = text.split(lineWrap);
 
@@ -108,17 +110,17 @@ public final class TextField implements Component {
 
 			final int lineWidth = font.getWidth(testLine);
 
-			if (width < lineWidth && lineWidth <= maxWidth - (2 * padding)) {
+			if (lineWidth > width) {
 				width = lineWidth;
 			}
 
 			// If the line with the word added is larger than max width end the current line
 			// and and start the next.
-			if (lineWidth >= maxWidth - (2 * padding)) {
+			if (lineWidth >= maxWidth) {
 
 				lines.add(line.toString());
 				line = new StringBuilder();
-				width = maxWidth;
+				width = this.maxWidth;
 
 			}
 
@@ -132,6 +134,12 @@ public final class TextField implements Component {
 
 		// Add the last line to the list of lines.
 		lines.add(line.toString());
+
+		if (width <= this.maxWidth) {
+			int newWidth = width + (2 * padding);
+			width = newWidth >= this.maxWidth ? this.maxWidth : newWidth;
+		}
+		;
 
 	}
 
@@ -160,7 +168,7 @@ public final class TextField implements Component {
 
 		int y = position.y + padding;
 		final int x = position.x + padding;
-		final int height = (lines.size() * font.getHeight()) + (padding * 2);
+		final int height = getHeight();
 
 		// Draw the font on the back found.
 		frame.setColor(Color.lightGray);
@@ -212,5 +220,14 @@ public final class TextField implements Component {
 	 */
 	public Point getPosition() {
 		return position;
+	}
+
+	/**
+	 * Retrieves the height of this {@link TextField}.
+	 * 
+	 * @return The height of the {@link TextField}.
+	 */
+	public int getHeight() {
+		return (lines.size() * font.getHeight()) + (padding * 2);
 	}
 }

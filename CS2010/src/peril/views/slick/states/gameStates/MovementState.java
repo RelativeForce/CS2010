@@ -11,7 +11,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.controllers.GameController;
-import peril.helpers.UnitHelper;
+import peril.model.board.ModelCountry;
 import peril.model.states.Fortify;
 import peril.views.slick.Frame;
 import peril.views.slick.board.SlickCountry;
@@ -33,6 +33,8 @@ public final class MovementState extends CoreGameState {
 	 */
 	private final String fortifyButton;
 
+	private final String upgradeButton;
+
 	/**
 	 * Hold the path between two {@link SlickCountry}s in the {@link MovementState}.
 	 */
@@ -50,6 +52,7 @@ public final class MovementState extends CoreGameState {
 	public MovementState(GameController game, int id, Fortify model) {
 		super(game, model.getName(), id, model);
 		this.fortifyButton = "fortify";
+		this.upgradeButton = "upgrades";
 		path = new LinkedList<>();
 
 		model.addObserver(this);
@@ -63,13 +66,14 @@ public final class MovementState extends CoreGameState {
 		super.enter(gc, sbg);
 		menus.showSaveOption();
 		getButton(fortifyButton).hide();
+		getButton(upgradeButton).hide();
 	}
 
 	/**
 	 * Render the {@link MovementState}.
 	 */
 	@Override
-	public void render(GameContainer gc, Frame frame){
+	public void render(GameContainer gc, Frame frame) {
 		super.render(gc, frame);
 
 		frame.setLineWidth(3f);
@@ -83,14 +87,14 @@ public final class MovementState extends CoreGameState {
 		super.drawImages();
 		super.drawButtons();
 		super.drawPlayerName(frame);
-		
+
 		super.drawMiniMap(frame);
 		menus.draw(frame);
 
 	}
 
 	@Override
-	public void update(GameContainer gc, int delta, Frame frame){
+	public void update(GameContainer gc, int delta, Frame frame) {
 		super.update(gc, delta, frame);
 		game.processAI(delta);
 	}
@@ -129,7 +133,7 @@ public final class MovementState extends CoreGameState {
 
 		for (SlickCountry country : path) {
 
-			Point current = super.getCenterArmyPosition(country);
+			Point current = country.getArmyPosition();
 
 			if (previous != null) {
 				frame.drawLine(previous, current);
@@ -145,8 +149,8 @@ public final class MovementState extends CoreGameState {
 	 */
 	@Override
 	public void parseMouse(Point mousePosition) {
-		this.checkPath(mousePosition);
 		super.parseMouse(mousePosition);
+		this.checkPath(mousePosition);
 	}
 
 	/**
@@ -158,8 +162,10 @@ public final class MovementState extends CoreGameState {
 	 */
 	public void checkPath(Point mousePosition) {
 
+		final ModelCountry primary = model.getSelected(0);
+
 		// If there is a highlighted country.
-		if (model.getSelected(0) != null && model.getSelected(0).getArmy().getStrength() > 1) {
+		if (primary != null && primary.getArmy().getNumberOfUnits() > 1) {
 
 			// Holds the country the user is hovering over.
 			SlickCountry target = slick.modelView.getVisual(game.getModelBoard()).getCountry(mousePosition);
@@ -168,8 +174,10 @@ public final class MovementState extends CoreGameState {
 
 				path.clear();
 
-				((Fortify) model).getPathBetween(model.getSelected(0), target.model, UnitHelper.getInstance().getWeakest())
-						.forEach(country -> path.add(slick.modelView.getVisual(country)));
+				List<ModelCountry> path = ((Fortify) model).getPathBetween(primary, target.model,
+						primary.getArmy().getWeakestUnit());
+
+				path.forEach(country -> this.path.add(slick.modelView.getVisual(country)));
 			}
 		}
 	}
@@ -183,7 +191,7 @@ public final class MovementState extends CoreGameState {
 	 */
 	private void moveFortifyButton(SlickCountry country) {
 
-		Point armyPosition = getCenterArmyPosition(country);
+		Point armyPosition = country.getArmyPosition();
 
 		int x = armyPosition.x;
 		int y = armyPosition.y + 25;
@@ -196,8 +204,8 @@ public final class MovementState extends CoreGameState {
 	 */
 	@Override
 	protected void panElements(Point panVector) {
-		Point current = getButton(fortifyButton).getPosition();
-		getButton(fortifyButton).setPosition(new Point(current.x + panVector.x, current.y + panVector.y));
+		panButton(getButton(fortifyButton), panVector);
+		panButton(getButton(upgradeButton), panVector);
 	}
 
 	@Override
@@ -210,13 +218,17 @@ public final class MovementState extends CoreGameState {
 			return;
 		}
 
+		// If this is the primary country
+		if (selected.size() > 0) {
+			showUpgradeButton(getButton(upgradeButton));
+		} else {
+			getButton(upgradeButton).hide();
+		}
+
 		if (selected.size() == 2 && selected.get(0).model.getArmy().getStrength() > 1) {
 			getButton(fortifyButton).show();
 
 			path.clear();
-
-			((Fortify) model).getPathBetween(selected.get(0).model, selected.get(1).model, UnitHelper.getInstance().getWeakest())
-					.forEach(country -> path.add(slick.modelView.getVisual(country)));
 
 			moveFortifyButton(selected.get(1));
 		} else {

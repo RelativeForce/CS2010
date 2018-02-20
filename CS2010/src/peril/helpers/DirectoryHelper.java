@@ -9,9 +9,10 @@ import peril.controllers.Directory;
  * 
  * @author Joshua_Eddy
  * 
+ * @since 2018-02-18
+ * @version 1.01.03
+ * 
  * @see Directory
- * @version 1.01.02
- * @since 2018-02-09
  *
  */
 public final class DirectoryHelper implements Directory {
@@ -65,7 +66,12 @@ public final class DirectoryHelper implements Directory {
 	 * The name of the folder containing the frames of the splash screen.
 	 */
 	private static final String SPLASH = "splash";
-	
+
+	/**
+	 * The name of the folder containing the text files.
+	 */
+	private static final String TEXT = "text";
+
 	/**
 	 * The path to the assets directory.
 	 */
@@ -125,10 +131,15 @@ public final class DirectoryHelper implements Directory {
 	public String asMapPath(String mapName) {
 		return getMapsPath() + mapName + fileSeperator();
 	}
-	
+
 	@Override
 	public String getSplashPath() {
 		return getUIPath() + SPLASH + fileSeperator();
+	}
+
+	@Override
+	public String getTextPath() {
+		return base + fileSeperator() + TEXT + fileSeperator();
 	}
 
 	/**

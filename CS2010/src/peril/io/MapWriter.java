@@ -17,8 +17,8 @@ import peril.model.states.ModelState;
  * 
  * @author Joshua_Eddy
  *
- * @version 1.01.03
- * @since 2018-02-18
+ * @version 1.01.04
+ * @since 2018-02-20
  */
 public final class MapWriter {
 
@@ -161,6 +161,15 @@ public final class MapWriter {
 		line.append(',');
 
 		line.append(player.distributableArmy.getStrength());
+		line.append(',');
+		
+		line.append(player.getCountriesTaken());
+		line.append(',');
+		
+		line.append(player.getArmiesDestroyed());
+		line.append(',');
+		
+		line.append(player.getPointsSpent());
 		line.append(',');
 
 		line.append(isActive);

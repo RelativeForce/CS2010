@@ -34,10 +34,10 @@ import peril.views.slick.util.Region;
  * {@link SlickContinent}s, {@link SlickUnit}s. In addition of this it restores
  * the state of the game.
  * 
- * @author Joshua_Eddy
+ * @author Joshua_Eddy, Joseph_Rolli
  * 
- * @since 2018-02-18
- * @version 1.01.02
+ * @since 2018-02-20
+ * @version 1.01.03
  * 
  * @see FileParser
  * @see SaveFile
@@ -628,12 +628,12 @@ public final class MapReader extends FileParser {
 	 */
 	private void parsePlayer(String[] details) {
 
-		final int STATE_LENGTH = 5;
+		final int PLAYER_LENGTH = 8;
 
 		// Check there is the correct number of details
-		if (details.length != STATE_LENGTH) {
+		if (details.length != PLAYER_LENGTH) {
 			throw new IllegalArgumentException(
-					"Line " + index + ": Incorrect number of elements, there should be " + STATE_LENGTH + ".");
+					"Line " + index + ": Incorrect number of elements, there should be " + PLAYER_LENGTH + ".");
 		}
 
 		// Holds the player number
@@ -662,7 +662,7 @@ public final class MapReader extends FileParser {
 			throw new IllegalArgumentException("Line " + index + ": " + details[3] + " is not a valid player state.");
 		}
 
-		// Holds the strength of the players distrubutable army.
+		// Holds the number of points a player has.
 		int points;
 
 		try {
@@ -671,6 +671,36 @@ public final class MapReader extends FileParser {
 			throw new IllegalArgumentException(
 					"Line " + index + ": " + details[4] + " is not a valid number of points.");
 		}
+		//
+		// Holds the number of countries a player has taken.
+		int countriesTaken;
+
+		try {
+			countriesTaken = Integer.parseInt(details[5]);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(
+					"Line " + index + ": " + details[5] + " is not a valid number of points.");
+		}
+		
+		// Holds the number of armies a player has destroyed.
+		int armiesDestroyed;
+
+		try {
+			armiesDestroyed = Integer.parseInt(details[6]);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(
+					"Line " + index + ": " + details[6] + " is not a valid number of points.");
+		}
+		
+		// Holds the number of points a player has spent.
+		int pointsSpent;
+
+		try {
+			pointsSpent = Integer.parseInt(details[7]);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(
+					"Line " + index + ": " + details[7] + " is not a valid number of points.");
+		}
 
 		// Holds the slick player.
 		final SlickPlayer player = new SlickPlayer(playerNumber, slickGame.getColor(playerNumber), AI.USER);
@@ -678,6 +708,9 @@ public final class MapReader extends FileParser {
 		// Set the state of the player
 		player.model.distributableArmy.setStrength(armyStrength);
 		player.model.setPoints(points);
+		player.model.setCountriesTaken(countriesTaken);
+		player.model.setArmiesDestroyed(armiesDestroyed);	
+		player.model.setPointsSpent(pointsSpent);		
 		player.replaceImage(slickGame.getPlayerIcon(playerNumber));
 
 		// Add to the view

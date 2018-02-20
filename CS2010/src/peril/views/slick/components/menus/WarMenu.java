@@ -247,6 +247,10 @@ public class WarMenu extends Menu {
 
 		super.draw(frame);
 
+		if (!isVisible()) {
+			return;
+		}
+		
 		final int size = attackingSquad.size() + attacker.model.getArmy().getNumberOfUnits();
 
 		// Attacker has failed to conquer country

@@ -22,10 +22,10 @@ import peril.model.states.Reinforce;
  * observe the model objects. The {@link View#getModelView()} is used to
  * retrieve the {@link ModelView} which allows this mapping.
  * 
- * @author Joshua_Eddy
+ * @author Joshua_Eddy, Joseph_Rolli
  * 
- * @since 2018-02-16
- * @version 1.01.01
+ * @since 2018-02-20
+ * @version 1.01.02
  * 
  * @see ModelView
  * @see FileParser
@@ -151,15 +151,6 @@ public interface View {
 	 *            The visibility state of the menu.
 	 */
 	void toggleStatsMenu(boolean state);
-
-	/**
-	 * Toggles whether the menu that displays consumables shop to the user, between
-	 * hidden and visible.
-	 * 
-	 * @param state
-	 *            The visibility state of the menu.
-	 */
-	void togglePointsMenu(boolean state);
 
 	/**
 	 * Toggles whether the menu that displays an {@link ModelArmy}s units to the

@@ -43,10 +43,10 @@ import peril.views.slick.util.Point;
  * game should not interact with anything bar the {@link View} and
  * {@link ModelView}.
  * 
- * @author Joshua_Eddy
+ * @author Joshua_Eddy, Joseph Rolli
  * 
  * @since 2018-02-19
- * @version 1.01.07
+ * @version 1.01.08
  * 
  * @see StateBasedGame
  * @see View
@@ -290,7 +290,6 @@ public final class SlickGame extends StateBasedGame implements View {
 		final StatsMenu statsMenu = new StatsMenu(new Point(100, 100), game);
 		final UnitMenu unitMenu = new UnitMenu(new Point(100, 100), game);
 		final UpgradeMenu upgradeMenu = new UpgradeMenu(new Point(100, 100), game);
-		final PointsMenu pointsMenu = new PointsMenu(new Point(100, 100), game);
 
 		// Holds all the menus
 		final Set<Menu> menus = new HashSet<>();
@@ -301,7 +300,6 @@ public final class SlickGame extends StateBasedGame implements View {
 		menus.add(statsMenu);
 		menus.add(unitMenu);
 		menus.add(upgradeMenu);
-		menus.add(pointsMenu);
 
 		// Add all the menus to the menu helper.
 		this.menus = new MenuHelper(menus);
@@ -348,7 +346,6 @@ public final class SlickGame extends StateBasedGame implements View {
 		containers.add(statsMenu);
 		containers.add(unitMenu);
 		containers.add(upgradeMenu);
-		containers.add(pointsMenu);
 
 		// User the containers to create the IO helper.
 		this.io = new IOHelper(game, containers);
@@ -501,14 +498,6 @@ public final class SlickGame extends StateBasedGame implements View {
 	@Override
 	public void toggleHelpMenu(boolean state) {
 		toggleMenu(state, HelpMenu.NAME);
-	}
-
-	/**
-	 * Toggle the visibility of the points menu.
-	 */
-	@Override
-	public void togglePointsMenu(boolean state) {
-		toggleMenu(state, PointsMenu.NAME);
 	}
 
 	/**

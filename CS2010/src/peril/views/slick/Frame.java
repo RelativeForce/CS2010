@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
@@ -43,7 +44,7 @@ import peril.views.slick.util.Region;
  * @author Joshua_Eddy
  * 
  * @since 2018-02-19
- * @version 1.02.02
+ * @version 1.02.03
  * 
  * @see Clickable
  * @see Point
@@ -70,6 +71,8 @@ public final class Frame {
 	 */
 	public Graphics g;
 
+	public GameContainer gc;
+
 	/**
 	 * Constructs a new {@link Frame};
 	 */
@@ -84,9 +87,12 @@ public final class Frame {
 	 * 
 	 * @param g
 	 *            {@link Graphics} of the new frame.
+	 * @param gc
+	 *            The {@link GameContainer}
 	 */
-	public void newFrame(Graphics g) {
+	public void newFrame(Graphics g, GameContainer gc) {
 		this.g = g;
+		this.gc = gc;
 
 		clear();
 
@@ -208,8 +214,17 @@ public final class Frame {
 	 */
 	public void draw(Clickable item, EventListener listener) {
 
-		// Add the object to the planes.
-		addToPlanes(new Entry(item, listener));
+		final int left = item.getPosition().x;
+		final int top = item.getPosition().y;
+		final int right = left + item.getWidth();
+		final int bottom = left + item.getHeight();
+
+		if (left < gc.getWidth() && right > 0 && top < gc.getHeight() && bottom > 0) {
+
+			// Add the object to the planes.
+			addToPlanes(new Entry(item, listener));
+		}
+
 	}
 
 	/**
@@ -220,32 +235,41 @@ public final class Frame {
 	 */
 	public void draw(Button button) {
 
-		// Holds the entry that only processes click operations.
-		final Entry entry = new Entry(button, new EventListener() {
+		final int left = button.getPosition().x;
+		final int top = button.getPosition().y;
+		final int right = left + button.getWidth();
+		final int bottom = left + button.getHeight();
 
-			@Override
-			public final void mouseHover(Point mouse, int delta) {
-				// Do nothing
-			}
+		if (left < gc.getWidth() && right > 0 && top < gc.getHeight() && bottom > 0) {
 
-			@Override
-			public final void mouseClick(Point mouse, int mouseButton) {
-				button.click();
-			}
+			// Holds the entry that only processes click operations.
+			final Entry entry = new Entry(button, new EventListener() {
 
-			@Override
-			public final void buttonPress(int Key, Point mouse) {
-				// Do nothing
-			}
+				@Override
+				public final void mouseHover(Point mouse, int delta) {
+					// Do nothing
+				}
 
-			@Override
-			public final void draw(Frame frame) {
-				// Draw the button image.
-				g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y);
-			}
-		});
+				@Override
+				public final void mouseClick(Point mouse, int mouseButton) {
+					button.click();
+				}
 
-		addToPlanes(entry);
+				@Override
+				public final void buttonPress(int Key, Point mouse) {
+					// Do nothing
+				}
+
+				@Override
+				public final void draw(Frame frame) {
+					// Draw the button image.
+					g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y);
+				}
+			});
+
+			addToPlanes(entry);
+		}
+
 	}
 
 	/**

@@ -81,17 +81,18 @@ public class StatsMenu extends Menu {
 	private void drawStats(Frame frame) {
 		String countriesRuled = "Countries owned: " + currentPlayer.getCountriesRuled();
 		String armyStrength = "Total army strength: " + currentPlayer.getTotalArmyStrength();
-		String continentsRuled = "Continents owned: " + currentPlayer.getContinentsRuled();
+		//String continentsRuled = "Continents owned: " + currentPlayer.getContinentsRuled();
 		String armiesDestroyed = "Armies destroyed: " + currentPlayer.getArmiesDestroyed();
 		String pointsSpent = "Points spent: " + currentPlayer.getPointsSpent();
 		String countriesTaken = "Countries taken: " + currentPlayer.getCountriesTaken();
 
 		frame.draw(textFont, countriesRuled, getPosition().x + 100, getPosition().y + 150);
 		frame.draw(textFont, armyStrength, getPosition().x + 100, getPosition().y + 200);
-		frame.draw(textFont, continentsRuled, getPosition().x + 100, getPosition().y + 250);
-		frame.draw(textFont, armiesDestroyed, getPosition().x + 100, getPosition().y + 300);
-		frame.draw(textFont, pointsSpent, getPosition().x + 100, getPosition().y + 350);
-		frame.draw(textFont, countriesTaken, getPosition().x + 100, getPosition().y + 400);
+		frame.draw(textFont, armiesDestroyed, getPosition().x + 100, getPosition().y + 250);
+		frame.draw(textFont, pointsSpent, getPosition().x + 100, getPosition().y + 300);
+		frame.draw(textFont, countriesTaken, getPosition().x + 100, getPosition().y + 350);
+		//frame.draw(textFont, continentsRuled, getPosition().x + 100, getPosition().y + 400);
+
 
 	}
 

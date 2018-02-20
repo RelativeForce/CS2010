@@ -22,10 +22,10 @@ import peril.model.states.Reinforce;
  * observe the model objects. The {@link View#getModelView()} is used to
  * retrieve the {@link ModelView} which allows this mapping.
  * 
- * @author Joshua_Eddy, Joseph_Rolli
+ * @author Joshua_Eddy, Joseph_Rolli, Adrian_Wong
  * 
  * @since 2018-02-20
- * @version 1.01.02
+ * @version 1.01.03
  * 
  * @see ModelView
  * @see FileParser
@@ -349,5 +349,10 @@ public interface View {
 	 * @return The {@link FileParser} that will load the game from memory.
 	 */
 	FileParser getMapLoader(String mapPath, SaveFile save);
+
+	/**
+	 * Allows to enter the credits page.
+	 */
+	void enterCredits();
 
 }

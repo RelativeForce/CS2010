@@ -10,9 +10,9 @@ import peril.views.slick.components.menus.UnitMenu;
  * 
  * This hold the functionality of every predefined {@link Button} in the game.
  * 
- * @author Mohammad_ali_Sayed_Ackbar, Joshua_Eddy, Joseph_Rolli
+ * @author Mohammad_ali_Sayed_Ackbar, Joshua_Eddy, Joseph_Rolli, Adrian_Wong
  * 
- * @version 1.01.03
+ * @version 1.01.04
  * @since 2018-02-20
  *
  */
@@ -112,6 +112,8 @@ public final class FunctionHelper {
 			return showUnitMenu();
 		case 31:
 			return hideUnitMenu();
+		case 32:
+			return enterCredits();
 
 		}
 
@@ -220,6 +222,15 @@ public final class FunctionHelper {
 	 */
 	private Action<?> nextHelpPage() {
 		return new Action<GameController>(game, game -> game.getView().nextHelpPage());
+	}
+	
+	/**
+	 * Retrieves the {@link Action} that moves the to the credits page
+	 * 
+	 * @return
+	 */
+	private Action<?> enterCredits() {
+		return new Action<GameController>(game, game -> game.getView().enterCredits());
 	}
 
 	/**

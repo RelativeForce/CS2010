@@ -37,8 +37,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joseph_Rolli, Joshua_Eddy
  * 
- * @since 2018-02-19
- * @version 1.01.03
+ * @since 2018-02-20
+ * @version 1.01.04
  * 
  * @see InteractiveState
  * @see Observer
@@ -216,16 +216,29 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 		switch (key) {
 		case Input.KEY_UP:
-			pan(new Point(0, +increment));
+
+			if (!slick.menus.menuVisible()) {
+				pan(new Point(0, +increment));
+			}
+
 			break;
 		case Input.KEY_DOWN:
-			pan(new Point(0, -increment));
+			if (!slick.menus.menuVisible()) {
+				pan(new Point(0, -increment));
+			}
+
 			break;
 		case Input.KEY_LEFT:
-			pan(new Point(+increment, 0));
+			if (!slick.menus.menuVisible()) {
+				pan(new Point(+increment, 0));
+			}
+
 			break;
 		case Input.KEY_RIGHT:
-			pan(new Point(-increment, 0));
+			if (!slick.menus.menuVisible()) {
+				pan(new Point(-increment, 0));
+			}
+
 			break;
 		case Input.KEY_ESCAPE:
 			menus.show(PauseMenu.NAME);
@@ -569,10 +582,10 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 			@Override
 			public void mouseClick(Point mouse, int mouseButton) {
 
-				if(game.getCurrentModelPlayer().ai != AI.USER) {
+				if (game.getCurrentModelPlayer().ai != AI.USER || slick.menus.menuVisible()) {
 					return;
 				}
-				
+
 				// Get the country that is clicked.
 				final SlickCountry clicked = board.getCountry(mouse);
 

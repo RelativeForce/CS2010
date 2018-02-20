@@ -18,7 +18,7 @@ import peril.views.slick.util.Region;
  * @author Joseph_Rolli
  * 
  * @since 2018-02-20
- * @version 1.01.04
+ * @version 1.01.05
  *
  */
 public class StatsMenu extends Menu {
@@ -48,7 +48,7 @@ public class StatsMenu extends Menu {
 	 */
 	public StatsMenu(Point position, GameController game) {
 		super(NAME, game, new Region(600, 600, position));
-		this.textFont = new Font("Arial", Color.black, 20);
+		this.textFont = new Font("Arial", Color.black, 35);
 
 	}
 
@@ -81,17 +81,17 @@ public class StatsMenu extends Menu {
 	private void drawStats(Frame frame) {
 		String countriesRuled = "Countries owned: " + currentPlayer.getCountriesRuled();
 		String armyStrength = "Total army strength: " + currentPlayer.getTotalArmyStrength();
-		//String continentsRuled = "Continents owned: " + currentPlayer.getContinentsRuled();
 		String armiesDestroyed = "Armies destroyed: " + currentPlayer.getArmiesDestroyed();
+		String currentPoints = "Current points: " + currentPlayer.getPoints();
 		String pointsSpent = "Points spent: " + currentPlayer.getPointsSpent();
 		String countriesTaken = "Countries taken: " + currentPlayer.getCountriesTaken();
 
 		frame.draw(textFont, countriesRuled, getPosition().x + 100, getPosition().y + 150);
 		frame.draw(textFont, armyStrength, getPosition().x + 100, getPosition().y + 200);
 		frame.draw(textFont, armiesDestroyed, getPosition().x + 100, getPosition().y + 250);
-		frame.draw(textFont, pointsSpent, getPosition().x + 100, getPosition().y + 300);
-		frame.draw(textFont, countriesTaken, getPosition().x + 100, getPosition().y + 350);
-		//frame.draw(textFont, continentsRuled, getPosition().x + 100, getPosition().y + 400);
+		frame.draw(textFont, currentPoints, getPosition().x + 100, getPosition().y + 300);
+		frame.draw(textFont, pointsSpent, getPosition().x + 100, getPosition().y + 350);
+		frame.draw(textFont, countriesTaken, getPosition().x + 100, getPosition().y + 400);
 
 
 	}

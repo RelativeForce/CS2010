@@ -31,8 +31,8 @@ import peril.views.slick.util.Viewable;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-17
- * @version 1.01.01
+ * @since 2018-02-19
+ * @version 1.01.02
  * 
  * @see Container
  * @see BasicGameState
@@ -323,7 +323,7 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	public final void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 
 		// Refresh the frame.
-		frame.newFrame(g);
+		frame.newFrame(g, gc);
 
 		// Render the frame
 		render(gc, frame);

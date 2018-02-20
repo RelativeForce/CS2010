@@ -516,7 +516,7 @@ public final class SlickGame extends StateBasedGame implements View {
 	 */
 	@Override
 	public void toggleUpgradeMenu(boolean state) {
-		toggleMenu(state, PointsMenu.NAME);
+		toggleMenu(state, UpgradeMenu.NAME);
 	}
 
 	/**
@@ -524,7 +524,7 @@ public final class SlickGame extends StateBasedGame implements View {
 	 */
 	@Override
 	public void toggleUnitMenu(boolean state) {
-		toggleMenu(state, PointsMenu.NAME);
+		toggleMenu(state, UnitMenu.NAME);
 	}
 
 	/**

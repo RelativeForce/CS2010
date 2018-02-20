@@ -162,6 +162,7 @@ public final class StateHelper {
 		game.addState(reinforcement);
 		game.addState(combat);
 		game.addState(movement);
+		game.addState(credits);
 
 	}
 

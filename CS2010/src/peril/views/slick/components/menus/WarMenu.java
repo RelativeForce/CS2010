@@ -48,6 +48,11 @@ public class WarMenu extends Menu {
 	private final static int MAX_ATTACK_SQUAD_SIZE = 3;
 
 	private final static int MAX_DEFEND_SQUAD_SIZE = 2;
+	
+	/**
+	 * The number of points awarded for conquering a country.
+	 */
+	private final static int CONQURE_POINTS = 2;
 
 	/**
 	 * The {@link Dice} displaying dice interactions on screen.
@@ -250,7 +255,7 @@ public class WarMenu extends Menu {
 		if (!isVisible()) {
 			return;
 		}
-		
+
 		final int size = attackingSquad.size() + attacker.model.getArmy().getNumberOfUnits();
 
 		// Attacker has failed to conquer country
@@ -450,6 +455,10 @@ public class WarMenu extends Menu {
 					game.getAttack().deselectAll();
 
 					attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
+
+					attackingPlayer.setCountriesTaken(attackingPlayer.getCountriesTaken() + 1);
+					
+					attackingPlayer.setPoints(attackingPlayer.getPoints() + CONQURE_POINTS);
 
 					game.checkContinentRulership();
 

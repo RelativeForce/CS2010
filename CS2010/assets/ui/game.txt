@@ -75,7 +75,3 @@ button,Upgrade Menu,29,xButton.png,60,60,490,10,close
 image,Upgrade Menu,toolTipBox.png,600,600,0,0
 
 
-//Points Menu
-button,Points Menu,27,xButton.png,60,60,490,10,close
-image,Points Menu,toolTipBox.png,600,600,0,0
-

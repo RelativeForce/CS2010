@@ -16,6 +16,7 @@ import org.newdawn.slick.Image;
 import peril.concurrent.Action;
 import peril.controllers.GameController;
 import peril.helpers.UnitHelper;
+import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
 import peril.model.ModelPlayer;
 import peril.views.slick.board.SlickCountry;
@@ -26,6 +27,7 @@ import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
 import peril.views.slick.io.ImageReader;
 import peril.views.slick.util.Button;
+import peril.views.slick.util.Clickable;
 import peril.views.slick.util.Font;
 import peril.views.slick.util.Point;
 import peril.views.slick.util.Region;
@@ -112,11 +114,11 @@ public class WarMenu extends Menu {
 
 	private final Consumer<SlickUnit> poolClick;
 
-	private final Consumer<SquadMember> squadClick;
-
 	private final List<SquadMember> attackingSquad;
 
 	private final Font yourArmyFont;
+
+	private Point squadTop;
 
 	/**
 	 * Constructs a new {@link WarMenu}.
@@ -136,19 +138,14 @@ public class WarMenu extends Menu {
 		this.yourArmyFont = new Font("Arial", Color.black, 25);
 		this.attackingSquad = new LinkedList<>();
 
-		poolClick = new Consumer<SlickUnit>() {
+		this.squadTop = new Point(this.getPosition().x + (this.getWidth() / 4) - SlickUnit.WIDTH,
+				this.getPosition().y + 250);
+
+		this.poolClick = new Consumer<SlickUnit>() {
 
 			@Override
 			public void accept(SlickUnit unit) {
 				moveToAttackSquad(unit.model);
-			}
-		};
-
-		squadClick = new Consumer<SquadMember>() {
-
-			@Override
-			public void accept(SquadMember unit) {
-				returnUnitToAttackingArmy(unit);
 			}
 		};
 
@@ -177,6 +174,16 @@ public class WarMenu extends Menu {
 			attacker.model.getArmy().add(member.unit.model);
 		}
 
+		int x = squadTop.x;
+		int y = squadTop.y;
+
+		for (SquadMember sqd : attackingSquad) {
+
+			sqd.setPosition(new Point(x, y));
+
+			y += SlickUnit.HEIGHT;
+		}
+
 		// If all the alive units have been removed hide the attack button and clear the
 		// dice.
 		if (getAliveUnits(attackingSquad) == 0) {
@@ -192,7 +199,11 @@ public class WarMenu extends Menu {
 
 		if (attackingSquad.size() <= MAX_ATTACK_SQUAD_SIZE - 1 && attacker.model.getArmy().getNumberOfUnits() > 1) {
 			attacker.model.getArmy().remove(unit);
-			attackingSquad.add(new SquadMember(slick.modelView.getVisual(unit), true));
+
+			SquadMember member = new SquadMember(slick.modelView.getVisual(unit), true);
+			member.setPosition(new Point(squadTop.x, squadTop.y + (attackingSquad.size() * SlickUnit.HEIGHT)));
+
+			attackingSquad.add(member);
 		}
 
 		getButton(attackButton).show();
@@ -236,33 +247,26 @@ public class WarMenu extends Menu {
 
 		super.draw(frame);
 
-		if (isVisible()) {
+		final int size = attackingSquad.size() + attacker.model.getArmy().getNumberOfUnits();
 
-			final int size = attackingSquad.size() + attacker.model.getArmy().getNumberOfUnits();
-
-			// Attacker has failed to conquer country
-			if (size == 1) {
-				failedConquer(frame);
-			}
-			// Attacker has conquered country
-			else if (attacker.model.getRuler().equals(enemy.model.getRuler())) {
-				succesfulConquer(frame);
-			}
-			// Normal Combat
-			else {
-				drawNormalCombat(frame);
-			}
-
-			// drawArmySizes(g);
-
+		// Attacker has failed to conquer country
+		if (size == 1) {
+			failedConquer(frame);
 		}
+		// Attacker has conquered country
+		else if (attacker.model.getRuler().equals(enemy.model.getRuler())) {
+			succesfulConquer(frame);
+		}
+		// Normal Combat
+		else {
+			drawNormalCombat(frame);
+		}
+
 	}
 
 	private void drawNormalCombat(Frame frame) {
-		Point position = new Point(this.getPosition().x + (this.getWidth() / 4) - SlickUnit.WIDTH,
-				this.getPosition().y + 250);
 
-		drawSquad(attackingSquad, position, frame);
+		drawSquad(attackingSquad, frame);
 
 		drawPlayer(enemyRuler, (getWidth() / 4), frame);
 
@@ -321,6 +325,9 @@ public class WarMenu extends Menu {
 
 		getButton(attackButton).hide();
 
+		this.squadTop = new Point(this.getPosition().x + (this.getWidth() / 4) - SlickUnit.WIDTH,
+				this.getPosition().y + 250);
+
 		attacker = slick.modelView.getVisual(game.getAttack().getSelected(0));
 		enemy = slick.modelView.getVisual(game.getAttack().getSelected(1));
 
@@ -329,16 +336,39 @@ public class WarMenu extends Menu {
 
 	}
 
-	private void drawSquad(List<SquadMember> squad, Point topUnit, Frame frame) {
+	private void drawSquad(List<SquadMember> squad, Frame frame) {
 
-		int x = topUnit.x;
-		int y = topUnit.y;
+		int x = squadTop.x;
+		int y = squadTop.y;
 
 		// Draw each member in the squad
 		for (SquadMember member : squad) {
 
 			// Draw the unit
-			frame.draw(new Button(new Point(x, y), member.unit.getImage(), new Action<>(member, squadClick), "squad"));
+
+			frame.draw(member, new EventListener() {
+
+				@Override
+				public void mouseHover(Point mouse, int delta) {
+					// Do nothing
+				}
+
+				@Override
+				public void mouseClick(Point mouse, int mouseButton) {
+					returnUnitToAttackingArmy(member);
+				}
+
+				@Override
+				public void draw(Frame frame) {
+					frame.draw(member.getImage(), member.getPosition().x, member.getPosition().y);
+				}
+
+				@Override
+				public void buttonPress(int key, Point mouse) {
+					// Do Nothing
+
+				}
+			});
 
 			// If the member is dead then draw a cross over it.
 			if (!member.isAlive) {
@@ -574,7 +604,7 @@ public class WarMenu extends Menu {
 
 		frame.draw(countryFont, attacker.model.getName(),
 				getPosition().x + (getWidth() / 2) - (countryFont.getWidth(attacker.model.getName()) / 2),
-				getPosition().y + (getHeight() / 2) - 30);
+				getPosition().y + (getHeight() / 2) - 45);
 
 		frame.draw(resultFont, failure, getPosition().x + (getWidth() / 2) - (resultFont.getWidth(failure) / 2),
 				getPosition().y + (getHeight() / 2));
@@ -918,7 +948,7 @@ public class WarMenu extends Menu {
 
 	}
 
-	private final class SquadMember {
+	private final class SquadMember extends Clickable {
 
 		public final SlickUnit unit;
 
@@ -928,6 +958,8 @@ public class WarMenu extends Menu {
 
 			this.unit = unit;
 			this.isAlive = isAlive;
+
+			replaceImage(unit.getImage());
 
 		}
 

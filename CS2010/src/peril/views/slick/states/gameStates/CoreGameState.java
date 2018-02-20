@@ -249,8 +249,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		super.parseMouse(mousePosition);
 
 		// Holds the dimensions of the game container.
-		int screenWidth = slick.getContainer().getWidth();
-		int screenHeight = slick.getContainer().getHeight();
+		int screenWidth = slick.getScreenWidth();
+		int screenHeight = slick.getScreenHeight();
 
 		// Set the padding of the window
 		int xPadding = screenWidth / 10;

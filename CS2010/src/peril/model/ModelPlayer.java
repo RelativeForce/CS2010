@@ -16,7 +16,7 @@ import peril.model.board.ModelArmy;
  * @author Joshua_Eddy, Ezekiel_Trinidad, Joseph_Rolli
  * 
  * @since 2018-02-20
- * @version 1.01.02
+ * @version 1.01.03
  * 
  * @see Player
  * @see Observable
@@ -193,6 +193,7 @@ public final class ModelPlayer extends Observable implements Player {
 	/**
 	 * Retrieves the amount of points this {@link ModelPlayer} has.
 	 */
+	@Override
 	public int getPoints() {
 		return this.points;
 	}

@@ -5,8 +5,8 @@ package peril.controllers.api;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.02
- * @since 2018-02-11
+ * @version 1.01.03
+ * @since 2018-02-20
  *
  */
 public interface Player {
@@ -41,7 +41,8 @@ public interface Player {
 	 * 
 	 * @return Distribute-able army strength
 	 * 
-	 * @deprecated use {@link Player#getDistributableArmy()} then {@link Army#getStrength()}
+	 * @deprecated use {@link Player#getDistributableArmy()} then
+	 *             {@link Army#getStrength()}
 	 */
 	int getDistributableArmyStrength();
 
@@ -62,5 +63,13 @@ public interface Player {
 	 * 
 	 */
 	Army getTotalArmy();
+
+	/**
+	 * Retrieves all the number of points that this {@link Player} has.
+	 * 
+	 * @return Number of points player has.
+	 * 
+	 */
+	int getPoints();
 
 }

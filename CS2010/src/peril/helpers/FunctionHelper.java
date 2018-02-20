@@ -12,7 +12,7 @@ import peril.views.slick.components.menus.UnitMenu;
  * 
  * @author Mohammad_ali_Sayed_Ackbar, Joshua_Eddy, Joseph_Rolli
  * 
- * @version 1.01.02
+ * @version 1.01.03
  * @since 2018-02-20
  *
  */
@@ -100,10 +100,10 @@ public final class FunctionHelper {
 			return showStatsMenu();
 		case 25:
 			return hideStatsMenu();
-		case 26:
-			return showPointsMenu();
-		case 27:
-			return hidePointsMenu();
+//		case 26:
+//			return showPointsMenu();
+//		case 27:
+//			return hidePointsMenu();
 		case 28:
 			return showUpgradeMenu();
 		case 29:
@@ -415,24 +415,6 @@ public final class FunctionHelper {
 	 */
 	private Action<?> hideStatsMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleStatsMenu(false));
-	}
-
-	/**
-	 * Retrieves the {@link Action} that opens the {@link PointsMenu} window.
-	 * 
-	 * @return
-	 */
-	private Action<?> showPointsMenu() {
-		return new Action<GameController>(game, game -> game.getView().togglePointsMenu(true));
-	}
-
-	/**
-	 * Retrieves the {@link Action} that closes the {@link PointsMenu} window.
-	 * 
-	 * @return
-	 */
-	private Action<?> hidePointsMenu() {
-		return new Action<GameController>(game, game -> game.getView().togglePointsMenu(false));
 	}
 
 	/**

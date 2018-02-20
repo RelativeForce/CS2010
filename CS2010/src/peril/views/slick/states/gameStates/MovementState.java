@@ -33,6 +33,8 @@ public final class MovementState extends CoreGameState {
 	 */
 	private final String fortifyButton;
 
+	private final String upgradeButton;
+
 	/**
 	 * Hold the path between two {@link SlickCountry}s in the {@link MovementState}.
 	 */
@@ -50,6 +52,7 @@ public final class MovementState extends CoreGameState {
 	public MovementState(GameController game, int id, Fortify model) {
 		super(game, model.getName(), id, model);
 		this.fortifyButton = "fortify";
+		this.upgradeButton = "upgrades";
 		path = new LinkedList<>();
 
 		model.addObserver(this);
@@ -63,6 +66,7 @@ public final class MovementState extends CoreGameState {
 		super.enter(gc, sbg);
 		menus.showSaveOption();
 		getButton(fortifyButton).hide();
+		getButton(upgradeButton).hide();
 	}
 
 	/**
@@ -200,8 +204,8 @@ public final class MovementState extends CoreGameState {
 	 */
 	@Override
 	protected void panElements(Point panVector) {
-		Point current = getButton(fortifyButton).getPosition();
-		getButton(fortifyButton).setPosition(new Point(current.x + panVector.x, current.y + panVector.y));
+		panButton(getButton(fortifyButton), panVector);
+		panButton(getButton(upgradeButton), panVector);
 	}
 
 	@Override
@@ -214,11 +218,18 @@ public final class MovementState extends CoreGameState {
 			return;
 		}
 
+		// If this is the primary country
+		if (selected.size() > 0) {
+			showUpgradeButton(getButton(upgradeButton));
+		} else {
+			getButton(upgradeButton).hide();
+		}
+
 		if (selected.size() == 2 && selected.get(0).model.getArmy().getStrength() > 1) {
 			getButton(fortifyButton).show();
 
 			path.clear();
-			
+
 			moveFortifyButton(selected.get(1));
 		} else {
 			getButton(fortifyButton).hide();

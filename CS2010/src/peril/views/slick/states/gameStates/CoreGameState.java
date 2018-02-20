@@ -29,6 +29,7 @@ import peril.views.slick.components.menus.PauseMenu;
 import peril.views.slick.components.menus.StatsMenu;
 import peril.views.slick.helpers.MenuHelper;
 import peril.views.slick.states.InteractiveState;
+import peril.views.slick.util.Button;
 import peril.views.slick.util.Point;
 
 /**
@@ -38,7 +39,7 @@ import peril.views.slick.util.Point;
  * @author Joseph_Rolli, Joshua_Eddy
  * 
  * @since 2018-02-20
- * @version 1.01.04
+ * @version 1.01.05
  * 
  * @see InteractiveState
  * @see Observer
@@ -516,6 +517,33 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 				// Do nothing
 			}
 		});
+	}
+
+	/**
+	 * Pans a {@link Button} by a specified {@link Point} pan vector.
+	 * 
+	 * @param button
+	 *            The {@link Button} to be panned.
+	 * @param panVector
+	 *            The direction that the {@link Button} will be panned.
+	 */
+	protected final void panButton(Button button, Point panVector) {
+		Point current = button.getPosition();
+		button.setPosition(new Point(current.x + panVector.x, current.y + panVector.y));
+	}
+
+	/**
+	 * Moves the specified {@link Button} to the position that the upgrade
+	 * {@link Button} is displayed over the primary country selected.
+	 * 
+	 * @param upgrade
+	 *            The upgrade button.
+	 */
+	protected final void showUpgradeButton(Button upgrade) {
+		
+		final Point army = selected.get(0).getArmyPosition();
+		upgrade.setPosition(new Point(army.x - upgrade.getWidth(), army.y + (SlickUnit.HEIGHT / 2) + 5));
+		upgrade.show();
 	}
 
 	/**

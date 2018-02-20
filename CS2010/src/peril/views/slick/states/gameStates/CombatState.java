@@ -34,6 +34,7 @@ public final class CombatState extends CoreGameState {
 	 * Holds the instance of a attack {@link Button}.
 	 */
 	private final String attackButton;
+	private String upgradeButton;
 
 	/**
 	 * Constructs a new {@link CombatState}.
@@ -46,7 +47,7 @@ public final class CombatState extends CoreGameState {
 	public CombatState(GameController game, int id, Attack model) {
 		super(game, model.getName(), id, model);
 		this.attackButton = "attack";
-
+		this.upgradeButton = "upgrades";
 		model.addObserver(this);
 
 	}
@@ -121,6 +122,7 @@ public final class CombatState extends CoreGameState {
 		super.enter(gc, sbg);
 		menus.showSaveOption();
 		getButton(attackButton).hide();
+		getButton(upgradeButton).hide();
 	}
 
 	/**
@@ -201,6 +203,13 @@ public final class CombatState extends CoreGameState {
 		// either case there should be no full state update.
 		if (getButton(attackButton) == null) {
 			return;
+		}
+
+		// If this is the primary country
+		if (selected.size() > 0) {
+			showUpgradeButton(getButton(upgradeButton));
+		} else {
+			getButton(upgradeButton).hide();
 		}
 
 		if (selected.size() == 2 && selected.get(0).model.getArmy().getStrength() > 1) {

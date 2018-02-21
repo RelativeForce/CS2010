@@ -2,17 +2,19 @@ package peril.views.slick.components.menus;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 
 import peril.Game;
 import peril.controllers.GameController;
 import peril.io.MapWriter;
 import peril.io.SaveFile;
-import peril.views.slick.Button;
-import peril.views.slick.Font;
-import peril.views.slick.Point;
-import peril.views.slick.Region;
-import peril.views.slick.Viewable;
-import peril.views.slick.components.lists.VisualList;
+import peril.views.slick.EventListener;
+import peril.views.slick.Frame;
+import peril.views.slick.components.VisualList;
+import peril.views.slick.util.Button;
+import peril.views.slick.util.Font;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Region;
 
 /**
  * Encapsulates the behaviour of a Pause Menu
@@ -60,6 +62,24 @@ public class PauseMenu extends Menu {
 	private final Font textFont;
 
 	/**
+	 * The {@link EventListener} that handles the events that occur to the
+	 * {@link #toggleMusic} list.
+	 */
+	private final EventListener musicToggleListener;
+
+	/**
+	 * The {@link EventListener} that handles the events that occur to the
+	 * {@link #toggleAllLinks} list.
+	 */
+	private final EventListener linksToggleListener;
+
+	/**
+	 * The {@link EventListener} that handles the events that occur to the
+	 * {@link #saveFiles} list.
+	 */
+	private final EventListener savesListener;
+
+	/**
 	 * Constructs a new {@link PauseMenu}.
 	 * 
 	 * @param position
@@ -68,29 +88,134 @@ public class PauseMenu extends Menu {
 	 *            The {@link Game} the {@link PauseMenu} is associated with.
 	 */
 	public PauseMenu(Point position, GameController game) {
-		super(NAME, game, new Region(300, 300, position));
+		super(NAME, game, new Region(600, 600, position));
 
 		this.saveButton = "save";
 		this.showSaveOption = false;
 
+		final Font toggleFont = new Font("Arial", Color.black, 20);
+
 		// Construct music toggle
-		this.toggleMusic = new VisualList<>(new Point(position.x + (getWidth() / 4), position.y + 70), 30, 15, 2, 5);
+		this.toggleMusic = new VisualList<>(new Point(position.x + (getWidth() / 4), position.y + (getHeight() / 4)),
+				60, 30, 2, 10);
 		this.toggleMusic.add(Toggle.ON.toString, Toggle.ON);
 		this.toggleMusic.add(Toggle.OFF.toString, Toggle.OFF);
-		this.toggleMusic.setFont(new Font("Arial", Color.black, 10));
+		this.toggleMusic.setFont(toggleFont);
 
 		// Construct all links toggle
-		this.toggleAllLinks = new VisualList<>(new Point(position.x + ((getWidth() * 3) / 4), position.y + 70), 30, 15,
-				2, 5);
+		this.toggleAllLinks = new VisualList<>(
+				new Point(position.x + ((getWidth() * 3) / 4), position.y + (getHeight() / 4)), 60, 30, 2, 10);
 		this.toggleAllLinks.add(Toggle.OFF.toString, Toggle.OFF);
 		this.toggleAllLinks.add(Toggle.ON.toString, Toggle.ON);
-		this.toggleAllLinks.setFont(new Font("Arial", Color.black, 10));
+		this.toggleAllLinks.setFont(toggleFont);
 
-		this.textFont = new Font("Arial", Color.black, 10);
+		this.textFont = new Font("Arial", Color.black, 20);
 
 		// Construct save file list
-		this.saveFiles = new VisualList<>(new Point(position.x + (getWidth() / 2), position.y + 120), 90, 15, 3, 5);
-		this.saveFiles.setFont(new Font("Arial", Color.black, 10));
+		this.saveFiles = new VisualList<>(new Point(position.x + (getWidth() / 2), position.y + 250), 180, 30, 3, 10);
+		this.saveFiles.setFont(toggleFont);
+
+		this.linksToggleListener = new EventListener() {
+
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
+				toggleAllLinks.click(mouse);
+			}
+
+			@Override
+			public void draw(Frame frame) {
+				toggleAllLinks.draw(frame);
+			}
+
+			@Override
+			public void buttonPress(int key, Point mouse) {
+				if (toggleAllLinks.isClicked(mouse)) {
+
+					if (key == Input.KEY_UP) {
+						toggleAllLinks.up();
+					} else if (key == Input.KEY_DOWN) {
+						toggleAllLinks.down();
+					}
+				}
+
+			}
+		};
+
+		this.musicToggleListener = new EventListener() {
+
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
+				toggleMusic.click(mouse);
+				checkMusicState();
+			}
+
+			@Override
+			public void draw(Frame frame) {
+				toggleMusic.draw(frame);
+			}
+
+			@Override
+			public void buttonPress(int key, Point mouse) {
+				if (toggleMusic.isClicked(mouse)) {
+
+					if (key == Input.KEY_UP) {
+						toggleMusic.up();
+						checkMusicState();
+					} else if (key == Input.KEY_DOWN) {
+						toggleMusic.down();
+						checkMusicState();
+					}
+
+				}
+
+			}
+
+			private void checkMusicState() {
+				game.getView().toggleMusic(toggleMusic.getSelected().toggle);
+			}
+		};
+
+		this.savesListener = new EventListener() {
+
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
+				saveFiles.click(mouse);
+			}
+
+			@Override
+			public void draw(Frame frame) {
+				saveFiles.draw(frame);
+			}
+
+			@Override
+			public void buttonPress(int key, Point mouse) {
+				if (saveFiles.isClicked(mouse)) {
+
+					if (key == Input.KEY_UP) {
+						saveFiles.up();
+					} else if (key == Input.KEY_DOWN) {
+						saveFiles.down();
+					}
+				}
+
+			}
+		};
+
 	}
 
 	/**
@@ -108,33 +233,17 @@ public class PauseMenu extends Menu {
 	 * @param g
 	 *            {@link Graphics}
 	 */
-	public void draw(Graphics g) {
+	public void draw(Frame frame) {
 
-		super.draw(g);
+		super.draw(frame);
 
-		if (isVisible()) {
+		frame.setColor(Color.white);
 
-			g.setColor(Color.white);
-
-			if (showSaveOption) {
-				drawSaveOption(g);
-			}
-
-			drawMusicToggle(g);
-
+		if (showSaveOption) {
+			drawSaveOption(frame);
 		}
 
-	}
-
-	/**
-	 * Adds an {@link Viewable} to this {@link PauseMenu}. The {@link Viewable}s
-	 * added will be scaled to the size of the {@link PauseMenu}.
-	 */
-	@Override
-	public void addImage(Viewable image) {
-		super.addImage(image);
-		image.scale(getWidth(), getWidth());
-		image.setPosition(getPosition());
+		drawToggles(frame);
 
 	}
 
@@ -148,22 +257,6 @@ public class PauseMenu extends Menu {
 		toggleMusic.init();
 		saveFiles.init();
 
-	}
-
-	/**
-	 * Processed the click on the toggle music buttons.
-	 */
-	public void parseClick(Point click) {
-
-		if (!toggleMusic.click(click)) {
-			if (!toggleAllLinks.click(click)) {
-				if (!saveFiles.click(click)) {
-					clickedButton(click);
-				}
-			}
-		} else {
-			slick.toggleMusic(toggleMusic.getSelected().toggle);
-		}
 	}
 
 	/**
@@ -237,37 +330,42 @@ public class PauseMenu extends Menu {
 	/**
 	 * Draws the music toggle on the {@link PauseMenu}.
 	 * 
-	 * @param g
+	 * @param frametextFont
 	 *            {@link Graphics}
 	 */
-	private void drawMusicToggle(Graphics g) {
+	private void drawToggles(Frame frame) {
 
 		String music = "Music:";
 
 		String links = "Links:";
 
-		textFont.draw(g, music, toggleMusic.getPosition().x - textFont.getWidth(music) - 5,
+		frame.draw(textFont, music, toggleMusic.getPosition().x - textFont.getWidth(music) - 5,
 				toggleMusic.getPosition().y);
-		textFont.draw(g, links, toggleAllLinks.getPosition().x - textFont.getWidth(links) - 5,
+		frame.draw(textFont, links, toggleAllLinks.getPosition().x - textFont.getWidth(links) - 5,
 				toggleAllLinks.getPosition().y);
 
-		toggleMusic.draw(g);
-		toggleAllLinks.draw(g);
+		// Draw the music toggle.
+		frame.draw(toggleMusic, musicToggleListener);
+
+		// Draw the links toggle.
+		frame.draw(toggleAllLinks, linksToggleListener);
+
 	}
 
 	/**
 	 * Draws the save option menu on the {@link PauseMenu}.
 	 * 
-	 * @param g
+	 * @param frame
 	 *            {@link Graphics}
 	 */
-	private void drawSaveOption(Graphics g) {
+	private void drawSaveOption(Frame frame) {
 
 		String save = "Save Game:";
 
-		textFont.draw(g, save, getPosition().x - textFont.getWidth(save) + (getWidth() / 2) - 5, getPosition().y + 120);
+		frame.draw(textFont, save, getPosition().x - textFont.getWidth(save) + (getWidth() / 2) - 10,
+				getPosition().y + 240);
 
-		saveFiles.draw(g);
+		frame.draw(saveFiles, savesListener);
 	}
 
 	/**
@@ -278,10 +376,11 @@ public class PauseMenu extends Menu {
 	 */
 	private void addSaveFile(SaveFile file) {
 
+		final String mapPath = game.getDirectory().asMapPath(game.getModelBoard().getName());
+
 		// If the save file does not currently exist display to the user that it is
 		// empty
-		boolean exists = file.existsIn(game.getMapsPath() + game.getModelBoard().getName());
-		String text = file.name + (exists ? "" : " - Empty");
+		final String text = file.name + (file.existsIn(mapPath) ? "" : " - Empty");
 
 		saveFiles.add(text, file);
 	}

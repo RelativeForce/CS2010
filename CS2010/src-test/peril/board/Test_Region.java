@@ -8,8 +8,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import peril.views.slick.Point;
-import peril.views.slick.Region;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Region;
 
 /**
  * Tests {@link Region}. In specific the ability for the {@link Region} to store
@@ -82,20 +82,20 @@ public class Test_Region {
 	}
 
 	/**
-	 * Test that {@link Region#isInside(Point)} works for
+	 * Test that {@link Region#isValid(Point)} works for
 	 * {@link Test_Region#testRegion}.
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void test_IsInside() {
 
 		// Assert that the (0,0) is not inside the region
-		assertTrue(!testRegion.isInside(new Point(0, 0)));
+		assertTrue(!testRegion.isValid(new Point(0, 0)));
 
 		// Assert that (1,1) is inside the region
-		assertTrue(testRegion.isInside(new Point(1, 1)));
+		assertTrue(testRegion.isValid(new Point(1, 1)));
 
 		// Assert that you cannot give a null Point.
-		assertTrue(testRegion.isInside(null));
+		assertTrue(testRegion.isValid(null));
 
 	}
 

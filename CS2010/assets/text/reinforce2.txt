@@ -1,0 +1,8 @@
+Help: Environmental Hazards
+After the first round, environmental hazards may occur in any country. These hazards will kill a random percentage of the army stationed at the country the hazard occurred in, up to a maximum value.
+These hazards appear as icons over the countries they have affected.
+
+Volcanic Eruption - up to 20% casualties, 10% chance
+Tornado - up to 30% casualties, 12% chance
+Hurricane - up to 10% casualties, 20% chance
+Tsunami - up to 40% casualties, 17% chance

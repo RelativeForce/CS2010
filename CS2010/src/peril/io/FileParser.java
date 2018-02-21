@@ -1,5 +1,7 @@
 package peril.io;
 
+import peril.controllers.Directory;
+
 /**
  * 
  * Defines the behaviour of an object that can parse a text file. The object
@@ -7,6 +9,9 @@ package peril.io;
  * the reader will be read sequentially using {@link FileParser#parseLine()}.
  * 
  * @author Joshua_Eddy
+ * 
+ * @version 1.01.01
+ * @since 2018-02-06
  *
  */
 public abstract class FileParser {
@@ -14,7 +19,7 @@ public abstract class FileParser {
 	/**
 	 * The path to the directory that contains the file.
 	 */
-	protected final String directoryPath;
+	protected final Directory directory;
 
 	/**
 	 * Holds the lines of the file to be parsed by this {@link FileParser}.
@@ -35,16 +40,15 @@ public abstract class FileParser {
 	 * @param filename
 	 *            The file name.
 	 */
-	public FileParser(String directoryPath, String filename) {
+	public FileParser(String sourceFilePath, Directory directory, String filename) {
 
-		if (directoryPath.isEmpty()) {
-			throw new NullPointerException("File path cannot be empty.");
+		if (directory == null) {
+			throw new NullPointerException("File path cannot be null.");
 		} else if (filename.isEmpty()) {
-			throw new NullPointerException("File name cannot be empty.");
+			throw new IllegalArgumentException("File name cannot be empty.");
 		}
-
-		this.lines = TextFileReader.scanFile(directoryPath, filename);
-		this.directoryPath = directoryPath;
+		this.directory = directory;
+		this.lines = TextFileReader.scanFile(sourceFilePath, filename);
 		this.index = 0;
 	}
 

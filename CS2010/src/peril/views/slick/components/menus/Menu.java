@@ -8,15 +8,16 @@ import java.util.Map;
 import org.newdawn.slick.Graphics;
 
 import peril.controllers.GameController;
-import peril.views.slick.Button;
-import peril.views.slick.Clickable;
 import peril.views.slick.Container;
-import peril.views.slick.Point;
-import peril.views.slick.Region;
+import peril.views.slick.Frame;
 import peril.views.slick.SlickGame;
-import peril.views.slick.Viewable;
 import peril.views.slick.components.Component;
 import peril.views.slick.states.InteractiveState;
+import peril.views.slick.util.Button;
+import peril.views.slick.util.Clickable;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Region;
+import peril.views.slick.util.Viewable;
 
 /**
  * Encapsulates the behaviour of a menu that can be displayed in a
@@ -47,9 +48,8 @@ public abstract class Menu extends Clickable implements Container, Component {
 	 * The {@link Game} that this {@link Menu} is a part of.
 	 */
 	protected final GameController game;
-	
+
 	protected final SlickGame slick;
-			
 
 	/**
 	 * Whether or not this {@link Menu} is visible or not.
@@ -68,9 +68,9 @@ public abstract class Menu extends Clickable implements Container, Component {
 	 */
 	public Menu(String name, GameController game, Region region) {
 		super(region);
-		
-		if(!(game.getView() instanceof SlickGame)) {
-			throw new IllegalArgumentException("This menu ( "+name+" ) only supports slick 2d.");
+
+		if (!(game.getView() instanceof SlickGame)) {
+			throw new IllegalArgumentException("This menu ( " + name + " ) only supports slick 2d.");
 		}
 
 		this.slick = (SlickGame) game.getView();
@@ -85,14 +85,6 @@ public abstract class Menu extends Clickable implements Container, Component {
 	 * Initialises the visual elements of this {@link Menu}.
 	 */
 	public abstract void init();
-
-	/**
-	 * Processes a mouse click at a specified {@link Point} on the screen.
-	 * 
-	 * @param click
-	 *            {@link Point}
-	 */
-	public abstract void parseClick(Point click);
 
 	/**
 	 * Retrieves whether this menu is visible of not.
@@ -123,13 +115,13 @@ public abstract class Menu extends Clickable implements Container, Component {
 	 * @param g
 	 *            {@link Graphics}
 	 */
-	public void draw(Graphics g) {
+	public void draw(Frame frame) {
 		if (visible) {
 
-			images.forEach(image -> g.drawImage(image.getImage(), image.getPosition().x, image.getPosition().y));
+			images.forEach(image -> frame.draw(image.getImage(), image.getPosition().x, image.getPosition().y));
 			buttons.forEach((buttonId, button) -> {
 				if (button.isVisible()) {
-					g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y);
+					frame.draw(button);
 				}
 			});
 		}
@@ -151,15 +143,15 @@ public abstract class Menu extends Clickable implements Container, Component {
 	}
 
 	public void setVisibility(boolean state) {
-		
+
 		if (state) {
 			show();
 		} else {
 			hide();
 		}
-		
+
 	}
-	
+
 	/**
 	 * Adds a {@link Button} to this {@link Menu}.
 	 */
@@ -218,27 +210,6 @@ public abstract class Menu extends Clickable implements Container, Component {
 		image.setPosition(new Point(current.x + menuPosition.x, current.y + menuPosition.y));
 
 		images.add(image);
-	}
-
-	/**
-	 * Processes a click at a specified {@link Point} on the {@link Button}s in the
-	 * {@link Menu}.
-	 */
-	@Override
-	public boolean clickedButton(Point click) {
-
-		if (visible) {
-			// Iterate through every button on the menu and is a button is clicked
-			for (Button b : buttons.values()) {
-
-				// If the button is clicked process a click on that button.
-				if (b.isClicked(click)) {
-					b.click();
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	/**

@@ -6,8 +6,9 @@ import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-import peril.views.slick.Font;
-import peril.views.slick.Point;
+import peril.views.slick.Frame;
+import peril.views.slick.util.Font;
+import peril.views.slick.util.Point;
 
 /**
  * This object is a visual component that can be used to display a block of text
@@ -21,12 +22,12 @@ public final class TextField implements Component {
 	/**
 	 * {@link List} of the lines in this {@link TextField}.
 	 */
-	private List<String> lines;
+	private final List<String> lines;
 
 	/**
 	 * The {@link Font} of this {@link TextField}.
 	 */
-	private Font font;
+	private final Font font;
 
 	/**
 	 * The {@link Font} of this {@link TextField}.
@@ -34,31 +35,36 @@ public final class TextField implements Component {
 	private Point position;
 
 	/**
-	 * The width of this {@link TextField}.
+	 * The maximum width of this {@link TextField}.
+	 */
+	private final int maxWidth;
+
+	/**
+	 * The padding between the text and the board of the backing box.
+	 */
+	private final int padding;
+
+	/**
+	 * The actual width of the {@link TextField}.
 	 */
 	private int width;
 
 	/**
-	 * THe height of the {@link TextField}.
-	 */
-	private int height;
-
-	/**
 	 * Constructs a new {@link TextField}.
 	 * 
-	 * @param width
-	 *            of the {@link TextField}.
-	 * @param height
-	 *            of the {@link TextField}.
+	 * @param maxWidth
+	 *            The maximum width of the {@link TextField}.
 	 * @param position
-	 *            {@link Point} of the {@link TextField}.
+	 *            The {@link Point} position of the {@link TextField}.
 	 */
-	public TextField(int width, int height, Point position) {
+	public TextField(int maxWidth, Point position) {
 		this.position = position;
-		this.width = width;
-		this.height = height;
-		this.font = new Font("Arial", Color.black, 15);
+		this.padding = 15;
+		this.maxWidth = maxWidth;
+		this.width = 0;
+		this.font = new Font("Arial", Color.black, 25);
 		this.lines = new ArrayList<>();
+
 	}
 
 	/**
@@ -87,11 +93,10 @@ public final class TextField implements Component {
 	 */
 	public void addText(String text, String lineWrap) {
 
+		final int maxWidth = this.maxWidth - (2 * padding);
+
 		// Separate the text by word
 		final String[] words = text.split(lineWrap);
-
-		// The maximum width of a line in the text field
-		final int maxWidth = width - 30;
 
 		// Holds the line currently being created.
 		StringBuilder line = new StringBuilder();
@@ -101,26 +106,40 @@ public final class TextField implements Component {
 		for (String word : words) {
 
 			// Holds the current line if the current word was added.
-			final String testLine = line.toString() + " " + word;
+			final String testLine = line.toString() + lineWrap + word;
+
+			final int lineWidth = font.getWidth(testLine);
+
+			if (lineWidth > width) {
+				width = lineWidth;
+			}
 
 			// If the line with the word added is larger than max width end the current line
 			// and and start the next.
-			if (font.getWidth(testLine) >= maxWidth) {
+			if (lineWidth >= maxWidth) {
 
 				lines.add(line.toString());
 				line = new StringBuilder();
+				width = this.maxWidth;
 
 			}
 
 			if (!line.toString().isEmpty()) {
-				line.append(' ');
+				line.append(lineWrap);
 			}
 
 			line.append(word);
+
 		}
 
 		// Add the last line to the list of lines.
 		lines.add(line.toString());
+
+		if (width <= this.maxWidth) {
+			int newWidth = width + (2 * padding);
+			width = newWidth >= this.maxWidth ? this.maxWidth : newWidth;
+		}
+		;
 
 	}
 
@@ -145,18 +164,19 @@ public final class TextField implements Component {
 	 * @param g
 	 *            {@link Graphics}
 	 */
-	public void draw(Graphics g) {
+	public void draw(Frame frame) {
 
-		g.setColor(Color.lightGray);
-		g.fillRect(position.x, position.y, width, height);
-
-		int padding = 15;
-		int x = position.x + padding;
 		int y = position.y + padding;
-		int numberOfLines = (height - padding) / font.getHeight();
+		final int x = position.x + padding;
+		final int height = getHeight();
 
-		for (int index = 0; index < (lines.size() > numberOfLines ? numberOfLines : lines.size()); index++) {
-			font.draw(g, lines.get(index), x, y);
+		// Draw the font on the back found.
+		frame.setColor(Color.lightGray);
+		frame.fillRect(position.x, position.y, width, height);
+
+		// Draw the text on screen.
+		for (int index = 0; index < lines.size(); index++) {
+			frame.draw(font, lines.get(index), x, y);
 			y += font.getHeight();
 		}
 
@@ -200,5 +220,14 @@ public final class TextField implements Component {
 	 */
 	public Point getPosition() {
 		return position;
+	}
+
+	/**
+	 * Retrieves the height of this {@link TextField}.
+	 * 
+	 * @return The height of the {@link TextField}.
+	 */
+	public int getHeight() {
+		return (lines.size() * font.getHeight()) + (padding * 2);
 	}
 }

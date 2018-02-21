@@ -1,3 +1,8 @@
+// Unit, name, strength, filename
+Unit,soldier,1,soldierIcon.png
+Unit,car,5,carIcon.png
+Unit,tank,15,tankIcon.png
+
 // Country, name, rgb, x offset, y offset
 Country,Great Britian,000000050,1,0,0,-
 Country,France,000000100,1,0,0,-

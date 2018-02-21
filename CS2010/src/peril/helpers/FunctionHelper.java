@@ -4,19 +4,23 @@ import java.io.IOException;
 
 import peril.concurrent.Action;
 import peril.controllers.GameController;
+import peril.views.slick.components.menus.UnitMenu;
 
 /**
  * 
- * This hold the functionality of every {@link Button} in the
- * {@link GameController}.
+ * This hold the functionality of every predefined {@link Button} in the game.
  * 
- * @author Mohammad_ali_Sayed_Ackbar
+ * @author Mohammad_ali_Sayed_Ackbar, Joshua_Eddy, Joseph_Rolli, Adrian_Wong
+ * 
+ * @version 1.01.04
+ * @since 2018-02-20
  *
  */
-public class FunctionHelper {
+public final class FunctionHelper {
 
 	/**
-	 * The {@link GameController} this {@link FunctionHelper} is a part of.
+	 * The {@link GameController} this {@link FunctionHelper} uses to interact with
+	 * the game.
 	 */
 	private final GameController game;
 
@@ -25,8 +29,8 @@ public class FunctionHelper {
 	 * Constructs a new {@link FunctionHelper}
 	 * 
 	 * @param game
-	 *            The {@link GameController} this {@link FunctionHelper} is a part
-	 *            of.
+	 *            The {@link GameController} this {@link FunctionHelper} uses to
+	 *            interact with the game.
 	 */
 	public FunctionHelper(GameController game) {
 		this.game = game;
@@ -40,6 +44,8 @@ public class FunctionHelper {
 	 * @return {@link Action}
 	 */
 	public Action<?> get(int code) {
+
+		// Switch between the function codes.
 		switch (code) {
 
 		case 0:
@@ -57,21 +63,21 @@ public class FunctionHelper {
 		case 6:
 			return excuteCombat();
 		case 7:
-			return loadGameController();
+			return loadGame();
 		case 8:
 			return reAssignCountries();
 		case 9:
 			return showWarMenu();
 		case 10:
-			return exitGameController();
+			return exitGame();
 		case 11:
-			return saveGameController();
+			return saveGame();
 		case 12:
 			return enterMainMenu();
 		case 13:
-			return showHelp();
+			return showHelpMenu();
 		case 14:
-			return hideHelp();
+			return hideHelpMenu();
 		case 15:
 			return nextHelpPage();
 		case 16:
@@ -90,7 +96,28 @@ public class FunctionHelper {
 			return leavePlayerSelect();
 		case 23:
 			return openWebsite();
+		case 24:
+			return showStatsMenu();
+		case 25:
+			return hideStatsMenu();
+//		case 26:
+//			return showPointsMenu();
+//		case 27:
+//			return hidePointsMenu();
+		case 28:
+			return showUpgradeMenu();
+		case 29:
+			return hideUpgradeMenu();
+		case 30:
+			return showUnitMenu();
+		case 31:
+			return hideUnitMenu();
+		case 32:
+			return enterCredits();
+
 		}
+
+		// If no action was returned then the function code was invalid.
 		throw new IllegalArgumentException(code + " is not a valid function code.");
 	}
 
@@ -101,7 +128,11 @@ public class FunctionHelper {
 	 */
 	private Action<?> openWebsite() {
 		return new Action<GameController>(game, game -> {
-			String url = "http://strategicgoats.github.io";
+
+			// The url of the website.
+			final String url = "http://strategicgoats.github.io";
+
+			// Attempt to open the website in the default browser.
 			try {
 				java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
 			} catch (IOException e) {
@@ -118,6 +149,8 @@ public class FunctionHelper {
 	 */
 	private Action<?> leavePlayerSelect() {
 		return new Action<GameController>(game, game -> {
+
+			// Attempt to load the game.
 			try {
 				game.getView().loadGame();
 			} catch (Exception e) {
@@ -190,6 +223,15 @@ public class FunctionHelper {
 	private Action<?> nextHelpPage() {
 		return new Action<GameController>(game, game -> game.getView().nextHelpPage());
 	}
+	
+	/**
+	 * Retrieves the {@link Action} that moves the to the credits page
+	 * 
+	 * @return
+	 */
+	private Action<?> enterCredits() {
+		return new Action<GameController>(game, game -> game.getView().enterCredits());
+	}
 
 	/**
 	 * Retrieves a function that show the {@link WarMenu} between visible and
@@ -202,9 +244,8 @@ public class FunctionHelper {
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will add one unit to a {@link SlickCountry}
-	 * and remove one unit from the current
-	 * {@link SlickPlayer#getDistributableArmySize()}.
+	 * Retrieves the {@link Action} that will reinforce the currently selected
+	 * country.
 	 * 
 	 * @return {@link Action}
 	 */
@@ -213,9 +254,8 @@ public class FunctionHelper {
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will change the state of the
-	 * {@link GameController} from {@link GameController#reinforcement} to
-	 * {@link GameController#combat}.
+	 * Retrieves the {@link Action} that will change the state of the game from
+	 * reinforce to attack.
 	 * 
 	 * @return {@link Action}
 	 */
@@ -224,9 +264,8 @@ public class FunctionHelper {
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will change the state of the
-	 * {@link GameController} from {@link GameController#combat} to
-	 * {@link GameController#movement}.
+	 * Retrieves the {@link Action} that will change the state of the game from
+	 * attack to fortify.
 	 * 
 	 * @return {@link Action}
 	 */
@@ -235,10 +274,8 @@ public class FunctionHelper {
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will change the state of the
-	 * {@link GameController} from {@link GameController#movement} to
-	 * {@link GameController#reinforcement}, moving tp the next player in the
-	 * process.
+	 * Retrieves the {@link Action} that will change the state of the game from
+	 * fortify to reinforce of the next player.
 	 * 
 	 * @return {@link Action}
 	 */
@@ -247,15 +284,32 @@ public class FunctionHelper {
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will change the state of the
-	 * {@link GameController} from {@link GameController#setup} to
-	 * {@link GameController#reinforcement}, checking the ownership of
-	 * {@link SlickContinent}s in the process.
+	 * Retrieves the {@link Action} that will change the state of the game from
+	 * setup to reinforce.
 	 * 
 	 * @return {@link Action}
 	 */
 	private Action<?> leaveSetUp() {
-		return new Action<GameController>(game, game -> game.confirmSetup());
+		return new Action<GameController>(game, game -> {
+			// Only confirm setup if all players have at least 1 country assigned.
+
+			int playerID = 0;
+
+			for (int playerIndex = 1; playerIndex <= PlayerHelper.MAX_PLAYERS; playerIndex++) {
+				if (game.isPlaying(playerIndex)) {
+					if (game.getModelPlayer(playerIndex).getCountriesRuled() == 0) {
+						playerID = playerIndex;
+					}
+				}
+			}
+
+			if (playerID == 0) {
+				game.confirmSetup();
+			} else {
+				game.getView().showToolTip("Player " + playerID + " does not have any countries assigned.");
+			}
+		});
+
 	}
 
 	/**
@@ -269,9 +323,8 @@ public class FunctionHelper {
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will perform one round of the
-	 * {@link WarMenu#fight(SlickCountry, SlickCountry, int)} on the two countries
-	 * selected in the {@link GameController#combat}.
+	 * Retrieves the {@link Action} that will perform one round of the combat
+	 * between the two selected countries.
 	 * 
 	 * @return {@link Action}
 	 */
@@ -280,15 +333,14 @@ public class FunctionHelper {
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will move the {@link GameController} from
-	 * the {@link GameController#mainMenu} to the {@link GameController#setup} state
-	 * and load the {@link ModelBoard} specified by the
-	 * {@link GameController#mainMenu}.
+	 * Retrieves the {@link Action} that will load the game.
 	 * 
 	 * @return {@link Action}
 	 */
-	private Action<?> loadGameController() {
+	private Action<?> loadGame() {
 		return new Action<GameController>(game, game -> {
+
+			// Attempt to load the game.
 			try {
 				game.getView().loadGame();
 			} catch (Exception e) {
@@ -298,8 +350,8 @@ public class FunctionHelper {
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will re-assign the {@link SlickCountry}s to
-	 * new {@link SlickPlayer}s.
+	 * Retrieves the {@link Action} that will randomly re-assign the countries to
+	 * new players.
 	 * 
 	 * @return {@link Action}
 	 */
@@ -316,30 +368,27 @@ public class FunctionHelper {
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will move the {@link GameController} from
-	 * the {@link GameController#pauseMenu} to the {@link GameController#mainMenu}
-	 * state
+	 * Retrieves the {@link Action} that will return the game back to the main menu.
 	 */
 	private Action<?> enterMainMenu() {
 		return new Action<GameController>(game, game -> game.getView().enterMainMenu());
 	}
 
 	/**
-	 * Retrieves the {@link Action} that will exit the {@link GameController}.
+	 * Retrieves the {@link Action} that will close the game.
 	 * 
 	 * @return {@link Action}
 	 */
-	private Action<?> exitGameController() {
+	private Action<?> exitGame() {
 		return new Action<GameController>(game, game -> game.getView().exit());
 	}
 
 	/**
-	 * Retrieves the {@link Action} that causes the {@link PauseMenu} to save the
-	 * current state of the game.
+	 * Retrieves the {@link Action} that will save the game.
 	 * 
-	 * @return
+	 * @return {@link Action}
 	 */
-	private Action<?> saveGameController() {
+	private Action<?> saveGame() {
 		return new Action<GameController>(game, game -> game.getView().save());
 	}
 
@@ -348,7 +397,7 @@ public class FunctionHelper {
 	 * 
 	 * @return
 	 */
-	private Action<?> showHelp() {
+	private Action<?> showHelpMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleHelpMenu(true));
 	}
 
@@ -357,7 +406,61 @@ public class FunctionHelper {
 	 * 
 	 * @return
 	 */
-	private Action<?> hideHelp() {
+	private Action<?> hideHelpMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleHelpMenu(false));
+	}
+
+	/**
+	 * Retrieves the {@link Action} that opens the {@link StatsMenu} window.
+	 * 
+	 * @return
+	 */
+	private Action<?> showStatsMenu() {
+		return new Action<GameController>(game, game -> game.getView().toggleStatsMenu(true));
+	}
+
+	/**
+	 * Retrieves the {@link Action} that closes the {@link StatsMenu} window.
+	 * 
+	 * @return
+	 */
+	private Action<?> hideStatsMenu() {
+		return new Action<GameController>(game, game -> game.getView().toggleStatsMenu(false));
+	}
+
+	/**
+	 * Retrieves the {@link Action} that opens the {@link UnitMenu} window.
+	 * 
+	 * @return
+	 */
+	private Action<?> showUnitMenu() {
+		return new Action<GameController>(game, game -> game.getView().toggleUnitMenu(true));
+	}
+
+	/**
+	 * Retrieves the {@link Action} that closes the {@link UnitMenu} window.
+	 * 
+	 * @return
+	 */
+	private Action<?> hideUnitMenu() {
+		return new Action<GameController>(game, game -> game.getView().toggleUnitMenu(false));
+	}
+
+	/**
+	 * Retrieves the {@link Action} that opens the {@link UpgradeMenu} window.
+	 * 
+	 * @return
+	 */
+	private Action<?> showUpgradeMenu() {
+		return new Action<GameController>(game, game -> game.getView().toggleUpgradeMenu(true));
+	}
+
+	/**
+	 * Retrieves the {@link Action} that closes the {@link UpgradeMenu} window.
+	 * 
+	 * @return
+	 */
+	private Action<?> hideUpgradeMenu() {
+		return new Action<GameController>(game, game -> game.getView().toggleUpgradeMenu(false));
 	}
 }

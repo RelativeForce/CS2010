@@ -11,37 +11,45 @@ import java.util.function.Consumer;
 import peril.Challenge;
 import peril.Game;
 import peril.model.ModelPlayer;
+import peril.model.board.ModelArmy;
 
 /**
- * A helper class for {@link Game} which encapsulates the behaviours of the list
- * of {@link SlickPlayer}s.
+ * A helper class for game which encapsulates the behaviours of the list of
+ * {@link ModelPlayer}s.
  * 
  * @author Joshua_Eddy
+ * 
+ * @version 1.01.02
+ * @since 2018-02-20
  *
  */
 public class PlayerHelper {
 
 	/**
-	 * The maximum number of {@link SlickPlayer}s in the game at any given time.
+	 * The maximum number of {@link ModelPlayer}s in the game at any given time.
 	 */
 	public static final int MAX_PLAYERS = 4;
 
 	/**
-	 * The minimum number of {@link SlickPlayer}s in the game at any given time.
+	 * The minimum number of {@link ModelPlayer}s in the game at any given time.
 	 */
 	public static final int MIN_PLAYERS = 2;
 
 	/**
-	 * Contains all the objectives that a {@link SlickPlayer} can attain in the
-	 * game.
+	 * Contains all the {@link Challenge}s that a {@link ModelPlayer} can complete
+	 * in the game.
 	 */
 	public final List<Challenge> challenges;
 
 	/**
-	 * Holds all the {@link SlickPlayer}s in this {@link Game}.
+	 * Holds all the {@link ModelPlayer}s in this game.
 	 */
 	private final Map<Integer, ModelPlayer> playing;
-	
+
+	/**
+	 * Holds all the {@link ModelPlayer}s that have been eliminated from the game in
+	 * the order they were eliminated.
+	 */
 	private final List<ModelPlayer> losers;
 
 	/**
@@ -50,12 +58,12 @@ public class PlayerHelper {
 	private final Game game;
 
 	/**
-	 * The {@link SlickPlayer} who's turn it is.
+	 * The {@link ModelPlayer} who's turn it is.
 	 */
 	private Iterator<Integer> index;
 
 	/**
-	 * The current {@link SlickPlayer}.
+	 * The current {@link ModelPlayer}.
 	 */
 	private ModelPlayer current;
 
@@ -67,14 +75,16 @@ public class PlayerHelper {
 	 */
 	public PlayerHelper(Game game) {
 		this.game = game;
+
 		this.playing = new LinkedHashMap<>();
-		this.index = playing.keySet().iterator();
-		this.challenges = new LinkedList<>();	
+		this.challenges = new LinkedList<>();
 		this.losers = new LinkedList<>();
+
+		this.index = playing.keySet().iterator();
 	}
 
 	/**
-	 * Gets the number of {@link SlickPlayer}s in the {@link Game}.
+	 * Gets the number of {@link ModelPlayer}s currently in the game.
 	 * 
 	 * @return <code>int</code>
 	 */
@@ -83,7 +93,7 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * Performs the specified task on each {@link SlickPlayer} in the {@link Game}.
+	 * Performs the specified task on each {@link ModelPlayer} in the game.
 	 * 
 	 * @param task
 	 *            {@link Consumer}
@@ -93,7 +103,7 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * Adds a {@link Challenge} for this {@link Game}.
+	 * Adds a {@link Challenge} for this game.
 	 * 
 	 * @param challenge
 	 *            NOT NULL
@@ -104,16 +114,14 @@ public class PlayerHelper {
 			throw new NullPointerException("Challenge cannot be null.");
 		}
 
-		this.challenges.add(challenge);
+		// Add the challenge then update the views collection of challenges.
+		challenges.add(challenge);
 		game.view.updateChallenges();
 	}
 
 	/**
-	 * Iterates thought all the available {@link Challenge}s to see if the specified
-	 * {@link SlickPlayer} has completed them or not.
-	 * 
-	 * @param currentState
-	 *            The current {@link CoreGameState} of the {@link Game}.
+	 * Iterates thought all the available {@link Challenge}s to see if the current
+	 * {@link ModelPlayer} has completed them or not.
 	 */
 	public void checkChallenges() {
 
@@ -140,17 +148,18 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * Sets a specified {@link SlickPlayer} as a loser which removes it from the
-	 * {@link Game#players} and adds it to the podium in the {@link EndState}.
+	 * Sets a specified {@link ModelPlayer} as a loser.
 	 * 
-	 * @param defendingPlayer
-	 *            {@link SlickPlayer} number that has lost.
+	 * @param player
+	 *            {@link ModelPlayer} that has lost.
 	 */
-	public void setLoser(ModelPlayer defendingPlayer) {
-		
-		losers.add(defendingPlayer);
+	public void setLoser(ModelPlayer player) {
 
-		playing.remove(defendingPlayer.number);
+		// Add the defending player to the list of losers
+		losers.add(player);
+
+		// Remove the player from the losers.
+		playing.remove(player.number);
 
 		index = playing.keySet().iterator();
 
@@ -163,15 +172,23 @@ public class PlayerHelper {
 
 	}
 
+	/**
+	 * Retrieves the {@link ModelPlayer} by number.
+	 * 
+	 * @param player
+	 *            Number of the player.
+	 * @return {@link ModelPlayer}
+	 */
 	public ModelPlayer getPlayer(int player) {
 		return playing.get(player);
 	}
 
 	/**
-	 * Retrieves whether or not a specified player is in this {@link Game}.
+	 * Retrieves whether or not a player specified by number is in this game. If the
+	 * player has lost then this will return false.
 	 * 
 	 * @param model
-	 *            {@link SlickPlayer} number
+	 *            {@link ModelPlayer} number
 	 * @return <code>boolean</code>
 	 */
 	public boolean isPlaying(int number) {
@@ -179,19 +196,19 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * Retrieves the {@link SlickPlayer} who's current turn it is.
+	 * Retrieves the {@link ModelPlayer} who's current turn it is.
 	 * 
-	 * @return {@link SlickPlayer}
+	 * @return {@link ModelPlayer}
 	 */
 	public ModelPlayer getCurrent() {
 		return current;
 	}
 
 	/**
-	 * Set the current {@link SlickPlayer} in this {@link PlayerHelper}.
+	 * Set the current {@link ModelPlayer}.
 	 * 
 	 * @param player
-	 *            {@link SlickPlayer}
+	 *            {@link ModelPlayer}
 	 */
 	public void setCurrent(ModelPlayer player) {
 
@@ -204,21 +221,22 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * Iterates to the next player.
+	 * Iterates to the next {@link ModelPlayer} in the sequence.
 	 */
 	public void nextPlayer() {
 
+		// Move to the next player
 		if (!index.hasNext()) {
 			index = playing.keySet().iterator();
 			game.endRound();
 		}
 
+		// Set the index player as the current.
 		current = playing.get(index.next());
 
+		// Reinforce the current.
 		reinforceCurrent();
 
-		// Check the challenges going into the next round
-		checkChallenges();
 	}
 
 	/**
@@ -230,13 +248,14 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * Adds a {@link SlickPlayer} to the set of {@link SlickPlayer}s that are
+	 * Adds a {@link ModelPlayer} to the set of {@link ModelPlayer}s that are
 	 * playing.
 	 * 
 	 * @param player
 	 */
 	public void addPlayer(ModelPlayer player) {
 
+		// If the player is not already playing
 		if (!playing.containsKey(player.number)) {
 
 			playing.put(player.number, player);
@@ -247,46 +266,49 @@ public class PlayerHelper {
 	}
 
 	/**
-	 * Retrieves a random {@link SlickPlayer} that is currently playing.
+	 * Retrieves a random {@link ModelPlayer} that is currently playing.
 	 * 
-	 * @return
+	 * @return {@link ModelPlayer}
 	 */
 	public ModelPlayer getRandomPlayer() {
 
+		// A random position in the set of players.
 		int pos = new Random().nextInt(playing.size());
 
-		int i = 0;
-		for (ModelPlayer p : playing.values()) {
+		// Iterate over each player.
+		int index = 0;
+		for (ModelPlayer player : playing.values()) {
 
-			if (pos == i) {
-				return p;
+			// If the index is the same then the current is the random player.
+			if (pos == index) {
+				return player;
 			}
 
-			i++;
+			index++;
 		}
 
-		return null;
+		throw new IllegalStateException("There are no currently active players.");
 	}
 
 	/**
-	 * Gives the current {@link SlickPlayer} reinforcements based on the number of
+	 * Gives the current {@link ModelPlayer} reinforcements based on the number of
 	 * countries they own.
 	 * 
 	 * @param model
-	 *            {@link SlickPlayer}
+	 *            {@link ModelPlayer}
 	 */
 	public void reinforceCurrent() {
 
 		ModelPlayer player = getCurrent();
 
 		// Scale reinforcements with round progression.
-		int roundScale = game.getRoundNumber() != 0 ? game.getRoundNumber() * 2 : 1;
+		final int roundScale = game.getRoundNumber() != 0 ? game.getRoundNumber() * 2 : 1;
 
-		if (player.getCountriesRuled() < 12) {
-			player.distributableArmy.add(3 * roundScale);
-		} else {
-			player.distributableArmy.add((player.getCountriesRuled() * roundScale) / 3);
-		}
+		// The factor is based on player progression.
+		final int factor = (player.getCountriesRuled() < 12 ? 9 : player.getCountriesRuled()) / 3;
+
+		player.distributableArmy.add(ModelArmy.generateUnits(factor * roundScale));
+
 	}
 
 }

@@ -16,12 +16,12 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.controllers.GameController;
 import peril.model.ModelPlayer;
-import peril.views.slick.Button;
-import peril.views.slick.Font;
-import peril.views.slick.Point;
-import peril.views.slick.Viewable;
+import peril.views.slick.Frame;
 import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.components.menus.HelpMenu;
+import peril.views.slick.util.Button;
+import peril.views.slick.util.Font;
+import peril.views.slick.util.Point;
 
 /**
  * 
@@ -65,12 +65,7 @@ public class EndState extends InteractiveState {
 	 * {@link Game}.
 	 */
 	private final String exitButton;
-
-	/**
-	 * The background {@link Viewable} of the {@link EndState}.
-	 */
-	private Viewable background;
-
+	
 	/**
 	 * Holds the {@link Point} position of the players in the {@link EndState}.
 	 */
@@ -116,23 +111,6 @@ public class EndState extends InteractiveState {
 	}
 
 	/**
-	 * Processes a mouse click at a {@link Point} position on this {@link EndState}.
-	 */
-	@Override
-	public void parseClick(int button, Point click) {
-		super.clickedButton(click);
-	}
-
-	/**
-	 * Adds an {@link Viewable} image to this {@link EndState}.
-	 */
-	@Override
-	public void addImage(Viewable image) {
-		background = image;
-		super.addImage(image);
-	}
-
-	/**
 	 * Retrieves the podium of this {@link EndState}.
 	 * 
 	 * @return {@link List} of {@link SlickPlayer}s.
@@ -142,25 +120,16 @@ public class EndState extends InteractiveState {
 	}
 
 	/**
-	 * Processes a button press on this {@link EndState}.
-	 */
-	@Override
-	public void parseButton(int key, char c, Point mousePosition) {
-		// Do NOTHING
-	}
-
-	/**
 	 * Render the {@link EndState}.
 	 */
 	@Override
-	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+	public void render(GameContainer gc, Frame frame) {
 
-		drawImages(g);
-		drawButtons(g);
+		drawImages();
+		drawButtons();
 
-		drawPodium(g, gc.getWidth(), gc.getHeight());
+		drawPodium(frame, gc.getWidth(), gc.getHeight());
 
-		g.destroy();
 	}
 
 	/**
@@ -191,9 +160,6 @@ public class EndState extends InteractiveState {
 
 		int padding = 20;
 
-		// Scale background image based on screen size.
-		background.scale(gc.getWidth(), gc.getHeight());
-
 		// Reposition menu button based on screen size.
 		int menuX = gc.getWidth() - getButton(menuButton).getWidth() - padding;
 		int menuY = gc.getHeight() - getButton(menuButton).getHeight() - padding;
@@ -208,6 +174,11 @@ public class EndState extends InteractiveState {
 		setPodiumPositions(gc);
 	}
 
+	@Override
+	public void update(GameContainer gc, int delta, Frame frame) {
+		// Do Nothing
+	}
+	
 	/**
 	 * Performs the exit state operations specific to the {@link EndState}.
 	 */
@@ -248,18 +219,18 @@ public class EndState extends InteractiveState {
 	/**
 	 * Draws the podium on the screen.
 	 * 
-	 * @param g
+	 * @param frame
 	 *            {@link Graphics}
 	 * @param width
 	 *            Width of the {@link GameContainer}
 	 * @param height
 	 *            Height of the {@link GameContainer}
 	 */
-	private void drawPodium(Graphics g, int width, int height) {
+	private void drawPodium(Frame frame, int width, int height) {
 
 		// Iterate through each player on the podium.
 		for (int index = 0; index < podium.size(); index++) {
-			drawPlayer(g, podium.get(index), podiumPositions.get(index + 1));
+			drawPlayer(frame, podium.get(index), podiumPositions.get(index + 1));
 		}
 
 	}
@@ -267,19 +238,21 @@ public class EndState extends InteractiveState {
 	/**
 	 * Draws a {@link SlickPlayer} at a position on screen.
 	 * 
-	 * @param g
+	 * @param frame
 	 *            {@link Graphics}
 	 * @param player
 	 *            {@link SlickPlayer} to be drawn
 	 * @param position
 	 *            {@link Point} position the player will be drawn
 	 */
-	private void drawPlayer(Graphics g, SlickPlayer player, Point position) {
-		g.drawImage(player.getImage(), position.x - (player.getWidth() / 2), position.y - (player.getHeight() / 2));
+	private void drawPlayer(Frame frame, SlickPlayer player, Point position) {
+		frame.draw(player.getImage(), position.x - (player.getWidth() / 2), position.y - (player.getHeight() / 2));
 	}
 
 	public void forEachLoser(Consumer<ModelPlayer> task) {
 		podium.forEach(loser -> task.accept(loser.model));
 	}
 
+
+	
 }

@@ -1,12 +1,20 @@
 package peril.views.slick;
 
+import peril.views.slick.util.Button;
+import peril.views.slick.util.Viewable;
+
 /**
  * Defines the behaviours of a object that can contain {@link Button}s and
- * {@link Viewable}s. In the case of {@link Buttons} this also defines the
- * behaviour of retrieving unique object defining {@link String} and processes a
- * click on the container.
+ * {@link Viewable}s. {@link Button}s can be retrieved using
+ * {@link Container#getButton(String)}.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-16
+ * @version 1.01.01
+ * 
+ * @see Viewable
+ * @see Button
  *
  */
 public interface Container {
@@ -15,7 +23,7 @@ public interface Container {
 	 * Adds a {@link Button} to this {@link Container}.
 	 * 
 	 * @param button
-	 *            {@link Button}
+	 *            The {@link Button} to be added.
 	 */
 	void addButton(Button button);
 
@@ -23,31 +31,24 @@ public interface Container {
 	 * Adds a {@link Viewable} to this {@link Container}.
 	 * 
 	 * @param image
-	 *            {@link Viewable}
+	 *            The {@link Viewable} to be added.
 	 */
 	void addImage(Viewable image);
 
 	/**
-	 * Processes a click at a specified {@link Point} on this {@link Container}.
-	 * 
-	 * @param click
-	 *            {@link Point} relative to the {@link Game} origin.
-	 * @return <code>boolean</code> whether a {@link Button} in this
-	 *         {@link Container} was clicked or not.
-	 */
-	boolean clickedButton(Point click);
-
-	/**
 	 * Retrieves a uniquely identifying string that denotes this {@link Container}.
 	 * 
-	 * @return name of this {@link Container}.
+	 * @return The name of this {@link Container}.
 	 */
 	String getName();
 
 	/**
 	 * Retrieves a {@link Button} by its id.
 	 * 
-	 * @return {@link Button}
+	 * @param id
+	 *            The id of a {@link Button} in this {@link Container}.
+	 * 
+	 * @return The {@link Button} assigned to the specified id.
 	 */
 	Button getButton(String id);
 }

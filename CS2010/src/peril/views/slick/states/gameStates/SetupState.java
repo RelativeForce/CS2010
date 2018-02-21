@@ -3,9 +3,7 @@ package peril.views.slick.states.gameStates;
 import java.util.Observable;
 
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import net.java.games.input.Component;
@@ -13,8 +11,9 @@ import peril.Game;
 import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
 import peril.model.states.Setup;
-import peril.views.slick.Point;
+import peril.views.slick.Frame;
 import peril.views.slick.board.SlickCountry;
+import peril.views.slick.util.Point;
 
 /**
  * The state where the user selects which player gets what
@@ -28,11 +27,6 @@ import peril.views.slick.board.SlickCountry;
 public final class SetupState extends CoreGameState {
 
 	/**
-	 * The name of a specific {@link SetupState}.
-	 */
-	private static final String STATE_NAME = "Setup";
-
-	/**
 	 * Constructs a new {@link SetupState}.
 	 * 
 	 * @param game
@@ -41,26 +35,32 @@ public final class SetupState extends CoreGameState {
 	 *            The ID of this {@link SetupState}
 	 */
 	public SetupState(GameController game, int id, Setup model) {
-		super(game, STATE_NAME, id, model);
+		super(game, model.getName(), id, model);
 
 		model.addObserver(this);
+	}
+
+	@Override
+	public void enter(GameContainer gc, StateBasedGame sbg) {
+		super.enter(gc, sbg);
+		menus.hideSaveOption();
 	}
 
 	/**
 	 * Renders this {@link SetupState}.
 	 */
 	@Override
-	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		super.render(gc, sbg, g);
+	public void render(GameContainer gc, Frame frame) {
+		super.render(gc, frame);
 
-		super.drawAllLinks(g);
-		super.drawArmies(g);
-		super.drawImages(g);
-		super.drawButtons(g);
-		super.drawPopups(g);
-		menus.draw(g);
+		super.drawAllLinks(frame);
+		super.drawArmies(frame);
+		super.drawImages();
+		super.drawButtons();
 
-		g.destroy();
+		super.drawMiniMap(frame);
+
+		menus.draw(frame);
 
 	}
 
@@ -68,8 +68,9 @@ public final class SetupState extends CoreGameState {
 	 * Parses a button press on this {@link SetupState}.
 	 */
 	@Override
-	public void parseButton(int key, char c, Point mousePosition) {
-
+	public void parseButton(int key, Point mousePosition) {
+		super.parseButton(key, mousePosition);
+		
 		ModelCountry highlighted = model.getSelected(0);
 
 		/*
@@ -104,9 +105,6 @@ public final class SetupState extends CoreGameState {
 				break;
 			}
 		}
-
-		super.parseButton(key, c, mousePosition);
-
 	}
 
 	/**
@@ -120,7 +118,7 @@ public final class SetupState extends CoreGameState {
 	@Override
 	public void update(Observable o, Object arg) {
 		super.update(o, arg);
-	
+
 		// Do any updates when a country is selected.
 
 	}

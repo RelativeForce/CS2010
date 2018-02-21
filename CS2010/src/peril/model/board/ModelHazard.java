@@ -4,32 +4,37 @@ import java.util.Random;
 
 /**
  * These may occur once a turn and will kill a random percentage of the army
- * stationed an {@link ModelContinent}. Each type of EnvironmentalHazard has a
- * percentage chance that wit will occur in a given turn.
+ * stationed an {@link ModelContinent}. Each type of hazard has a percentage
+ * chance that wit will occur in a given turn.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-17
+ * @version 1.01.01
+ * 
+ * @see ModelArmy
  *
  */
 public enum ModelHazard {
 
 	/**
 	 * A VOLCANIC_ERUPTION has a 10% chance of occurring and may kill up to 20% of
-	 * the units in an {@link Army}.
+	 * the units in an {@link ModelArmy}.
 	 */
 	VOLCANIC_ERUPTION(20, 10, "Volcanic Eruption"),
 	/**
 	 * A TORNADO has a 12% chance of occurring and may kill up to 30% of the units
-	 * in an {@link Army}.
+	 * in an {@link ModelArmy}.
 	 */
 	TORNADO(30, 12, "Tornado"),
 	/**
 	 * A HURRICANE has a 20% chance of occurring and may kill up to 10% of the units
-	 * in an {@link Army}.
+	 * in an {@link ModelArmy}.
 	 */
 	HURRICANE(10, 20, "Hurricane"),
 	/**
 	 * A TSUNAMI has a 17% chance of occurring and may kill up to 40% of the units
-	 * in an {@link Army}.
+	 * in an {@link ModelArmy}.
 	 */
 	TSUNAMI(40, 17, "Tsunami");
 
@@ -45,8 +50,8 @@ public enum ModelHazard {
 	public final String name;
 
 	/**
-	 * Holds the percentage chance that this {@link ModelHazard} will occur
-	 * on a give {@link ModelArmy}.
+	 * Holds the percentage chance that this {@link ModelHazard} will occur on a
+	 * give {@link ModelArmy}.
 	 */
 	public final int chance;
 
@@ -59,76 +64,23 @@ public enum ModelHazard {
 	 * Constructs an {@link ModelHazard}.
 	 * 
 	 * @param maxCasualties
-	 *            The maximum percentage of a {@link Amry} that this
+	 *            The maximum percentage of a {@link ModelArmy} that this
 	 *            {@link ModelHazard} will kill.
 	 * @param chance
-	 *            Percentage chance that wit will occur in a given turn.
+	 *            The percentage chance that wit will occur in a given turn.
 	 * @param name
-	 *            The <code>String</code> representation of the
-	 *            {@link ModelHazard}.
+	 *            The <code>String</code> representation of the {@link ModelHazard}.
 	 */
 	private ModelHazard(int maxCasualties, int chance, String name) {
 		this.maxCasualties = maxCasualties;
 		this.chance = chance;
 		this.name = name;
-		generator = new Random();
+		this.generator = new Random();
 	}
 
 	/**
-	 * Retrieves the <code>String</code> representation of the
-	 * {@link ModelHazard}.
-	 */
-	@Override
-	public String toString() {
-		return name;
-	}
-
-	/**
-	 * Enacts the {@link ModelHazard} on an {@link ModelArmy}.
-	 * 
-	 * @param army
-	 *            The {@link ModelArmy} that will be effected by the
-	 *            {@link ModelHazard}.
-	 * @return <code>boolean</code> whether or not this {@link ModelHazard}
-	 *         occurred on this army.
-	 */
-	public boolean act(ModelArmy army) {
-
-		// Calculate whether this hazard will occur.
-		boolean occur = chance > generator.nextInt(100);
-
-		// If the environmental hazard occurs.
-		if (occur) {
-
-			// Holds the current size of the army.
-			int currentSize = army.getStrength();
-
-			// Holds the max amount of units this hazard can kill
-			int maxCasualties = (this.maxCasualties * currentSize) / 100;
-
-			// Generate a random proportion of the army to kill.
-			int casualties = maxCasualties == 0 ? 1 : generator.nextInt(maxCasualties - (maxCasualties / 4)) + 1;
-
-			// Check whether the army will be below the minimum size.
-			if (currentSize - casualties < 1) {
-
-				// Set the army to the minimum size.
-				army.setStrength(1);
-			} else {
-
-				// Remove the dead regiments.
-				army.setStrength(currentSize - casualties);
-			}
-
-		}
-
-		return occur;
-	}
-
-	/**
-	 * Retrieves the {@link ModelHazard} using the specified name. If there
-	 * is no {@link ModelHazard} with that name then this returns
-	 * <code>null</code>.
+	 * Retrieves the {@link ModelHazard} using the specified name. If there is no
+	 * {@link ModelHazard} with that name then this returns <code>null</code>.
 	 * 
 	 * @param name
 	 *            Name of the {@link ModelHazard}
@@ -148,5 +100,55 @@ public enum ModelHazard {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Retrieves the <code>String</code> representation of the {@link ModelHazard}.
+	 */
+	@Override
+	public String toString() {
+		return name;
+	}
+
+	/**
+	 * Enacts the {@link ModelHazard} on an {@link ModelArmy}.
+	 * 
+	 * @param army
+	 *            The {@link ModelArmy} that will be effected by the
+	 *            {@link ModelHazard}.
+	 * @return <code>boolean</code> whether or not this {@link ModelHazard} occurred
+	 *         on this army.
+	 */
+	public boolean act(ModelArmy army) {
+
+		// Calculate whether this hazard will occur.
+		final boolean occur = chance > generator.nextInt(100);
+
+		// If the environmental hazard occurs.
+		if (occur) {
+
+			// Holds the current size of the army.
+			final int currentSize = army.getStrength();
+
+			// Holds the max amount of units this hazard can kill
+			final int maxCasualties = (this.maxCasualties * currentSize) / 100;
+
+			// Generate a random proportion of the army to kill.
+			final int casualties = maxCasualties == 0 ? 1 : generator.nextInt(maxCasualties - (maxCasualties / 4)) + 1;
+
+			// Check whether the army will be below the minimum size.
+			if (currentSize - casualties <= 1) {
+
+				// Set the army to the minimum size.
+				army.setWeakest();
+			} else {
+
+				// Remove the dead regiments.
+				army.remove(casualties);
+			}
+
+		}
+
+		return occur;
 	}
 }

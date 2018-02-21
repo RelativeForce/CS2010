@@ -3,8 +3,9 @@ package peril.views.slick.states;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
@@ -12,12 +13,15 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.controllers.GameController;
 import peril.io.FileParser;
-import peril.views.slick.Point;
-import peril.views.slick.Viewable;
+import peril.views.slick.Frame;
 import peril.views.slick.components.ProgressBar;
 import peril.views.slick.components.menus.HelpMenu;
+import peril.views.slick.io.ImageReader;
 import peril.views.slick.states.gameStates.CoreGameState;
 import peril.views.slick.states.gameStates.SetupState;
+import peril.views.slick.util.Font;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Viewable;
 
 /**
  * 
@@ -54,17 +58,21 @@ public final class LoadingScreen extends InteractiveState {
 	/**
 	 * The background {@link Viewable} of the {@link LoadingScreen}.
 	 */
-	private Viewable background;
+	private Image background;
 
 	/**
 	 * The {@link Music} that will be played during the loading state.
 	 */
 	private Music music;
 
+	private boolean terminated;
+
 	/**
 	 * THe {@link ProgressBar} that will be displayed on this loading screen.
 	 */
 	private final ProgressBar progressBar;
+
+	private final Font textFont;
 
 	/**
 	 * Constructs a new {@link LoadingScreen}.
@@ -80,17 +88,8 @@ public final class LoadingScreen extends InteractiveState {
 		this.readers = new ArrayList<>();
 		this.progressBar = new ProgressBar(new Point(0, 0), 100, 20);
 		super.addComponent(progressBar);
-	}
-
-	/**
-	 * Adds a {@link Viewable} to this {@link LoadingScreen}. The last
-	 * {@link Viewable} added will be the background {@link Image} of the
-	 * {@link LoadingScreen} and will be scaled to fill the screen.
-	 */
-	@Override
-	public void addImage(Viewable image) {
-		background = image;
-		super.addImage(image);
+		this.textFont = new Font("Arial", Color.red, 25);
+		this.terminated = false;
 	}
 
 	/**
@@ -99,8 +98,11 @@ public final class LoadingScreen extends InteractiveState {
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 
+		this.terminated = false;
+
 		// Scale the background image to fill the screen.
-		background.scale(gc.getWidth(), gc.getHeight());
+		background = ImageReader.getImage(game.getDirectory().getUIPath() + "perilLogo.png")
+				.getScaledCopy(gc.getWidth(), gc.getHeight());
 
 		changeMusic(gc);
 
@@ -117,21 +119,31 @@ public final class LoadingScreen extends InteractiveState {
 		// Set the music.
 		music = slick.music.read("loading");
 
+		textFont.init();
+
 	}
 
 	/**
 	 * Renders the {@link LoadingScreen}.S
 	 */
 	@Override
-	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+	public void render(GameContainer gc, Frame frame) {
 
-		drawImages(g);
-		drawButtons(g);
+		frame.draw(background, 0, 0);
 
-		progressBar.draw(g);
+		drawImages();
+		drawButtons();
 
-		g.destroy();
+		progressBar.draw(frame);
 
+		if (index == readers.size()) {
+
+			final String text = "Finishing up";
+			final int x = (gc.getWidth() / 2) - (textFont.getWidth(text) / 2);
+			final int y = progressBar.getPosition().y + (progressBar.getHeight() / 2) - (textFont.getHeight() / 2);
+
+			frame.draw(textFont, text, x, y);
+		}
 	}
 
 	/**
@@ -139,8 +151,11 @@ public final class LoadingScreen extends InteractiveState {
 	 * {@link SetupState} when all the {@link FileParser}s are finished.
 	 */
 	@Override
-	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-		super.update(gc, sbg, delta);
+	public void update(GameContainer gc, int delta, Frame frame) {
+
+		if (terminated) {
+			return;
+		}
 
 		// If the index is equal to the size of the readers list then the last reader is
 		// finished.
@@ -156,8 +171,15 @@ public final class LoadingScreen extends InteractiveState {
 
 			// If the reader is not finished parse its current line.
 			if (!reader.isFinished()) {
-				reader.parseLine();
-				progressBar.increment();
+
+				try {
+					reader.parseLine();
+					progressBar.increment();
+				} catch (Exception e) {
+					slick.showToolTip(e.getMessage());
+					slick.showToolTip("Press any button to return to Main Menu.");
+					this.terminated = true;
+				}
 			}
 			// Otherwise move to the next reader.
 			else {
@@ -210,27 +232,23 @@ public final class LoadingScreen extends InteractiveState {
 		firstState = null;
 
 		slick.menus.refreshSaveFiles();
-		
+
 		slick.centerBoard();
+
+		this.terminated = false;
+
+	}
+
+	@Override
+	public void parseButton(int key, Point mousePosition) {
+		super.parseButton(key, mousePosition);
+		
+		if(terminated) {
+			slick.enterMainMenu();
+		}
 		
 	}
-
-	/**
-	 * Processes a mouse click on this {@link LoadingScreen}.
-	 */
-	@Override
-	public void parseClick(int button, Point click) {
-		super.clickedButton(click);
-	}
-
-	/**
-	 * Processes a button press on this {@link LoadingScreen}.
-	 */
-	@Override
-	public void parseButton(int key, char c, Point mousePosition) {
-		// DO NOTHING
-	}
-
+	
 	/**
 	 * Retrieves the loading {@link Music}.
 	 */

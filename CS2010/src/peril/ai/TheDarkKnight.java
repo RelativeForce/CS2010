@@ -146,7 +146,7 @@ public final class TheDarkKnight extends AI {
 			if (current.equals(country.getOwner())) {
 
 				//default weight of this country
-				final int defaultValue = -country.getArmySize();
+				final int defaultValue = -country.getArmyStrength();
 
 				// The current value.
 				int value = defaultValue;
@@ -154,13 +154,13 @@ public final class TheDarkKnight extends AI {
 				// Iterate through current country's neighbours.
 				for (Country neighbour : country.getNeighbours()) {
 					if (!current.equals(neighbour.getOwner())) {
-						value += neighbour.getArmySize();
+						value += neighbour.getArmyStrength();
 					}
 				}
 
 				// If the current country is an internal country.
 				if (value == defaultValue) {
-					if (country.getArmySize() > 1) {
+					if (country.getArmyStrength() > 1) {
 						internal.add(country);
 					}
 				} else {
@@ -197,15 +197,15 @@ public final class TheDarkKnight extends AI {
 
 		api.forEachCountry(country -> {
 
-			if (current.equals(country.getOwner()) && country.getArmySize() > 1) {
+			if (current.equals(country.getOwner()) && country.getArmyStrength() > 1) {
 
 				for (Country neighbour : country.getNeighbours()) {
 
-					int value = country.getArmySize();
+					int value = country.getArmyStrength();
 
 					if (!current.equals(neighbour.getOwner())) {
 
-						value -= neighbour.getArmySize();
+						value -= neighbour.getArmyStrength();
 
 						countries.put(value, new Entry(country, neighbour));
 					}
@@ -228,19 +228,19 @@ public final class TheDarkKnight extends AI {
 			// Check if the country is friendly.
 			if (current.equals(country.getOwner())) {
 
-				int value = -country.getArmySize();
+				int value = -country.getArmyStrength();
 
 				// Search through all the neighbour countries.
 				for (Country neighbour : country.getNeighbours()) {
 
 					// Check if the neighbour is an enemy country.
 					if (!current.equals(neighbour.getOwner())) {
-						value += neighbour.getArmySize();
+						value += neighbour.getArmyStrength();
 					}
 				}
 
 				// If the current country has enemy countries.
-				if (value != -country.getArmySize()) {
+				if (value != -country.getArmyStrength()) {
 					countries.put(value, country);
 				}
 

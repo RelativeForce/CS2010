@@ -1,58 +1,54 @@
 package peril.io;
 
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
-
 import peril.Challenge;
-import peril.Game;
 import peril.controllers.GameController;
+import peril.helpers.UnitHelper;
 import peril.model.ModelColor;
 import peril.model.ModelPlayer;
-import peril.views.slick.SlickGame;
-import peril.views.slick.board.SlickContinent;
-import peril.views.slick.board.SlickCountry;
-import peril.views.slick.board.SlickPlayer;
-import peril.views.slick.states.InteractiveState;
+import peril.model.board.ModelArmy;
+import peril.model.board.ModelContinent;
+import peril.model.board.ModelCountry;
+import peril.model.board.ModelUnit;
+import peril.model.board.links.ModelLink;
+import peril.model.states.ModelState;
 
 /**
- * Used for writing the {@link ModelBoard} from the {@link Game} into memory.
+ * Used for writing the {@link ModelBoard} from the game into memory.
  * 
  * @author Joshua_Eddy
  *
+ * @version 1.01.04
+ * @since 2018-02-20
  */
-public class MapWriter {
-
-	/**
-	 * Holds all the links that have been written into the file.
-	 */
-	private Set<String> savedLinks;
+public final class MapWriter {
 
 	/**
 	 * The {@link TextFileWriter} that creates the save file.
 	 */
-	private TextFileWriter writer;
+	private final TextFileWriter writer;
 
 	/**
-	 * The {@link Game} that this {@link MapWriter} is a part of.
+	 * The {@link GameController} that this {@link MapWriter} uses to interact with
+	 * the game.
 	 */
-	private GameController game;
+	private final GameController game;
 
 	/**
 	 * Constructs a new {@link MapWriter}.
 	 * 
 	 * @param game
-	 *            The {@link Game} that this {@link MapWriter} is a part of.
-	 * @param mapDiretory
-	 *            directory of the current map.
+	 *            The {@link GameController} that this {@link MapWriter} uses to
+	 *            interact with the game.
 	 * @param file
 	 *            The {@link SaveFile} that will be written to.
 	 */
 	public MapWriter(GameController game, SaveFile file) {
-		this.savedLinks = new HashSet<>();
 		this.game = game;
-		this.writer = new TextFileWriter(
-				game.getMapsPath() + game.getModelBoard().getName() + File.separatorChar + file.filename, false);
+
+		// The file path for the map
+		final String mapDirectoryPath = game.getDirectory().asMapPath(game.getModelBoard().getName());
+
+		this.writer = new TextFileWriter(mapDirectoryPath + file.filename, false);
 	}
 
 	/**
@@ -63,6 +59,9 @@ public class MapWriter {
 		// Open the file
 		writer.open();
 
+		// Write units into map file.
+		UnitHelper.getInstance().forEach(unit -> writer.writeLine(parseUnit(unit)));
+
 		// Write player details for the active players
 		game.forEachModelPlayer(player -> writer.writeLine(parsePlayer(player, true)));
 
@@ -70,19 +69,16 @@ public class MapWriter {
 		game.forEachLoser(player -> writer.writeLine(parsePlayer(player, false)));
 
 		// Write the state the game will start in
-		writer.writeLine(parseState(((SlickGame) game.getView()).getCurrentState(), game.getRoundNumber()));
+		writer.writeLine(parseGameState());
 
 		// Write all the countries to the file
-		game.getModelBoard().forEachCountry(country -> writer
-				.writeLine(parseCountry((SlickCountry) game.getView().getModelView().getVisual(country))));
+		game.getModelBoard().forEachCountry(country -> writer.writeLine(parseCountry(country)));
 
 		// Write all the continents to the file
-		game.getModelBoard().getContinents().values().forEach(continent -> writer
-				.writeLine(parseContinent((SlickContinent) game.getView().getModelView().getVisual(continent))));
+		game.getModelBoard().getContinents().values().forEach(continent -> writer.writeLine(parseContinent(continent)));
 
 		// Write all the links to the file
-		game.getModelBoard()
-				.forEachCountry(country -> parseLinks((SlickCountry) game.getView().getModelView().getVisual(country)));
+		game.getModelBoard().forEachCountry(country -> parseLinks(country));
 
 		game.getChallenges().forEach(challenge -> writer.writeLine(parseChallenge(challenge)));
 
@@ -91,15 +87,43 @@ public class MapWriter {
 	}
 
 	/**
-	 * Parses the details of a {@link InteractiveState} its <code>String</code>
-	 * representation that will be used to store the {@link InteractiveState} in the
-	 * file.
+	 * Parses the details of a {@link ModelUnit} into a string that will be strored
+	 * in the level file.
 	 * 
-	 * @param state
-	 *            {@link InteractiveState}
+	 * @param unit
+	 *            {@link ModelUnit}
+	 * @return String
+	 */
+	private String parseUnit(ModelUnit unit) {
+
+		StringBuilder line = new StringBuilder();
+		line.append("Unit,");
+
+		line.append(unit.name);
+		line.append(',');
+
+		line.append(unit.strength);
+		line.append(',');
+
+		line.append(unit.fileName);
+
+		return line.toString();
+	}
+
+	/**
+	 * Parses the details of the game's current state into a <code>String</code>
+	 * representation that will be used to stored in the file.
+	 * 
 	 * @return <code>String</code>
 	 */
-	private String parseState(InteractiveState state, int roundNumber) {
+	private String parseGameState() {
+
+		final ModelState state = game.getCurrentState();
+
+		// If the state is null then the current state is not a model state.
+		if (state == null) {
+			throw new IllegalStateException("The current state cannot be saved.");
+		}
 
 		StringBuilder line = new StringBuilder();
 		line.append("State,");
@@ -110,20 +134,21 @@ public class MapWriter {
 		line.append(game.getCurrentModelPlayer().number);
 		line.append(',');
 
-		line.append(roundNumber);
+		line.append(game.getRoundNumber());
 
 		return line.toString();
 
 	}
 
 	/**
-	 * Parses the details of a {@link SlickPlayer} its <code>String</code>
-	 * representation that will be used to store the {@link SlickPlayer} in the
+	 * Parses the details of a {@link ModelPlayer} its <code>String</code>
+	 * representation that will be used to store the {@link ModelPlayer} in the
 	 * file.
 	 * 
 	 * @param player
-	 *            {@link SlickPlayer}
+	 *            {@link ModelPlayer}
 	 * @param isActive
+	 *            Whether this player is currently playing or has lost.
 	 * @return <code>String</code>
 	 */
 	private String parsePlayer(ModelPlayer player, Boolean isActive) {
@@ -137,81 +162,91 @@ public class MapWriter {
 
 		line.append(player.distributableArmy.getStrength());
 		line.append(',');
+		
+		line.append(player.getCountriesTaken());
+		line.append(',');
+		
+		line.append(player.getArmiesDestroyed());
+		line.append(',');
+		
+		line.append(player.getPointsSpent());
+		line.append(',');
 
 		line.append(isActive);
+		line.append(',');
+
+		line.append(player.getPoints());
 
 		return line.toString();
 
 	}
 
 	/**
-	 * Processes all the links between the specified {@link SlickCountry} and all
+	 * Processes all the links between the specified {@link ModelCountry} and all
 	 * its neighbours.
 	 * 
 	 * @param country
-	 *            {@link SlickCountry}
+	 *            {@link ModelCountry}
 	 */
-	private void parseLinks(SlickCountry country) {
-		country.model.getNeighbours()
-				.forEach(neighbour -> parseLink(country, (SlickCountry) game.getView().getModelView().getVisual(neighbour)));
+	private void parseLinks(ModelCountry country) {
+		country.getNeighbours().forEach(neighbour -> parseLink(country, neighbour));
 	}
 
 	/**
 	 * Writes a link to the file if it does not already exist in the file.
 	 * 
 	 * @param country
-	 *            {@link SlickCountry}
+	 *            {@link ModelCountry}
 	 * @param neighbour
-	 *            {@link SlickCountry}
+	 *            {@link ModelCountry}
 	 */
-	private void parseLink(SlickCountry country, SlickCountry neighbour) {
+	private void parseLink(ModelCountry country, ModelCountry neighbour) {
 
 		StringBuilder line = new StringBuilder();
-		StringBuilder potentialDuplicate = new StringBuilder();
 
 		line.append("Link,");
-		line.append(country.model.getName());
+		line.append(country.getName());
 		line.append(',');
-		line.append(neighbour.model.getName());
+		line.append(neighbour.getName());
+		line.append(',');
 
-		potentialDuplicate.append("Link,");
-		potentialDuplicate.append(neighbour.model.getName());
-		potentialDuplicate.append(',');
-		potentialDuplicate.append(country.model.getName());
+		final ModelLink link = country.getLinkTo(neighbour);
 
-		// Check if the link has already been written into the file.
-		if (!savedLinks.contains(potentialDuplicate.toString())) {
-			String lineStr = line.toString();
-			writer.writeLine(lineStr);
-			savedLinks.add(lineStr);
-		}
+		line.append(link.getDefaultState().name);
+		line.append(',');
+		line.append(link.getState().name);
+		line.append(',');
+		line.append(Integer.toString(link.getDuration()));
+
+		writer.writeLine(line.toString());
+
 	}
 
 	/**
-	 * Processes a {@link SlickContinent} into its <code>String</code>
-	 * representation that will be used to store the {@link SlickContinent} in the
+	 * Processes a {@link ModelContinent} into its <code>String</code>
+	 * representation that will be used to store the {@link ModelContinent} in the
 	 * file.
 	 * 
 	 * @param country
-	 *            {@link SlickContinent}
+	 *            {@link ModelContinent}
 	 * @return <code>String</code>
 	 */
-	private String parseContinent(SlickContinent continent) {
+	private String parseContinent(ModelContinent continent) {
 
 		StringBuilder line = new StringBuilder();
 
 		line.append("Continent,");
 
 		// Country name
-		line.append(continent.model.getName());
+		line.append(continent.getName());
 		line.append(',');
 
 		// Hazard name
-		line.append(continent.model.hazard.toString());
+		line.append(continent.hazard.toString());
 		line.append(',');
 
 		// Append countries
-		continent.model.getCountries().forEach(country -> {
+		continent.getCountries().forEach(country -> {
 			line.append(country.getName());
 			line.append('-');
 		});
@@ -223,14 +258,14 @@ public class MapWriter {
 	}
 
 	/**
-	 * Processes a {@link SlickCountry} into its <code>String</code> representation
-	 * that will be used to store the {@link SlickCountry} in the file.
+	 * Processes a {@link ModelCountry} into its <code>String</code> representation
+	 * that will be used to store the {@link ModelCountry} in the file.
 	 * 
 	 * @param country
-	 *            {@link SlickCountry}
+	 *            {@link ModelCountry}
 	 * @return <code>String</code>
 	 */
-	private String parseCountry(SlickCountry country) {
+	private String parseCountry(ModelCountry country) {
 
 		StringBuilder line = new StringBuilder();
 
@@ -238,10 +273,10 @@ public class MapWriter {
 		line.append(',');
 
 		// Country name
-		line.append(country.model.getName());
+		line.append(country.getName());
 		line.append(',');
 
-		ModelColor color = country.model.getColor();
+		ModelColor color = country.getColor();
 
 		// Country RGB
 		line.append(formatRGB(color.red));
@@ -250,25 +285,58 @@ public class MapWriter {
 		line.append(',');
 
 		// Army Size
-		line.append(country.model.getArmy().getStrength());
+		line.append(parseArmy(country.getArmy()));
 		line.append(',');
 
 		// Army offset
-		line.append(Integer.toString(country.getArmyOffset().x));
+		line.append(Integer.toString(game.getView().getArmyOffsetX(country)));
 		line.append(',');
-		line.append(Integer.toString(country.getArmyOffset().y));
+		line.append(Integer.toString(game.getView().getArmyOffsetY(country)));
 		line.append(',');
 
 		// Player ruler
-		line.append(country.model.getRuler() != null ? country.model.getRuler().number : '-');
+		line.append(country.getRuler() != null ? country.getRuler().number : '-');
 
 		return line.toString();
 	}
 
 	/**
-	 * Converts a int value into a three
+	 * Processes a {@link ModelArmy} into a string that can be written to the map
+	 * file.
+	 * 
+	 * @param army
+	 *            The {@link ModelArmy} to be parsed.
+	 * @return String representation of the specified {@link ModelArmy}.
+	 */
+	private String parseArmy(ModelArmy army) {
+
+		final StringBuilder line = new StringBuilder();
+		
+		//Whether the current unit is the first.
+		boolean firstUnit = true;
+
+		// Iterate over every unit in the army.
+		for (ModelUnit unit : army) {
+
+			if (!firstUnit) {
+				line.append('-');
+			}
+
+			line.append(unit.name);
+			line.append(':');
+			line.append(army.getNumberOf(unit));
+
+			firstUnit = false;
+		}
+
+		return line.toString();
+	}
+
+	/**
+	 * Converts a int value into a three binary bits.
 	 * 
 	 * @param value
+	 *            0 - 255
 	 * @return
 	 */
 	private String formatRGB(int value) {

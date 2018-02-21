@@ -2,14 +2,20 @@ package peril.views.slick.io;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
-
-import peril.views.slick.Region;
-import peril.views.slick.board.SlickBoard;
+import peril.views.slick.util.Region;
 
 /**
- * Reads an image using a specified file path.
+ * A function object that can reads an {@link Image} using a specified file
+ * path. This object is used as a factory for {@link Image}s.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-17
+ * @version 1.01.01
+ * 
+ * @see Image
+ * @see Region
+ * @see Color
  *
  */
 public class ImageReader {
@@ -23,34 +29,34 @@ public class ImageReader {
 	 * Constructs a new {@link ImageReader}.
 	 * 
 	 * @param path
-	 *            The path of the image this {@link ImageReader} will read.
+	 *            The path of the {@link Image} this {@link ImageReader} will read.
 	 */
-	private ImageReader(final String path) {
+	private ImageReader(String path) {
 
 		this.path = path;
 	}
 
 	/**
-	 * Reads the image from the {@link ImageReader#file}.
+	 * Reads the {@link Image} from the image file specified by the path.
 	 * 
-	 * @return {@link BufferedImage}
+	 * @return The {@link Image}
 	 */
 	private Image readImage() {
 
 		// Attempt to read the specified file and if there is an exception thrown return
 		// null.
-		try {			
+		try {
 			return new Image(path);
 
 		} catch (Exception e) {
 			System.out.println("Error: Image NOT Found.");
-			e.printStackTrace();
+			System.out.println(path);
 			return null;
 		}
 	}
 
 	/**
-	 * Retrieves a {@link Region} of the {@link SlickBoard} denoted by a {@link Color}.
+	 * Retrieves a {@link Region} denoted by a {@link Color}.
 	 * 
 	 * @param path
 	 *            <code>String</code> path of the {@link Image} file.
@@ -68,13 +74,10 @@ public class ImageReader {
 	 * 
 	 * @param path
 	 *            The file path of an image.
-	 * @return <code>Integer[][]</code>
+	 * @return {@link Image}
 	 */
 	public static Image getImage(String path) {
-
-		// Holds the raw image retrieved from the image reader.
 		return new ImageReader(path).readImage();
 
 	}
-
 }

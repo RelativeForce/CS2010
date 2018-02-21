@@ -9,6 +9,12 @@ import peril.model.board.ModelUnit;
  * Stores the {@link ModelUnit}s that are currently in use. Singleton
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-18
+ * @version 1.01.01
+ * 
+ * @see ModelUnit
+ * @see LinkedList
  *
  */
 public final class UnitHelper {
@@ -21,7 +27,7 @@ public final class UnitHelper {
 	/**
 	 * The {@link OrderedList} that holds all the {@link ModelUnit}.
 	 */
-	private OrderedList<ModelUnit> units;
+	private final OrderedList<ModelUnit> units;
 
 	/**
 	 * Constructs a new {@link UnitHelper}.
@@ -47,18 +53,6 @@ public final class UnitHelper {
 	 */
 	public void addUnit(ModelUnit unit) {
 		units.add(unit);
-	}
-
-	/**
-	 * Adds a new type of {@link ModelUnit}.
-	 * 
-	 * @param name
-	 *            of the {@link ModelUnit}.
-	 * @param strength
-	 *            of the {@link ModelUnit}.
-	 */
-	public void addUnit(String name, int strength) {
-		units.add(new ModelUnit(name, strength));
 	}
 
 	/**
@@ -139,17 +133,37 @@ public final class UnitHelper {
 	}
 
 	/**
+	 * Retrieves the {@link ModelUnit} with the specified name.
+	 * 
+	 * @param name
+	 *            The name of the {@link ModelUnit}.
+	 * @return The {@link ModelUnit} with the specified name.
+	 */
+	public ModelUnit get(String name) {
+
+		for (ModelUnit unit : units) {
+			if (unit.name.equals(name)) {
+				return unit;
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * A ordered {@link LinkedList}.
 	 * 
 	 * @author Joshua_Eddy
 	 *
 	 * @param <T>
 	 *            An object that is {@link Comparable}.
+	 * @version 1.01.01
+	 * @since 2018-02-06
 	 */
 	private class OrderedList<T extends Comparable<T>> extends LinkedList<T> {
 
 		/**
-		 * 
+		 * The unique id of this subclass of {@link LinkedList}.
 		 */
 		private static final long serialVersionUID = -8011586922814965872L;
 
@@ -178,6 +192,26 @@ public final class UnitHelper {
 			super.add(index, element);
 
 			return true;
+		}
+
+		@Override
+		public T getLast() {
+
+			if (isEmpty()) {
+				return null;
+			}
+
+			return super.getLast();
+		}
+
+		@Override
+		public T getFirst() {
+
+			if (isEmpty()) {
+				return null;
+			}
+
+			return super.getFirst();
 		}
 
 	}

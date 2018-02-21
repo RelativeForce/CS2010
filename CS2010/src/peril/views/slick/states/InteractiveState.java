@@ -14,26 +14,43 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.Game;
 import peril.controllers.GameController;
-import peril.views.slick.Button;
-import peril.views.slick.Clickable;
 import peril.views.slick.Container;
-import peril.views.slick.Point;
+import peril.views.slick.Frame;
 import peril.views.slick.SlickGame;
-import peril.views.slick.Viewable;
 import peril.views.slick.components.Component;
 import peril.views.slick.components.menus.HelpMenu;
+import peril.views.slick.util.Button;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Viewable;
 
 /**
  * 
- * A state that allows the user to click on {@link Buttons} and displays
- * {@link Viewable} objects.
+ * A {@link BasicGameState} that allows the user to click on {@link Buttons} and
+ * displays {@link Viewable} objects. It is also a {@link Container}.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-19
+ * @version 1.01.02
+ * 
+ * @see Container
+ * @see BasicGameState
  *
  */
 public abstract class InteractiveState extends BasicGameState implements Container {
+
+	/**
+	 * Holds the {@link GameController} that allows the {@link InteractiveState} to
+	 * interact with the game.
+	 */
+	protected final GameController game;
+
+	/**
+	 * The {@link SlickGame} that allows the {@link InteractiveState} to interact
+	 * with the visual representation of the game.
+	 */
+	protected final SlickGame slick;
 
 	/**
 	 * Holds the name of a specific {@link InteractiveState}.
@@ -41,22 +58,14 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	private final String stateName;
 
 	/**
-	 * Holds the the current {@link Game} this {@link InteractiveState} is
-	 * associated with.
-	 */
-	protected final GameController game;
-
-	protected final SlickGame slick;
-
-	/**
-	 * A {@link List} of {@link Button} elements that this {@link InteractiveState}
-	 * has.
+	 * A {@link Map} of {@link Button} names to their {@link Button}s elements that
+	 * this {@link InteractiveState} has.
 	 */
 	private final Map<String, Button> buttons;
 
 	/**
-	 * A {@link List} of {@link Viewable} elements that this
-	 * {@link InteractiveState} has.
+	 * A {@link Set} of {@link Viewable} elements that this {@link InteractiveState}
+	 * has.
 	 */
 	private final Set<Viewable> images;
 
@@ -78,14 +87,21 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	private final int helpId;
 
 	/**
+	 * The {@link Frame} that displays the {@link InteractiveState} to the user.
+	 */
+	private final Frame frame;
+
+	/**
 	 * Constructs a new {@link InteractiveState}.
 	 * 
 	 * @param game
-	 *            The {@link Game} this state is a part of.
+	 *            The {@link GameController} this state is a part of.
 	 * @param stateName
 	 *            Holds the name of a specific {@link InteractiveState}.
 	 * @param id
 	 *            The id of this {@link InteractiveState}.
+	 * @param helpId
+	 *            The id of this {@link InteractiveState}'s help page.
 	 */
 	public InteractiveState(GameController game, String stateName, int id, int helpId) {
 
@@ -106,109 +122,41 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 		this.buttons = new HashMap<>();
 		this.images = new HashSet<>();
 		this.components = new LinkedList<>();
+		this.frame = new Frame();
 	}
 
 	/**
-	 * Adds a {@link Viewable} element to the list of {@link Viewable}s in this
-	 * state.
-	 * 
-	 * @param element
-	 *            The {@link Viewable} element to be added to the list.
-	 * 
-	 */
-	public void addVisual(Viewable element) {
-		images.add(element);
-	}
-
-	/**
-	 * Returns the name of the current state, as a String.
-	 * 
-	 */
-	public final String getStateName() {
-		return stateName;
-	}
-
-	/**
-	 * Returns the {@link String} name of this state.
-	 */
-	public final String getName() {
-		return getStateName();
-	}
-
-	/*
-	 * Adds a {@link Button} to the list of buttons in this state.
-	 * 
-	 */
-	@Override
-	public void addButton(Button button) {
-		buttons.put(button.id, button);
-	}
-
-	/**
-	 * Processes a click at a {@link Point} on this {@link InteractiveState}.
-	 * 
-	 * @param button
-	 *            <code>int</code> button
-	 * @param click
-	 *            {@link Point} of the click
-	 */
-	public abstract void parseClick(int button, Point click);
-
-	/**
-	 * Processes a button press on this {@link InteractiveState}.
-	 * 
-	 * @param key
-	 *            <code>int</code> key code
-	 * @param c
-	 *            <code>char</code> char on the button
-	 * @param mousePosition
-	 *            The {@link Point} position of the mouse relative to the
-	 *            {@link GameContainer}.
-	 */
-	public abstract void parseButton(int key, char c, Point mousePosition);
-
-	/**
-	 * Called when the state is entered, before slick2d's game loop commences.
+	 * Draws the current {@link Frame}.
 	 * 
 	 * @param gc
-	 *            The game window.
-	 * 
-	 * @param sbg
-	 *            The {@link StateBasedGame} this state is a part of.
+	 *            The {@link GameContainer} that contains the game.
+	 * @param frame
+	 *            The {@link Frame} that displays the {@link InteractiveState} to
+	 *            the user.
 	 */
-	@Override
-	public void enter(GameContainer gc, StateBasedGame sbg) {
-		if (helpId != HelpMenu.NULL_PAGE) {
-			game.setHelpMenuPage(helpId);
-		}
-	}
+	public abstract void render(GameContainer gc, Frame frame);
 
 	/**
-	 * Called when this {@link InteractiveState} is being left this method should
-	 * perform all exit state operations.
-	 */
-	@Override
-	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
-
-	};
-
-	/**
-	 * Called as part of slick2d's game loop. Renders this state to the game's
-	 * graphics context. Draws all the {@link Button}s then the {@link Viewable}
-	 * objects.
+	 * Updates the state of the frame objects before they are drawn again.
 	 * 
 	 * @param gc
-	 *            The game window.
-	 * 
-	 * @param sbg
-	 *            The {@link StateBasedGame} this state is a part of.
+	 *            The {@link GameContainer} that contains the game.
+	 * @param delta
+	 *            The number of milliseconds between the current frame and the
+	 *            previous.
+	 * @param frame
+	 *            The {@link Frame} that displays the {@link InteractiveState} to
+	 *            the user.
+	 */
+	public abstract void update(GameContainer gc, int delta, Frame frame);
+
+	/**
+	 * The {@link Music} that plays in the background of this
+	 * {@link InteractiveState}.
 	 *
-	 * @param g
-	 *            A graphics context that can be used to render primitives to the
-	 *            accelerated canvas provided by LWJGL.
+	 * @return The {@link Music} of this {@link InteractiveState}.
 	 */
-	@Override
-	public abstract void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException;
+	public abstract Music getMusic();
 
 	/**
 	 * Called when the state is first created, before slick2d's game loop commences.
@@ -228,6 +176,82 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	}
 
 	/**
+	 * Assigns the pan direction of the {@link InteractiveState}.
+	 * 
+	 * @param mousePosition
+	 *            The {@link Point} position of the mouse.
+	 */
+	public void parseMouse(Point mousePosition) {
+		// TODO Add support for mouse hovering.
+	}
+
+	/**
+	 * Performs the operations when this {@link InteractiveState} is exited.
+	 */
+	@Override
+	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		super.leave(container, game);
+
+		frame.clearToolTips();
+	}
+
+	/**
+	 * Called when the state is entered, before slick2d's game loop commences.
+	 * 
+	 * @param gc
+	 *            The game window.
+	 * 
+	 * @param sbg
+	 *            The {@link StateBasedGame} this state is a part of.
+	 */
+	@Override
+	public void enter(GameContainer gc, StateBasedGame sbg) {
+		if (helpId != HelpMenu.NULL_PAGE) {
+			game.setHelpMenuPage(helpId);
+		}
+	}
+
+	/**
+	 * Processes a button press on this {@link InteractiveState}.
+	 * 
+	 * @param key
+	 *            <code>int</code> key code
+	 * @param mousePosition
+	 *            The {@link Point} position of the mouse relative to the
+	 *            {@link GameContainer}.
+	 */
+	public void parseButton(int key, Point mousePosition) {
+		frame.pressButton(key, mousePosition);
+	}
+
+	/**
+	 * Adds a {@link Viewable} element to the list of {@link Viewable}s in this
+	 * state.
+	 * 
+	 * @param element
+	 *            The {@link Viewable} element to be added to the list.
+	 * 
+	 */
+	public final void addVisual(Viewable element) {
+		images.add(element);
+	}
+
+	/**
+	 * Returns the name of the current state, as a String.
+	 */
+	public final String getStateName() {
+		return stateName;
+	}
+
+	/**
+	 * Returns the {@link String} name of this state.
+	 */
+	@Override
+	public final String getName() {
+		return getStateName();
+	}
+
+	/**
 	 * Called as part of slick2d's game loop. Update the state's logic based on the
 	 * amount of time that has passed.
 	 * 
@@ -241,7 +265,71 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 *            The amount of time thats passed in millisecond since last update
 	 */
 	@Override
-	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+	public final void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+		frame.updateFrame(delta);
+		update(gc, delta, frame);
+	}
+
+	/**
+	 * Adds a String as a tool tip to this {@link InteractiveState} to be displayed
+	 * to the user.
+	 * 
+	 * @param toolTip
+	 *            <code>String</code>
+	 */
+	public final void showToolTip(String toolTip, Point position) {
+
+		// Display the tool tip for 8 seconds
+		frame.addToolTip(toolTip, position, 8000);
+
+	}
+
+	/*
+	 * Adds a {@link Button} to the list of buttons in this state.
+	 */
+	@Override
+	public final void addButton(Button button) {
+		buttons.put(button.id, button);
+	}
+
+	/**
+	 * Processes a click on this {@link InteractiveState}.
+	 * 
+	 * @param mouse
+	 *            The {@link Point} position of the mouse click.
+	 * @param button
+	 *            The mouse button that was pressed.
+	 */
+	public final void click(Point mouse, int button) {
+		frame.click(mouse, button);
+	}
+
+	/**
+	 * Called as part of slick2d's game loop. Renders this state to the game's
+	 * graphics context. Draws all the {@link Button}s then the {@link Viewable}
+	 * objects.
+	 * 
+	 * @param gc
+	 *            The game window.
+	 * 
+	 * @param sbg
+	 *            The {@link StateBasedGame} this state is a part of.
+	 *
+	 * @param g
+	 *            A graphics context that can be used to render primitives to the
+	 *            accelerated canvas provided by LWJGL.
+	 */
+	@Override
+	public final void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+
+		// Refresh the frame.
+		frame.newFrame(g, gc);
+
+		// Render the frame
+		render(gc, frame);
+
+		// Draw the tool tips
+		frame.drawToolTips();
 
 	}
 
@@ -257,63 +345,25 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 * Retrieves a {@link Button} from this {@link InteractiveState} by id. If the
 	 * specified id is not found this shall return <code>null</code>.
 	 */
-	public Button getButton(String buttonId) {
+	public final Button getButton(String buttonId) {
 		return buttons.get(buttonId);
-	}
-
-	/**
-	 * 
-	 * The {@link Music} that plays in the background of this
-	 * {@link InteractiveState}.
-	 *
-	 * @return {@link Music}
-	 */
-	public abstract Music getMusic();
-
-	/**
-	 * Simulate a click a specified {@link Point} and check if any of the
-	 * {@link Clickable} {@link Button}s are intersected by the {@link Point}.
-	 * 
-	 * @param click
-	 *            {@link Point}
-	 * @return whether any {@link Button} was intersected by the {@link Point}.
-	 */
-	@Override
-	public boolean clickedButton(Point click) {
-
-		// Iterate through all the buttons in the current state.
-		for (Button button : buttons.values()) {
-
-			// If the click is in the current element
-			if (button.isClicked(click) && button.isVisible()) {
-
-				// Click the button
-				button.click();
-				return true;
-
-			}
-		}
-		return false;
 	}
 
 	/**
 	 * Adds an {@link Viewable} image to this {@link InteractiveState}.
 	 */
 	@Override
-	public void addImage(Viewable image) {
+	public final void addImage(Viewable image) {
 		images.add(image);
 	}
 
 	/**
 	 * Draws all the {@link Button}s in this {@link InteractiveState}.
-	 * 
-	 * @param g
-	 *            {@link Graphics}
 	 */
-	protected void drawButtons(Graphics g) {
+	protected final void drawButtons() {
 		buttons.forEach((id, button) -> {
 			if (button.isVisible()) {
-				g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y);
+				frame.draw(button);
 			}
 		});
 	}
@@ -326,28 +376,32 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 * @param component
 	 *            The {@link Component} to be added.
 	 */
-	protected void addComponent(Component component) {
+	protected final void addComponent(Component component) {
 		components.add(component);
 	}
 
 	/**
 	 * Draws all the {@link Viewable}s in this {@link InteractiveState}.
-	 * 
-	 * @param g
-	 *            {@link Graphics}
 	 */
-	protected void drawImages(Graphics g) {
-		images.forEach(image -> g.drawImage(image.getImage(), image.getPosition().x, image.getPosition().y));
+	protected final void drawImages() {
+		images.forEach(image -> frame.draw(image.getImage(), image.getPosition().x, image.getPosition().y));
+	}
+
+	/**
+	 * Clears all the tool tips that are currently on screen.
+	 */
+	protected final void clearToolTips() {
+		frame.clearToolTips();
 	}
 
 	/**
 	 * Changes the {@link Music} that is currently playing for the {@link Music} of
-	 * the {@link Game#getCurrentState()}.
+	 * the current state.
 	 * 
 	 * @param gc
-	 *            {@link GameContainer}
+	 *            The {@link GameContainer}.
 	 */
-	protected void changeMusic(GameContainer gc) {
+	protected final void changeMusic(GameContainer gc) {
 
 		gc.setMusicOn(false);
 		gc.setMusicOn(true);

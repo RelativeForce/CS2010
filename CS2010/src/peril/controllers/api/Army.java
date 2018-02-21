@@ -7,7 +7,7 @@ import java.util.Set;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.03
+ * @version 1.01.04
  * @since 2018-01-21
  *
  */
@@ -19,6 +19,20 @@ public interface Army {
 	 * @return {@link Set}&lt;{@link Unit}&gt;
 	 */
 	Set<? extends Unit> getUnits();
+
+	/**
+	 * Retrieves the strongest {@link Unit} in this {@link Army}.
+	 * 
+	 * @return Strongest {@link Unit} in this {@link Army}.
+	 */
+	Unit getStrongestUnit();
+
+	/**
+	 * Retrieves the weakest {@link Unit} in this {@link Army}.
+	 * 
+	 * @return Weakest {@link Unit} in this {@link Army}.
+	 */
+	Unit getWeakestUnit();
 
 	/**
 	 * Retrieves the strength of the {@link Army}.

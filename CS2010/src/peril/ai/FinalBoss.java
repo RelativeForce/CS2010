@@ -104,6 +104,9 @@ public class FinalBoss extends AI {
 	 */
 	private static class ReinforceHandler {
 
+		private static final double UNIT_FACTOR = 2.5;
+		private static final double PLAYER_FACTOR = 1.0;
+
 		/**
 		 * Retrieves the {@link Country} that the {@link FinalBoss} should reinforce.
 		 * 
@@ -143,11 +146,8 @@ public class FinalBoss extends AI {
 		 */
 		private static Map<Integer, Country> getReinforceWeightings(AIController api) {
 
-			final double UNIT_FACTOR = 1.5;
-			final double PLAYER_FACTOR = 1.2;
-
-			Map<Integer, Country> countries = new HashMap<>();
-			Player current = api.getCurrentPlayer();
+			final Map<Integer, Country> countries = new HashMap<>();
+			final Player current = api.getCurrentPlayer();
 
 			// Get the weightings of each country on the board.
 			api.forEachCountry(country -> {
@@ -171,11 +171,11 @@ public class FinalBoss extends AI {
 
 						// If the neighbour is an enemy country.
 						if (!current.equals(owner)) {
-							rating += UNIT_FACTOR * getMaxOneAttackDamage(neighbour.getArmy());
+							rating += (UNIT_FACTOR * getMaxOneAttackDamage(neighbour.getArmy()));
 
 							// Add Player Rating if the country is ruled.
 							if (owner != null) {
-								rating += PLAYER_FACTOR * playerRating(owner, api);
+								rating += (PLAYER_FACTOR * playerRating(owner, api));
 							}
 						}
 					}
@@ -294,21 +294,21 @@ public class FinalBoss extends AI {
 		 */
 		private static Map<Integer, Entry> getAttackWeightings(AIController api) {
 
-			Map<Integer, Entry> countries = new HashMap<>();
+			final Map<Integer, Entry> countries = new HashMap<>();
 
-			Player current = api.getCurrentPlayer();
+			final Player current = api.getCurrentPlayer();
 
 			api.forEachCountry(country -> {
 
-				if (current.equals(country.getOwner()) && country.getArmyStrength() > 1) {
+				if (current.equals(country.getOwner()) && country.getArmy().getUnits().size() > 1) {
 
 					for (Country neighbour : country.getNeighbours()) {
 
-						int value = country.getArmyStrength();
+						int value = country.getArmy().getStrength();
 
 						if (!current.equals(neighbour.getOwner())) {
 
-							value -= neighbour.getArmyStrength();
+							value -= neighbour.getArmy().getStrength();
 
 							countries.put(value, new Entry(country, neighbour));
 						}

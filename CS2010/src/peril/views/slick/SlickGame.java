@@ -45,8 +45,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy, Joseph Rolli
  * 
- * @since 2018-02-19
- * @version 1.01.08
+ * @since 2018-02-20
+ * @version 1.01.09
  * 
  * @see StateBasedGame
  * @see View
@@ -442,11 +442,23 @@ public final class SlickGame extends StateBasedGame implements View {
 	@Override
 	public void showToolTip(String text) {
 
-		if(getCurrentState() instanceof CoreGameState) {
+		if (getCurrentState() instanceof CoreGameState) {
 			getCurrentState().showToolTip(text, new Point(410, 100));
-		}else {
+		} else {
 			getCurrentState().showToolTip(text, new Point(0, 0));
 		}
+	}
+
+	/**
+	 * Show a tool tip on the current {@link InteractiveState}.
+	 * 
+	 * @param text
+	 *            The message of the tool tip.
+	 * @param position
+	 *            The {@link Point} position of the tool tip.
+	 */
+	public void showToolTip(String text, Point position) {
+		getCurrentState().showToolTip(text, position);
 	}
 
 	/**

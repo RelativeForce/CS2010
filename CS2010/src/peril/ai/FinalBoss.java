@@ -42,11 +42,13 @@ public class FinalBoss extends AI {
 	@Override
 	public boolean processReinforce(AIController api) {
 
-		Country country = ReinforceHandler.getCountry(api);
+		api.clearSelected();
+		final Country country = ReinforceHandler.getCountry(api);
 
 		// Select the country with the highest weight then reinforce it.
-		api.select(country);
-		api.reinforce();
+		if (api.select(country)) {
+			api.reinforce();
+		}
 
 		return true;
 
@@ -58,17 +60,23 @@ public class FinalBoss extends AI {
 	@Override
 	public boolean processAttack(AIController api) {
 
-		Entry attack = AttackHandler.getEntry(api);
+		UpgradeHandler.upgradeCountries(api);
+		
+		api.clearSelected();
+		final Entry attack = AttackHandler.getEntry(api);
 
 		if (attack == null) {
 			return false;
 		}
 
-		api.select(attack.a);
-		api.select(attack.b);
-		api.attack();
+		if (api.select(attack.a)) {
+			if (api.select(attack.b)) {
+				api.attack();
+				return true;
+			}
+		}
 
-		return true;
+		return false;
 
 	}
 
@@ -79,6 +87,7 @@ public class FinalBoss extends AI {
 	@Override
 	public boolean processFortify(AIController api) {
 
+		api.clearSelected();
 		Entry fortify = FortifyHandler.getEntry(api);
 
 		api.clearSelected();
@@ -89,11 +98,14 @@ public class FinalBoss extends AI {
 
 		// If there was a valid link between the safe and border then the secondary will
 		// be the border.
-		api.select(fortify.a);
-		api.select(fortify.b);
-		api.fortify();
+		if (api.select(fortify.a)) {
+			if (api.select(fortify.b)) {
+				api.fortify();
+				return true;
+			}
+		}
 
-		return true;
+		return false;
 
 	}
 
@@ -154,10 +166,6 @@ public class FinalBoss extends AI {
 
 				// If the country is friendly.
 				if (current.equals(country.getOwner())) {
-
-					// Trade the units of the army up to make the army have its max one attack
-					// damage.
-					country.getArmy().tradeUnitsUp();
 
 					// The base value is the maximum damage for one combat attack.
 					final int baseRating = (int) -(UNIT_FACTOR * getMaxOneAttackDamage(country.getArmy()));
@@ -459,4 +467,11 @@ public class FinalBoss extends AI {
 
 	}
 
+	private static class UpgradeHandler {
+
+		public static void upgradeCountries(AIController api) {
+
+		}
+
+	}
 }

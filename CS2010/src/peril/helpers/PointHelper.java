@@ -6,10 +6,10 @@ import peril.controllers.Points;
  * Provides the point reward amounts for in-game actions. Realises
  * {@link Points}.
  * 
- * @author Joseph_Rolli
+ * @author Joseph_Rolli, Joshua Eddy
  * 
  * @since 2018-02-21
- * @version 1.01.02
+ * @version 1.01.03
  * 
  * @see Points
  *
@@ -22,7 +22,7 @@ public final class PointHelper implements Points {
 	/**
 	 * Points rewarded for conquering a country.
 	 */
-	public static final int CONQUER_COST = 2;
+	public static final int CONQUER_REWARD = 2;
 
 	public static final int BLOCKADE_COST = 4;
 
@@ -41,7 +41,7 @@ public final class PointHelper implements Points {
 
 	@Override
 	public int getConquer() {
-		return CONQUER_COST;
+		return CONQUER_REWARD;
 	}
 
 	@Override

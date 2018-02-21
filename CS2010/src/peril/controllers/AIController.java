@@ -156,4 +156,29 @@ public interface AIController {
 	 */
 	boolean tradeUnit(Country country, Unit unit);
 
+	/**
+	 * Retrieves whether the link between two {@link Country}s is open.
+	 * 
+	 * @param country
+	 *            The {@link Country} that is will be the source of the traversal.
+	 * @param neighbour
+	 *            The {@link Country} that is will be the destination of the
+	 *            traversal.
+	 * @return Whether the link between two {@link Country}s is open.
+	 */
+	boolean hasOpenLinkBetween(Country country, Country neighbour);
+
+	/**
+	 * Creates a blockade that prevents the neighbour {@link Country} from
+	 * transferring units to the source {@link Country}. This also prevents attack
+	 * from the neighbour however the source can still attack the neighbour.
+	 * Blockades last 3 rounds.
+	 * 
+	 * @param source
+	 *            The {@link Country} that is will be the source of the blockade.
+	 * @param neighbour
+	 *            The {@link Country} that is will be blocked from transferring
+	 *            units.
+	 */
+	void createBlockade(Country source, Country neighbour);
 }

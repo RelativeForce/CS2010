@@ -454,7 +454,7 @@ public class WarMenu extends Menu {
 
 					attackingPlayer.setCountriesTaken(attackingPlayer.getCountriesTaken() + 1);
 					
-					attackingPlayer.setPoints(attackingPlayer.getPoints() + PointHelper.CONQUER_COST);
+					attackingPlayer.addPoints(PointHelper.CONQUER_REWARD);
 
 					game.checkContinentRulership();
 

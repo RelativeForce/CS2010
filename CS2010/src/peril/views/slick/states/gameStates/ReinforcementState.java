@@ -74,6 +74,7 @@ public final class ReinforcementState extends CoreGameState {
 		menus.showSaveOption();
 		getButton(reinforceButton).hide();
 		getButton(upgradeButton).hide();
+		slick.showToolTip("Click the '?' for help.");
 	}
 
 	/**

@@ -799,8 +799,8 @@ public final class MapReader extends FileParser {
 				public boolean hasCompleted(ModelPlayer player, ModelBoard board) {
 
 					if (player.getContinentsRuled() >= goal) {
-						// Give the player a army to distribute.
-						player.distributableArmy.add(ModelArmy.generateUnits(reward));
+						// Give the player points
+						player.addPoints(reward);
 						return true;
 					}
 
@@ -858,8 +858,8 @@ public final class MapReader extends FileParser {
 				public boolean hasCompleted(ModelPlayer player, ModelBoard board) {
 
 					if (player.getCountriesRuled() >= goal) {
-						// Give the player a army to distribute.
-						player.distributableArmy.add(ModelArmy.generateUnits(reward));
+						// Give the player points.
+						player.addPoints(reward);
 
 						return true;
 					}
@@ -918,8 +918,8 @@ public final class MapReader extends FileParser {
 
 					if (player.totalArmy.getStrength() >= sizeOfArmy) {
 
-						// Give the player a army to distribute.
-						player.distributableArmy.add(ModelArmy.generateUnits(reward));
+						// Give the player points.
+						player.addPoints(reward);
 						return true;
 					}
 

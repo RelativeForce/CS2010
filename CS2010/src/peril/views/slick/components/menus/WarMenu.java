@@ -270,6 +270,8 @@ public class WarMenu extends Menu {
 		else {
 			drawNormalCombat(frame);
 		}
+		
+		slick.showToolTip("Click the units below, to select the number of attacking units");
 
 	}
 

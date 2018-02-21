@@ -1,22 +1,33 @@
 package peril.views.slick.components.menus;
 
+import peril.views.slick.io.ImageReader;
+
+import java.util.LinkedList;
+import java.util.List;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
-import peril.Game;
 import peril.controllers.GameController;
+import peril.helpers.UnitHelper;
+import peril.model.ModelPlayer;
+import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
+import peril.model.board.ModelUnit;
 import peril.model.board.links.ModelLinkState;
 import peril.model.states.ModelState;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
 import peril.views.slick.board.SlickPlayer;
+import peril.views.slick.board.SlickUnit;
+import peril.views.slick.components.Component;
 import peril.views.slick.components.TextField;
 import peril.views.slick.components.VisualList;
 import peril.views.slick.states.gameStates.CoreGameState;
+import peril.views.slick.util.Clickable;
 import peril.views.slick.util.Font;
 import peril.views.slick.util.Point;
 import peril.views.slick.util.Region;
@@ -41,6 +52,8 @@ public class UpgradeMenu extends Menu {
 	private static final int HEIGHT = 600;
 
 	private static final int BLOCK_LINK_COST = 4;
+
+	private static final int TRADE_UNIT_COST = 3;
 
 	/**
 	 * The padding in the horizontal direction between the edge of the
@@ -67,7 +80,11 @@ public class UpgradeMenu extends Menu {
 
 	private final EventListener neighbourListener;
 
+	private final List<UnitTrader> traders;
+
 	private ModelCountry selected;
+
+	private final Font armyFont;
 
 	private Image player;
 
@@ -92,6 +109,7 @@ public class UpgradeMenu extends Menu {
 		this.countryFont = new Font("Arial", Color.black, 30);
 		this.titleFont = new Font("Arial", Color.black, 40);
 		this.blockFont = new Font("Arial", Color.black, 25);
+		this.armyFont = new Font("Arial", Color.red, 50);
 		this.hasUpgrades = false;
 		this.player = null;
 
@@ -102,10 +120,12 @@ public class UpgradeMenu extends Menu {
 		final int x = getPosition().x + ((getWidth() * 2) / 3) - (width / 2);
 		final int y = getPosition().y + (getHeight() / 4);
 
-		neighbours = new VisualList<>(new Point(x, y), width, elementHeight, 5, 5);
-		neighbours.setFont(listFont);
+		this.neighbours = new VisualList<>(new Point(x, y), width, elementHeight, 5, 5);
+		this.neighbours.setFont(listFont);
 
-		neighbourListener = new EventListener() {
+		this.traders = new LinkedList<>();
+
+		this.neighbourListener = new EventListener() {
 
 			@Override
 			public void mouseHover(Point mouse, int delta) {
@@ -161,8 +181,53 @@ public class UpgradeMenu extends Menu {
 
 			populatesUpgrades();
 
+			populateTraders();
+
 		}
 
+	}
+
+	private void populateTraders() {
+		if (!traders.isEmpty()) {
+			traders.clear();
+		}
+
+		final ModelArmy army = selected.getArmy();
+
+		final UnitHelper helper = UnitHelper.getInstance();
+
+		ModelUnit current = helper.getStrongest();
+
+		boolean isStrongest = true;
+
+		final Point armyPos = getArmyPosition();
+
+		final int interval = SlickUnit.WIDTH - 5;
+
+		int x = armyPos.x + interval;
+		int y = armyPos.y;
+
+		while (current != null) {
+
+			if (army.hasUnit(current)) {
+
+				if (!isStrongest) {
+					traders.add(new UnitTrader(current, new Point(x, y)));
+					x -= (interval * 2);
+				}
+			}
+
+			isStrongest = false;
+			current = helper.getUnitBelow(current);
+		}
+	}
+
+	private Point getArmyPosition() {
+
+		final int x = getPosition().x + ((getWidth() * 3) / 4) - (SlickUnit.WIDTH / 2);
+		final int y = getPosition().y + ((getHeight() * 4) / 5) - (SlickUnit.HEIGHT / 2);
+
+		return new Point(x, y);
 	}
 
 	private void populatesUpgrades() {
@@ -233,6 +298,56 @@ public class UpgradeMenu extends Menu {
 
 		drawPlayer(frame);
 
+		drawUnits(frame);
+
+	}
+
+	private void drawUnits(Frame frame) {
+
+		final Point armyPos = getArmyPosition();
+		int x = armyPos.x;
+		final int y = armyPos.y;
+
+		final int interval = SlickUnit.WIDTH - 5;
+
+		final ModelArmy army = selected.getArmy();
+
+		final UnitHelper helper = UnitHelper.getInstance();
+
+		ModelUnit current = helper.getStrongest();
+
+		int index = 0;
+
+		while (current != null) {
+
+			if (army.hasUnit(current)) {
+
+				final Image unit = slick.modelView.getVisual(current).getImage();
+
+				frame.draw(unit, x, y);
+
+				final String text = "[Cost: " + TRADE_UNIT_COST + "]";
+				final int costX = x + (SlickUnit.WIDTH / 2) - (blockFont.getHeight(text) / 2);
+
+				frame.draw(blockFont, text, costX, y - blockFont.getHeight(text));
+
+				traders.get(index).draw(frame);
+
+				final int numberOfCurrent = army.getNumberOf(current);
+
+				final String number = Integer.toString(numberOfCurrent);
+
+				final int fontX = x + (SlickUnit.WIDTH / 2) - (armyFont.getWidth(number) / 2);
+				final int fontY = y + (SlickUnit.HEIGHT / 2) - (armyFont.getHeight() / 2);
+
+				frame.draw(armyFont, number, fontX, fontY);
+
+				index++;
+				x -= (interval * 2);
+			}
+
+			current = helper.getUnitBelow(current);
+		}
 	}
 
 	private void drawPlayer(Frame frame) {
@@ -242,17 +357,21 @@ public class UpgradeMenu extends Menu {
 	}
 
 	private void drawUpgrades(Frame frame) {
-		if (hasUpgrades) {
 
-			final String block = "Block link [Cost: " + BLOCK_LINK_COST + "]";
-			final int x = neighbours.getPosition().x + (neighbours.getWidth() / 2) - (blockFont.getWidth(block) / 2);
-			final int y = neighbours.getPosition().y - blockFont.getHeight(block) - 5;
+		final String block = "Blockade [Cost: " + BLOCK_LINK_COST + "]";
+		final int x = neighbours.getPosition().x + (neighbours.getWidth() / 2) - (blockFont.getWidth(block) / 2);
+		final int y = neighbours.getPosition().y - blockFont.getHeight(block) - 5;
+
+		if (hasUpgrades) {
 
 			frame.draw(blockFont, block, x, y);
 
 			frame.draw(neighbours, neighbourListener);
 		} else {
-			frame.draw(countryFont, "This country has no upgrades avalible.", 500, 400);
+
+			final String text = "No blockades available.";
+
+			frame.draw(blockFont, text, x, y);
 		}
 	}
 
@@ -311,6 +430,7 @@ public class UpgradeMenu extends Menu {
 		titleFont.init();
 		neighbours.init();
 		blockFont.init();
+		armyFont.init();
 
 	}
 
@@ -333,4 +453,95 @@ public class UpgradeMenu extends Menu {
 
 	}
 
+	private final class UnitTrader implements Component {
+
+		private static final String TRADE_ICON_NAME = "rightButton.png";
+
+		private final Clickable tradeIcon;
+
+		private final EventListener listener;
+
+		public UnitTrader(ModelUnit unit, Point position) {
+
+			final Image temp = ImageReader.getImage(game.getDirectory().getButtonsPath() + TRADE_ICON_NAME);
+
+			this.tradeIcon = new Clickable(temp.getScaledCopy(SlickUnit.WIDTH, SlickUnit.HEIGHT));
+			this.tradeIcon.setPosition(position);
+
+			this.listener = new EventListener() {
+
+				@Override
+				public void mouseHover(Point mouse, int delta) {
+					// Do nothing
+				}
+
+				@Override
+				public void mouseClick(Point mouse, int mouseButton) {
+
+					final ModelArmy army = selected.getArmy();
+					final ModelPlayer ruler = selected.getRuler();
+					final int currentPoints = ruler.getPoints();
+
+					// If the user has enough points trade up.
+					if (currentPoints >= TRADE_UNIT_COST) {
+
+						if (army.tradeUp(unit)) {
+							ruler.setPoints(currentPoints - TRADE_UNIT_COST);
+							populateTraders();
+						} else {
+
+							final ModelUnit above = UnitHelper.getInstance().getUnitAbove(unit);
+							final int aboveStrength = above.strength;
+							final int unitStrength = unit.strength;
+							final int ratio = aboveStrength / unitStrength;
+
+							final String message = ratio + " " + unit.name + "(s) required.";
+
+							slick.showToolTip(message, tradeIcon.getPosition());
+
+						}
+
+					} else {
+
+						final String message = "You have in sufficient points.";
+
+						slick.showToolTip(message, tradeIcon.getPosition());
+					}
+
+				}
+
+				@Override
+				public void draw(Frame frame) {
+					frame.draw(tradeIcon.getImage(), tradeIcon.getPosition().x, tradeIcon.getPosition().y);
+				}
+
+				@Override
+				public void buttonPress(int key, Point mouse) {
+					// Do nothing
+				}
+			};
+		}
+
+		@Override
+		public void draw(Frame frame) {
+			frame.draw(tradeIcon, listener);
+		}
+
+		@Override
+		public void init() {
+			// Do nothing
+		}
+
+		@Override
+		public void setPosition(Point position) {
+			tradeIcon.setPosition(position);
+
+		}
+
+		@Override
+		public Point getPosition() {
+			return tradeIcon.getPosition();
+		}
+
+	}
 }

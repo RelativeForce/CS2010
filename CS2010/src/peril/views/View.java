@@ -8,7 +8,6 @@ import peril.controllers.api.Player;
 import peril.io.FileParser;
 import peril.io.SaveFile;
 import peril.model.ModelPlayer;
-import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
 import peril.model.states.Attack;
 import peril.model.states.Fortify;
@@ -151,15 +150,6 @@ public interface View {
 	 *            The visibility state of the menu.
 	 */
 	void toggleStatsMenu(boolean state);
-
-	/**
-	 * Toggles whether the menu that displays an {@link ModelArmy}s units to the
-	 * user between hidden and visible.
-	 * 
-	 * @param state
-	 *            The visibility state of the menu.
-	 */
-	void toggleUnitMenu(boolean state);
 
 	/**
 	 * Toggles whether the menu that displays the upgrades to a {@link ModelCountry}

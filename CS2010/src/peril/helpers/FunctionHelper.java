@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import peril.concurrent.Action;
 import peril.controllers.GameController;
-import peril.views.slick.components.menus.UnitMenu;
 
 /**
  * 
@@ -12,8 +11,8 @@ import peril.views.slick.components.menus.UnitMenu;
  * 
  * @author Mohammad_ali_Sayed_Ackbar, Joshua_Eddy, Joseph_Rolli, Adrian_Wong
  * 
- * @version 1.01.04
- * @since 2018-02-20
+ * @version 1.01.05
+ * @since 2018-02-21
  *
  */
 public final class FunctionHelper {
@@ -100,18 +99,10 @@ public final class FunctionHelper {
 			return showStatsMenu();
 		case 25:
 			return hideStatsMenu();
-//		case 26:
-//			return showPointsMenu();
-//		case 27:
-//			return hidePointsMenu();
 		case 28:
 			return showUpgradeMenu();
 		case 29:
 			return hideUpgradeMenu();
-		case 30:
-			return showUnitMenu();
-		case 31:
-			return hideUnitMenu();
 		case 32:
 			return enterCredits();
 
@@ -426,24 +417,6 @@ public final class FunctionHelper {
 	 */
 	private Action<?> hideStatsMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleStatsMenu(false));
-	}
-
-	/**
-	 * Retrieves the {@link Action} that opens the {@link UnitMenu} window.
-	 * 
-	 * @return
-	 */
-	private Action<?> showUnitMenu() {
-		return new Action<GameController>(game, game -> game.getView().toggleUnitMenu(true));
-	}
-
-	/**
-	 * Retrieves the {@link Action} that closes the {@link UnitMenu} window.
-	 * 
-	 * @return
-	 */
-	private Action<?> hideUnitMenu() {
-		return new Action<GameController>(game, game -> game.getView().toggleUnitMenu(false));
 	}
 
 	/**

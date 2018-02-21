@@ -483,7 +483,7 @@ public class UpgradeMenu extends Menu {
 					if (currentPoints >= PointHelper.TRADE_UNIT_COST) {
 
 						if (army.tradeUp(unit)) {
-							ruler.setPoints(currentPoints - PointHelper.TRADE_UNIT_COST);
+							ruler.spendPoints(PointHelper.TRADE_UNIT_COST);
 							populateTraders();
 						} else {
 

@@ -12,6 +12,8 @@ import peril.controllers.api.Unit;
 import peril.helpers.PointHelper;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
+import peril.model.board.links.ModelLink;
+import peril.model.board.links.ModelLinkState;
 import peril.model.states.ModelState;
 
 /**
@@ -223,7 +225,6 @@ public final class AIHandler implements AIController {
 	/**
 	 * Retrieves all the {@link Player}s that are currently active in the game.
 	 */
-
 	@Override
 	public Set<? extends Player> getPlayers() {
 
@@ -240,7 +241,6 @@ public final class AIHandler implements AIController {
 	 * by the {@link Player} owner of the specified {@link Country} and is a
 	 * neighbour of that {@link Country}.
 	 */
-
 	@Override
 	public void forEachEnemyNeighbour(Country country, Consumer<Country> task) {
 
@@ -307,6 +307,73 @@ public final class AIHandler implements AIController {
 		final ModelUnit checkedUnit = (ModelUnit) unit;
 
 		return checkedSource.getArmy().tradeUp(checkedUnit);
+	}
+
+	/**
+	 * Whether the link is open or not.
+	 */
+	@Override
+	public boolean hasOpenLinkBetween(Country country, Country neighbour) {
+		// Ensure that both the parameter Countrys is a valid model country, This should
+		// never be false.
+		if (!(country instanceof ModelCountry)) {
+			throw new IllegalArgumentException("The parmameter 'source' country is not a valid country.");
+		} else if (!(neighbour instanceof ModelCountry)) {
+			throw new IllegalArgumentException("The parmameter 'neighbour' country is not a valid country.");
+		}
+
+		final ModelCountry checkedSource = (ModelCountry) country;
+		final ModelCountry checkedDestination = (ModelCountry) neighbour;
+
+		if (!checkedSource.isNeighbour(checkedDestination)) {
+			throw new IllegalArgumentException("The specifed countries must be neighbours.");
+		}
+
+		return checkedSource.getLinkTo(checkedDestination).canTransfer(null, checkedSource, checkedDestination);
+	}
+
+	/**
+	 * Create blockade.
+	 */
+	@Override
+	public void createBlockade(Country source, Country neighbour) {
+
+		// Ensure that both the parameter Countries is a valid model country, This
+		// should
+		// never be false.
+		if (!(source instanceof ModelCountry)) {
+			throw new IllegalArgumentException("The parmameter 'source' country is not a valid country.");
+		} else if (!(neighbour instanceof ModelCountry)) {
+			throw new IllegalArgumentException("The parmameter 'neighbour' country is not a valid country.");
+		}
+
+		final ModelCountry checkedSource = (ModelCountry) source;
+		final ModelCountry checkedDestination = (ModelCountry) neighbour;
+
+		// Check there is a link between the two countries.
+		if (!checkedSource.isNeighbour(checkedDestination)) {
+			throw new IllegalArgumentException("The specifed countries must be neighbours.");
+		}
+
+		// Get the link from the destination to the source
+		final ModelLink link = checkedDestination.getLinkTo(checkedSource);
+
+		if (source.getOwner() != getCurrentPlayer()) {
+			throw new IllegalStateException("The source country must be owned by the current player.");
+		}
+
+		final int price = getPoints().getBlockade();
+
+		// Check that the current player has sufficient points.
+		if (getCurrentPlayer().getPoints() < price) {
+			throw new IllegalStateException("The current player has insufficent points to buy a blockade.");
+		}
+
+		final int duration = 3;
+
+		link.setState(ModelLinkState.BLOCKADE, duration);
+		game.players.getCurrent().spendPoints(price);
+
 	}
 
 }

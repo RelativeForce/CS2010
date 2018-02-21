@@ -138,8 +138,8 @@ public final class CombatState extends CoreGameState {
 	 */
 	@Override
 	protected void panElements(Point panVector) {
-		Point current = getButton(attackButton).getPosition();
-		getButton(attackButton).setPosition(new Point(current.x + panVector.x, current.y + panVector.y));
+		panButton(getButton(attackButton), panVector);
+		panButton(getButton(upgradeButton), panVector);
 	}
 
 	/**

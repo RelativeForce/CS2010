@@ -14,10 +14,15 @@ import peril.controllers.api.Player;
 
 /**
  * 
- * @author Gurdeep aka TheDarkKnight
+ * @author Gurdeep_Pol
+ * 
+ * @since 2018-02-21
+ * 
+ * @version 1.01.01
+ * 
+ * @see AI
  *
  */
-
 public final class Knight extends AI {
 	
 	/**

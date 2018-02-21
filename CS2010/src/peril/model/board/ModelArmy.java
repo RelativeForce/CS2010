@@ -22,8 +22,8 @@ import peril.helpers.UnitHelper;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.03
- * @since 2018-02-18
+ * @version 1.01.04
+ * @since 2018-02-21
  * 
  * @see Observable
  * @see Iterable
@@ -579,7 +579,13 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 		return hasUnit((ModelUnit) unit);
 	}
 
-	@Override
+	/**
+	 * Trades all the {@link ModelUnit}s in the {@link ModelArmy} up to make this
+	 * {@link ModelArmy} as strong as possible.
+	 * 
+	 * @return Whether any of the {@link ModelUnit}s in this {@link ModelArmy} were
+	 *         traded up.
+	 */
 	public boolean tradeUnitsUp() {
 
 		// If there are no units then trade up failed.

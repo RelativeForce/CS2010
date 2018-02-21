@@ -12,6 +12,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 import peril.controllers.GameController;
+import peril.helpers.PointHelper;
 import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelArmy;
@@ -50,10 +51,6 @@ public class UpgradeMenu extends Menu {
 	private static final int WIDTH = 800;
 
 	private static final int HEIGHT = 600;
-
-	private static final int BLOCK_LINK_COST = 4;
-
-	private static final int TRADE_UNIT_COST = 3;
 
 	/**
 	 * The padding in the horizontal direction between the edge of the
@@ -326,7 +323,7 @@ public class UpgradeMenu extends Menu {
 
 				frame.draw(unit, x, y);
 
-				final String text = "[Cost: " + TRADE_UNIT_COST + "]";
+				final String text = "[Cost: " + PointHelper.TRADE_UNIT_COST + "]";
 				final int costX = x + (SlickUnit.WIDTH / 2) - (blockFont.getHeight(text) / 2);
 
 				frame.draw(blockFont, text, costX, y - blockFont.getHeight(text));
@@ -358,7 +355,7 @@ public class UpgradeMenu extends Menu {
 
 	private void drawUpgrades(Frame frame) {
 
-		final String block = "Blockade [Cost: " + BLOCK_LINK_COST + "]";
+		final String block = "Blockade [Cost: " + PointHelper.BLOCKADE_COST + "]";
 		final int x = neighbours.getPosition().x + (neighbours.getWidth() / 2) - (blockFont.getWidth(block) / 2);
 		final int y = neighbours.getPosition().y - blockFont.getHeight(block) - 5;
 
@@ -483,10 +480,10 @@ public class UpgradeMenu extends Menu {
 					final int currentPoints = ruler.getPoints();
 
 					// If the user has enough points trade up.
-					if (currentPoints >= TRADE_UNIT_COST) {
+					if (currentPoints >= PointHelper.TRADE_UNIT_COST) {
 
 						if (army.tradeUp(unit)) {
-							ruler.setPoints(currentPoints - TRADE_UNIT_COST);
+							ruler.spendPoints(PointHelper.TRADE_UNIT_COST);
 							populateTraders();
 						} else {
 

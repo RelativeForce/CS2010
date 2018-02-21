@@ -15,6 +15,7 @@ import org.newdawn.slick.Image;
 
 import peril.concurrent.Action;
 import peril.controllers.GameController;
+import peril.helpers.PointHelper;
 import peril.helpers.UnitHelper;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
@@ -48,11 +49,6 @@ public class WarMenu extends Menu {
 	private final static int MAX_ATTACK_SQUAD_SIZE = 3;
 
 	private final static int MAX_DEFEND_SQUAD_SIZE = 2;
-	
-	/**
-	 * The number of points awarded for conquering a country.
-	 */
-	private final static int CONQURE_POINTS = 2;
 
 	/**
 	 * The {@link Dice} displaying dice interactions on screen.
@@ -460,7 +456,7 @@ public class WarMenu extends Menu {
 
 					attackingPlayer.setCountriesTaken(attackingPlayer.getCountriesTaken() + 1);
 					
-					attackingPlayer.setPoints(attackingPlayer.getPoints() + CONQURE_POINTS);
+					attackingPlayer.addPoints(PointHelper.CONQUER_REWARD);
 
 					game.checkContinentRulership();
 

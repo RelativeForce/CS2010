@@ -99,6 +99,8 @@ public final class FunctionHelper {
 			return showStatsMenu();
 		case 25:
 			return hideStatsMenu();
+		case 26:
+			return blockLink();
 		case 28:
 			return showUpgradeMenu();
 		case 29:
@@ -110,6 +112,15 @@ public final class FunctionHelper {
 
 		// If no action was returned then the function code was invalid.
 		throw new IllegalArgumentException(code + " is not a valid function code.");
+	}
+
+	/**
+	 * Retrieves a {@link Action} that blocks the link between two countries.
+	 * 
+	 * @return {@link Action}
+	 */
+	private Action<?> blockLink() {
+		return new Action<GameController>(game, game -> game.getView().blockLink());
 	}
 
 	/**
@@ -214,7 +225,7 @@ public final class FunctionHelper {
 	private Action<?> nextHelpPage() {
 		return new Action<GameController>(game, game -> game.getView().nextHelpPage());
 	}
-	
+
 	/**
 	 * Retrieves the {@link Action} that moves the to the credits page
 	 * 

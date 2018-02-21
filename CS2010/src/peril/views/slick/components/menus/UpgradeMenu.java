@@ -25,7 +25,6 @@ import peril.views.slick.Frame;
 import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.board.SlickUnit;
 import peril.views.slick.components.Component;
-import peril.views.slick.components.TextField;
 import peril.views.slick.components.VisualList;
 import peril.views.slick.states.gameStates.CoreGameState;
 import peril.views.slick.util.Clickable;
@@ -53,18 +52,6 @@ public class UpgradeMenu extends Menu {
 	private static final int HEIGHT = 600;
 
 	/**
-	 * The padding in the horizontal direction between the edge of the
-	 * {@link HelpMenu} and the edge of the {@link TextField}.
-	 */
-	private static final int PADDING_X = WIDTH / 12;
-
-	/**
-	 * The padding in the vertical direction between the edge of the
-	 * {@link HelpMenu} and the edge of the {@link TextField}.
-	 */
-	private static final int PADDING_Y = HEIGHT / 9;
-
-	/**
 	 * The {@link Font} for the text of the text of the {@link UpgradeMenu}.
 	 */
 	private final Font pointFont;
@@ -72,6 +59,8 @@ public class UpgradeMenu extends Menu {
 	private final Font countryFont;
 
 	private final Font titleFont;
+
+	private final String blockButton;
 
 	private final VisualList<ModelCountry> neighbours;
 
@@ -100,7 +89,7 @@ public class UpgradeMenu extends Menu {
 	 *            The {@link Game} the {@link UpgradeMenu} is associated with.
 	 */
 	public UpgradeMenu(Point position, GameController game) {
-		super(NAME, game, new Region(800, 600, position));
+		super(NAME, game, new Region(WIDTH, HEIGHT, position));
 
 		this.pointFont = new Font("Arial", Color.black, 25);
 		this.countryFont = new Font("Arial", Color.black, 30);
@@ -109,6 +98,7 @@ public class UpgradeMenu extends Menu {
 		this.armyFont = new Font("Arial", Color.red, 50);
 		this.hasUpgrades = false;
 		this.player = null;
+		this.blockButton = "block";
 
 		final Font listFont = new Font("Arial", Color.black, 25);
 
@@ -181,6 +171,104 @@ public class UpgradeMenu extends Menu {
 			populateTraders();
 
 		}
+	}
+
+	@Override
+	public void hide() {
+		super.hide();
+
+		if (country == null) {
+
+			try {
+				country.destroy();
+			} catch (SlickException e) {
+				e.printStackTrace();
+			}
+		}
+
+		country = null;
+		selected = null;
+
+	}
+
+	/**
+	 * Draws the {@link UpgradeMenu} on screen.
+	 * 
+	 * @param frame
+	 *            {@link Graphics}
+	 */
+	public void draw(Frame frame) {
+
+		super.draw(frame);
+
+		drawCountry(frame);
+
+		drawUpgrades(frame);
+
+		drawPoints(frame);
+
+		drawPlayer(frame);
+
+		drawUnits(frame);
+
+	}
+
+	/**
+	 * Initialises all the visual elements off {@link UpgradeMenu}.
+	 */
+	public void init() {
+
+		pointFont.init();
+		countryFont.init();
+		titleFont.init();
+		neighbours.init();
+		blockFont.init();
+		armyFont.init();
+
+	}
+
+	/**
+	 * Process a click.
+	 */
+	public void parseClick(Point click) {
+
+	}
+
+	/**
+	 * Moves all the components in this {@link UpgradeMenu}.
+	 */
+	@Override
+	public void moveComponents(Point vector) {
+
+		final Point current = neighbours.getPosition();
+
+		neighbours.setPosition(new Point(current.x + vector.x, current.y + vector.y));
+
+	}
+
+	public void blockLink() {
+	
+		final ModelPlayer ruler = selected.getRuler();
+		final int currentPoints = ruler.getPoints();
+
+		// If the user has enough points trade up.
+		if (currentPoints >= PointHelper.BLOCKADE_COST) {
+
+			final ModelCountry neighbour = neighbours.getSelected();
+			
+			ruler.spendPoints(PointHelper.BLOCKADE_COST);
+			
+			neighbour.getLinkTo(selected).setState(ModelLinkState.BLOCKADE, 3);
+			
+			populatesUpgrades();
+			
+		
+		} else {
+
+			final String message = "You have in sufficient points.";
+
+			slick.showToolTip(message, getButton(blockButton).getPosition());
+		}
 
 	}
 
@@ -222,7 +310,7 @@ public class UpgradeMenu extends Menu {
 	private Point getArmyPosition() {
 
 		final int x = getPosition().x + ((getWidth() * 3) / 4) - (SlickUnit.WIDTH / 2);
-		final int y = getPosition().y + ((getHeight() * 4) / 5) - (SlickUnit.HEIGHT / 2);
+		final int y = getPosition().y + ((getHeight() * 4) / 5) - (SlickUnit.HEIGHT / 2) - 10;
 
 		return new Point(x, y);
 	}
@@ -252,51 +340,11 @@ public class UpgradeMenu extends Menu {
 			neighbours.setSelected(0);
 			hasUpgrades = true;
 			neighbours.init();
+			getButton(blockButton).show();
+		}else {
+			getButton(blockButton).hide();
+			hasUpgrades = false;
 		}
-	}
-
-	@Override
-	public void hide() {
-		super.hide();
-
-		if (country == null) {
-
-			try {
-				country.destroy();
-			} catch (SlickException e) {
-				e.printStackTrace();
-			}
-		}
-
-		country = null;
-		selected = null;
-
-	}
-
-	/**
-	 * Draws the {@link UpgradeMenu} on screen.
-	 * 
-	 * @param frame
-	 *            {@link Graphics}
-	 */
-	public void draw(Frame frame) {
-
-		super.draw(frame);
-
-		drawBackground(frame);
-
-		drawTitle(frame);
-
-		drawCountry(frame);
-
-		drawUpgrades(frame);
-
-		drawPoints(frame);
-
-		drawPlayer(frame);
-
-		drawUnits(frame);
-
 	}
 
 	private void drawUnits(Frame frame) {
@@ -398,58 +446,6 @@ public class UpgradeMenu extends Menu {
 		frame.draw(countryFont, countryName, counrtyNameX, countryNameY);
 	}
 
-	private void drawBackground(Frame frame) {
-		frame.setColor(Color.lightGray);
-
-		final int boxX = getPosition().x + PADDING_X;
-		final int boxY = getPosition().y + PADDING_Y;
-		final int boxWidth = WIDTH - (2 * PADDING_X);
-		final int boxHeight = HEIGHT - (2 * PADDING_Y);
-
-		frame.fillRect(boxX, boxY, boxWidth, boxHeight);
-	}
-
-	private void drawTitle(Frame frame) {
-		final String title = "UPGRADE";
-		final int titleX = getPosition().x + (getWidth() / 2) - (titleFont.getWidth(title) / 2);
-		final int titleY = getPosition().y + titleFont.getHeight(title);
-
-		frame.draw(titleFont, title, titleX, titleY);
-	}
-
-	/**
-	 * Initialises all the visual elements off {@link UpgradeMenu}.
-	 */
-	public void init() {
-
-		pointFont.init();
-		countryFont.init();
-		titleFont.init();
-		neighbours.init();
-		blockFont.init();
-		armyFont.init();
-
-	}
-
-	/**
-	 * Process a click.
-	 */
-	public void parseClick(Point click) {
-
-	}
-
-	/**
-	 * Moves all the components in this {@link UpgradeMenu}.
-	 */
-	@Override
-	public void moveComponents(Point vector) {
-
-		final Point current = neighbours.getPosition();
-
-		neighbours.setPosition(new Point(current.x + vector.x, current.y + vector.y));
-
-	}
-
 	private final class UnitTrader implements Component {
 
 		private static final String TRADE_ICON_NAME = "rightButton.png";
@@ -541,4 +537,5 @@ public class UpgradeMenu extends Menu {
 		}
 
 	}
+
 }

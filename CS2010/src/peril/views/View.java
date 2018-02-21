@@ -9,6 +9,7 @@ import peril.io.FileParser;
 import peril.io.SaveFile;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
+import peril.model.board.links.ModelLink;
 import peril.model.states.Attack;
 import peril.model.states.Fortify;
 import peril.model.states.ModelState;
@@ -344,5 +345,10 @@ public interface View {
 	 * Allows to enter the credits page.
 	 */
 	void enterCredits();
+
+	/**
+	 * Blocks the {@link ModelLink} between two countries that are selected.
+	 */
+	void blockLink();
 
 }

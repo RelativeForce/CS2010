@@ -46,7 +46,7 @@ import peril.views.slick.util.Point;
  * @author Joshua_Eddy, Joseph Rolli
  * 
  * @since 2018-02-21
- * @version 1.01.10
+ * @version 1.01.11
  * 
  * @see StateBasedGame
  * @see View
@@ -747,6 +747,16 @@ public final class SlickGame extends StateBasedGame implements View {
 		}
 		throw new IllegalStateException(state.getID() + " is not a valid state as it is not a InteractiveState.");
 	}
+	
+	@Override
+	public void enterCredits() {
+		enterState(states.credits);
+	}
+
+	@Override
+	public void blockLink() {
+		menus.blockLink();		
+	}
 
 	/**
 	 * Toggles the visibility of a {@link Menu} specified by its name.
@@ -764,11 +774,6 @@ public final class SlickGame extends StateBasedGame implements View {
 		} else {
 			menus.hide(menuName);
 		}
-	}
-
-	@Override
-	public void enterCredits() {
-		enterState(states.credits);
 	}
 
 }

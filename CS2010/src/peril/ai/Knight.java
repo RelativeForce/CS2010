@@ -18,28 +18,28 @@ import peril.controllers.api.Player;
  *
  */
 
-public final class TheDarkKnight extends AI {
+public final class Knight extends AI {
 	
 	/**
-	 * The number of milliseconds between each action of this {@link TheDarkKnight}. If
-	 * this is zero or lower then the then the {@link TheDarkKnight} will perform its
+	 * The number of milliseconds between each action of this {@link Knight}. If
+	 * this is zero or lower then the then the {@link Knight} will perform its
 	 * actions at the frame rate of the display.
 	 */
 	private static final int SPEED = 100;
 
 	/**
-	 * The name of this {@link TheDarkKnight}.
+	 * The name of this {@link Knight}.
 	 */
-	private static final String NAME = "TheDarkKnight";
+	private static final String NAME = "Knight";
 
 	/**
-	 * Constructs a new {@link TheDarkKnight} {@link AI}.
+	 * Constructs a new {@link Knight} {@link AI}.
 	 * 
 	 * @param api
 	 *            The {@link AIController} that this {@link AI} will use to query the
 	 *            state of the game.
 	 */
-	public TheDarkKnight(AIController api) {
+	public Knight(AIController api) {
 		super(NAME, SPEED, api);
 	}
 	

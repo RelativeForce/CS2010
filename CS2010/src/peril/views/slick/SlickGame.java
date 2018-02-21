@@ -45,8 +45,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy, Joseph Rolli
  * 
- * @since 2018-02-20
- * @version 1.01.09
+ * @since 2018-02-21
+ * @version 1.01.10
  * 
  * @see StateBasedGame
  * @see View
@@ -288,7 +288,6 @@ public final class SlickGame extends StateBasedGame implements View {
 		final HelpMenu helpMenu = new HelpMenu(new Point(100, 100), game);
 		final ChallengeMenu challengeMenu = new ChallengeMenu(new Point(100, 100), game);
 		final StatsMenu statsMenu = new StatsMenu(new Point(100, 100), game);
-		final UnitMenu unitMenu = new UnitMenu(new Point(100, 100), game);
 		final UpgradeMenu upgradeMenu = new UpgradeMenu(new Point(100, 100), game);
 
 		// Holds all the menus
@@ -298,7 +297,6 @@ public final class SlickGame extends StateBasedGame implements View {
 		menus.add(helpMenu);
 		menus.add(challengeMenu);
 		menus.add(statsMenu);
-		menus.add(unitMenu);
 		menus.add(upgradeMenu);
 
 		// Add all the menus to the menu helper.
@@ -345,7 +343,6 @@ public final class SlickGame extends StateBasedGame implements View {
 		containers.add(end);
 		containers.add(playerSelection);
 		containers.add(statsMenu);
-		containers.add(unitMenu);
 		containers.add(upgradeMenu);
 		containers.add(credits);
 
@@ -520,14 +517,6 @@ public final class SlickGame extends StateBasedGame implements View {
 	@Override
 	public void toggleUpgradeMenu(boolean state) {
 		toggleMenu(state, UpgradeMenu.NAME);
-	}
-
-	/**
-	 * Toggle the visibility of the unit menu.
-	 */
-	@Override
-	public void toggleUnitMenu(boolean state) {
-		toggleMenu(state, UnitMenu.NAME);
 	}
 
 	/**

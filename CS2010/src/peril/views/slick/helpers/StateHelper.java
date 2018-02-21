@@ -2,13 +2,13 @@ package peril.views.slick.helpers;
 
 import org.newdawn.slick.SlickException;
 
-import peril.Game;
-import peril.views.slick.MiniMap;
 import peril.views.slick.SlickGame;
 import peril.views.slick.board.SlickBoard;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
+import peril.views.slick.components.MiniMap;
 import peril.views.slick.components.menus.WarMenu;
+import peril.views.slick.states.Credits;
 import peril.views.slick.states.EndState;
 import peril.views.slick.states.InteractiveState;
 import peril.views.slick.states.LoadingScreen;
@@ -22,24 +22,40 @@ import peril.views.slick.states.gameStates.ReinforcementState;
 import peril.views.slick.states.gameStates.SetupState;
 
 /**
- * A helper class for {@link Game} this object stores the instances of the
- * various {@link InteractiveState}s of the {@link Game}.
+ * A helper class for {@link SlickGame} this object stores the instances of the
+ * various {@link InteractiveState}s of the {@link SlickGame}.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-17
+ * @version 1.01.01
+ * 
+ * @see InteractiveState
+ * @see SlickGame
  *
  */
-public class StateHelper {
+public final class StateHelper {
 
 	/**
-	 * The state that displays combat to the user. This is heavily couples with
-	 * {@link WarMenu}.
+	 * The splash screen of the game.
 	 */
-	public final CombatState combat;
+	public final Opening opening;
 
 	/**
-	 * The {@link MainMenu} of the {@link Game}.
+	 * The {@link MainMenu} of the {@link SlickGame}.
 	 */
 	public final MainMenu mainMenu;
+
+	/**
+	 * The {@link PlayerSelection} that allows the user to select how many players
+	 * will be in the game.
+	 */
+	public final PlayerSelection playerSelection;
+
+	/**
+	 * The {@link LoadingScreen} that will load the map specified files from memory.
+	 */
+	public final LoadingScreen loadingScreen;
 
 	/**
 	 * The {@link SetupState} that will allow the user to set up which
@@ -54,28 +70,26 @@ public class StateHelper {
 	public final ReinforcementState reinforcement;
 
 	/**
+	 * The state that displays combat to the user. This is heavily couples with
+	 * {@link WarMenu}.
+	 */
+	public final CombatState combat;
+
+	/**
 	 * The {@link MovementState} which lets the user move {@link ModelArmy}s from
 	 * one {@link SlickCountry} to another.
 	 */
 	public final MovementState movement;
 
 	/**
-	 * The {@link EndState} that displays the results of the {@link Game}.
+	 * The {@link EndState} that displays the results of the {@link SlickGame}.
 	 */
 	public final EndState end;
 
 	/**
-	 * The {@link LoadingScreen} that will load the map specified files from memory.
+	 * The {@link Credits} page for this game. 
 	 */
-	public final LoadingScreen loadingScreen;
-
-	/**
-	 * The {@link PlayerSelection} that allows the user to select how many players
-	 * will be in the game.
-	 */
-	public final PlayerSelection playerSelection;
-	
-	public final Opening opening;
+	public final Credits credits;
 
 	/**
 	 * Constructs a new {@link StateHelper}.
@@ -104,9 +118,14 @@ public class StateHelper {
 	 * @param playerSelection
 	 *            The {@link PlayerSelection} that allows the user to select how
 	 *            many players will be in the game.
+	 * @param opening
+	 *            The splash screen of the game.
+	 * @param credits
+	 *            The credits page for this game.
 	 */
-	public StateHelper(Opening opening,MainMenu mainMenu, CombatState combat, ReinforcementState reinforcement, SetupState setup,
-			MovementState movement, EndState end, LoadingScreen loadingScreen, PlayerSelection playerSelection) {
+	public StateHelper(Opening opening, MainMenu mainMenu, CombatState combat, ReinforcementState reinforcement,
+			SetupState setup, MovementState movement, EndState end, LoadingScreen loadingScreen,
+			PlayerSelection playerSelection, Credits credits) {
 		this.opening = opening;
 		this.mainMenu = mainMenu;
 		this.end = end;
@@ -116,24 +135,23 @@ public class StateHelper {
 		this.movement = movement;
 		this.loadingScreen = loadingScreen;
 		this.playerSelection = playerSelection;
+		this.credits = credits;
 	}
 
 	/**
-	 * Adds {@link CoreGameState}s to the {@link GameContainer} for this
-	 * {@link Game}.
-	 */
-	/**
+	 * Adds {@link InteractiveState}s to the {@link SlickGame}.
 	 * 
-	 * @param container
 	 * @param game
-	 * @param slickBoard
-	 * @param eventHandler
+	 *            The {@link SlickGame} that the {@link InteractiveState} will be
+	 *            added to.
+	 * 
 	 * @throws SlickException
+	 *             Thrown if there is a problem with adding a state.
 	 */
-	public void init(SlickGame game, SlickBoard slickBoard) throws SlickException {
+	public void init(SlickGame game) throws SlickException {
 
 		// Add starting state to the game container.
-		//game.addState(opening);
+		// game.addState(opening);
 		game.addState(mainMenu);
 		game.addState(playerSelection);
 		game.addState(loadingScreen);
@@ -144,18 +162,41 @@ public class StateHelper {
 		game.addState(reinforcement);
 		game.addState(combat);
 		game.addState(movement);
-	
+		game.addState(credits);
+
 	}
-	
-	public void addMiniMap(SlickBoard slickBoard, SlickGame game) {
-		
-		final MiniMap miniMap = new MiniMap(slickBoard, game.getScreenWidth(), game.getScreenHeight());
-		
+
+	/**
+	 * Adds a {@link MiniMap} to all the {@link CoreGameState}s.
+	 * 
+	 * @param slickBoard
+	 *            The {@link SlickBoard} that the {@link MiniMap} will display.
+	 * @param screenWidth
+	 *            The width of the screen.
+	 * @param screenHeight
+	 *            The height of the screen.
+	 */
+	public void addMiniMap(SlickBoard slickBoard, int screenWidth, int screenHeight) {
+
+		final MiniMap miniMap = new MiniMap(slickBoard, screenWidth, screenHeight);
+
 		setup.setMiniMap(miniMap);
 		reinforcement.setMiniMap(miniMap);
 		combat.setMiniMap(miniMap);
 		movement.setMiniMap(miniMap);
-		
+
+	}
+
+	/**
+	 * Removes the {@link MiniMap} from all the {@link CoreGameState}s.
+	 */
+	public void removeMiniMap() {
+
+		setup.setMiniMap(null);
+		reinforcement.setMiniMap(null);
+		combat.setMiniMap(null);
+		movement.setMiniMap(null);
+
 	}
 
 	/**
@@ -176,6 +217,6 @@ public class StateHelper {
 			return reinforcement;
 		}
 
-		throw new NullPointerException(name + " is not a valid game state.");
+		throw new NullPointerException(name + " is not a valid game state to save in.");
 	}
 }

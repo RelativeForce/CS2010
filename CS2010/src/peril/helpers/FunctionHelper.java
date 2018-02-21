@@ -10,13 +10,13 @@ import peril.views.slick.components.menus.UnitMenu;
  * 
  * This hold the functionality of every predefined {@link Button} in the game.
  * 
- * @author Mohammad_ali_Sayed_Ackbar, Joshua_Eddy
+ * @author Mohammad_ali_Sayed_Ackbar, Joshua_Eddy, Joseph_Rolli, Adrian_Wong
  * 
- * @version 1.01.01
- * @since 2018-02-06
+ * @version 1.01.04
+ * @since 2018-02-20
  *
  */
-public class FunctionHelper {
+public final class FunctionHelper {
 
 	/**
 	 * The {@link GameController} this {@link FunctionHelper} uses to interact with
@@ -100,10 +100,10 @@ public class FunctionHelper {
 			return showStatsMenu();
 		case 25:
 			return hideStatsMenu();
-		case 26:
-			return showPointsMenu();
-		case 27:
-			return hidePointsMenu();
+//		case 26:
+//			return showPointsMenu();
+//		case 27:
+//			return hidePointsMenu();
 		case 28:
 			return showUpgradeMenu();
 		case 29:
@@ -112,6 +112,8 @@ public class FunctionHelper {
 			return showUnitMenu();
 		case 31:
 			return hideUnitMenu();
+		case 32:
+			return enterCredits();
 
 		}
 
@@ -221,6 +223,15 @@ public class FunctionHelper {
 	private Action<?> nextHelpPage() {
 		return new Action<GameController>(game, game -> game.getView().nextHelpPage());
 	}
+	
+	/**
+	 * Retrieves the {@link Action} that moves the to the credits page
+	 * 
+	 * @return
+	 */
+	private Action<?> enterCredits() {
+		return new Action<GameController>(game, game -> game.getView().enterCredits());
+	}
 
 	/**
 	 * Retrieves a function that show the {@link WarMenu} between visible and
@@ -279,7 +290,26 @@ public class FunctionHelper {
 	 * @return {@link Action}
 	 */
 	private Action<?> leaveSetUp() {
-		return new Action<GameController>(game, game -> game.confirmSetup());
+		return new Action<GameController>(game, game -> {
+			// Only confirm setup if all players have at least 1 country assigned.
+
+			int playerID = 0;
+
+			for (int playerIndex = 1; playerIndex <= PlayerHelper.MAX_PLAYERS; playerIndex++) {
+				if (game.isPlaying(playerIndex)) {
+					if (game.getModelPlayer(playerIndex).getCountriesRuled() == 0) {
+						playerID = playerIndex;
+					}
+				}
+			}
+
+			if (playerID == 0) {
+				game.confirmSetup();
+			} else {
+				game.getView().showToolTip("Player " + playerID + " does not have any countries assigned.");
+			}
+		});
+
 	}
 
 	/**
@@ -304,11 +334,12 @@ public class FunctionHelper {
 
 	/**
 	 * Retrieves the {@link Action} that will load the game.
+	 * 
 	 * @return {@link Action}
 	 */
 	private Action<?> loadGame() {
 		return new Action<GameController>(game, game -> {
-			
+
 			// Attempt to load the game.
 			try {
 				game.getView().loadGame();
@@ -378,7 +409,7 @@ public class FunctionHelper {
 	private Action<?> hideHelpMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleHelpMenu(false));
 	}
-	
+
 	/**
 	 * Retrieves the {@link Action} that opens the {@link StatsMenu} window.
 	 * 
@@ -396,25 +427,7 @@ public class FunctionHelper {
 	private Action<?> hideStatsMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleStatsMenu(false));
 	}
-	
-	/**
-	 * Retrieves the {@link Action} that opens the {@link PointsMenu} window.
-	 * 
-	 * @return
-	 */
-	private Action<?> showPointsMenu() {
-		return new Action<GameController>(game, game -> game.getView().togglePointsMenu(true));
-	}
 
-	/**
-	 * Retrieves the {@link Action} that closes the {@link PointsMenu} window.
-	 * 
-	 * @return
-	 */
-	private Action<?> hidePointsMenu() {
-		return new Action<GameController>(game, game -> game.getView().togglePointsMenu(false));
-	}
-	
 	/**
 	 * Retrieves the {@link Action} that opens the {@link UnitMenu} window.
 	 * 
@@ -432,7 +445,7 @@ public class FunctionHelper {
 	private Action<?> hideUnitMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleUnitMenu(false));
 	}
-	
+
 	/**
 	 * Retrieves the {@link Action} that opens the {@link UpgradeMenu} window.
 	 * 

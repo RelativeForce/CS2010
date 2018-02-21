@@ -1,0 +1,7 @@
+Help: Combat
+In Combat, the current player can attack adjacent enemy countries using their countries.
+Valid targets will be shown by a line linking them to the selected country.
+How to:
+1. Select the country with more than 1 unit that you wish to attack with. A link will be shown to the enemy countries that can be attacked."
+2. Select the adjacent enemy country you want to attack.
+3. Click 'Attack' to start a war.

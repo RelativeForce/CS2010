@@ -19,8 +19,8 @@ import peril.model.board.ModelArmy;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.01
- * @since 2018-02-06
+ * @version 1.01.02
+ * @since 2018-02-20
  *
  */
 public class PlayerHelper {
@@ -237,8 +237,6 @@ public class PlayerHelper {
 		// Reinforce the current.
 		reinforceCurrent();
 
-		// Check the challenges going into the next round
-		checkChallenges();
 	}
 
 	/**

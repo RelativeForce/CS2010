@@ -16,12 +16,12 @@ import org.newdawn.slick.state.StateBasedGame;
 import peril.Game;
 import peril.controllers.GameController;
 import peril.model.ModelPlayer;
-import peril.views.slick.Button;
-import peril.views.slick.Font;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
 import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.components.menus.HelpMenu;
+import peril.views.slick.util.Button;
+import peril.views.slick.util.Font;
+import peril.views.slick.util.Point;
 
 /**
  * 
@@ -120,14 +120,6 @@ public class EndState extends InteractiveState {
 	}
 
 	/**
-	 * Processes a button press on this {@link EndState}.
-	 */
-	@Override
-	public void parseButton(Frame frame, int key, Point mousePosition) {
-		frame.pressButton(key, mousePosition);
-	}
-
-	/**
 	 * Render the {@link EndState}.
 	 */
 	@Override
@@ -182,6 +174,11 @@ public class EndState extends InteractiveState {
 		setPodiumPositions(gc);
 	}
 
+	@Override
+	public void update(GameContainer gc, int delta, Frame frame) {
+		// Do Nothing
+	}
+	
 	/**
 	 * Performs the exit state operations specific to the {@link EndState}.
 	 */

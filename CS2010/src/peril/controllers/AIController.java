@@ -14,8 +14,8 @@ import peril.controllers.api.Player;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.02
- * @since 2018-02-08
+ * @version 1.01.03
+ * @since 2018-02-20
  *
  */
 public interface AIController {
@@ -131,5 +131,12 @@ public interface AIController {
 	 * @param task {@link Consumer}
 	 */
 	void forEachEnemyNeighbour(Country country, Consumer<Country> task);
+	
+	/**
+	 * Retrieves all the point reward values for actions in the game.
+	 * 
+	 * @return {@link Points}
+	 */
+	Points getPoints();
 
 }

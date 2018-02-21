@@ -12,8 +12,8 @@ import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
 import peril.model.states.Setup;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
 import peril.views.slick.board.SlickCountry;
+import peril.views.slick.util.Point;
 
 /**
  * The state where the user selects which player gets what
@@ -59,7 +59,6 @@ public final class SetupState extends CoreGameState {
 		super.drawButtons();
 
 		super.drawMiniMap(frame);
-		super.drawPopups(frame);
 
 		menus.draw(frame);
 
@@ -69,8 +68,9 @@ public final class SetupState extends CoreGameState {
 	 * Parses a button press on this {@link SetupState}.
 	 */
 	@Override
-	public void parseButton(Frame frame, int key, Point mousePosition) {
-
+	public void parseButton(int key, Point mousePosition) {
+		super.parseButton(key, mousePosition);
+		
 		ModelCountry highlighted = model.getSelected(0);
 
 		/*
@@ -105,9 +105,6 @@ public final class SetupState extends CoreGameState {
 				break;
 			}
 		}
-
-		super.parseButton(frame, key, mousePosition);
-
 	}
 
 	/**

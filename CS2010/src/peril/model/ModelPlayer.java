@@ -5,6 +5,7 @@ import java.util.Observable;
 import peril.Update;
 import peril.ai.AI;
 import peril.controllers.api.Army;
+import peril.controllers.api.Country;
 import peril.controllers.api.Player;
 import peril.model.board.ModelArmy;
 
@@ -12,10 +13,10 @@ import peril.model.board.ModelArmy;
  * The internal representation of a player of the game. This object will hold
  * all of the tracked statistics about a player.
  * 
- * @author Joshua_Eddy, Ezekiel_Trinidad
+ * @author Joshua_Eddy, Ezekiel_Trinidad, Joseph_Rolli
  * 
- * @since 2018-02-13
- * @version 1.01.01
+ * @since 2018-02-20
+ * @version 1.01.03
  * 
  * @see Player
  * @see Observable
@@ -67,6 +68,21 @@ public final class ModelPlayer extends Observable implements Player {
 	 * The number of {@link ModelContinent}s the {@link ModelPlayer} owns.
 	 */
 	private int continents;
+
+	/**
+	 * The number of {@link ModelArmy}s the {@link ModelPlayer} has destroyed.
+	 */
+	private int armiesDestroyed;
+
+	/**
+	 * The number of {@link ModelCountry}s the {@link ModelPlayer} has conquered.
+	 */
+	private int countriesTaken;
+
+	/**
+	 * The number of points the {@link ModelPlayer} has spent.
+	 */
+	private int pointsSpent;
 
 	/**
 	 * Constructs a new {@link ModelPlayer}.
@@ -177,6 +193,7 @@ public final class ModelPlayer extends Observable implements Player {
 	/**
 	 * Retrieves the amount of points this {@link ModelPlayer} has.
 	 */
+	@Override
 	public int getPoints() {
 		return this.points;
 	}
@@ -205,6 +222,48 @@ public final class ModelPlayer extends Observable implements Player {
 	@Override
 	public Army getTotalArmy() {
 		return totalArmy;
+	}
+
+	/**
+	 * Retrieves the total {@link Army}s destroyed by this {@link ModelPlayer}.
+	 */
+	public int getArmiesDestroyed() {
+		return armiesDestroyed;
+	}
+
+	/**
+	 * Sets the total {@link Army}s destroyed by this {@link ModelPlayer}.
+	 */
+	public void setArmiesDestroyed(int armiesDestroyed) {
+		this.armiesDestroyed = armiesDestroyed;
+	}
+
+	/**
+	 * Retrieves the total {@link Country}s this {@link ModelPlayer} has taken.
+	 */
+	public int getCountriesTaken() {
+		return countriesTaken;
+	}
+
+	/**
+	 * Sets the total {@link Country}s this {@link ModelPlayer} has taken.
+	 */
+	public void setCountriesTaken(int countriesTaken) {
+		this.countriesTaken = countriesTaken;
+	}
+
+	/**
+	 * Retrieves the total points this {@link ModelPlayer} has spent.
+	 */
+	public int getPointsSpent() {
+		return pointsSpent;
+	}
+
+	/**
+	 * Sets the total points this {@link ModelPlayer} has spent.
+	 */
+	public void setPointsSpent(int pointsSpent) {
+		this.pointsSpent = pointsSpent;
 	}
 
 }

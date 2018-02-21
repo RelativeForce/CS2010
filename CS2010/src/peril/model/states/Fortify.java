@@ -153,10 +153,13 @@ public final class Fortify extends ModelState {
 			if (primaryArmy.getNumberOfUnits() > 1 && primaryArmy.getNumberOf(unit) > 0) {
 
 				// The path between the two countries.
-				final List<ModelCountry> path = getPathBetween(primary, target, unit);
+				//final List<ModelCountry> path = getPathBetween(primary, target, unit);
 
 				// Transfer the unit along the path
-				transferAlongPath(path, unit);
+				//transferAlongPath(path, unit);
+				primary.getArmy().remove(unit);
+				target.getArmy().add(unit);
+				
 
 				// If there is one unit left in the primary army then de-select the countries.
 				if (primaryArmy.getNumberOfUnits() == 1) {

@@ -11,16 +11,19 @@ import peril.controllers.GameController;
 import peril.io.SaveFile;
 import peril.io.TextFileReader;
 import peril.views.slick.EventListener;
-import peril.views.slick.Font;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
-import peril.views.slick.components.lists.VisualList;
+import peril.views.slick.components.VisualList;
 import peril.views.slick.components.menus.HelpMenu;
+import peril.views.slick.util.Font;
+import peril.views.slick.util.Point;
 
 /**
  * Encapsulates the behaviour of the main menu.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-18
+ * @version 1.01.02
  * 
  * @see InteractiveState
  *
@@ -28,25 +31,19 @@ import peril.views.slick.components.menus.HelpMenu;
 public final class MainMenu extends InteractiveState {
 
 	/**
+	 * The width of the main menu window.
+	 */
+	public static final int WIDTH = 900;
+
+	/**
+	 * The height of the main menu window.
+	 */
+	public static final int HEIGHT = 700;
+
+	/**
 	 * The name of a specific {@link InteractiveState}.
 	 */
 	private static final String STATE_NAME = "Main Menu";
-
-	/**
-	 * The width of the main menu
-	 */
-	private static final int WIDTH = 620;
-
-	/**
-	 * The height of the main menu
-	 */
-	private static final int HEIGHT = 500;
-
-	/**
-	 * Whether or not the user interface elements have been loaded from memory or
-	 * not.
-	 */
-	private boolean uiLoaded;
 
 	/**
 	 * Holds the contents of the maps.txt file.
@@ -74,10 +71,16 @@ public final class MainMenu extends InteractiveState {
 	private Music background;
 
 	/**
-	 * Constructs a new {@link MainMenu}
+	 * Whether or not the user interface elements have been loaded from memory or
+	 * not.
+	 */
+	private boolean uiLoaded;
+
+	/**
+	 * Constructs a new {@link MainMenu}.
 	 * 
 	 * @param game
-	 *            The {@link Game} this state is a part of.
+	 *            The {@link GameController} this state is a part of.
 	 * @param id
 	 *            The ID of this {@link MainMenu}.
 	 */
@@ -90,18 +93,18 @@ public final class MainMenu extends InteractiveState {
 		mapsFile = TextFileReader.scanFile(game.getDirectory().getMapsPath(), "maps.txt");
 
 		// Holds the y of all the menus
-		int menuY = 415;
+		final int menuY = 580;
 
-		maps = new VisualList<>(new Point(15, menuY), 110, 24, 3, 10);
-		saves = new VisualList<>(new Point(130, menuY), 80, 18, 4, 10);
+		maps = new VisualList<>(new Point(15, menuY), 180, 36, 3, 10);
+		saves = new VisualList<>(new Point(215, menuY), 160, 27, 4, 10);
 
 		// Populate the visual lists.
 		getMaps();
 
 		// Initialise the fonts;
-		Font listFont = new Font("Arial", Color.black, 19);
-		Font savesFont = new Font("Arial", Color.black, 14);
-		textFont = new Font("Calibri", Color.red, 18);
+		final Font listFont = new Font("Arial", Color.black, 30);
+		final Font savesFont = new Font("Arial", Color.black, 25);
+		textFont = new Font("Arial", Color.red, 35);
 
 		// Assign list fonts
 		maps.setFont(listFont);
@@ -125,6 +128,7 @@ public final class MainMenu extends InteractiveState {
 		drawImages();
 		drawButtons();
 
+		// Draw the maps list.
 		frame.draw(textFont, "Map: ", maps.getPosition().x, maps.getPosition().y - textFont.getHeight());
 		frame.draw(maps, new EventListener() {
 
@@ -158,6 +162,7 @@ public final class MainMenu extends InteractiveState {
 			}
 		});
 
+		// Draw save list.
 		frame.draw(textFont, "Load: ", saves.getPosition().x, saves.getPosition().y - textFont.getHeight());
 		frame.draw(saves, new EventListener() {
 
@@ -196,9 +201,8 @@ public final class MainMenu extends InteractiveState {
 	 * Processes a button press on this {@link MainMenu}.
 	 */
 	@Override
-	public void parseButton(Frame frame, int key, Point mousePosition) {
-
-		frame.pressButton(key, mousePosition);
+	public void parseButton(int key, Point mousePosition) {
+		super.parseButton(key, mousePosition);
 
 		if (key == Input.KEY_ENTER) {
 			// Attempt to load the map
@@ -255,8 +259,9 @@ public final class MainMenu extends InteractiveState {
 	 * visual assets of the main menu are loaded in from memory.
 	 */
 	@Override
-	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+	public void update(GameContainer gc, int delta, Frame frame) {
 
+		// Load Assets
 		if (!slick.io.mainMenuLoader.isFinished()) {
 			slick.io.mainMenuLoader.parseLine();
 		}
@@ -272,12 +277,12 @@ public final class MainMenu extends InteractiveState {
 	}
 
 	/**
-	 * Loads the {@link MainMenu#listFont} {@link VisualList#getSelected()} into the
-	 * {@link Game} and re-sizes the window of the {@link Game}.
+	 * Loads the {@link MainMenu#maps} {@link VisualList#getSelected()} into the
+	 * {@link GameController} and re-sizes the window of the game.
 	 */
 	public void loadGame() throws SlickException {
 
-		Map map = maps.getSelected();
+		final Map map = maps.getSelected();
 
 		// Check width
 		if (map.width <= 0) {
@@ -317,7 +322,7 @@ public final class MainMenu extends InteractiveState {
 	}
 
 	/**
-	 * The visual representation of a map on screen.
+	 * Populates the maps visual list of all the map options.
 	 */
 	private void getMaps() {
 
@@ -325,7 +330,7 @@ public final class MainMenu extends InteractiveState {
 		// maps.
 		for (String line : mapsFile) {
 
-			String[] mapDetails = line.split(",");
+			final String[] mapDetails = line.split(",");
 
 			if (!mapDetails[0].isEmpty() && mapDetails.length == 3) {
 
@@ -357,7 +362,7 @@ public final class MainMenu extends InteractiveState {
 	 */
 	private void checkSaves() {
 
-		String mapName = maps.getSelected().name;
+		final String mapName = maps.getSelected().name;
 
 		saves.clear();
 
@@ -372,10 +377,12 @@ public final class MainMenu extends InteractiveState {
 	}
 
 	/**
-	 * A wrapper for the details of a map in the {@link Game}.
+	 * A wrapper for the details of a map in the {@link MainMenu#maps} list.
 	 * 
 	 * @author Joshua_Eddy
 	 *
+	 * @since 2018-02-17
+	 * @version 1.01.01
 	 */
 	private final class Map {
 
@@ -398,11 +405,11 @@ public final class MainMenu extends InteractiveState {
 		 * Constructs a new {@link Map}.
 		 * 
 		 * @param name
-		 *            of the {@link Map}.
+		 *            The name of the {@link Map}.
 		 * @param width
-		 *            of the {@link Map}.
+		 *            The width of the {@link Map}.
 		 * @param height
-		 *            of the {@link Map}.
+		 *            The height of the {@link Map}.
 		 */
 		public Map(String name, int width, int height) {
 			this.width = width;

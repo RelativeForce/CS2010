@@ -1,4 +1,4 @@
-package peril.views.slick;
+package peril.views.slick.util;
 
 import org.newdawn.slick.Image;
 
@@ -9,6 +9,12 @@ import peril.concurrent.Action;
  * using {@link Button#click()}.
  * 
  * @author Joseph_Rolli, Joshua_Eddy, Mohammed_Sayed_Ackbar
+ * 
+ * @since 2018-02-16
+ * @version 1.01.01
+ * 
+ * @see Action
+ * @see Clickable
  *
  */
 public final class Button extends Clickable {
@@ -17,12 +23,12 @@ public final class Button extends Clickable {
 	 * Holds the id of this {@link Button} allowing it to be identified.
 	 */
 	public final String id;
-	
+
 	/**
 	 * The {@link Action} this {@link Button} will perform when
 	 * {@link Button#click()} is performed.
 	 * 
-	 * @see Action {@link Action}
+	 * @see Action
 	 */
 	private final Action<?> action;
 
@@ -55,19 +61,33 @@ public final class Button extends Clickable {
 		} else if (action == null) {
 			throw new NullPointerException("The action of this button cannot be null.");
 		}
-		setPosition(position);
+
 		this.id = id;
 		this.action = action;
 		this.isVisible = true;
+
+		// Assign the position to the button.
+		setPosition(position);
+
 	}
 
 	/**
-	 * Performs the {@link Button#action} click in this {@link Button}.
+	 * Performs the {@link Action} assigned to this {@link Button}. The
+	 * {@link Button} can only been clicked when it {@link Button#isVisible()}.
 	 */
 	public void click() {
 		if (isVisible) {
 			action.execute();
 		}
+	}
+
+	/**
+	 * Retrieves the {@link Action} assigned to this {@link Button}.
+	 * 
+	 * @return {@link Action}.
+	 */
+	public Action<?> getAction() {
+		return action;
 	}
 
 	/**
@@ -77,10 +97,6 @@ public final class Button extends Clickable {
 		isVisible = false;
 	}
 
-	public Action<?> getAction(){
-		return action;
-	}
-	
 	/**
 	 * Sets this {@link Button} to visible.
 	 */

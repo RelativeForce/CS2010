@@ -1,16 +1,15 @@
 package peril.io;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import peril.Challenge;
 import peril.controllers.GameController;
 import peril.helpers.UnitHelper;
 import peril.model.ModelColor;
 import peril.model.ModelPlayer;
+import peril.model.board.ModelArmy;
 import peril.model.board.ModelContinent;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
+import peril.model.board.links.ModelLink;
 import peril.model.states.ModelState;
 
 /**
@@ -18,15 +17,10 @@ import peril.model.states.ModelState;
  * 
  * @author Joshua_Eddy
  *
- * @version 1.01.01
- * @since 2018-02-06
+ * @version 1.01.04
+ * @since 2018-02-20
  */
-public class MapWriter {
-
-	/**
-	 * Holds all the links that have been written into the file.
-	 */
-	private final Set<String> savedLinks;
+public final class MapWriter {
 
 	/**
 	 * The {@link TextFileWriter} that creates the save file.
@@ -49,7 +43,6 @@ public class MapWriter {
 	 *            The {@link SaveFile} that will be written to.
 	 */
 	public MapWriter(GameController game, SaveFile file) {
-		this.savedLinks = new HashSet<>();
 		this.game = game;
 
 		// The file path for the map
@@ -169,8 +162,20 @@ public class MapWriter {
 
 		line.append(player.distributableArmy.getStrength());
 		line.append(',');
+		
+		line.append(player.getCountriesTaken());
+		line.append(',');
+		
+		line.append(player.getArmiesDestroyed());
+		line.append(',');
+		
+		line.append(player.getPointsSpent());
+		line.append(',');
 
 		line.append(isActive);
+		line.append(',');
+
+		line.append(player.getPoints());
 
 		return line.toString();
 
@@ -198,24 +203,23 @@ public class MapWriter {
 	private void parseLink(ModelCountry country, ModelCountry neighbour) {
 
 		StringBuilder line = new StringBuilder();
-		StringBuilder potentialDuplicate = new StringBuilder();
 
 		line.append("Link,");
 		line.append(country.getName());
 		line.append(',');
 		line.append(neighbour.getName());
+		line.append(',');
 
-		potentialDuplicate.append("Link,");
-		potentialDuplicate.append(neighbour.getName());
-		potentialDuplicate.append(',');
-		potentialDuplicate.append(country.getName());
+		final ModelLink link = country.getLinkTo(neighbour);
 
-		// Check if the link has already been written into the file.
-		if (!savedLinks.contains(potentialDuplicate.toString())) {
-			String lineStr = line.toString();
-			writer.writeLine(lineStr);
-			savedLinks.add(lineStr);
-		}
+		line.append(link.getDefaultState().name);
+		line.append(',');
+		line.append(link.getState().name);
+		line.append(',');
+		line.append(Integer.toString(link.getDuration()));
+
+		writer.writeLine(line.toString());
+
 	}
 
 	/**
@@ -281,7 +285,7 @@ public class MapWriter {
 		line.append(',');
 
 		// Army Size
-		line.append(country.getArmy().getStrength());
+		line.append(parseArmy(country.getArmy()));
 		line.append(',');
 
 		// Army offset
@@ -292,6 +296,38 @@ public class MapWriter {
 
 		// Player ruler
 		line.append(country.getRuler() != null ? country.getRuler().number : '-');
+
+		return line.toString();
+	}
+
+	/**
+	 * Processes a {@link ModelArmy} into a string that can be written to the map
+	 * file.
+	 * 
+	 * @param army
+	 *            The {@link ModelArmy} to be parsed.
+	 * @return String representation of the specified {@link ModelArmy}.
+	 */
+	private String parseArmy(ModelArmy army) {
+
+		final StringBuilder line = new StringBuilder();
+		
+		//Whether the current unit is the first.
+		boolean firstUnit = true;
+
+		// Iterate over every unit in the army.
+		for (ModelUnit unit : army) {
+
+			if (!firstUnit) {
+				line.append('-');
+			}
+
+			line.append(unit.name);
+			line.append(':');
+			line.append(army.getNumberOf(unit));
+
+			firstUnit = false;
+		}
 
 		return line.toString();
 	}

@@ -1,19 +1,24 @@
-package peril.views.slick;
+package peril.views.slick.util;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 /**
- * Encapsulates the behaviour of an {@link Image} in the game.
+ * Encapsulates the behaviour of an {@link Image} with a {@link Point} position
+ * on screen.
  * 
  * @author Joshua_Eddy, Joseph_Rolli
  * 
- *
+ * @since 2018-02-17
+ * @version 1.01.01
+ * 
+ * @see Image
+ * @see Point
  */
 public class Viewable {
 
 	/**
-	 * The image that represents this {@link Viewable} on the screen.
+	 * The {@link Image} that represents this {@link Viewable} on the screen.
 	 */
 	private Image image;
 
@@ -46,7 +51,20 @@ public class Viewable {
 	 *            The {@link Point} position of the {@link Viewable}.
 	 */
 	public Viewable(Image image, Point position) {
+		this(position);
 		this.image = image;
+	}
+
+	/**
+	 * Sets the {@link Point} position of this {@link Viewable}.
+	 * 
+	 * @param position
+	 *            {@link Point}
+	 */
+	public void setPosition(Point position) {
+		if (position == null) {
+			throw new NullPointerException("Position cannot be null.");
+		}
 		this.position = position;
 	}
 
@@ -56,6 +74,7 @@ public class Viewable {
 	 */
 	public void replaceImage(Image image) {
 
+		// If the current image is not null, destroy it.
 		if (this.image != null) {
 
 			try {
@@ -76,48 +95,16 @@ public class Viewable {
 		this.image = image;
 	}
 
+	/**
+	 * Scales this {@link Viewable} to a new width and height.
+	 * 
+	 * @param width
+	 *            The new width.
+	 * @param height
+	 *            The new height.
+	 */
 	public void scale(int width, int height) {
 		image = image.getScaledCopy(width, height);
-	}
-
-	/**
-	 * Retrieves the {@link Image} of this {@link Viewable}.
-	 * 
-	 * @return {@link Image}
-	 */
-	public Image getImage() {
-		return image;
-	}
-
-	/**
-	 * Retrieves whether this {@link Viewable} has an {@link Image} or not.
-	 * 
-	 * @return <code>boolean</code>
-	 */
-	public boolean hasImage() {
-		return image != null;
-	}
-
-	/**
-	 * Retrieves the {@link Point} position of the {@link Viewable}.
-	 * 
-	 * @return
-	 */
-	public Point getPosition() {
-		return position;
-	}
-
-	/**
-	 * Sets the {@link Point} position of this {@link Viewable}.
-	 * 
-	 * @param position
-	 *            {@link Point}
-	 */
-	public void setPosition(Point position) {
-		if (position == null) {
-			throw new NullPointerException("Position cannot be null.");
-		}
-		this.position = position;
 	}
 
 	/**
@@ -148,9 +135,41 @@ public class Viewable {
 		throw new NullPointerException("The image is null.");
 	}
 
+	/**
+	 * Retrieves whether this {@link Viewable} has an {@link Image} or not.
+	 * 
+	 * @return <code>boolean</code>
+	 */
+	public boolean hasImage() {
+		return image != null;
+	}
+
+	/**
+	 * Retrieves the {@link Image} of this {@link Viewable}.
+	 * 
+	 * @return The {@link Image} of this {@link Viewable}.
+	 * 
+	 */
+	public Image getImage() {
+		return image;
+	}
+
+	/**
+	 * Retrieves the {@link Point} position of the {@link Viewable}.
+	 * 
+	 * @return The {@link Point} position of the {@link Viewable}.
+	 */
+	public Point getPosition() {
+		return position;
+	}
+
+	/**
+	 * When the {@link Viewable} is finalised destroy the {@link Image}.
+	 */
 	@Override
-	protected void finalize() throws Throwable {
-		if (hasImage())
+	protected final void finalize() throws Throwable {
+		if (hasImage()) {
 			image.destroy();
+		}
 	}
 }

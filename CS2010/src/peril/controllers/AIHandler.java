@@ -8,6 +8,7 @@ import peril.Game;
 import peril.controllers.api.Board;
 import peril.controllers.api.Country;
 import peril.controllers.api.Player;
+import peril.helpers.PointHelper;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
 import peril.model.states.ModelState;
@@ -255,6 +256,16 @@ public final class AIHandler implements AIController {
 			}
 		});
 
+	}
+	
+	/**
+	 * Retrieves the {@link PointHelper} handling all the point reward values for actions in the game.
+	 * 
+	 * @return {@link PointHelper}
+	 */
+	@Override
+	public Points getPoints() {
+		return PointHelper.getInstance();
 	}
 
 }

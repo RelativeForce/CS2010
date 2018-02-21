@@ -4,32 +4,37 @@ import java.util.Random;
 
 /**
  * These may occur once a turn and will kill a random percentage of the army
- * stationed an {@link ModelContinent}. Each type of EnvironmentalHazard has a
- * percentage chance that wit will occur in a given turn.
+ * stationed an {@link ModelContinent}. Each type of hazard has a percentage
+ * chance that wit will occur in a given turn.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-17
+ * @version 1.01.01
+ * 
+ * @see ModelArmy
  *
  */
 public enum ModelHazard {
 
 	/**
 	 * A VOLCANIC_ERUPTION has a 10% chance of occurring and may kill up to 20% of
-	 * the units in an {@link Army}.
+	 * the units in an {@link ModelArmy}.
 	 */
 	VOLCANIC_ERUPTION(20, 10, "Volcanic Eruption"),
 	/**
 	 * A TORNADO has a 12% chance of occurring and may kill up to 30% of the units
-	 * in an {@link Army}.
+	 * in an {@link ModelArmy}.
 	 */
 	TORNADO(30, 12, "Tornado"),
 	/**
 	 * A HURRICANE has a 20% chance of occurring and may kill up to 10% of the units
-	 * in an {@link Army}.
+	 * in an {@link ModelArmy}.
 	 */
 	HURRICANE(10, 20, "Hurricane"),
 	/**
 	 * A TSUNAMI has a 17% chance of occurring and may kill up to 40% of the units
-	 * in an {@link Army}.
+	 * in an {@link ModelArmy}.
 	 */
 	TSUNAMI(40, 17, "Tsunami");
 
@@ -45,8 +50,8 @@ public enum ModelHazard {
 	public final String name;
 
 	/**
-	 * Holds the percentage chance that this {@link ModelHazard} will occur
-	 * on a give {@link ModelArmy}.
+	 * Holds the percentage chance that this {@link ModelHazard} will occur on a
+	 * give {@link ModelArmy}.
 	 */
 	public final int chance;
 
@@ -59,13 +64,12 @@ public enum ModelHazard {
 	 * Constructs an {@link ModelHazard}.
 	 * 
 	 * @param maxCasualties
-	 *            The maximum percentage of a {@link Amry} that this
+	 *            The maximum percentage of a {@link ModelArmy} that this
 	 *            {@link ModelHazard} will kill.
 	 * @param chance
-	 *            Percentage chance that wit will occur in a given turn.
+	 *            The percentage chance that wit will occur in a given turn.
 	 * @param name
-	 *            The <code>String</code> representation of the
-	 *            {@link ModelHazard}.
+	 *            The <code>String</code> representation of the {@link ModelHazard}.
 	 */
 	private ModelHazard(int maxCasualties, int chance, String name) {
 		this.maxCasualties = maxCasualties;
@@ -75,8 +79,31 @@ public enum ModelHazard {
 	}
 
 	/**
-	 * Retrieves the <code>String</code> representation of the
-	 * {@link ModelHazard}.
+	 * Retrieves the {@link ModelHazard} using the specified name. If there is no
+	 * {@link ModelHazard} with that name then this returns <code>null</code>.
+	 * 
+	 * @param name
+	 *            Name of the {@link ModelHazard}
+	 * @return {@link ModelHazard} specified by the parameter name.
+	 */
+	public static ModelHazard getByName(String name) {
+
+		/*
+		 * Iterate through all the hazards in the game and if the hazard specified by
+		 * the parameter name is the same as one from the game set the hazard of the new
+		 * continent as that. Otherwise there will be NO hazard in the new continent.
+		 */
+		for (ModelHazard indexHazard : ModelHazard.values()) {
+			if (indexHazard.toString().equals(name)) {
+				return indexHazard;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Retrieves the <code>String</code> representation of the {@link ModelHazard}.
 	 */
 	@Override
 	public String toString() {
@@ -89,8 +116,8 @@ public enum ModelHazard {
 	 * @param army
 	 *            The {@link ModelArmy} that will be effected by the
 	 *            {@link ModelHazard}.
-	 * @return <code>boolean</code> whether or not this {@link ModelHazard}
-	 *         occurred on this army.
+	 * @return <code>boolean</code> whether or not this {@link ModelHazard} occurred
+	 *         on this army.
 	 */
 	public boolean act(ModelArmy army) {
 
@@ -123,30 +150,5 @@ public enum ModelHazard {
 		}
 
 		return occur;
-	}
-
-	/**
-	 * Retrieves the {@link ModelHazard} using the specified name. If there
-	 * is no {@link ModelHazard} with that name then this returns
-	 * <code>null</code>.
-	 * 
-	 * @param name
-	 *            Name of the {@link ModelHazard}
-	 * @return {@link ModelHazard} specified by the parameter name.
-	 */
-	public static ModelHazard getByName(String name) {
-
-		/*
-		 * Iterate through all the hazards in the game and if the hazard specified by
-		 * the parameter name is the same as one from the game set the hazard of the new
-		 * continent as that. Otherwise there will be NO hazard in the new continent.
-		 */
-		for (ModelHazard indexHazard : ModelHazard.values()) {
-			if (indexHazard.toString().equals(name)) {
-				return indexHazard;
-			}
-		}
-
-		return null;
 	}
 }

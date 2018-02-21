@@ -12,7 +12,6 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.controllers.GameController;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
 import peril.views.slick.components.menus.HelpMenu;
 import peril.views.slick.io.ImageReader;
 
@@ -56,18 +55,12 @@ public class Opening extends InteractiveState {
 	}
 
 	@Override
-	public void parseButton(Frame frame, int key, Point mousePosition) {
-		frame.pressButton(key, mousePosition);
-	}
-
-	@Override
 	public void render(GameContainer gc, Frame frame) {
 		states.get(index).draw(frame);
 	}
 
 	@Override
-	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-		super.update(gc, sbg, delta);
+	public void update(GameContainer gc, int delta, Frame frame) {
 
 		SplashState current = states.get(index);
 

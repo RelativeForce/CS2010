@@ -5,8 +5,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+
+import peril.views.slick.components.TextField;
+import peril.views.slick.util.Button;
+import peril.views.slick.util.Clickable;
+import peril.views.slick.util.Font;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Region;
 
 /**
  * <h3>Basic Description</h3>
@@ -35,8 +43,8 @@ import org.newdawn.slick.Image;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-13
- * @version 1.01.01
+ * @since 2018-02-19
+ * @version 1.02.03
  * 
  * @see Clickable
  * @see Point
@@ -53,15 +61,24 @@ public final class Frame {
 	private final List<List<Entry>> planes;
 
 	/**
+	 * The {@link List} of all the {@link ToolTip}s that are drawn on the
+	 * {@link Frame}.
+	 */
+	private final List<ToolTip> toolTips;
+
+	/**
 	 * The {@link Graphics} of the current frame.
 	 */
 	public Graphics g;
+
+	public GameContainer gc;
 
 	/**
 	 * Constructs a new {@link Frame};
 	 */
 	public Frame() {
 		planes = new ArrayList<>();
+		toolTips = new LinkedList<>();
 	}
 
 	/**
@@ -70,9 +87,12 @@ public final class Frame {
 	 * 
 	 * @param g
 	 *            {@link Graphics} of the new frame.
+	 * @param gc
+	 *            The {@link GameContainer}
 	 */
-	public void newFrame(Graphics g) {
+	public void newFrame(Graphics g, GameContainer gc) {
 		this.g = g;
+		this.gc = gc;
 
 		clear();
 
@@ -80,6 +100,90 @@ public final class Frame {
 		final LinkedList<Entry> newPlane = new LinkedList<>();
 		planes.add(newPlane);
 
+	}
+
+	/**
+	 * Updates the {@link Frame} on how many milliseconds have passed since the last
+	 * time {@link Frame#newFrame(Graphics)} was called.
+	 * 
+	 * @param delta
+	 *            How many milliseconds have passed since the last time
+	 *            {@link Frame#newFrame(Graphics)} was called.
+	 */
+	public void updateFrame(int delta) {
+
+		List<ToolTip> toRemove = new LinkedList<>();
+
+		toolTips.forEach(toolTip -> {
+
+			// If the tool tip has elapsed remove it.
+			if (toolTip.elapse(delta)) {
+				toRemove.add(toolTip);
+			}
+		});
+
+		toRemove.forEach(toolTip -> toolTips.remove(toolTip));
+	}
+
+	/**
+	 * Clears all the tool tips from this frame.
+	 */
+	public void clearToolTips() {
+		if (!toolTips.isEmpty()) {
+			toolTips.clear();
+		}
+	}
+
+	/**
+	 * Adds a tool tip to be displayed for a specified duration at a specified
+	 * {@link Point} position.
+	 * 
+	 * @param message
+	 *            The message of the tool tip.
+	 * @param position
+	 *            The position of the tool tip.
+	 * @param duration
+	 *            The number of milliseconds this tool tip will be displayed for.
+	 */
+	public void addToolTip(String message, Point position, long duration) {
+
+		// If the message is already being displayed, dont display it again.
+		for (ToolTip temp : toolTips) {
+			if (temp.messaage.equals(message)) {
+				return;
+			}
+		}
+
+		final ToolTip tt = new ToolTip(message, position, duration);
+
+		final Point toolTipPos = new Point(position.x, position.y + (toolTips.size() * tt.getHeight()));
+
+		tt.setPosition(toolTipPos);
+
+		toolTips.add(tt);
+	}
+
+	/**
+	 * Moves all the {@link ToolTip} currently being displayed on this {@link Frame}
+	 * by a specified {@link Point} vector.
+	 * 
+	 * @param vector
+	 *            The {@link Point} vector the tool tips will be moved in.
+	 */
+	public void panToolTips(Point vector) {
+
+		toolTips.forEach(toolTip -> {
+			final Point current = toolTip.getPosition();
+			toolTip.setPosition(new Point(current.x + vector.x, current.y + vector.y));
+		});
+
+	}
+
+	/**
+	 * Draws all the {@link ToolTip} on the {@link Frame}.
+	 */
+	public void drawToolTips() {
+		toolTips.forEach(toolTip -> toolTip.draw(this));
 	}
 
 	/**
@@ -110,8 +214,17 @@ public final class Frame {
 	 */
 	public void draw(Clickable item, EventListener listener) {
 
-		// Add the object to the planes.
-		addToPlanes(new Entry(item, listener));
+		final int left = item.getPosition().x;
+		final int top = item.getPosition().y;
+		final int right = left + item.getWidth();
+		final int bottom = left + item.getHeight();
+
+		if (left < gc.getWidth() && right > 0 && top < gc.getHeight() && bottom > 0) {
+
+			// Add the object to the planes.
+			addToPlanes(new Entry(item, listener));
+		}
+
 	}
 
 	/**
@@ -122,32 +235,41 @@ public final class Frame {
 	 */
 	public void draw(Button button) {
 
-		// Holds the entry that only processes click operations.
-		final Entry entry = new Entry(button, new EventListener() {
+		final int left = button.getPosition().x;
+		final int top = button.getPosition().y;
+		final int right = left + button.getWidth();
+		final int bottom = left + button.getHeight();
 
-			@Override
-			public final void mouseHover(Point mouse, int delta) {
-				// Do nothing
-			}
+		if (left < gc.getWidth() && right > 0 && top < gc.getHeight() && bottom > 0) {
 
-			@Override
-			public final void mouseClick(Point mouse, int mouseButton) {
-				button.click();
-			}
+			// Holds the entry that only processes click operations.
+			final Entry entry = new Entry(button, new EventListener() {
 
-			@Override
-			public final void buttonPress(int Key, Point mouse) {
-				// Do nothing
-			}
+				@Override
+				public final void mouseHover(Point mouse, int delta) {
+					// Do nothing
+				}
 
-			@Override
-			public final void draw(Frame frame) {
-				// Draw the button image.
-				g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y);
-			}
-		});
+				@Override
+				public final void mouseClick(Point mouse, int mouseButton) {
+					button.click();
+				}
 
-		addToPlanes(entry);
+				@Override
+				public final void buttonPress(int Key, Point mouse) {
+					// Do nothing
+				}
+
+				@Override
+				public final void draw(Frame frame) {
+					// Draw the button image.
+					g.drawImage(button.getImage(), button.getPosition().x, button.getPosition().y);
+				}
+			});
+
+			addToPlanes(entry);
+		}
+
 	}
 
 	/**
@@ -456,4 +578,145 @@ public final class Frame {
 
 	}
 
+	/**
+	 * 
+	 * Encapsulates the behaviours of a tool tip that will be displayed over the
+	 * {@link Frame}.
+	 * 
+	 * @author Joshua_Eddy
+	 * 
+	 * @since 2018-02-19
+	 * @version 1.01.02
+	 *
+	 */
+	private final class ToolTip {
+
+		/**
+		 * The message this {@link ToolTip} displays.
+		 */
+		public final String messaage;
+
+		/**
+		 * The {@link TextField} that displays the message to the user.
+		 */
+		private final TextField text;
+
+		/**
+		 * The {@link Delay} before this {@link ToolTip} will be disappear.
+		 */
+		private final Delay delay;
+
+		/**
+		 * Constructs a new {@link ToolTip}.
+		 * 
+		 * @param message
+		 *            The message to be displayed on the {@link ToolTip}.
+		 * @param position
+		 *            The {@link Point} position of the {@link ToolTip}.
+		 * @param duration
+		 *            The number of milliseconds this {@link ToolTip} will be displayed
+		 *            for.
+		 */
+		public ToolTip(String message, Point position, long duration) {
+			this.text = new TextField(800, position);
+			this.delay = new Delay(duration);
+			this.messaage = message;
+			this.text.init();
+			this.text.addText(message);
+		}
+
+		/**
+		 * Retrieves whether or not this {@link ToolTip} should disappear or not.
+		 * 
+		 * @param delta
+		 *            The number of milliseconds between the last frame and this one.
+		 * @return Whether or not this {@link ToolTip} should disappear or not.
+		 */
+		public boolean elapse(int delta) {
+			return delay.hasElapsed(delta);
+		}
+
+		/**
+		 * Draws the {@link ToolTip} on the specified {@link Frame}.
+		 * 
+		 * @param frame
+		 *            The {@link Frame} the {@link ToolTip} will be drawn on.
+		 */
+		public void draw(Frame frame) {
+			text.draw(frame);
+		}
+
+		/**
+		 * Sets the {@link Point} position of the {@link ToolTip}.
+		 * 
+		 * @param position
+		 *            The new {@link Point} position of the {@link ToolTip}.
+		 */
+		public void setPosition(Point position) {
+			text.setPosition(position);
+		}
+
+		/**
+		 * Retrieves the {@link Point} position of the {@link ToolTip}.
+		 * 
+		 * @return The {@link Point} position of the {@link ToolTip}.
+		 */
+		public Point getPosition() {
+			return text.getPosition();
+		}
+
+		/**
+		 * Retrieves the height of this {@link ToolTip}.
+		 * 
+		 * @return The height of this {@link ToolTip}.
+		 */
+		public int getHeight() {
+			return text.getHeight();
+		}
+	}
+
+	/**
+	 * Encapsulates the behaviour of a time delay.
+	 * 
+	 * @author Joshua_Eddy
+	 * 
+	 * @since 2018-02-15
+	 * @version 1.01.01
+	 *
+	 */
+	private final class Delay {
+
+		/**
+		 * The time in milliseconds before this {@link Delay} has elapsed.
+		 */
+		private long time;
+
+		/**
+		 * Constructs a new {@link Delay}.
+		 * 
+		 * @param time
+		 *            The number of {@link Delay#hasElapsed()} executions before this
+		 *            {@link Delay} has elapsed.
+		 */
+		public Delay(long time) {
+			if (time <= 0) {
+				throw new IllegalArgumentException("Delay time cannot be <= zero.");
+			}
+			this.time = time;
+		}
+
+		/**
+		 * Reduces {@link Delay#time} and retrieves whether it has elapsed or not.
+		 * 
+		 * @param delta
+		 *            The time that has passed in milliseconds
+		 * 
+		 * @return Whether this {@link Delay} has elapsed or not.
+		 */
+		public boolean hasElapsed(int delta) {
+			time -= delta;
+			return time <= 0;
+		}
+
+	}
 }

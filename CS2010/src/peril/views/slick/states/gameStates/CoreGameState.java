@@ -15,28 +15,31 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.Update;
+import peril.ai.AI;
 import peril.controllers.GameController;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
 import peril.model.states.ModelState;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
-import peril.views.slick.MiniMap;
-import peril.views.slick.Point;
 import peril.views.slick.board.*;
-import peril.views.slick.components.lists.ToolTipList;
+import peril.views.slick.components.MiniMap;
 import peril.views.slick.components.menus.Menu;
 import peril.views.slick.components.menus.PauseMenu;
+import peril.views.slick.components.menus.StatsMenu;
 import peril.views.slick.helpers.MenuHelper;
 import peril.views.slick.states.InteractiveState;
+import peril.views.slick.util.Button;
+import peril.views.slick.util.Point;
 
 /**
  * A {@link InteractiveState} which displays the {@link SlickBoard} to the user.
  * This is an {@link Observer} to a {@link ModelState}.
  * 
  * @author Joseph_Rolli, Joshua_Eddy
- * @version 1.01.01
- * @since 2018-02-05
+ * 
+ * @since 2018-02-20
+ * @version 1.01.05
  * 
  * @see InteractiveState
  * @see Observer
@@ -53,8 +56,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * The {@link MenuHelper} that contains all the {@link Menu}s.
 	 */
 	protected final MenuHelper menus;
-
-	private MiniMap miniMap;
 
 	/**
 	 * Holds all the {@link SlickCountry}s that are currently selected by this
@@ -74,9 +75,9 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	private Point panDirection;
 
 	/**
-	 * Holds the tool tip that will be displayed to the user.
+	 * The {@link MiniMap} that is currently displayed over the {@link SlickBoard}.
 	 */
-	private final ToolTipList toolTipList;
+	private MiniMap miniMap;
 
 	/**
 	 * Constructs a new {@link CoreGameState}.
@@ -97,11 +98,27 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		this.menus = slick.menus;
 		this.model = model;
 		this.panDirection = null;
-		this.toolTipList = new ToolTipList(new Point(210, 60));
 		this.backgroundMusic = new ArrayList<>();
 		this.selected = new ArrayList<>();
 
-		super.addComponent(toolTipList);
+	}
+
+	/**
+	 * Sets the {@link MiniMap} that the {@link CoreGameState} displays.
+	 * 
+	 * @param miniMap
+	 *            The {@link MiniMap} that the {@link CoreGameState} displays.
+	 */
+	public final void setMiniMap(MiniMap miniMap) {
+		this.miniMap = miniMap;
+	}
+
+	/**
+	 * Retrieves the {@link Music} played by this {@link CoreGameState}.
+	 */
+	@Override
+	public final Music getMusic() {
+		return backgroundMusic.get(new Random().nextInt(backgroundMusic.size()));
 	}
 
 	/**
@@ -123,7 +140,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 				getMusic().play();
 			}
 		}
-		
+
 		miniMap.repositionWindow();
 	}
 
@@ -143,15 +160,14 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * Updates this {@link CoreGameState} between frames.
 	 */
 	@Override
-	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-		super.update(gc, sbg, delta);
-
-		// Elapse the time of the tool tips.
-		toolTipList.elapseTime(delta);
-
+	public void update(GameContainer gc, int delta, Frame frame) {
 		// If there is no menu visible and there is a pan direction, pan.
 		if (panDirection != null && !menus.menuVisible()) {
-			pan(panDirection);
+
+			final int x = (panDirection.x * delta) / gc.getFPS();
+			final int y = (panDirection.y * delta) / gc.getFPS();
+
+			frame.panToolTips(pan(new Point(x, y)));
 		}
 	}
 
@@ -179,7 +195,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
 		super.leave(container, game);
 
-		toolTipList.clear();
+		super.clearToolTips();
 
 		collapseSelected();
 
@@ -193,38 +209,40 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * Processes a button click on a {@link CoreGameState}.
 	 */
 	@Override
-	public void parseButton(Frame frame, int key, Point mousePosition) {
+	public void parseButton(int key, Point mousePosition) {
+		super.parseButton(key, mousePosition);
 
 		// Movement increment
-		int increment = 50;
-		int width = slick.getContainer().getWidth();
-		int height = slick.getContainer().getHeight();
+		final int increment = 50;
 
 		switch (key) {
 		case Input.KEY_UP:
-			slick.modelView.getVisual(game.getModelBoard()).move(new Point(0, +increment), width, height);
-			miniMap.repositionWindow();
+
+			if (!slick.menus.menuVisible()) {
+				pan(new Point(0, +increment));
+			}
+
 			break;
 		case Input.KEY_DOWN:
-			slick.modelView.getVisual(game.getModelBoard()).move(new Point(0, -increment), width, height);
-			miniMap.repositionWindow();
+			if (!slick.menus.menuVisible()) {
+				pan(new Point(0, -increment));
+			}
+
 			break;
 		case Input.KEY_LEFT:
-			slick.modelView.getVisual(game.getModelBoard()).move(new Point(+increment, 0), width, height);
-			miniMap.repositionWindow();
+			if (!slick.menus.menuVisible()) {
+				pan(new Point(+increment, 0));
+			}
+
 			break;
 		case Input.KEY_RIGHT:
-			slick.modelView.getVisual(game.getModelBoard()).move(new Point(-increment, 0), width, height);
-			miniMap.repositionWindow();
+			if (!slick.menus.menuVisible()) {
+				pan(new Point(-increment, 0));
+			}
+
 			break;
 		case Input.KEY_ESCAPE:
 			menus.show(PauseMenu.NAME);
-			break;
-		case Input.KEY_E:
-			expandSelected();
-			break;
-		case Input.KEY_C:
-			collapseSelected();
 			break;
 		case Input.KEY_T:
 			tradeSelectedUnitUp();
@@ -236,52 +254,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 	}
 
-	public void setMiniMap(MiniMap miniMap) {
-		this.miniMap = miniMap;
-	}
-
-	private void tradeSelectedUnitUp() {
-
-		if (selected.get(0) == null) {
-			return;
-		}
-
-		ModelArmy army = selected.get(0).model.getArmy();
-
-		if (army.getSelected() == null) {
-			return;
-		}
-
-		army.tradeUp(army.getSelected());
-
-	}
-
-	/**
-	 * Retrieves the {@link Music} played by this {@link CoreGameState}.
-	 */
-	@Override
-	public final Music getMusic() {
-		return backgroundMusic.get(new Random().nextInt(backgroundMusic.size()));
-	}
-
-	/**
-	 * Adds a String as a tool tip to this {@link CoreGameState} to be displayed to
-	 * the user.
-	 * 
-	 * @param toolTip
-	 *            <code>String</code>
-	 */
-	public final void showToolTip(String toolTip) {
-
-		if (toolTip == null) {
-			throw new NullPointerException("Popup cannot be null.");
-		}
-
-		// Display the tool tip for 8 seconds
-		toolTipList.add(toolTip, 8000);
-
-	}
-
 	/**
 	 * Assigns the pan direction of the {@link CoreGameState}.
 	 * 
@@ -289,17 +261,18 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 *            {@link Point} position of the mouse.
 	 */
 	public void parseMouse(Point mousePosition) {
+		super.parseMouse(mousePosition);
 
 		// Holds the dimensions of the game container.
-		int screenWidth = slick.getContainer().getWidth();
-		int screenHeight = slick.getContainer().getHeight();
+		int screenWidth = slick.getScreenWidth();
+		int screenHeight = slick.getScreenHeight();
 
 		// Set the padding of the window
 		int xPadding = screenWidth / 10;
 		int yPadding = screenHeight / 10;
 
 		// The pixels per frame the state will pan at.
-		int panSpeed = 4;
+		int panSpeed = 100;
 
 		int x = 0;
 		int y = 0;
@@ -417,11 +390,33 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * {@link Color}.
 	 * 
 	 * @param frame
-	 *            {@link Graphics}
+	 *            {@link Frame}
 	 */
 	protected final void drawPlayerName(Frame frame) {
 		SlickPlayer p = slick.modelView.getVisual(game.getCurrentModelPlayer());
-		frame.draw(p.getImage(), 20, 80);
+		frame.draw(p, new EventListener() {
+
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
+				slick.menus.show(StatsMenu.NAME);
+
+			}
+
+			@Override
+			public void draw(Frame frame) {
+				frame.draw(p.getImage(), p.getPosition().x, p.getPosition().y);
+			}
+
+			@Override
+			public void buttonPress(int key, Point mouse) {
+				// Do nothing
+			}
+		});
 	}
 
 	/**
@@ -443,14 +438,14 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		game.forEachModelCountry(model -> {
 
 			// The position of the current country's army.
-			final Point countryPosition = getCenterArmyPosition(slick.modelView.getVisual(model));
+			final Point countryPosition = slick.modelView.getVisual(model).getArmyPosition();
 
 			// For each neighbour of that country draw the link from the neighbour to the
 			// current country
 			model.getNeighbours().forEach(modelNeighbour -> {
 
 				// The position of the neighbour's army.
-				final Point neighbourPosition = getCenterArmyPosition(slick.modelView.getVisual(modelNeighbour));
+				final Point neighbourPosition = slick.modelView.getVisual(modelNeighbour).getArmyPosition();
 
 				// The link from the country to its neighbour
 				final SlickLinkState link = slick.modelView.getVisual(model.getLinkTo(modelNeighbour).getState());
@@ -461,37 +456,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 			});
 		});
 
-	}
-
-	/**
-	 * Draws the {@link ToolTipList} containing the pop ups of the
-	 * {@link CoreGameState} on screen.
-	 * 
-	 * @param frame
-	 */
-	protected final void drawPopups(Frame frame) {
-		toolTipList.draw(frame);
-	}
-
-	/**
-	 * Retrieves the centre of the oval behind the {@link Amry} of a specified
-	 * {@link SlickCountry}.
-	 * 
-	 * @param country
-	 *            {@link SlickCountry}
-	 * @return {@link Point} position
-	 */
-	protected final Point getCenterArmyPosition(SlickCountry country) {
-
-		Point armyPos = country.getArmyPosition();
-
-		SlickArmy army = slick.modelView.getVisual(country.model.getArmy());
-
-		// Add the distance to the centre of the oval.
-		int x = armyPos.x + (army.getOvalWidth((army.model.getStrength()) * 4) / 5);
-		int y = armyPos.y + 12;
-
-		return new Point(x, y);
 	}
 
 	/**
@@ -519,24 +483,110 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	}
 
 	/**
+	 * If there is a {@link MiniMap} then display then draw it.
+	 * 
+	 * @param frame
+	 *            The {@link Frame} that will display the {@link MiniMap} to the
+	 *            user.
+	 */
+	protected final void drawMiniMap(Frame frame) {
+
+		if (miniMap == null) {
+			return;
+		}
+
+		frame.draw(miniMap, new EventListener() {
+
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
+				miniMap.parseClick(mouse);
+			}
+
+			@Override
+			public void draw(Frame frame) {
+				miniMap.draw(frame);
+			}
+
+			@Override
+			public void buttonPress(int key, Point mouse) {
+				// Do nothing
+			}
+		});
+	}
+
+	/**
+	 * Pans a {@link Button} by a specified {@link Point} pan vector.
+	 * 
+	 * @param button
+	 *            The {@link Button} to be panned.
+	 * @param panVector
+	 *            The direction that the {@link Button} will be panned.
+	 */
+	protected final void panButton(Button button, Point panVector) {
+		Point current = button.getPosition();
+		button.setPosition(new Point(current.x + panVector.x, current.y + panVector.y));
+	}
+
+	/**
+	 * Moves the specified {@link Button} to the position that the upgrade
+	 * {@link Button} is displayed over the primary country selected.
+	 * 
+	 * @param upgrade
+	 *            The upgrade button.
+	 */
+	protected final void showUpgradeButton(Button upgrade) {
+		
+		final Point army = selected.get(0).getArmyPosition();
+		upgrade.setPosition(new Point(army.x - upgrade.getWidth(), army.y + (SlickUnit.HEIGHT / 2) + 5));
+		upgrade.show();
+	}
+
+	/**
+	 * Performs the {@link ModelArmy#tradeUnitsUp()} on the selected
+	 * {@link SlickCountry}(s).
+	 */
+	private void tradeSelectedUnitUp() {
+
+		if (selected.get(0) == null) {
+			return;
+		}
+
+		ModelArmy army = selected.get(0).model.getArmy();
+
+		if (army.getSelected() == null) {
+			return;
+		}
+
+		army.tradeUp(army.getSelected());
+
+	}
+
+	/**
 	 * Pans the {@link Game#board} according to the
 	 * {@link CoreGameState#panDirection}.
 	 * 
 	 * @param panVector
 	 */
-	private void pan(Point panVector) {
+	private Point pan(Point panVector) {
 
-		int width = slick.getContainer().getWidth();
-		int height = slick.getContainer().getHeight();
+		final int width = slick.getContainer().getWidth();
+		final int height = slick.getContainer().getHeight();
 
 		// The vector the board actually moved along.
-		Point actualVector = slick.modelView.getVisual(game.getModelBoard()).move(panDirection, width, height);
+		final Point actualVector = slick.modelView.getVisual(game.getModelBoard()).move(panVector, width, height);
 
 		// If the board actually moved.
 		if (actualVector.x != 0 || actualVector.y != 0) {
 			panElements(actualVector);
 			miniMap.repositionWindow();
 		}
+
+		return actualVector;
 
 	}
 
@@ -560,8 +610,12 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 			@Override
 			public void mouseClick(Point mouse, int mouseButton) {
 
+				if (game.getCurrentModelPlayer().ai != AI.USER || slick.menus.menuVisible()) {
+					return;
+				}
+
 				// Get the country that is clicked.
-				SlickCountry clicked = board.getCountry(mouse);
+				final SlickCountry clicked = board.getCountry(mouse);
 
 				/*
 				 * If the board was clicked with the left mouse and it is a valid country to
@@ -578,34 +632,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 			@Override
 			public void draw(Frame frame) {
-				board.draw(frame, game, slick, model);
-			}
-
-			@Override
-			public void buttonPress(int key, Point mouse) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-
-	}
-
-	protected void drawMiniMap(Frame frame) {
-		frame.draw(miniMap, new EventListener() {
-
-			@Override
-			public void mouseHover(Point mouse, int delta) {
-				// Do nothing
-			}
-
-			@Override
-			public void mouseClick(Point mouse, int mouseButton) {
-				miniMap.parseClick(mouse);
-			}
-
-			@Override
-			public void draw(Frame frame) {
-				miniMap.draw(frame);
+				board.draw(frame);
 			}
 
 			@Override
@@ -613,6 +640,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 				// Do nothing
 			}
 		});
+
 	}
 
 	/**

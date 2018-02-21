@@ -22,8 +22,8 @@ import peril.helpers.UnitHelper;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.02
- * @since 2018-02-13
+ * @version 1.01.03
+ * @since 2018-02-18
  * 
  * @see Observable
  * @see Iterable
@@ -306,6 +306,26 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 
 		// Iterate through all the units and add them to the army.
 		unitList.forEach(unit -> add(unit));
+	}
+
+	/**
+	 * Adds all of the {@link ModelUnit}s from the specified {@link ModelArmy} into
+	 * this {@link ModelArmy}. This will not remove the {@link ModelUnit}s from the
+	 * specified {@link ModelArmy}.
+	 * 
+	 * @param army
+	 *            The {@link ModelArmy} to be merged.
+	 */
+	public void merge(ModelArmy army) {
+
+		// For every unit in the specified army add the number of that unit to this
+		// army.
+		for (ModelUnit unit : army) {
+
+			for (int index = 0; index < army.getNumberOf(unit); index++) {
+				add(unit);
+			}
+		}
 	}
 
 	/**

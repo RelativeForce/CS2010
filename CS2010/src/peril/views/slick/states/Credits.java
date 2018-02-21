@@ -8,12 +8,9 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
 import peril.controllers.GameController;
-import peril.views.slick.Button;
-import peril.views.slick.Font;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
-import peril.views.slick.Viewable;
 import peril.views.slick.components.menus.HelpMenu;
+import peril.views.slick.util.Font;
 
 /**
  * 
@@ -33,23 +30,22 @@ public final class Credits extends InteractiveState {
 	/**
 	 * The {@link Font} that the entire {@link Credits} will be displayed in.
 	 */
-	private final Font creditsFont;
-	
-	/**
-	 * The {@link Button} that will cause the {@link Credits} to return the the
-	 * main menu.
-	 */
-	private final String menuButton;
-	
-	/**
-	 * The background {@link Viewable} of the {@link Credits}.
-	 */
-	private Viewable background;
+	private final Font creditsFont;	
 	
 	/**
 	 * The background music for this {@link Credits}.
 	 */
 	private Music music;
+	
+	/**
+	 * This {@link Credits} does not run at the start.
+	 */
+	public static boolean creditsRunning = false;
+	
+	/**
+	 * Holds the contents of the credits.txt file.
+	 */
+	//private final String[] creditsFile;
 	
 	/**
 	 * Constructs a new {@link Credits}.
@@ -58,12 +54,11 @@ public final class Credits extends InteractiveState {
 	 *            The {@link Game} this state is a part of.
 	 * @param id
 	 *            The id of this {@link Credits}.
+	 * @throws SlickException 
 	 */
-	public Credits(GameController game, int id) {
-		super(game, NAME, id, HelpMenu.NULL_PAGE);
-		// TODO Auto-generated constructor stub
+	public Credits(GameController game, int id) throws SlickException {
+		super(game, NAME, id, HelpMenu.NULL_PAGE);	
 		creditsFont = new Font("Arial", Color.black, 20);
-		menuButton = "menu";
 		
 	}	
 	
@@ -74,30 +69,15 @@ public final class Credits extends InteractiveState {
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
 
-		music = slick.music.read("credits");
+		//music = slick.music.read("credits"); //add later
 
 		// Initialise Fonts
 		creditsFont.init();
 	}
-	
-	/**
-	 * Enters the {@link Credits} state.
-	 */
-	@Override
-	public void enter(GameContainer gc, StateBasedGame sbg) {
 
-		changeMusic(gc);
+	@Override
+	public void update(GameContainer gc, int delta, Frame frame) {	
 		
-		// Scale the background image to fill the screen.
-		background.scale(gc.getWidth(), gc.getHeight());
-	}
-
-	/**
-	 * Processes a button press on this {@link Credits}.
-	 */
-	@Override
-	public void parseButton(Frame frame, int key, Point mousePosition) {
-		frame.pressButton(key, mousePosition);
 	}
 
 	/**
@@ -105,10 +85,10 @@ public final class Credits extends InteractiveState {
 	 */
 	@Override
 	public void render(GameContainer gc, Frame frame) {
-		// TODO Auto-generated method stub	
+		
 		drawImages();
 		drawButtons();
-		
+
 	}
 	
 	/**

@@ -1,4 +1,4 @@
-package peril.views.slick.components.lists;
+package peril.views.slick.components;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -6,13 +6,12 @@ import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-import peril.views.slick.Clickable;
-import peril.views.slick.Font;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
-import peril.views.slick.Region;
-import peril.views.slick.components.Component;
 import peril.views.slick.states.InteractiveState;
+import peril.views.slick.util.Clickable;
+import peril.views.slick.util.Font;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Region;
 
 /**
  * Encapsulates the behaviours a {@link List} of {@link Element}s that can be

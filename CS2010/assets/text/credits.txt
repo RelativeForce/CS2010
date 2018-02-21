@@ -1,0 +1,32 @@
+Peril - Strategic Goats 2018
+
+Aston University - CS2010 (Group 5) 2017-2018
+
+Development Team:
+- Joshua Eddy
+- Ezekiel Trinidad
+- Joseph Rolli
+- James Rowntree
+- Mohammad Sayed Ackbar
+- Adrian Wong
+
+Graphics and Maps:
+- Adrian Wong
+- Joseph Rolli
+
+Quality Assurance:
+- Hannah Miller
+- Gurdeep Pol
+
+Testing Team:
+- 
+
+Special thanks:
+
+- Audio Machine (Music)
+	- Flames of War
+	- Supermoon
+	- House of Cards
+	- Sura
+	- Discovery of Power
+	- Veni Vidi Vici

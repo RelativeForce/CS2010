@@ -14,11 +14,11 @@ import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
 import peril.model.board.links.ModelLinkState;
 import peril.model.states.Attack;
-import peril.views.slick.Button;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
+import peril.views.slick.util.Button;
+import peril.views.slick.util.Point;
 
 /**
  * Encapsulates the behaviour of the 'Combat' state of the game. In this state
@@ -34,6 +34,7 @@ public final class CombatState extends CoreGameState {
 	 * Holds the instance of a attack {@link Button}.
 	 */
 	private final String attackButton;
+	private String upgradeButton;
 
 	/**
 	 * Constructs a new {@link CombatState}.
@@ -46,7 +47,7 @@ public final class CombatState extends CoreGameState {
 	public CombatState(GameController game, int id, Attack model) {
 		super(game, model.getName(), id, model);
 		this.attackButton = "attack";
-
+		this.upgradeButton = "upgrades";
 		model.addObserver(this);
 
 	}
@@ -67,7 +68,7 @@ public final class CombatState extends CoreGameState {
 	 * name and then the enemy {@link SlickCountry}.
 	 */
 	@Override
-	public void render(GameContainer gc, Frame frame)  {
+	public void render(GameContainer gc, Frame frame) {
 
 		super.render(gc, frame);
 
@@ -81,11 +82,8 @@ public final class CombatState extends CoreGameState {
 		super.drawButtons();
 		super.drawPlayerName(frame);
 		super.drawMiniMap(frame);
-		
-		super.drawPopups(frame);
 
 		menus.draw(frame);
-
 
 	}
 
@@ -93,30 +91,27 @@ public final class CombatState extends CoreGameState {
 	 * Updates this {@link CombatState}.
 	 */
 	@Override
-	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-		super.update(gc, sbg, delta);
-
+	public final void update(GameContainer gc, int delta, Frame frame) {
+		super.update(gc, delta, frame);
 		game.processAI(delta);
-		
+
 	}
-	
+
 	@Override
-	public void parseButton(Frame frame,int key, Point mousePosition) {
-		
-		if(key == Input.KEY_B) {
-			
+	public void parseButton(int key, Point mousePosition) {
+		super.parseButton(key, mousePosition);
+
+		if (key == Input.KEY_B) {
+
 			final ModelCountry primary = model.getSelected(0);
 			final ModelCountry secondary = model.getSelected(1);
-			
-			if(primary != null && secondary != null) {
-				
+
+			if (primary != null && secondary != null) {
+
 				secondary.getLinkTo(primary).setState(ModelLinkState.BLOCKADE, 3);
-				
+
 			}
 		}
-		
-		
-		super.parseButton(frame, key, mousePosition);
 	}
 
 	/**
@@ -127,6 +122,7 @@ public final class CombatState extends CoreGameState {
 		super.enter(gc, sbg);
 		menus.showSaveOption();
 		getButton(attackButton).hide();
+		getButton(upgradeButton).hide();
 	}
 
 	/**
@@ -165,14 +161,14 @@ public final class CombatState extends CoreGameState {
 
 			for (ModelCountry modelNeighbour : highlighted.model.getNeighbours()) {
 
-				SlickCountry neighbour = slick.modelView.getVisual(modelNeighbour);
+				final SlickCountry neighbour = slick.modelView.getVisual(modelNeighbour);
 
 				// if it is a valid target highlight the country and draw a line from the
 				// highlighted country to the neighbour country.
 				if (((Attack) model).isValidTarget(highlighted.model, modelNeighbour)) {
 
-					Point enemy = super.getCenterArmyPosition(neighbour);
-					Point selected = super.getCenterArmyPosition(highlighted);
+					final Point enemy = neighbour.getArmyPosition();
+					final Point selected = highlighted.getArmyPosition();
 
 					frame.drawLine(enemy, selected);
 				}
@@ -190,10 +186,10 @@ public final class CombatState extends CoreGameState {
 	 */
 	private void moveAttackButton(SlickCountry primary, SlickCountry target) {
 
-		Point p1 = getCenterArmyPosition(primary);
-		Point p2 = getCenterArmyPosition(target);
-		int x = ((p2.x - p1.x) / 2) + p1.x;
-		int y = ((p2.y - p1.y) / 2) + p1.y;
+		final Point p1 = primary.getArmyPosition();
+		final Point p2 = target.getArmyPosition();
+		final int x = ((p2.x - p1.x) / 2) + p1.x;
+		final int y = ((p2.y - p1.y) / 2) + p1.y;
 
 		getButton(attackButton).setPosition(new Point(x, y));
 
@@ -207,6 +203,13 @@ public final class CombatState extends CoreGameState {
 		// either case there should be no full state update.
 		if (getButton(attackButton) == null) {
 			return;
+		}
+
+		// If this is the primary country
+		if (selected.size() > 0) {
+			showUpgradeButton(getButton(upgradeButton));
+		} else {
+			getButton(upgradeButton).hide();
 		}
 
 		if (selected.size() == 2 && selected.get(0).model.getArmy().getStrength() > 1) {

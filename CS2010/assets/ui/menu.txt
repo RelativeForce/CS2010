@@ -1,7 +1,14 @@
-// asset_type,state_name,function_code,asset_file_name,width,height,x,y
-button,Main Menu,7,playButton.png,90,40,515,450,play
-button,Select,22,playButton.png,90,40,515,450,play
-button,Main Menu,23,goat32.png,30,30,575,15,website
+// Main Menu
+button,Main Menu,7,playButton.png,180,80,710,610,play
+image,Main Menu,perilLogo.png,800,520,60,0
+button,Main Menu,23,goat.png,60,60,820,15,website
+button,Main Menu,32,pointsButton.png,60,60,0,0,credits
 
-// asset_type,state_name,asset_file_name,width,height,x,y
-image,Main Menu,perilLogo.png,500,340,60,0
+// Player Selection
+button,Select,12,mainMenuButton.png,180,80,10,610,menu
+button,Select,22,playButton.png,180,80,710,610,play
+image,Select,playerSelectionScreen.png,900,700,0,0
+
+// Credits
+image,Credits,credits.png,900,700,0,0
+button,Credits,12,mainMenuButton.png,180,80,10,610,menu

@@ -5,33 +5,38 @@ import org.newdawn.slick.Graphics;
 
 import peril.Game;
 import peril.controllers.GameController;
-import peril.io.MapWriter;
-import peril.io.SaveFile;
-import peril.views.slick.Button;
-import peril.views.slick.Font;
+import peril.model.ModelPlayer;
 import peril.views.slick.Frame;
-import peril.views.slick.Point;
-import peril.views.slick.Region;
-import peril.views.slick.components.lists.VisualList;
+import peril.views.slick.util.Font;
+import peril.views.slick.util.Point;
+import peril.views.slick.util.Region;
 
 /**
- * Encapsulates the behaviour of a Pause Menu
+ * Encapsulates the behaviour of a window that displays information to the user.
  * 
- * @author Joseph Rolli
+ * 
+ * @author Joseph_Rolli
+ * 
+ * @since 2018-02-20
+ * @version 1.01.05
  *
  */
 public class StatsMenu extends Menu {
 
 	/**
-	 * Holds the name of this {@link StatsMenu}.
+	 * The uniquely identifying string name of the {@link StatsMenu}.
 	 */
 	public final static String NAME = "Stats Menu";
-
 
 	/**
 	 * The {@link Font} for the text of the text of the {@link StatsMenu}.
 	 */
 	private final Font textFont;
+
+	/**
+	 * The {@link ModelPlayer} that is currently active.
+	 */
+	private ModelPlayer currentPlayer;
 
 	/**
 	 * Constructs a new {@link StatsMenu}.
@@ -43,36 +48,7 @@ public class StatsMenu extends Menu {
 	 */
 	public StatsMenu(Point position, GameController game) {
 		super(NAME, game, new Region(600, 600, position));
-
-		final Font toggleFont = new Font("Arial", Color.black, 20);
-		
-		this.textFont = new Font("Arial", Color.black, 20);
-
-	}
-
-	/**
-	 * Sets this {@link StatsMenu} a visible.
-	 */
-	@Override
-	public void show() {
-		super.show();
-	}
-
-	/**
-	 * Draws the {@link StatsMenu} on screen.
-	 * 
-	 * @param f
-	 *            {@link Graphics}
-	 */
-	public void draw(Frame f) {
-
-		super.draw(f);
-
-		if (isVisible()) {
-
-			f.setColor(Color.white);
-
-		}
+		this.textFont = new Font("Arial", Color.black, 35);
 
 	}
 
@@ -86,13 +62,61 @@ public class StatsMenu extends Menu {
 	}
 
 	/**
+	 * Sets this {@link StatsMenu} as visible.
+	 */
+	@Override
+	public void show() {
+		super.show();
+
+		currentPlayer = game.getCurrentModelPlayer();
+
+	}
+
+	/**
+	 * Draws the current player stats on the {@link StatsMenu}.
+	 * 
+	 * @param frame
+	 *            {@link Graphics}
+	 */
+	private void drawStats(Frame frame) {
+		String countriesRuled = "Countries owned: " + currentPlayer.getCountriesRuled();
+		String armyStrength = "Total army strength: " + currentPlayer.getTotalArmyStrength();
+		String armiesDestroyed = "Armies destroyed: " + currentPlayer.getArmiesDestroyed();
+		String currentPoints = "Current points: " + currentPlayer.getPoints();
+		String pointsSpent = "Points spent: " + currentPlayer.getPointsSpent();
+		String countriesTaken = "Countries taken: " + currentPlayer.getCountriesTaken();
+
+		frame.draw(textFont, countriesRuled, getPosition().x + 100, getPosition().y + 150);
+		frame.draw(textFont, armyStrength, getPosition().x + 100, getPosition().y + 200);
+		frame.draw(textFont, armiesDestroyed, getPosition().x + 100, getPosition().y + 250);
+		frame.draw(textFont, currentPoints, getPosition().x + 100, getPosition().y + 300);
+		frame.draw(textFont, pointsSpent, getPosition().x + 100, getPosition().y + 350);
+		frame.draw(textFont, countriesTaken, getPosition().x + 100, getPosition().y + 400);
+
+
+	}
+
+	/**
+	 * Draws thus {@link StatsMenu} on screen. If this {@link StatsMenu} is hidden,
+	 * this with do nothing.
+	 * 
+	 * @param f
+	 *            {@link Frame}
+	 */
+	public void draw(Frame frame) {
+		if (!isVisible())
+			return;
+		super.draw(frame);
+		drawStats(frame);
+
+	}
+
+	/**
 	 * Process a click.
 	 */
 	public void parseClick(Point click) {
 
-
-		}
-
+	}
 
 	/**
 	 * Moves all the components in this {@link StatsMenu}.

@@ -13,12 +13,13 @@ import peril.controllers.api.Country;
 import peril.controllers.api.Player;
 
 /**
+ * A very basic {@link AI} which will hopefully win the battle, we can only pray
  * 
  * @author Gurdeep_Pol
  * 
  * @since 2018-02-21
  * 
- * @version 1.01.01
+ * @version 1.01.02
  * 
  * @see AI
  *
@@ -76,7 +77,7 @@ public final class Knight extends AI {
 
 			api.clearSelected();
 
-			// if there is a link between border and safe, then the secondary will be the border
+			// Check if there is a link between border and safe, then the secondary will be the border
 			if (api.select(safe)) {
 				if (api.select(border)) {
 					api.fortify();

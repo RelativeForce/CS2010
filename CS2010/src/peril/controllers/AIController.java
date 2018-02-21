@@ -3,9 +3,11 @@ package peril.controllers;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import peril.controllers.api.Army;
 import peril.controllers.api.Board;
 import peril.controllers.api.Country;
 import peril.controllers.api.Player;
+import peril.controllers.api.Unit;
 
 /**
  * The API for all AI interactions with the game. This API is unable to directly
@@ -14,8 +16,8 @@ import peril.controllers.api.Player;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.03
- * @since 2018-02-20
+ * @version 1.01.04
+ * @since 2018-02-21
  *
  */
 public interface AIController {
@@ -127,16 +129,31 @@ public interface AIController {
 	 * by the {@link Player} owner of the specified {@link Country} and is a
 	 * neighbour of that {@link Country}.
 	 * 
-	 * @param country {@link Country}
-	 * @param task {@link Consumer}
+	 * @param country
+	 *            {@link Country}
+	 * @param task
+	 *            {@link Consumer}
 	 */
 	void forEachEnemyNeighbour(Country country, Consumer<Country> task);
-	
+
 	/**
 	 * Retrieves all the point reward values for actions in the game.
 	 * 
 	 * @return {@link Points}
 	 */
 	Points getPoints();
+
+	/**
+	 * Converts as many of the {@link Unit}s from this {@link Army} into the
+	 * {@link Unit} above in terms of strength. If no {@link Unit}s were traded then
+	 * this method will return false;
+	 * 
+	 * @param unit
+	 *            Specified {@link Unit} to trade up.
+	 * @param country
+	 *            The {@link Country} containing the unit.
+	 * @return Whether or not any {@link Unit}s were traded up.
+	 */
+	boolean tradeUnit(Country country, Unit unit);
 
 }

@@ -8,8 +8,8 @@ import peril.controllers.Points;
  * 
  * @author Joseph_Rolli
  * 
- * @since 2018-02-20
- * @version 1.01.01
+ * @since 2018-02-21
+ * @version 1.01.02
  * 
  * @see Points
  *
@@ -22,22 +22,36 @@ public final class PointHelper implements Points {
 	/**
 	 * Points rewarded for conquering a country.
 	 */
-	private static final int CONQUER = 2;
+	public static final int CONQUER_COST = 2;
+
+	public static final int BLOCKADE_COST = 4;
+
+	public static final int TRADE_UNIT_COST = 3;
 
 	/**
 	 * Constructs a new {@link PointHelper}.
 	 */
 	private PointHelper() {
-
-	}
-
-	@Override
-	public int getConquer() {
-		return CONQUER;
+		// Do nothing
 	}
 
 	public static PointHelper getInstance() {
 		return INSTANCE;
+	}
+
+	@Override
+	public int getConquer() {
+		return CONQUER_COST;
+	}
+
+	@Override
+	public int getUnitTrade() {
+		return TRADE_UNIT_COST;
+	}
+
+	@Override
+	public int getBlockade() {
+		return BLOCKADE_COST;
 	}
 
 }

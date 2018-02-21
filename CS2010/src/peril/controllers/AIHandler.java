@@ -8,6 +8,7 @@ import peril.Game;
 import peril.controllers.api.Board;
 import peril.controllers.api.Country;
 import peril.controllers.api.Player;
+import peril.controllers.api.Unit;
 import peril.helpers.PointHelper;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
@@ -16,10 +17,10 @@ import peril.model.states.ModelState;
 /**
  * The controller for all AI -> {@link Game} interactions.
  * 
- * @author Joshua_Eddy
+ * @author Joshua_Eddy, Joseph_Rolli
  * 
- * @version 1.01.03
- * @since 2018-02-06
+ * @version 1.01.04
+ * @since 2018-02-21
  * 
  * @see AIController
  *
@@ -249,7 +250,7 @@ public final class AIHandler implements AIController {
 
 		// Iterate over every neighbour of the specified country
 		country.getNeighbours().forEach(neighbour -> {
-			
+
 			// If the neighbour is an enemy country then perform the task.
 			if (!country.getOwner().equals(neighbour.getOwner())) {
 				task.accept(neighbour);
@@ -257,15 +258,55 @@ public final class AIHandler implements AIController {
 		});
 
 	}
-	
+
 	/**
-	 * Retrieves the {@link PointHelper} handling all the point reward values for actions in the game.
+	 * Retrieves the {@link PointHelper} handling all the point reward values for
+	 * actions in the game.
 	 * 
 	 * @return {@link PointHelper}
 	 */
 	@Override
 	public Points getPoints() {
 		return PointHelper.getInstance();
+	}
+
+	/**
+	 * Trades the specified unit up.
+	 */
+	@Override
+	public boolean tradeUnit(Country country, Unit unit) {
+
+		// Check parameters
+		if (country == null) {
+			throw new NullPointerException("Country cannot be null.");
+		} else if (unit == null) {
+			throw new NullPointerException("Unit cannot be null.");
+		} else if (country.getOwner() == null || country.getOwner() == getCurrentPlayer()) {
+			throw new NullPointerException("The specifed country must be ruled by the current player.");
+		}
+
+		final Player player = country.getOwner();
+
+		final int points = player.getPoints();
+
+		final Points pointHelper = getPoints();
+
+		if (points - pointHelper.getUnitTrade() < 0) {
+			return false;
+		}
+
+		if (!(country instanceof ModelCountry)) {
+			throw new IllegalArgumentException("The specifed country is not a valid model country.");
+		}
+
+		if (!(unit instanceof ModelUnit)) {
+			throw new IllegalArgumentException("The unit is not a valid model unit.");
+		}
+
+		final ModelCountry checkedSource = (ModelCountry) country;
+		final ModelUnit checkedUnit = (ModelUnit) unit;
+
+		return checkedSource.getArmy().tradeUp(checkedUnit);
 	}
 
 }

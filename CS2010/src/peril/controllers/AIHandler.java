@@ -10,6 +10,8 @@ import peril.controllers.api.Country;
 import peril.controllers.api.Player;
 import peril.controllers.api.Unit;
 import peril.helpers.PointHelper;
+import peril.helpers.UnitHelper;
+import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
 import peril.model.board.links.ModelLink;
@@ -281,17 +283,13 @@ public final class AIHandler implements AIController {
 			throw new NullPointerException("Country cannot be null.");
 		} else if (unit == null) {
 			throw new NullPointerException("Unit cannot be null.");
-		} else if (country.getOwner() == null || country.getOwner() == getCurrentPlayer()) {
+		} else if (country.getOwner() == null || country.getOwner() != getCurrentPlayer()) {
 			throw new NullPointerException("The specifed country must be ruled by the current player.");
 		}
 
-		final Player player = country.getOwner();
+		final ModelPlayer player = game.players.getCurrent();
 
-		final int points = player.getPoints();
-
-		final Points pointHelper = getPoints();
-
-		if (points - pointHelper.getUnitTrade() < 0) {
+		if (player.getPoints() < getPoints().getUnitTrade()) {
 			return false;
 		}
 
@@ -306,7 +304,14 @@ public final class AIHandler implements AIController {
 		final ModelCountry checkedSource = (ModelCountry) country;
 		final ModelUnit checkedUnit = (ModelUnit) unit;
 
-		return checkedSource.getArmy().tradeUp(checkedUnit);
+		final boolean hasTraded = checkedSource.getArmy().tradeUp(checkedUnit);
+		
+		if(hasTraded) {
+			
+			player.spendPoints(PointHelper.TRADE_UNIT_COST);
+		}
+		
+		return hasTraded;
 	}
 
 	/**
@@ -339,8 +344,7 @@ public final class AIHandler implements AIController {
 	public void createBlockade(Country source, Country neighbour) {
 
 		// Ensure that both the parameter Countries is a valid model country, This
-		// should
-		// never be false.
+		// should never be false.
 		if (!(source instanceof ModelCountry)) {
 			throw new IllegalArgumentException("The parmameter 'source' country is not a valid country.");
 		} else if (!(neighbour instanceof ModelCountry)) {
@@ -374,6 +378,21 @@ public final class AIHandler implements AIController {
 		link.setState(ModelLinkState.BLOCKADE, duration);
 		game.players.getCurrent().spendPoints(price);
 
+	}
+
+	/**
+	 * Retrieves the {@link Unit} above.
+	 */
+	@Override
+	public Unit getUnitAbove(Unit unit) {
+
+		if (!(unit instanceof ModelUnit)) {
+			throw new IllegalArgumentException("The parmameter unit is not a valid model unit.");
+		}
+
+		final ModelUnit checkedUnit = (ModelUnit) unit;
+
+		return UnitHelper.getInstance().getUnitAbove(checkedUnit);
 	}
 
 }

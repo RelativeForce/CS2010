@@ -181,4 +181,14 @@ public interface AIController {
 	 *            units.
 	 */
 	void createBlockade(Country source, Country neighbour);
+
+	/**
+	 * Retrieves the {@link Unit} above the specified {@link Unit} in terms of
+	 * strength.
+	 * 
+	 * @return {@link Unit}
+	 * @param unit
+	 *            The {@link Unit} above the specifed unit in terms of strength.
+	 */
+	Unit getUnitAbove(Unit unit);
 }

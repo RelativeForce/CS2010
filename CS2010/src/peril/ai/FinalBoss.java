@@ -37,9 +37,15 @@ public class FinalBoss extends AI {
 	private static final double UNIT_FACTOR = 2.5;
 
 	/**
-	 * THe weighting that the standing of a player has over a decision.
+	 * The weighting that the standing of a player has over a decision.
 	 */
 	private static final double PLAYER_FACTOR = 1.0;
+
+	/**
+	 * The weighting that defines how long the {@link FinalBoss} will wait before it
+	 * trades a unit for the stronger one.
+	 */
+	private static final double TRADE_FACTOR = 0.4;
 
 	/**
 	 * Constructs a new {@link FinalBoss}.
@@ -125,7 +131,7 @@ public class FinalBoss extends AI {
 
 	private static int getMaxOneAttackDamage(Army army) {
 
-		Set<? extends Unit> units = army.getUnits();
+		final Set<? extends Unit> units = army.getUnits();
 
 		int maxDamage = 0;
 
@@ -177,6 +183,68 @@ public class FinalBoss extends AI {
 		return rating;
 	}
 
+	private static Unit getBestUnitToTrade(AIController api, Country country) {
+
+		Unit bestUnit = null;
+		int valueToBeat = 0;
+
+		final Army army = country.getArmy();
+
+		for (Unit unit : army.getUnits()) {
+
+			final Unit above = api.getUnitAbove(unit);
+
+			if (above != null) {
+
+				// The strength of the unit above the current one.
+				final int aboveStrength = above.getStrength();
+
+				// The strength of the current unit.
+				final int unitStrength = unit.getStrength();
+
+				// The number of the current unit required to make one of the unit above.
+				final int ratio = aboveStrength / unitStrength;
+
+				// The number of the current unit in the
+				final int numberOfUnit = army.getNumberOf(unit);
+
+				// Whether there are enough of current unit to make at least one of the unit
+				// above.
+				final boolean hasEnough = numberOfUnit >= ratio;
+
+				if (hasEnough) {
+
+					final int numberTraded = numberOfUnit / ratio;
+
+					if (bestUnit == null) {
+						System.out.println("First");
+						bestUnit = unit;
+						valueToBeat = numberTraded;
+
+					} else {
+
+						final boolean isStronger = bestUnit.getStrength() < unit.getStrength();
+						final boolean isBetter = valueToBeat < numberTraded
+								|| (valueToBeat == numberTraded && isStronger);
+
+						// If the unit is better or the first;
+						if (isBetter) {
+
+							System.out.println("Better");
+							bestUnit = unit;
+							valueToBeat = numberTraded;
+						}
+
+					}
+
+				}
+			}
+
+		}
+
+		return bestUnit;
+	}
+
 	/**
 	 * This handles all the reinforce operations for the {@link FinalBoss}.
 	 * 
@@ -209,7 +277,29 @@ public class FinalBoss extends AI {
 				throw new IllegalStateException("There are no countries");
 			}
 
-			return countries.get(highest);
+			final Country country = countries.get(highest);
+
+			final int points = api.getCurrentPlayer().getPoints();
+			final int cost = api.getPoints().getUnitTrade();
+
+			if (points >= cost) {
+
+				final Unit unit = getBestUnitToTrade(api, country);
+
+				if (unit != null) {
+
+					final double countriesSize = countries.size();
+
+					final boolean shouldTrade = points / (cost * countriesSize) >= TRADE_FACTOR;
+
+					if (shouldTrade) {
+						api.tradeUnit(country, unit);
+					}
+
+				}
+			}
+
+			return country;
 		}
 
 		/**
@@ -227,38 +317,34 @@ public class FinalBoss extends AI {
 			final Player current = api.getCurrentPlayer();
 
 			// Get the weightings of each country on the board.
-			api.forEachCountry(country -> {
+			api.forEachFriendlyCountry(current, country -> {
 
-				// If the country is friendly.
-				if (current.equals(country.getOwner())) {
+				// The base value is the maximum damage for one combat attack.
+				final int baseRating = (int) -(UNIT_FACTOR * getMaxOneAttackDamage(country.getArmy()));
 
-					// The base value is the maximum damage for one combat attack.
-					final int baseRating = (int) -(UNIT_FACTOR * getMaxOneAttackDamage(country.getArmy()));
+				int rating = baseRating;
 
-					int rating = baseRating;
+				// Iterate through all the neighbour countries.
+				for (Country neighbour : country.getNeighbours()) {
 
-					// Iterate through all the neighbour countries.
-					for (Country neighbour : country.getNeighbours()) {
+					final Player owner = neighbour.getOwner();
 
-						final Player owner = neighbour.getOwner();
+					// If the neighbour is an enemy country.
+					if (!current.equals(owner)) {
+						rating += (UNIT_FACTOR * getMaxOneAttackDamage(neighbour.getArmy()));
 
-						// If the neighbour is an enemy country.
-						if (!current.equals(owner)) {
-							rating += (UNIT_FACTOR * getMaxOneAttackDamage(neighbour.getArmy()));
-
-							// Add Player Rating if the country is ruled.
-							if (owner != null) {
-								rating += (PLAYER_FACTOR * playerRating(owner, api));
-							}
+						// Add Player Rating if the country is ruled.
+						if (owner != null) {
+							rating += (PLAYER_FACTOR * playerRating(owner, api));
 						}
 					}
-
-					// If the current country has enemy countries.
-					if (rating != baseRating) {
-						countries.put(rating, country);
-					}
-
 				}
+
+				// If the current country has enemy countries.
+				if (rating != baseRating) {
+					countries.put(rating, country);
+				}
+
 			});
 
 			return countries;
@@ -335,15 +421,15 @@ public class FinalBoss extends AI {
 						if (api.hasOpenLinkBetween(country, neighbour)) {
 
 							final Player owner = neighbour.getOwner();
-							
+
 							int rating = (int) (UNIT_FACTOR * getMaxOneAttackDamage(country.getArmy()));
-							rating -= (int)(UNIT_FACTOR * getMaxOneAttackDamage(neighbour.getArmy()));
+							rating -= (int) (UNIT_FACTOR * getMaxOneAttackDamage(neighbour.getArmy()));
 
 							// Add Player Rating if the country is ruled.
 							if (owner != null) {
 								rating -= (PLAYER_FACTOR * playerRating(owner, api));
 							}
-							
+
 							countries.put(rating, new Entry(country, neighbour));
 						}
 

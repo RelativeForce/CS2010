@@ -18,7 +18,7 @@ import peril.controllers.api.Unit;
  * @author Joshua_Eddy
  *
  */
-public class FinalBoss extends AI {
+public final class FinalBoss extends AI {
 
 	/**
 	 * The name of this {@link AI}.
@@ -29,7 +29,7 @@ public class FinalBoss extends AI {
 	 * Denotes how much larger a enemy army must be in order for the
 	 * {@link FinalBoss} to block the link between those two armies.
 	 */
-	private static final double DEFENSE_FACTOR = 1.25;
+	private static final double DEFENSE_FACTOR = 1.1;
 
 	/**
 	 * The weighting that the size of an army has over a decision.
@@ -45,7 +45,7 @@ public class FinalBoss extends AI {
 	 * The weighting that defines how long the {@link FinalBoss} will wait before it
 	 * trades a unit for the stronger one.
 	 */
-	private static final double TRADE_FACTOR = 0.4;
+	private static final double TRADE_FACTOR = 0.7;
 
 	/**
 	 * Constructs a new {@link FinalBoss}.

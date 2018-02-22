@@ -203,7 +203,7 @@ public final class Knight extends AI {
 
 		api.forEachCountry(country -> {
 
-			if (current.equals(country.getOwner()) && country.getArmyStrength() > 1) {
+			if (current.equals(country.getOwner()) && country.getArmy().getNumberOfUnits() > 1) {
 
 				for (Country neighbour : country.getNeighbours()) {
 

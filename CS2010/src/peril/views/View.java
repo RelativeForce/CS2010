@@ -8,8 +8,8 @@ import peril.controllers.api.Player;
 import peril.io.FileParser;
 import peril.io.SaveFile;
 import peril.model.ModelPlayer;
-import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
+import peril.model.board.links.ModelLink;
 import peril.model.states.Attack;
 import peril.model.states.Fortify;
 import peril.model.states.ModelState;
@@ -22,10 +22,10 @@ import peril.model.states.Reinforce;
  * observe the model objects. The {@link View#getModelView()} is used to
  * retrieve the {@link ModelView} which allows this mapping.
  * 
- * @author Joshua_Eddy, Joseph_Rolli
+ * @author Joshua_Eddy, Joseph_Rolli, Adrian_Wong
  * 
  * @since 2018-02-20
- * @version 1.01.02
+ * @version 1.01.03
  * 
  * @see ModelView
  * @see FileParser
@@ -151,15 +151,6 @@ public interface View {
 	 *            The visibility state of the menu.
 	 */
 	void toggleStatsMenu(boolean state);
-
-	/**
-	 * Toggles whether the menu that displays an {@link ModelArmy}s units to the
-	 * user between hidden and visible.
-	 * 
-	 * @param state
-	 *            The visibility state of the menu.
-	 */
-	void toggleUnitMenu(boolean state);
 
 	/**
 	 * Toggles whether the menu that displays the upgrades to a {@link ModelCountry}
@@ -349,5 +340,15 @@ public interface View {
 	 * @return The {@link FileParser} that will load the game from memory.
 	 */
 	FileParser getMapLoader(String mapPath, SaveFile save);
+
+	/**
+	 * Allows to enter the credits page.
+	 */
+	void enterCredits();
+
+	/**
+	 * Blocks the {@link ModelLink} between two countries that are selected.
+	 */
+	void blockLink();
 
 }

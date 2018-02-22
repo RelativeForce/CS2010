@@ -45,8 +45,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy, Joseph Rolli
  * 
- * @since 2018-02-19
- * @version 1.01.08
+ * @since 2018-02-21
+ * @version 1.01.11
  * 
  * @see StateBasedGame
  * @see View
@@ -288,7 +288,6 @@ public final class SlickGame extends StateBasedGame implements View {
 		final HelpMenu helpMenu = new HelpMenu(new Point(100, 100), game);
 		final ChallengeMenu challengeMenu = new ChallengeMenu(new Point(100, 100), game);
 		final StatsMenu statsMenu = new StatsMenu(new Point(100, 100), game);
-		final UnitMenu unitMenu = new UnitMenu(new Point(100, 100), game);
 		final UpgradeMenu upgradeMenu = new UpgradeMenu(new Point(100, 100), game);
 
 		// Holds all the menus
@@ -298,7 +297,6 @@ public final class SlickGame extends StateBasedGame implements View {
 		menus.add(helpMenu);
 		menus.add(challengeMenu);
 		menus.add(statsMenu);
-		menus.add(unitMenu);
 		menus.add(upgradeMenu);
 
 		// Add all the menus to the menu helper.
@@ -316,6 +314,7 @@ public final class SlickGame extends StateBasedGame implements View {
 		final ReinforcementState reinforcement = new ReinforcementState(game, 3, game.getReinforce());
 		final CombatState combat = new CombatState(game, 4, game.getAttack());
 		final MovementState movement = new MovementState(game, 5, game.getFortify());
+		final Credits credits = new Credits(game, 8);
 
 		// Subscribe the core game states to the board
 		final ModelBoard board = game.getModelBoard();
@@ -326,7 +325,7 @@ public final class SlickGame extends StateBasedGame implements View {
 
 		// Add all the states to the state helper.
 		this.states = new StateHelper(opening, mainMenu, combat, reinforcement, setup, movement, end, loadingScreen,
-				playerSelection);
+				playerSelection, credits);
 
 		// Set the containers that visual elements will be loaded into.
 
@@ -344,8 +343,8 @@ public final class SlickGame extends StateBasedGame implements View {
 		containers.add(end);
 		containers.add(playerSelection);
 		containers.add(statsMenu);
-		containers.add(unitMenu);
 		containers.add(upgradeMenu);
+		containers.add(credits);
 
 		// User the containers to create the IO helper.
 		this.io = new IOHelper(game, containers);
@@ -440,11 +439,23 @@ public final class SlickGame extends StateBasedGame implements View {
 	@Override
 	public void showToolTip(String text) {
 
-		if(getCurrentState() instanceof CoreGameState) {
+		if (getCurrentState() instanceof CoreGameState) {
 			getCurrentState().showToolTip(text, new Point(410, 100));
-		}else {
+		} else {
 			getCurrentState().showToolTip(text, new Point(0, 0));
 		}
+	}
+
+	/**
+	 * Show a tool tip on the current {@link InteractiveState}.
+	 * 
+	 * @param text
+	 *            The message of the tool tip.
+	 * @param position
+	 *            The {@link Point} position of the tool tip.
+	 */
+	public void showToolTip(String text, Point position) {
+		getCurrentState().showToolTip(text, position);
 	}
 
 	/**
@@ -506,14 +517,6 @@ public final class SlickGame extends StateBasedGame implements View {
 	@Override
 	public void toggleUpgradeMenu(boolean state) {
 		toggleMenu(state, UpgradeMenu.NAME);
-	}
-
-	/**
-	 * Toggle the visibility of the unit menu.
-	 */
-	@Override
-	public void toggleUnitMenu(boolean state) {
-		toggleMenu(state, UnitMenu.NAME);
 	}
 
 	/**
@@ -743,6 +746,16 @@ public final class SlickGame extends StateBasedGame implements View {
 			return (InteractiveState) state;
 		}
 		throw new IllegalStateException(state.getID() + " is not a valid state as it is not a InteractiveState.");
+	}
+	
+	@Override
+	public void enterCredits() {
+		enterState(states.credits);
+	}
+
+	@Override
+	public void blockLink() {
+		menus.blockLink();		
 	}
 
 	/**

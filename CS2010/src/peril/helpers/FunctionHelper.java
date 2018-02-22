@@ -4,16 +4,15 @@ import java.io.IOException;
 
 import peril.concurrent.Action;
 import peril.controllers.GameController;
-import peril.views.slick.components.menus.UnitMenu;
 
 /**
  * 
  * This hold the functionality of every predefined {@link Button} in the game.
  * 
- * @author Mohammad_ali_Sayed_Ackbar, Joshua_Eddy, Joseph_Rolli
+ * @author Mohammad_ali_Sayed_Ackbar, Joshua_Eddy, Joseph_Rolli, Adrian_Wong
  * 
- * @version 1.01.03
- * @since 2018-02-20
+ * @version 1.01.05
+ * @since 2018-02-21
  *
  */
 public final class FunctionHelper {
@@ -100,23 +99,28 @@ public final class FunctionHelper {
 			return showStatsMenu();
 		case 25:
 			return hideStatsMenu();
-//		case 26:
-//			return showPointsMenu();
-//		case 27:
-//			return hidePointsMenu();
+		case 26:
+			return blockLink();
 		case 28:
 			return showUpgradeMenu();
 		case 29:
 			return hideUpgradeMenu();
-		case 30:
-			return showUnitMenu();
-		case 31:
-			return hideUnitMenu();
+		case 32:
+			return enterCredits();
 
 		}
 
 		// If no action was returned then the function code was invalid.
 		throw new IllegalArgumentException(code + " is not a valid function code.");
+	}
+
+	/**
+	 * Retrieves a {@link Action} that blocks the link between two countries.
+	 * 
+	 * @return {@link Action}
+	 */
+	private Action<?> blockLink() {
+		return new Action<GameController>(game, game -> game.getView().blockLink());
 	}
 
 	/**
@@ -220,6 +224,15 @@ public final class FunctionHelper {
 	 */
 	private Action<?> nextHelpPage() {
 		return new Action<GameController>(game, game -> game.getView().nextHelpPage());
+	}
+
+	/**
+	 * Retrieves the {@link Action} that moves the to the credits page
+	 * 
+	 * @return
+	 */
+	private Action<?> enterCredits() {
+		return new Action<GameController>(game, game -> game.getView().enterCredits());
 	}
 
 	/**
@@ -415,24 +428,6 @@ public final class FunctionHelper {
 	 */
 	private Action<?> hideStatsMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleStatsMenu(false));
-	}
-
-	/**
-	 * Retrieves the {@link Action} that opens the {@link UnitMenu} window.
-	 * 
-	 * @return
-	 */
-	private Action<?> showUnitMenu() {
-		return new Action<GameController>(game, game -> game.getView().toggleUnitMenu(true));
-	}
-
-	/**
-	 * Retrieves the {@link Action} that closes the {@link UnitMenu} window.
-	 * 
-	 * @return
-	 */
-	private Action<?> hideUnitMenu() {
-		return new Action<GameController>(game, game -> game.getView().toggleUnitMenu(false));
 	}
 
 	/**

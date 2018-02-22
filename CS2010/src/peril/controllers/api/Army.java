@@ -7,8 +7,8 @@ import java.util.Set;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.02
- * @since 2018-01-13
+ * @version 1.01.04
+ * @since 2018-01-21
  *
  */
 public interface Army {
@@ -19,6 +19,20 @@ public interface Army {
 	 * @return {@link Set}&lt;{@link Unit}&gt;
 	 */
 	Set<? extends Unit> getUnits();
+
+	/**
+	 * Retrieves the strongest {@link Unit} in this {@link Army}.
+	 * 
+	 * @return Strongest {@link Unit} in this {@link Army}.
+	 */
+	Unit getStrongestUnit();
+
+	/**
+	 * Retrieves the weakest {@link Unit} in this {@link Army}.
+	 * 
+	 * @return Weakest {@link Unit} in this {@link Army}.
+	 */
+	Unit getWeakestUnit();
 
 	/**
 	 * Retrieves the strength of the {@link Army}.
@@ -49,14 +63,10 @@ public interface Army {
 	boolean hasUnit(Unit unit);
 
 	/**
-	 * Converts as many of the {@link Unit}s from this {@link Army} into the
-	 * {@link Unit} above in terms of strength. If no {@link Unit}s were traded then
-	 * this method will return false;
+	 * Retrieves the number of {@link Unit}s in this {@link Army}
 	 * 
-	 * @param unit
-	 *            Specified {@link Unit} to trade up.
-	 * @return Whether or not any {@link Unit}s were traded up.
+	 * @return The number of {@link Unit}s.
 	 */
-	boolean tradeUnitsUp();
+	int getNumberOfUnits();
 
 }

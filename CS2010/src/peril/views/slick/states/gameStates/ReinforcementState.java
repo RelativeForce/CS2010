@@ -24,7 +24,7 @@ import peril.views.slick.util.Point;
  * {@link SlickPlayer#getDistributableArmyStrength()} on their
  * {@link SlickCountry}s.
  * 
- * @author Joseph_Rolli, Joshua_Eddy
+ * @author Joseph_Rolli, Joshua_Eddy, Gurdeep_Pol
  *
  */
 public final class ReinforcementState extends CoreGameState {
@@ -74,6 +74,7 @@ public final class ReinforcementState extends CoreGameState {
 		menus.showSaveOption();
 		getButton(reinforceButton).hide();
 		getButton(upgradeButton).hide();
+		slick.showToolTip("Click the '?' for help.");
 	}
 
 	/**

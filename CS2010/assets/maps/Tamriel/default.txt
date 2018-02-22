@@ -1,7 +1,7 @@
 // Unit, name, strength, filename
-Unit,spider,1,soldierIcon.png
-Unit,bear,5,carIcon.png
-Unit,giant,15,tankIcon.png
+Unit,spider,1,spiderIcon.png
+Unit,bear,5,bearIcon.png
+Unit,giant,15,giantIcon.png
 
 // Country, name, rgb, reinforcements, x offset, y offset
 

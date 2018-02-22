@@ -233,7 +233,9 @@ public final class LoadingScreen extends InteractiveState {
 
 		slick.menus.refreshSaveFiles();
 
-		slick.centerBoard();
+		if(!terminated) {
+			slick.centerBoard();
+		}
 
 		this.terminated = false;
 

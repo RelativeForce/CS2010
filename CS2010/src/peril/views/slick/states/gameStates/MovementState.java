@@ -67,6 +67,7 @@ public final class MovementState extends CoreGameState {
 		menus.showSaveOption();
 		getButton(fortifyButton).hide();
 		getButton(upgradeButton).hide();
+		slick.showToolTip("Click '?' for help");
 	}
 
 	/**

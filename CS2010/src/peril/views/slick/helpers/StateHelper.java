@@ -8,6 +8,7 @@ import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.components.MiniMap;
 import peril.views.slick.components.menus.WarMenu;
+import peril.views.slick.states.Credits;
 import peril.views.slick.states.EndState;
 import peril.views.slick.states.InteractiveState;
 import peril.views.slick.states.LoadingScreen;
@@ -86,6 +87,11 @@ public final class StateHelper {
 	public final EndState end;
 
 	/**
+	 * The {@link Credits} page for this game. 
+	 */
+	public final Credits credits;
+
+	/**
 	 * Constructs a new {@link StateHelper}.
 	 * 
 	 * @param mainMenu
@@ -114,10 +120,12 @@ public final class StateHelper {
 	 *            many players will be in the game.
 	 * @param opening
 	 *            The splash screen of the game.
+	 * @param credits
+	 *            The credits page for this game.
 	 */
 	public StateHelper(Opening opening, MainMenu mainMenu, CombatState combat, ReinforcementState reinforcement,
 			SetupState setup, MovementState movement, EndState end, LoadingScreen loadingScreen,
-			PlayerSelection playerSelection) {
+			PlayerSelection playerSelection, Credits credits) {
 		this.opening = opening;
 		this.mainMenu = mainMenu;
 		this.end = end;
@@ -127,6 +135,7 @@ public final class StateHelper {
 		this.movement = movement;
 		this.loadingScreen = loadingScreen;
 		this.playerSelection = playerSelection;
+		this.credits = credits;
 	}
 
 	/**
@@ -153,6 +162,7 @@ public final class StateHelper {
 		game.addState(reinforcement);
 		game.addState(combat);
 		game.addState(movement);
+		game.addState(credits);
 
 	}
 

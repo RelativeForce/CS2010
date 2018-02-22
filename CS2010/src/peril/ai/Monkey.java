@@ -28,8 +28,8 @@ public final class Monkey extends AI {
 	 * Constructs a new {@link Monkey} {@link AI}.
 	 * 
 	 * @param api
-	 *            The {@link AIController} that this {@link AI} will use to query the
-	 *            state of the game.
+	 *            The {@link AIController} that this {@link AI} will use to query
+	 *            the state of the game.
 	 */
 	public Monkey(AIController api) {
 		super(NAME, MAX_SPEED, api);
@@ -82,6 +82,8 @@ public final class Monkey extends AI {
 		if (highest == Integer.MIN_VALUE) {
 			return false;
 		}
+
+		api.clearSelected();
 
 		api.select(countries.get(highest).a);
 		api.select(countries.get(highest).b);
@@ -191,7 +193,7 @@ public final class Monkey extends AI {
 			if (current.equals(country.getOwner())) {
 
 				// The default weight of this country
-				final int defaultValue = -country.getArmyStrength();
+				final int defaultValue = -country.getArmy().getStrength();
 
 				// The current value.
 				int value = defaultValue;
@@ -199,13 +201,13 @@ public final class Monkey extends AI {
 				// Iterate through all the country's neighbours.
 				for (Country neighbour : country.getNeighbours()) {
 					if (!current.equals(neighbour.getOwner())) {
-						value += neighbour.getArmyStrength();
+						value += neighbour.getArmy().getStrength();
 					}
 				}
 
 				// If the current country is an internal country.
 				if (value == defaultValue) {
-					if (country.getArmyStrength() > 1) {
+					if (country.getArmy().getNumberOfUnits() > 1) {
 						internal.add(country);
 					}
 				} else {
@@ -219,8 +221,8 @@ public final class Monkey extends AI {
 	 * Retrieves the weighting for a country that the {@link Monkey} may reinforce.
 	 * 
 	 * @param api
-	 *            The {@link AIController} that this {@link AI} will use to query the
-	 *            state of the game.
+	 *            The {@link AIController} that this {@link AI} will use to query
+	 *            the state of the game.
 	 * @return weighting
 	 */
 	private Map<Integer, Country> getReinforceWeightings(AIController api) {
@@ -234,19 +236,19 @@ public final class Monkey extends AI {
 			// If the country is friendly.
 			if (current.equals(country.getOwner())) {
 
-				int value = -country.getArmyStrength();
+				int value = -country.getArmy().getStrength();
 
 				// Iterate through all the neighbour countries.
 				for (Country neighbour : country.getNeighbours()) {
 
 					// If the neighbour is an enemy country.
 					if (!current.equals(neighbour.getOwner())) {
-						value += neighbour.getArmyStrength();
+						value += neighbour.getArmy().getStrength();
 					}
 				}
 
 				// If the current country has enemy countries.
-				if (value != -country.getArmyStrength()) {
+				if (value != -country.getArmy().getStrength()) {
 					countries.put(value, country);
 				}
 
@@ -260,8 +262,8 @@ public final class Monkey extends AI {
 	 * Retrieves the weighting for a country that the {@link Monkey} may attack.
 	 * 
 	 * @param api
-	 *            The {@link AIController} that this {@link AI} will use to query the
-	 *            state of the game.
+	 *            The {@link AIController} that this {@link AI} will use to query
+	 *            the state of the game.
 	 * @return weighting
 	 */
 	private Map<Integer, Entry> getAttackWeightings(AIController api) {
@@ -272,15 +274,15 @@ public final class Monkey extends AI {
 
 		api.forEachCountry(country -> {
 
-			if (current.equals(country.getOwner()) && country.getArmyStrength() > 1) {
+			if (current.equals(country.getOwner()) && country.getArmy().getStrength() > 1) {
 
 				for (Country neighbour : country.getNeighbours()) {
 
-					int value = country.getArmyStrength();
+					int value = country.getArmy().getStrength();
 
 					if (!current.equals(neighbour.getOwner())) {
 
-						value -= neighbour.getArmyStrength();
+						value -= neighbour.getArmy().getStrength();
 
 						countries.put(value, new Entry(country, neighbour));
 					}

@@ -209,6 +209,16 @@ public final class ModelPlayer extends Observable implements Player {
 	}
 
 	/**
+	 * Adds points to this {@link ModelPlayer}.
+	 * 
+	 * @param points
+	 *            points to add.
+	 */
+	public void addPoints(int points) {
+		this.points += points;
+	}
+
+	/**
 	 * Retrieves the distribute-able {@link Army} of this {@link ModelPlayer}.
 	 */
 	@Override
@@ -257,6 +267,22 @@ public final class ModelPlayer extends Observable implements Player {
 	 */
 	public int getPointsSpent() {
 		return pointsSpent;
+	}
+
+	/**
+	 * Spends a specified amount to the players points. The number of points the
+	 * player has {@link #getPoints()} must remain greater than or equal to zero.
+	 * 
+	 * @param points
+	 *            Points to spend.
+	 */
+	public void spendPoints(int points) {
+
+		if (this.points - points < 0) {
+			throw new IllegalArgumentException("This player has insufficent points to spend " + points + " points.");
+		}
+		this.points -= points;
+		this.pointsSpent += points;
 	}
 
 	/**

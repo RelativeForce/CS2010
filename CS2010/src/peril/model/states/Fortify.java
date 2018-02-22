@@ -21,8 +21,8 @@ import peril.model.board.links.ModelLink;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-14
- * @version 1.01.01
+ * @since 2018-02-21
+ * @version 1.01.02
  *
  * @see ModelState
  */
@@ -146,7 +146,7 @@ public final class Fortify extends ModelState {
 
 			// If there is a selected unit fortify the country with that otherwise use the
 			// weakest unit in the army.
-			final ModelUnit unit = unitSelected ? primaryArmy.getSelected() : primaryArmy.getWeakestUnit();
+			final ModelUnit unit = unitSelected ? primaryArmy.getSelected() : primaryArmy.getStrongestUnit();
 
 			// If the primary army is larger that 1 unit in size and has at least one of the
 			// specified unit.

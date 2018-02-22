@@ -209,7 +209,7 @@ public final class Knight extends AI {
 
 					int value = country.getArmyStrength();
 
-					if (!current.equals(neighbour.getOwner())) {
+					if (!current.equals(neighbour.getOwner()) && api.hasOpenLinkBetween(country, neighbour)) {
 
 						value -= neighbour.getArmyStrength();
 

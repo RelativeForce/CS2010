@@ -26,6 +26,28 @@ public class FinalBoss extends AI {
 	private static final String NAME = "Final Boss";
 
 	/**
+	 * Denotes how much larger a enemy army must be in order for the
+	 * {@link FinalBoss} to block the link between those two armies.
+	 */
+	private static final double DEFENSE_FACTOR = 1.25;
+
+	/**
+	 * The weighting that the size of an army has over a decision.
+	 */
+	private static final double UNIT_FACTOR = 2.5;
+
+	/**
+	 * The weighting that the standing of a player has over a decision.
+	 */
+	private static final double PLAYER_FACTOR = 1.0;
+
+	/**
+	 * The weighting that defines how long the {@link FinalBoss} will wait before it
+	 * trades a unit for the stronger one.
+	 */
+	private static final double TRADE_FACTOR = 0.4;
+
+	/**
 	 * Constructs a new {@link FinalBoss}.
 	 * 
 	 * @param api
@@ -42,11 +64,13 @@ public class FinalBoss extends AI {
 	@Override
 	public boolean processReinforce(AIController api) {
 
-		Country country = ReinforceHandler.getCountry(api);
+		api.clearSelected();
+		final Country country = ReinforceHandler.getCountry(api);
 
 		// Select the country with the highest weight then reinforce it.
-		api.select(country);
-		api.reinforce();
+		if (api.select(country)) {
+			api.reinforce();
+		}
 
 		return true;
 
@@ -58,17 +82,21 @@ public class FinalBoss extends AI {
 	@Override
 	public boolean processAttack(AIController api) {
 
-		Entry attack = AttackHandler.getEntry(api);
+		api.clearSelected();
+		final Entry attack = AttackHandler.getEntry(api);
 
 		if (attack == null) {
 			return false;
 		}
 
-		api.select(attack.a);
-		api.select(attack.b);
-		api.attack();
+		if (api.select(attack.a)) {
+			if (api.select(attack.b)) {
+				api.attack();
+				return true;
+			}
+		}
 
-		return true;
+		return false;
 
 	}
 
@@ -79,6 +107,7 @@ public class FinalBoss extends AI {
 	@Override
 	public boolean processFortify(AIController api) {
 
+		api.clearSelected();
 		Entry fortify = FortifyHandler.getEntry(api);
 
 		api.clearSelected();
@@ -89,12 +118,131 @@ public class FinalBoss extends AI {
 
 		// If there was a valid link between the safe and border then the secondary will
 		// be the border.
-		api.select(fortify.a);
-		api.select(fortify.b);
-		api.fortify();
+		if (api.select(fortify.a)) {
+			if (api.select(fortify.b)) {
+				api.fortify();
+				return true;
+			}
+		}
 
-		return true;
+		return false;
 
+	}
+
+	private static int getMaxOneAttackDamage(Army army) {
+
+		final Set<? extends Unit> units = army.getUnits();
+
+		int maxDamage = 0;
+
+		int remainingUnits = 3;
+
+		boolean flag = units.isEmpty();
+
+		while (!flag && remainingUnits > 0) {
+
+			final Unit unit = army.getStrongestUnit();
+			final int numberOfUnit = army.getNumberOf(unit);
+
+			if (numberOfUnit > 0) {
+
+				final int toAdd = numberOfUnit >= remainingUnits ? remainingUnits : numberOfUnit;
+
+				maxDamage += (toAdd * unit.getStrength());
+				remainingUnits -= toAdd;
+
+			}
+
+			units.remove(unit);
+
+			if (units.isEmpty()) {
+				flag = true;
+			}
+		}
+
+		return maxDamage;
+	}
+
+	private static int playerRating(Player player, AIController api) {
+
+		int rating = 0;
+
+		rating = (player.getCountriesRuled() * api.getBoard().getNumberOfCountries()) / 100;
+
+		int totalArmyStrength = 0;
+
+		for (Player p : api.getPlayers()) {
+			totalArmyStrength += p.getTotalArmy().getStrength();
+		}
+
+		rating += (player.getTotalArmy().getStrength() * totalArmyStrength) / 100;
+
+		// Divide by 2 so its out of 100.
+		rating /= 2;
+
+		return rating;
+	}
+
+	private static Unit getBestUnitToTrade(AIController api, Country country) {
+
+		Unit bestUnit = null;
+		int valueToBeat = 0;
+
+		final Army army = country.getArmy();
+
+		for (Unit unit : army.getUnits()) {
+
+			final Unit above = api.getUnitAbove(unit);
+
+			if (above != null) {
+
+				// The strength of the unit above the current one.
+				final int aboveStrength = above.getStrength();
+
+				// The strength of the current unit.
+				final int unitStrength = unit.getStrength();
+
+				// The number of the current unit required to make one of the unit above.
+				final int ratio = aboveStrength / unitStrength;
+
+				// The number of the current unit in the
+				final int numberOfUnit = army.getNumberOf(unit);
+
+				// Whether there are enough of current unit to make at least one of the unit
+				// above.
+				final boolean hasEnough = numberOfUnit >= ratio;
+
+				if (hasEnough) {
+
+					final int numberTraded = numberOfUnit / ratio;
+
+					if (bestUnit == null) {
+						System.out.println("First");
+						bestUnit = unit;
+						valueToBeat = numberTraded;
+
+					} else {
+
+						final boolean isStronger = bestUnit.getStrength() < unit.getStrength();
+						final boolean isBetter = valueToBeat < numberTraded
+								|| (valueToBeat == numberTraded && isStronger);
+
+						// If the unit is better or the first;
+						if (isBetter) {
+
+							System.out.println("Better");
+							bestUnit = unit;
+							valueToBeat = numberTraded;
+						}
+
+					}
+
+				}
+			}
+
+		}
+
+		return bestUnit;
 	}
 
 	/**
@@ -103,9 +251,6 @@ public class FinalBoss extends AI {
 	 * @author Joshua_Eddy
 	 */
 	private static class ReinforceHandler {
-
-		private static final double UNIT_FACTOR = 2.5;
-		private static final double PLAYER_FACTOR = 1.0;
 
 		/**
 		 * Retrieves the {@link Country} that the {@link FinalBoss} should reinforce.
@@ -132,7 +277,29 @@ public class FinalBoss extends AI {
 				throw new IllegalStateException("There are no countries");
 			}
 
-			return countries.get(highest);
+			final Country country = countries.get(highest);
+
+			final int points = api.getCurrentPlayer().getPoints();
+			final int cost = api.getPoints().getUnitTrade();
+
+			if (points >= cost) {
+
+				final Unit unit = getBestUnitToTrade(api, country);
+
+				if (unit != null) {
+
+					final double countriesSize = countries.size();
+
+					final boolean shouldTrade = points / (cost * countriesSize) >= TRADE_FACTOR;
+
+					if (shouldTrade) {
+						api.tradeUnit(country, unit);
+					}
+
+				}
+			}
+
+			return country;
 		}
 
 		/**
@@ -150,113 +317,39 @@ public class FinalBoss extends AI {
 			final Player current = api.getCurrentPlayer();
 
 			// Get the weightings of each country on the board.
-			api.forEachCountry(country -> {
+			api.forEachFriendlyCountry(current, country -> {
 
-				// If the country is friendly.
-				if (current.equals(country.getOwner())) {
+				// The base value is the maximum damage for one combat attack.
+				final int baseRating = (int) -(UNIT_FACTOR * getMaxOneAttackDamage(country.getArmy()));
 
-					// Trade the units of the army up to make the army have its max one attack
-					// damage.
-					country.getArmy().tradeUnitsUp();
+				int rating = baseRating;
 
-					// The base value is the maximum damage for one combat attack.
-					final int baseRating = (int) -(UNIT_FACTOR * getMaxOneAttackDamage(country.getArmy()));
+				// Iterate through all the neighbour countries.
+				for (Country neighbour : country.getNeighbours()) {
 
-					int rating = baseRating;
+					final Player owner = neighbour.getOwner();
 
-					// Iterate through all the neighbour countries.
-					for (Country neighbour : country.getNeighbours()) {
+					// If the neighbour is an enemy country.
+					if (!current.equals(owner)) {
+						rating += (UNIT_FACTOR * getMaxOneAttackDamage(neighbour.getArmy()));
 
-						final Player owner = neighbour.getOwner();
-
-						// If the neighbour is an enemy country.
-						if (!current.equals(owner)) {
-							rating += (UNIT_FACTOR * getMaxOneAttackDamage(neighbour.getArmy()));
-
-							// Add Player Rating if the country is ruled.
-							if (owner != null) {
-								rating += (PLAYER_FACTOR * playerRating(owner, api));
-							}
+						// Add Player Rating if the country is ruled.
+						if (owner != null) {
+							rating += (PLAYER_FACTOR * playerRating(owner, api));
 						}
 					}
-
-					// If the current country has enemy countries.
-					if (rating != baseRating) {
-						countries.put(rating, country);
-					}
-
 				}
+
+				// If the current country has enemy countries.
+				if (rating != baseRating) {
+					countries.put(rating, country);
+				}
+
 			});
 
 			return countries;
 		}
 
-		private static int getMaxOneAttackDamage(Army army) {
-
-			Set<? extends Unit> units = army.getUnits();
-
-			int maxDamage = 0;
-
-			int remainingUnits = 3;
-
-			boolean flag = units.isEmpty();
-
-			while (!flag && remainingUnits > 0) {
-
-				final Unit unit = getStrongest(units);
-				final int numberOfUnit = army.getNumberOf(unit);
-
-				if (numberOfUnit > 0) {
-
-					final int toAdd = numberOfUnit >= remainingUnits ? remainingUnits : numberOfUnit;
-
-					maxDamage += (toAdd * unit.getStrength());
-					remainingUnits -= toAdd;
-
-				}
-
-				units.remove(unit);
-
-				if (units.isEmpty()) {
-					flag = true;
-				}
-			}
-
-			return maxDamage;
-		}
-
-		private static Unit getStrongest(Set<? extends Unit> units) {
-
-			Unit strongest = null;
-
-			for (Unit unit : units) {
-				if (strongest == null || unit.getStrength() > strongest.getStrength()) {
-					strongest = unit;
-				}
-			}
-
-			return strongest;
-		}
-
-		private static int playerRating(Player player, AIController api) {
-
-			int rating = 0;
-
-			rating = (player.getCountriesRuled() * api.getBoard().getNumberOfCountries()) / 100;
-
-			int totalArmyStrength = 0;
-
-			for (Player p : api.getPlayers()) {
-				totalArmyStrength += p.getTotalArmy().getStrength();
-			}
-
-			rating += (player.getTotalArmy().getStrength() * totalArmyStrength) / 100;
-
-			// Divide by 2 so its out of 100.
-			rating /= 2;
-
-			return rating;
-		}
 	}
 
 	/**
@@ -298,22 +391,49 @@ public class FinalBoss extends AI {
 
 			final Player current = api.getCurrentPlayer();
 
-			api.forEachCountry(country -> {
+			api.forEachFriendlyCountry(current, country -> {
 
-				if (current.equals(country.getOwner()) && country.getArmy().getUnits().size() > 1) {
+				if (country.getArmy().getNumberOfUnits() > 1) {
 
-					for (Country neighbour : country.getNeighbours()) {
+					final int countryStrength = country.getArmy().getStrength();
 
-						int value = country.getArmy().getStrength();
+					api.forEachEnemyNeighbour(country, neighbour -> {
 
-						if (!current.equals(neighbour.getOwner())) {
+						// The strength of the current neighbours army.
+						final int neighbourStrength = neighbour.getArmy().getStrength();
 
-							value -= neighbour.getArmy().getStrength();
+						// Whether the current country's army is overwhelmed by the enemy army
+						final boolean isOverWhelmed = DEFENSE_FACTOR * countryStrength <= neighbourStrength;
 
-							countries.put(value, new Entry(country, neighbour));
+						// Whether the current country is vulnerable to attack from the neighbour
+						final boolean isVulnerable = api.hasOpenLinkBetween(neighbour, country);
+
+						// If the player can afford to blockade the link
+						final boolean sufficentPoints = current.getPoints() >= api.getPoints().getBlockade();
+
+						// If the country is vulnerable to attack and can block the link, block the
+						// link.
+						if (isOverWhelmed && isVulnerable && sufficentPoints) {
+							api.createBlockade(country, neighbour);
 						}
 
-					}
+						// If the country can attack.
+						if (api.hasOpenLinkBetween(country, neighbour)) {
+
+							final Player owner = neighbour.getOwner();
+
+							int rating = (int) (UNIT_FACTOR * getMaxOneAttackDamage(country.getArmy()));
+							rating -= (int) (UNIT_FACTOR * getMaxOneAttackDamage(neighbour.getArmy()));
+
+							// Add Player Rating if the country is ruled.
+							if (owner != null) {
+								rating -= (PLAYER_FACTOR * playerRating(owner, api));
+							}
+
+							countries.put(rating, new Entry(country, neighbour));
+						}
+
+					});
 				}
 			});
 
@@ -403,7 +523,7 @@ public class FinalBoss extends AI {
 				if (current.equals(country.getOwner())) {
 
 					// The default weight of this country
-					final int defaultValue = -country.getArmyStrength();
+					final int defaultValue = -country.getArmy().getStrength();
 
 					// The current value.
 					int value = defaultValue;
@@ -411,13 +531,13 @@ public class FinalBoss extends AI {
 					// Iterate through all the country's neighbours.
 					for (Country neighbour : country.getNeighbours()) {
 						if (!current.equals(neighbour.getOwner())) {
-							value += neighbour.getArmyStrength();
+							value += neighbour.getArmy().getStrength();
 						}
 					}
 
 					// If the current country is an internal country.
 					if (value == defaultValue) {
-						if (country.getArmyStrength() > 1) {
+						if (country.getArmy().getNumberOfUnits() > 1) {
 							internal.add(country);
 						}
 					} else {

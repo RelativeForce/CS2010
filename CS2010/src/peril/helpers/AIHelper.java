@@ -64,6 +64,7 @@ public final class AIHelper implements Iterable<AI> {
 		final Ocelot ocelot = new Ocelot(api);
 		final Knight knight = new Knight(api);
 		final Ernie ernie = new Ernie(api);
+		final Noob noob = new Noob(api);
 
 		// Add AIs to ai map
 		ai.put(user.name, user);
@@ -74,6 +75,8 @@ public final class AIHelper implements Iterable<AI> {
 		ai.put(ocelot.name, ocelot);
 		ai.put(knight.name, knight);
 		ai.put(ernie.name, ernie);
+		ai.put(noob.name, noob);
+
 
 	}
 

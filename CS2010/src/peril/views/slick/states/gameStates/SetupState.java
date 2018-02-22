@@ -44,6 +44,7 @@ public final class SetupState extends CoreGameState {
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
 		menus.hideSaveOption();
+		slick.showToolTip("Press 'Auto' to evenly distrubute units, then press 'Play'");
 	}
 
 	/**

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import peril.controllers.Directory;
 import peril.io.TextFileReader;
+import peril.model.board.ModelCountry;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
 import peril.views.slick.components.menus.*;
@@ -33,7 +34,7 @@ public final class MenuHelper {
 	/**
 	 * The currently visible menu.
 	 */
-	private Menu visible;
+	private volatile Menu visible;
 
 	/**
 	 * Constructs a new {@link MenuHelper}.
@@ -300,10 +301,10 @@ public final class MenuHelper {
 	 */
 	public boolean isPaused() {
 
-		if(visible == null) {
+		if (visible == null) {
 			return false;
 		}
-		
+
 		final PauseMenu pause = (PauseMenu) menus.get(PauseMenu.NAME);
 
 		if (pause == null) {
@@ -356,6 +357,22 @@ public final class MenuHelper {
 		}
 
 		pause.refreshSaveFiles();
+	}
+
+	/**
+	 * Causes the {@link UpgradeMenu} to block the link from one
+	 * {@link ModelCountry} to another.
+	 */
+	public void blockLink() {
+
+		final UpgradeMenu upgrade = (UpgradeMenu) menus.get(UpgradeMenu.NAME);
+
+		if (upgrade == null) {
+			throw new NullPointerException("There is no upgrade menu in this menu helper.");
+		}
+		
+		upgrade.blockLink();
+
 	}
 
 	/**

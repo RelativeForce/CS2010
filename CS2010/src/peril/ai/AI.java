@@ -108,7 +108,7 @@ public abstract class AI {
 	 */
 	public final boolean reinforce(int delta) {
 
-		if (api.getCurrentPlayer().getDistributableArmyStrength() == 0) {
+		if (api.getCurrentPlayer().getDistributableArmy().getNumberOfUnits() == 0) {
 			return false;
 		}
 

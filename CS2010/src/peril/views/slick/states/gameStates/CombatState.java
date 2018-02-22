@@ -123,6 +123,7 @@ public final class CombatState extends CoreGameState {
 		menus.showSaveOption();
 		getButton(attackButton).hide();
 		getButton(upgradeButton).hide();
+		slick.showToolTip("Click the '?' for help");
 	}
 
 	/**

@@ -2,7 +2,7 @@
 button,Main Menu,7,playButton.png,180,80,710,610,play
 image,Main Menu,perilLogo.png,800,520,60,0
 button,Main Menu,23,goat.png,60,60,820,15,website
-button,Main Menu,32,pointsButton.png,60,60,0,0,credits
+button,Main Menu,32,creditsButton.png,180,80,5,5,credits
 
 // Player Selection
 button,Select,12,mainMenuButton.png,180,80,10,610,menu

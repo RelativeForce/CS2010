@@ -34,7 +34,7 @@ public final class MenuHelper {
 	/**
 	 * The currently visible menu.
 	 */
-	private Menu visible;
+	private volatile Menu visible;
 
 	/**
 	 * Constructs a new {@link MenuHelper}.

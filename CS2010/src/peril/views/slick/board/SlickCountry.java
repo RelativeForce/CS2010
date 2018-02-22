@@ -114,7 +114,7 @@ public final class SlickCountry extends Clickable implements Observer {
 	 *            The new {@link Color}.
 	 */
 	public void changeColour(Color newColor) {
-		this.replaceImage(getRegion().convert(newColor));
+		this.swapImage(getRegion().convert(newColor));
 	}
 
 	/**

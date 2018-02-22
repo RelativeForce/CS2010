@@ -100,7 +100,7 @@ public final class Reinforce extends ModelState {
 					final ModelUnit weakest = UnitHelper.getInstance().getWeakest();
 
 					// Remove the unit from the list of units to place.
-					player.distributableArmy.remove(weakest);
+					player.distributableArmy.remove(weakest.strength);
 					player.totalArmy.add(weakest);
 
 					// Get that country's army and increase its size by one.

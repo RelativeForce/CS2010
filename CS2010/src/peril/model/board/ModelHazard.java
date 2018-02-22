@@ -9,8 +9,8 @@ import java.util.Random;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-17
- * @version 1.01.01
+ * @since 2018-02-22
+ * @version 1.01.02
  * 
  * @see ModelArmy
  *
@@ -128,7 +128,7 @@ public enum ModelHazard {
 		if (occur) {
 
 			// Holds the current size of the army.
-			final int currentSize = army.getStrength();
+			final int currentSize = army.getNumberOfUnits();
 
 			// Holds the max amount of units this hazard can kill
 			final int maxCasualties = (this.maxCasualties * currentSize) / 100;
@@ -144,7 +144,10 @@ public enum ModelHazard {
 			} else {
 
 				// Remove the dead regiments.
-				army.remove(casualties);
+				for (int i = 0; i < casualties; i++) {
+					army.removeRandomUnit();
+				}
+
 			}
 
 		}

@@ -1,9 +1,13 @@
 package peril.views.slick.util;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.ImageBuffer;
+import org.newdawn.slick.SlickException;
 
 /**
  * This denotes the region of pixels given on screen where each pixel is given a
@@ -41,6 +45,8 @@ public final class Region {
 	 * a pixel is determined by how the {@link Region} is constructed.
 	 */
 	private final boolean[] object;
+
+	private final Map<Color, Image> versions;
 
 	/**
 	 * The <code>int</code> width of this {@link Region}.
@@ -99,6 +105,7 @@ public final class Region {
 	 */
 	public Region(boolean[] object, int width, int height) {
 		this.object = new Reducer(object, width, height).reduce();
+		this.versions = new HashMap<>();
 	}
 
 	/**
@@ -124,6 +131,8 @@ public final class Region {
 		for (int index = 0; index < object.length; index++) {
 			object[index] = true;
 		}
+		
+		this.versions = new HashMap<>();
 
 	}
 
@@ -351,9 +360,14 @@ public final class Region {
 		if (color == null) {
 			throw new NullPointerException("Colour cannot be null");
 		}
+		
+		// If the version already exists.
+		if(versions.containsKey(color)) {
+			return versions.get(color);
+		}
 
 		// Holds the image of the region.
-		ImageBuffer imagebuffer = new ImageBuffer(width, height);
+		final ImageBuffer imagebuffer = new ImageBuffer(width, height);
 
 		// Set the colour of the visual and get its rgb value.
 		int r = color.getRed();
@@ -370,8 +384,30 @@ public final class Region {
 				}
 			}
 		}
-		return imagebuffer.getImage();
+		
+		final Image version = imagebuffer.getImage();
+		
+		versions.put(color, version);
+		
+		return version;
 
+	}
+
+	/**
+	 * Finalises this {@link Region} for garbage collection.
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+
+		versions.values().forEach(image -> {
+			try {
+				image.destroy();
+			} catch (SlickException e) {
+				e.printStackTrace();
+			}
+		});
+
+		super.finalize();
 	}
 
 	/**
@@ -385,6 +421,7 @@ public final class Region {
 	 * @param height
 	 *            The height of the {@link Region#object}.
 	 */
+
 	private static int getIndex(int x, int y, int height) {
 		return (x * height) + y;
 	}

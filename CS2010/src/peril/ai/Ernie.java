@@ -1,8 +1,10 @@
 package peril.ai;
 
+import java.security.KeyStore.Entry;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
 
 import peril.controllers.AIController;
 import peril.controllers.api.Country;
@@ -30,15 +32,14 @@ public class Ernie extends AI {
 			Map<Integer, Country> countries = new HashMap<>();
 			Player current = api.getCurrentPlayer();
 			
-			if (current.equals(country.getOwner())) {
 			int highest = Integer.MIN_VALUE;
 			
 			api.forEachCountry(country -> {
-				
-			int value = rand.nextInt(10);
-			countries.put(value, country);
+			if (current.equals(country.getOwner())) {
+				int value = rand.nextInt(10);
+				countries.put(value, country);
+			}});
 			
-			});
 			for (int value : countries.keySet()) {
 				highest = value > highest ? value : highest;
 			}
@@ -53,21 +54,52 @@ public class Ernie extends AI {
 	
 		return true;
 	}
-	}
+			
+	
 
 	@Override
 	protected boolean processAttack(AIController api) {
 		// TODO Auto-generated method stub
-		if(rand.nextInt()>5 && rand.nextInt()<10) {
-			return true;}
-		return false;
 		
+		Map<Integer, Entry> countries = new HashMap<>();	
+		Player current = api.getCurrentPlayer();
 		//go through each of the countries owned by that player
 		//see the neighbouring countries of each
 		//put them in array with values for the amount of troops
 		// find own country and neighbouring non friendly country with biggest gap between the two
 		//attack it
+		int highest = Integer.MIN_VALUE;
+		
+		api.forEachCountry(country -> {
+			if (current.equals(country.getOwner())) {
+				if(country.getArmy().getNumberOfUnits() > 1)) {
+				for (Country neighbour : country.getNeighbours()) {
+					
+					if (!current.equals(neighbour.getOwner())) {
+						int value = rand.nextInt(10);
+						countries.put(value, new Entry(country, neighbour));
+					}}
+				}}});	
+	
+		for (int value : countries.keySet()) {
+			highest = value > highest ? value : highest;
+		}
+
+		if (highest == Integer.MIN_VALUE) {
+			return false;
+		}
+
+		api.select(countries.get(highest).a);
+		api.select(countries.get(highest).b);
+		
+
+		api.attack();
+
+		return true;
+	
 	}
+	
+		
 
 	@Override
 	protected boolean processFortify(AIController api) {
@@ -76,4 +108,28 @@ public class Ernie extends AI {
 		return false;
 	}
 
+	private class Entry {
+
+		/**
+		 * {@link Country} a
+		 */
+		public final Country a;
+
+		/**
+		 * {@link Country} b
+		 */
+		public final Country b;
+
+		/**
+		 * Constructs a new {@link Entry}.
+		 * 
+		 * @param a
+		 * @param b
+		 */
+		public Entry(Country a, Country b) {
+			this.a = a;
+			this.b = b;
+		}
+
+	}
 }

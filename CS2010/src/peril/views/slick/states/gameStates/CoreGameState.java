@@ -610,7 +610,9 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 			@Override
 			public void mouseClick(Point mouse, int mouseButton) {
 
-				if (game.getCurrentModelPlayer().ai != AI.USER || slick.menus.menuVisible()) {
+				if(slick.menus.menuVisible()) {
+					return;
+				}else if (!(CoreGameState.this instanceof SetupState) && game.getCurrentModelPlayer().ai != AI.USER ) {
 					return;
 				}
 

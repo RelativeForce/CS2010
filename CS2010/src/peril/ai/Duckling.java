@@ -71,7 +71,17 @@ public class Duckling extends AI {
 	@Override
 	protected boolean processFortify(AIController api) {
 		
-		return false;
+		Map<Integer, Country> countries = fortify(api);
+		
+		int weakest = 1;
+		
+		for (int value : countries.keySet()) {
+			if(value < weakest) {
+				value = weakest;
+			}
+		}
+		
+		return true;
 	}
 
 	// Assisted
@@ -129,6 +139,20 @@ public class Duckling extends AI {
 		});
 
 		return countries;
+	}
+	
+	private Map<Integer, Country> fortify(AIController api) {
+		Map<Integer, Country> friendlies = new HashMap<>();
+		
+		Player current = api.getCurrentPlayer();
+		
+		api.forEachCountry(country -> {
+			if(current.equals(country.getOwner())) {
+				friendlies.put(country.getArmyStrength(), country);
+			}
+		});
+		
+		return friendlies;
 	}
 	
 	//just gonna borrow this class, lmao

@@ -499,6 +499,8 @@ public class WarMenu extends Menu {
 		frame.draw(resultFont, failure, getPosition().x + (getWidth() / 2) - (resultFont.getWidth(failure) / 2),
 				getPosition().y + (getHeight() / 2));
 
+		getButton(attackButton).hide();
+		
 		drawPlayer(attackingRuler, -(getWidth() / 4), frame);
 		drawPlayer(enemyRuler, (getWidth() / 4), frame);
 
@@ -533,6 +535,8 @@ public class WarMenu extends Menu {
 		final int conqueredY = getPosition().y + (getHeight() / 2) + ((countryFont.getHeight(attackerName) * 3) / 2);
 		frame.draw(countryFont, conqueredName, conqueredX, conqueredY);
 
+		getButton(attackButton).hide();
+		
 		// Draw the player icons
 		drawPlayer(attackingRuler, -(getWidth() / 4), frame);
 		drawPlayer(enemyRuler, (getWidth() / 4), frame);

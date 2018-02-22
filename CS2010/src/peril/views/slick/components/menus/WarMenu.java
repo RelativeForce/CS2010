@@ -665,8 +665,11 @@ public class WarMenu extends Menu {
 					defendingSquad.returnSquadToArmy(defendingArmy);
 
 					if (defender != null) {
-						defender.totalArmy
-								.remove(defendingUnit.getStrength() - UnitHelper.getInstance().getWeakest().strength);
+
+						final int toRemove = defendingUnit.getStrength()
+								- UnitHelper.getInstance().getWeakest().strength;
+
+						defender.totalArmy.remove(toRemove);
 					}
 
 					defendingArmy.setWeakest();
@@ -697,16 +700,32 @@ public class WarMenu extends Menu {
 			// Attacker has lost the attack
 			else {
 
-				boolean removedFromSquad = attackingSquad.killUnit(defendingUnit);
+				if (defendingUnit.strength >= attackingArmy.getStrength() + attackingSquad.geStrength()) {
 
-				// If the enemy unti's damage was not taken from the squad return the squad to
-				// the army and then remove the damage from the army.
-				if (!removedFromSquad) {
 					attackingSquad.returnSquadToArmy(attackingArmy);
-					attackingArmy.remove(defendingUnit);
-				}
 
-				attacker.totalArmy.remove(defendingUnit);
+					final int toRemove = attackingUnit.getStrength() - UnitHelper.getInstance().getWeakest().strength;
+
+					attacker.totalArmy.remove(toRemove);
+
+					attackingArmy.setWeakest();
+
+					getButton(attackButton).hide();
+
+				} else {
+
+					boolean removedFromSquad = attackingSquad.killUnit(defendingUnit);
+
+					// If the enemy unti's damage was not taken from the squad return the squad to
+					// the army and then remove the damage from the army.
+					if (!removedFromSquad) {
+						attackingSquad.returnSquadToArmy(attackingArmy);
+						attackingArmy.remove(defendingUnit);
+					}
+
+					attacker.totalArmy.remove(defendingUnit);
+
+				}
 
 			}
 		}

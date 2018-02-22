@@ -15,13 +15,13 @@ import peril.controllers.api.Player;
  *
  */
 
-public class Duckling extends AI {
+public class NegativeFiveIQ extends AI {
 
 	private static final String NAME = "Duckling";
 
 	private static final int SPEED = 100;
 
-	public Duckling(AIController api) {
+	public NegativeFiveIQ(AIController api) {
 		super(NAME, SPEED, api);
 
 	}
@@ -121,18 +121,22 @@ public class Duckling extends AI {
 
 		api.forEachCountry(country -> {
 
-			if (current.equals(country.getOwner()) && country.getArmyStrength() > 1) {
+			if (current.equals(country.getOwner()) && country.getArmy().getNumberOfUnits() > 1) {
 
 				for (Country neighbour : country.getNeighbours()) {
 
-					int value = country.getArmyStrength();
+					if(api.hasOpenLinkBetween(country, neighbour)) {
+						
+						int value = country.getArmyStrength();
 
-					if (!current.equals(neighbour.getOwner())) {
+						if (!current.equals(neighbour.getOwner())) {
 
-						value -= neighbour.getArmyStrength();
+							value -= neighbour.getArmyStrength();
 
-						countries.put(value, new Entry(country, neighbour));
+							countries.put(value, new Entry(country, neighbour));
+						}
 					}
+					
 
 				}
 			}

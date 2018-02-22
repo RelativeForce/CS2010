@@ -60,7 +60,7 @@ public final class AIHelper implements Iterable<AI> {
 		final Monkey monkey = new Monkey(api);
 		final FinalBoss finalBoss = new FinalBoss(api);
 		final Goat goat = new Goat(api);
-		final Duckling duckling = new Duckling(api);
+		final NegativeFiveIQ nfiq = new NegativeFiveIQ(api);
 		final Ocelot ocelot = new Ocelot(api);
 		final Knight knight = new Knight(api);
 		final Ernie ernie = new Ernie(api);
@@ -71,7 +71,7 @@ public final class AIHelper implements Iterable<AI> {
 		ai.put(monkey.name, monkey);
 		ai.put(finalBoss.name, finalBoss);
 		ai.put(goat.name, goat);
-		ai.put(duckling.name, duckling);
+		ai.put(nfiq.name, nfiq);
 		ai.put(ocelot.name, ocelot);
 		ai.put(knight.name, knight);
 		ai.put(ernie.name, ernie);

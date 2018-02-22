@@ -178,11 +178,11 @@ public final class Ocelot extends AI {
 
 		api.forEachCountry(country -> {
 
-			if (current.equals(country.getOwner()) && country.getArmy().getStrength() > 1) {
+			if (current.equals(country.getOwner()) && country.getArmy().getNumberOfUnits() > 1) {
 
 				for (Country neighbour : country.getNeighbours()) {
 
-					int value = country.getArmy().getStrength();
+					int value = country.getArmy().getNumberOfUnits();
 
 					if (!current.equals(neighbour.getOwner())) {
 
@@ -250,7 +250,7 @@ public final class Ocelot extends AI {
 			if (current.equals(country.getOwner())) {
 
 				// The default weight of this country
-				final int defaultValue = -country.getArmy().getStrength();
+				final int defaultValue = -country.getArmy().getNumberOfUnits();
 
 				// The current value.
 				int value = defaultValue;
@@ -258,7 +258,7 @@ public final class Ocelot extends AI {
 				// Iterate through all the country's neighbours.
 				for (Country neighbour : country.getNeighbours()) {
 					if (!current.equals(neighbour.getOwner())) {
-						value += neighbour.getArmy().getStrength();
+						value += neighbour.getArmy().getNumberOfUnits();
 					}
 				}
 

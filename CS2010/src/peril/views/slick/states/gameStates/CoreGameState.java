@@ -367,7 +367,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 */
 	protected final void addHighlight(SlickCountry country) {
 		if (country != null) {
-			country.replaceImage(country.getRegion().convert(Color.yellow));
+			country.changeColour(Color.yellow);
 		}
 	}
 

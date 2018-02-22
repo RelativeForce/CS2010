@@ -10,6 +10,7 @@ import java.util.Observable;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import peril.Update;
 import peril.controllers.api.Army;
@@ -40,7 +41,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	 * value of each key is the number of that {@link ModelUnit} in the
 	 * {@link ModelArmy}.
 	 */
-	private final Map<ModelUnit, Integer> units;
+	private final Map<String, Integer> units;
 
 	/**
 	 * Holds the currently selected {@link ModelUnit}.
@@ -78,8 +79,11 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 
 		int strength = 0;
 
-		for (ModelUnit unit : units.keySet()) {
-			strength += units.get(unit) * unit.strength;
+		for (String unitName : units.keySet()) {
+
+			ModelUnit unit = UnitHelper.getInstance().get(unitName);
+
+			strength += units.get(unitName) * unit.strength;
 		}
 
 		return strength;
@@ -104,7 +108,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	public boolean select(ModelUnit unit) {
 
 		// If the unit is in this army then it can be selected.
-		if (units.containsKey(unit)) {
+		if (units.containsKey(unit.name)) {
 
 			setSelected(unit);
 			return true;
@@ -131,21 +135,24 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	 */
 	public boolean remove(ModelUnit unit) {
 
+		final String unitName = unit.name;
+
 		/*
 		 * If the unit is in the army then remove it, otherwise remove the units
 		 * strength.
 		 */
-		if (units.containsKey(unit)) {
+		if (units.containsKey(unitName)) {
 
 			/*
 			 * If there is only one of the specified unit type then remove the entry in the
 			 * units map.
 			 */
-			if (units.get(unit) == 1) {
-				units.remove(unit);
+			if (units.get(unitName) == 1) {
+				units.remove(unitName);
 			} else {
-				units.replace(unit, units.get(unit) - 1);
+				units.replace(unitName, units.get(unitName) - 1);
 			}
+
 			// Notify observers.
 			setChanged();
 			notifyObservers();
@@ -173,7 +180,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 		 * If the unit is not in the map or if the unit is in the map and there is zero
 		 * of the unit type, return false.
 		 */
-		return units.get(unit) != null && units.get(unit) != 0;
+		return units.get(unit.name) != null && units.get(unit.name) != 0;
 	}
 
 	/**
@@ -186,7 +193,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	 * @return Number of a specific {@link ModelUnit}
 	 */
 	public int getNumberOf(ModelUnit unit) {
-		return units.get(unit);
+		return units.get(unit.name);
 	}
 
 	/**
@@ -223,7 +230,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 		}
 
 		// The current number of the specified unit.
-		final int numberOfUnit = units.get(unit);
+		final int numberOfUnit = units.get(unit.name);
 
 		// The current combine strength of all the specified units.
 		final int strengthCombined = numberOfUnit * unit.strength;
@@ -278,7 +285,10 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	 */
 	@Override
 	public Iterator<ModelUnit> iterator() {
-		return units.keySet().iterator();
+
+		Stream<ModelUnit> unitStream = units.keySet().stream().map(name -> UnitHelper.getInstance().get(name));
+
+		return unitStream.collect(Collectors.toSet()).iterator();
 	}
 
 	/**
@@ -289,11 +299,13 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	 */
 	public void add(ModelUnit unit) {
 
+		final String unitName = unit.name;
+
 		// The number of the specified unit currently in the army
-		final int currentNumber = units.get(unit) == null ? 0 : units.get(unit);
+		final int currentNumber = units.get(unitName) == null ? 0 : units.get(unitName);
 
 		// Set the new number of the specified unit.
-		units.put(unit, currentNumber + 1);
+		units.put(unitName, currentNumber + 1);
 
 		setChanged();
 		notifyObservers();
@@ -368,7 +380,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 		clearUnits();
 
 		// Set the army to its weakest not empty value.
-		units.put(UnitHelper.getInstance().getWeakest(), 1);
+		units.put(UnitHelper.getInstance().getWeakest().name, 1);
 
 		setChanged();
 		notifyObservers();
@@ -380,6 +392,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	 * 
 	 * @return Weakest {@link ModelUnit} in this {@link ModelArmy}.
 	 */
+	@Override
 	public ModelUnit getWeakestUnit() {
 
 		/**
@@ -406,6 +419,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	 * 
 	 * @return Strongest {@link ModelUnit} in this {@link ModelArmy}.
 	 */
+	@Override
 	public ModelUnit getStrongestUnit() {
 
 		/**
@@ -452,17 +466,18 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 
 	}
 
+	/**
+	 * Removes a random {@link ModelUnit} from this {@link ModelArmy}.
+	 */
 	public void removeRandomUnit() {
 
-		final Set<ModelUnit> units = this.units.keySet().stream().filter(unit -> hasUnit(unit))
-				.collect(Collectors.toSet());
 		final int size = units.size();
 		final int item = new Random().nextInt(size);
 
 		int i = 0;
 		ModelUnit toRemove = null;
 
-		for (ModelUnit unit : units) {
+		for (ModelUnit unit : this) {
 			if (i == item) {
 				toRemove = unit;
 			}
@@ -591,7 +606,8 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	@Override
 	public Set<? extends Unit> getUnits() {
 		// Copy the key set into a new map so that this army cannot be modified.
-		return new HashSet<Unit>(units.keySet());
+		return new HashSet<Unit>(
+				units.keySet().stream().map(name -> UnitHelper.getInstance().get(name)).collect(Collectors.toSet()));
 	}
 
 	@Override

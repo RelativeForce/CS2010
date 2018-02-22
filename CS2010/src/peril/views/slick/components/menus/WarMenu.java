@@ -86,12 +86,22 @@ public class WarMenu extends Menu {
 
 	private final Font armyFont;
 
+	private final Font yourArmyFont;
+
 	/**
 	 * The id of the {@link Button} that will be clicked to attack enemy
 	 * {@link ModelCountry} .
 	 * 
 	 */
 	private final String attackButton;
+
+	private final Consumer<SlickUnit> poolClick;
+
+	private final CombatHelper combat;
+
+	private final Squad attackingSquad;
+
+	private final Squad defendingSquad;
 
 	/**
 	 * The {@link ModelCountry} of the attacking {@link ModelPlayer}.
@@ -112,16 +122,6 @@ public class WarMenu extends Menu {
 	 * The {@link ModelPlayer} that is ruling the defending {@link ModelCountry}.
 	 */
 	private SlickPlayer enemyRuler;
-
-	private final Consumer<SlickUnit> poolClick;
-
-	private final CombatHelper combat;
-
-	private final Font yourArmyFont;
-
-	private final Squad attackingSquad;
-
-	private final Squad defendingSquad;
 
 	/**
 	 * Constructs a new {@link WarMenu}.
@@ -343,7 +343,7 @@ public class WarMenu extends Menu {
 	}
 
 	private void processPostFight(final ModelPlayer attackingPlayer, final ModelPlayer defendingPlayer) {
-		
+
 		// If the country has been conquered
 		if (attacker.model.getRuler().equals(defender.model.getRuler())) {
 
@@ -573,7 +573,7 @@ public class WarMenu extends Menu {
 		 *            Amount of units (dice) the attacking {@link ModelArmy} wants to
 		 *            pit against the defending {@link ModelArmy}
 		 */
-		private void fight(SlickCountry attacking, SlickCountry defending, int attackSquadSize) {
+		public void fight(SlickCountry attacking, SlickCountry defending, int attackSquadSize) {
 
 			// Check parameter
 			if (attackSquadSize > 3 || attackSquadSize < 0) {
@@ -659,7 +659,6 @@ public class WarMenu extends Menu {
 			// If the army of the defending country is of size on then this victory will
 			// conquer the country. Otherwise just kill unit from the defending army.
 			if (attackingUnit.strength >= totalStrength) {
-
 				resetArmyToWeakest(defendingSquad, defendingArmy, defender, attackingUnit);
 
 				defending.model.setRuler(attacker);
@@ -667,6 +666,14 @@ public class WarMenu extends Menu {
 
 			} else {
 				removeUnitFromArmy(defendingSquad, defendingArmy, defender, attackingUnit);
+
+				// If the defending army was cleared.
+				if (defendingArmy.getNumberOfUnits() == 0) {
+					defendingArmy.setWeakest();
+					defending.model.setRuler(attacker);
+					return true;
+				}
+
 				return false;
 			}
 		}
@@ -682,6 +689,13 @@ public class WarMenu extends Menu {
 				return true;
 			} else {
 				removeUnitFromArmy(attackingSquad, attackingArmy, attacker, defendingUnit);
+
+				// If the attacking army was cleared.
+				if (attackingArmy.getNumberOfUnits() == 1) {
+					attackingArmy.setWeakest();
+					return true;
+				}
+
 				return false;
 			}
 		}

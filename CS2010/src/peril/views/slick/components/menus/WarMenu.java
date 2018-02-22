@@ -313,59 +313,21 @@ public class WarMenu extends Menu {
 		// If there is two countries highlighted
 		if (attacker != null && defender != null) {
 
-			ModelPlayer attackingPlayer = attacker.model.getRuler();
-			ModelPlayer defendingPlayer = defender.model.getRuler();
+			final ModelPlayer attackingPlayer = attacker.model.getRuler();
+			final ModelPlayer defendingPlayer = defender.model.getRuler();
 
-			// If the army of the primary highlighted country is larger that 1 unit in size
-			if (attacker.model.getArmy().getNumberOfUnits() + attackingSquad.getAliveUnits() > 1) {
+			// If the army of the attacker country is larger that 1 unit in size
+			if (getTotalAliveUnits(attacker.model.getArmy(), attackingSquad) > 1) {
 
 				// Remove the dead attacking units.
 				attackingSquad.removeDeadUnits();
 
-				int squadSize = attackingSquad.getAliveUnits();
-
 				defendingSquad.autoPopulate(defender.model.getArmy());
 
 				// Execute the combat
-				combat.fight(attacker, defender, squadSize);
+				combat.fight(attacker, defender, attackingSquad.getAliveUnits());
 
-				// If the country has been conquered
-				if (attacker.model.getRuler().equals(defender.model.getRuler())) {
-
-					// If there is a defending player
-					if (defendingPlayer != null) {
-
-						defendingPlayer.setCountriesRuled(defendingPlayer.getCountriesRuled() - 1);
-
-						// If the player has no countries they have lost.
-						if (defendingPlayer.getCountriesRuled() == 0) {
-
-							game.setLoser(defendingPlayer);
-							game.checkWinner();
-						}
-					}
-
-					game.getAttack().deselectAll();
-
-					attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
-					attackingPlayer.setCountriesTaken(attackingPlayer.getCountriesTaken() + 1);
-					attackingPlayer.addPoints(PointHelper.CONQUER_REWARD);
-
-					game.checkContinentRulership();
-
-					game.checkChallenges();
-
-				} else {
-
-					final boolean attackArmyToSmall = attacker.model.getArmy().getNumberOfUnits()
-							+ attackingSquad.getAliveUnits() == 1;
-
-					// If the attacking army is not large enough to attack again.
-					if (attackArmyToSmall) {
-						game.getAttack().deselectAll();
-						getButton(attackButton).hide();
-					}
-				}
+				processPostFight(attackingPlayer, defendingPlayer);
 			}
 		}
 
@@ -374,6 +336,47 @@ public class WarMenu extends Menu {
 			game.getAttack().deselectAll();
 		}
 
+	}
+
+	private int getTotalAliveUnits(ModelArmy army, Squad squad) {
+		return army.getNumberOfUnits() + squad.getAliveUnits();
+	}
+
+	private void processPostFight(final ModelPlayer attackingPlayer, final ModelPlayer defendingPlayer) {
+		
+		// If the country has been conquered
+		if (attacker.model.getRuler().equals(defender.model.getRuler())) {
+
+			enemyRuler = attackingRuler;
+			attackingPlayer.totalArmy.add(UnitHelper.getInstance().getWeakest());
+
+			// If there is a defending player
+			if (defendingPlayer != null) {
+
+				defendingPlayer.setCountriesRuled(defendingPlayer.getCountriesRuled() - 1);
+
+				// If the player has no countries they have lost.
+				if (defendingPlayer.getCountriesRuled() == 0) {
+
+					game.setLoser(defendingPlayer);
+					game.checkWinner();
+				}
+			}
+
+			// Increment the statistics appropriately
+			attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
+			attackingPlayer.setCountriesTaken(attackingPlayer.getCountriesTaken() + 1);
+			attackingPlayer.addPoints(PointHelper.CONQUER_REWARD);
+
+			game.getAttack().deselectAll();
+			game.checkContinentRulership();
+			game.checkChallenges();
+			getButton(attackButton).hide();
+
+		} else if (getTotalAliveUnits(attacker.model.getArmy(), attackingSquad) == 1) {
+			game.getAttack().deselectAll();
+			getButton(attackButton).hide();
+		}
 	}
 
 	/**
@@ -660,8 +663,6 @@ public class WarMenu extends Menu {
 				resetArmyToWeakest(defendingSquad, defendingArmy, defender, attackingUnit);
 
 				defending.model.setRuler(attacker);
-				enemyRuler = attackingRuler;
-				attacker.totalArmy.add(UnitHelper.getInstance().getWeakest());
 				return true;
 
 			} else {

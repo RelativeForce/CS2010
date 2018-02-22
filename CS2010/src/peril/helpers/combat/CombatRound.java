@@ -15,7 +15,7 @@ import peril.model.board.ModelCountry;
  * @see ModelCountry
  *
  */
-public class CombatRound {
+public final class CombatRound {
 
 	/**
 	 * The {@link ModelCountry} that will attack the {@link #defending}

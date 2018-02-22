@@ -14,17 +14,10 @@ import peril.controllers.api.Player;
 /**
  * A hopefully somewhat clever AI. We'll see. {@link AI}.
  * 
- * @author Joseph Rolli
+ * @author Joseph_Rolli
  *
  */
 public final class Ocelot extends AI {
-
-	/**
-	 * The number of milliseconds between each action of this {@link Ocelot}. If
-	 * this is zero or lower then the {@link Ocelot} will perform its
-	 * actions at the frame rate of the display.
-	 */
-	private static final int SPEED = 100;
 
 	/**
 	 * The name of this {@link Ocelot}.
@@ -35,11 +28,11 @@ public final class Ocelot extends AI {
 	 * Constructs a new {@link Ocelot} {@link AI}.
 	 * 
 	 * @param api
-	 *            The {@link AIController} that this {@link AI} will use to query the
-	 *            state of the game.
+	 *            The {@link AIController} that this {@link AI} will use to query
+	 *            the state of the game.
 	 */
 	public Ocelot(AIController api) {
-		super(NAME, SPEED, api);
+		super(NAME, AI.MAX_SPEED, api);
 	}
 
 	/**
@@ -48,13 +41,15 @@ public final class Ocelot extends AI {
 	 */
 	@Override
 	public boolean processReinforce(AIController api) {
-		while(api.getCurrentPlayer().getDistributableArmyStrength()!=0) {
-			api.forEachCountry(country -> {
-				if(api.getCurrentPlayer().equals(country.getOwner())) {
-					api.select(country);
-					api.reinforce();
-				}
-			});
+		for (Country country : calcBiggestTerritory(api)) {
+			System.out.println(country);
+		}
+		for (Country country : calcBiggestTerritory(api)) {
+			if (api.getCurrentPlayer().getDistributableArmy().getStrength() != 0) {
+				api.select(country);
+				api.reinforce();
+				api.clearSelected();
+			}
 		}
 
 		return true;
@@ -136,6 +131,73 @@ public final class Ocelot extends AI {
 
 	}
 
+	// Return a hashset containing all countries directly connected to the parameter
+	// country.
+	public HashSet<Country> calcTerritory(AIController api, Country country1) {
+		HashSet<Country> territory = new HashSet<Country>();
+		territory.add(country1);
+		api.forEachFriendlyCountry(api.getCurrentPlayer(), country -> {
+			if ((api.isPathBetween(country1, country)) && (!territory.contains(country))) {
+				territory.add(country);
+			}
+		});
+
+		return territory;
+	}
+
+	// Return a hashset containing the biggest collection of directly connected
+	// countries
+	public HashSet<Country> calcBiggestTerritory(AIController api) {
+		HashSet<Country> biggestTerritory = new HashSet<Country>();
+		HashSet<Country> tempTerritory = new HashSet<Country>();
+
+		api.forEachFriendlyCountry(api.getCurrentPlayer(), country -> {
+			tempTerritory.addAll(calcTerritory(api, country));
+			if (tempTerritory.size() >= biggestTerritory.size()) {
+				biggestTerritory.removeAll(biggestTerritory);
+				biggestTerritory.addAll(tempTerritory);
+				tempTerritory.removeAll(tempTerritory);
+			}
+		});
+		return biggestTerritory;
+	}
+
+	/**
+	 * Retrieves the weighting for a country that the {@link Ocelot} may attack.
+	 * 
+	 * @param api
+	 *            The {@link AIController} that this {@link AI} will use to query
+	 *            the state of the game.
+	 * @return weighting
+	 */
+	private Map<Integer, Entry> getAttackWeightings(AIController api) {
+
+		Map<Integer, Entry> countries = new HashMap<>();
+
+		Player current = api.getCurrentPlayer();
+
+		api.forEachCountry(country -> {
+
+			if (current.equals(country.getOwner()) && country.getArmy().getStrength() > 1) {
+
+				for (Country neighbour : country.getNeighbours()) {
+
+					int value = country.getArmy().getStrength();
+
+					if (!current.equals(neighbour.getOwner())) {
+
+						value -= neighbour.getArmy().getStrength();
+
+						countries.put(value, new Entry(country, neighbour));
+					}
+
+				}
+			}
+		});
+
+		return countries;
+	}
+
 	/**
 	 * Retrieves the weighting for every possible fortification possible on the
 	 * board..
@@ -163,6 +225,7 @@ public final class Ocelot extends AI {
 		return possibleMoves;
 	}
 
+
 	/**
 	 * Iterates through each {@link Country} on the {@link ModelBoard} and adds the
 	 * {@link Country}s that border enemy {@link Country}s to 'frontline' and
@@ -187,7 +250,7 @@ public final class Ocelot extends AI {
 			if (current.equals(country.getOwner())) {
 
 				// The default weight of this country
-				final int defaultValue = -country.getArmyStrength();
+				final int defaultValue = -country.getArmy().getStrength();
 
 				// The current value.
 				int value = defaultValue;
@@ -195,13 +258,13 @@ public final class Ocelot extends AI {
 				// Iterate through all the country's neighbours.
 				for (Country neighbour : country.getNeighbours()) {
 					if (!current.equals(neighbour.getOwner())) {
-						value += neighbour.getArmyStrength();
+						value += neighbour.getArmy().getStrength();
 					}
 				}
 
 				// If the current country is an internal country.
 				if (value == defaultValue) {
-					if (country.getArmyStrength() > 1) {
+					if (country.getArmy().getNumberOfUnits() > 1) {
 						internal.add(country);
 					}
 				} else {
@@ -210,44 +273,7 @@ public final class Ocelot extends AI {
 			}
 		});
 	}
-
-
-	/**
-	 * Retrieves the weighting for a country that the {@link Ocelot} may attack.
-	 * 
-	 * @param api
-	 *            The {@link AIController} that this {@link AI} will use to query the
-	 *            state of the game.
-	 * @return weighting
-	 */
-	private Map<Integer, Entry> getAttackWeightings(AIController api) {
-
-		Map<Integer, Entry> countries = new HashMap<>();
-
-		Player current = api.getCurrentPlayer();
-
-		api.forEachCountry(country -> {
-
-			if (current.equals(country.getOwner()) && country.getArmyStrength() > 1) {
-
-				for (Country neighbour : country.getNeighbours()) {
-
-					int value = country.getArmyStrength();
-
-					if (!current.equals(neighbour.getOwner())) {
-
-						value -= neighbour.getArmyStrength();
-
-						countries.put(value, new Entry(country, neighbour));
-					}
-
-				}
-			}
-		});
-
-		return countries;
-	}
-
+	
 	/**
 	 * Holds a pair of {@link Country}s.
 	 * 

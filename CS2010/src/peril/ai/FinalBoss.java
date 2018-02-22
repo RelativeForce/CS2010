@@ -217,7 +217,7 @@ public class FinalBoss extends AI {
 					final int numberTraded = numberOfUnit / ratio;
 
 					if (bestUnit == null) {
-						System.out.println("First");
+						
 						bestUnit = unit;
 						valueToBeat = numberTraded;
 
@@ -230,7 +230,6 @@ public class FinalBoss extends AI {
 						// If the unit is better or the first;
 						if (isBetter) {
 
-							System.out.println("Better");
 							bestUnit = unit;
 							valueToBeat = numberTraded;
 						}

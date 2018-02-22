@@ -1,6 +1,6 @@
 package peril.ai;
 
-import java.security.KeyStore.Entry;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -72,7 +72,7 @@ public class Ernie extends AI {
 		
 		api.forEachCountry(country -> {
 			if (current.equals(country.getOwner())) {
-				if(country.getArmy().getNumberOfUnits() > 1)) {
+				if(country.getArmy().getNumberOfUnits() > 1) {
 				for (Country neighbour : country.getNeighbours()) {
 					
 					if (!current.equals(neighbour.getOwner())) {

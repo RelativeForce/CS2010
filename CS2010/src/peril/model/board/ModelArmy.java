@@ -7,7 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import peril.Update;
 import peril.controllers.api.Army;
@@ -22,8 +24,8 @@ import peril.helpers.UnitHelper;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.04
- * @since 2018-02-21
+ * @version 1.01.05
+ * @since 2018-02-22
  * 
  * @see Observable
  * @see Iterable
@@ -127,7 +129,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	 * @param unit
 	 *            The {@link ModelUnit} that is to be removed. NOT NULL
 	 */
-	public void remove(ModelUnit unit) {
+	public boolean remove(ModelUnit unit) {
 
 		/*
 		 * If the unit is in the army then remove it, otherwise remove the units
@@ -144,13 +146,15 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 			} else {
 				units.replace(unit, units.get(unit) - 1);
 			}
-		} else {
-			remove(unit.strength);
+			// Notify observers.
+			setChanged();
+			notifyObservers();
+
+			return true;
+
 		}
 
-		// Notify observers.
-		setChanged();
-		notifyObservers();
+		return false;
 
 	}
 
@@ -445,6 +449,27 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 		// Notify observers of the change.
 		setChanged();
 		notifyObservers();
+
+	}
+
+	public void removeRandomUnit() {
+
+		final Set<ModelUnit> units = this.units.keySet().stream().filter(unit -> hasUnit(unit))
+				.collect(Collectors.toSet());
+		final int size = units.size();
+		final int item = new Random().nextInt(size);
+
+		int i = 0;
+		ModelUnit toRemove = null;
+
+		for (ModelUnit unit : units) {
+			if (i == item) {
+				toRemove = unit;
+			}
+			i++;
+		}
+
+		remove(toRemove);
 
 	}
 

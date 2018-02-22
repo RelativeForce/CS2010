@@ -115,6 +115,8 @@ public class WarMenu extends Menu {
 
 	private final Consumer<SlickUnit> poolClick;
 
+	private final CombatHelper combat;
+
 	private final Font yourArmyFont;
 
 	private final Squad attackingSquad;
@@ -160,6 +162,7 @@ public class WarMenu extends Menu {
 			}
 		};
 
+		this.combat = new CombatHelper();
 	}
 
 	/**
@@ -306,6 +309,7 @@ public class WarMenu extends Menu {
 	 * they are eligible to 'fight'.
 	 */
 	public void attack() {
+
 		// If there is two countries highlighted
 		if (attacker != null && defender != null) {
 
@@ -323,7 +327,7 @@ public class WarMenu extends Menu {
 				defendingSquad.autoPopulate(defender.model.getArmy());
 
 				// Execute the combat
-				fight(attacker, defender, squadSize);
+				combat.fight(attacker, defender, squadSize);
 
 				// If the country has been conquered
 				if (attacker.model.getRuler().equals(defender.model.getRuler())) {
@@ -344,9 +348,7 @@ public class WarMenu extends Menu {
 					game.getAttack().deselectAll();
 
 					attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
-
 					attackingPlayer.setCountriesTaken(attackingPlayer.getCountriesTaken() + 1);
-
 					attackingPlayer.addPoints(PointHelper.CONQUER_REWARD);
 
 					game.checkContinentRulership();
@@ -355,13 +357,15 @@ public class WarMenu extends Menu {
 
 				} else {
 
+					final boolean attackArmyToSmall = attacker.model.getArmy().getNumberOfUnits()
+							+ attackingSquad.getAliveUnits() == 1;
+
 					// If the attacking army is not large enough to attack again.
-					if (attacker.model.getArmy().getNumberOfUnits() + attackingSquad.getAliveUnits() == 1) {
+					if (attackArmyToSmall) {
 						game.getAttack().deselectAll();
 						getButton(attackButton).hide();
 					}
 				}
-
 			}
 		}
 
@@ -369,6 +373,7 @@ public class WarMenu extends Menu {
 		if (game.getAttack().getPrimary() == null || game.getAttack().getSecondary() == null) {
 			game.getAttack().deselectAll();
 		}
+
 	}
 
 	/**
@@ -409,77 +414,6 @@ public class WarMenu extends Menu {
 		Squad squad = attackingSquad;
 
 		squad.autoPopulate(army);
-	}
-
-	/**
-	 * Gets an <code>int[]</code> of {@link Random#nextInt(int)} with bounds of 1 -
-	 * 6
-	 * 
-	 * @param numberOfRolls
-	 *            <code>int</code> number of rolls
-	 * @return <code>int[]</code>
-	 */
-	private Integer[] getDiceRolls(int numberOfRolls) {
-
-		// Holds the dice roles.
-		Integer[] rolls = new Integer[numberOfRolls];
-
-		// Initialise dice rolls for the attacking army
-		for (int rollIndex = 0; rollIndex < numberOfRolls; rollIndex++) {
-			rolls[rollIndex] = random.nextInt(6) + 1;
-		}
-
-		// Sort the dice roles into descending order.
-		Arrays.sort(rolls, Collections.reverseOrder());
-
-		return rolls;
-	}
-
-	/**
-	 * This emulates one round of a war between two {@link ModelCountry}s. The
-	 * defender will always defend with the maximum number of units available to
-	 * them.
-	 * 
-	 * @param attacking
-	 *            This is the {@link ModelCountry} that the {@link ModelPlayer} uses
-	 *            to attack a {@link ModelCountry}.
-	 * @param defending
-	 *            This is the {@link ModelCountry} that defend against the
-	 *            {@link ModelPlayer}'s attacking {@link ModelArmy}.
-	 * @param attackSquadSize
-	 *            Amount of units (dice) the attacking {@link ModelArmy} wants to
-	 *            pit against the defending {@link ModelArmy}
-	 */
-	private void fight(SlickCountry attacking, SlickCountry defending, int attackSquadSize) {
-
-		// Check parameter
-		if (attackSquadSize > 3 || attackSquadSize < 0) {
-			throw new IllegalArgumentException(
-					"The attacker cannot attact with more that 3 or less than 3 units at a time.");
-		}
-
-		// Get the dice rolls for the attackers and defenders.
-		Integer[] attackerDiceRolls = getDiceRolls(attackSquadSize);
-
-		final int defendingArmySize = defending.model.getArmy().getNumberOfUnits() + defendingSquad.getAliveUnits();
-
-		Integer[] defenderDiceRolls = getDiceRolls(
-				defendingArmySize > MAX_DEFEND_SQUAD_SIZE ? MAX_DEFEND_SQUAD_SIZE : defendingArmySize);
-
-		// The position of the top attacker dice
-		final int attackX = this.getPosition().x + (this.getWidth() / 4);
-
-		// The position of the top defender dice
-		final int defendX = this.getPosition().x + ((this.getWidth() * 3) / 4);
-
-		final int y = this.getPosition().y + 250;
-
-		// Display the dice that we rolled
-		dice.set(attackerDiceRolls, defenderDiceRolls, new Point(attackX, y), new Point(defendX, y));
-
-		// Compare the dice that were rolled.
-		compareDiceRolls(attackerDiceRolls, defenderDiceRolls, attacking, defending);
-
 	}
 
 	/**
@@ -619,139 +553,196 @@ public class WarMenu extends Menu {
 		frame.draw(player.getImage(), x, this.getPosition().y + 80);
 	}
 
-	/**
-	 * Compares the attackers dice roles from the defenders rolls and removes units
-	 * from the attacking country and defending country appropriately.
-	 * 
-	 * @param attackerDiceRolls
-	 * @param defenderDiceRolls
-	 * @param attacking
-	 *            {@link Counrty}
-	 * @param defending
-	 *            {@link Counrty}
-	 */
-	private void compareDiceRolls(Integer[] attackerDiceRolls, Integer[] defenderDiceRolls) {
+	private final class CombatHelper {
 
-		// Get the size of the smaller set of dice.
-		final int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length
-				: attackerDiceRolls.length;
+		/**
+		 * This emulates one round of a war between two {@link ModelCountry}s. The
+		 * defender will always defend with the maximum number of units available to
+		 * them.
+		 * 
+		 * @param attacking
+		 *            This is the {@link ModelCountry} that the {@link ModelPlayer} uses
+		 *            to attack a {@link ModelCountry}.
+		 * @param defending
+		 *            This is the {@link ModelCountry} that defend against the
+		 *            {@link ModelPlayer}'s attacking {@link ModelArmy}.
+		 * @param attackSquadSize
+		 *            Amount of units (dice) the attacking {@link ModelArmy} wants to
+		 *            pit against the defending {@link ModelArmy}
+		 */
+		private void fight(SlickCountry attacking, SlickCountry defending, int attackSquadSize) {
 
-		// Copy the attacking squad to this holding variable.
-		final LinkedList<SquadMember> attackingSqd = new LinkedList<>(attackingSquad.members);
-		final LinkedList<SquadMember> defendingSqd = new LinkedList<>(defendingSquad.members);
-
-		// Compare each attacking dice roll against the defending dice roll
-		for (int i = 0; i < diceToCheck; i++) {
-
-			ModelUnit attackingUnit = attackingSqd.get(i).unit.model;
-			ModelUnit defendingUnit = defendingSqd.get(i).unit.model;
-
-			/*
-			 * If the attackers dice is higher than the deffender's remove one unit from the
-			 * defender's army and vice versa.
-			 */
-			if (attackerDiceRolls[i] > defenderDiceRolls[i]) {
-				attackerWon(defender, attacker, attackingUnit, defendingUnit);
+			// Check parameter
+			if (attackSquadSize > 3 || attackSquadSize < 0) {
+				throw new IllegalArgumentException(
+						"The attacker cannot attact with more that 3 or less than 3 units at a time.");
 			}
-			// Attacker has lost the attack
-			else {
-				attackerLost(defender, attacker, attackingUnit, defendingUnit);
+
+			final int defendingArmySize = defending.model.getArmy().getNumberOfUnits() + defendingSquad.getAliveUnits();
+
+			// Get the dice rolls for the attackers and defenders.
+			final Integer[] attackerDiceRolls = getDiceRolls(attackSquadSize);
+
+			final Integer[] defenderDiceRolls = getDiceRolls(
+					defendingArmySize > MAX_DEFEND_SQUAD_SIZE ? MAX_DEFEND_SQUAD_SIZE : defendingArmySize);
+
+			// The position of the top attacker dice
+			final int attackX = getPosition().x + (getWidth() / 4);
+
+			// The position of the top defender dice
+			final int defendX = getPosition().x + ((getWidth() * 3) / 4);
+
+			final int y = getPosition().y + 250;
+
+			// Display the dice that we rolled
+			dice.set(attackerDiceRolls, defenderDiceRolls, new Point(attackX, y), new Point(defendX, y));
+
+			// Compare the dice that were rolled.
+			compareDiceRolls(attackerDiceRolls, defenderDiceRolls);
+
+		}
+
+		/**
+		 * Compares the attackers dice roles from the defenders rolls and removes units
+		 * from the attacking country and defending country appropriately.
+		 * 
+		 * @param attackerDiceRolls
+		 * @param defenderDiceRolls
+		 */
+		private void compareDiceRolls(Integer[] attackerDiceRolls, Integer[] defenderDiceRolls) {
+
+			// Get the size of the smaller set of dice.
+			final int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length
+					: attackerDiceRolls.length;
+
+			// Copy the squads to these holding lists so the squads can be modified.
+			final LinkedList<SquadMember> attackingSqd = new LinkedList<>(attackingSquad.members);
+			final LinkedList<SquadMember> defendingSqd = new LinkedList<>(defendingSquad.members);
+
+			// The index of the current set of current units.
+			int unitIndex = 0;
+
+			// Holds whether the combat is in a valid state to continue. For example combat
+			// cannot continue if the defender has no units.
+			boolean finished = false;
+
+			// Compare each attacking dice roll against the defending dice roll
+			while (unitIndex < diceToCheck && !finished) {
+
+				// The units that will fight
+				final ModelUnit attackingUnit = attackingSqd.get(unitIndex).unit.model;
+				final ModelUnit defendingUnit = defendingSqd.get(unitIndex).unit.model;
+
+				// Attacker won
+				if (attackerDiceRolls[unitIndex] > defenderDiceRolls[unitIndex]) {
+					finished = attackerWon(defender, attacker, attackingUnit);
+				}
+				// Attacker lost
+				else {
+					finished = attackerLost(defender, attacker, defendingUnit);
+				}
+
+				unitIndex++;
 			}
 		}
 
-		if (attackingSquad.getAliveUnits() == 0) {
-			getButton(attackButton).hide();
-		} else {
-			getButton(attackButton).show();
+		private boolean attackerWon(SlickCountry defending, SlickCountry attacking, ModelUnit attackingUnit) {
+
+			final ModelPlayer defender = defending.model.getRuler();
+			final ModelPlayer attacker = attacking.model.getRuler();
+			final ModelArmy defendingArmy = defending.model.getArmy();
+			final int totalStrength = defendingArmy.getStrength() + defendingSquad.geStrength();
+
+			// If the army of the defending country is of size on then this victory will
+			// conquer the country. Otherwise just kill unit from the defending army.
+			if (attackingUnit.strength >= totalStrength) {
+
+				resetArmyToWeakest(defendingSquad, defendingArmy, defender, attackingUnit);
+
+				defending.model.setRuler(attacker);
+				enemyRuler = attackingRuler;
+				attacker.totalArmy.add(UnitHelper.getInstance().getWeakest());
+				return true;
+
+			} else {
+				removeUnitFromArmy(defendingSquad, defendingArmy, defender, attackingUnit);
+				return false;
+			}
 		}
 
-	}
+		private boolean attackerLost(SlickCountry defending, SlickCountry attacking, ModelUnit defendingUnit) {
 
-	private void attackerWon(SlickCountry defending, SlickCountry attacking, ModelUnit attackingUnit,
-			ModelUnit defendingUnit) {
+			final ModelPlayer attacker = attacking.model.getRuler();
+			final ModelArmy attackingArmy = attacking.model.getArmy();
+			final int totalStrength = attackingArmy.getStrength() + attackingSquad.geStrength();
 
-		final ModelArmy attackingArmy = attacking.model.getArmy();
-		final ModelArmy defendingArmy = defending.model.getArmy();
+			if (defendingUnit.strength >= totalStrength) {
+				resetArmyToWeakest(attackingSquad, attackingArmy, attacker, defendingUnit);
+				return true;
+			} else {
+				removeUnitFromArmy(attackingSquad, attackingArmy, attacker, defendingUnit);
+				return false;
+			}
+		}
 
-		final ModelPlayer defender = defending.model.getRuler();
-		final ModelPlayer attacker = attacking.model.getRuler();
+		private void resetArmyToWeakest(Squad squad, ModelArmy army, ModelPlayer player, ModelUnit enemyUnit) {
+			final ModelUnit weakestUnit = UnitHelper.getInstance().getWeakest();
 
-		// If the army of the defending country is of size on then this victory will
-		// conquer the country. Otherwise just kill unit from the defending army.
-		if (attackingUnit.strength >= defendingArmy.getStrength() + defendingSquad.geStrength()) {
+			squad.returnSquadToArmy(army);
 
-			defending.model.setRuler(attacker);
-			enemyRuler = attackingRuler;
+			final int toRemove = enemyUnit.strength - weakestUnit.strength;
 
-			defendingSquad.returnSquadToArmy(defendingArmy);
-
-			if (defender != null) {
-
-				final int toRemove = defendingUnit.getStrength() - UnitHelper.getInstance().getWeakest().strength;
-
-				defender.totalArmy.remove(toRemove);
+			if (player != null) {
+				player.totalArmy.remove(toRemove);
 			}
 
-			defendingArmy.setWeakest();
+			army.setWeakest();
 
-			attacker.totalArmy.add(UnitHelper.getInstance().getWeakest());
+		}
 
-			getButton(attackButton).hide();
+		private void removeUnitFromArmy(Squad squad, ModelArmy army, ModelPlayer player, ModelUnit enemyUnit) {
 
-		} else {
-
-			boolean removedFromSquad = defendingSquad.killUnit(attackingUnit);
-
-			if (defender != null) {
-				defender.totalArmy.remove(attackingUnit);
-			}
+			boolean removedFromSquad = squad.killUnit(enemyUnit);
 
 			// If the enemy unti's damage was not taken from the squad return the squad to
 			// the army and then remove the damage from the army.
 			if (!removedFromSquad) {
-				defendingSquad.returnSquadToArmy(defendingArmy);
-				defendingArmy.remove(attackingUnit);
-
-			}
-		}
-	}
-
-	private void attackerLost(SlickCountry defending, SlickCountry attacking, ModelUnit attackingUnit,
-			ModelUnit defendingUnit) {
-		
-		final ModelArmy attackingArmy = attacking.model.getArmy();
-		final ModelArmy defendingArmy = defending.model.getArmy();
-
-		final ModelPlayer defender = defending.model.getRuler();
-		final ModelPlayer attacker = attacking.model.getRuler();
-		
-		
-		if (defendingUnit.strength >= attackingArmy.getStrength() + attackingSquad.geStrength()) {
-
-			attackingSquad.returnSquadToArmy(attackingArmy);
-
-			final int toRemove = attackingUnit.getStrength() - UnitHelper.getInstance().getWeakest().strength;
-
-			attacker.totalArmy.remove(toRemove);
-
-			attackingArmy.setWeakest();
-
-			getButton(attackButton).hide();
-
-		} else {
-
-			boolean removedFromSquad = attackingSquad.killUnit(defendingUnit);
-
-			// If the enemy unti's damage was not taken from the squad return the squad to
-			// the army and then remove the damage from the army.
-			if (!removedFromSquad) {
-				attackingSquad.returnSquadToArmy(attackingArmy);
-				attackingArmy.remove(defendingUnit);
+				squad.returnSquadToArmy(army);
+				army.remove(enemyUnit);
 			}
 
-			attacker.totalArmy.remove(defendingUnit);
+			if (player != null) {
+				player.totalArmy.remove(enemyUnit);
+			}
 
 		}
+
+		/**
+		 * Gets an <code>int[]</code> of {@link Random#nextInt(int)} with bounds of 1 -
+		 * 6
+		 * 
+		 * @param numberOfRolls
+		 *            <code>int</code> number of rolls
+		 * @return <code>int[]</code>
+		 */
+		private Integer[] getDiceRolls(int numberOfRolls) {
+
+			final int maxDice = 6;
+
+			// Holds the dice roles.
+			final Integer[] rolls = new Integer[numberOfRolls];
+
+			// Initialise dice rolls for the attacking army
+			for (int rollIndex = 0; rollIndex < numberOfRolls; rollIndex++) {
+				rolls[rollIndex] = random.nextInt(maxDice) + 1;
+			}
+
+			// Sort the dice roles into descending order.
+			Arrays.sort(rolls, Collections.reverseOrder());
+
+			return rolls;
+		}
+
 	}
 
 	/**

@@ -133,7 +133,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	 * @param unit
 	 *            The {@link ModelUnit} that is to be removed. NOT NULL
 	 */
-	public boolean remove(ModelUnit unit) {
+	public void remove(ModelUnit unit) {
 
 		final String unitName = unit.name;
 
@@ -153,15 +153,13 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 				units.replace(unitName, units.get(unitName) - 1);
 			}
 
-			// Notify observers.
-			setChanged();
-			notifyObservers();
-
-			return true;
-
+		} else {
+			removeRandomUnit();
 		}
 
-		return false;
+		// Notify observers.
+		setChanged();
+		notifyObservers();
 
 	}
 
@@ -531,8 +529,20 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 		// Clear the current list of units.
 		clearUnits();
 
-		// Generate the units then add them to the current army.
-		add(generateUnits(strength));
+		if (strength == 0) {
+			return;
+		}
+
+		final ModelUnit weakest = UnitHelper.getInstance().getWeakest();
+
+		final int numberOfWeakest = strength / weakest.strength;
+
+		for (int i = 0; i < numberOfWeakest; i++) {
+
+			// Generate the units then add them to the current army.
+			add(weakest);
+
+		}
 
 	}
 

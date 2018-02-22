@@ -101,7 +101,7 @@ public class WarMenu extends Menu {
 	/**
 	 * The {@link ModelCountry} of the defending {@link ModelPlayer}.
 	 */
-	private SlickCountry enemy;
+	private SlickCountry defender;
 
 	/**
 	 * The {@link ModelPlayer} that is ruling the attacking {@link ModelCountry}.
@@ -195,7 +195,7 @@ public class WarMenu extends Menu {
 			failedConquer(frame);
 		}
 		// Attacker has conquered country
-		else if (attacker.model.getRuler().equals(enemy.model.getRuler())) {
+		else if (attacker.model.getRuler().equals(defender.model.getRuler())) {
 			succesfulConquer(frame);
 		}
 		// Normal Combat
@@ -271,12 +271,12 @@ public class WarMenu extends Menu {
 		getButton(attackButton).hide();
 
 		attacker = slick.modelView.getVisual(game.getAttack().getSelected(0));
-		enemy = slick.modelView.getVisual(game.getAttack().getSelected(1));
+		defender = slick.modelView.getVisual(game.getAttack().getSelected(1));
 
-		enemyRuler = slick.modelView.getVisual(enemy.model.getRuler());
+		enemyRuler = slick.modelView.getVisual(defender.model.getRuler());
 		attackingRuler = slick.modelView.getVisual(attacker.model.getRuler());
 
-		defendingSquad.autoPopulate(enemy.model.getArmy());
+		defendingSquad.autoPopulate(defender.model.getArmy());
 
 	}
 
@@ -291,8 +291,8 @@ public class WarMenu extends Menu {
 			attackingSquad.returnSquadToArmy(attacker.model.getArmy());
 
 		}
-		if (enemy != null) {
-			defendingSquad.returnSquadToArmy(enemy.model.getArmy());
+		if (defender != null) {
+			defendingSquad.returnSquadToArmy(defender.model.getArmy());
 		}
 
 		dice.clear();
@@ -307,10 +307,10 @@ public class WarMenu extends Menu {
 	 */
 	public void attack() {
 		// If there is two countries highlighted
-		if (attacker != null && enemy != null) {
+		if (attacker != null && defender != null) {
 
 			ModelPlayer attackingPlayer = attacker.model.getRuler();
-			ModelPlayer defendingPlayer = enemy.model.getRuler();
+			ModelPlayer defendingPlayer = defender.model.getRuler();
 
 			// If the army of the primary highlighted country is larger that 1 unit in size
 			if (attacker.model.getArmy().getNumberOfUnits() + attackingSquad.getAliveUnits() > 1) {
@@ -320,13 +320,13 @@ public class WarMenu extends Menu {
 
 				int squadSize = attackingSquad.getAliveUnits();
 
-				defendingSquad.autoPopulate(enemy.model.getArmy());
+				defendingSquad.autoPopulate(defender.model.getArmy());
 
 				// Execute the combat
-				fight(attacker, enemy, squadSize);
+				fight(attacker, defender, squadSize);
 
 				// If the country has been conquered
-				if (attacker.model.getRuler().equals(enemy.model.getRuler())) {
+				if (attacker.model.getRuler().equals(defender.model.getRuler())) {
 
 					// If there is a defending player
 					if (defendingPlayer != null) {
@@ -389,7 +389,7 @@ public class WarMenu extends Menu {
 		this.hide();
 
 		attackingRuler = null;
-		enemy = null;
+		defender = null;
 		attacker = null;
 		enemyRuler = null;
 
@@ -500,7 +500,7 @@ public class WarMenu extends Menu {
 				getPosition().y + (getHeight() / 2));
 
 		getButton(attackButton).hide();
-		
+
 		drawPlayer(attackingRuler, -(getWidth() / 4), frame);
 		drawPlayer(enemyRuler, (getWidth() / 4), frame);
 
@@ -530,13 +530,13 @@ public class WarMenu extends Menu {
 		frame.draw(countryFont, attackerName, attackerX, attackerY);
 
 		// Draw the defending country's name
-		final String conqueredName = enemy.model.getName();
+		final String conqueredName = defender.model.getName();
 		final int conqueredX = getPosition().x + (getWidth() / 2) - (countryFont.getWidth(conqueredName) / 2);
 		final int conqueredY = getPosition().y + (getHeight() / 2) + ((countryFont.getHeight(attackerName) * 3) / 2);
 		frame.draw(countryFont, conqueredName, conqueredX, conqueredY);
 
 		getButton(attackButton).hide();
-		
+
 		// Draw the player icons
 		drawPlayer(attackingRuler, -(getWidth() / 4), frame);
 		drawPlayer(enemyRuler, (getWidth() / 4), frame);
@@ -562,7 +562,7 @@ public class WarMenu extends Menu {
 		frame.draw(textFont, attackingArmy, getPosition().x + (getWidth() / 4) - (textFont.getWidth(attackingArmy) / 2),
 				getPosition().y + yOffset);
 
-		String enemyArmy = Integer.toString(enemy.model.getArmy().getStrength() + defendingSquad.geStrength());
+		String enemyArmy = Integer.toString(defender.model.getArmy().getStrength() + defendingSquad.geStrength());
 
 		frame.draw(textFont, enemyArmy, getPosition().x + ((getWidth() * 3) / 4) - (textFont.getWidth(enemyArmy) / 2),
 				getPosition().y + yOffset);
@@ -584,7 +584,7 @@ public class WarMenu extends Menu {
 
 		String vs = "VS";
 		String attackerStr = attacker.model.getName();
-		String enemyStr = enemy.model.getName();
+		String enemyStr = defender.model.getName();
 
 		int centreX = getPosition().x + (getWidth() / 2);
 		int vsX = centreX - (headingFont.getWidth(vs) / 2);
@@ -630,17 +630,10 @@ public class WarMenu extends Menu {
 	 * @param defending
 	 *            {@link Counrty}
 	 */
-	private void compareDiceRolls(Integer[] attackerDiceRolls, Integer[] defenderDiceRolls, SlickCountry attacking,
-			SlickCountry defending) {
-
-		ModelArmy attackingArmy = attacking.model.getArmy();
-		ModelArmy defendingArmy = defending.model.getArmy();
-
-		ModelPlayer defender = defending.model.getRuler();
-		ModelPlayer attacker = attacking.model.getRuler();
+	private void compareDiceRolls(Integer[] attackerDiceRolls, Integer[] defenderDiceRolls) {
 
 		// Get the size of the smaller set of dice.
-		int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length
+		final int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length
 				: attackerDiceRolls.length;
 
 		// Copy the attacking squad to this holding variable.
@@ -658,79 +651,11 @@ public class WarMenu extends Menu {
 			 * defender's army and vice versa.
 			 */
 			if (attackerDiceRolls[i] > defenderDiceRolls[i]) {
-
-				// If the army of the defending country is of size on then this victory will
-				// conquer the country. Otherwise just kill unit from the defending army.
-				if (attackingUnit.strength >= defendingArmy.getStrength() + defendingSquad.geStrength()) {
-
-					defending.model.setRuler(attacker);
-					enemyRuler = attackingRuler;
-
-					defendingSquad.returnSquadToArmy(defendingArmy);
-
-					if (defender != null) {
-
-						final int toRemove = defendingUnit.getStrength()
-								- UnitHelper.getInstance().getWeakest().strength;
-
-						defender.totalArmy.remove(toRemove);
-					}
-
-					defendingArmy.setWeakest();
-
-					attacker.totalArmy.add(UnitHelper.getInstance().getWeakest());
-
-					getButton(attackButton).hide();
-
-					break;
-
-				} else {
-
-					boolean removedFromSquad = defendingSquad.killUnit(attackingUnit);
-
-					// If the enemy unti's damage was not taken from the squad return the squad to
-					// the army and then remove the damage from the army.
-					if (!removedFromSquad) {
-						defendingSquad.returnSquadToArmy(defendingArmy);
-						defendingArmy.remove(attackingUnit);
-					}
-
-					if (defender != null) {
-						defender.totalArmy.remove(attackingUnit);
-					}
-				}
-
+				attackerWon(defender, attacker, attackingUnit, defendingUnit);
 			}
 			// Attacker has lost the attack
 			else {
-
-				if (defendingUnit.strength >= attackingArmy.getStrength() + attackingSquad.geStrength()) {
-
-					attackingSquad.returnSquadToArmy(attackingArmy);
-
-					final int toRemove = attackingUnit.getStrength() - UnitHelper.getInstance().getWeakest().strength;
-
-					attacker.totalArmy.remove(toRemove);
-
-					attackingArmy.setWeakest();
-
-					getButton(attackButton).hide();
-
-				} else {
-
-					boolean removedFromSquad = attackingSquad.killUnit(defendingUnit);
-
-					// If the enemy unti's damage was not taken from the squad return the squad to
-					// the army and then remove the damage from the army.
-					if (!removedFromSquad) {
-						attackingSquad.returnSquadToArmy(attackingArmy);
-						attackingArmy.remove(defendingUnit);
-					}
-
-					attacker.totalArmy.remove(defendingUnit);
-
-				}
-
+				attackerLost(defender, attacker, attackingUnit, defendingUnit);
 			}
 		}
 
@@ -740,6 +665,93 @@ public class WarMenu extends Menu {
 			getButton(attackButton).show();
 		}
 
+	}
+
+	private void attackerWon(SlickCountry defending, SlickCountry attacking, ModelUnit attackingUnit,
+			ModelUnit defendingUnit) {
+
+		final ModelArmy attackingArmy = attacking.model.getArmy();
+		final ModelArmy defendingArmy = defending.model.getArmy();
+
+		final ModelPlayer defender = defending.model.getRuler();
+		final ModelPlayer attacker = attacking.model.getRuler();
+
+		// If the army of the defending country is of size on then this victory will
+		// conquer the country. Otherwise just kill unit from the defending army.
+		if (attackingUnit.strength >= defendingArmy.getStrength() + defendingSquad.geStrength()) {
+
+			defending.model.setRuler(attacker);
+			enemyRuler = attackingRuler;
+
+			defendingSquad.returnSquadToArmy(defendingArmy);
+
+			if (defender != null) {
+
+				final int toRemove = defendingUnit.getStrength() - UnitHelper.getInstance().getWeakest().strength;
+
+				defender.totalArmy.remove(toRemove);
+			}
+
+			defendingArmy.setWeakest();
+
+			attacker.totalArmy.add(UnitHelper.getInstance().getWeakest());
+
+			getButton(attackButton).hide();
+
+		} else {
+
+			boolean removedFromSquad = defendingSquad.killUnit(attackingUnit);
+
+			if (defender != null) {
+				defender.totalArmy.remove(attackingUnit);
+			}
+
+			// If the enemy unti's damage was not taken from the squad return the squad to
+			// the army and then remove the damage from the army.
+			if (!removedFromSquad) {
+				defendingSquad.returnSquadToArmy(defendingArmy);
+				defendingArmy.remove(attackingUnit);
+
+			}
+		}
+	}
+
+	private void attackerLost(SlickCountry defending, SlickCountry attacking, ModelUnit attackingUnit,
+			ModelUnit defendingUnit) {
+		
+		final ModelArmy attackingArmy = attacking.model.getArmy();
+		final ModelArmy defendingArmy = defending.model.getArmy();
+
+		final ModelPlayer defender = defending.model.getRuler();
+		final ModelPlayer attacker = attacking.model.getRuler();
+		
+		
+		if (defendingUnit.strength >= attackingArmy.getStrength() + attackingSquad.geStrength()) {
+
+			attackingSquad.returnSquadToArmy(attackingArmy);
+
+			final int toRemove = attackingUnit.getStrength() - UnitHelper.getInstance().getWeakest().strength;
+
+			attacker.totalArmy.remove(toRemove);
+
+			attackingArmy.setWeakest();
+
+			getButton(attackButton).hide();
+
+		} else {
+
+			boolean removedFromSquad = attackingSquad.killUnit(defendingUnit);
+
+			// If the enemy unti's damage was not taken from the squad return the squad to
+			// the army and then remove the damage from the army.
+			if (!removedFromSquad) {
+				attackingSquad.returnSquadToArmy(attackingArmy);
+				attackingArmy.remove(defendingUnit);
+			}
+
+			attacker.totalArmy.remove(defendingUnit);
+
+		}
 	}
 
 	/**

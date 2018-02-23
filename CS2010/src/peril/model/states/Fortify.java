@@ -22,7 +22,7 @@ import peril.model.board.links.ModelLink;
  * @author Joshua_Eddy
  * 
  * @since 2018-02-23
- * @version 1.01.03
+ * @version 1.01.04
  *
  * @see ModelState
  */
@@ -35,9 +35,13 @@ public final class Fortify extends ModelState {
 
 	/**
 	 * Constructs an new {@link Fortify}.
+	 * 
+	 * @param game
+	 *            The {@link GameController} that allows this {@link ModelState} to
+	 *            query the state of the game.
 	 */
-	public Fortify() {
-		super(STATE_NAME);
+	public Fortify(GameController game) {
+		super(STATE_NAME, game);
 	}
 
 	/**
@@ -46,7 +50,7 @@ public final class Fortify extends ModelState {
 	 * of friendly {@link ModelCountry}s between the two {@link ModelCountry}.
 	 */
 	@Override
-	public boolean select(ModelCountry country, GameController game) {
+	public boolean select(ModelCountry country) {
 
 		// Whether the country is a valid primary country.
 		final boolean validPrimary = selectPrimary(country, game);
@@ -153,13 +157,12 @@ public final class Fortify extends ModelState {
 			if (primaryArmy.getNumberOfUnits() > 1 && primaryArmy.getNumberOf(unit) > 0) {
 
 				// The path between the two countries.
-				//final List<ModelCountry> path = getPathBetween(primary, target, unit);
+				// final List<ModelCountry> path = getPathBetween(primary, target, unit);
 
 				// Transfer the unit along the path
-				//transferAlongPath(path, unit);
+				// transferAlongPath(path, unit);
 				primary.getArmy().remove(unit);
 				target.getArmy().add(unit);
-				
 
 				// If there is one unit left in the primary army then de-select the countries.
 				if (primaryArmy.getNumberOfUnits() == 1) {

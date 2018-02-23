@@ -14,8 +14,8 @@ import peril.model.board.ModelUnit;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-14
- * @version 1.01.01
+ * @since 2018-02-23
+ * @version 1.01.02
  * 
  * @see ModelState
  *
@@ -29,9 +29,13 @@ public final class Reinforce extends ModelState {
 
 	/**
 	 * Constructs a new {@link Reinforce}.
+	 * 
+	 * @param game
+	 *            The {@link GameController} that allows this {@link ModelState} to
+	 *            query the state of the game.
 	 */
-	public Reinforce() {
-		super(STATE_NAME);
+	public Reinforce(GameController game) {
+		super(STATE_NAME, game);
 	}
 
 	/**
@@ -41,7 +45,7 @@ public final class Reinforce extends ModelState {
 	 * {@link GameController#getCurrentModelPlayer()}.
 	 */
 	@Override
-	public boolean select(ModelCountry country, GameController game) {
+	public boolean select(ModelCountry country) {
 
 		// If the country is not null.
 		if (country != null) {

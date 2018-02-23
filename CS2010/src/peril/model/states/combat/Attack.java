@@ -38,9 +38,9 @@ public final class Attack extends ModelState {
 	/**
 	 * Constructs a new {@link Attack}.
 	 */
-	public Attack() {
-		super(STATE_NAME);
-		this.combat = new CombatHelper();
+	public Attack(GameController game) {
+		super(STATE_NAME, game);
+		this.combat = new CombatHelper(game);
 	}
 
 	/**
@@ -49,10 +49,10 @@ public final class Attack extends ModelState {
 	 * to the {@link ModelPlayer} that is ruled by an enemy {@link ModelPlayer}.
 	 */
 	@Override
-	public boolean select(ModelCountry country, GameController api) {
+	public boolean select(ModelCountry country) {
 
 		// Whether the country is a valid primary country.
-		final boolean validPrimary = selectPrimary(country, api);
+		final boolean validPrimary = selectPrimary(country, game);
 
 		// Whether the country is a valid secondary country.
 		final boolean validSecondary = selectSecondary(country);

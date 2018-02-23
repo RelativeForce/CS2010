@@ -13,7 +13,7 @@ import peril.Game;
 import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
 import peril.model.board.links.ModelLinkState;
-import peril.model.states.Attack;
+import peril.model.states.combat.Attack;
 import peril.views.slick.Frame;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;

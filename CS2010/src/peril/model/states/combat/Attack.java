@@ -1,10 +1,11 @@
-package peril.model.states;
+package peril.model.states.combat;
 
 import peril.controllers.GameController;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
 import peril.model.board.links.ModelLink;
+import peril.model.states.ModelState;
 
 /**
  * 
@@ -15,8 +16,8 @@ import peril.model.board.links.ModelLink;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-14
- * @version 1.01.01
+ * @since 2018-02-23
+ * @version 1.01.02
  * 
  * @see ModelState
  *

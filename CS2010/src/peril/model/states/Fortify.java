@@ -21,8 +21,8 @@ import peril.model.board.links.ModelLink;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-21
- * @version 1.01.02
+ * @since 2018-02-23
+ * @version 1.01.03
  *
  * @see ModelState
  */
@@ -218,7 +218,7 @@ public final class Fortify extends ModelState {
 	 * @param country
 	 *            The {@link ModelCountry} that could be selected.
 	 * @param game
-	 *            The {@link GameController} that allows this {@link Attack} to
+	 *            The {@link GameController} that allows this {@link Fortify} to
 	 *            query the state of the game.
 	 * @return Whether or not the specified {@link ModelCountry} could be selected.
 	 */
@@ -250,7 +250,7 @@ public final class Fortify extends ModelState {
 	 * @param country
 	 *            The {@link ModelCountry} that could be selected.
 	 * @param game
-	 *            The {@link GameController} that allows this {@link Attack} to
+	 *            The {@link GameController} that allows this {@link Fortify} to
 	 *            query the state of the game.
 	 * @return Whether or not the specified {@link ModelCountry} could be selected.
 	 */

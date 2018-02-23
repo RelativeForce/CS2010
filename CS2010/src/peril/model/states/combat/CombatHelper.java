@@ -1,4 +1,4 @@
-package peril.helpers.combat;
+package peril.model.states.combat;
 
 import java.util.Arrays;
 import java.util.Collections;

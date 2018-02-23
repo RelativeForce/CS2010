@@ -32,8 +32,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-18
- * @version 1.01.02
+ * @since 2018-02-23
+ * @version 1.01.03
  * 
  * @see InteractiveState
  * @see AI
@@ -175,7 +175,10 @@ public final class PlayerSelection extends InteractiveState {
 
 		resetPlayers();
 
-		aiSpeeds.setSelected((Integer) AI.MAX_SPEED);
+		selected = null;
+
+		aiSpeeds.setSelected("1x");
+
 		changeAISpeed();
 
 	}
@@ -568,14 +571,14 @@ public final class PlayerSelection extends InteractiveState {
 	 */
 	private void populateAISpeeds() {
 
-		// The increment of speeds.
-		final int factor = 200;
+		final int multipler = 4;
 
 		for (int index = 0; index < 4; index++) {
 
-			final int speed = AI.MAX_SPEED + (index * factor);
+			final int speed = (int) (AI.MAX_SPEED * Math.pow(2, index));
+			final String text = Integer.toString(multipler - index) + "x";
 
-			aiSpeeds.add(Integer.toString(speed), speed);
+			aiSpeeds.add(text, speed);
 
 		}
 
@@ -600,7 +603,7 @@ public final class PlayerSelection extends InteractiveState {
 			final int x = player.getPosition().x + player.getWidth() + textFont.getWidth(AI_TEXT) + 10;
 			final int y = player.getPosition().y + (player.getHeight() / 2) - (aiList.getHeight() / 2);
 
-			aiList.setSelected(player.ai);
+			aiList.setSelected(player.ai.name);
 
 			aiList.setPosition(new Point(x, y));
 			aiList.show();

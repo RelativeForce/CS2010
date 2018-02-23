@@ -186,6 +186,29 @@ public final class VisualList<T> extends Clickable implements Component {
 	}
 
 	/**
+	 * Sets the selected {@link Element} by text;
+	 * 
+	 * @param text
+	 *            The text of the new selected {@link T} element in the
+	 *            {@link VisualList}.
+	 */
+	public void setSelected(String text) {
+
+		/*
+		 * Iterate through all the elements and if the payload of the current element is
+		 * equal to the specified T then set that element as the selected.
+		 */
+		for (Element e : elements) {
+			if (e.text.equals(text)) {
+				this.selected = e;
+				return;
+			}
+		}
+
+		throw new IllegalArgumentException("Element is not present in this visual list");
+	}
+
+	/**
 	 * Sets the {@link Font} for the {@link VisualList}.
 	 * 
 	 * @param font

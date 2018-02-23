@@ -290,7 +290,11 @@ public final class WarMenu extends Menu {
 				dice.set(state.combat.view.attackerDiceRolls, state.combat.view.defenderDiceRolls,
 						new Point(attackX, y), new Point(defendX, y));
 
-				if (state.combat.getTotalAliveUnits(attacker.getArmy(), attackingSquad.model) > 1) {
+				// Check the state of the countries
+				final boolean validAttackArmy = state.combat.getTotalAliveUnits(attacker.getArmy(), attackingSquad.model) > 1;
+				final boolean sameRuler = state.getPrimary().getRuler().equals(state.getSecondary().getRuler());
+				
+				if (validAttackArmy && !sameRuler) {
 					getButton(attackButton).show();
 				} else {
 					getButton(attackButton).hide();
@@ -590,12 +594,12 @@ public final class WarMenu extends Menu {
 		/**
 		 * The {@link Image} of a red box.
 		 */
-		private final Image redBox;
+		private Image redBox;
 
 		/**
 		 * The {@link Image} of a green box.
 		 */
-		private final Image greenBox;
+		private Image greenBox;
 
 		/**
 		 * Constructs a new {@link Dice}.
@@ -603,11 +607,6 @@ public final class WarMenu extends Menu {
 		public Dice() {
 			this.defaultDice = new HashMap<>();
 			this.display = new HashMap<>();
-
-			final Region box = new Region(BOX_WIDTH, HEIGHT, new Point(0, 0));
-
-			this.redBox = box.convert(Color.red, 255);
-			this.greenBox = box.convert(Color.green, 255);
 		}
 
 		/**
@@ -669,6 +668,11 @@ public final class WarMenu extends Menu {
 		 */
 		public void init() {
 
+			final Region box = new Region(BOX_WIDTH, HEIGHT, new Point(0, 0));
+
+			this.redBox = box.convert(Color.red, 255);
+			this.greenBox = box.convert(Color.green, 255);
+			
 			// Iterate over all the values of a dice and import the dice's image.
 			for (int index = 1; index <= 6; index++) {
 

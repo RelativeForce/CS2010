@@ -201,6 +201,11 @@ public final class WarMenu extends Menu {
 		if (!isVisible()) {
 			return;
 		}
+		
+		if(state.getPrimary() == null) {
+			hide();
+			return;
+		}
 
 		final int size = attackingSquad.model.size() + state.getPrimary().getArmy().getNumberOfUnits();
 

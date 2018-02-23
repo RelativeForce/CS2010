@@ -19,10 +19,8 @@ public class NegativeFiveIQ extends AI {
 
 	private static final String NAME = "Duckling";
 
-	private static final int SPEED = 100;
-
 	public NegativeFiveIQ(AIController api) {
-		super(NAME, SPEED, api);
+		super(NAME, MAX_SPEED, api);
 
 	}
 

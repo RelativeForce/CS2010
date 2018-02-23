@@ -14,13 +14,6 @@ import peril.controllers.api.Player;
 public final class Noob extends AI {
 
 	/**
-	 * The number of milliseconds between each action of this {@link Noob}. If this
-	 * is zero or lower then the {@link Noob} will perform its actions at the frame
-	 * rate of the display.
-	 */
-	private static final int SPEED = 100;
-
-	/**
 	 * The name of this {@link AI}.
 	 */
 	private static final String NAME = "Noob";
@@ -33,7 +26,7 @@ public final class Noob extends AI {
 	 *            the state of the game.
 	 */
 	public Noob(AIController api) {
-		super(NAME, SPEED, api);
+		super(NAME, MAX_SPEED, api);
 	}
 
 	@Override

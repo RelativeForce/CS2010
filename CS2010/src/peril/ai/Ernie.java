@@ -13,7 +13,7 @@ public class Ernie extends AI {
 	private Random rand;
 
 	public Ernie(AIController api) {
-		super("Ernie", 100, api);
+		super("Ernie", MAX_SPEED, api);
 		// TODO Auto-generated constructor stub
 		rand = new Random(10);
 	}

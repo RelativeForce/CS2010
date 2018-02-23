@@ -5,11 +5,9 @@ import peril.controllers.AIController;
 public class Goat extends AI {
 
 	private static final String NAME = "Goat";
-	
-	private static final int SPEED = 100;
 
 	public Goat(AIController api) {
-		super(NAME, SPEED, api);
+		super(NAME, MAX_SPEED, api);
 	}
 
 	@Override

@@ -32,7 +32,7 @@ public final class Ocelot extends AI {
 	 *            the state of the game.
 	 */
 	public Ocelot(AIController api) {
-		super(NAME, AI.MAX_SPEED, api);
+		super(NAME, MAX_SPEED, api);
 	}
 
 	/**

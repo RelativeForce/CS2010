@@ -27,13 +27,6 @@ import peril.controllers.api.Player;
 public final class Knight extends AI {
 
 	/**
-	 * The number of milliseconds between each action of this {@link Knight}. If
-	 * this is zero or lower then the then the {@link Knight} will perform its
-	 * actions at the frame rate of the display.
-	 */
-	private static final int SPEED = 100;
-
-	/**
 	 * The name of this {@link Knight}.
 	 */
 	private static final String NAME = "Knight";
@@ -46,7 +39,7 @@ public final class Knight extends AI {
 	 *            the state of the game.
 	 */
 	public Knight(AIController api) {
-		super(NAME, SPEED, api);
+		super(NAME, AI.MAX_SPEED, api);
 	}
 
 	@Override

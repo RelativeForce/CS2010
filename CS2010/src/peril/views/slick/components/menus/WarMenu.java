@@ -291,7 +291,7 @@ public final class WarMenu extends Menu {
 						new Point(attackX, y), new Point(defendX, y));
 
 				// Check the state of the countries
-				final boolean validAttackArmy = state.combat.getTotalAliveUnits(attacker.getArmy(), attackingSquad.model) > 1;
+				final boolean validAttackArmy = attackingSquad.model.getAliveUnits() > 1;
 				final boolean sameRuler = state.getPrimary().getRuler().equals(state.getSecondary().getRuler());
 				
 				if (validAttackArmy && !sameRuler) {

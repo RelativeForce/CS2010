@@ -1,5 +1,6 @@
 package peril.model.states.combat;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
@@ -16,15 +17,16 @@ import peril.model.board.ModelUnit;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-22
- * @version 1.01.01
+ * @since 2018-02-23
+ * @version 1.01.02
  * 
  * @see ModelSquadMember
  * @see CombatHelper
  * @see Observable
+ * @see Iterable
  *
  */
-public final class ModelSquad extends Observable {
+public final class ModelSquad extends Observable implements Iterable<ModelSquadMember> {
 
 	/**
 	 * The {@link List} of {@link ModelSquadMember}s that make up this
@@ -205,6 +207,15 @@ public final class ModelSquad extends Observable {
 	public void returnSquadToArmy(ModelArmy army) {
 		members.stream().filter(member -> member.isAlive).forEach(member -> army.add(member.unit));
 		clear();
+	}
+
+	/**
+	 * Retrieves the {@link Iterator} that iterates over each
+	 * {@link ModelSquadMember} of this {@link ModelSquad}.
+	 */
+	@Override
+	public Iterator<ModelSquadMember> iterator() {
+		return members.iterator();
 	}
 
 }

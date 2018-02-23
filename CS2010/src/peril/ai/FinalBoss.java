@@ -62,17 +62,16 @@ public final class FinalBoss extends AI {
 	 * This {@link FinalBoss} will reinforce all its countries.
 	 */
 	@Override
-	public boolean processReinforce(AIController api) {
+	public AIOperation processReinforce(AIController api) {
 
-		api.clearSelected();
 		final Country country = ReinforceHandler.getCountry(api);
 
-		// Select the country with the highest weight then reinforce it.
-		if (api.select(country)) {
-			api.reinforce();
-		}
+		final AIOperation op = new AIOperation();
 
-		return true;
+		op.select.add(country);
+		op.processAgain = true;
+
+		return op;
 
 	}
 
@@ -80,23 +79,20 @@ public final class FinalBoss extends AI {
 	 * This {@link FinalBoss} will attack countries.
 	 */
 	@Override
-	public boolean processAttack(AIController api) {
+	public AIOperation processAttack(AIController api) {
 
-		api.clearSelected();
 		final Entry attack = AttackHandler.getEntry(api);
 
+		final AIOperation op = new AIOperation();
+
 		if (attack == null) {
-			return false;
+			op.processAgain = false;
+		} else {
+			op.select.add(attack.a);
+			op.select.add(attack.b);
+			op.processAgain = true;
 		}
-
-		if (api.select(attack.a)) {
-			if (api.select(attack.b)) {
-				api.attack();
-				return true;
-			}
-		}
-
-		return false;
+		return op;
 
 	}
 
@@ -105,27 +101,21 @@ public final class FinalBoss extends AI {
 	 * to attack the most neighbouring countries.
 	 */
 	@Override
-	public boolean processFortify(AIController api) {
+	public AIOperation processFortify(AIController api) {
 
-		api.clearSelected();
-		Entry fortify = FortifyHandler.getEntry(api);
+		final Entry fortify = FortifyHandler.getEntry(api);
 
-		api.clearSelected();
+		final AIOperation op = new AIOperation();
 
 		if (fortify == null) {
-			return false;
+			op.processAgain = false;
+		} else {
+			op.select.add(fortify.a);
+			op.select.add(fortify.b);
+			op.processAgain = true;
 		}
-
-		// If there was a valid link between the safe and border then the secondary will
-		// be the border.
-		if (api.select(fortify.a)) {
-			if (api.select(fortify.b)) {
-				api.fortify();
-				return true;
-			}
-		}
-
-		return false;
+		
+		return op;
 
 	}
 
@@ -217,7 +207,7 @@ public final class FinalBoss extends AI {
 					final int numberTraded = numberOfUnit / ratio;
 
 					if (bestUnit == null) {
-						
+
 						bestUnit = unit;
 						valueToBeat = numberTraded;
 

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-
 import peril.views.slick.Frame;
 import peril.views.slick.util.Font;
 import peril.views.slick.util.Point;
@@ -15,12 +13,17 @@ import peril.views.slick.util.Point;
  * on the screen.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-23
+ * @version 1.01.01
+ * 
+ * @see Component
  *
  */
 public final class TextField implements Component {
 
 	/**
-	 * {@link List} of the lines in this {@link TextField}.
+	 * The {@link List} of the lines in this {@link TextField}.
 	 */
 	private final List<String> lines;
 
@@ -74,7 +77,7 @@ public final class TextField implements Component {
 	 * method.
 	 * 
 	 * @param text
-	 *            to be added to the {@link TextField}
+	 *            The text to be added to the {@link TextField}
 	 */
 	public void addText(String text) {
 		addText(text, " ");
@@ -87,7 +90,7 @@ public final class TextField implements Component {
 	 * this method.
 	 * 
 	 * @param text
-	 *            to be added to the {@link TextField}
+	 *            The text to be added to the {@link TextField}
 	 * @param lineWrap
 	 *            The character used to separate the words in the text.
 	 */
@@ -139,7 +142,6 @@ public final class TextField implements Component {
 			int newWidth = width + (2 * padding);
 			width = newWidth >= this.maxWidth ? this.maxWidth : newWidth;
 		}
-		;
 
 	}
 
@@ -161,8 +163,8 @@ public final class TextField implements Component {
 	 * Draws this {@link TextField} on the screen. {@link TextField#init()} must be
 	 * called before this method.
 	 * 
-	 * @param g
-	 *            {@link Graphics}
+	 * @param frame
+	 *            The {@link Frame} that displays this {@link TextField} on screen.
 	 */
 	public void draw(Frame frame) {
 
@@ -183,31 +185,10 @@ public final class TextField implements Component {
 	}
 
 	/**
-	 * Processes a mouse click at a {@link Point} position on this
-	 * {@link TextField}.
-	 */
-	public void parseMouseClick(Point click) {
-
-	}
-
-	/**
-	 * Process a mouse drag on this {@link TextField} from one {@link Point} to
-	 * another.
-	 * 
-	 * @param oldPosition
-	 *            {@link Point}
-	 * @param newPosition
-	 *            {@link Point}
-	 */
-	public void parseMouseDrag(Point oldPosition, Point newPosition) {
-
-	}
-
-	/**
 	 * Assigns the new {@link Point} position of this {@link TextField}.
 	 * 
 	 * @param position
-	 *            {@link Point}
+	 *            The new {@link Point} position of the {@link TextField}.
 	 */
 	public void setPosition(Point position) {
 		this.position = position;
@@ -216,7 +197,7 @@ public final class TextField implements Component {
 	/**
 	 * Retrieves the {@link Point} position of this {@link TextField}.
 	 * 
-	 * @return
+	 * @return The position of the {@link TextField}.
 	 */
 	public Point getPosition() {
 		return position;

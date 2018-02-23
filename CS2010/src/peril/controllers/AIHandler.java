@@ -23,8 +23,8 @@ import peril.model.states.ModelState;
  * 
  * @author Joshua_Eddy, Joseph_Rolli
  * 
- * @version 1.01.04
- * @since 2018-02-21
+ * @version 1.01.05
+ * @since 2018-02-23
  * 
  * @see AIController
  *
@@ -74,7 +74,7 @@ public final class AIHandler implements AIController {
 
 		// If the state is null then the current state is not a game state.
 		if (state != null) {
-			return state.select(checkedCountry, game.getGameController());
+			return state.select(checkedCountry);
 		} else {
 			throw new IllegalStateException("The current state is not a valid game state.");
 		}

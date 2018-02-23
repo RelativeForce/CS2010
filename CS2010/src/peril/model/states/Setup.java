@@ -15,8 +15,8 @@ import peril.model.board.ModelCountry;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-14
- * @version 1.01.01
+ * @since 2018-02-23
+ * @version 1.01.02
  * 
  * @see ModelState
  *
@@ -31,8 +31,8 @@ public final class Setup extends ModelState {
 	/**
 	 * Constructs a new {@link Setup}.
 	 */
-	public Setup() {
-		super(STATE_NAME);
+	public Setup(GameController game) {
+		super(STATE_NAME, game);
 	}
 
 	/**
@@ -40,7 +40,7 @@ public final class Setup extends ModelState {
 	 * at a time.
 	 */
 	@Override
-	public boolean select(ModelCountry country, GameController api) {
+	public boolean select(ModelCountry country) {
 
 		deselectAll();
 		addSelected(country, 0);

@@ -7,6 +7,8 @@ import java.util.Observable;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import peril.controllers.GameController;
+import peril.helpers.PointHelper;
 import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelArmy;
@@ -20,8 +22,8 @@ import peril.model.board.ModelUnit;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-22
- * @version 1.01.01
+ * @since 2018-02-23
+ * @version 1.01.03
  *
  * @see Observable
  * @see CombatRound
@@ -42,21 +44,32 @@ public final class CombatHelper extends Observable {
 	public final static int MAX_DEFEND_SQUAD_SIZE = 2;
 
 	/**
-	 * The {@link Random} that generated the dice rolls.
-	 */
-	private final Random random;
-
-	/**
 	 * The {@link CombatView} that denotes the results of the previous round of
 	 * combat.
 	 */
 	public CombatView view;
 
 	/**
-	 * Constructs an new {@link CombatHelper}.
+	 * The {@link Random} that generated the dice rolls.
 	 */
-	public CombatHelper() {
+	private final Random random;
+
+	/**
+	 * The {@link GameController} that allows this {@link CombatHelper} to query the
+	 * state of the game.
+	 */
+	private final GameController game;
+
+	/**
+	 * Constructs an new {@link CombatHelper}.
+	 * 
+	 * @param game
+	 *            The {@link GameController} that allows this {@link CombatHelper}
+	 *            to query the state of the game.
+	 */
+	public CombatHelper(GameController game) {
 		this.random = new Random();
+		this.game = game;
 	}
 
 	/**
@@ -70,6 +83,11 @@ public final class CombatHelper extends Observable {
 	 *            The {@link CombatRound} specifying the details of this fight.
 	 */
 	public void fight(CombatRound round) {
+
+		// Check the countries
+		if (round.attacker.getRuler().equals(round.defender.getRuler())) {
+			throw new IllegalArgumentException("The two countries can be ruler by the same player.");
+		}
 
 		// Check the attacking squad.
 		final int attackSquadSize = round.attackerSquad.getAliveUnits();
@@ -87,8 +105,13 @@ public final class CombatHelper extends Observable {
 		final Integer[] attackerDiceRolls = getDiceRolls(attackSquadSize);
 		final Integer[] defenderDiceRolls = getDiceRolls(defendSquadSize);
 
+		final ModelPlayer attackingPlayer = round.attacker.getRuler();
+		final ModelPlayer defendingPlayer = round.defender.getRuler();
+
 		// Compare the dice that were rolled.
 		compareDiceRolls(round, attackerDiceRolls, defenderDiceRolls);
+
+		processPostFight(round, attackingPlayer, defendingPlayer);
 
 		// Update the view
 		this.view = new CombatView(round, attackerDiceRolls, defenderDiceRolls);
@@ -103,6 +126,63 @@ public final class CombatHelper extends Observable {
 	 */
 	public void clear() {
 		this.view = null;
+	}
+
+	/**
+	 * Retrieves the total number of alive {@link ModelUnit}s when the specified
+	 * {@link ModelArmy} and the {@link ModelSquad}.
+	 * 
+	 * @param army
+	 *            The {@link ModelArmy} to be combined.
+	 * @param squad
+	 *            The {@link ModelSquad} to be combined.
+	 * @return The total number of alive {@link ModelUnit}s.
+	 */
+	public int getTotalAliveUnits(ModelArmy army, ModelSquad squad) {
+		return army.getNumberOfUnits() + squad.getAliveUnits();
+	}
+
+	/**
+	 * Processes the state of the specified {@link CombatRound} after the
+	 * {@link #compareDiceRolls(CombatRound, Integer[], Integer[])} has been
+	 * performed.
+	 * 
+	 * @param round
+	 *            The {@link CombatRound} to be processed.
+	 * @param attackingPlayer
+	 *            The {@link ModelPlayer} that started the attack.
+	 * @param defendingPlayer
+	 *            The {@link ModelPlayer} that defended against the attack.
+	 */
+	private void processPostFight(CombatRound round, ModelPlayer attackingPlayer, ModelPlayer defendingPlayer) {
+
+		// If the country has been conquered
+		if (round.attacker.getRuler().equals(round.defender.getRuler())) {
+
+			attackingPlayer.totalArmy.add(UnitHelper.getInstance().getWeakest());
+
+			// If there is a defending player
+			if (defendingPlayer != null) {
+
+				defendingPlayer.setCountriesRuled(defendingPlayer.getCountriesRuled() - 1);
+
+				// If the player has no countries they have lost.
+				if (defendingPlayer.getCountriesRuled() == 0) {
+
+					game.setLoser(defendingPlayer);
+					game.checkWinner();
+				}
+			}
+
+			// Increment the statistics appropriately
+			attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
+			attackingPlayer.setCountriesTaken(attackingPlayer.getCountriesTaken() + 1);
+			attackingPlayer.addPoints(PointHelper.CONQUER_REWARD);
+
+			game.checkContinentRulership();
+			game.checkChallenges();
+
+		}
 	}
 
 	/**
@@ -168,9 +248,9 @@ public final class CombatHelper extends Observable {
 	 */
 	private boolean attackerWon(CombatRound round, ModelUnit attackingUnit) {
 
-		final ModelPlayer defender = round.defending.getRuler();
-		final ModelPlayer attacker = round.attacking.getRuler();
-		final ModelArmy defendingArmy = round.defending.getArmy();
+		final ModelPlayer defender = round.defender.getRuler();
+		final ModelPlayer attacker = round.attacker.getRuler();
+		final ModelArmy defendingArmy = round.defender.getArmy();
 		final int totalStrength = defendingArmy.getStrength() + round.defenderSquad.geStrength();
 
 		// If the army of the defending country is of size on then this victory will
@@ -178,7 +258,7 @@ public final class CombatHelper extends Observable {
 		if (attackingUnit.strength >= totalStrength) {
 			resetArmyToWeakest(round.defenderSquad, defendingArmy, defender);
 
-			round.defending.setRuler(attacker);
+			round.defender.setRuler(attacker);
 			return true;
 
 		} else {
@@ -187,7 +267,7 @@ public final class CombatHelper extends Observable {
 			// If the defending army was cleared.
 			if (defendingArmy.getNumberOfUnits() == 0) {
 				defendingArmy.setWeakest();
-				round.defending.setRuler(attacker);
+				round.defender.setRuler(attacker);
 				return true;
 			}
 
@@ -209,8 +289,8 @@ public final class CombatHelper extends Observable {
 	 */
 	private boolean attackerLost(CombatRound round, ModelUnit defendingUnit) {
 
-		final ModelPlayer attacker = round.attacking.getRuler();
-		final ModelArmy attackingArmy = round.attacking.getArmy();
+		final ModelPlayer attacker = round.attacker.getRuler();
+		final ModelArmy attackingArmy = round.attacker.getArmy();
 		final int totalStrength = attackingArmy.getStrength() + round.attackerSquad.geStrength();
 
 		if (defendingUnit.strength >= totalStrength) {

@@ -38,8 +38,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joseph_Rolli, Joshua_Eddy
  * 
- * @since 2018-02-20
- * @version 1.01.05
+ * @since 2018-02-23
+ * @version 1.01.06
  * 
  * @see InteractiveState
  * @see Observer
@@ -625,7 +625,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 				 * highlighted country.
 				 */
 				if (mouseButton == Input.MOUSE_LEFT_BUTTON) {
-					model.select(clicked == null ? null : clicked.model, game);
+					model.select(clicked == null ? null : clicked.model);
 				} else if (mouseButton == Input.MOUSE_RIGHT_BUTTON) {
 					model.deselectAll();
 				}

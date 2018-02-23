@@ -1,5 +1,6 @@
 package peril.model.states.combat;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
@@ -16,15 +17,16 @@ import peril.model.board.ModelUnit;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-22
- * @version 1.01.01
+ * @since 2018-02-23
+ * @version 1.01.03
  * 
  * @see ModelSquadMember
  * @see CombatHelper
  * @see Observable
+ * @see Iterable
  *
  */
-public final class ModelSquad extends Observable {
+public final class ModelSquad extends Observable implements Iterable<ModelSquadMember> {
 
 	/**
 	 * The {@link List} of {@link ModelSquadMember}s that make up this
@@ -66,6 +68,36 @@ public final class ModelSquad extends Observable {
 	 */
 	public int size() {
 		return members.size();
+	}
+
+	/**
+	 * Constructs the strongest {@link ModelSquad} from the specified
+	 * {@link ModelArmy} leaving the the {@link ModelArmy} with at least the minimum
+	 * number of {@link ModelUnit}s specified.
+	 * 
+	 * @param army
+	 *            The source {@link ModelArmy}.
+	 * @param minArmySize
+	 *            The minimum number of model units to be left in the
+	 *            {@link ModelArmy}.
+	 */
+	public void autoPopulate(ModelArmy army, int minArmySize) {
+
+		removeDeadUnits();
+		returnSquadToArmy(army);
+
+		ModelUnit unit = army.getStrongestUnit();
+
+		// Iterate over the army until the squad is at the max size of the army is depleted.
+		while (size() < maxSize && army.getNumberOfUnits() > minArmySize) {
+
+			if (army.hasUnit(unit)) {
+				this.moveToSquad(unit, army);
+			} else {
+				unit = army.getStrongestUnit();
+			}
+		}
+
 	}
 
 	/**
@@ -205,6 +237,15 @@ public final class ModelSquad extends Observable {
 	public void returnSquadToArmy(ModelArmy army) {
 		members.stream().filter(member -> member.isAlive).forEach(member -> army.add(member.unit));
 		clear();
+	}
+
+	/**
+	 * Retrieves the {@link Iterator} that iterates over each
+	 * {@link ModelSquadMember} of this {@link ModelSquad}.
+	 */
+	@Override
+	public Iterator<ModelSquadMember> iterator() {
+		return members.iterator();
 	}
 
 }

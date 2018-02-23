@@ -268,7 +268,7 @@ public final class WarMenu extends Menu {
 			final CombatRound round = new CombatRound(attacker, defender, attackingSquad.model, defendingSquad.model);
 
 			// If the army of the attacker country is larger that 1 unit in size
-			if (state.combat.getTotalAliveUnits(attacker.getArmy(), attackingSquad.model) > 1) {
+			if (attackingSquad.model.getAliveUnits() > 1) {
 
 				// Remove the dead attacking units.
 				attackingSquad.model.removeDeadUnits();

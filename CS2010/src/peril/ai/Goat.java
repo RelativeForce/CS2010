@@ -13,21 +13,21 @@ public class Goat extends AI {
 	}
 
 	@Override
-	protected boolean processReinforce(AIController api) {
+	protected AIOperation processReinforce(AIController api) {
 		// TODO Auto-generated method stub
-		return false;
+		return new AIOperation();
 	}
 
 	@Override
-	protected boolean processAttack(AIController api) {
+	protected AIOperation processAttack(AIController api) {
 		// TODO Auto-generated method stub
-		return false;
+		return new AIOperation();
 	}
 
 	@Override
-	protected boolean processFortify(AIController api) {
+	protected AIOperation processFortify(AIController api) {
 		// TODO Auto-generated method stub
-		return false;
+		return new AIOperation();
 	}
 
 }

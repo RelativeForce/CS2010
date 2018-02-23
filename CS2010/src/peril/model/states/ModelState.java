@@ -18,8 +18,8 @@ import peril.model.board.ModelCountry;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-14
- * @version 1.01.02
+ * @since 2018-02-23
+ * @version 1.01.03
  * 
  * @see Observable
  *
@@ -32,6 +32,12 @@ public abstract class ModelState extends Observable {
 	private final List<ModelCountry> selected;
 
 	/**
+	 * The {@link GameController} that allows this {@link ModelState} to query the
+	 * state of the game.
+	 */
+	protected final GameController game;
+
+	/**
 	 * Holds the name of this {@link ModelState}.
 	 */
 	private final String stateName;
@@ -41,10 +47,14 @@ public abstract class ModelState extends Observable {
 	 * 
 	 * @param stateName
 	 *            The name of the {@link ModelState}.
+	 * @param game
+	 *            The {@link GameController} that allows this {@link ModelState} to
+	 *            query the state of the game.
 	 */
-	public ModelState(String stateName) {
+	public ModelState(String stateName, GameController game) {
 		this.selected = new LinkedList<>();
 		this.stateName = stateName;
+		this.game = game;
 	}
 
 	/**
@@ -54,13 +64,10 @@ public abstract class ModelState extends Observable {
 	 * 
 	 * @param country
 	 *            The {@link ModelCountry} that can be selected.
-	 * @param game
-	 *            The {@link GameController} that allows this {@link ModelState} to
-	 *            query the state of the game.
 	 * @return Whether or not the specified {@link ModelCountry} has been selected
 	 *         by this {@link ModelState}.
 	 */
-	public abstract boolean select(ModelCountry country, GameController game);
+	public abstract boolean select(ModelCountry country);
 
 	/**
 	 * Retrieves the name of a specific {@link ModelState}.

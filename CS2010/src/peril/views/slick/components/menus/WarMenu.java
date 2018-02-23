@@ -9,7 +9,6 @@ import java.util.Observer;
 import java.util.function.Consumer;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 import peril.concurrent.Action;
@@ -35,40 +34,43 @@ import peril.views.slick.util.Point;
 import peril.views.slick.util.Region;
 
 /**
- * Encapsulates all the game combat logic.
+ * Displays the {@link CombatHelper} from the {@link Attack} to the user.
  * 
  * @author Joshua_Eddy, Ezekiel_Trinidad
+ * 
+ * @since 2018-02-23
+ * @version 1.01.01
+ * 
+ * @see Menu
+ * @see Attack
  *
  */
-public class WarMenu extends Menu {
+public final class WarMenu extends Menu {
 
 	/**
 	 * The name of this {@link Menu}.
 	 */
 	public final static String NAME = "War Menu";
 
+	/**
+	 * The {@link Attack} that contains the {@link CombatHelper}.
+	 */
 	private final Attack state;
 
 	/**
-	 * The {@link Dice} displaying dice interactions on screen.
+	 * The {@link Dice} displaying dice on screen.
 	 */
 	private final Dice dice;
 
 	/**
-	 * The {@link Font} for the text of the heading.
+	 * The {@link Font} used to draw the number of each type of {@link SlickUnit}.
 	 */
-	private final Font headingFont;
+	private final Font armyFont;
 
 	/**
 	 * The {@link Font} for the text to display the {@link ModelArmy}s sizes.
 	 */
 	private final Font textFont;
-
-	/**
-	 * The {@link Font} for the text to display the name of the
-	 * {@link ModelCountry}s.
-	 */
-	private final Font countryFont;
 
 	/**
 	 * The {@link Font} for the text to display the results of the attack on a;
@@ -77,8 +79,20 @@ public class WarMenu extends Menu {
 	 */
 	private final Font resultFont;
 
-	private final Font armyFont;
+	/**
+	 * The {@link Font} for the text of the heading.
+	 */
+	private final Font headingFont;
 
+	/**
+	 * The {@link Font} for the text to display the name of the
+	 * {@link ModelCountry}s.
+	 */
+	private final Font countryFont;
+
+	/**
+	 * The {@link Font} used to display the title of the player's army.
+	 */
 	private final Font yourArmyFont;
 
 	/**
@@ -88,37 +102,61 @@ public class WarMenu extends Menu {
 	 */
 	private final String attackButton;
 
+	/**
+	 * The {@link Consumer} that defines the operation to perform on a specified
+	 * {@link SlickUnit} when it is clicked in the pool of select-able
+	 * {@link ModelUnit}.
+	 */
 	private final Consumer<SlickUnit> poolClick;
 
+	/**
+	 * The {@link SlickSquad} that contains the {@link SlickSquadMember} that will
+	 * attack the {@link #defendingSquad}.
+	 */
 	private final SlickSquad attackingSquad;
 
+	/**
+	 * The {@link SlickSquad} that contains the {@link SlickSquadMember}s that will
+	 * defend against the attack from the {@link #attackingSquad}.
+	 */
 	private final SlickSquad defendingSquad;
 
 	/**
 	 * Constructs a new {@link WarMenu}.
 	 * 
+	 * @param position
+	 *            The initial {@link Point} position of the {@link WarMenu}.
+	 * @param game
+	 *            The {@link GameController} that allows this {@link WarMenu} to
+	 *            query the state of the game.
 	 */
 	public WarMenu(Point position, GameController game) {
 		super(NAME, game, new Region(800, 600, position));
 
 		this.state = game.getAttack();
-		this.headingFont = new Font("Arial", Color.red, 30);
-		this.textFont = new Font("Arial", Color.red, 40);
-		this.countryFont = new Font("Arial", Color.black, 37);
-		this.resultFont = new Font("Arial", Color.black, 30);
-		this.armyFont = new Font("Arial", Color.red, 50);
 		this.dice = new Dice();
 		this.attackButton = "war";
+
+		// Define the fonts used in the war menu
+		this.armyFont = new Font("Arial", Color.red, 50);
+		this.textFont = new Font("Arial", Color.red, 40);
+		this.resultFont = new Font("Arial", Color.black, 30);
+		this.countryFont = new Font("Arial", Color.black, 37);
+		this.headingFont = new Font("Arial", Color.red, 30);
 		this.yourArmyFont = new Font("Arial", Color.black, 25);
 
-		final Point attackTop = new Point(this.getPosition().x + (this.getWidth() / 4) - SlickUnit.WIDTH,
-				this.getPosition().y + 250);
+		// Define the point whether the attack squad will be displayed.
+		final int attackX = this.getPosition().x + (this.getWidth() / 4) - SlickUnit.WIDTH;
+		final int attackY = this.getPosition().y + 250;
+		final Point attackTop = new Point(attackX, attackY);
 
+		// Define the point whether the defend squad will be displayed.
+		final int defendX = this.getPosition().x + ((this.getWidth() * 3) / 4);
+		final int defendY = this.getPosition().y + 250;
+		final Point defendTop = new Point(defendX, defendY);
+
+		// Define the squads
 		this.attackingSquad = new SlickSquad(attackTop, true, new ModelSquad(CombatHelper.MAX_ATTACK_SQUAD_SIZE));
-
-		final Point defendTop = new Point(this.getPosition().x + ((this.getWidth() * 3) / 4),
-				this.getPosition().y + 250);
-
 		this.defendingSquad = new SlickSquad(defendTop, false, new ModelSquad(CombatHelper.MAX_DEFEND_SQUAD_SIZE));
 
 		this.poolClick = new Consumer<SlickUnit>() {
@@ -126,6 +164,7 @@ public class WarMenu extends Menu {
 			@Override
 			public void accept(SlickUnit unit) {
 
+				// If there is more that one unit in the attacking army
 				if (state.getPrimary().getArmy().getNumberOfUnits() > 1) {
 					attackingSquad.model.moveToSquad(unit.model, state.getPrimary().getArmy());
 					getButton(attackButton).show();
@@ -136,16 +175,17 @@ public class WarMenu extends Menu {
 	}
 
 	/**
-	 * Initialises all the Visual Elements of {@link WarMenu}.
+	 * Initialises all the visual elements of {@link WarMenu}.
 	 */
+	@Override
 	public void init() {
 
-		headingFont.init();
-		textFont.init();
-		countryFont.init();
-		resultFont.init();
 		dice.init();
+		textFont.init();
 		armyFont.init();
+		resultFont.init();
+		headingFont.init();
+		countryFont.init();
 		yourArmyFont.init();
 
 	}
@@ -153,6 +193,7 @@ public class WarMenu extends Menu {
 	/**
 	 * Draws the {@link War Menu} on the screen.
 	 */
+	@Override
 	public void draw(Frame frame) {
 
 		super.draw(frame);
@@ -214,8 +255,8 @@ public class WarMenu extends Menu {
 	}
 
 	/**
-	 * Processes the attack between 2 highlighted {@link ModelCountry}s and see if
-	 * they are eligible to 'fight'.
+	 * Causes the {@link CombatHelper} to process a {@link CombatRound} with the
+	 * {@link ModelSquad}s currently in the {@link WarMenu}.
 	 */
 	public void attack() {
 
@@ -248,10 +289,10 @@ public class WarMenu extends Menu {
 				// Display the dice that we rolled
 				dice.set(state.combat.view.attackerDiceRolls, state.combat.view.defenderDiceRolls,
 						new Point(attackX, y), new Point(defendX, y));
-				
-				if(state.combat.getTotalAliveUnits(attacker.getArmy(), attackingSquad.model) > 1) {
+
+				if (state.combat.getTotalAliveUnits(attacker.getArmy(), attackingSquad.model) > 1) {
 					getButton(attackButton).show();
-				}else {
+				} else {
 					getButton(attackButton).hide();
 				}
 
@@ -270,7 +311,7 @@ public class WarMenu extends Menu {
 	}
 
 	/**
-	 * Clears the elements of and hides, the {@link WarMenu}.
+	 * Clears the elements of and hides the {@link WarMenu}.
 	 */
 	public void clear() {
 
@@ -282,8 +323,9 @@ public class WarMenu extends Menu {
 	}
 
 	/**
-	 * Selects the highest number of dice possible for the current state of the
-	 * {@link WarMenu}.
+	 * Selects the {@link ModelUnit}s to be {@link SlickSquadMember}s of the
+	 * {@link #attackingSquad} that will result in the strongest possible
+	 * {@link #attackingSquad}.
 	 */
 	public void selectMaxUnits() {
 
@@ -293,6 +335,12 @@ public class WarMenu extends Menu {
 
 	}
 
+	/**
+	 * Draws the normal state of combat where both countries are valid for combat.
+	 * 
+	 * @param frame
+	 *            The {@link Frame} that will display this normal combat state.
+	 */
 	private void drawNormalCombat(Frame frame) {
 
 		attackingSquad.draw(frame);
@@ -305,13 +353,22 @@ public class WarMenu extends Menu {
 
 		drawTitle(frame);
 
-		drawArmySizes(frame);
+		drawArmyStrengths(frame);
 
 		dice.draw(frame);
 
 		drawArmyPool(frame, new Point(getPosition().x + (getWidth() / 2), getPosition().y + getHeight() - 120));
 	}
 
+	/**
+	 * Draws the attackers army so that they can select the units to add to the
+	 * attacking squad.
+	 * 
+	 * @param frame
+	 *            The {@link Frame} that displays the {@link WarMenu}.
+	 * @param position
+	 *            The position of the army pool.
+	 */
 	private void drawArmyPool(Frame frame, Point position) {
 
 		final ModelArmy model = state.getPrimary().getArmy();
@@ -348,11 +405,11 @@ public class WarMenu extends Menu {
 	}
 
 	/**
-	 * Displays text when a {@link ModelPlayer} fails to conquer a
-	 * {@link ModelCountry} they are attacking.
+	 * Draws the {@link WarMenu} where the attacking country has failed to conquer
+	 * the other country.
 	 * 
-	 * @param g
-	 *            {@link Graphics}
+	 * @param frame
+	 *            The {@link Frame} that displays the {@link WarMenu}.
 	 */
 	private void failedConquer(Frame frame) {
 		String failure = "has insufficient units to attack.";
@@ -374,11 +431,11 @@ public class WarMenu extends Menu {
 	}
 
 	/**
-	 * Displays text when a {@link ModelPlayer} successfully conquers a
-	 * {@link ModelCountry} they are attacking.
+	 * Draws the {@link WarMenu} where the attacking country has conquered the other
+	 * country.
 	 * 
-	 * @param g
-	 *            {@link Graphics}.
+	 * @param frame
+	 *            The {@link Frame} that displays the {@link WarMenu}.
 	 */
 	private void succesfulConquer(Frame frame) {
 
@@ -400,8 +457,6 @@ public class WarMenu extends Menu {
 		final int conqueredY = getPosition().y + (getHeight() / 2) + ((countryFont.getHeight(attackerName) * 3) / 2);
 		frame.draw(countryFont, conqueredName, conqueredX, conqueredY);
 
-		getButton(attackButton).hide();
-
 		// Draw the player icons
 		drawPlayer(state.getPrimary().getRuler(), -(getWidth() / 4), frame);
 		drawPlayer(state.getSecondary().getRuler(), (getWidth() / 4), frame);
@@ -412,27 +467,33 @@ public class WarMenu extends Menu {
 	}
 
 	/**
-	 * Draws the army sizes for each {@link ModelArmy} belonging to the attacking
+	 * Draws the army strength for each {@link ModelArmy} belonging to the attacking
 	 * and defending {@link ModelCountry}s.
 	 * 
-	 * @param g
-	 *            {@link Graphics}
+	 * @param frame
+	 *            The {@link Frame} that displays the {@link WarMenu}.
 	 */
-	private void drawArmySizes(Frame frame) {
+	private void drawArmyStrengths(Frame frame) {
 
 		final int yOffset = 190;
 
-		String attackingArmy = Integer
-				.toString(state.getPrimary().getArmy().getStrength() + attackingSquad.model.geStrength());
+		// The strengths of both armies
+		final int attack = state.getPrimary().getArmy().getStrength() + attackingSquad.model.geStrength();
+		final int defend = state.getSecondary().getArmy().getStrength() + defendingSquad.model.geStrength();
 
-		frame.draw(textFont, attackingArmy, getPosition().x + (getWidth() / 4) - (textFont.getWidth(attackingArmy) / 2),
-				getPosition().y + yOffset);
+		// The strengths as strings
+		final String attackStr = Integer.toString(attack);
+		final String defendStr = Integer.toString(defend);
 
-		String enemyArmy = Integer
-				.toString(state.getSecondary().getArmy().getStrength() + defendingSquad.model.geStrength());
+		// Draw the attack strength
+		final int attackX = getPosition().x + (getWidth() / 4) - (textFont.getWidth(attackStr) / 2);
+		final int attackY = getPosition().y + yOffset;
+		frame.draw(textFont, attackStr, attackX, attackY);
 
-		frame.draw(textFont, enemyArmy, getPosition().x + ((getWidth() * 3) / 4) - (textFont.getWidth(enemyArmy) / 2),
-				getPosition().y + yOffset);
+		// Draw the defend strength
+		final int defendX = getPosition().x + ((getWidth() * 3) / 4) - (textFont.getWidth(defendStr) / 2);
+		final int defendY = getPosition().y + yOffset;
+		frame.draw(textFont, defendStr, defendX, defendY);
 
 	}
 
@@ -440,24 +501,23 @@ public class WarMenu extends Menu {
 	 * Draws the names of the {@link ModelPlayer}s whose {@link ModelCountry}s are
 	 * attacking and defending.
 	 * 
-	 * @param frame2
-	 *            {@link Graphics}
+	 * @param frame
+	 *            The {@link Frame} that displays the {@link WarMenu}.
 	 */
 	private void drawTitle(Frame frame) {
 
-		final int yOffset = 150;
+		final int y = getPosition().y + 150;
 
-		int y = getPosition().y + yOffset;
+		final String vs = "VS";
+		final String attackerStr = state.getPrimary().getName();
+		final String enemyStr = state.getSecondary().getName();
 
-		String vs = "VS";
-		String attackerStr = state.getPrimary().getName();
-		String enemyStr = state.getSecondary().getName();
+		// The centre of the menu
+		final int centreX = getPosition().x + (getWidth() / 2);
 
-		int centreX = getPosition().x + (getWidth() / 2);
-		int vsX = centreX - (headingFont.getWidth(vs) / 2);
-
-		int attackerX = centreX - (getWidth() / 4) - (countryFont.getWidth(attackerStr) / 2);
-		int enemyX = centreX + (getWidth() / 4) - (countryFont.getWidth(enemyStr) / 2);
+		final int vsX = centreX - (headingFont.getWidth(vs) / 2);
+		final int attackerX = centreX - (getWidth() / 4) - (countryFont.getWidth(attackerStr) / 2);
+		final int enemyX = centreX + (getWidth() / 4) - (countryFont.getWidth(enemyStr) / 2);
 
 		frame.draw(headingFont, vs, vsX, y);
 		frame.draw(countryFont, attackerStr, attackerX, y);
@@ -466,10 +526,10 @@ public class WarMenu extends Menu {
 	}
 
 	/**
-	 * Draws the String representation of a {@link ModelPlayer}.
+	 * Draws the visual of a {@link ModelPlayer}.
 	 * 
-	 * @param g
-	 *            {@link Graphics}
+	 * @param frame
+	 *            The {@link Frame} that displays the {@link WarMenu}.
 	 * @param player
 	 *            The {@link ModelPlayer} you want to display
 	 * @param offset
@@ -481,11 +541,13 @@ public class WarMenu extends Menu {
 			return;
 		}
 
+		final int centreX = getPosition().x + (getWidth() / 2);
+
 		final SlickPlayer slickPlayer = slick.modelView.getVisual(player);
 
-		int centreX = getPosition().x + (getWidth() / 2);
-		int x = centreX + offset - (slickPlayer.getWidth() / 2);
-		frame.draw(slickPlayer.getImage(), x, this.getPosition().y + 80);
+		final int x = centreX + offset - (slickPlayer.getWidth() / 2);
+		final int y = this.getPosition().y + 80;
+		frame.draw(slickPlayer.getImage(), x, y);
 	}
 
 	/**
@@ -493,12 +555,27 @@ public class WarMenu extends Menu {
 	 * 
 	 * @author Joshua_Eddy
 	 *
+	 * @since 2018-02-23
+	 * @version 1.01.01
+	 *
+	 * @see Image
+	 *
 	 */
 	private final class Dice {
 
+		/**
+		 * The width of a dice.
+		 */
 		private static final int WIDTH = SlickUnit.WIDTH - 20;
-
+		/**
+		 * The height of a dice
+		 */
 		private static final int HEIGHT = SlickUnit.HEIGHT - 20;
+
+		/**
+		 * The width of the box that displays which dice wins.
+		 */
+		private static final int BOX_WIDTH = 10;
 
 		/**
 		 * Holds the dice that will be displayed on screen.
@@ -511,23 +588,39 @@ public class WarMenu extends Menu {
 		private final Map<Integer, Image> defaultDice;
 
 		/**
+		 * The {@link Image} of a red box.
+		 */
+		private final Image redBox;
+
+		/**
+		 * The {@link Image} of a green box.
+		 */
+		private final Image greenBox;
+
+		/**
 		 * Constructs a new {@link Dice}.
 		 */
 		public Dice() {
 			this.defaultDice = new HashMap<>();
 			this.display = new HashMap<>();
+
+			final Region box = new Region(BOX_WIDTH, HEIGHT, new Point(0, 0));
+
+			this.redBox = box.convert(Color.red, 255);
+			this.greenBox = box.convert(Color.green, 255);
 		}
 
 		/**
-		 * Adds dice to {@link WarMenu#display} with there designated {@link Point}
-		 * position.
+		 * Adds dice to {@link WarMenu} with there designated {@link Point} position.
 		 * 
 		 * @param attackerDiceRolls
+		 *            The values of the dice to be displayed.
 		 * @param defenderDiceRolls
+		 *            The values of the dice to be displayed.
 		 * @param attackTop
-		 *            {@link Point} of the top dice for the attacker.
+		 *            The {@link Point} of the top dice for the attacker.
 		 * @param defendTop
-		 *            {@link Point} of the top dice for the defender.
+		 *            The {@link Point} of the top dice for the defender.
 		 */
 		public void set(Integer[] attackerDiceRolls, Integer[] defenderDiceRolls, Point attackTop, Point defendTop) {
 
@@ -549,14 +642,6 @@ public class WarMenu extends Menu {
 				defendY += SlickUnit.HEIGHT;
 			}
 
-			int boxWidth = 10;
-
-			final Region box = new Region(boxWidth, HEIGHT, new Point(0, 0));
-
-			final Image redBox = box.convert(Color.red, 255);
-
-			final Image greenBox = box.convert(Color.green, 255);
-
 			// Get the size of the smaller set of dice.
 			final int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length
 					: attackerDiceRolls.length;
@@ -567,7 +652,7 @@ public class WarMenu extends Menu {
 				final boolean attackerWon = attackerDiceRolls[i] > defenderDiceRolls[i];
 
 				// Display defender box
-				final Point defend = new Point(defendTop.x - WIDTH - boxWidth - 3,
+				final Point defend = new Point(defendTop.x - WIDTH - BOX_WIDTH - 3,
 						defendTop.y + (i * (SlickUnit.HEIGHT + 2)) + 10);
 				display.put(defend, attackerWon ? redBox : greenBox);
 
@@ -595,6 +680,9 @@ public class WarMenu extends Menu {
 
 		/**
 		 * Draws this {@link Dice}.
+		 * 
+		 * @param frame
+		 *            The {@link Frame} that displays the {@link WarMenu}.
 		 */
 		public void draw(Frame frame) {
 			display.forEach((position, dice) -> frame.draw(dice, position.x, position.y));
@@ -604,33 +692,77 @@ public class WarMenu extends Menu {
 		 * Clears the dice in this {@link Dice}
 		 */
 		public void clear() {
-			display.clear();
+			if (!display.isEmpty()) {
+				display.clear();
+			}
 		}
 
 	}
 
+	/**
+	 * Displays a {@link ModelSquad} to the user.
+	 * 
+	 * @author Joshua_Eddy
+	 * 
+	 * @since 2018-02-23
+	 * @version 1.01.01
+	 * 
+	 * @see Observer
+	 * @see SlickSquadMember
+	 *
+	 */
 	private final class SlickSquad implements Observer {
 
+		/**
+		 * Whether of not this {@link SlickSquad} is the user's.
+		 */
 		private final boolean isUser;
 
+		/**
+		 * The {@link ModelSquad} this {@link SlickSquad} displays.
+		 */
 		private final ModelSquad model;
 
+		/**
+		 * The {@link List} of {@link SlickSquadMember}s that make up this
+		 * {@link SlickSquad}.
+		 */
 		private final List<SlickSquadMember> members;
 
-		private Point squadTop;
+		/**
+		 * The position of this {@link SlickSquad}.
+		 */
+		private Point position;
 
+		/**
+		 * Constructs a new {@link SlickSquad}.
+		 * 
+		 * @param position
+		 *            The position of this {@link SlickSquad}.
+		 * @param isUser
+		 *            Whether of not this {@link SlickSquad} is the user's.
+		 * @param model
+		 *            The {@link ModelSquad} this {@link SlickSquad} displays.
+		 */
 		public SlickSquad(Point position, boolean isUser, ModelSquad model) {
-			this.squadTop = position;
+			this.position = position;
 			this.isUser = isUser;
 			this.model = model;
 			this.model.addObserver(this);
 			this.members = new LinkedList<>();
 		}
 
+		/**
+		 * Draws this {@link SlickSquad} on the specified {@link Frame}.
+		 * 
+		 * @param frame
+		 *            The {@link Frame} that displays the {@link SlickSquad} to the
+		 *            user.
+		 */
 		public void draw(Frame frame) {
 
-			int x = squadTop.x;
-			int y = squadTop.y;
+			int x = position.x;
+			int y = position.y;
 
 			// Draw each member in the squad
 			for (SlickSquadMember member : members) {
@@ -688,33 +820,55 @@ public class WarMenu extends Menu {
 			}
 		}
 
+		/**
+		 * Moves this {@link SlickSquad} by the specified {@link Point} vector.
+		 * 
+		 * @param vector
+		 *            The {@link Point} vector.
+		 */
 		public void move(Point vector) {
 
-			int x = squadTop.x + vector.x;
-			int y = squadTop.y + vector.y;
+			final int x = position.x + vector.x;
+			final int y = position.y + vector.y;
 
-			squadTop = new Point(x, y);
+			this.position = new Point(x, y);
 
 			repositionUnits();
 		}
 
-		private void autoPopulate(ModelArmy army) {
+		/**
+		 * Performs {@link ModelSquad#autoPopulate(ModelArmy, int)} distinguishing
+		 * between the minimum army size based on whether this {@link SlickSquad} is the
+		 * user's or not.
+		 * 
+		 * @param army
+		 *            The source {@link ModelArmy}.
+		 */
+		public void autoPopulate(ModelArmy army) {
 			model.autoPopulate(army, isUser ? 1 : 0);
 		}
 
+		/**
+		 * Changes the positions of all the {@link SlickSquadMember}s in this
+		 * {@link SlickSquad} based on {@link #position}.
+		 */
 		private void repositionUnits() {
 
 			// Reposition all the alive units.
 			int index = 0;
 			for (SlickSquadMember member : members) {
-				member.setPosition(new Point(squadTop.x, squadTop.y + (index * SlickUnit.HEIGHT)));
+				member.setPosition(new Point(position.x, position.y + (index * SlickUnit.HEIGHT)));
 				index++;
 			}
 
 		}
 
+		/**
+		 * Updates this {@link SlickSquad}.
+		 */
 		@Override
 		public void update(Observable o, Object arg) {
+			
 			if (!members.isEmpty()) {
 				members.clear();
 			}
@@ -726,16 +880,38 @@ public class WarMenu extends Menu {
 
 	}
 
+	/**
+	 * 
+	 * Displays a {@link ModelSquadMember} to the user.
+	 * 
+	 * @author Joshua_Eddy
+	 * 
+	 * @since 2018-02-23
+	 * @version 1.01.01
+	 * 
+	 * @see Clickable
+	 * @see ModelSquadMember
+	 *
+	 */
 	private final class SlickSquadMember extends Clickable {
 
-		public final SlickUnit unit;
-
+		/**
+		 * The {@link ModelSquadMember} this {@link SlickSquadMember} displays.
+		 */
 		public final ModelSquadMember model;
 
+		/**
+		 * Constructs a new {@link SlickSquadMember}.
+		 * 
+		 * @param model
+		 *            The {@link ModelSquadMember} this {@link SlickSquadMember}
+		 *            displays.
+		 */
 		public SlickSquadMember(ModelSquadMember model) {
 			this.model = model;
-			this.unit = slick.modelView.getVisual(model.unit);
-			replaceImage(unit.getImage());
+
+			// Set this members image as the units image.
+			replaceImage(slick.modelView.getVisual(model.unit).getImage());
 		}
 
 	}

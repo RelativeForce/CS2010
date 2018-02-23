@@ -5,6 +5,7 @@ import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
 import peril.model.states.*;
+import peril.model.states.combat.Attack;
 
 /**
  * A helper class for {@link Game} this object stores the instances of the

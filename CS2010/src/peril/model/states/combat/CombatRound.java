@@ -1,4 +1,4 @@
-package peril.helpers.combat;
+package peril.model.states.combat;
 
 import peril.model.board.ModelCountry;
 

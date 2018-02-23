@@ -1,7 +1,5 @@
 package peril.ai;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -40,7 +38,7 @@ public final class Monkey extends AI {
 	 * countries based on the size of the enemy armies at those countries.
 	 */
 	@Override
-	public boolean processReinforce(AIController api) {
+	public AIOperation processReinforce(AIController api) {
 
 		Map<Integer, Country> countries = getReinforceWeightings(api);
 
@@ -57,11 +55,16 @@ public final class Monkey extends AI {
 			throw new IllegalStateException("There are no countries");
 		}
 
-		// Select the country with the highest weight then reinforce it.
-		api.select(countries.get(highest));
-		api.reinforce();
+		final AIOperation op = new AIOperation();
 
-		return true;
+		// Select the country with the highest weight then reinforce it.
+		// api.select(countries.get(highest));
+		// api.reinforce();
+
+		op.select.add(countries.get(highest));
+		op.processAgain = true;
+
+		return op;
 
 	}
 
@@ -69,7 +72,7 @@ public final class Monkey extends AI {
 	 * This {@link Monkey} will attack the largest thread at its borders first.
 	 */
 	@Override
-	public boolean processAttack(AIController api) {
+	public AIOperation processAttack(AIController api) {
 
 		Map<Integer, Entry> countries = getAttackWeightings(api);
 
@@ -79,18 +82,21 @@ public final class Monkey extends AI {
 			highest = value > highest ? value : highest;
 		}
 
+		final AIOperation op = new AIOperation();
+
 		if (highest == Integer.MIN_VALUE) {
-			return false;
+
+			op.processAgain = false;
+
+		} else {
+
+			op.select.add(countries.get(highest).a);
+			op.select.add(countries.get(highest).b);
+			op.processAgain = true;
+
 		}
 
-		api.clearSelected();
-
-		api.select(countries.get(highest).a);
-		api.select(countries.get(highest).b);
-
-		api.attack();
-
-		return true;
+		return op;
 
 	}
 
@@ -99,7 +105,7 @@ public final class Monkey extends AI {
 	 * attack the most neighbouring countries.
 	 */
 	@Override
-	public boolean processFortify(AIController api) {
+	public AIOperation processFortify(AIController api) {
 
 		final Set<Country> internal = new HashSet<>();
 
@@ -109,36 +115,26 @@ public final class Monkey extends AI {
 
 		final Map<Integer, Entry> possibleMoves = getFortifyWeightings(api, internal, frontline);
 
-		final Integer[] weights = possibleMoves.keySet().toArray(new Integer[possibleMoves.keySet().size()]);
+		int highest = Integer.MIN_VALUE;
 
-		// Sort the weights roles into descending order.
-		Arrays.sort(weights, Collections.reverseOrder());
-
-		// If there was no weighted pairs.
-		if (weights.length == 0) {
-			return false;
+		for (int value : possibleMoves.keySet()) {
+			highest = value > highest ? value : highest;
 		}
 
-		for (int index = 0; index < weights.length; index++) {
+		final AIOperation op = new AIOperation();
 
-			final Country safe = possibleMoves.get(weights[index]).a;
-			final Country border = possibleMoves.get(weights[index]).b;
+		if (highest == Integer.MIN_VALUE) {
 
-			api.clearSelected();
+			op.processAgain = false;
 
-			// If there was a valid link between the safe and border then the secondary will
-			// be the border.
-			if (api.select(safe)) {
-				if (api.select(border)) {
-					api.fortify();
-					return true;
-				}
-			}
+		} else {
 
+			op.select.add(possibleMoves.get(highest).a);
+			op.select.add(possibleMoves.get(highest).b);
+			op.processAgain = true;
 		}
 
-		// If there was weighted pairs
-		return false;
+		return op;
 
 	}
 
@@ -155,7 +151,7 @@ public final class Monkey extends AI {
 	private Map<Integer, Entry> getFortifyWeightings(AIController api, Set<Country> internal,
 			Map<Country, Integer> frontline) {
 
-		Map<Integer, Entry> possibleMoves = new HashMap<>();
+		final Map<Integer, Entry> possibleMoves = new HashMap<>();
 
 		frontline.keySet().forEach(f -> internal.forEach(i -> {
 

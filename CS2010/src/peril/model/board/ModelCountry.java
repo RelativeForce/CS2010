@@ -55,7 +55,7 @@ public final class ModelCountry extends Observable implements Country, Observer 
 	/**
 	 * Holds the {@link ModelPlayer} that rules this {@link ModelCountry}.
 	 */
-	private ModelPlayer ruler;
+	private volatile ModelPlayer ruler;
 
 	/**
 	 * Constructs a new {@link ModelCountry} with a specified army offset.

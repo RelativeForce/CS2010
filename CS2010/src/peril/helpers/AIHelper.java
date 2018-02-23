@@ -12,12 +12,14 @@ import peril.controllers.GameController;
  * This class is responsible for retrieving and storing all the {@linkAI} which
  * will be used in the game.
  * 
- * @author James_Rowntree
+ * @author James_Rowntree, Joshua_Eddy
  * 
- * @since 2018-02-13
+ * @since 2018-02-23
  * 
- * @version 1.01.02
- *
+ * @version 1.01.03
+ * 
+ * @see Iterable
+ * @see AI
  */
 public final class AIHelper implements Iterable<AI> {
 
@@ -54,7 +56,7 @@ public final class AIHelper implements Iterable<AI> {
 
 		// AI controller api
 		final AIController api = game.getAIController();
-		
+
 		// Define all AIs
 		final AI user = AI.USER;
 		final Monkey monkey = new Monkey(api);
@@ -76,7 +78,6 @@ public final class AIHelper implements Iterable<AI> {
 		ai.put(knight.name, knight);
 		ai.put(ernie.name, ernie);
 		ai.put(noob.name, noob);
-
 
 	}
 

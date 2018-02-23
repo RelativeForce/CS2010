@@ -2,6 +2,12 @@ package peril.ai;
 
 import peril.controllers.api.Country;
 import peril.controllers.api.Player;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import peril.controllers.AIController;
 import peril.controllers.api.Board;
 
@@ -23,17 +29,17 @@ public abstract class AI {
 	public static final AI USER = new AI() {
 
 		@Override
-		public boolean processReinforce(AIController api) {
+		public AIOperation processReinforce(AIController api) {
 			throw new UnsupportedOperationException("This is a user contrlled player.");
 		}
 
 		@Override
-		public boolean processAttack(AIController api) {
+		public AIOperation processAttack(AIController api) {
 			throw new UnsupportedOperationException("This is a user contrlled player.");
 		}
 
 		@Override
-		public boolean processFortify(AIController api) {
+		public AIOperation processFortify(AIController api) {
 			throw new UnsupportedOperationException("This is a user contrlled player.");
 		}
 	};
@@ -67,6 +73,8 @@ public abstract class AI {
 	 */
 	private int speed;
 
+	private Future<AIOperation> future;
+
 	/**
 	 * Constructs a new {@link AI}.
 	 * 
@@ -77,14 +85,15 @@ public abstract class AI {
 	 *            If this is zero or lower then the then the {@link AI} will perform
 	 *            its actions at the frame rate of the display.
 	 * @param api
-	 *            The {@link AIController} that this {@link AI} will use to query the
-	 *            state of the game.
+	 *            The {@link AIController} that this {@link AI} will use to query
+	 *            the state of the game.
 	 */
 	public AI(String name, int defaultSpeed, AIController api) {
 		this.name = name;
 		this.wait = 0;
 		this.api = api;
 		setSpeed(defaultSpeed);
+		this.future = null;
 	}
 
 	/**
@@ -112,15 +121,62 @@ public abstract class AI {
 			return false;
 		}
 
-		if (wait <= 0) {
+		if (future != null) {
+
+			if (future.isDone()) {
+
+				System.out.println("Task done. (Reinforce)");
+
+				try {
+
+					final AIOperation result = future.get();
+
+					future = null;
+
+					if (result.processAgain) {
+
+						api.select(result.select.get(0));
+						api.reinforce();
+
+						return true;
+
+					} else {
+
+						return false;
+					}
+
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					e.printStackTrace();
+				}
+
+			}
+
+			System.out.println("Task not done. (Reinforce)");
+
+		} else if (wait <= 0) {
+
 			wait = speed;
+
+			System.out.println("Creating Task. (Reinforce)");
 			api.clearSelected();
-			return processReinforce(api);
+
+			Callable<AIOperation> task = () -> {
+				return processReinforce(api);
+			};
+			
+
+			ExecutorService executor = Executors.newFixedThreadPool(1);
+			
+			future = executor.submit(task);
+
+		} else {
+			System.out.println("Waiting... (Reinforce)");
 		}
 
 		wait -= delta;
 		return true;
-
 	}
 
 	/**
@@ -134,14 +190,60 @@ public abstract class AI {
 	 */
 	public final boolean attack(int delta) {
 
-		if (wait <= 0) {
+		if (future != null) {
+
+			if (future.isDone()) {
+
+				System.out.println("Task done. (Attack)");
+
+				try {
+
+					final AIOperation result = future.get();
+
+					future = null;
+
+					if (result.processAgain) {
+						
+						api.select(result.select.get(0));
+						api.select(result.select.get(1));
+						api.attack();
+
+						return true;
+					} else {
+						return false;
+					}
+
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					e.printStackTrace();
+				}
+
+			}
+
+			System.out.println("Task not done. (Attack)");
+
+		} else if (wait <= 0) {
+
 			wait = speed;
+
+			System.out.println("Creating Task. (Attack)");
 			api.clearSelected();
-			return processAttack(api);
+
+			Callable<AIOperation> task = () -> {
+				return processAttack(api);
+			};
+
+			ExecutorService executor = Executors.newFixedThreadPool(4);
+			future = executor.submit(task);
+
+		} else {
+			System.out.println("Waiting... (Attack)");
 		}
 
 		wait -= delta;
 		return true;
+
 	}
 
 	/**
@@ -155,15 +257,61 @@ public abstract class AI {
 	 */
 	public final boolean fortify(int delta) {
 
-		if (wait <= 0) {
+
+		if (future != null) {
+
+			if (future.isDone()) {
+
+				System.out.println("Task done. (Fortify)");
+
+				try {
+
+					final AIOperation result = future.get();
+
+					future = null;
+
+					if (result.processAgain) {
+						
+						api.select(result.select.get(0));
+						api.select(result.select.get(1));
+						api.fortify();
+
+						return true;
+					} else {
+						return false;
+					}
+
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					e.printStackTrace();
+				}
+
+			}
+
+			System.out.println("Task not done. (Fortify)");
+
+		} else if (wait <= 0) {
+
 			wait = speed;
+
+			System.out.println("Creating Task. (Fortify)");
 			api.clearSelected();
-			return processFortify(api);
+
+			Callable<AIOperation> task = () -> {
+				return processFortify(api);
+			};
+
+			ExecutorService executor = Executors.newFixedThreadPool(4);
+			future = executor.submit(task);
+
+		} else {
+			System.out.println("Waiting... (Fortify)");
 		}
 
 		wait -= delta;
-
 		return true;
+		
 	}
 
 	/**
@@ -181,8 +329,8 @@ public abstract class AI {
 	}
 
 	/**
-	 * Perform the reinforce operation using the specified {@link AIController}. This
-	 * operation should be specific to the specialised instance of the
+	 * Perform the reinforce operation using the specified {@link AIController}.
+	 * This operation should be specific to the specialised instance of the
 	 * {@link AI}.<br>
 	 * <br>
 	 * Key aspects:
@@ -198,7 +346,8 @@ public abstract class AI {
 	 * This method must:
 	 * <ol>
 	 * <li>Select a {@link Country} using {@link AIController#select(Country)}.</li>
-	 * <li>Reinforce that {@link Country} using {@link AIController#reinforce()}.</li>
+	 * <li>Reinforce that {@link Country} using
+	 * {@link AIController#reinforce()}.</li>
 	 * </ol>
 	 * 
 	 * @param api
@@ -206,7 +355,7 @@ public abstract class AI {
 	 * @return Whether or not this {@link AI} wishes to perform another operation or
 	 *         not. If not the {@link AIController}
 	 */
-	protected abstract boolean processReinforce(AIController api);
+	protected abstract AIOperation processReinforce(AIController api);
 
 	/**
 	 * Perform the attack operation using the specified {@link AIController}. This
@@ -217,7 +366,8 @@ public abstract class AI {
 	 * <ul>
 	 * <li>Only attack the target {@link Country} <strong>ONCE</strong>.</li>
 	 * <li>The operation should be completely functional and rely on
-	 * <strong>NO</strong> data that is not provided by the {@link AIController}.</li>
+	 * <strong>NO</strong> data that is not provided by the
+	 * {@link AIController}.</li>
 	 * <li>The primary {@link Country} should have more than a one unit army.</li>
 	 * <li>The primary {@link Country} that is selected must be owned by the current
 	 * {@link Player}.</li>
@@ -245,7 +395,7 @@ public abstract class AI {
 	 * @return Whether or not this {@link AI} wishes to perform another attack or
 	 *         not.
 	 */
-	protected abstract boolean processAttack(AIController api);
+	protected abstract AIOperation processAttack(AIController api);
 
 	/**
 	 * Perform the fortify operation using the specified {@link AIController}. This
@@ -257,7 +407,8 @@ public abstract class AI {
 	 * <ul>
 	 * <li>Only fortify the target {@link Country} <strong>ONCE</strong>.</li>
 	 * <li>The operation should be completely functional and rely on
-	 * <strong>NO</strong> data that is not provided by the {@link AIController}.</li>
+	 * <strong>NO</strong> data that is not provided by the
+	 * {@link AIController}.</li>
 	 * <li>The primary {@link Country} must have more than a one unit army.</li>
 	 * <li>The primary and target {@link Country}s must be owned by the same
 	 * {@link Player}.</li>
@@ -286,6 +437,6 @@ public abstract class AI {
 	 * @return Whether or not this {@link AI} wishes to perform another fortify or
 	 *         not.
 	 */
-	protected abstract boolean processFortify(AIController api);
+	protected abstract AIOperation processFortify(AIController api);
 
 }

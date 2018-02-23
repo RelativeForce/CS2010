@@ -7,8 +7,8 @@ import peril.model.board.ModelCountry;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-22
- * @version 1.01.01
+ * @since 2018-02-23
+ * @version 1.01.02
  * 
  * @see CombatHelper
  * @see ModelSquad
@@ -18,16 +18,16 @@ import peril.model.board.ModelCountry;
 public final class CombatRound {
 
 	/**
-	 * The {@link ModelCountry} that will attack the {@link #defending}
+	 * The {@link ModelCountry} that will attack the {@link #defender}
 	 * {@link ModelCountry}.
 	 */
-	public final ModelCountry attacking;
+	public final ModelCountry attacker;
 
 	/**
-	 * The {@link ModelCountry} that will defend against the {@link #attacking}
+	 * The {@link ModelCountry} that will defend against the {@link #attacker}
 	 * {@link ModelCountry}.
 	 */
-	public final ModelCountry defending;
+	public final ModelCountry defender;
 
 	/**
 	 * The {@link ModelSquad} that will attack the {@link #defenderSquad}.
@@ -42,19 +42,26 @@ public final class CombatRound {
 	/**
 	 * Constructs a new {@link CombatRound}.
 	 * 
-	 * @param attacking
-	 *            The {@link ModelCountry} that will attack the {@link #defending}
+	 * @param attacker
+	 *            The {@link ModelCountry} that will attack the {@link #defender}
 	 *            {@link ModelCountry}.
 	 * @param defending
 	 *            The {@link ModelCountry} that will defend against the
-	 *            {@link #attacking} {@link ModelCountry}.
+	 *            {@link #attacker} {@link ModelCountry}.
+	 * @param attackerSquad
+	 *            The {@link ModelSquad} that will attack the
+	 *            {@link #defenderSquad}.
+	 * @param defenderSquad
+	 *            The {@link ModelSquad} that will defend against the
+	 *            {@link #defenderSquad}.
 	 */
-	public CombatRound(ModelCountry attacking, ModelCountry defending) {
+	public CombatRound(ModelCountry attacker, ModelCountry defending, ModelSquad attackerSquad,
+			ModelSquad defenderSquad) {
 
-		this.attacking = attacking;
-		this.defending = defending;
-		this.attackerSquad = new ModelSquad(CombatHelper.MAX_ATTACK_SQUAD_SIZE);
-		this.defenderSquad = new ModelSquad(CombatHelper.MAX_DEFEND_SQUAD_SIZE);
+		this.attacker = attacker;
+		this.defender = defending;
+		this.attackerSquad = attackerSquad;
+		this.defenderSquad = defenderSquad;
 	}
 
 }

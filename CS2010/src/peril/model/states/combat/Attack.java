@@ -30,10 +30,17 @@ public final class Attack extends ModelState {
 	private static final String STATE_NAME = "Combat";
 
 	/**
+	 * Holds the {@link CombatHelper} that will handle combat during the
+	 * {@link Attack} state.
+	 */
+	public final CombatHelper combat;
+
+	/**
 	 * Constructs a new {@link Attack}.
 	 */
 	public Attack() {
 		super(STATE_NAME);
+		this.combat = new CombatHelper();
 	}
 
 	/**

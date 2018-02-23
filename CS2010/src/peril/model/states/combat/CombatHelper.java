@@ -20,8 +20,8 @@ import peril.model.board.ModelUnit;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-22
- * @version 1.01.01
+ * @since 2018-02-23
+ * @version 1.01.02
  *
  * @see Observable
  * @see CombatRound
@@ -168,9 +168,9 @@ public final class CombatHelper extends Observable {
 	 */
 	private boolean attackerWon(CombatRound round, ModelUnit attackingUnit) {
 
-		final ModelPlayer defender = round.defending.getRuler();
-		final ModelPlayer attacker = round.attacking.getRuler();
-		final ModelArmy defendingArmy = round.defending.getArmy();
+		final ModelPlayer defender = round.defender.getRuler();
+		final ModelPlayer attacker = round.attacker.getRuler();
+		final ModelArmy defendingArmy = round.defender.getArmy();
 		final int totalStrength = defendingArmy.getStrength() + round.defenderSquad.geStrength();
 
 		// If the army of the defending country is of size on then this victory will
@@ -178,7 +178,7 @@ public final class CombatHelper extends Observable {
 		if (attackingUnit.strength >= totalStrength) {
 			resetArmyToWeakest(round.defenderSquad, defendingArmy, defender);
 
-			round.defending.setRuler(attacker);
+			round.defender.setRuler(attacker);
 			return true;
 
 		} else {
@@ -187,7 +187,7 @@ public final class CombatHelper extends Observable {
 			// If the defending army was cleared.
 			if (defendingArmy.getNumberOfUnits() == 0) {
 				defendingArmy.setWeakest();
-				round.defending.setRuler(attacker);
+				round.defender.setRuler(attacker);
 				return true;
 			}
 
@@ -209,8 +209,8 @@ public final class CombatHelper extends Observable {
 	 */
 	private boolean attackerLost(CombatRound round, ModelUnit defendingUnit) {
 
-		final ModelPlayer attacker = round.attacking.getRuler();
-		final ModelArmy attackingArmy = round.attacking.getArmy();
+		final ModelPlayer attacker = round.attacker.getRuler();
+		final ModelArmy attackingArmy = round.attacker.getArmy();
 		final int totalStrength = attackingArmy.getStrength() + round.attackerSquad.geStrength();
 
 		if (defendingUnit.strength >= totalStrength) {

@@ -1,12 +1,11 @@
 package peril.views.slick.components.menus;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Collections;
-import java.util.Random;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.function.Consumer;
 
 import org.newdawn.slick.Color;
@@ -15,17 +14,19 @@ import org.newdawn.slick.Image;
 
 import peril.concurrent.Action;
 import peril.controllers.GameController;
-import peril.helpers.PointHelper;
-import peril.helpers.UnitHelper;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
 import peril.model.ModelPlayer;
-import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.board.SlickUnit;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
+import peril.model.states.combat.Attack;
+import peril.model.states.combat.CombatHelper;
+import peril.model.states.combat.CombatRound;
+import peril.model.states.combat.ModelSquad;
+import peril.model.states.combat.ModelSquadMember;
 import peril.views.slick.io.ImageReader;
 import peril.views.slick.util.Button;
 import peril.views.slick.util.Clickable;
@@ -46,20 +47,12 @@ public class WarMenu extends Menu {
 	 */
 	public final static String NAME = "War Menu";
 
-	private final static int MAX_ATTACK_SQUAD_SIZE = 3;
-
-	private final static int MAX_DEFEND_SQUAD_SIZE = 2;
+	private final Attack state;
 
 	/**
 	 * The {@link Dice} displaying dice interactions on screen.
 	 */
 	private final Dice dice;
-
-	/**
-	 * {@link Random} object for the random number generator.
-	 * 
-	 */
-	private final Random random;
 
 	/**
 	 * The {@link Font} for the text of the heading.
@@ -97,31 +90,9 @@ public class WarMenu extends Menu {
 
 	private final Consumer<SlickUnit> poolClick;
 
-	private final CombatHelper combat;
+	private final SlickSquad attackingSquad;
 
-	private final Squad attackingSquad;
-
-	private final Squad defendingSquad;
-
-	/**
-	 * The {@link ModelCountry} of the attacking {@link ModelPlayer}.
-	 */
-	private SlickCountry attacker;
-
-	/**
-	 * The {@link ModelCountry} of the defending {@link ModelPlayer}.
-	 */
-	private SlickCountry defender;
-
-	/**
-	 * The {@link ModelPlayer} that is ruling the attacking {@link ModelCountry}.
-	 */
-	private SlickPlayer attackingRuler;
-
-	/**
-	 * The {@link ModelPlayer} that is ruling the defending {@link ModelCountry}.
-	 */
-	private SlickPlayer enemyRuler;
+	private final SlickSquad defendingSquad;
 
 	/**
 	 * Constructs a new {@link WarMenu}.
@@ -130,7 +101,7 @@ public class WarMenu extends Menu {
 	public WarMenu(Point position, GameController game) {
 		super(NAME, game, new Region(800, 600, position));
 
-		this.random = new Random();
+		this.state = game.getAttack();
 		this.headingFont = new Font("Arial", Color.red, 30);
 		this.textFont = new Font("Arial", Color.red, 40);
 		this.countryFont = new Font("Arial", Color.black, 37);
@@ -143,26 +114,25 @@ public class WarMenu extends Menu {
 		final Point attackTop = new Point(this.getPosition().x + (this.getWidth() / 4) - SlickUnit.WIDTH,
 				this.getPosition().y + 250);
 
-		this.attackingSquad = new Squad(attackTop, true, MAX_ATTACK_SQUAD_SIZE);
+		this.attackingSquad = new SlickSquad(attackTop, true, new ModelSquad(CombatHelper.MAX_ATTACK_SQUAD_SIZE));
 
 		final Point defendTop = new Point(this.getPosition().x + ((this.getWidth() * 3) / 4),
 				this.getPosition().y + 250);
 
-		this.defendingSquad = new Squad(defendTop, false, MAX_DEFEND_SQUAD_SIZE);
+		this.defendingSquad = new SlickSquad(defendTop, false, new ModelSquad(CombatHelper.MAX_DEFEND_SQUAD_SIZE));
 
 		this.poolClick = new Consumer<SlickUnit>() {
 
 			@Override
 			public void accept(SlickUnit unit) {
 
-				if (attacker.model.getArmy().getNumberOfUnits() > 1) {
-					attackingSquad.moveToSquad(unit.model, attacker.model.getArmy());
+				if (state.getPrimary().getArmy().getNumberOfUnits() > 1) {
+					attackingSquad.model.moveToSquad(unit.model, state.getPrimary().getArmy());
 					getButton(attackButton).show();
 				}
 			}
 		};
 
-		this.combat = new CombatHelper();
 	}
 
 	/**
@@ -191,14 +161,14 @@ public class WarMenu extends Menu {
 			return;
 		}
 
-		final int size = attackingSquad.size() + attacker.model.getArmy().getNumberOfUnits();
+		final int size = attackingSquad.model.size() + state.getPrimary().getArmy().getNumberOfUnits();
 
 		// Attacker has failed to conquer country
 		if (size == 1) {
 			failedConquer(frame);
 		}
 		// Attacker has conquered country
-		else if (attacker.model.getRuler().equals(defender.model.getRuler())) {
+		else if (state.getPrimary().getRuler().equals(state.getSecondary().getRuler())) {
 			succesfulConquer(frame);
 		}
 		// Normal Combat
@@ -210,15 +180,122 @@ public class WarMenu extends Menu {
 
 	}
 
+	/**
+	 * Makes this {@link WarMenu} visible along with its attack {@link Button}.
+	 */
+	@Override
+	public void show() {
+		super.show();
+
+		getButton(attackButton).hide();
+		defendingSquad.autoPopulate(state.getSecondary().getArmy());
+
+	}
+
+	/**
+	 * Hides this {@link WarMenu}.
+	 */
+	@Override
+	public void hide() {
+		super.hide();
+
+		if (state.getPrimary() != null) {
+			attackingSquad.model.returnSquadToArmy(state.getPrimary().getArmy());
+
+		}
+		if (state.getSecondary() != null) {
+			defendingSquad.model.returnSquadToArmy(state.getSecondary().getArmy());
+		}
+
+		dice.clear();
+
+		getButton(attackButton).hide();
+
+	}
+
+	/**
+	 * Processes the attack between 2 highlighted {@link ModelCountry}s and see if
+	 * they are eligible to 'fight'.
+	 */
+	public void attack() {
+
+		// If there is two countries highlighted
+		if (state.numberOfSelected() == 2) {
+
+			final ModelCountry attacker = state.getPrimary();
+			final ModelCountry defender = state.getSecondary();
+			final CombatRound round = new CombatRound(attacker, defender, attackingSquad.model, defendingSquad.model);
+
+			// If the army of the attacker country is larger that 1 unit in size
+			if (state.combat.getTotalAliveUnits(attacker.getArmy(), attackingSquad.model) > 1) {
+
+				// Remove the dead attacking units.
+				attackingSquad.model.removeDeadUnits();
+
+				defendingSquad.autoPopulate(defender.getArmy());
+
+				// Execute the combat
+				state.combat.fight(round);
+
+				// The position of the top attacker dice
+				final int attackX = getPosition().x + (getWidth() / 4);
+
+				// The position of the top defender dice
+				final int defendX = getPosition().x + ((getWidth() * 3) / 4);
+
+				final int y = getPosition().y + 250;
+
+				// Display the dice that we rolled
+				dice.set(state.combat.view.attackerDiceRolls, state.combat.view.defenderDiceRolls,
+						new Point(attackX, y), new Point(defendX, y));
+
+			}
+		}
+	}
+
+	/**
+	 * Moves all the visual components of the {@link WarMenu} along a specified
+	 * {@link Point} vector.
+	 */
+	@Override
+	public void moveComponents(Point vector) {
+		attackingSquad.move(vector);
+		defendingSquad.move(vector);
+	}
+
+	/**
+	 * Clears the elements of and hides, the {@link WarMenu}.
+	 */
+	public void clear() {
+
+		this.hide();
+
+		attackingSquad.model.clear();
+		defendingSquad.model.clear();
+
+	}
+
+	/**
+	 * Selects the highest number of dice possible for the current state of the
+	 * {@link WarMenu}.
+	 */
+	public void selectMaxUnits() {
+
+		final ModelArmy army = state.getPrimary().getArmy();
+
+		attackingSquad.autoPopulate(army);
+
+	}
+
 	private void drawNormalCombat(Frame frame) {
 
 		attackingSquad.draw(frame);
 
 		defendingSquad.draw(frame);
 
-		drawPlayer(enemyRuler, (getWidth() / 4), frame);
+		drawPlayer(state.getSecondary().getRuler(), (getWidth() / 4), frame);
 
-		drawPlayer(attackingRuler, -(getWidth() / 4), frame);
+		drawPlayer(state.getPrimary().getRuler(), -(getWidth() / 4), frame);
 
 		drawTitle(frame);
 
@@ -231,7 +308,7 @@ public class WarMenu extends Menu {
 
 	private void drawArmyPool(Frame frame, Point position) {
 
-		ModelArmy model = attacker.model.getArmy();
+		final ModelArmy model = state.getPrimary().getArmy();
 
 		int x = position.x - (((model.getVarietyOfUnits() - 1) * SlickUnit.WIDTH) / 2) - (SlickUnit.WIDTH / 2);
 		int y = position.y - (SlickUnit.HEIGHT / 2);
@@ -265,161 +342,6 @@ public class WarMenu extends Menu {
 	}
 
 	/**
-	 * Makes this {@link WarMenu} visible along with its attack {@link Button}.
-	 */
-	@Override
-	public void show() {
-		super.show();
-
-		getButton(attackButton).hide();
-
-		attacker = slick.modelView.getVisual(game.getAttack().getSelected(0));
-		defender = slick.modelView.getVisual(game.getAttack().getSelected(1));
-
-		enemyRuler = slick.modelView.getVisual(defender.model.getRuler());
-		attackingRuler = slick.modelView.getVisual(attacker.model.getRuler());
-
-		defendingSquad.autoPopulate(defender.model.getArmy());
-
-	}
-
-	/**
-	 * Hides this {@link WarMenu}.
-	 */
-	@Override
-	public void hide() {
-		super.hide();
-
-		if (attacker != null) {
-			attackingSquad.returnSquadToArmy(attacker.model.getArmy());
-
-		}
-		if (defender != null) {
-			defendingSquad.returnSquadToArmy(defender.model.getArmy());
-		}
-
-		dice.clear();
-
-		getButton(attackButton).hide();
-
-	}
-
-	/**
-	 * Processes the attack between 2 highlighted {@link ModelCountry}s and see if
-	 * they are eligible to 'fight'.
-	 */
-	public void attack() {
-
-		// If there is two countries highlighted
-		if (attacker != null && defender != null) {
-
-			final ModelPlayer attackingPlayer = attacker.model.getRuler();
-			final ModelPlayer defendingPlayer = defender.model.getRuler();
-
-			// If the army of the attacker country is larger that 1 unit in size
-			if (getTotalAliveUnits(attacker.model.getArmy(), attackingSquad) > 1) {
-
-				// Remove the dead attacking units.
-				attackingSquad.removeDeadUnits();
-
-				defendingSquad.autoPopulate(defender.model.getArmy());
-
-				// Execute the combat
-				combat.fight(attacker, defender, attackingSquad.getAliveUnits());
-
-				processPostFight(attackingPlayer, defendingPlayer);
-			}
-		}
-
-		// Cant attack any more hide the war menu.
-		if (game.getAttack().getPrimary() == null || game.getAttack().getSecondary() == null) {
-			game.getAttack().deselectAll();
-		}
-
-	}
-
-	private int getTotalAliveUnits(ModelArmy army, Squad squad) {
-		return army.getNumberOfUnits() + squad.getAliveUnits();
-	}
-
-	private void processPostFight(final ModelPlayer attackingPlayer, final ModelPlayer defendingPlayer) {
-
-		// If the country has been conquered
-		if (attacker.model.getRuler().equals(defender.model.getRuler())) {
-
-			enemyRuler = attackingRuler;
-			attackingPlayer.totalArmy.add(UnitHelper.getInstance().getWeakest());
-
-			// If there is a defending player
-			if (defendingPlayer != null) {
-
-				defendingPlayer.setCountriesRuled(defendingPlayer.getCountriesRuled() - 1);
-
-				// If the player has no countries they have lost.
-				if (defendingPlayer.getCountriesRuled() == 0) {
-
-					game.setLoser(defendingPlayer);
-					game.checkWinner();
-				}
-			}
-
-			// Increment the statistics appropriately
-			attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
-			attackingPlayer.setCountriesTaken(attackingPlayer.getCountriesTaken() + 1);
-			attackingPlayer.addPoints(PointHelper.CONQUER_REWARD);
-
-			game.getAttack().deselectAll();
-			game.checkContinentRulership();
-			game.checkChallenges();
-			getButton(attackButton).hide();
-
-		} else if (getTotalAliveUnits(attacker.model.getArmy(), attackingSquad) == 1) {
-			game.getAttack().deselectAll();
-			getButton(attackButton).hide();
-		}
-	}
-
-	/**
-	 * Moves all the visual components of the {@link WarMenu} along a specified
-	 * {@link Point} vector.
-	 */
-	@Override
-	public void moveComponents(Point vector) {
-		attackingSquad.move(vector);
-		defendingSquad.move(vector);
-	}
-
-	/**
-	 * Clears the elements of and hides, the {@link WarMenu}.
-	 */
-	public void clear() {
-
-		this.hide();
-
-		attackingRuler = null;
-		defender = null;
-		attacker = null;
-		enemyRuler = null;
-
-		attackingSquad.clear();
-		defendingSquad.clear();
-
-	}
-
-	/**
-	 * Selects the highest number of dice possible for the current state of the
-	 * {@link WarMenu}.
-	 */
-	public void selectMaxUnits() {
-
-		ModelArmy army = attacker.model.getArmy();
-
-		Squad squad = attackingSquad;
-
-		squad.autoPopulate(army);
-	}
-
-	/**
 	 * Displays text when a {@link ModelPlayer} fails to conquer a
 	 * {@link ModelCountry} they are attacking.
 	 * 
@@ -429,8 +351,8 @@ public class WarMenu extends Menu {
 	private void failedConquer(Frame frame) {
 		String failure = "has insufficient units to attack.";
 
-		frame.draw(countryFont, attacker.model.getName(),
-				getPosition().x + (getWidth() / 2) - (countryFont.getWidth(attacker.model.getName()) / 2),
+		frame.draw(countryFont, state.getPrimary().getName(),
+				getPosition().x + (getWidth() / 2) - (countryFont.getWidth(state.getPrimary().getName()) / 2),
 				getPosition().y + (getHeight() / 2) - 45);
 
 		frame.draw(resultFont, failure, getPosition().x + (getWidth() / 2) - (resultFont.getWidth(failure) / 2),
@@ -438,8 +360,8 @@ public class WarMenu extends Menu {
 
 		getButton(attackButton).hide();
 
-		drawPlayer(attackingRuler, -(getWidth() / 4), frame);
-		drawPlayer(enemyRuler, (getWidth() / 4), frame);
+		drawPlayer(state.getPrimary().getRuler(), -(getWidth() / 4), frame);
+		drawPlayer(state.getSecondary().getRuler(), (getWidth() / 4), frame);
 
 		drawTitle(frame);
 
@@ -461,13 +383,13 @@ public class WarMenu extends Menu {
 		frame.draw(resultFont, success, resultX, resultY);
 
 		// Draw the attacking country's name
-		final String attackerName = attacker.model.getName();
+		final String attackerName = state.getPrimary().getName();
 		final int attackerX = getPosition().x + (getWidth() / 2) - (countryFont.getWidth(attackerName) / 2);
 		final int attackerY = getPosition().y + (getHeight() / 2) - ((countryFont.getHeight(attackerName) * 3) / 2);
 		frame.draw(countryFont, attackerName, attackerX, attackerY);
 
 		// Draw the defending country's name
-		final String conqueredName = defender.model.getName();
+		final String conqueredName = state.getSecondary().getName();
 		final int conqueredX = getPosition().x + (getWidth() / 2) - (countryFont.getWidth(conqueredName) / 2);
 		final int conqueredY = getPosition().y + (getHeight() / 2) + ((countryFont.getHeight(attackerName) * 3) / 2);
 		frame.draw(countryFont, conqueredName, conqueredX, conqueredY);
@@ -475,8 +397,8 @@ public class WarMenu extends Menu {
 		getButton(attackButton).hide();
 
 		// Draw the player icons
-		drawPlayer(attackingRuler, -(getWidth() / 4), frame);
-		drawPlayer(enemyRuler, (getWidth() / 4), frame);
+		drawPlayer(state.getPrimary().getRuler(), -(getWidth() / 4), frame);
+		drawPlayer(state.getSecondary().getRuler(), (getWidth() / 4), frame);
 
 		// Draw the country titles
 		drawTitle(frame);
@@ -494,12 +416,14 @@ public class WarMenu extends Menu {
 
 		final int yOffset = 190;
 
-		String attackingArmy = Integer.toString(attacker.model.getArmy().getStrength() + attackingSquad.geStrength());
+		String attackingArmy = Integer
+				.toString(state.getPrimary().getArmy().getStrength() + attackingSquad.model.geStrength());
 
 		frame.draw(textFont, attackingArmy, getPosition().x + (getWidth() / 4) - (textFont.getWidth(attackingArmy) / 2),
 				getPosition().y + yOffset);
 
-		String enemyArmy = Integer.toString(defender.model.getArmy().getStrength() + defendingSquad.geStrength());
+		String enemyArmy = Integer
+				.toString(state.getSecondary().getArmy().getStrength() + defendingSquad.model.geStrength());
 
 		frame.draw(textFont, enemyArmy, getPosition().x + ((getWidth() * 3) / 4) - (textFont.getWidth(enemyArmy) / 2),
 				getPosition().y + yOffset);
@@ -520,8 +444,8 @@ public class WarMenu extends Menu {
 		int y = getPosition().y + yOffset;
 
 		String vs = "VS";
-		String attackerStr = attacker.model.getName();
-		String enemyStr = defender.model.getName();
+		String attackerStr = state.getPrimary().getName();
+		String enemyStr = state.getSecondary().getName();
 
 		int centreX = getPosition().x + (getWidth() / 2);
 		int vsX = centreX - (headingFont.getWidth(vs) / 2);
@@ -545,219 +469,17 @@ public class WarMenu extends Menu {
 	 * @param offset
 	 *            The string offset
 	 */
-	private void drawPlayer(SlickPlayer player, int offset, Frame frame) {
+	private void drawPlayer(ModelPlayer player, int offset, Frame frame) {
 
 		if (player == null) {
 			return;
 		}
 
+		final SlickPlayer slickPlayer = slick.modelView.getVisual(player);
+
 		int centreX = getPosition().x + (getWidth() / 2);
-		int x = centreX + offset - (player.getWidth() / 2);
-		frame.draw(player.getImage(), x, this.getPosition().y + 80);
-	}
-
-	private final class CombatHelper {
-
-		/**
-		 * This emulates one round of a war between two {@link ModelCountry}s. The
-		 * defender will always defend with the maximum number of units available to
-		 * them.
-		 * 
-		 * @param attacking
-		 *            This is the {@link ModelCountry} that the {@link ModelPlayer} uses
-		 *            to attack a {@link ModelCountry}.
-		 * @param defending
-		 *            This is the {@link ModelCountry} that defend against the
-		 *            {@link ModelPlayer}'s attacking {@link ModelArmy}.
-		 * @param attackSquadSize
-		 *            Amount of units (dice) the attacking {@link ModelArmy} wants to
-		 *            pit against the defending {@link ModelArmy}
-		 */
-		public void fight(SlickCountry attacking, SlickCountry defending, int attackSquadSize) {
-
-			// Check parameter
-			if (attackSquadSize > 3 || attackSquadSize < 0) {
-				throw new IllegalArgumentException(
-						"The attacker cannot attact with more that 3 or less than 3 units at a time.");
-			}
-
-			final int defendingArmySize = defending.model.getArmy().getNumberOfUnits() + defendingSquad.getAliveUnits();
-
-			// Get the dice rolls for the attackers and defenders.
-			final Integer[] attackerDiceRolls = getDiceRolls(attackSquadSize);
-
-			final Integer[] defenderDiceRolls = getDiceRolls(
-					defendingArmySize > MAX_DEFEND_SQUAD_SIZE ? MAX_DEFEND_SQUAD_SIZE : defendingArmySize);
-
-			// The position of the top attacker dice
-			final int attackX = getPosition().x + (getWidth() / 4);
-
-			// The position of the top defender dice
-			final int defendX = getPosition().x + ((getWidth() * 3) / 4);
-
-			final int y = getPosition().y + 250;
-
-			// Display the dice that we rolled
-			dice.set(attackerDiceRolls, defenderDiceRolls, new Point(attackX, y), new Point(defendX, y));
-
-			// Compare the dice that were rolled.
-			compareDiceRolls(attackerDiceRolls, defenderDiceRolls);
-
-		}
-
-		/**
-		 * Compares the attackers dice roles from the defenders rolls and removes units
-		 * from the attacking country and defending country appropriately.
-		 * 
-		 * @param attackerDiceRolls
-		 * @param defenderDiceRolls
-		 */
-		private void compareDiceRolls(Integer[] attackerDiceRolls, Integer[] defenderDiceRolls) {
-
-			// Get the size of the smaller set of dice.
-			final int diceToCheck = attackerDiceRolls.length >= defenderDiceRolls.length ? defenderDiceRolls.length
-					: attackerDiceRolls.length;
-
-			// Copy the squads to these holding lists so the squads can be modified.
-			final LinkedList<SquadMember> attackingSqd = new LinkedList<>(attackingSquad.members);
-			final LinkedList<SquadMember> defendingSqd = new LinkedList<>(defendingSquad.members);
-
-			// The index of the current set of current units.
-			int unitIndex = 0;
-
-			// Holds whether the combat is in a valid state to continue. For example combat
-			// cannot continue if the defender has no units.
-			boolean finished = false;
-
-			// Compare each attacking dice roll against the defending dice roll
-			while (unitIndex < diceToCheck && !finished) {
-
-				// The units that will fight
-				final ModelUnit attackingUnit = attackingSqd.get(unitIndex).unit.model;
-				final ModelUnit defendingUnit = defendingSqd.get(unitIndex).unit.model;
-
-				// Attacker won
-				if (attackerDiceRolls[unitIndex] > defenderDiceRolls[unitIndex]) {
-					finished = attackerWon(defender, attacker, attackingUnit);
-				}
-				// Attacker lost
-				else {
-					finished = attackerLost(defender, attacker, defendingUnit);
-				}
-
-				unitIndex++;
-			}
-		}
-
-		private boolean attackerWon(SlickCountry defending, SlickCountry attacking, ModelUnit attackingUnit) {
-
-			final ModelPlayer defender = defending.model.getRuler();
-			final ModelPlayer attacker = attacking.model.getRuler();
-			final ModelArmy defendingArmy = defending.model.getArmy();
-			final int totalStrength = defendingArmy.getStrength() + defendingSquad.geStrength();
-
-			// If the army of the defending country is of size on then this victory will
-			// conquer the country. Otherwise just kill unit from the defending army.
-			if (attackingUnit.strength >= totalStrength) {
-				resetArmyToWeakest(defendingSquad, defendingArmy, defender, attackingUnit);
-
-				defending.model.setRuler(attacker);
-				return true;
-
-			} else {
-				removeUnitFromArmy(defendingSquad, defendingArmy, defender, attackingUnit);
-
-				// If the defending army was cleared.
-				if (defendingArmy.getNumberOfUnits() == 0) {
-					defendingArmy.setWeakest();
-					defending.model.setRuler(attacker);
-					return true;
-				}
-
-				return false;
-			}
-		}
-
-		private boolean attackerLost(SlickCountry defending, SlickCountry attacking, ModelUnit defendingUnit) {
-
-			final ModelPlayer attacker = attacking.model.getRuler();
-			final ModelArmy attackingArmy = attacking.model.getArmy();
-			final int totalStrength = attackingArmy.getStrength() + attackingSquad.geStrength();
-
-			if (defendingUnit.strength >= totalStrength) {
-				resetArmyToWeakest(attackingSquad, attackingArmy, attacker, defendingUnit);
-				return true;
-			} else {
-				removeUnitFromArmy(attackingSquad, attackingArmy, attacker, defendingUnit);
-
-				// If the attacking army was cleared.
-				if (attackingArmy.getNumberOfUnits() == 1) {
-					attackingArmy.setWeakest();
-					return true;
-				}
-
-				return false;
-			}
-		}
-
-		private void resetArmyToWeakest(Squad squad, ModelArmy army, ModelPlayer player, ModelUnit enemyUnit) {
-			final ModelUnit weakestUnit = UnitHelper.getInstance().getWeakest();
-
-			squad.returnSquadToArmy(army);
-
-			final int toRemove = enemyUnit.strength - weakestUnit.strength;
-
-			if (player != null) {
-				player.totalArmy.remove(toRemove);
-			}
-
-			army.setWeakest();
-
-		}
-
-		private void removeUnitFromArmy(Squad squad, ModelArmy army, ModelPlayer player, ModelUnit enemyUnit) {
-
-			boolean removedFromSquad = squad.killUnit(enemyUnit);
-
-			// If the enemy unti's damage was not taken from the squad return the squad to
-			// the army and then remove the damage from the army.
-			if (!removedFromSquad) {
-				squad.returnSquadToArmy(army);
-				army.remove(enemyUnit);
-			}
-
-			if (player != null) {
-				player.totalArmy.remove(enemyUnit);
-			}
-
-		}
-
-		/**
-		 * Gets an <code>int[]</code> of {@link Random#nextInt(int)} with bounds of 1 -
-		 * 6
-		 * 
-		 * @param numberOfRolls
-		 *            <code>int</code> number of rolls
-		 * @return <code>int[]</code>
-		 */
-		private Integer[] getDiceRolls(int numberOfRolls) {
-
-			final int maxDice = 6;
-
-			// Holds the dice roles.
-			final Integer[] rolls = new Integer[numberOfRolls];
-
-			// Initialise dice rolls for the attacking army
-			for (int rollIndex = 0; rollIndex < numberOfRolls; rollIndex++) {
-				rolls[rollIndex] = random.nextInt(maxDice) + 1;
-			}
-
-			// Sort the dice roles into descending order.
-			Arrays.sort(rolls, Collections.reverseOrder());
-
-			return rolls;
-		}
-
+		int x = centreX + offset - (slickPlayer.getWidth() / 2);
+		frame.draw(slickPlayer.getImage(), x, this.getPosition().y + 80);
 	}
 
 	/**
@@ -881,95 +603,22 @@ public class WarMenu extends Menu {
 
 	}
 
-	private final class Squad {
-
-		public final List<SquadMember> members;
+	private final class SlickSquad implements Observer {
 
 		private final boolean isUser;
 
-		private final int maxSize;
+		private final ModelSquad model;
+
+		private final List<SlickSquadMember> members;
 
 		private Point squadTop;
 
-		public Squad(Point position, boolean isUser, int maxSize) {
+		public SlickSquad(Point position, boolean isUser, ModelSquad model) {
 			this.squadTop = position;
 			this.isUser = isUser;
-			this.maxSize = maxSize;
+			this.model = model;
+			this.model.addObserver(this);
 			this.members = new LinkedList<>();
-		}
-
-		public void returnUnitToArmy(ModelArmy army, SquadMember member) {
-
-			members.remove(member);
-
-			if (member.isAlive) {
-				army.add(member.unit.model);
-			}
-
-			repositionUnits();
-		}
-
-		public boolean killUnit(ModelUnit unit) {
-
-			boolean removedFromSquad = false;
-
-			// If the enemy units damage can be removed from the squad remove it from the
-			// squad
-			for (SquadMember member : members) {
-				if (!removedFromSquad && member.unit.model.strength == unit.strength && member.isAlive) {
-					removedFromSquad = true;
-					member.isAlive = false;
-				}
-			}
-
-			return removedFromSquad;
-
-		}
-
-		public void autoPopulate(ModelArmy army) {
-
-			removeDeadUnits();
-			returnSquadToArmy(army);
-
-			ModelUnit unit = army.getStrongestUnit();
-
-			while (size() < maxSize && army.getNumberOfUnits() > (isUser ? 1 : 0)) {
-
-				if (army.hasUnit(unit)) {
-					this.moveToSquad(unit, army);
-				} else {
-					unit = army.getStrongestUnit();
-				}
-			}
-
-		}
-
-		public int getAliveUnits() {
-			int numberOfUnits = 0;
-
-			for (SquadMember member : members) {
-				numberOfUnits += member.isAlive ? 1 : 0;
-			}
-			return numberOfUnits;
-		}
-
-		public int size() {
-			return members.size();
-		}
-
-		public void moveToSquad(ModelUnit unit, ModelArmy army) {
-
-			removeDeadUnits();
-
-			if (members.size() < maxSize) {
-				army.remove(unit);
-
-				SquadMember member = new SquadMember(slick.modelView.getVisual(unit), true);
-				member.setPosition(new Point(squadTop.x, squadTop.y + (members.size() * SlickUnit.HEIGHT)));
-
-				members.add(member);
-			}
-
 		}
 
 		public void draw(Frame frame) {
@@ -978,10 +627,9 @@ public class WarMenu extends Menu {
 			int y = squadTop.y;
 
 			// Draw each member in the squad
-			for (SquadMember member : members) {
+			for (SlickSquadMember member : members) {
 
 				// Draw the unit
-
 				frame.draw(member, new EventListener() {
 
 					@Override
@@ -993,11 +641,11 @@ public class WarMenu extends Menu {
 					public void mouseClick(Point mouse, int mouseButton) {
 
 						if (isUser) {
-							attackingSquad.returnUnitToArmy(attacker.model.getArmy(), member);
+							attackingSquad.model.returnUnitToArmy(state.getPrimary().getArmy(), member.model);
 
 							// If all the alive units have been removed hide the attack button and clear the
 							// dice.
-							if (attackingSquad.getAliveUnits() == 0) {
+							if (attackingSquad.model.getAliveUnits() == 0) {
 								getButton(attackButton).hide();
 								dice.clear();
 							}
@@ -1017,7 +665,7 @@ public class WarMenu extends Menu {
 				});
 
 				// If the member is dead then draw a cross over it.
-				if (!member.isAlive) {
+				if (!member.model.isAlive) {
 
 					final int left = x;
 					final int right = x + SlickUnit.WIDTH;
@@ -1034,74 +682,56 @@ public class WarMenu extends Menu {
 			}
 		}
 
-		public void clear() {
-			if (!members.isEmpty()) {
-				members.clear();
-			}
-		}
-
 		public void move(Point vector) {
 
 			int x = squadTop.x + vector.x;
 			int y = squadTop.y + vector.y;
 
 			squadTop = new Point(x, y);
-		}
-
-		public void removeDeadUnits() {
-
-			members.stream().filter(member -> !member.isAlive).forEach(member -> members.remove(member));
 
 			repositionUnits();
+		}
 
+		private void autoPopulate(ModelArmy army) {
+			model.autoPopulate(army, isUser ? 1 : 0);
 		}
 
 		private void repositionUnits() {
 
 			// Reposition all the alive units.
 			int index = 0;
-			for (SquadMember member : members) {
+			for (SlickSquadMember member : members) {
 				member.setPosition(new Point(squadTop.x, squadTop.y + (index * SlickUnit.HEIGHT)));
 				index++;
 			}
 
 		}
 
-		public int geStrength() {
-			int strength = 0;
-
-			for (SquadMember member : members) {
-				strength += member.isAlive ? member.unit.model.strength : 0;
+		@Override
+		public void update(Observable o, Object arg) {
+			if (!members.isEmpty()) {
+				members.clear();
 			}
 
-			return strength;
-		}
+			model.forEach(member -> members.add(new SlickSquadMember(member)));
 
-		public void returnSquadToArmy(ModelArmy army) {
-			members.forEach(member -> {
-				if (member.isAlive) {
-					army.add(member.unit.model);
-				}
-			});
-			clear();
+			repositionUnits();
 		}
 
 	}
 
-	private final class SquadMember extends Clickable {
+	private final class SlickSquadMember extends Clickable {
 
 		public final SlickUnit unit;
 
-		public boolean isAlive;
+		public final ModelSquadMember model;
 
-		public SquadMember(SlickUnit unit, boolean isAlive) {
-
-			this.unit = unit;
-			this.isAlive = isAlive;
-
+		public SlickSquadMember(ModelSquadMember model) {
+			this.model = model;
+			this.unit = slick.modelView.getVisual(model.unit);
 			replaceImage(unit.getImage());
-
 		}
 
 	}
+
 }

@@ -40,19 +40,24 @@ public final class Ocelot extends AI {
 	 * countries based on the size of the enemy armies at those countries.
 	 */
 	@Override
-	public boolean processReinforce(AIController api) {
-		for (Country country : calcBiggestTerritory(api)) {
-			System.out.println(country);
-		}
+	public AIOperation processReinforce(AIController api) {
+		
+		final AIOperation op = new AIOperation();
+		
 		for (Country country : calcBiggestTerritory(api)) {
 			if (api.getCurrentPlayer().getDistributableArmy().getStrength() != 0) {
-				api.select(country);
-				api.reinforce();
-				api.clearSelected();
+				
+				if(!op.select.isEmpty()) {
+					op.select.clear();
+				}
+				op.select.add(country);
+				op.processAgain = true;
+				
+			
 			}
 		}
 
-		return true;
+		return op;
 
 	}
 
@@ -60,7 +65,7 @@ public final class Ocelot extends AI {
 	 * This {@link Ocelot} will attack the largest thread at its borders first.
 	 */
 	@Override
-	public boolean processAttack(AIController api) {
+	public AIOperation processAttack(AIController api) {
 
 		Map<Integer, Entry> countries = getAttackWeightings(api);
 
@@ -70,16 +75,22 @@ public final class Ocelot extends AI {
 			highest = value > highest ? value : highest;
 		}
 
+		
+		final AIOperation op = new AIOperation();
+
 		if (highest == Integer.MIN_VALUE) {
-			return false;
+
+			op.processAgain = false;
+
+		} else {
+
+			op.select.add(countries.get(highest).a);
+			op.select.add(countries.get(highest).b);
+			op.processAgain = true;
+
 		}
 
-		api.select(countries.get(highest).a);
-		api.select(countries.get(highest).b);
-
-		api.attack();
-
-		return true;
+		return op;
 
 	}
 
@@ -88,7 +99,7 @@ public final class Ocelot extends AI {
 	 * attack the most neighbouring countries.
 	 */
 	@Override
-	public boolean processFortify(AIController api) {
+	public AIOperation processFortify(AIController api) {
 
 		final Set<Country> internal = new HashSet<>();
 
@@ -103,31 +114,26 @@ public final class Ocelot extends AI {
 		// Sort the weights roles into descending order.
 		Arrays.sort(weights, Collections.reverseOrder());
 
-		// If there was no weighted pairs.
+		final AIOperation op = new AIOperation();
+
+		// If there is no weighted pairs.
 		if (weights.length == 0) {
-			return false;
+			op.processAgain = false;
+			return op;
+		}
+		
+		final Country safe = possibleMoves.get(weights[0]).a;
+		final Country border = possibleMoves.get(weights[0]).b;
+
+		if (!op.select.isEmpty()) {
+			op.select.clear();
 		}
 
-		for (int index = 0; index < weights.length; index++) {
+		op.select.add(safe);
+		op.select.add(border);
+		op.processAgain = true;
 
-			final Country safe = possibleMoves.get(weights[index]).a;
-			final Country border = possibleMoves.get(weights[index]).b;
-
-			api.clearSelected();
-
-			// If there was a valid link between the safe and border then the secondary will
-			// be the border.
-			if (api.select(safe)) {
-				if (api.select(border)) {
-					api.fortify();
-					return true;
-				}
-			}
-
-		}
-
-		// If there was weighted pairs
-		return false;
+		return op;
 
 	}
 

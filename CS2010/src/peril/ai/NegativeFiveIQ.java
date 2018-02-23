@@ -27,7 +27,7 @@ public class NegativeFiveIQ extends AI {
 	}
 
 	@Override
-	protected boolean processReinforce(AIController api) {
+	protected AIOperation processReinforce(AIController api) {
 
 		Map<Integer, Country> countries = getReinforceWeightings(api);
 
@@ -38,15 +38,16 @@ public class NegativeFiveIQ extends AI {
 				strongest = value;
 			}
 		}
+		
+		final AIOperation op = new AIOperation();
+		op.select.add(countries.get(strongest));
+		op.processAgain = true;
 
-		api.select(countries.get(strongest));
-		api.reinforce();
-
-		return true;
+		return op;
 	}
 
 	@Override
-	protected boolean processAttack(AIController api) {
+	protected AIOperation processAttack(AIController api) {
 		
 		Map<Integer, Entry> countries = getAttackWeightings(api);
 
@@ -56,20 +57,21 @@ public class NegativeFiveIQ extends AI {
 			highest = value > highest ? value : highest;
 		}
 
+		final AIOperation op = new AIOperation();
+
 		if (highest == Integer.MIN_VALUE) {
-			return false;
+			op.processAgain = false;
+		} else {
+			op.select.add(countries.get(highest).a);
+			op.select.add(countries.get(highest).b);
+			op.processAgain = true;
 		}
 
-		api.select(countries.get(highest).a);
-		api.select(countries.get(highest).b);
-
-		api.attack();
-
-		return true;
+		return op;
 	}
 
 	@Override
-	protected boolean processFortify(AIController api) {
+	protected AIOperation processFortify(AIController api) {
 		
 		Map<Integer, Country> countries = fortify(api);
 		
@@ -81,7 +83,7 @@ public class NegativeFiveIQ extends AI {
 			}
 		}
 		
-		return true;
+		return new AIOperation();
 	}
 
 	// Assisted

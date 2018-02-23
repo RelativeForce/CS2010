@@ -37,7 +37,7 @@ public final class Noob extends AI {
 	}
 
 	@Override
-	protected boolean processReinforce(AIController api) {
+	protected AIOperation processReinforce(AIController api) {
 
 		HashMap<Integer, Country> countries = getReinforceWeightings(api);
 
@@ -54,19 +54,20 @@ public final class Noob extends AI {
 			lowest = value > lowest ? value : lowest;
 		}
 
-		// Select the country with the lowest weight then reinforce it.
-		if (api.select(countries.get(lowest))) {
-			api.reinforce();
-		}
+		final AIOperation op = new AIOperation();
 
-		return true;
+		op.select.add(countries.get(lowest));
+		op.processAgain = true;
+
+		return op;
+		
 	}
 
 	/**
 	 * This {@link Noob} will attack the largest thread at its borders first.
 	 */
 	@Override
-	public boolean processAttack(AIController api) {
+	public AIOperation processAttack(AIController api) {
 
 		Map<Integer, Entry> countries = getAttackWeightings(api);
 
@@ -76,22 +77,21 @@ public final class Noob extends AI {
 			highest = value > highest ? value : highest;
 		}
 
+		final AIOperation op = new AIOperation();
+
 		if (highest == Integer.MIN_VALUE) {
-			return false;
+			op.processAgain = false;
+		} else {
+			op.select.add(countries.get(highest).a);
+			op.select.add(countries.get(highest).b);
+			op.processAgain = true;
 		}
 
-		if (api.select(countries.get(highest).a)) {
-			if (api.select(countries.get(highest).b)) {
-				api.attack();
-				return true;
-
-			}
-		}
-		return false;
+		return op;
 	}
 
 	@Override
-	public boolean processFortify(AIController api) {
+	public AIOperation processFortify(AIController api) {
 
 		final Set<Country> internal = new HashSet<>();
 
@@ -106,24 +106,26 @@ public final class Noob extends AI {
 		// Sort the weights roles into descending order.
 		Arrays.sort(weights, Collections.reverseOrder());
 
-		for (int index = 0; index < weights.length; index++) {
+		final AIOperation op = new AIOperation();
 
-			final Country safe = possibleMoves.get(weights[index]).a;
-			final Country border = possibleMoves.get(weights[index]).b;
+		// If there is no weighted pairs.
+		if (weights.length == 0) {
+			op.processAgain = false;
+			return op;
+		}
+		
+		final Country safe = possibleMoves.get(weights[0]).a;
+		final Country border = possibleMoves.get(weights[0]).b;
 
-			api.clearSelected();
-
-			// If there was a valid link between the safe and border then the secondary will
-			// be the border.
-			if (api.select(safe) && api.select(border)) {
-
-				api.fortify();
-				return true;
-			}
+		if (!op.select.isEmpty()) {
+			op.select.clear();
 		}
 
-		// If there was weighted pairs
-		return false;
+		op.select.add(safe);
+		op.select.add(border);
+		op.processAgain = true;
+
+		return op;
 
 	}
 

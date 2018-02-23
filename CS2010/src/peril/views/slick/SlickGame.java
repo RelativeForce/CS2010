@@ -55,6 +55,11 @@ import peril.views.slick.util.Point;
 public final class SlickGame extends StateBasedGame implements View {
 
 	/**
+	 * The target fps of the game.
+	 */
+	public static final int FPS = 60;
+	
+	/**
 	 * The {@link SlickModelView} that maps the model objects to their slick object
 	 * counterparts.
 	 * 
@@ -123,7 +128,8 @@ public final class SlickGame extends StateBasedGame implements View {
 		try {
 			agc = new AppGameContainer(this);
 			agc.setDisplayMode(MainMenu.WIDTH, MainMenu.HEIGHT, false);
-			agc.setTargetFrameRate(60);
+			agc.setSmoothDeltas(true);
+			agc.setTargetFrameRate(FPS);
 		} catch (SlickException e) {
 			e.printStackTrace();
 			throw new IllegalStateException("The game must have a game container.");

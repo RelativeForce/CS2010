@@ -20,6 +20,7 @@ import peril.model.board.ModelCountry;
 import peril.model.states.ModelState;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
+import peril.views.slick.SlickGame;
 import peril.views.slick.board.*;
 import peril.views.slick.components.MiniMap;
 import peril.views.slick.components.menus.Menu;
@@ -68,11 +69,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	private final List<Music> backgroundMusic;
 
 	/**
-	 * The {@link Point} pan direction vector this state will pan at.
-	 */
-	private Point panDirection;
-
-	/**
 	 * The {@link MiniMap} that is currently displayed over the {@link SlickBoard}.
 	 */
 	private MiniMap miniMap;
@@ -95,7 +91,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		super(game, stateName, id, id);
 		this.menus = slick.menus;
 		this.model = model;
-		this.panDirection = null;
 		this.backgroundMusic = new ArrayList<>();
 		this.selected = new ArrayList<>();
 
@@ -164,13 +159,15 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 		final Point mouse = new Point(input.getAbsoluteMouseX(), input.getAbsoluteMouseY());
 
-		processPan(mouse);
+		final Point panDirection = processPan(mouse);
 
 		// If there is no menu visible and there is a pan direction, pan.
 		if (panDirection != null && !menus.menuVisible()) {
 
-			final int x = (panDirection.x * delta) / gc.getFPS();
-			final int y = (panDirection.y * delta) / gc.getFPS();
+			final float ratio = ((float) SlickGame.FPS / (((float) 1000f) / ((float) delta)));
+
+			final int x = (int) ((float) panDirection.x * ratio);
+			final int y = (int) ((float) panDirection.y * ratio);
 
 			frame.panToolTips(pan(new Point(x, y)));
 		}
@@ -206,8 +203,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 		model.deselectAll();
 
-		// Stop the state from panning after it has been exited.
-		panDirection = null;
 	}
 
 	/**
@@ -585,8 +580,9 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * 
 	 * @param mousePosition
 	 *            {@link Point} position of the mouse.
+	 * @return The pan direction {@link Point} vector.
 	 */
-	private void processPan(Point mousePosition) {
+	private Point processPan(Point mousePosition) {
 
 		// Holds the dimensions of the game container.
 		int screenWidth = slick.getScreenWidth();
@@ -597,7 +593,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		int yPadding = screenHeight / 10;
 
 		// The pixels per frame the state will pan at.
-		int panSpeed = 100;
+		int panSpeed = 50;
 
 		int x = 0;
 		int y = 0;
@@ -616,13 +612,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 			y = -panSpeed;
 		}
 
-		// If there is a pan direction set the pan direction as that vector. Otherwise
-		// set the pan direction as null.
-		if (x != 0 || y != 0) {
-			panDirection = new Point(x, y);
-		} else {
-			panDirection = null;
-		}
+		return new Point(x, y);
 
 	}
 

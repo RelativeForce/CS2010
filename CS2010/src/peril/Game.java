@@ -19,8 +19,8 @@ import peril.views.slick.SlickGame;
  * 
  * @author Joshua_Eddy, James_Rowntree
  * 
- * @version 1.01.02
- * @since 2018-02-06
+ * @version 1.01.03
+ * @since 2018-02-23
  *
  */
 public final class Game {
@@ -92,10 +92,10 @@ public final class Game {
 		this.aiHelper = new AIHelper(game);
 
 		// Construct model states
-		final Setup setup = new Setup();
-		final Attack attack = new Attack();
-		final Fortify fortify = new Fortify();
-		final Reinforce reinforce = new Reinforce();
+		final Setup setup = new Setup(game);
+		final Attack attack = new Attack(game);
+		final Fortify fortify = new Fortify(game);
+		final Reinforce reinforce = new Reinforce(game);
 		this.states = new ModelStateHelper(attack, reinforce, setup, fortify);
 
 		// Set the initial round to zero

@@ -13,11 +13,9 @@ import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.Game;
 import peril.Update;
 import peril.ai.AI;
 import peril.controllers.GameController;
-import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;
 import peril.model.states.ModelState;
 import peril.views.slick.EventListener;
@@ -161,6 +159,13 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 */
 	@Override
 	public void update(GameContainer gc, int delta, Frame frame) {
+
+		final Input input = gc.getInput();
+
+		final Point mouse = new Point(input.getAbsoluteMouseX(), input.getAbsoluteMouseY());
+
+		processPan(mouse);
+
 		// If there is no menu visible and there is a pan direction, pan.
 		if (panDirection != null && !menus.menuVisible()) {
 
@@ -244,59 +249,9 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		case Input.KEY_ESCAPE:
 			menus.show(PauseMenu.NAME);
 			break;
-		case Input.KEY_T:
-			tradeSelectedUnitUp();
-			break;
 		default:
 			break;
 
-		}
-
-	}
-
-	/**
-	 * Assigns the pan direction of the {@link CoreGameState}.
-	 * 
-	 * @param mousePosition
-	 *            {@link Point} position of the mouse.
-	 */
-	public void parseMouse(Point mousePosition) {
-		super.parseMouse(mousePosition);
-
-		// Holds the dimensions of the game container.
-		int screenWidth = slick.getScreenWidth();
-		int screenHeight = slick.getScreenHeight();
-
-		// Set the padding of the window
-		int xPadding = screenWidth / 10;
-		int yPadding = screenHeight / 10;
-
-		// The pixels per frame the state will pan at.
-		int panSpeed = 100;
-
-		int x = 0;
-		int y = 0;
-
-		// If the x is within the padding pan left or right
-		if (mousePosition.x < xPadding) {
-			x = panSpeed;
-		} else if (mousePosition.x > screenWidth - xPadding) {
-			x = -panSpeed;
-		}
-
-		// If the y is within the padding pan up or down
-		if (mousePosition.y < yPadding) {
-			y = panSpeed;
-		} else if (mousePosition.y > screenHeight - yPadding) {
-			y = -panSpeed;
-		}
-
-		// If there is a pan direction set the pan direction as that vector. Otherwise
-		// set the pan direction as null.
-		if (x != 0 || y != 0) {
-			panDirection = new Point(x, y);
-		} else {
-			panDirection = null;
 		}
 
 	}
@@ -540,30 +495,10 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 *            The upgrade button.
 	 */
 	protected final void showUpgradeButton(Button upgrade) {
-		
+
 		final Point army = selected.get(0).getArmyPosition();
 		upgrade.setPosition(new Point(army.x - upgrade.getWidth(), army.y + (SlickUnit.HEIGHT / 2) + 5));
 		upgrade.show();
-	}
-
-	/**
-	 * Performs the {@link ModelArmy#tradeUnitsUp()} on the selected
-	 * {@link SlickCountry}(s).
-	 */
-	private void tradeSelectedUnitUp() {
-
-		if (selected.get(0) == null) {
-			return;
-		}
-
-		ModelArmy army = selected.get(0).model.getArmy();
-
-		if (army.getSelected() == null) {
-			return;
-		}
-
-		army.tradeUp(army.getSelected());
-
 	}
 
 	/**
@@ -610,9 +545,9 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 			@Override
 			public void mouseClick(Point mouse, int mouseButton) {
 
-				if(slick.menus.menuVisible()) {
+				if (slick.menus.menuVisible()) {
 					return;
-				}else if (!(CoreGameState.this instanceof SetupState) && game.getCurrentModelPlayer().ai != AI.USER ) {
+				} else if (!(CoreGameState.this instanceof SetupState) && game.getCurrentModelPlayer().ai != AI.USER) {
 					return;
 				}
 
@@ -642,6 +577,52 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 				// Do nothing
 			}
 		});
+
+	}
+
+	/**
+	 * Assigns the pan direction of the {@link CoreGameState}.
+	 * 
+	 * @param mousePosition
+	 *            {@link Point} position of the mouse.
+	 */
+	private void processPan(Point mousePosition) {
+
+		// Holds the dimensions of the game container.
+		int screenWidth = slick.getScreenWidth();
+		int screenHeight = slick.getScreenHeight();
+
+		// Set the padding of the window
+		int xPadding = screenWidth / 10;
+		int yPadding = screenHeight / 10;
+
+		// The pixels per frame the state will pan at.
+		int panSpeed = 100;
+
+		int x = 0;
+		int y = 0;
+
+		// If the x is within the padding pan left or right
+		if (mousePosition.x < xPadding) {
+			x = panSpeed;
+		} else if (mousePosition.x > screenWidth - xPadding) {
+			x = -panSpeed;
+		}
+
+		// If the y is within the padding pan up or down
+		if (mousePosition.y < yPadding) {
+			y = panSpeed;
+		} else if (mousePosition.y > screenHeight - yPadding) {
+			y = -panSpeed;
+		}
+
+		// If there is a pan direction set the pan direction as that vector. Otherwise
+		// set the pan direction as null.
+		if (x != 0 || y != 0) {
+			panDirection = new Point(x, y);
+		} else {
+			panDirection = null;
+		}
 
 	}
 

@@ -158,7 +158,7 @@ public final class MenuHelper {
 	 * @return Whether or not there is a {@link Menu} currently visible.
 	 */
 	public boolean menuVisible() {
-		return visible != null;
+		return visible != null && visible.isVisible();
 	}
 
 	/**

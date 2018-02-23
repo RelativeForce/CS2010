@@ -54,7 +54,7 @@ public abstract class Menu extends Clickable implements Container, Component {
 	/**
 	 * Whether or not this {@link Menu} is visible or not.
 	 */
-	private boolean visible;
+	private volatile boolean visible;
 
 	/**
 	 * Constructs a new {@link Menu}. Initially invisible.

@@ -20,9 +20,15 @@ import peril.views.slick.util.Region;
  * @author Joshua_Eddy
  *
  * @param <T>
- *            The type of the {@link Element#get()}
+ *            The type of this lists elements.
+ * 
+ * @since 2018-02-23
+ * @version 1.01.01
+ * 
+ * @see Clickable
+ * @see Component
  */
-public class VisualList<T> extends Clickable implements Component {
+public final class VisualList<T> extends Clickable implements Component {
 
 	/**
 	 * The <code>int</code> width of the {@link VisualList}.
@@ -38,7 +44,19 @@ public class VisualList<T> extends Clickable implements Component {
 	 * The <code>int</code> number of {@link Element}s that are displayed in the box
 	 * at once in the {@link VisualList}.
 	 */
-	private int elementsInView;
+	private final int elementsInView;
+
+	/**
+	 * {@link List} of {@link Element}s that are displayed in this
+	 * {@link VisualList}.
+	 */
+	private final List<Element> elements;
+
+	/**
+	 * The number of pixels that the {@link Element}s will be displayed from the
+	 * edge of the left wall.
+	 */
+	private final int padding;
 
 	/**
 	 * Whether or not this {@link VisualList} is visible or not.
@@ -51,12 +69,6 @@ public class VisualList<T> extends Clickable implements Component {
 	private Font font;
 
 	/**
-	 * {@link List} of {@link Element}s that are displayed in this
-	 * {@link VisualList}.
-	 */
-	private final List<Element> elements;
-
-	/**
 	 * The {@link Element} that is currently selected in the {@link VisualList}.
 	 */
 	private Element selected;
@@ -65,12 +77,6 @@ public class VisualList<T> extends Clickable implements Component {
 	 * The index of the element at the top of the {@link VisualList}.
 	 */
 	private int topElementIndex;
-
-	/**
-	 * The number of pixels that the {@link Element}s will be displayed from the
-	 * edge of the left wall.
-	 */
-	private int padding;
 
 	/**
 	 * Constructs a new {@link VisualList}.
@@ -146,6 +152,7 @@ public class VisualList<T> extends Clickable implements Component {
 	 * Sets the selected {@link Element}
 	 * 
 	 * @param index
+	 *            The new index of the selected element.
 	 */
 	public void setSelected(int index) {
 		if (index < 0 || index >= elements.size()) {
@@ -158,7 +165,8 @@ public class VisualList<T> extends Clickable implements Component {
 	/**
 	 * Sets the selected {@link Element}
 	 * 
-	 * @param index
+	 * @param selected
+	 *            The new selected {@link T} element in the {@link VisualList}.
 	 */
 	public void setSelected(T selected) {
 
@@ -192,7 +200,7 @@ public class VisualList<T> extends Clickable implements Component {
 	 * {@link VisualList}.
 	 * 
 	 * @param click
-	 *            {@link Point}
+	 *            The {@link Point} click.
 	 */
 	public boolean click(Point click) {
 
@@ -234,8 +242,8 @@ public class VisualList<T> extends Clickable implements Component {
 	/**
 	 * Draws the {@link VisualList} on screen.
 	 * 
-	 * @param g
-	 *            {@link Graphics}
+	 * @param frame
+	 *            The {@link Frame} that draws this {@link VisualList} on screen.
 	 */
 	public void draw(Frame frame) {
 
@@ -245,7 +253,7 @@ public class VisualList<T> extends Clickable implements Component {
 
 		frame.setColor(Color.white);
 
-		int x = this.getPosition().x;
+		final int x = this.getPosition().x;
 		int y = this.getPosition().y;
 
 		// Draws the background menu box.
@@ -254,7 +262,7 @@ public class VisualList<T> extends Clickable implements Component {
 		// Draw the map names in the game.
 		for (Element element : elements) {
 
-			int index = elements.indexOf(element);
+			final int index = elements.indexOf(element);
 
 			if (index >= topElementIndex && index < topElementIndex + elementsInView) {
 
@@ -267,7 +275,7 @@ public class VisualList<T> extends Clickable implements Component {
 		// Highlights the selected map
 		if (selected != null) {
 
-			int selectedIndex = elements.indexOf(selected);
+			final int selectedIndex = elements.indexOf(selected);
 
 			if (selectedIndex >= topElementIndex && selectedIndex < topElementIndex + elementsInView) {
 				frame.draw(selected.getImage(), selected.getPosition().x, selected.getPosition().y);
@@ -363,9 +371,14 @@ public class VisualList<T> extends Clickable implements Component {
 	 * {@link Element#draw(Graphics, Font)}. This element wraps &lt;T&gt;.
 	 * 
 	 * @author Joshua_Eddy
+	 * 
+	 * @since 2018-02-23
+	 * @version 1.01.01
+	 * 
+	 * @see Clickable
 	 *
 	 */
-	private class Element extends Clickable {
+	private final class Element extends Clickable {
 
 		/**
 		 * The {@link T} that will be returned if this {@link Element} is selected.
@@ -385,6 +398,12 @@ public class VisualList<T> extends Clickable implements Component {
 		 *            selected.
 		 * @param text
 		 *            The text representation of the {@link Element}.
+		 * @param position
+		 *            The position of this {@link Element}.
+		 * @param width
+		 *            The width of this {@link Element}.
+		 * @param height
+		 *            The height of this {@link Element}.
 		 */
 		public Element(String text, T payload, Point position, int width, int height) {
 			super(new Region(width, height, position));
@@ -395,7 +414,7 @@ public class VisualList<T> extends Clickable implements Component {
 		/**
 		 * Retrieves the {@link Element#payload}.
 		 * 
-		 * @return {@link T}
+		 * @return The {@link T} pay load of this {@link Element}.
 		 */
 		public T get() {
 			return payload;
@@ -420,10 +439,10 @@ public class VisualList<T> extends Clickable implements Component {
 		/**
 		 * Draws the name of the {@link Element} on screen.
 		 * 
-		 * @param g
-		 *            {@link Graphics}
+		 * @param frame
+		 *            The {@link Frame} that draws this {@link Element} on screen.
 		 * @param font
-		 *            {@link Font}
+		 *            The {@link Font} that the element will be drawn in.
 		 * @param padding
 		 *            The number of pixels to the left of this {@link Element}s
 		 *            {@link Point} position this will be displayed.

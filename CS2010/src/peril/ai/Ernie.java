@@ -1,10 +1,8 @@
 package peril.ai;
 
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-
 
 import peril.controllers.AIController;
 import peril.controllers.api.Country;
@@ -21,91 +19,89 @@ public class Ernie extends AI {
 	}
 
 	@Override
-	protected boolean processReinforce(AIController api) {
-		
-		//for loop to see what countries are connected to each other and put them in an array
+	protected AIOperation processReinforce(AIController api) {
+
+		// for loop to see what countries are connected to each other and put them in an
+		// array
 		// give them all a value
-		//the country with the lowest value ie the lowest amount of troops
+		// the country with the lowest value ie the lowest amount of troops
 		// choose a random amount of troops to give to them
-	
-		
-			Map<Integer, Country> countries = new HashMap<>();
-			Player current = api.getCurrentPlayer();
-			
-			int highest = Integer.MIN_VALUE;
-			
-			api.forEachCountry(country -> {
+
+		Map<Integer, Country> countries = new HashMap<>();
+		Player current = api.getCurrentPlayer();
+
+		int highest = Integer.MIN_VALUE;
+
+		api.forEachCountry(country -> {
 			if (current.equals(country.getOwner())) {
 				int value = rand.nextInt(10);
 				countries.put(value, country);
-			}});
-			
-			for (int value : countries.keySet()) {
-				highest = value > highest ? value : highest;
 			}
-			if (highest == Integer.MIN_VALUE) {
-				throw new IllegalStateException("There are no countries");
-			}
-			
-			
-			
-		api.select(countries.get(highest));
-		api.reinforce();
-	
-		return true;
+		});
+
+		for (int value : countries.keySet()) {
+			highest = value > highest ? value : highest;
+		}
+		if (highest == Integer.MIN_VALUE) {
+			throw new IllegalStateException("There are no countries");
+		}
+
+		final AIOperation op = new AIOperation();
+
+		op.select.add(countries.get(highest));
+		op.processAgain = true;
+
+		return op;
 	}
-			
-	
 
 	@Override
-	protected boolean processAttack(AIController api) {
-		// TODO Auto-generated method stub
-		
-		Map<Integer, Entry> countries = new HashMap<>();	
+	protected AIOperation processAttack(AIController api) {
+
+		Map<Integer, Entry> countries = new HashMap<>();
 		Player current = api.getCurrentPlayer();
-		//go through each of the countries owned by that player
-		//see the neighbouring countries of each
-		//put them in array with values for the amount of troops
-		// find own country and neighbouring non friendly country with biggest gap between the two
-		//attack it
+		// go through each of the countries owned by that player
+		// see the neighbouring countries of each
+		// put them in array with values for the amount of troops
+		// find own country and neighbouring non friendly country with biggest gap
+		// between the two
+		// attack it
 		int highest = Integer.MIN_VALUE;
-		
+
 		api.forEachCountry(country -> {
 			if (current.equals(country.getOwner())) {
-				if(country.getArmy().getNumberOfUnits() > 1) {
-				for (Country neighbour : country.getNeighbours()) {
-					
-					if (!current.equals(neighbour.getOwner())) {
-						int value = rand.nextInt(10);
-						countries.put(value, new Entry(country, neighbour));
-					}}
-				}}});	
-	
+				if (country.getArmy().getNumberOfUnits() > 1) {
+					for (Country neighbour : country.getNeighbours()) {
+
+						if (!current.equals(neighbour.getOwner())) {
+							int value = rand.nextInt(10);
+							countries.put(value, new Entry(country, neighbour));
+						}
+					}
+				}
+			}
+		});
+
 		for (int value : countries.keySet()) {
 			highest = value > highest ? value : highest;
 		}
 
+		final AIOperation op = new AIOperation();
+		
 		if (highest == Integer.MIN_VALUE) {
-			return false;
+			op.processAgain = false;
+		}else {
+			op.select.add(countries.get(highest).a);
+			op.select.add(countries.get(highest).b);
+			op.processAgain = true;
 		}
 
-		api.select(countries.get(highest).a);
-		api.select(countries.get(highest).b);
-		
+		return op;
 
-		api.attack();
-
-		return true;
-	
 	}
-	
-		
 
 	@Override
-	protected boolean processFortify(AIController api) {
-		if(rand.nextInt()>5 && rand.nextInt()<10) {
-			return true;}
-		return false;
+	protected AIOperation processFortify(AIController api) {
+		return new AIOperation();
 	}
 
 	private class Entry {

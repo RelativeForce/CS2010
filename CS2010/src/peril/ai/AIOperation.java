@@ -12,7 +12,8 @@ public class AIOperation {
 	public final List<Country> select;
 	
 	public AIOperation() {
-		select = new LinkedList<>();
+		this.select = new LinkedList<>();
+		this.processAgain = false;
 	}
 	
 }

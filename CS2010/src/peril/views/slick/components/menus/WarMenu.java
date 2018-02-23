@@ -248,6 +248,12 @@ public class WarMenu extends Menu {
 				// Display the dice that we rolled
 				dice.set(state.combat.view.attackerDiceRolls, state.combat.view.defenderDiceRolls,
 						new Point(attackX, y), new Point(defendX, y));
+				
+				if(state.combat.getTotalAliveUnits(attacker.getArmy(), attackingSquad.model) > 1) {
+					getButton(attackButton).show();
+				}else {
+					getButton(attackButton).hide();
+				}
 
 			}
 		}

@@ -8,6 +8,11 @@ import peril.views.slick.util.Point;
  * screen.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-23
+ * @version 1.01.01
+ * 
+ * @see Component
  *
  */
 public final class ProgressBar implements Component {
@@ -59,6 +64,7 @@ public final class ProgressBar implements Component {
 	/**
 	 * Initialise the {@link ProgressBar}.
 	 */
+	@Override
 	public void init() {
 		// DO NOTHING
 	}
@@ -92,6 +98,7 @@ public final class ProgressBar implements Component {
 	 * @param position
 	 *            of the {@link ProgressBar}
 	 */
+	@Override
 	public void setPosition(Point position) {
 		this.position = position;
 	}
@@ -119,7 +126,7 @@ public final class ProgressBar implements Component {
 	/**
 	 * Retrieves the height of the {@link ProgressBar}.
 	 * 
-	 * @return int
+	 * @return The height
 	 */
 	public int getHeight() {
 		return height;
@@ -129,7 +136,7 @@ public final class ProgressBar implements Component {
 	 * The total number tick this {@link ProgressBar} must perform to be to be
 	 * completed by a specified value.
 	 * 
-	 * @param size
+	 * @param size The new size of the {@link ProgressBar}.
 	 */
 	public void increaseTotal(int size) {
 		total += size;
@@ -138,6 +145,7 @@ public final class ProgressBar implements Component {
 	/**
 	 * Draws the {@link ProgressBar} to screen.
 	 */
+	@Override
 	public void draw(Frame frame) {
 
 		// Calculate the current progress on screen

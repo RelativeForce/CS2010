@@ -18,7 +18,7 @@ import peril.model.board.ModelUnit;
  * @author Joshua_Eddy
  * 
  * @since 2018-02-23
- * @version 1.01.02
+ * @version 1.01.03
  * 
  * @see ModelSquadMember
  * @see CombatHelper
@@ -68,6 +68,36 @@ public final class ModelSquad extends Observable implements Iterable<ModelSquadM
 	 */
 	public int size() {
 		return members.size();
+	}
+
+	/**
+	 * Constructs the strongest {@link ModelSquad} from the specified
+	 * {@link ModelArmy} leaving the the {@link ModelArmy} with at least the minimum
+	 * number of {@link ModelUnit}s specified.
+	 * 
+	 * @param army
+	 *            The source {@link ModelArmy}.
+	 * @param minArmySize
+	 *            The minimum number of model units to be left in the
+	 *            {@link ModelArmy}.
+	 */
+	public void autoPopulate(ModelArmy army, int minArmySize) {
+
+		removeDeadUnits();
+		returnSquadToArmy(army);
+
+		ModelUnit unit = army.getStrongestUnit();
+
+		// Iterate over the army until the squad is at the max size of the army is depleted.
+		while (size() < maxSize && army.getNumberOfUnits() > minArmySize) {
+
+			if (army.hasUnit(unit)) {
+				this.moveToSquad(unit, army);
+			} else {
+				unit = army.getStrongestUnit();
+			}
+		}
+
 	}
 
 	/**

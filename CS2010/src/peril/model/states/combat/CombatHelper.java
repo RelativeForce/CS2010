@@ -23,7 +23,7 @@ import peril.model.board.ModelUnit;
  * @author Joshua_Eddy
  * 
  * @since 2018-02-23
- * @version 1.01.02
+ * @version 1.01.03
  *
  * @see Observable
  * @see CombatRound
@@ -83,6 +83,11 @@ public final class CombatHelper extends Observable {
 	 *            The {@link CombatRound} specifying the details of this fight.
 	 */
 	public void fight(CombatRound round) {
+
+		// Check the countries
+		if (round.attacker.getRuler().equals(round.defender.getRuler())) {
+			throw new IllegalArgumentException("The two countries can be ruler by the same player.");
+		}
 
 		// Check the attacking squad.
 		final int attackSquadSize = round.attackerSquad.getAliveUnits();
@@ -174,12 +179,9 @@ public final class CombatHelper extends Observable {
 			attackingPlayer.setCountriesTaken(attackingPlayer.getCountriesTaken() + 1);
 			attackingPlayer.addPoints(PointHelper.CONQUER_REWARD);
 
-			game.getAttack().deselectAll();
 			game.checkContinentRulership();
 			game.checkChallenges();
 
-		} else if (getTotalAliveUnits(round.attacker.getArmy(), round.attackerSquad) == 1) {
-			game.getAttack().deselectAll();
 		}
 	}
 

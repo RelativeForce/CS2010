@@ -7,6 +7,8 @@ import java.util.Observable;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import peril.controllers.GameController;
+import peril.helpers.PointHelper;
 import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelArmy;
@@ -42,21 +44,32 @@ public final class CombatHelper extends Observable {
 	public final static int MAX_DEFEND_SQUAD_SIZE = 2;
 
 	/**
-	 * The {@link Random} that generated the dice rolls.
-	 */
-	private final Random random;
-
-	/**
 	 * The {@link CombatView} that denotes the results of the previous round of
 	 * combat.
 	 */
 	public CombatView view;
 
 	/**
-	 * Constructs an new {@link CombatHelper}.
+	 * The {@link Random} that generated the dice rolls.
 	 */
-	public CombatHelper() {
+	private final Random random;
+
+	/**
+	 * The {@link GameController} that allows this {@link CombatHelper} to query the
+	 * state of the game.
+	 */
+	private final GameController game;
+
+	/**
+	 * Constructs an new {@link CombatHelper}.
+	 * 
+	 * @param game
+	 *            The {@link GameController} that allows this {@link CombatHelper}
+	 *            to query the state of the game.
+	 */
+	public CombatHelper(GameController game) {
 		this.random = new Random();
+		this.game = game;
 	}
 
 	/**
@@ -87,8 +100,13 @@ public final class CombatHelper extends Observable {
 		final Integer[] attackerDiceRolls = getDiceRolls(attackSquadSize);
 		final Integer[] defenderDiceRolls = getDiceRolls(defendSquadSize);
 
+		final ModelPlayer attackingPlayer = round.attacker.getRuler();
+		final ModelPlayer defendingPlayer = round.defender.getRuler();
+
 		// Compare the dice that were rolled.
 		compareDiceRolls(round, attackerDiceRolls, defenderDiceRolls);
+
+		processPostFight(round, attackingPlayer, defendingPlayer);
 
 		// Update the view
 		this.view = new CombatView(round, attackerDiceRolls, defenderDiceRolls);
@@ -103,6 +121,66 @@ public final class CombatHelper extends Observable {
 	 */
 	public void clear() {
 		this.view = null;
+	}
+
+	/**
+	 * Retrieves the total number of alive {@link ModelUnit}s when the specified
+	 * {@link ModelArmy} and the {@link ModelSquad}.
+	 * 
+	 * @param army
+	 *            The {@link ModelArmy} to be combined.
+	 * @param squad
+	 *            The {@link ModelSquad} to be combined.
+	 * @return The total number of alive {@link ModelUnit}s.
+	 */
+	public int getTotalAliveUnits(ModelArmy army, ModelSquad squad) {
+		return army.getNumberOfUnits() + squad.getAliveUnits();
+	}
+
+	/**
+	 * Processes the state of the specified {@link CombatRound} after the
+	 * {@link #compareDiceRolls(CombatRound, Integer[], Integer[])} has been
+	 * performed.
+	 * 
+	 * @param round
+	 *            The {@link CombatRound} to be processed.
+	 * @param attackingPlayer
+	 *            The {@link ModelPlayer} that started the attack.
+	 * @param defendingPlayer
+	 *            The {@link ModelPlayer} that defended against the attack.
+	 */
+	private void processPostFight(CombatRound round, ModelPlayer attackingPlayer, ModelPlayer defendingPlayer) {
+
+		// If the country has been conquered
+		if (round.attacker.getRuler().equals(round.defender.getRuler())) {
+
+			attackingPlayer.totalArmy.add(UnitHelper.getInstance().getWeakest());
+
+			// If there is a defending player
+			if (defendingPlayer != null) {
+
+				defendingPlayer.setCountriesRuled(defendingPlayer.getCountriesRuled() - 1);
+
+				// If the player has no countries they have lost.
+				if (defendingPlayer.getCountriesRuled() == 0) {
+
+					game.setLoser(defendingPlayer);
+					game.checkWinner();
+				}
+			}
+
+			// Increment the statistics appropriately
+			attackingPlayer.setCountriesRuled(attackingPlayer.getCountriesRuled() + 1);
+			attackingPlayer.setCountriesTaken(attackingPlayer.getCountriesTaken() + 1);
+			attackingPlayer.addPoints(PointHelper.CONQUER_REWARD);
+
+			game.getAttack().deselectAll();
+			game.checkContinentRulership();
+			game.checkChallenges();
+
+		} else if (getTotalAliveUnits(round.attacker.getArmy(), round.attackerSquad) == 1) {
+			game.getAttack().deselectAll();
+		}
 	}
 
 	/**

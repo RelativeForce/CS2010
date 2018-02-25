@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.newdawn.slick.Color;
-import peril.Game;
 import peril.controllers.GameController;
 import peril.views.slick.Frame;
 import peril.views.slick.components.Component;
@@ -23,9 +22,14 @@ import peril.views.slick.util.Viewable;
  * point to the next page and previous page using the IDs of those pages.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-18
+ * @version 1.01.01
+ * 
+ * @see Menu
  *
  */
-public class HelpMenu extends Menu {
+public final class HelpMenu extends Menu {
 
 	/**
 	 * The id of a null page. If this assigned to the next or previous page of a
@@ -107,13 +111,14 @@ public class HelpMenu extends Menu {
 	 * Constructs a new {@link HelpMenu}.
 	 * 
 	 * @param game
-	 *            {@link Game}
+	 *            The {@link GameController} that allows the {@link HelpMenu} to
+	 *            query the state of the game.
 	 * @param position
-	 *            {@link Point} position of the {@link HelpMenu}
+	 *            The {@link Point} position of the {@link HelpMenu}
 	 * @param width
-	 *            of the {@link HelpMenu}
+	 *            The width of the {@link HelpMenu}
 	 * @param height
-	 *            of {@link HelpMenu}}
+	 *            The height of {@link HelpMenu}}
 	 */
 	public HelpMenu(Point position, GameController game) {
 		super(NAME, game, new Region(WIDTH, HEIGHT, position));
@@ -168,11 +173,11 @@ public class HelpMenu extends Menu {
 		}
 
 		// Construct the text feild that will show this page.
-		TextField text = new TextField(WIDTH - (PADDING_X * 2),
+		final TextField text = new TextField(WIDTH - (PADDING_X * 2),
 				new Point(this.getPosition().x + PADDING_X, this.getPosition().y + PADDING_Y));
 
 		// Construct the help page
-		HelpPage newPage = new HelpPage(text, nextPage, previousPage, title);
+		final HelpPage newPage = new HelpPage(text, nextPage, previousPage, title);
 
 		// Add the help page to the as its new page.
 		pages.put(id, newPage);
@@ -346,9 +351,14 @@ public class HelpMenu extends Menu {
 	 * pre-initialisation text addition.
 	 * 
 	 * @author Joshua_Eddy
+	 * 
+	 * @serial 2018-02-25
+	 * @version 1.01.01
+	 * 
+	 * @see Component
 	 *
 	 */
-	private class HelpPage implements Component {
+	private final class HelpPage implements Component {
 
 		/**
 		 * The uniquely identifying ID number of the next {@link HelpPage}.
@@ -407,6 +417,7 @@ public class HelpMenu extends Menu {
 		 * if it is too long.
 		 * 
 		 * @param text
+		 *            The text to be added to the {@link HelpPage}.
 		 */
 		public void addText(String text) {
 			if (isInitialised) {

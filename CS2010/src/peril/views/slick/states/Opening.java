@@ -13,77 +13,137 @@ import peril.views.slick.components.menus.HelpMenu;
 import peril.views.slick.io.ImageReader;
 import peril.views.slick.util.Point;
 
-public class Opening extends InteractiveState {
+/**
+ * 
+ * The opening splash screen of the game.
+ * 
+ * @author Joshua_Eddy
+ *
+ * @since 2018-02-25
+ * @version 1.01.01
+ *
+ * @see InteractiveState
+ *
+ */
+public final class Opening extends InteractiveState {
 
+	/**
+	 * The name of the {@link Opening}.
+	 */
 	private static final String NAME = "Opening";
 
-	private final static int DURATION = 2;
+	/**
+	 * The number of seconds that this {@link Opening} will take to play out.
+	 */
+	private static final int DURATION = 1;
 
-	private Image goat;
+	/**
+	 * The current {@link Image} of the splash screen.
+	 */
+	private Image splash;
 
-	private Image initialGoat;
+	/**
+	 * The initial {@link Image} of the splash screen.
+	 */
+	private Image initialSplash;
 
-	private Point goatPosition;
+	/**
+	 * The position of the splash screen.
+	 */
+	private Point splashPosition;
 
-	private float goatScale;
+	/**
+	 * The current scale of the {@link #splash} from the {@link #initialSplash}.
+	 */
+	private float splashScale;
 
-	private float maxGoatScale;
+	/**
+	 * The maximum scale of the {@link #splash} before this state will enter the
+	 * main menu..
+	 */
+	private float maxSplashScale;
 
-	private float initialGoatScale;
+	/**
+	 * The initial scale of the {@link #splash}.
+	 */
+	private float initialSplashScale;
 
+	/**
+	 * Constructs a new {@link Opening}.
+	 * 
+	 * @param game
+	 *            The {@link GameController} that allows this {@link Opening} to
+	 *            query the state of the game.
+	 * @param id
+	 *            The id of this {@link InteractiveState}.
+	 */
 	public Opening(GameController game, int id) {
 		super(game, NAME, id, HelpMenu.NULL_PAGE);
 	}
 
+	/**
+	 * Initialises the visual elements of the {@link Opening}.
+	 */
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
 
-		this.initialGoat = ImageReader.getImage(game.getDirectory().getUIPath() + "perilLogo.png");
-
-		this.initialGoatScale = (float) (gc.getWidth() / 3) / initialGoat.getWidth();
-
-		this.goatScale = initialGoatScale;
-
-		this.maxGoatScale = (float) (gc.getWidth() * 9 / 10) / initialGoat.getWidth();
-
-		this.goat = initialGoat.getScaledCopy(goatScale);
-
-		this.goatPosition = getGoatPosition(gc);
+		this.initialSplash = ImageReader.getImage(game.getDirectory().getUIPath() + "perilLogo.png");
+		this.initialSplashScale = (float) (gc.getWidth() / 3) / initialSplash.getWidth();
+		this.splashScale = initialSplashScale;
+		this.maxSplashScale = (float) (gc.getWidth() * 9 / 10) / initialSplash.getWidth();
+		this.splash = initialSplash.getScaledCopy(splashScale);
+		this.splashPosition = getGoatPosition(gc);
 
 	}
 
+	/**
+	 * Renders the {@link Opening} on screen.
+	 */
 	@Override
 	public void render(GameContainer gc, Frame frame) {
-		frame.draw(goat, goatPosition.x, goatPosition.y);
+		frame.draw(splash, splashPosition.x, splashPosition.y);
 	}
 
+	/**
+	 * Updates the {@link Opening} between frames.
+	 */
 	@Override
 	public void update(GameContainer gc, int delta, Frame frame) {
 
-		if (goatScale >= maxGoatScale) {
+		// If the splash is at full zoom
+		if (splashScale >= maxSplashScale) {
 			game.getView().enterMainMenu();
 		} else {
 
 			final float ratio = (((float) 1000f) / (float) SlickGame.FPS) / ((float) delta);
 
-			goatScale += ((float) (maxGoatScale - initialGoatScale) / (DURATION * SlickGame.FPS)) / ratio;
-
-			goat = initialGoat.getScaledCopy(goatScale);
-
-			goatPosition = getGoatPosition(gc);
+			this.splashScale = ((float) (maxSplashScale - initialSplashScale) / (DURATION * SlickGame.FPS)) / ratio;
+			this.splash = initialSplash.getScaledCopy(splashScale);
+			this.splashPosition = getGoatPosition(gc);
 
 		}
 	}
 
+	/**
+	 * Retrieves the music from the frame.
+	 */
 	@Override
 	public Music getMusic() {
 		return null;
 	}
 
+	/**
+	 * Retrieves the position of the {@link #splash} based on its current
+	 * dimensions.
+	 * 
+	 * @param gc
+	 *            The {@link GameContainer} that displays the game.
+	 * @return The new position of the {@link #splash}.
+	 */
 	private Point getGoatPosition(GameContainer gc) {
-		final int x = (gc.getWidth() - goat.getWidth()) / 2;
-		final int y = (gc.getHeight() - goat.getHeight()) / 2;
+		final int x = (gc.getWidth() - splash.getWidth()) / 2;
+		final int y = (gc.getHeight() - splash.getHeight()) / 2;
 		return new Point(x, y);
 	}
 

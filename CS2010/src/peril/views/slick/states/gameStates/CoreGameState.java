@@ -37,8 +37,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joseph_Rolli, Joshua_Eddy
  * 
- * @since 2018-02-23
- * @version 1.01.06
+ * @since 2018-02-25
+ * @version 1.01.07
  * 
  * @see InteractiveState
  * @see Observer
@@ -164,7 +164,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		// If there is no menu visible and there is a pan direction, pan.
 		if (panDirection != null && !menus.menuVisible()) {
 
-			final float ratio = ((float) SlickGame.FPS / (((float) 1000f) / ((float) delta)));
+			final float ratio = (((float) 1000f) / (float) SlickGame.FPS) / ((float) delta);
 
 			final int x = (int) ((float) panDirection.x * ratio);
 			final int y = (int) ((float) panDirection.y * ratio);

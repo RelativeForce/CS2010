@@ -25,8 +25,8 @@ import peril.helpers.UnitHelper;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.05
- * @since 2018-02-22
+ * @version 1.02.01
+ * @since 2018-02-25
  * 
  * @see Observable
  * @see Iterable
@@ -128,7 +128,16 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	}
 
 	/**
-	 * Removes a specified {@link ModelUnit} from this {@link ModelArmy}.
+	 * Removes a specified {@link ModelUnit} from this {@link ModelArmy}. If the
+	 * {@link ModelUnit} is not contained in this {@link ModelArmy} then:<br>
+	 * <ol>
+	 * <li>Check if the {@link ModelUnit} is larger than the {@link ModelArmy}, if
+	 * so then {@link ModelArmy} will be reduced to the minimum size of zero.</li>
+	 * <li>Check if the {@link ModelUnit} is weaker than this {@link ModelArmy}'s
+	 * strongest {@link ModelUnit}, if so then remove {@link ModelUnit}s until the
+	 * strength of the</li>
+	 * </ol>
+	 * 
 	 * 
 	 * @param unit
 	 *            The {@link ModelUnit} that is to be removed. NOT NULL
@@ -136,6 +145,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	public void remove(ModelUnit unit) {
 
 		final String unitName = unit.name;
+		final UnitHelper helper = UnitHelper.getInstance();
 
 		/*
 		 * If the unit is in the army then remove it, otherwise remove the units
@@ -154,12 +164,94 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 			}
 
 		} else {
-			removeRandomUnit();
+
+			// Unit is larger than the army, reset the army to empty.
+			if (getStrength() - unit.strength <= 0) {
+				clearUnits();
+			}
+			// Unit weaker than army
+			else {
+
+				final ModelUnit currentStrongest = getStrongestUnit();
+
+				// Unit is stronger than the current strongest
+				if (unit.strength > currentStrongest.strength) {
+
+					// Remove the units required to create the unit's strength the remove them.
+					getRemovable(unit.strength).forEach(e -> remove(e));
+
+				}
+				// Unit is weaker than the current strongest
+				else {
+
+					// Find the next unit above the current unit in this army.
+					ModelUnit current = helper.getUnitAbove(unit);
+					while (!hasUnit(current)) {
+						current = helper.getUnitAbove(current);
+					}
+
+					// Break one of the unit above into the units below.
+					tradeDown(current);
+
+					// Attempt this method again with the newly available units.
+					remove(unit);
+
+				}
+			}
 		}
 
 		// Notify observers.
 		setChanged();
 		notifyObservers();
+
+	}
+
+	/**
+	 * Removes a amount of {@link ModelUnit} strength from this {@link ModelArmy}.
+	 * If the loss in strength would reduce the {@link ModelArmy}'s strength to less
+	 * than zero then the {@link ModelArmy} will be emptied.
+	 * 
+	 * @param strength
+	 *            The amount of {@link ModelUnit} strength to remove.
+	 */
+	public void remove(int strength) {
+
+		// The strength of the army post strength removal.
+		final int newStrength = getStrength() - strength;
+
+		// If the new strength of the army is more that one of the weakest units then
+		// populate the army. Otherwise clear the army.
+		if (newStrength > 0) {
+			getRemovable(strength).forEach(e -> remove(e));
+		} else {
+			clearUnits();
+		}
+
+		// Notify observers of the change.
+		setChanged();
+		notifyObservers();
+
+	}
+
+	/**
+	 * Removes a random {@link ModelUnit} from this {@link ModelArmy}.
+	 */
+	public void removeRandomUnit() {
+
+		final int size = units.size();
+		final int item = new Random().nextInt(size);
+
+		int i = 0;
+		ModelUnit toRemove = null;
+
+		for (ModelUnit unit : this) {
+			if (i == item) {
+				toRemove = unit;
+			}
+			i++;
+		}
+
+		remove(toRemove);
 
 	}
 
@@ -246,11 +338,11 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 		// The number of the unit above that can be made.
 		final int numberOfAbove = strengthCombined / above.strength;
 
-		// The number of remaining unit strength left by creating the units above.
-		final int remainder = strengthCombined % above.strength;
+		// The number of the unit required to make all the units above.
+		final int numberToRemove = (numberOfAbove * above.strength) / unit.strength;
 
 		// Remove all the specified units from the army
-		for (int index = 0; index < numberOfUnit; index++) {
+		for (int index = 0; index < numberToRemove; index++) {
 			remove(unit);
 		}
 
@@ -259,11 +351,91 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 			add(above);
 		}
 
-		// Convert the remaining strength into units and then add them to the army.
-		generateUnits(remainder).forEach(smaller -> add(smaller));
+		return true;
+
+	}
+
+	/**
+	 * Converts one of the specified {@link ModelUnit} into its strength equivalent
+	 * of the {@link ModelUnit} below it. <br>
+	 * <br>
+	 * Will return false if:
+	 * <ul>
+	 * <li>There is no {@link ModelUnit} below.</li>
+	 * <li>The unit is not in the {@link ModelArmy}.</li>
+	 * </ul>
+	 * 
+	 * @param unit
+	 *            The {@link ModelUnit} to trade down.
+	 * @return Whether the {@link ModelUnit} was traded down.
+	 */
+	public boolean tradeDown(ModelUnit unit) {
+
+		// If the unit is not in this army.
+		if (!hasUnit(unit)) {
+			return false;
+		}
+
+		// Holds the unit below the specified unit.
+		final ModelUnit below = UnitHelper.getInstance().getUnitBelow(unit);
+
+		// If there is no unit below the specified unit.
+		if (below == null) {
+			return false;
+		}
+
+		// The number of the unit above that can be made.
+		final int numberOfBelow = unit.strength / below.strength;
+
+		// Remove the single unit.
+		remove(unit);
+
+		// Add the number of the below unit that can be created.
+		for (int index = 0; index < numberOfBelow; index++) {
+			add(below);
+		}
 
 		return true;
 
+	}
+
+	/**
+	 * Trades all the {@link ModelUnit}s in the {@link ModelArmy} up to make this
+	 * {@link ModelArmy} as strong as possible.
+	 * 
+	 * @return Whether any of the {@link ModelUnit}s in this {@link ModelArmy} were
+	 *         traded up.
+	 */
+	public boolean tradeUnitsUp() {
+
+		// If there are no units then trade up failed.
+		if (units.isEmpty()) {
+			return false;
+		}
+
+		// Holds whether any units have been traded up.
+		boolean hasTraded = false;
+
+		// Holds the current unit starting with the weakest.
+		ModelUnit current = getWeakestUnit();
+
+		/*
+		 * Iterate over all the units in this army starting at the weakest and working
+		 * up in terms of strength and attempt to trade each of them up.
+		 */
+		while (current != null) {
+
+			if (hasUnit(current)) {
+				if (tradeUp(current)) {
+					hasTraded = true;
+				}
+			}
+
+			current = UnitHelper.getInstance().getUnitAbove(current);
+
+		}
+
+		return hasTraded;
 	}
 
 	/**
@@ -438,115 +610,6 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	}
 
 	/**
-	 * Removes a amount of {@link ModelUnit} strength from this {@link ModelArmy}.
-	 * If the loss in strength would reduce the {@link ModelArmy}'s strength to less
-	 * than zero then the {@link ModelArmy} will be emptied.
-	 * 
-	 * @param strength
-	 *            The amount of {@link ModelUnit} strength to remove.
-	 */
-	public void remove(int strength) {
-
-		// The strength of the army post strength removal.
-		final int newStrength = getStrength() - strength;
-
-		// If the new strength of the army is more that one of the weakest units then
-		// populate the army. Otherwise clear the army.
-		if (newStrength >= UnitHelper.getInstance().getWeakest().strength) {
-			populateArmy(newStrength);
-		} else {
-			clearUnits();
-		}
-
-		// Notify observers of the change.
-		setChanged();
-		notifyObservers();
-
-	}
-
-	/**
-	 * Removes a random {@link ModelUnit} from this {@link ModelArmy}.
-	 */
-	public void removeRandomUnit() {
-
-		final int size = units.size();
-		final int item = new Random().nextInt(size);
-
-		int i = 0;
-		ModelUnit toRemove = null;
-
-		for (ModelUnit unit : this) {
-			if (i == item) {
-				toRemove = unit;
-			}
-			i++;
-		}
-
-		remove(toRemove);
-
-	}
-
-	/**
-	 * Removes all the {@link ModelUnit}s from this {@link ModelArmy} provided there
-	 * are {@link ModelUnit}s to remove.
-	 */
-	private void clearUnits() {
-
-		// Clear the current map of units if there are units to clear.
-		if (!units.isEmpty())
-			units.clear();
-
-	}
-
-	/**
-	 * Sets the selected {@link ModelUnit}.
-	 * 
-	 * @param unit
-	 *            {@link ModelUnit}
-	 */
-	private void setSelected(ModelUnit unit) {
-
-		selected = unit;
-
-		// Notify observers that the selected has changed.
-		setChanged();
-		notifyObservers(new Update("selected", selected));
-
-	}
-
-	/**
-	 * Re-populates this {@link ModelArmy} based on the specified new strength of
-	 * the {@link ModelArmy}.
-	 * 
-	 * @param strength
-	 *            The new strength of this {@link ModelArmy}.
-	 */
-	private void populateArmy(int strength) {
-
-		// De-select the currently selected unit.
-		deselect();
-
-		// Clear the current list of units.
-		clearUnits();
-
-		if (strength == 0) {
-			return;
-		}
-
-		final ModelUnit weakest = UnitHelper.getInstance().getWeakest();
-
-		final int numberOfWeakest = strength / weakest.strength;
-
-		for (int i = 0; i < numberOfWeakest; i++) {
-
-			// Generate the units then add them to the current army.
-			add(weakest);
-
-		}
-
-	}
-
-	/**
 	 * Generates a {@link List} of {@link ModelUnit}s who's combined strength is
 	 * equal to the specified strength. This method will prioritise the strongest
 	 * {@link ModelUnit}s first according to {@link UnitHelper#getStrongest()}. The
@@ -631,42 +694,110 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	}
 
 	/**
-	 * Trades all the {@link ModelUnit}s in the {@link ModelArmy} up to make this
-	 * {@link ModelArmy} as strong as possible.
-	 * 
-	 * @return Whether any of the {@link ModelUnit}s in this {@link ModelArmy} were
-	 *         traded up.
+	 * Removes all the {@link ModelUnit}s from this {@link ModelArmy} provided there
+	 * are {@link ModelUnit}s to remove.
 	 */
-	public boolean tradeUnitsUp() {
+	private void clearUnits() {
 
-		// If there are no units then trade up failed.
-		if (units.isEmpty()) {
-			return false;
+		// Clear the current map of units if there are units to clear.
+		if (!units.isEmpty())
+			units.clear();
+
+	}
+
+	/**
+	 * Sets the selected {@link ModelUnit}.
+	 * 
+	 * @param unit
+	 *            {@link ModelUnit}
+	 */
+	private void setSelected(ModelUnit unit) {
+
+		selected = unit;
+
+		// Notify observers that the selected has changed.
+		setChanged();
+		notifyObservers(new Update("selected", selected));
+
+	}
+
+	/**
+	 * Re-populates this {@link ModelArmy} based on the specified new strength of
+	 * the {@link ModelArmy}.
+	 * 
+	 * @param strength
+	 *            The new strength of this {@link ModelArmy}.
+	 */
+	private void populateArmy(int strength) {
+
+		// De-select the currently selected unit.
+		deselect();
+
+		// Clear the current list of units.
+		clearUnits();
+
+		if (strength == 0) {
+			return;
 		}
 
-		// Holds whether any units have been traded up.
-		boolean hasTraded = false;
+		final ModelUnit weakest = UnitHelper.getInstance().getWeakest();
 
-		// Holds the current unit starting with the weakest.
-		ModelUnit current = getWeakestUnit();
+		final int numberOfWeakest = strength / weakest.strength;
 
-		/*
-		 * Iterate over all the units in this army starting at the weakest and working
-		 * up in terms of strength and attempt to trade each of them up.
-		 */
-		while (current != null) {
+		for (int i = 0; i < numberOfWeakest; i++) {
 
-			if (hasUnit(current)) {
-				if (tradeUp(current)) {
-					hasTraded = true;
+			// Generate the units then add them to the current army.
+			add(weakest);
+
+		}
+
+	}
+
+	/**
+	 * Retrieves the minimum {@link ModelUnit}s from THIS {@link ModelArmy} that
+	 * when combined will have the specified strength.
+	 * 
+	 * @param strength
+	 *            The combined strength of the {@link ModelUnit}s.
+	 * @return The {@link List} of {@link ModelUnit}s with the specified strength.
+	 */
+	private List<ModelUnit> getRemovable(int strength) {
+
+		final LinkedList<ModelUnit> toReomve = new LinkedList<>();
+
+		ModelUnit current = getStrongestUnit();
+		int remainder = strength;
+		boolean removed = false;
+
+		while (current != null && !removed) {
+
+			final int numberRequired = (remainder / current.strength);
+			final int numberOfCurrent = getNumberOf(current);
+
+			// If the current unit can be removed to reduce the remainder
+			if (numberOfCurrent > 0 && numberRequired > 0) {
+
+				// Remove the amount required.
+				final int numberToRemove = numberOfCurrent > numberRequired ? numberRequired : numberOfCurrent;
+				for (int index = 0; index < numberToRemove; index++) {
+					toReomve.add(current);
 				}
+
+				remainder -= numberToRemove * current.strength;
+
 			}
 
-			current = UnitHelper.getInstance().getUnitAbove(current);
+			// If there is no remaining strength the unit has been removed.
+			if (remainder == 0) {
+				removed = true;
+			}
+
+			current = UnitHelper.getInstance().getUnitBelow(current);
 
 		}
 
-		return hasTraded;
+		return toReomve;
+
 	}
 
 }

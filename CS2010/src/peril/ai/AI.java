@@ -8,6 +8,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.function.Function;
+
 import peril.controllers.AIController;
 import peril.controllers.api.Board;
 
@@ -18,6 +20,11 @@ import peril.controllers.api.Board;
  * {@link Player}s.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-25
+ * @version 1.01.01
+ * 
+ * @see AIController
  *
  */
 public abstract class AI {
@@ -61,6 +68,37 @@ public abstract class AI {
 	private final AIController api;
 
 	/**
+	 * The {@link Callable} which invokes the
+	 * {@link #processReinforce(AIController)}.
+	 */
+	private final Callable<AIOperation> reinforce;
+
+	/**
+	 * The {@link Function} that is called when {@link #reinforce} is completed.
+	 */
+	private final Function<AIOperation, Boolean> completeReinforce;
+
+	/**
+	 * The {@link Callable} which invokes the {@link #processAttack(AIController)}.
+	 */
+	private final Callable<AIOperation> attack;
+
+	/**
+	 * The {@link Function} that is called when {@link #attack} is completed.
+	 */
+	private final Function<AIOperation, Boolean> completeAttack;
+
+	/**
+	 * The {@link Callable} which invokes the {@link #processFortify(AIController)}.
+	 */
+	private final Callable<AIOperation> fortify;
+
+	/**
+	 * The {@link Function} that is called when {@link #fortify} is completed.
+	 */
+	private final Function<AIOperation, Boolean> completeFortify;
+
+	/**
 	 * The number of milliseconds that this {@link AI} will wait before performing
 	 * another operation.
 	 */
@@ -73,6 +111,9 @@ public abstract class AI {
 	 */
 	private int speed;
 
+	/**
+	 * The result of the AI operation on another thread.
+	 */
 	private Future<AIOperation> future;
 
 	/**
@@ -94,16 +135,71 @@ public abstract class AI {
 		this.api = api;
 		setSpeed(defaultSpeed);
 		this.future = null;
+
+		// The function that will be called when the reinforce function is completed.
+		this.completeReinforce = result -> {
+
+			if (result.processAgain) {
+				api.select(result.select.get(0));
+				api.reinforce();
+			}
+
+			return result.processAgain;
+
+		};
+
+		// The function that is to be completed when the AI reinforces.
+		this.reinforce = () -> {
+			return processReinforce(api);
+		};
+
+		// The function that will be called when the attack function is completed.
+		this.completeAttack = result -> {
+
+			if (result.processAgain) {
+
+				api.select(result.select.get(0));
+				api.select(result.select.get(1));
+				api.attack();
+
+			}
+
+			return result.processAgain;
+
+		};
+
+		// The function that is to be completed when the AI attacks.
+		this.attack = () -> {
+			return processAttack(api);
+		};
+
+		// The function that will be called when the fortify function is completed.
+		this.completeFortify = result -> {
+
+			if (result.processAgain) {
+
+				api.select(result.select.get(0));
+				api.select(result.select.get(1));
+				api.fortify();
+
+			}
+
+			return result.processAgain;
+
+		};
+
+		// The function that is to be completed when the AI fortify.
+		this.fortify = () -> {
+			return processFortify(api);
+		};
+
 	}
 
 	/**
 	 * Constructs the {@link AI#USER}.
 	 */
 	private AI() {
-		this.speed = 0;
-		this.wait = 0;
-		this.api = null;
-		this.name = "None";
+		this("None", MAX_SPEED, null);
 	}
 
 	/**
@@ -121,62 +217,8 @@ public abstract class AI {
 			return false;
 		}
 
-		if (future != null) {
-
-			if (future.isDone()) {
-
-				System.out.println("Task done. (Reinforce)");
-
-				try {
-
-					final AIOperation result = future.get();
-
-					future = null;
-
-					if (result.processAgain) {
-
-						api.select(result.select.get(0));
-						api.reinforce();
-
-						return true;
-
-					} else {
-
-						return false;
-					}
-
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					e.printStackTrace();
-				}
-
-			}
-
-			System.out.println("Task not done. (Reinforce)");
-
-		} else if (wait <= 0) {
-
-			wait = speed;
-
-			System.out.println("Creating Task. (Reinforce)");
-			api.clearSelected();
-
-			Callable<AIOperation> task = () -> {
-				return processReinforce(api);
-			};
-			
-
-			ExecutorService executor = Executors.newFixedThreadPool(1);
-			
-			future = executor.submit(task);
-
-		} else {
-			System.out.println("Waiting... (Reinforce)");
-		}
-
 		wait -= delta;
-		return true;
+		return performOperation(reinforce, completeReinforce);
 	}
 
 	/**
@@ -190,59 +232,8 @@ public abstract class AI {
 	 */
 	public final boolean attack(int delta) {
 
-		if (future != null) {
-
-			if (future.isDone()) {
-
-				System.out.println("Task done. (Attack)");
-
-				try {
-
-					final AIOperation result = future.get();
-
-					future = null;
-
-					if (result.processAgain) {
-						
-						api.select(result.select.get(0));
-						api.select(result.select.get(1));
-						api.attack();
-
-						return true;
-					} else {
-						return false;
-					}
-
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					e.printStackTrace();
-				}
-
-			}
-
-			System.out.println("Task not done. (Attack)");
-
-		} else if (wait <= 0) {
-
-			wait = speed;
-
-			System.out.println("Creating Task. (Attack)");
-			api.clearSelected();
-
-			Callable<AIOperation> task = () -> {
-				return processAttack(api);
-			};
-
-			ExecutorService executor = Executors.newFixedThreadPool(4);
-			future = executor.submit(task);
-
-		} else {
-			System.out.println("Waiting... (Attack)");
-		}
-
 		wait -= delta;
-		return true;
+		return performOperation(attack, completeAttack);
 
 	}
 
@@ -257,61 +248,9 @@ public abstract class AI {
 	 */
 	public final boolean fortify(int delta) {
 
-
-		if (future != null) {
-
-			if (future.isDone()) {
-
-				System.out.println("Task done. (Fortify)");
-
-				try {
-
-					final AIOperation result = future.get();
-
-					future = null;
-
-					if (result.processAgain) {
-						
-						api.select(result.select.get(0));
-						api.select(result.select.get(1));
-						api.fortify();
-
-						return true;
-					} else {
-						return false;
-					}
-
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					e.printStackTrace();
-				}
-
-			}
-
-			System.out.println("Task not done. (Fortify)");
-
-		} else if (wait <= 0) {
-
-			wait = speed;
-
-			System.out.println("Creating Task. (Fortify)");
-			api.clearSelected();
-
-			Callable<AIOperation> task = () -> {
-				return processFortify(api);
-			};
-
-			ExecutorService executor = Executors.newFixedThreadPool(4);
-			future = executor.submit(task);
-
-		} else {
-			System.out.println("Waiting... (Fortify)");
-		}
-
 		wait -= delta;
-		return true;
-		
+		return performOperation(fortify, completeFortify);
+
 	}
 
 	/**
@@ -345,15 +284,16 @@ public abstract class AI {
 	 * 
 	 * This method must:
 	 * <ol>
-	 * <li>Select a {@link Country} using {@link AIController#select(Country)}.</li>
-	 * <li>Reinforce that {@link Country} using
-	 * {@link AIController#reinforce()}.</li>
+	 * <li>Select a {@link Country} by adding one {@link Counrty} to
+	 * {@link AIOperation#select} that is returned.</li>
+	 * <li>Set {@link AIOperation#processAgain}, which is whether or not this
+	 * {@link AI} wishes to perform another operation or not. If not the
+	 * {@link AIController}</li>
 	 * </ol>
 	 * 
 	 * @param api
 	 *            {@link AIController}
-	 * @return Whether or not this {@link AI} wishes to perform another operation or
-	 *         not. If not the {@link AIController}
+	 * @return The {@link AIOperation} for this {@link AI}'s reinforce.
 	 */
 	protected abstract AIOperation processReinforce(AIController api);
 
@@ -378,22 +318,21 @@ public abstract class AI {
 	 * 
 	 * This method must:
 	 * <ol>
-	 * <li>Select a primary {@link Country} using
-	 * {@link AIController#select(Country)}.</li>
-	 * <li>Select a target {@link Country} using
-	 * {@link AIController#select(Country)}.</li>
-	 * <li>Attack that {@link Country} using {@link AIController#attack()}.</li>
+	 * <li>Select a primary {@link Country} by adding it first to
+	 * {@link AIOperation#select} that is returned.</li>
+	 * <li>Select a target {@link Country} by adding it second to
+	 * {@link AIOperation#select} that is returned.</li>
+	 * <li>Set {@link AIOperation#processAgain}, which is whether or not this
+	 * {@link AI} wishes to perform another operation or not. If not the
+	 * {@link AIController}</li>
 	 * </ol>
 	 * 
 	 * The order that the {@link Country}s are selected matters. The primary
-	 * {@link Country} <strong>MUST</strong> be selected first. The selected
-	 * {@link Country}s can be cleared using {@link AIController#clearSelected()}.
-	 * <br>
+	 * {@link Country} <strong>MUST</strong> be selected first. <br>
 	 * 
 	 * @param api
 	 *            {@link AIController}
-	 * @return Whether or not this {@link AI} wishes to perform another attack or
-	 *         not.
+	 * @return The {@link AIOperation} for this {@link AI}'s attack.
 	 */
 	protected abstract AIOperation processAttack(AIController api);
 
@@ -420,23 +359,77 @@ public abstract class AI {
 	 * 
 	 * This method must:
 	 * <ol>
-	 * <li>Select a primary {@link Country} using
-	 * {@link AIController#select(Country)}.</li>
-	 * <li>Select a target {@link Country} using
-	 * {@link AIController#select(Country)}.</li>
-	 * <li>Fortify that {@link Country} using {@link AIController#fortify()}.</li>
+	 * <li>Select a primary {@link Country} by adding it first to
+	 * {@link AIOperation#select} that is returned.</li>
+	 * <li>Select a target {@link Country} by adding it second to
+	 * {@link AIOperation#select} that is returned.</li>
+	 * <li>Set {@link AIOperation#processAgain}, which is whether or not this
+	 * {@link AI} wishes to perform another operation or not. If not the
+	 * {@link AIController}</li>
 	 * </ol>
 	 * 
 	 * The order that the {@link Country}s are selected matters. The primary
-	 * {@link Country} <strong>MUST</strong> be selected first. The selected
-	 * {@link Country}s can be cleared using {@link AIController#clearSelected()}}.
-	 * <br>
+	 * {@link Country} <strong>MUST</strong> be selected first. <br>
 	 * 
 	 * @param api
 	 *            {@link AIController}
-	 * @return Whether or not this {@link AI} wishes to perform another fortify or
-	 *         not.
+	 * @return The {@link AIOperation} for this {@link AI}'s fortify.
 	 */
 	protected abstract AIOperation processFortify(AIController api);
 
+	/**
+	 * Performs the specified {@link Callable} operation and stored the result in
+	 * {@link #future}. When {@link #future} {@link Future#isDone()} this method
+	 * will perform the specified {@link Function}.
+	 * 
+	 * @param operation
+	 *            The {@link Callable} that contains the AIs calculations.
+	 * @param onComplete
+	 *            The {@link Function} that will be performed when the operation is
+	 *            completed.
+	 * @return Whether or not this {@link AI} wishes to perform another operation or
+	 *         not.
+	 */
+	private boolean performOperation(Callable<AIOperation> operation, Function<AIOperation, Boolean> onComplete) {
+
+		// If there is a future.
+		if (future != null) {
+
+			// If the AI operation has been completed.
+			if (future.isDone()) {
+
+				// Try to parse the result of the operation.
+				try {
+
+					// Retrieve the AIs operation and perform it.
+					final AIOperation result = future.get();
+
+					// Empty the future.
+					future = null;
+
+					return onComplete.apply(result);
+
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					e.printStackTrace();
+				}
+
+			}
+
+		}
+		// If the AI has waited the time between operations.
+		else if (wait <= 0) {
+
+			wait = speed;
+			api.clearSelected();
+
+			// Set the next task to be performed.
+			final ExecutorService executor = Executors.newFixedThreadPool(1);
+			future = executor.submit(operation);
+
+		}
+
+		return true;
+	}
 }

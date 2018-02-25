@@ -25,21 +25,22 @@ public final class ModelSquadMember extends Observable {
 	public final ModelUnit unit;
 
 	/**
-	 * Whether this {@link ModelSquadMember} is dead or alive.
+	 * The {@link ModelSquadMemberState} of this {@link ModelSquadMember}.
 	 */
-	public boolean isAlive;
+	public ModelSquadMemberState state;
 
 	/**
 	 * Constructs an new {@link ModelSquadMember}.
 	 * 
 	 * @param unit
 	 *            The {@link ModelUnit} that denotes this member of the squad.
-	 * @param isAlive
-	 *            Whether this {@link ModelSquadMember} is dead or alive.
+	 * @param state
+	 *            The {@link ModelSquadMemberState} of this
+	 *            {@link ModelSquadMember}.
 	 */
-	public ModelSquadMember(ModelUnit unit, boolean isAlive) {
+	public ModelSquadMember(ModelUnit unit, ModelSquadMemberState state) {
 		this.unit = unit;
-		this.isAlive = isAlive;
+		this.state = state;
 	}
 
 }

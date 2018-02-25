@@ -26,6 +26,7 @@ import peril.model.states.combat.CombatHelper;
 import peril.model.states.combat.CombatRound;
 import peril.model.states.combat.ModelSquad;
 import peril.model.states.combat.ModelSquadMember;
+import peril.model.states.combat.ModelSquadMemberState;
 import peril.views.slick.io.ImageReader;
 import peril.views.slick.util.Button;
 import peril.views.slick.util.Clickable;
@@ -38,11 +39,13 @@ import peril.views.slick.util.Region;
  * 
  * @author Joshua_Eddy, Ezekiel_Trinidad
  * 
- * @since 2018-02-23
- * @version 1.01.01
+ * @since 2018-02-25
+ * @version 1.01.02
  * 
  * @see Menu
  * @see Attack
+ * @see SlickSquad
+ * @see SlickSquadMember
  *
  */
 public final class WarMenu extends Menu {
@@ -201,8 +204,8 @@ public final class WarMenu extends Menu {
 		if (!isVisible()) {
 			return;
 		}
-		
-		if(state.getPrimary() == null) {
+
+		if (state.getPrimary() == null) {
 			hide();
 			return;
 		}
@@ -247,10 +250,11 @@ public final class WarMenu extends Menu {
 
 		if (state.getPrimary() != null) {
 			attackingSquad.model.returnSquadToArmy(state.getPrimary().getArmy());
-
+			attackingSquad.model.clear();
 		}
 		if (state.getSecondary() != null) {
 			defendingSquad.model.returnSquadToArmy(state.getSecondary().getArmy());
+			defendingSquad.model.clear();
 		}
 
 		dice.clear();
@@ -276,7 +280,7 @@ public final class WarMenu extends Menu {
 			if (attackingSquad.model.getAliveUnits() > 1) {
 
 				// Remove the dead attacking units.
-				attackingSquad.model.removeDeadUnits();
+				attackingSquad.model.removeNonActiveUnits();
 
 				defendingSquad.autoPopulate(defender.getArmy());
 
@@ -298,7 +302,7 @@ public final class WarMenu extends Menu {
 				// Check the state of the countries
 				final boolean validAttackArmy = attackingSquad.model.getAliveUnits() > 1;
 				final boolean sameRuler = state.getPrimary().getRuler().equals(state.getSecondary().getRuler());
-				
+
 				if (validAttackArmy && !sameRuler) {
 					getButton(attackButton).show();
 				} else {
@@ -677,7 +681,7 @@ public final class WarMenu extends Menu {
 
 			this.redBox = box.convert(Color.red, 255);
 			this.greenBox = box.convert(Color.green, 255);
-			
+
 			// Iterate over all the values of a dice and import the dice's image.
 			for (int index = 1; index <= 6; index++) {
 
@@ -713,8 +717,8 @@ public final class WarMenu extends Menu {
 	 * 
 	 * @author Joshua_Eddy
 	 * 
-	 * @since 2018-02-23
-	 * @version 1.01.01
+	 * @since 2018-02-25
+	 * @version 1.01.02
 	 * 
 	 * @see Observer
 	 * @see SlickSquadMember
@@ -773,6 +777,8 @@ public final class WarMenu extends Menu {
 			int x = position.x;
 			int y = position.y;
 
+			frame.setLineWidth(6);
+
 			// Draw each member in the squad
 			for (SlickSquadMember member : members) {
 
@@ -796,6 +802,23 @@ public final class WarMenu extends Menu {
 								getButton(attackButton).hide();
 								dice.clear();
 							}
+						} else {
+
+							switch (member.model.state) {
+
+							case ALIVE:
+								slick.showToolTip("This unit is alive.", mouse);
+								break;
+							case DEAD:
+								slick.showToolTip("This unit is dead.", mouse);
+								break;
+							case RETURNED:
+								slick.showToolTip("This unit was returned to the army to help with the damage recieved from the last attack.", mouse);
+								break;
+							default:
+								break;
+
+							}
 						}
 					}
 
@@ -811,17 +834,27 @@ public final class WarMenu extends Menu {
 					}
 				});
 
-				// If the member is dead then draw a cross over it.
-				if (!member.model.isAlive) {
+				final int left = x;
+				final int right = x + SlickUnit.WIDTH;
+				final int top = y;
+				final int bottom = y + SlickUnit.HEIGHT;
 
-					final int left = x;
-					final int right = x + SlickUnit.WIDTH;
-					final int top = y;
-					final int bottom = y + SlickUnit.HEIGHT;
+				// If the member is dead then draw a cross over it.
+				if (member.model.state == ModelSquadMemberState.DEAD) {
 
 					frame.setColor(Color.red);
 					frame.drawLine(new Point(left, top), new Point(right, bottom));
 					frame.drawLine(new Point(left, bottom), new Point(right, top));
+
+				} else if (member.model.state == ModelSquadMemberState.RETURNED) {
+
+					final int centerX = x + (SlickUnit.WIDTH / 2);
+					final int centerY = y + (SlickUnit.HEIGHT / 2);
+
+					frame.setColor(Color.green);
+					frame.drawLine(new Point(centerX, top), new Point(centerX, bottom));
+					frame.drawLine(new Point(left, centerY), new Point(centerX, bottom));
+					frame.drawLine(new Point(right, centerY), new Point(centerX, bottom));
 
 				}
 
@@ -877,7 +910,7 @@ public final class WarMenu extends Menu {
 		 */
 		@Override
 		public void update(Observable o, Object arg) {
-			
+
 			if (!members.isEmpty()) {
 				members.clear();
 			}

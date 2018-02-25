@@ -159,8 +159,6 @@ public final class CombatHelper extends Observable {
 		// If the country has been conquered
 		if (round.attacker.getRuler().equals(round.defender.getRuler())) {
 
-			attackingPlayer.totalArmy.add(UnitHelper.getInstance().getWeakest());
-
 			// If there is a defending player
 			if (defendingPlayer != null) {
 
@@ -211,11 +209,11 @@ public final class CombatHelper extends Observable {
 
 		// Holds whether the combat is in a valid state to continue. For example combat
 		// cannot continue if the defender has no units.
-		boolean finished = false;
+		boolean warEnded = false;
 
 		// Compare each attacking dice roll against the defending dice roll unless
 		// finished is flagged.
-		while (index < diceToCheck && !finished) {
+		while (index < diceToCheck && !warEnded) {
 
 			// The units that will fight
 			final ModelUnit attackingUnit = attackingSqd.get(index).unit;
@@ -223,11 +221,11 @@ public final class CombatHelper extends Observable {
 
 			// Attacker won
 			if (attackerDiceRolls[index] > defenderDiceRolls[index]) {
-				finished = attackerWon(round, attackingUnit);
+				warEnded = attackerWon(round, attackingUnit);
 			}
 			// Attacker lost
 			else {
-				finished = attackerLost(round, defendingUnit);
+				warEnded = attackerLost(round, defendingUnit);
 			}
 
 			index++;
@@ -248,31 +246,39 @@ public final class CombatHelper extends Observable {
 	 */
 	private boolean attackerWon(CombatRound round, ModelUnit attackingUnit) {
 
+		// Whether this units damage has ended the war.
+		boolean warEnded = false;
+
 		final ModelPlayer defender = round.defender.getRuler();
 		final ModelPlayer attacker = round.attacker.getRuler();
 		final ModelArmy defendingArmy = round.defender.getArmy();
 		final int totalStrength = defendingArmy.getStrength() + round.defenderSquad.geStrength();
 
-		// If the army of the defending country is of size on then this victory will
-		// conquer the country. Otherwise just kill unit from the defending army.
-		if (attackingUnit.strength >= totalStrength) {
-			resetArmyToWeakest(round.defenderSquad, defendingArmy, defender);
+		removeUnitFromArmy(round.defenderSquad, defendingArmy, defender, attackingUnit);
 
-			round.defender.setRuler(attacker);
-			return true;
+		// If the defending army was cleared.
+		if (defendingArmy.getNumberOfUnits() == 0) {
 
-		} else {
-			removeUnitFromArmy(round.defenderSquad, defendingArmy, defender, attackingUnit);
+			// Remove the units from the defending army.
+			if (round.defender.getRuler() != null) {
 
-			// If the defending army was cleared.
-			if (defendingArmy.getNumberOfUnits() == 0) {
-				defendingArmy.setWeakest();
-				round.defender.setRuler(attacker);
-				return true;
+				final int strengthToRemove = attackingUnit.strength > totalStrength ? totalStrength
+						: attackingUnit.strength;
+
+				defender.totalArmy.remove(strengthToRemove);
 			}
 
-			return false;
+			// Reset the army to its weakest.
+			defendingArmy.setWeakest();
+
+			// Change the ruler.
+			round.defender.setRuler(attacker);
+			attacker.totalArmy.add(UnitHelper.getInstance().getWeakest());
+
+			warEnded = true;
 		}
+
+		return warEnded;
 	}
 
 	/**
@@ -289,57 +295,30 @@ public final class CombatHelper extends Observable {
 	 */
 	private boolean attackerLost(CombatRound round, ModelUnit defendingUnit) {
 
+		// Whether this units damage has ended the war.
+		boolean warEnded = false;
+
 		final ModelPlayer attacker = round.attacker.getRuler();
 		final ModelArmy attackingArmy = round.attacker.getArmy();
 		final int totalStrength = attackingArmy.getStrength() + round.attackerSquad.geStrength();
 
-		if (defendingUnit.strength >= totalStrength) {
-			resetArmyToWeakest(round.attackerSquad, attackingArmy, attacker);
-			return true;
-		} else {
-			removeUnitFromArmy(round.attackerSquad, attackingArmy, attacker, defendingUnit);
+		removeUnitFromArmy(round.attackerSquad, attackingArmy, attacker, defendingUnit);
 
-			// If the attacking army was cleared.
-			if (attackingArmy.getNumberOfUnits() == 1) {
+		// If the attacking army weakened to the point they can no longer
+		// attack.
+		if (attackingArmy.getNumberOfUnits() <= 1) {
+			attacker.totalArmy.remove(defendingUnit.strength > totalStrength ? totalStrength : defendingUnit.strength);
+
+			// If the army was cleared.
+			if (attackingArmy.getNumberOfUnits() == 0) {
 				attackingArmy.setWeakest();
-				return true;
+				attacker.totalArmy.add(UnitHelper.getInstance().getWeakest());
 			}
 
-			return false;
-		}
-	}
-
-	/**
-	 * Returns a specified {@link ModelArmy} to its weakest state while also
-	 * emptying the specified {@link ModelSquad} and removing the appropriate
-	 * strength from the specified {@link ModelPlayer}'s total {@link ModelArmy}.
-	 * 
-	 * @param squad
-	 *            The {@link ModelSquad} that will be returned to the specified
-	 *            {@link ModelArmy}.
-	 * @param army
-	 *            The {@link ModelArmy} that will be reset to its weakest (non
-	 *            empty) state.
-	 * @param player
-	 *            The {@link ModelPlayer} that owns the specified {@link ModelArmy}.
-	 */
-	private void resetArmyToWeakest(ModelSquad squad, ModelArmy army, ModelPlayer player) {
-
-		// The weakest unit in the game.
-		final ModelUnit weakestUnit = UnitHelper.getInstance().getWeakest();
-
-		squad.returnSquadToArmy(army);
-
-		// The difference between the current strength of the army and the new strength.
-		final int toRemove = army.getStrength() - weakestUnit.strength;
-
-		// If the player is not null then remove the difference from their total army.
-		if (player != null) {
-			player.totalArmy.remove(toRemove);
+			warEnded = true;
 		}
 
-		army.setWeakest();
-
+		return warEnded;
 	}
 
 	/**
@@ -370,12 +349,6 @@ public final class CombatHelper extends Observable {
 			squad.returnSquadToArmy(army);
 			army.remove(enemyUnit);
 		}
-
-		// Remove the unit from the player total army.
-		if (player != null) {
-			player.totalArmy.remove(enemyUnit);
-		}
-
 	}
 
 	/**

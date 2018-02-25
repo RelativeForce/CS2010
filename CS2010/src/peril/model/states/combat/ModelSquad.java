@@ -17,10 +17,11 @@ import peril.model.board.ModelUnit;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-23
- * @version 1.01.03
+ * @since 2018-02-25
+ * @version 1.01.04
  * 
  * @see ModelSquadMember
+ * @see ModelSquadMemberState
  * @see CombatHelper
  * @see Observable
  * @see Iterable
@@ -57,7 +58,7 @@ public final class ModelSquad extends Observable implements Iterable<ModelSquadM
 	 * @return The number of alive {@link ModelSquadMember}s.
 	 */
 	public int getAliveUnits() {
-		return (int) members.stream().filter(member -> member.isAlive).count();
+		return (int) members.stream().filter(member -> member.state == ModelSquadMemberState.ALIVE).count();
 	}
 
 	/**
@@ -83,12 +84,13 @@ public final class ModelSquad extends Observable implements Iterable<ModelSquadM
 	 */
 	public void autoPopulate(ModelArmy army, int minArmySize) {
 
-		removeDeadUnits();
+		removeNonActiveUnits();
 		returnSquadToArmy(army);
 
 		ModelUnit unit = army.getStrongestUnit();
 
-		// Iterate over the army until the squad is at the max size of the army is depleted.
+		// Iterate over the army until the squad is at the max size of the army is
+		// depleted.
 		while (size() < maxSize && army.getNumberOfUnits() > minArmySize) {
 
 			if (army.hasUnit(unit)) {
@@ -108,7 +110,8 @@ public final class ModelSquad extends Observable implements Iterable<ModelSquadM
 	 *         this {@link ModelSquad}
 	 */
 	public int geStrength() {
-		return members.stream().filter(member -> member.isAlive).mapToInt(member -> member.unit.strength).sum();
+		return members.stream().filter(member -> member.state == ModelSquadMemberState.ALIVE)
+				.mapToInt(member -> member.unit.strength).sum();
 	}
 
 	/**
@@ -129,9 +132,9 @@ public final class ModelSquad extends Observable implements Iterable<ModelSquadM
 		// squad
 		for (ModelSquadMember member : members) {
 
-			if (!killed && member.unit.strength == unit.strength && member.isAlive) {
+			if (!killed && member.unit.strength == unit.strength && member.state == ModelSquadMemberState.ALIVE) {
 				killed = true;
-				member.isAlive = false;
+				member.state = ModelSquadMemberState.DEAD;
 
 				setChanged();
 				notifyObservers(new Update("members", members));
@@ -154,11 +157,10 @@ public final class ModelSquad extends Observable implements Iterable<ModelSquadM
 	 */
 	public void returnUnitToArmy(ModelArmy army, ModelSquadMember member) {
 
-		// Remove the member from the squad.
-		members.remove(member);
-
 		// If the member was alive then add it to the army.
-		if (member.isAlive) {
+		if (member.state == ModelSquadMemberState.ALIVE) {
+
+			member.state = ModelSquadMemberState.RETURNED;
 			army.add(member.unit);
 		}
 
@@ -178,13 +180,13 @@ public final class ModelSquad extends Observable implements Iterable<ModelSquadM
 	public void moveToSquad(ModelUnit unit, ModelArmy army) {
 
 		// Remove the dead units to free up any space.
-		removeDeadUnits();
+		removeNonActiveUnits();
 
 		// If there is enough space in the squad attempt to add the unit.
 		if (members.size() < maxSize) {
 			army.remove(unit);
 
-			final ModelSquadMember member = new ModelSquadMember(unit, true);
+			final ModelSquadMember member = new ModelSquadMember(unit, ModelSquadMemberState.ALIVE);
 			members.add(member);
 
 			setChanged();
@@ -217,10 +219,11 @@ public final class ModelSquad extends Observable implements Iterable<ModelSquadM
 	}
 
 	/**
-	 * Removes all the dead {@link ModelSquadMember}s from this {@link ModelSquad}.
+	 * Removes all the {@link ModelSquadMember}s that are not
+	 * {@link ModelSquadMemberState#ALIVE} from this {@link ModelSquad}.
 	 */
-	public void removeDeadUnits() {
-		members.removeIf(member -> !member.isAlive);
+	public void removeNonActiveUnits() {
+		members.removeIf(member -> member.state != ModelSquadMemberState.ALIVE);
 
 		setChanged();
 		notifyObservers(new Update("members", members));
@@ -235,8 +238,10 @@ public final class ModelSquad extends Observable implements Iterable<ModelSquadM
 	 *            returned to.
 	 */
 	public void returnSquadToArmy(ModelArmy army) {
-		members.stream().filter(member -> member.isAlive).forEach(member -> army.add(member.unit));
-		clear();
+		members.stream().filter(member -> member.state == ModelSquadMemberState.ALIVE).forEach(member -> {
+			army.add(member.unit);
+			member.state = ModelSquadMemberState.RETURNED;
+		});
 	}
 
 	/**

@@ -151,7 +151,7 @@ public final class StateHelper {
 	public void init(SlickGame game) throws SlickException {
 
 		// Add starting state to the game container.
-		// game.addState(opening);
+		game.addState(opening);
 		game.addState(mainMenu);
 		game.addState(playerSelection);
 		game.addState(loadingScreen);

@@ -166,8 +166,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 			final float ratio = (((float) 1000f) / (float) SlickGame.FPS) / ((float) delta);
 
-			final int x = (int) ((float) panDirection.x * ratio);
-			final int y = (int) ((float) panDirection.y * ratio);
+			final int x = (int) ((float) panDirection.x / ratio);
+			final int y = (int) ((float) panDirection.y / ratio);
 
 			frame.panToolTips(pan(new Point(x, y)));
 		}

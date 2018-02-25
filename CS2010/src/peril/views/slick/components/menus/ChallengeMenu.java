@@ -2,7 +2,6 @@ package peril.views.slick.components.menus;
 
 import org.newdawn.slick.Color;
 import peril.Challenge;
-import peril.Game;
 import peril.controllers.GameController;
 import peril.views.slick.Frame;
 import peril.views.slick.components.TextField;
@@ -11,10 +10,14 @@ import peril.views.slick.util.Point;
 import peril.views.slick.util.Region;
 
 /**
- * Displays the {@link Challenge}s of the {@link Game} to the user.
+ * Displays the {@link Challenge}s of the game to the user.
  * 
  * @author Joshua_Eddy
  *
+ * @since 2018-02-25
+ * @version 1.01.01
+ *
+ * @see Menu
  */
 public final class ChallengeMenu extends Menu {
 
@@ -40,6 +43,9 @@ public final class ChallengeMenu extends Menu {
 	 */
 	private final int paddingY;
 
+	/**
+	 * The {@link Font} of the title of the page.
+	 */
 	private final Font titleFont;
 
 	/**
@@ -48,10 +54,12 @@ public final class ChallengeMenu extends Menu {
 	 * @param position
 	 *            The {@link Point} position of the {@link ChallengeMenu}
 	 * @param game
-	 *            The {@link Game} this {@link ChallengeMenu} is a part of.
+	 *            The {@link GameController} that allows this {@link ChallengeMenu}
+	 *            to query the state of the game.
 	 */
 	public ChallengeMenu(Point position, GameController game) {
 		super(NAME, game, new Region(600, 600, position));
+		
 		this.paddingX = (getWidth() / 12);
 		this.paddingY = (getHeight() / 8);
 		this.text = new TextField(getWidth() - (paddingX * 2),

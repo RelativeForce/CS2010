@@ -1,10 +1,8 @@
 package peril.views.slick.components.menus;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
-import peril.Game;
 import peril.controllers.GameController;
 import peril.io.MapWriter;
 import peril.io.SaveFile;
@@ -17,17 +15,22 @@ import peril.views.slick.util.Point;
 import peril.views.slick.util.Region;
 
 /**
- * Encapsulates the behaviour of a Pause Menu
+ * Encapsulates the behaviour of a Pause Menu.
  * 
- * @author Ezekiel_Trinidad
+ * @author Ezekiel_Trinidad, Joshua_Eddy
+ * 
+ * @since 2018-02-25
+ * @version 1.01.01
+ * 
+ * @see Menu
  *
  */
-public class PauseMenu extends Menu {
+public final class PauseMenu extends Menu {
 
 	/**
 	 * Holds the name of this {@link PauseMenu}.
 	 */
-	public final static String NAME = "Pause Menu";
+	public static final String NAME = "Pause Menu";
 
 	/**
 	 * {@link VisualList} of buttons to toggle the Music on and off.
@@ -45,11 +48,6 @@ public class PauseMenu extends Menu {
 	 * Holds a list of all the save files that use can save the game into.
 	 */
 	private final VisualList<SaveFile> saveFiles;
-
-	/**
-	 * Denotes whether or not the save option will be displayed to the user.
-	 */
-	private boolean showSaveOption;
 
 	/**
 	 * Holds the id of the save {@link Button}.
@@ -80,12 +78,18 @@ public class PauseMenu extends Menu {
 	private final EventListener savesListener;
 
 	/**
+	 * Denotes whether or not the save option will be displayed to the user.
+	 */
+	private boolean showSaveOption;
+
+	/**
 	 * Constructs a new {@link PauseMenu}.
 	 * 
 	 * @param position
 	 *            {@link Point} position of the {@link PauseMenu}.
 	 * @param game
-	 *            The {@link Game} the {@link PauseMenu} is associated with.
+	 *            The {@link GameController} the {@link PauseMenu} is associated
+	 *            with.
 	 */
 	public PauseMenu(Point position, GameController game) {
 		super(NAME, game, new Region(600, 600, position));
@@ -98,15 +102,15 @@ public class PauseMenu extends Menu {
 		// Construct music toggle
 		this.toggleMusic = new VisualList<>(new Point(position.x + (getWidth() / 4), position.y + (getHeight() / 4)),
 				60, 30, 2, 10);
-		this.toggleMusic.add(Toggle.ON.toString, Toggle.ON);
-		this.toggleMusic.add(Toggle.OFF.toString, Toggle.OFF);
+		this.toggleMusic.add(Toggle.ON.name, Toggle.ON);
+		this.toggleMusic.add(Toggle.OFF.name, Toggle.OFF);
 		this.toggleMusic.setFont(toggleFont);
 
 		// Construct all links toggle
 		this.toggleAllLinks = new VisualList<>(
 				new Point(position.x + ((getWidth() * 3) / 4), position.y + (getHeight() / 4)), 60, 30, 2, 10);
-		this.toggleAllLinks.add(Toggle.OFF.toString, Toggle.OFF);
-		this.toggleAllLinks.add(Toggle.ON.toString, Toggle.ON);
+		this.toggleAllLinks.add(Toggle.OFF.name, Toggle.OFF);
+		this.toggleAllLinks.add(Toggle.ON.name, Toggle.ON);
 		this.toggleAllLinks.setFont(toggleFont);
 
 		this.textFont = new Font("Arial", Color.black, 20);
@@ -219,7 +223,7 @@ public class PauseMenu extends Menu {
 	}
 
 	/**
-	 * Sets this {@link PauseMenu} a visible.
+	 * Sets this {@link PauseMenu} as visible.
 	 */
 	@Override
 	public void show() {
@@ -230,8 +234,8 @@ public class PauseMenu extends Menu {
 	/**
 	 * Draws the {@link PauseMenu} on screen.
 	 * 
-	 * @param g
-	 *            {@link Graphics}
+	 * @param frame
+	 *            The {@link Frame} that draws the {@link PauseMenu} on screen.
 	 */
 	public void draw(Frame frame) {
 
@@ -289,7 +293,7 @@ public class PauseMenu extends Menu {
 	}
 
 	/**
-	 * Saves the current state of the {@link Game}.
+	 * Saves the current state of the game.
 	 */
 	public void save() {
 
@@ -321,7 +325,8 @@ public class PauseMenu extends Menu {
 	/**
 	 * Retrieves whether the the user has toggled show all links on.
 	 * 
-	 * @return <code>boolean</code>
+	 * @return Whether the user has selected to show all the links between
+	 *         countries.
 	 */
 	public boolean showAllLinks() {
 		return toggleAllLinks.getSelected() == Toggle.ON;
@@ -330,8 +335,8 @@ public class PauseMenu extends Menu {
 	/**
 	 * Draws the music toggle on the {@link PauseMenu}.
 	 * 
-	 * @param frametextFont
-	 *            {@link Graphics}
+	 * @param frame
+	 *            The {@link Frame} that draws the {@link PauseMenu} on screen.
 	 */
 	private void drawToggles(Frame frame) {
 
@@ -356,7 +361,7 @@ public class PauseMenu extends Menu {
 	 * Draws the save option menu on the {@link PauseMenu}.
 	 * 
 	 * @param frame
-	 *            {@link Graphics}
+	 *            The {@link Frame} that draws the {@link PauseMenu} on screen.
 	 */
 	private void drawSaveOption(Frame frame) {
 
@@ -372,7 +377,7 @@ public class PauseMenu extends Menu {
 	 * Adds a save file to {@link PauseMenu#saveFiles}.
 	 * 
 	 * @param file
-	 *            {@link SaveFile}
+	 *            The {@link SaveFile}
 	 */
 	private void addSaveFile(SaveFile file) {
 
@@ -389,6 +394,9 @@ public class PauseMenu extends Menu {
 	 * Holds "ON" and "OFF" which has boolean value assigned to them.
 	 * 
 	 * @author Ezekiel_Trinidad, Joshua_Eddy
+	 * 
+	 * @since 2018-02-25
+	 * @version 1.01.01
 	 *
 	 */
 	private enum Toggle {
@@ -396,26 +404,26 @@ public class PauseMenu extends Menu {
 		ON("On", true), OFF("Off", false);
 
 		/**
-		 * <code>boolean</code> state of the {@link Toggle}.
+		 * The state of the {@link Toggle}.
 		 */
 		public final boolean toggle;
 
 		/**
 		 * The string representation of the {@link Toggle}.
 		 */
-		public final String toString;
+		public final String name;
 
 		/**
 		 * Constructs a new {@link Toggle}.
 		 * 
-		 * @param toString
+		 * @param name
 		 *            The string representation of the {@link Toggle}.
 		 * @param toggle
 		 *            <code>boolean</code> state of the {@link Toggle}.
 		 */
-		private Toggle(String toString, boolean toggle) {
+		private Toggle(String name, boolean toggle) {
 			this.toggle = toggle;
-			this.toString = toString;
+			this.name = name;
 		}
 	}
 }

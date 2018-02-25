@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
@@ -33,60 +32,116 @@ import peril.views.slick.util.Point;
 import peril.views.slick.util.Region;
 
 /**
- * Encapsulates the behaviour of a Pause Menu
+ * Encapsulates the behaviour of a {@link Menu} that allows the user to upgrade
+ * the selected {@link ModelCountry} and upgrade {@link ModelUnit}s for points.
  * 
- * @author Joseph Rolli
+ * @author Joseph_Rolli, Joshua_Eddy
+ * 
+ * @since 2018-02-25
+ * @version 1.01.01
  *
+ * @see Menu
+ * @see UnitTrader
  */
-public class UpgradeMenu extends Menu {
+public final class UpgradeMenu extends Menu {
 
 	/**
 	 * Holds the name of this {@link UpgradeMenu}.
 	 */
-	public final static String NAME = "Upgrade Menu";
+	public static final String NAME = "Upgrade Menu";
 
+	/**
+	 * The width that the {@link Image} of the selected {@link ModelCountry} will be
+	 * scaled to.
+	 */
 	private static final int COUNTRY_WIDTH = 200;
 
+	/**
+	 * The width of the {@link UpgradeMenu}.
+	 */
 	private static final int WIDTH = 800;
 
+	/**
+	 * The height of the {@link UpgradeMenu}.
+	 */
 	private static final int HEIGHT = 600;
 
 	/**
-	 * The {@link Font} for the text of the text of the {@link UpgradeMenu}.
+	 * The {@link Font} for the points of the current {@link ModelPlayer}.
 	 */
 	private final Font pointFont;
 
+	/**
+	 * The {@link Font} that displays the name of the selected {@link ModelCountry}.
+	 */
 	private final Font countryFont;
 
+	/**
+	 * The {@link Font} that displays titles.
+	 */
 	private final Font titleFont;
 
+	/**
+	 * The string name of the block link {@link Button}.
+	 */
 	private final String blockButton;
 
+	/**
+	 * The {@link VisualList} that contains all of the neighbours of the currently
+	 * selected {@link ModelCountry} that can have their links blocked.
+	 */
 	private final VisualList<ModelCountry> neighbours;
 
+	/**
+	 * The {@link EventListener} that defines the operations for when the
+	 * {@link #neighbours} {@link VisualList} is added to the current {@link Frame}.
+	 */
 	private final EventListener neighbourListener;
 
+	/**
+	 * The {@link List} of {@link UnitTrader}s that allow the user to upgrade the
+	 * {@link ModelArmy} of the selected {@link ModelCountry}.
+	 */
 	private final List<UnitTrader> traders;
 
-	private ModelCountry selected;
-
+	/**
+	 * The {@link Font} that shows the cost of upgrading a {@link ModelUnit}.
+	 */
 	private final Font armyFont;
 
+	/**
+	 * The {@link Font} that displays the cost of purchases.
+	 */
+	private final Font costFont;
+
+	/**
+	 * The selected {@link ModelCountry} that is being upgraded.
+	 */
+	private ModelCountry selected;
+
+	/**
+	 * The {@link Image} of the {@link SlickPlayer}s icon.
+	 */
 	private Image player;
 
+	/**
+	 * The scaled {@link Image} of the {@link #selected} {@link ModelCountry}.
+	 */
 	private Image country;
 
-	private boolean hasUpgrades;
-
-	private Font blockFont;
+	/**
+	 * Whether the {@link ModelCountry} has some links that can be blocked.
+	 */
+	private boolean hasBlockableLinks;
 
 	/**
 	 * Constructs a new {@link UpgradeMenu}.
 	 * 
 	 * @param position
-	 *            {@link Point} position of the {@link UpgradeMenu}.
+	 *            The {@link Point} position of the {@link UpgradeMenu}.
 	 * @param game
-	 *            The {@link Game} the {@link UpgradeMenu} is associated with.
+	 *            The {@link GameController} the {@link UpgradeMenu} is associated
+	 *            with.
 	 */
 	public UpgradeMenu(Point position, GameController game) {
 		super(NAME, game, new Region(WIDTH, HEIGHT, position));
@@ -94,9 +149,9 @@ public class UpgradeMenu extends Menu {
 		this.pointFont = new Font("Arial", Color.black, 25);
 		this.countryFont = new Font("Arial", Color.black, 30);
 		this.titleFont = new Font("Arial", Color.black, 40);
-		this.blockFont = new Font("Arial", Color.black, 25);
+		this.costFont = new Font("Arial", Color.black, 25);
 		this.armyFont = new Font("Arial", Color.red, 50);
-		this.hasUpgrades = false;
+		this.hasBlockableLinks = false;
 		this.player = null;
 		this.blockButton = "block";
 
@@ -156,6 +211,7 @@ public class UpgradeMenu extends Menu {
 
 			final ModelState state = ((CoreGameState) slick.getCurrentState()).model;
 
+			// Retrieve the selected model country.
 			this.selected = state.getSelected(0);
 
 			final SlickPlayer player = slick.modelView.getVisual(selected.getRuler());
@@ -163,7 +219,6 @@ public class UpgradeMenu extends Menu {
 			final float scaleFactor = (float) COUNTRY_WIDTH / country.getWidth();
 
 			this.country = country.getScaledCopy(scaleFactor);
-
 			this.player = slick.modelView.getVisual(selected.getRuler()).getImage();
 
 			populatesUpgrades();
@@ -173,10 +228,14 @@ public class UpgradeMenu extends Menu {
 		}
 	}
 
+	/**
+	 * Hides this {@link UpgradeMenu}.
+	 */
 	@Override
 	public void hide() {
 		super.hide();
 
+		// If there is a selected country destroy the image
 		if (country == null) {
 
 			try {
@@ -195,20 +254,17 @@ public class UpgradeMenu extends Menu {
 	 * Draws the {@link UpgradeMenu} on screen.
 	 * 
 	 * @param frame
-	 *            {@link Graphics}
+	 *            The {@link Frame} that will draw the {@link UpgradeMenu} on
+	 *            screen.
 	 */
 	public void draw(Frame frame) {
 
 		super.draw(frame);
 
 		drawCountry(frame);
-
 		drawUpgrades(frame);
-
 		drawPoints(frame);
-
 		drawPlayer(frame);
-
 		drawUnits(frame);
 
 	}
@@ -222,15 +278,8 @@ public class UpgradeMenu extends Menu {
 		countryFont.init();
 		titleFont.init();
 		neighbours.init();
-		blockFont.init();
+		costFont.init();
 		armyFont.init();
-
-	}
-
-	/**
-	 * Process a click.
-	 */
-	public void parseClick(Point click) {
 
 	}
 
@@ -246,8 +295,12 @@ public class UpgradeMenu extends Menu {
 
 	}
 
+	/**
+	 * Blocks the link between the selected {@link ModelCountry} and the currently
+	 * selected neighbour {@link ModelCountry}.
+	 */
 	public void blockLink() {
-	
+
 		final ModelPlayer ruler = selected.getRuler();
 		final int currentPoints = ruler.getPoints();
 
@@ -255,14 +308,13 @@ public class UpgradeMenu extends Menu {
 		if (currentPoints >= PointHelper.BLOCKADE_COST) {
 
 			final ModelCountry neighbour = neighbours.getSelected();
-			
+
 			ruler.spendPoints(PointHelper.BLOCKADE_COST);
-			
+
 			neighbour.getLinkTo(selected).setState(ModelLinkState.BLOCKADE, 3);
-			
+
 			populatesUpgrades();
-			
-		
+
 		} else {
 
 			final String message = "You have in sufficient points.";
@@ -272,41 +324,50 @@ public class UpgradeMenu extends Menu {
 
 	}
 
+	/**
+	 * Creates the {@link List} of {@link UnitTrader}s that
+	 */
 	private void populateTraders() {
+
+		// Empty the traders.
 		if (!traders.isEmpty()) {
 			traders.clear();
 		}
 
 		final ModelArmy army = selected.getArmy();
-
 		final UnitHelper helper = UnitHelper.getInstance();
-
-		ModelUnit current = helper.getStrongest();
-
-		boolean isStrongest = true;
-
 		final Point armyPos = getArmyPosition();
-
 		final int interval = SlickUnit.WIDTH - 5;
 
+		boolean isStrongest = true;
+		ModelUnit current = helper.getStrongest();
 		int x = armyPos.x + interval;
 		int y = armyPos.y;
 
+		// Iterate over the units until there is no more.
 		while (current != null) {
 
+			// If the army has the current unit
 			if (army.hasUnit(current)) {
 
+				// If the current unit is not the strongest unit in the game.
 				if (!isStrongest) {
 					traders.add(new UnitTrader(current, new Point(x, y)));
 					x -= (interval * 2);
 				}
 			}
 
+			// Move to the unit below.
 			isStrongest = false;
 			current = helper.getUnitBelow(current);
 		}
 	}
 
+	/**
+	 * Retrieves the {@link Point} position of the {@link #traders} on screen.
+	 * 
+	 * @return The {@link Point} position.
+	 */
 	private Point getArmyPosition() {
 
 		final int x = getPosition().x + ((getWidth() * 3) / 4) - (SlickUnit.WIDTH / 2);
@@ -315,111 +376,138 @@ public class UpgradeMenu extends Menu {
 		return new Point(x, y);
 	}
 
+	/**
+	 * Populates the {@link #neighbours} {@link VisualList} with all the
+	 * {@link ModelCountry} neighbours of the current {@link ModelCountry} that can
+	 * have the links blocked.
+	 */
 	private void populatesUpgrades() {
 
+		// Clear the list of neighbours
 		neighbours.clear();
+		hasBlockableLinks = false;
 
-		int validUpgrades = 0;
-
+		// Iterate over all the neighbours of the currently selected country.
 		for (ModelCountry neighbour : selected.getNeighbours()) {
 
+			// Whether the link is currently open.
 			final boolean hasOpenLink = neighbour.getLinkTo(selected).getState() == ModelLinkState.OPEN;
+
+			// Whether it is an enemy country.
 			final boolean isEnemyRuled = selected.getRuler() != neighbour.getRuler();
 
-			final boolean isValid = hasOpenLink && isEnemyRuled;
-
-			if (isValid) {
+			// If the country is valid add it as a block-able neighbour.
+			if (hasOpenLink && isEnemyRuled) {
 				neighbours.add(neighbour.getName(), neighbour);
-				validUpgrades++;
+				hasBlockableLinks = true;
 			}
 
 		}
 
 		// Set the first as the selected.
-		if (validUpgrades > 0) {
+		if (hasBlockableLinks) {
 			neighbours.setSelected(0);
-			hasUpgrades = true;
 			neighbours.init();
 			getButton(blockButton).show();
-		}else {
+		} else {
 			getButton(blockButton).hide();
-			hasUpgrades = false;
 		}
 	}
 
+	/**
+	 * Draws the {@link UnitTrader}s on screen.
+	 * 
+	 * @param frame
+	 *            The {@link Frame} that displays the {@link UpgradeMenu} on screen.
+	 */
 	private void drawUnits(Frame frame) {
 
 		final Point armyPos = getArmyPosition();
-		int x = armyPos.x;
+		final ModelArmy army = selected.getArmy();
+		final UnitHelper helper = UnitHelper.getInstance();
+		final int interval = SlickUnit.WIDTH - 5;
 		final int y = armyPos.y;
 
-		final int interval = SlickUnit.WIDTH - 5;
-
-		final ModelArmy army = selected.getArmy();
-
-		final UnitHelper helper = UnitHelper.getInstance();
-
+		int x = armyPos.x;
+		int index = 0;
 		ModelUnit current = helper.getStrongest();
 
-		int index = 0;
-
+		// Iterate over all the units.
 		while (current != null) {
 
+			// If the current unit is in the army.
 			if (army.hasUnit(current)) {
 
+				// Draw the unit icon
 				final Image unit = slick.modelView.getVisual(current).getImage();
-
 				frame.draw(unit, x, y);
 
+				// Draw the cost to trade the unit.
 				final String text = "[Cost: " + PointHelper.TRADE_UNIT_COST + "]";
-				final int costX = x + (SlickUnit.WIDTH / 2) - (blockFont.getHeight(text) / 2);
+				final int costX = x + (SlickUnit.WIDTH / 2) - (costFont.getHeight(text) / 2);
+				frame.draw(costFont, text, costX, y - costFont.getHeight(text));
 
-				frame.draw(blockFont, text, costX, y - blockFont.getHeight(text));
-
+				// Draw the trader
 				traders.get(index).draw(frame);
 
+				// Draws the number of the current unit.
 				final int numberOfCurrent = army.getNumberOf(current);
-
 				final String number = Integer.toString(numberOfCurrent);
-
 				final int fontX = x + (SlickUnit.WIDTH / 2) - (armyFont.getWidth(number) / 2);
 				final int fontY = y + (SlickUnit.HEIGHT / 2) - (armyFont.getHeight() / 2);
-
 				frame.draw(armyFont, number, fontX, fontY);
 
 				index++;
 				x -= (interval * 2);
 			}
 
+			// Move to the unit below.
 			current = helper.getUnitBelow(current);
 		}
 	}
 
+	/**
+	 * Draws the current {@link ModelPlayer} on screen.
+	 * 
+	 * @param frame
+	 *            The {@link Frame} that displays the {@link UpgradeMenu} on screen.
+	 */
 	private void drawPlayer(Frame frame) {
 		final int playerX = getPosition().x + (getWidth() / 4) - (player.getWidth() / 2);
 		final int playerY = getPosition().y + (getHeight() / 2) - player.getHeight() - 10;
 		frame.draw(player, playerX, playerY);
 	}
 
+	/**
+	 * Draws the possible blockades for this current {@link ModelCountry}.
+	 * 
+	 * @param frame
+	 *            The {@link Frame} that displays the {@link UpgradeMenu} on screen.
+	 */
 	private void drawUpgrades(Frame frame) {
 
 		final String block = "Blockade [Cost: " + PointHelper.BLOCKADE_COST + "]";
-		final int x = neighbours.getPosition().x + (neighbours.getWidth() / 2) - (blockFont.getWidth(block) / 2);
-		final int y = neighbours.getPosition().y - blockFont.getHeight(block) - 5;
+		final int x = neighbours.getPosition().x + (neighbours.getWidth() / 2) - (costFont.getWidth(block) / 2);
+		final int y = neighbours.getPosition().y - costFont.getHeight(block) - 5;
 
-		if (hasUpgrades) {
+		// If there are possible blockades.
+		if (hasBlockableLinks) {
 
-			frame.draw(blockFont, block, x, y);
-
+			frame.draw(costFont, block, x, y);
 			frame.draw(neighbours, neighbourListener);
 		} else {
 
 			final String text = "No blockades available.";
-
-			frame.draw(blockFont, text, x, y);
+			frame.draw(costFont, text, x, y);
 		}
 	}
 
+	/**
+	 * Draws the number of points the current {@link ModelPlayer} has.
+	 * 
+	 * @param frame
+	 *            The {@link Frame} the displays the {@link UpgradeMenu} on screen.
+	 */
 	private void drawPoints(Frame frame) {
 
 		final String points = Integer.toString(selected.getRuler().getPoints());
@@ -432,6 +520,12 @@ public class UpgradeMenu extends Menu {
 		frame.draw(titleFont, points, x - (titleFont.getWidth(points) / 2), y - titleFont.getHeight(points) - 5);
 	}
 
+	/**
+	 * Draws the currently selected {@link ModelCountry} on screen.
+	 * 
+	 * @param frame
+	 *            The {@link Frame} that displays the {@link UpgradeMenu} on screen.
+	 */
 	private void drawCountry(Frame frame) {
 
 		final int countryX = getPosition().x + (getWidth() / 4);
@@ -446,14 +540,46 @@ public class UpgradeMenu extends Menu {
 		frame.draw(countryFont, countryName, counrtyNameX, countryNameY);
 	}
 
+	/**
+	 * A object that when clicked upgrades the specified {@link ModelUnit} to the
+	 * {@link ModelUnit} above it in terms of strength.
+	 * 
+	 * @author Joseph_Rolli, Joshua_Eddy
+	 * 
+	 * @since 2018-02-18
+	 * @version 1.01.01
+	 * 
+	 * @see Component
+	 * @see Clickable
+	 *
+	 */
 	private final class UnitTrader implements Component {
 
+		/**
+		 * The file name of the icon used to trade a unit for the unit above.
+		 */
 		private static final String TRADE_ICON_NAME = "rightButton.png";
 
+		/**
+		 * The {@link Clickable} that when clicked attempts the trade the specified unit
+		 * up.
+		 */
 		private final Clickable tradeIcon;
 
+		/**
+		 * The {@link EventListener} that handles the operations for this
+		 * {@link UnitTrader}.
+		 */
 		private final EventListener listener;
 
+		/**
+		 * Constructs a new {@link UnitTrader}.
+		 * 
+		 * @param unit
+		 *            The {@link ModelUnit} this {@link UnitTrader} will trade up.
+		 * @param position
+		 *            The position of this {@link UnitTrader}.
+		 */
 		public UnitTrader(ModelUnit unit, Point position) {
 
 			final Image temp = ImageReader.getImage(game.getDirectory().getButtonsPath() + TRADE_ICON_NAME);
@@ -478,16 +604,17 @@ public class UpgradeMenu extends Menu {
 					// If the user has enough points trade up.
 					if (currentPoints >= PointHelper.TRADE_UNIT_COST) {
 
+						// If the unit was successfully traded up.
 						if (army.tradeUp(unit)) {
 							ruler.spendPoints(PointHelper.TRADE_UNIT_COST);
 							populateTraders();
 						} else {
 
+							// Display the ratio of units.
 							final ModelUnit above = UnitHelper.getInstance().getUnitAbove(unit);
 							final int aboveStrength = above.strength;
 							final int unitStrength = unit.strength;
 							final int ratio = aboveStrength / unitStrength;
-
 							final String message = ratio + " " + unit.name + "(s) required.";
 
 							slick.showToolTip(message, tradeIcon.getPosition());
@@ -515,22 +642,34 @@ public class UpgradeMenu extends Menu {
 			};
 		}
 
+		/**
+		 * Draws this {@link UnitTrader} on screen.
+		 */
 		@Override
 		public void draw(Frame frame) {
 			frame.draw(tradeIcon, listener);
 		}
 
+		/**
+		 * Initialises this {@link UnitTrader}.
+		 */
 		@Override
 		public void init() {
 			// Do nothing
 		}
 
+		/**
+		 * Sets the {@link Point} position of this {@link UnitTrader}.
+		 */
 		@Override
 		public void setPosition(Point position) {
 			tradeIcon.setPosition(position);
 
 		}
 
+		/**
+		 * Retrieves the {@link Point} of the {@link UnitTrader}.
+		 */
 		@Override
 		public Point getPosition() {
 			return tradeIcon.getPosition();

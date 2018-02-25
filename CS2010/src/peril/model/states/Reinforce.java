@@ -14,8 +14,8 @@ import peril.model.board.ModelUnit;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-23
- * @version 1.01.02
+ * @since 2018-02-25
+ * @version 1.01.03
  * 
  * @see ModelState
  *
@@ -104,7 +104,7 @@ public final class Reinforce extends ModelState {
 					final ModelUnit weakest = UnitHelper.getInstance().getWeakest();
 
 					// Remove the unit from the list of units to place.
-					player.distributableArmy.remove(weakest.strength);
+					player.distributableArmy.remove(weakest);
 					player.totalArmy.add(weakest);
 
 					// Get that country's army and increase its size by one.

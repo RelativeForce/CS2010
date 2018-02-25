@@ -25,7 +25,7 @@ import peril.helpers.UnitHelper;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.02.01
+ * @version 1.02.02
  * @since 2018-02-25
  * 
  * @see Observable
@@ -283,7 +283,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	 * @return Number of a specific {@link ModelUnit}
 	 */
 	public int getNumberOf(ModelUnit unit) {
-		return units.get(unit.name);
+		return units.containsKey(unit.name) ? units.get(unit.name) : 0;
 	}
 
 	/**

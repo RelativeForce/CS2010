@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 import peril.Challenge;
 import peril.Game;
 import peril.model.ModelPlayer;
-import peril.model.board.ModelArmy;
+import peril.model.board.ModelUnit;
 
 /**
  * A helper class for game which encapsulates the behaviours of the list of
@@ -19,8 +19,8 @@ import peril.model.board.ModelArmy;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.02
- * @since 2018-02-20
+ * @version 1.01.03
+ * @since 2018-02-25
  *
  */
 public class PlayerHelper {
@@ -307,7 +307,13 @@ public class PlayerHelper {
 		// The factor is based on player progression.
 		final int factor = (player.getCountriesRuled() < 12 ? 9 : player.getCountriesRuled()) / 3;
 
-		player.distributableArmy.add(ModelArmy.generateUnits(factor * roundScale));
+		final ModelUnit weakest = UnitHelper.getInstance().getWeakest();
+		
+		for (int index = 0; index < factor * roundScale; index++) {
+				player.distributableArmy.add(weakest);
+		}
+		
+	
 
 	}
 

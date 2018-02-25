@@ -18,7 +18,7 @@ import peril.model.board.ModelUnit;
  * @author Joshua_Eddy
  * 
  * @since 2018-02-25
- * @version 1.01.04
+ * @version 1.01.05
  * 
  * @see ModelSquadMember
  * @see ModelSquadMemberState
@@ -84,8 +84,8 @@ public final class ModelSquad extends Observable implements Iterable<ModelSquadM
 	 */
 	public void autoPopulate(ModelArmy army, int minArmySize) {
 
-		removeNonActiveUnits();
 		returnSquadToArmy(army);
+		removeNonActiveUnits();
 
 		ModelUnit unit = army.getStrongestUnit();
 
@@ -162,6 +162,10 @@ public final class ModelSquad extends Observable implements Iterable<ModelSquadM
 
 			member.state = ModelSquadMemberState.RETURNED;
 			army.add(member.unit);
+		}
+		// If the member is dead or returned then remove it.
+		else {
+			members.remove(member);
 		}
 
 		setChanged();

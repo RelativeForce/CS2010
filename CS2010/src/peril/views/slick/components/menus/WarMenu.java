@@ -40,7 +40,7 @@ import peril.views.slick.util.Region;
  * @author Joshua_Eddy, Ezekiel_Trinidad
  * 
  * @since 2018-02-25
- * @version 1.01.02
+ * @version 1.01.03
  * 
  * @see Menu
  * @see Attack
@@ -225,8 +225,6 @@ public final class WarMenu extends Menu {
 			drawNormalCombat(frame);
 		}
 
-		slick.showToolTip("Click the units below, to select the number of attacking units");
-
 	}
 
 	/**
@@ -238,6 +236,8 @@ public final class WarMenu extends Menu {
 
 		getButton(attackButton).hide();
 		defendingSquad.autoPopulate(state.getSecondary().getArmy());
+		
+		slick.showToolTip("Click here to select the attacking units.", new Point(getPosition().x + (getWidth() / 2), getPosition().y + getHeight() - 120));
 
 	}
 
@@ -279,10 +279,10 @@ public final class WarMenu extends Menu {
 			// If the army of the attacker country is larger that 1 unit in size
 			if (attackingSquad.model.getAliveUnits() > 1) {
 
-				// Remove the dead attacking units.
-				attackingSquad.model.removeNonActiveUnits();
-
-				defendingSquad.autoPopulate(defender.getArmy());
+				// If the defending squad is full of alive units.
+				if(defendingSquad.model.getAliveUnits() != defendingSquad.model.size()) {
+					defendingSquad.autoPopulate(defender.getArmy());
+				}
 
 				// Execute the combat
 				state.combat.fight(round);

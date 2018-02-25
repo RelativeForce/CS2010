@@ -1,11 +1,10 @@
 package peril.views.slick.components.menus;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import org.newdawn.slick.Graphics;
 
 import peril.controllers.GameController;
 import peril.views.slick.Container;
@@ -25,31 +24,41 @@ import peril.views.slick.util.Viewable;
  * {@link Clickable}.
  * 
  * @author Joshua_Eddy, Ezekiel_Trinidad
+ * 
+ * @since 2018-02-25
+ * @version 1.01.01
+ * 
+ * @see Clickable
+ * @see Container
+ * @see Component
  *
  */
 public abstract class Menu extends Clickable implements Container, Component {
-
-	/**
-	 * A {@link List} of {@link Button}s on this {@link Menu}.
-	 */
-	private final Map<String, Button> buttons;
-
-	/**
-	 * A {@link List} of {@link Viewable}s on this {@link Menu}.
-	 */
-	private final List<Viewable> images;
-
-	/**
-	 * The string representation of this {@link Menu}.
-	 */
-	private String name;
 
 	/**
 	 * The {@link Game} that this {@link Menu} is a part of.
 	 */
 	protected final GameController game;
 
+	/**
+	 * The {@link SlickGame} this {@link Menu} is apart of.
+	 */
 	protected final SlickGame slick;
+
+	/**
+	 * The {@link List} of {@link Button}s on this {@link Menu}.
+	 */
+	private final Map<String, Button> buttons;
+
+	/**
+	 * The {@link List} of {@link Viewable}s on this {@link Menu}.
+	 */
+	private final List<Viewable> images;
+
+	/**
+	 * The string representation of this {@link Menu}.
+	 */
+	private final String name;
 
 	/**
 	 * Whether or not this {@link Menu} is visible or not.
@@ -62,9 +71,10 @@ public abstract class Menu extends Clickable implements Container, Component {
 	 * @param name
 	 *            The string representation of this {@link Menu}.
 	 * @param game
-	 *            The {@link Game} that this {@link Menu} is a part of.
+	 *            The {@link GameController} that allows this {@link Menu} to query
+	 *            the state of the game.
 	 * @param region
-	 *            {@link Region}
+	 *            The {@link Region} that denotes this {@link Menu} on screen.
 	 */
 	public Menu(String name, GameController game, Region region) {
 		super(region);
@@ -87,13 +97,13 @@ public abstract class Menu extends Clickable implements Container, Component {
 	public abstract void init();
 
 	/**
-	 * Retrieves whether this menu is visible of not.
+	 * Moves all the visual components in the object that extends {@link Menu} along
+	 * a specified {@link Point} vector.
 	 * 
-	 * @return <code>boolean</code>
+	 * @param vector
+	 *           The {@link Point} vector to move the components by.
 	 */
-	public boolean isVisible() {
-		return visible;
-	}
+	public abstract void moveComponents(Point vector);
 
 	/**
 	 * Toggles this {@link Menu} between visible and invisible.
@@ -110,10 +120,7 @@ public abstract class Menu extends Clickable implements Container, Component {
 
 	/**
 	 * Draws this {@link Menu} and all its {@link Button}s and {@link Viewable}s on
-	 * screen. {@link Buttons} are drawn on top of {@link Viewable}s.
-	 * 
-	 * @param g
-	 *            {@link Graphics}
+	 * screen. The {@link Buttons} are drawn on top of {@link Viewable}s.
 	 */
 	public void draw(Frame frame) {
 		if (visible) {
@@ -142,6 +149,12 @@ public abstract class Menu extends Clickable implements Container, Component {
 		visible = false;
 	}
 
+	/**
+	 * Sets the state of the {@link Menu}.
+	 * 
+	 * @param state
+	 *            The visibility of state of the {@link Menu}.
+	 */
 	public void setVisibility(boolean state) {
 
 		if (state) {
@@ -158,9 +171,9 @@ public abstract class Menu extends Clickable implements Container, Component {
 	@Override
 	public void addButton(Button button) {
 
-		Point current = button.getPosition();
+		final Point current = button.getPosition();
 
-		Point menuPosition = this.getPosition();
+		final Point menuPosition = this.getPosition();
 
 		button.setPosition(new Point(current.x + menuPosition.x, current.y + menuPosition.y));
 
@@ -174,28 +187,19 @@ public abstract class Menu extends Clickable implements Container, Component {
 	@Override
 	public void setPosition(Point position) {
 
-		Point current = super.getPosition();
+		final Point current = super.getPosition();
 
-		Point vector = new Point(position.x - current.x, position.y - current.y);
+		final Point vector = new Point(position.x - current.x, position.y - current.y);
 
 		super.setPosition(position);
 
 		moveComponents(vector);
 
-		moveButtons(vector);
+		moveViewables(buttons.values(), vector);
 
-		moveImages(vector);
+		moveViewables(images, vector);
 
 	}
-
-	/**
-	 * Moves all the visual components in the object that extends {@link Menu} along
-	 * a specified {@link Point} vector.
-	 * 
-	 * @param vector
-	 *            {@link Point}
-	 */
-	public abstract void moveComponents(Point vector);
 
 	/**
 	 * Adds a {@link Viewable} to this {@link Menu}.
@@ -203,9 +207,9 @@ public abstract class Menu extends Clickable implements Container, Component {
 	@Override
 	public void addImage(Viewable image) {
 
-		Point current = image.getPosition();
+		final Point current = image.getPosition();
 
-		Point menuPosition = this.getPosition();
+		final Point menuPosition = this.getPosition();
 
 		image.setPosition(new Point(current.x + menuPosition.x, current.y + menuPosition.y));
 
@@ -234,24 +238,31 @@ public abstract class Menu extends Clickable implements Container, Component {
 	}
 
 	/**
-	 * Moves all the {@link Viewable}s along a specified {@link Point} vector.
+	 * Retrieves whether this menu is visible of not.
 	 * 
-	 * @param vector
-	 *            {@link Point}
+	 * @return <code>boolean</code>
 	 */
-	private void moveImages(Point vector) {
-		images.forEach(image -> image
-				.setPosition(new Point(image.getPosition().x + vector.x, image.getPosition().y + vector.y)));
+	public boolean isVisible() {
+		return visible;
 	}
 
 	/**
-	 * Moves all the {@link Button}s along a specified {@link Point} vector.
+	 * Moves a {@link Collection} of {@link Viewable}s along a specified
+	 * {@link Point} vector.
 	 * 
 	 * @param vector
-	 *            {@link Point}
+	 *            The {@link Point} vector to move the specified {@link Viewable}s
+	 *            by.
+	 * @param viewables
+	 *            The {@link Collection} of {@link Viewable} objects to be moved by
+	 *            the {@link Point} vector.
 	 */
-	private void moveButtons(Point vector) {
-		buttons.forEach((buttonId, button) -> button
-				.setPosition(new Point(button.getPosition().x + vector.x, button.getPosition().y + vector.y)));
+	private void moveViewables(Collection<? extends Viewable> viewables, Point vector) {
+		viewables.forEach(image -> {
+			final int x = image.getPosition().x + vector.x;
+			final int y = image.getPosition().y + vector.y;
+			image.setPosition(new Point(x, y));
+		});
 	}
+
 }

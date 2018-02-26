@@ -7,21 +7,23 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.state.StateBasedGame;
 
 import net.java.games.input.Component;
-import peril.Game;
 import peril.controllers.GameController;
+import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
 import peril.model.states.Setup;
 import peril.views.slick.Frame;
-import peril.views.slick.board.SlickCountry;
 import peril.views.slick.util.Point;
 
 /**
- * The state where the user selects which player gets what
- * {@link SlickCountry}s.
+ * The state where the user selects which {@link ModelPlayer} gets what
+ * {@link ModelCountry}s before the game properly begins.
  * 
  * @author Joshua_Eddy, Joseph_Rolli
  * 
- *         {@link CoreGameState}
+ * @since 2018-02-26
+ * @version 1.01.01
+ * 
+ * @see CoreGameState
  *
  */
 public final class SetupState extends CoreGameState {
@@ -30,7 +32,8 @@ public final class SetupState extends CoreGameState {
 	 * Constructs a new {@link SetupState}.
 	 * 
 	 * @param game
-	 *            The {@link Game} this {@link SetupState} is a part of.
+	 *            The {@link GameController} that allows this {@link SetupState} to
+	 *            query the state of the game.
 	 * @param id
 	 *            The ID of this {@link SetupState}
 	 */
@@ -40,6 +43,9 @@ public final class SetupState extends CoreGameState {
 		model.addObserver(this);
 	}
 
+	/**
+	 * Enters the {@link SetupState}.
+	 */
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
@@ -58,7 +64,6 @@ public final class SetupState extends CoreGameState {
 		super.drawArmies(frame);
 		super.drawImages();
 		super.drawButtons();
-
 		super.drawMiniMap(frame);
 
 		menus.draw(frame);
@@ -71,8 +76,8 @@ public final class SetupState extends CoreGameState {
 	@Override
 	public void parseButton(int key, Point mousePosition) {
 		super.parseButton(key, mousePosition);
-		
-		ModelCountry highlighted = model.getSelected(0);
+
+		final ModelCountry highlighted = model.getSelected(0);
 
 		/*
 		 * If the player has highlighted a county then parse the button presses that

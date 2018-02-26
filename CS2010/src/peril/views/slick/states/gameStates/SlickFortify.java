@@ -6,60 +6,69 @@ import java.util.Observable;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
+import peril.model.board.ModelUnit;
 import peril.model.states.Fortify;
 import peril.views.slick.Frame;
 import peril.views.slick.board.SlickCountry;
-import peril.views.slick.util.Button;
 import peril.views.slick.util.Point;
 
 /**
- * Encapsulates the behaviour of the 'Movement' state of the game. In this state
- * the {@link Game#getCurrent()} chooses which of their {@link SlickCountry}s
- * they will move units to another {@link SlickCountry}.
+ * Displays the {@link Fortify} state to the user.
  * 
  * @author Joshua_Eddy, Joseph_Rolli
+ * 
+ * @since 2018-02-26
+ * @version 1.01.01
+ * 
+ * @see Fortify
+ * @see CoreGameState
  *
  */
-public final class MovementState extends CoreGameState {
+public final class SlickFortify extends CoreGameState {
 
 	/**
-	 * Holds the instance of the fortify {@link Button}.
+	 * Holds the name of the fortify button.
 	 */
 	private final String fortifyButton;
 
+	/**
+	 * Holds the name of the upgrade button.
+	 */
 	private final String upgradeButton;
 
 	/**
-	 * Hold the path between two {@link SlickCountry}s in the {@link MovementState}.
+	 * Hold the path between two {@link SlickCountry}s in the {@link SlickFortify}.
 	 */
-	private List<SlickCountry> path;
+	private final List<SlickCountry> path;
 
 	/**
-	 * Constructs a new {@link MovementState}.
+	 * Constructs a new {@link SlickFortify}.
 	 * 
 	 * @param game
-	 *            The {@link Game} that houses this {@link MovementState}.
+	 *            The {@link Game} that houses this {@link SlickFortify}.
 	 * @param id
-	 *            The ID of this {@link MovementState}.
+	 *            The ID of this {@link SlickFortify}.
+	 * @param model
+	 *            The {@link Fortify} state this {@link SlickFortify} displays.
 	 * 
 	 */
-	public MovementState(GameController game, int id, Fortify model) {
+	public SlickFortify(GameController game, int id, Fortify model) {
 		super(game, model.getName(), id, model);
+
 		this.fortifyButton = "fortify";
 		this.upgradeButton = "upgrades";
-		path = new LinkedList<>();
+		this.path = new LinkedList<>();
 
 		model.addObserver(this);
 	}
 
 	/**
-	 * Enters this {@link MovementState}
+	 * Enters this {@link SlickFortify}
 	 */
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
@@ -71,7 +80,7 @@ public final class MovementState extends CoreGameState {
 	}
 
 	/**
-	 * Render the {@link MovementState}.
+	 * Render the {@link SlickFortify}.
 	 */
 	@Override
 	public void render(GameContainer gc, Frame frame) {
@@ -94,6 +103,9 @@ public final class MovementState extends CoreGameState {
 
 	}
 
+	/**
+	 * Updates this {@link SlickFortify}.
+	 */
 	@Override
 	public void update(GameContainer gc, int delta, Frame frame) {
 		super.update(gc, delta, frame);
@@ -101,7 +113,7 @@ public final class MovementState extends CoreGameState {
 	}
 
 	/**
-	 * Performs the exit state operations specific to this {@link MovementState}
+	 * Performs the exit state operations specific to this {@link SlickFortify}
 	 */
 	@Override
 	public void leave(GameContainer gc, StateBasedGame game) throws SlickException {
@@ -112,7 +124,7 @@ public final class MovementState extends CoreGameState {
 	}
 
 	/**
-	 * Hide the fortify {@link Button}.
+	 * Hide the fortify button.
 	 */
 	public void hideFortifyButton() {
 		getButton(fortifyButton).hide();
@@ -122,7 +134,7 @@ public final class MovementState extends CoreGameState {
 	 * Draws the path between the primary and secondary {@link SlickCountry}s.
 	 * 
 	 * @param frame
-	 *            {@link Graphics}
+	 *            The {@link Frame} which displays {@link SlickFortify} to the user.
 	 */
 	public void drawPath(Frame frame) {
 
@@ -146,7 +158,7 @@ public final class MovementState extends CoreGameState {
 	}
 
 	/**
-	 * Processes a mouse movement over this {@link MovementState}.
+	 * Processes a mouse movement over this {@link SlickFortify}.
 	 */
 	@Override
 	public void parseMouse(Point mousePosition) {
@@ -184,31 +196,8 @@ public final class MovementState extends CoreGameState {
 	}
 
 	/**
-	 * Moves the reinforce {@link Button} to be positioned at the top left of the
-	 * current country.
-	 * 
-	 * @param country
-	 *            {@link SlickCountry}
+	 * Updates this {@link SlickFortify} when its {@link Observable}s have changed.
 	 */
-	private void moveFortifyButton(SlickCountry country) {
-
-		Point armyPosition = country.getArmyPosition();
-
-		int x = armyPosition.x;
-		int y = armyPosition.y + 25;
-
-		getButton(fortifyButton).setPosition(new Point(x, y));
-	}
-
-	/**
-	 * Moves the fortify button along the pan {@link Point} vector.
-	 */
-	@Override
-	protected void panElements(Point panVector) {
-		panButton(getButton(fortifyButton), panVector);
-		panButton(getButton(upgradeButton), panVector);
-	}
-
 	@Override
 	public void update(Observable o, Object arg) {
 		super.update(o, arg);
@@ -226,10 +215,27 @@ public final class MovementState extends CoreGameState {
 			getButton(upgradeButton).hide();
 		}
 
-		if (selected.size() == 2 && selected.get(0).model.getArmy().getStrength() > 1) {
+		// If there are two countries selected there must be a path between them.
+		if (selected.size() == 2 && selected.get(0).model.getArmy().getNumberOfUnits() > 1) {
 			getButton(fortifyButton).show();
 
-			path.clear();
+			if (!path.isEmpty()) {
+				path.clear();
+			}
+
+			final Fortify fortify = (Fortify) model;
+			final ModelCountry primary = fortify.getPrimary();
+			final ModelCountry target = fortify.getSecondary();
+			final ModelUnit strongest = primary.getArmy().getStrongestUnit();
+
+			// Retrieve the path between the two selected countries then add the countries
+			// in the model path to the drawn path.
+			fortify.getPathBetween(primary, target, strongest).forEach(country -> {
+
+				final SlickCountry slickCountry = slick.modelView.getVisual(country);
+				path.add(slickCountry);
+
+			});
 
 			moveFortifyButton(selected.get(1));
 		} else {
@@ -238,4 +244,32 @@ public final class MovementState extends CoreGameState {
 		}
 
 	}
+
+	/**
+	 * Moves the fortify button along the pan {@link Point} vector.
+	 */
+	@Override
+	protected void panElements(Point panVector) {
+		panButton(getButton(fortifyButton), panVector);
+		panButton(getButton(upgradeButton), panVector);
+	}
+
+	/**
+	 * Moves the fortify button to be positioned at the top left of the current
+	 * country.
+	 * 
+	 * @param country
+	 *            The {@link SlickCountry} the fortify button will be positioned
+	 *            over.
+	 */
+	private void moveFortifyButton(SlickCountry country) {
+
+		Point armyPosition = country.getArmyPosition();
+
+		int x = armyPosition.x;
+		int y = armyPosition.y + 25;
+
+		getButton(fortifyButton).setPosition(new Point(x, y));
+	}
+
 }

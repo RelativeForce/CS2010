@@ -17,7 +17,7 @@ import peril.views.slick.states.Opening;
 import peril.views.slick.states.PlayerSelection;
 import peril.views.slick.states.gameStates.CombatState;
 import peril.views.slick.states.gameStates.CoreGameState;
-import peril.views.slick.states.gameStates.MovementState;
+import peril.views.slick.states.gameStates.SlickFortify;
 import peril.views.slick.states.gameStates.SlickReinforce;
 import peril.views.slick.states.gameStates.SlickSetup;
 
@@ -76,10 +76,10 @@ public final class StateHelper {
 	public final CombatState combat;
 
 	/**
-	 * The {@link MovementState} which lets the user move {@link ModelArmy}s from
+	 * The {@link SlickFortify} which lets the user move {@link ModelArmy}s from
 	 * one {@link SlickCountry} to another.
 	 */
-	public final MovementState movement;
+	public final SlickFortify movement;
 
 	/**
 	 * The {@link EndState} that displays the results of the {@link SlickGame}.
@@ -107,7 +107,7 @@ public final class StateHelper {
 	 *            The {@link SlickSetup} that will allow the user to set up which
 	 *            {@link SlickPlayer} owns which {@link SlickCountry}.
 	 * @param movement
-	 *            The {@link MovementState} which lets the user move
+	 *            The {@link SlickFortify} which lets the user move
 	 *            {@link ModelArmy}s from one {@link SlickCountry} to another.
 	 * @param end
 	 *            The {@link EndState} that displays the results of the
@@ -124,7 +124,7 @@ public final class StateHelper {
 	 *            The credits page for this game.
 	 */
 	public StateHelper(Opening opening, MainMenu mainMenu, CombatState combat, SlickReinforce reinforcement,
-			SlickSetup setup, MovementState movement, EndState end, LoadingScreen loadingScreen,
+			SlickSetup setup, SlickFortify movement, EndState end, LoadingScreen loadingScreen,
 			PlayerSelection playerSelection, Credits credits) {
 		this.opening = opening;
 		this.mainMenu = mainMenu;

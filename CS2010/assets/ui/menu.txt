@@ -3,6 +3,7 @@ button,Main Menu,7,playButton.png,180,80,710,610,play
 image,Main Menu,perilLogo.png,800,520,60,0
 button,Main Menu,23,goat.png,60,60,820,15,website
 button,Main Menu,32,creditsButton.png,180,80,5,5,credits
+button,Main Menu,33,help1Button.png,180,80,460,610,help
 
 // Player Selection
 button,Select,12,mainMenuButton.png,180,80,10,610,menu
@@ -14,3 +15,5 @@ image,Credits,credits.png,900,700,0,0
 button,Credits,12,mainMenuButton.png,180,80,10,610,menu
 
 // Help
+image,Help,helpScreen.png,900,700,0,0
+button,Help,12,mainMenuButton.png,180,80,10,610,menu

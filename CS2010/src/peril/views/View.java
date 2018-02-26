@@ -350,5 +350,10 @@ public interface View {
 	 * Blocks the {@link ModelLink} between two countries that are selected.
 	 */
 	void blockLink();
+	
+	/**
+	 * Allows to enter the help state.
+	 */
+	void enterHelp();
 
 }

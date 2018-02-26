@@ -10,7 +10,6 @@ import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.Game;
 import peril.controllers.GameController;
 import peril.io.FileParser;
 import peril.views.slick.Frame;
@@ -26,9 +25,15 @@ import peril.views.slick.util.Viewable;
 /**
  * 
  * Encapsulates the behaviour of a loading screen. Using {@link FileParser}s
- * this object will load objects from memory.
+ * this object will load objects from memory. This object will also determine
+ * which state the game starts in based on the map file it loads.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-26
+ * @version 1.01.01
+ * 
+ * @see InteractiveState
  *
  */
 public final class LoadingScreen extends InteractiveState {
@@ -39,16 +44,26 @@ public final class LoadingScreen extends InteractiveState {
 	private final static String NAME = "loading screen";
 
 	/**
-	 * Holds the first {@link CoreGameState} the game should load into if the map is
-	 * loaded from a save.
-	 */
-	private CoreGameState firstState;
-
-	/**
 	 * Holds the {@link List} of {@link FileParser}s this {@link LoadingScreen} will
 	 * load.
 	 */
 	private final List<FileParser> readers;
+
+	/**
+	 * THe {@link ProgressBar} that will be displayed on this loading screen.
+	 */
+	private final ProgressBar progressBar;
+
+	/**
+	 * The {@link Font} that "finishing up" is displayed in.
+	 */
+	private final Font textFont;
+
+	/**
+	 * Holds the first {@link CoreGameState} the game should load into if the map is
+	 * loaded from a save.
+	 */
+	private CoreGameState firstState;
 
 	/**
 	 * The index of the current {@link FileParser} being parsed.
@@ -65,31 +80,31 @@ public final class LoadingScreen extends InteractiveState {
 	 */
 	private Music music;
 
-	private boolean terminated;
-
 	/**
-	 * THe {@link ProgressBar} that will be displayed on this loading screen.
+	 * Whether or not this {@link LoadingScreen} has encountered a exception while
+	 * loaded and is therefore un-able to continue loading the game.
 	 */
-	private final ProgressBar progressBar;
-
-	private final Font textFont;
+	private boolean terminated;
 
 	/**
 	 * Constructs a new {@link LoadingScreen}.
 	 * 
 	 * @param game
-	 *            The {@link Game} this {@link LoadingScreen} is a part of.
+	 *            The {@link GameController} that allows this {@link LoadingScreen}
+	 *            to query the state of the game.
 	 * @param id
-	 *            The is of this {@link LoadingScreen}.
+	 *            The id of this {@link LoadingScreen}.
 	 */
 	public LoadingScreen(GameController game, int id) {
 		super(game, NAME, id, HelpMenu.NULL_PAGE);
+
 		this.index = 0;
 		this.readers = new ArrayList<>();
 		this.progressBar = new ProgressBar(new Point(0, 0), 100, 20);
-		super.addComponent(progressBar);
 		this.textFont = new Font("Arial", Color.red, 25);
 		this.terminated = false;
+
+		super.addComponent(progressBar);
 	}
 
 	/**
@@ -136,6 +151,8 @@ public final class LoadingScreen extends InteractiveState {
 
 		progressBar.draw(frame);
 
+		// If all the file parsers are done, display that the game is "finishing up" in
+		// case the game slows down due to map size.
 		if (index == readers.size()) {
 
 			final String text = "Finishing up";
@@ -147,12 +164,14 @@ public final class LoadingScreen extends InteractiveState {
 	}
 
 	/**
-	 * Parses the line from the current {@link FileParser}. Enters
-	 * {@link SetupState} when all the {@link FileParser}s are finished.
+	 * Parses the line from the current {@link FileParser}. When all the
+	 * {@link FileParser}s are finished this {@link LoadingScreen} enters
+	 * {@link SetupState} unless the map file specifies otherwise.
 	 */
 	@Override
 	public void update(GameContainer gc, int delta, Frame frame) {
 
+		// If the loading has been interupted.
 		if (terminated) {
 			return;
 		}
@@ -167,7 +186,7 @@ public final class LoadingScreen extends InteractiveState {
 		// Otherwise reader the current readers line.
 		else {
 
-			FileParser reader = readers.get(index);
+			final FileParser reader = readers.get(index);
 
 			// If the reader is not finished parse its current line.
 			if (!reader.isFinished()) {
@@ -193,7 +212,7 @@ public final class LoadingScreen extends InteractiveState {
 	 * Adds a {@link FileParser} to the {@link LoadingScreen} to be parsed.
 	 * 
 	 * @param reader
-	 *            {@link FileParser}
+	 *            The file parser to be added {@link FileParser}.
 	 */
 	public void addReader(FileParser reader) {
 
@@ -233,30 +252,26 @@ public final class LoadingScreen extends InteractiveState {
 
 		slick.menus.refreshSaveFiles();
 
-		if(!terminated) {
+		if (!terminated) {
 			slick.centerBoard();
+			slick.menus.hideVisible();
 		}
 
 		this.terminated = false;
 
 	}
 
+	/**
+	 * Processed a button press on the loading screen.
+	 */
 	@Override
 	public void parseButton(int key, Point mousePosition) {
 		super.parseButton(key, mousePosition);
-		
-		if(terminated) {
+
+		if (terminated) {
 			slick.enterMainMenu();
 		}
-		
-	}
-	
-	/**
-	 * Retrieves the loading {@link Music}.
-	 */
-	@Override
-	public Music getMusic() {
-		return music;
+
 	}
 
 	/**
@@ -268,6 +283,14 @@ public final class LoadingScreen extends InteractiveState {
 	 */
 	public void setFirstState(CoreGameState saveState) {
 		firstState = saveState;
+	}
+
+	/**
+	 * Retrieves the loading {@link Music}.
+	 */
+	@Override
+	public Music getMusic() {
+		return music;
 	}
 
 	/**

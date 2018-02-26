@@ -22,8 +22,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-18
- * @version 1.01.02
+ * @since 2018-02-26
+ * @version 1.01.03
  * 
  * @see InteractiveState
  *
@@ -229,6 +229,11 @@ public final class MainMenu extends InteractiveState {
 		background = slick.music.read("menu");
 
 		checkSaves();
+
+		// Load Assets
+		while (!slick.io.mainMenuLoader.isFinished()) {
+			slick.io.mainMenuLoader.parseLine();
+		}
 	}
 
 	/**
@@ -255,17 +260,11 @@ public final class MainMenu extends InteractiveState {
 	}
 
 	/**
-	 * Updates this {@link MainMenu}. When this state is first activated all the
-	 * visual assets of the main menu are loaded in from memory.
+	 * Updates this {@link MainMenu}.
 	 */
 	@Override
 	public void update(GameContainer gc, int delta, Frame frame) {
-
-		// Load Assets
-		if (!slick.io.mainMenuLoader.isFinished()) {
-			slick.io.mainMenuLoader.parseLine();
-		}
-
+		// Do nothing
 	}
 
 	/**

@@ -6,42 +6,37 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.Game;
 import peril.controllers.GameController;
 import peril.model.ModelPlayer;
 import peril.views.slick.Frame;
 import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.components.menus.HelpMenu;
 import peril.views.slick.util.Button;
-import peril.views.slick.util.Font;
 import peril.views.slick.util.Point;
 
 /**
  * 
- * The final {@link InteractiveState} of the {@link Game} where the winner and
- * losers are displayed.
+ * The final {@link InteractiveState} where the winner and losers are displayed.
  * 
  * @author Joshua_Eddy
+ * 
+ * @since 2018-02-26
+ * @version 1.01.01
+ * 
+ * @see InteractiveState
  *
  */
-public class EndState extends InteractiveState {
+public final class EndState extends InteractiveState {
 
 	/**
 	 * The name of a specific {@link EndState}.
 	 */
 	private static final String STATE_NAME = "End";
-
-	/**
-	 * The {@link Font} that the winning {@link SlickPlayer} will be displayed in.
-	 */
-	private final Font winnerFont;
 
 	/**
 	 * The ordered {@link SlickPlayer}s finishing positions. {@link SlickPlayer} at
@@ -50,22 +45,16 @@ public class EndState extends InteractiveState {
 	private final LinkedList<SlickPlayer> podium;
 
 	/**
-	 * The {@link Font} that the losing {@link SlickPlayer}(s) will be displayed in.
-	 */
-	private final Font loserFont;
-
-	/**
 	 * The {@link Button} that will cause the {@link EndState} to return the the
 	 * main menu.
 	 */
 	private final String menuButton;
 
 	/**
-	 * The {@link Button} that will cause the {@link EndState} to exit the
-	 * {@link Game}.
+	 * The {@link Button} that will cause the {@link EndState} to exit the game.
 	 */
 	private final String exitButton;
-	
+
 	/**
 	 * Holds the {@link Point} position of the players in the {@link EndState}.
 	 */
@@ -80,15 +69,14 @@ public class EndState extends InteractiveState {
 	 * Constructs a new {@link EndState}.
 	 * 
 	 * @param game
-	 *            The {@link Game} this state is a part of.
+	 *            The {@link GameController} which allows this {@link EndState} to
+	 *            query the state of the game.
 	 * @param id
 	 *            The id of this {@link EndState}.
 	 */
 	public EndState(GameController game, int id) {
 		super(game, STATE_NAME, id, HelpMenu.NULL_PAGE);
 		podium = new LinkedList<>();
-		winnerFont = new Font("Arial", Color.yellow, 50);
-		loserFont = new Font("Arial", Color.red, 30);
 		exitButton = "exit";
 		menuButton = "menu";
 		podiumPositions = new HashMap<>();
@@ -108,15 +96,6 @@ public class EndState extends InteractiveState {
 		}
 
 		podium.push(player);
-	}
-
-	/**
-	 * Retrieves the podium of this {@link EndState}.
-	 * 
-	 * @return {@link List} of {@link SlickPlayer}s.
-	 */
-	public List<SlickPlayer> getPodium() {
-		return podium;
 	}
 
 	/**
@@ -140,10 +119,6 @@ public class EndState extends InteractiveState {
 		super.init(gc, sbg);
 
 		music = slick.music.read("victory");
-
-		// Initialise Fonts
-		winnerFont.init();
-		loserFont.init();
 	}
 
 	/**
@@ -174,11 +149,14 @@ public class EndState extends InteractiveState {
 		setPodiumPositions(gc);
 	}
 
+	/**
+	 * Updated the visual elements of the {@link EndState}.
+	 */
 	@Override
 	public void update(GameContainer gc, int delta, Frame frame) {
 		// Do Nothing
 	}
-	
+
 	/**
 	 * Performs the exit state operations specific to the {@link EndState}.
 	 */
@@ -191,11 +169,30 @@ public class EndState extends InteractiveState {
 	}
 
 	/**
+	 * Performs a {@link Consumer} task on every {@link ModelPlayer} that has lost.
+	 * 
+	 * @param task
+	 *            The task to be performed on every lecture.
+	 */
+	public void forEachLoser(Consumer<ModelPlayer> task) {
+		podium.forEach(loser -> task.accept(loser.model));
+	}
+
+	/**
 	 * Retrieves the {@link Music} of this {@link EndState}.
 	 */
 	@Override
 	public Music getMusic() {
 		return music;
+	}
+
+	/**
+	 * Retrieves the podium of this {@link EndState}.
+	 * 
+	 * @return {@link List} of {@link SlickPlayer}s.
+	 */
+	public List<SlickPlayer> getPodium() {
+		return podium;
 	}
 
 	/**
@@ -220,7 +217,7 @@ public class EndState extends InteractiveState {
 	 * Draws the podium on the screen.
 	 * 
 	 * @param frame
-	 *            {@link Graphics}
+	 *            The {@link Frame} that displays this {@link EndState} to the user.
 	 * @param width
 	 *            Width of the {@link GameContainer}
 	 * @param height
@@ -239,7 +236,7 @@ public class EndState extends InteractiveState {
 	 * Draws a {@link SlickPlayer} at a position on screen.
 	 * 
 	 * @param frame
-	 *            {@link Graphics}
+	 *            The {@link Frame} that displays this {@link EndState} to the user.
 	 * @param player
 	 *            {@link SlickPlayer} to be drawn
 	 * @param position
@@ -249,10 +246,4 @@ public class EndState extends InteractiveState {
 		frame.draw(player.getImage(), position.x - (player.getWidth() / 2), position.y - (player.getHeight() / 2));
 	}
 
-	public void forEachLoser(Consumer<ModelPlayer> task) {
-		podium.forEach(loser -> task.accept(loser.model));
-	}
-
-
-	
 }

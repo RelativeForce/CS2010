@@ -318,7 +318,7 @@ public final class SlickGame extends StateBasedGame implements View {
 		// Initialise the game play states
 		final SlickSetup setup = new SlickSetup(game, 2, game.getSetup());
 		final SlickReinforce reinforcement = new SlickReinforce(game, 3, game.getReinforce());
-		final CombatState combat = new CombatState(game, 4, game.getAttack());
+		final SlickAttack combat = new SlickAttack(game, 4, game.getAttack());
 		final SlickFortify movement = new SlickFortify(game, 5, game.getFortify());
 		final Credits credits = new Credits(game, 8);
 

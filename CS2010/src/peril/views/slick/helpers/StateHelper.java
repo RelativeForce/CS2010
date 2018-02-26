@@ -15,7 +15,7 @@ import peril.views.slick.states.LoadingScreen;
 import peril.views.slick.states.MainMenu;
 import peril.views.slick.states.Opening;
 import peril.views.slick.states.PlayerSelection;
-import peril.views.slick.states.gameStates.CombatState;
+import peril.views.slick.states.gameStates.SlickAttack;
 import peril.views.slick.states.gameStates.CoreGameState;
 import peril.views.slick.states.gameStates.SlickFortify;
 import peril.views.slick.states.gameStates.SlickReinforce;
@@ -73,7 +73,7 @@ public final class StateHelper {
 	 * The state that displays combat to the user. This is heavily couples with
 	 * {@link WarMenu}.
 	 */
-	public final CombatState combat;
+	public final SlickAttack combat;
 
 	/**
 	 * The {@link SlickFortify} which lets the user move {@link ModelArmy}s from
@@ -123,7 +123,7 @@ public final class StateHelper {
 	 * @param credits
 	 *            The credits page for this game.
 	 */
-	public StateHelper(Opening opening, MainMenu mainMenu, CombatState combat, SlickReinforce reinforcement,
+	public StateHelper(Opening opening, MainMenu mainMenu, SlickAttack combat, SlickReinforce reinforcement,
 			SlickSetup setup, SlickFortify movement, EndState end, LoadingScreen loadingScreen,
 			PlayerSelection playerSelection, Credits credits) {
 		this.opening = opening;

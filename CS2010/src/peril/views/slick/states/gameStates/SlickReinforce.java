@@ -7,31 +7,30 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.Game;
 import peril.controllers.GameController;
 import peril.model.states.Reinforce;
 import peril.views.slick.Frame;
 import peril.views.slick.board.SlickCountry;
-import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.board.SlickUnit;
-import peril.views.slick.util.Button;
 import peril.views.slick.util.Font;
 import peril.views.slick.util.Point;
 
 /**
- * Encapsulates the behaviour of the Reinforcement {@link CoreGameState} where
- * the {@link SlickPlayer} places their units from
- * {@link SlickPlayer#getDistributableArmyStrength()} on their
- * {@link SlickCountry}s.
+ * Displays the {@link Reinforce} state to the user.
  * 
  * @author Joseph_Rolli, Joshua_Eddy, Gurdeep_Pol
+ * 
+ * @since 2018-02-26
+ * @version 1.01.01
+ * 
+ * @see CoreGameState
+ * @see Reinforce
  *
  */
-public final class ReinforcementState extends CoreGameState {
+public final class SlickReinforce extends CoreGameState {
 
 	/**
-	 * The {@link Font} for displaying the {@link Player's} available units to
-	 * distribute.
+	 * The {@link Font} for displaying the player's available units to distribute.
 	 */
 	private final Font unitFont;
 
@@ -41,21 +40,28 @@ public final class ReinforcementState extends CoreGameState {
 	private final Font textFont;
 
 	/**
-	 * Holds the instance of the reinforce {@link Button}.
+	 * Holds the name of the reinforce button.
 	 */
 	private final String reinforceButton;
 
-	private String upgradeButton;
+	/**
+	 * The name of the upgrade button.
+	 */
+	private final String upgradeButton;
 
 	/**
-	 * Constructs a new {@link ReinforcementState}.
+	 * Constructs a new {@link SlickReinforce}.
 	 * 
 	 * @param game
-	 *            The {@link Game} this {@link ReinforcementState} is a part of.
+	 *            The {@link GameController} that allows this {@link SlickReinforce}
+	 *            to
 	 * @param id
-	 *            The ID of this {@link ReinforcementState}
+	 *            The ID of this {@link SlickReinforce}
+	 * @param model
+	 *            The {@link Reinforce} state that this {@link SlickReinforce}
+	 *            displays.
 	 */
-	public ReinforcementState(GameController game, int id, Reinforce model) {
+	public SlickReinforce(GameController game, int id, Reinforce model) {
 		super(game, model.getName(), id, model);
 		this.reinforceButton = "reinforce";
 		this.upgradeButton = "upgrades";
@@ -66,7 +72,7 @@ public final class ReinforcementState extends CoreGameState {
 	}
 
 	/**
-	 * Enters this {@link ReinforcementState}.
+	 * Enters this {@link SlickReinforce}.
 	 */
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
@@ -78,7 +84,7 @@ public final class ReinforcementState extends CoreGameState {
 	}
 
 	/**
-	 * Initialises this {@link ReinforcementState}.
+	 * Initialises this {@link SlickReinforce}.
 	 */
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
@@ -88,8 +94,7 @@ public final class ReinforcementState extends CoreGameState {
 	}
 
 	/**
-	 * Performs the exit state operations specific to this
-	 * {@link ReinforcementState}.
+	 * Performs the exit state operations specific to this {@link SlickReinforce}.
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
@@ -99,7 +104,7 @@ public final class ReinforcementState extends CoreGameState {
 	}
 
 	/**
-	 * Renders this {@link ReinforcementState} on screen.
+	 * Renders this {@link SlickReinforce} on screen.
 	 */
 	@Override
 	public void render(GameContainer gc, Frame frame) {
@@ -123,39 +128,19 @@ public final class ReinforcementState extends CoreGameState {
 
 	}
 
+	/**
+	 * Updates the {@link SlickReinforce}.
+	 */
 	@Override
-	public final void update(GameContainer gc, int delta, Frame frame) {
+	public void update(GameContainer gc, int delta, Frame frame) {
 		super.update(gc, delta, frame);
 		game.processAI(delta);
 	}
 
 	/**
-	 * Moves the reinforce {@link Button} to be positioned at the top left of the
-	 * current country.
-	 * 
-	 * @param country
-	 *            {@link SlickCountry}
+	 * Updates this {@link SlickReinforce} when one of its {@link Observable}
+	 * objects changes.
 	 */
-	private void moveReinforceButton(SlickCountry country) {
-
-		Point armyPosition = country.getArmyPosition();
-
-		int x = armyPosition.x;
-		int y = armyPosition.y + (SlickUnit.HEIGHT / 2) + 5;
-
-		getButton(reinforceButton).setPosition(new Point(x, y));
-
-	}
-
-	/**
-	 * Pans this {@link ReinforcementState}.
-	 */
-	@Override
-	protected void panElements(Point panVector) {
-		panButton(getButton(upgradeButton), panVector);
-		panButton(getButton(reinforceButton), panVector);
-	}
-
 	@Override
 	public void update(Observable o, Object arg) {
 		super.update(o, arg);
@@ -169,7 +154,7 @@ public final class ReinforcementState extends CoreGameState {
 		// If this is the primary country
 		if (selected.size() > 0) {
 			showUpgradeButton(getButton(upgradeButton));
-		}else {
+		} else {
 			getButton(upgradeButton).hide();
 		}
 
@@ -181,4 +166,32 @@ public final class ReinforcementState extends CoreGameState {
 		}
 
 	}
+
+	/**
+	 * Pans the elements of this {@link SlickReinforce}.
+	 */
+	@Override
+	protected void panElements(Point panVector) {
+		panButton(getButton(upgradeButton), panVector);
+		panButton(getButton(reinforceButton), panVector);
+	}
+
+	/**
+	 * Moves the reinforce {@link Button} to be positioned at the top left of the
+	 * current country.
+	 * 
+	 * @param country
+	 *            The {@link SlickCountry} the button will appear next to.
+	 */
+	private void moveReinforceButton(SlickCountry country) {
+
+		Point armyPosition = country.getArmyPosition();
+
+		int x = armyPosition.x;
+		int y = armyPosition.y + (SlickUnit.HEIGHT / 2) + 5;
+
+		getButton(reinforceButton).setPosition(new Point(x, y));
+
+	}
+
 }

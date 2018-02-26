@@ -35,6 +35,8 @@ public final class SlickSetup extends CoreGameState {
 	 *            query the state of the game.
 	 * @param id
 	 *            The ID of this {@link SlickSetup}
+	 * @param model
+	 *            The {@link Setup} state that this {@link SlickSetup} displays.
 	 */
 	public SlickSetup(GameController game, int id, Setup model) {
 		super(game, model.getName(), id, model);

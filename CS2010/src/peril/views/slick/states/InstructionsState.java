@@ -1,6 +1,5 @@
 package peril.views.slick.states;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.Music;
@@ -14,23 +13,21 @@ import peril.views.slick.Frame;
 import peril.views.slick.components.ScrollBar;
 import peril.views.slick.components.TextField;
 import peril.views.slick.components.menus.HelpMenu;
-import peril.views.slick.util.Font;
 import peril.views.slick.util.Point;
 
 /**
  * 
- * The {@link InteractiveState} of the {@link Game} where the instructions of
- * the entire game are displayed.
+ * The {@link InteractiveState} of the game where the instructions of the entire
+ * game are displayed.
  * 
- * @author Adrian_Wong
+ * @author Adrian_Wong, Joshua_Eddy
  * 
  * @since 2018-02-26
- * @version 1.01.01
+ * @version 1.01.02
  * 
  * @see InteractiveState
  *
  */
-
 public final class InstructionsState extends InteractiveState {
 
 	/**
@@ -38,12 +35,25 @@ public final class InstructionsState extends InteractiveState {
 	 */
 	private static final String NAME = "Instructions";
 
+	/**
+	 * The max index of the {@link #scrollBar}.
+	 */
 	private static final int MAX = 20;
 
+	/**
+	 * The {@link ScrollBar} that allows the user
+	 */
 	private final ScrollBar scrollBar;
 
+	/**
+	 * The {@link TextField} that displays the instructions to the user.
+	 */
 	private final TextField text;
 
+	/**
+	 * The {@link EventListener} that defines the operations for drawing the
+	 * {@link #scrollBar}.
+	 */
 	private final EventListener scrollListener;
 
 	/**
@@ -104,6 +114,9 @@ public final class InstructionsState extends InteractiveState {
 
 	}
 
+	/**
+	 * Updates the {@link InstructionsState}.
+	 */
 	@Override
 	public void update(GameContainer gc, int delta, Frame frame) {
 
@@ -128,6 +141,9 @@ public final class InstructionsState extends InteractiveState {
 		drawButtons();
 	}
 
+	/**
+	 * Processes a button press on this {@link InstructionsState}.
+	 */
 	@Override
 	public void parseButton(int key, Point mousePosition) {
 		super.parseButton(key, mousePosition);
@@ -147,16 +163,20 @@ public final class InstructionsState extends InteractiveState {
 
 	}
 
-	private void setTextPosition() {
-		text.setPosition(new Point(30, 30 - ((text.getHeight() - MainMenu.HEIGHT + 60) / MAX) * scrollBar.getIndex()));
-	}
-
 	/**
 	 * Retrieves the {@link Music} of this {@link InstructionsState}.
 	 */
 	@Override
 	public Music getMusic() {
 		return null;
+	}
+
+	/**
+	 * Updates the position of the {@link #text} based on the index of the
+	 * {@link #scrollBar}.
+	 */
+	private void setTextPosition() {
+		text.setPosition(new Point(30, 30 - ((text.getHeight() - MainMenu.HEIGHT + 60) / MAX) * scrollBar.getIndex()));
 	}
 
 }

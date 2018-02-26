@@ -4,47 +4,55 @@ import java.util.Observable;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.Game;
 import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
-import peril.model.board.links.ModelLinkState;
 import peril.model.states.combat.Attack;
 import peril.views.slick.Frame;
 import peril.views.slick.board.SlickCountry;
-import peril.views.slick.board.SlickPlayer;
-import peril.views.slick.util.Button;
+import peril.views.slick.components.menus.WarMenu;
 import peril.views.slick.util.Point;
 
 /**
- * Encapsulates the behaviour of the 'Combat' state of the game. In this state
- * the {@link Game#getCurrent()} chooses which of their {@link SlickCountry}s
- * they will attack other {@link SlickCountry}s with.
+ * Displays the {@link Attack} state to the user.
  * 
  * @author Joseph_Rolli, Joshua_Eddy
+ * 
+ * @since 2018-02-26
+ * @version 1.01.01
+ * 
+ * @see CoreGameState
+ * @see Attack
+ * @see WarMenu
  *
  */
-public final class CombatState extends CoreGameState {
+public final class SlickAttack extends CoreGameState {
 
 	/**
-	 * Holds the instance of a attack {@link Button}.
+	 * The name of the attack button.
 	 */
 	private final String attackButton;
-	private String upgradeButton;
 
 	/**
-	 * Constructs a new {@link CombatState}.
+	 * The name of the upgrade buton.
+	 */
+	private final String upgradeButton;
+
+	/**
+	 * Constructs a new {@link SlickAttack}.
 	 * 
 	 * @param game
-	 *            The {@link Game} that houses this {@link CombatState}.
+	 *            The {@link GameController} that allows this {@link SlickAttack} to
+	 *            query the state of the game.
 	 * @param id
-	 *            The ID of this {@link CombatState}
+	 *            The ID of this {@link SlickAttack}
+	 * @param model
+	 *            The {@link Attack} state this {@link SlickAttack} displays to the
+	 *            user.
 	 */
-	public CombatState(GameController game, int id, Attack model) {
+	public SlickAttack(GameController game, int id, Attack model) {
 		super(game, model.getName(), id, model);
 		this.attackButton = "attack";
 		this.upgradeButton = "upgrades";
@@ -53,7 +61,7 @@ public final class CombatState extends CoreGameState {
 	}
 
 	/**
-	 * Performs the exit state operations specific to this {@link CombatState}.
+	 * Performs the exit state operations specific to this {@link SlickAttack}.
 	 */
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
@@ -64,8 +72,7 @@ public final class CombatState extends CoreGameState {
 	}
 
 	/**
-	 * Displays super classes render method then the current {@link SlickPlayer}s
-	 * name and then the enemy {@link SlickCountry}.
+	 * Draws this {@link SlickAttack} on screen.
 	 */
 	@Override
 	public void render(GameContainer gc, Frame frame) {
@@ -88,7 +95,7 @@ public final class CombatState extends CoreGameState {
 	}
 
 	/**
-	 * Updates this {@link CombatState}.
+	 * Updates this {@link SlickAttack}.
 	 */
 	@Override
 	public final void update(GameContainer gc, int delta, Frame frame) {
@@ -97,32 +104,17 @@ public final class CombatState extends CoreGameState {
 
 	}
 
-	@Override
-	public void parseButton(int key, Point mousePosition) {
-		super.parseButton(key, mousePosition);
-
-		if (key == Input.KEY_B) {
-
-			final ModelCountry primary = model.getSelected(0);
-			final ModelCountry secondary = model.getSelected(1);
-
-			if (primary != null && secondary != null) {
-
-				secondary.getLinkTo(primary).setState(ModelLinkState.BLOCKADE, 3);
-
-			}
-		}
-	}
-
 	/**
-	 * Enters this {@link CombatState}.
+	 * Enters this {@link SlickAttack}.
 	 */
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 		super.enter(gc, sbg);
+
+		hideAttackButton();
+		super.getButton(upgradeButton).hide();
+
 		menus.showSaveOption();
-		getButton(attackButton).hide();
-		getButton(upgradeButton).hide();
 		slick.showToolTip("Click the '?' for help");
 	}
 
@@ -134,7 +126,7 @@ public final class CombatState extends CoreGameState {
 	}
 
 	/**
-	 * Pans the visual elements of the {@link CombatState} along a specified
+	 * Pans the visual elements of the {@link SlickAttack} along a specified
 	 * {@link Point} vector.
 	 */
 	@Override
@@ -148,14 +140,15 @@ public final class CombatState extends CoreGameState {
 	 * valid targets.
 	 * 
 	 * @param frame
-	 *            {@link Graphics}
+	 *            The {@link Frame} that displays this {@link SlickAttack} to the
+	 *            user.
 	 */
 	private void drawValidTargets(Frame frame) {
 
 		// If there is a country highlighted.
 		if (!selected.isEmpty()) {
 
-			SlickCountry highlighted = selected.get(0);
+			final SlickCountry highlighted = selected.get(0);
 
 			// Assign the line colour.
 			frame.setColor(Color.white);
@@ -179,10 +172,12 @@ public final class CombatState extends CoreGameState {
 	}
 
 	/**
-	 * Moves the reinforce {@link Button} to be positioned at the top left of the
-	 * current country.
+	 * Moves the attack button to be positioned at the in between of the two
+	 * specified countries.
 	 * 
-	 * @param country
+	 * @param primary
+	 *            {@link SlickCountry}
+	 * @param target
 	 *            {@link SlickCountry}
 	 */
 	private void moveAttackButton(SlickCountry primary, SlickCountry target) {
@@ -196,6 +191,9 @@ public final class CombatState extends CoreGameState {
 
 	}
 
+	/**
+	 * Updates this {@link SlickAttack} when its {@link Observable}s are changed.
+	 */
 	@Override
 	public void update(Observable o, Object arg) {
 		super.update(o, arg);
@@ -213,7 +211,7 @@ public final class CombatState extends CoreGameState {
 			getButton(upgradeButton).hide();
 		}
 
-		if (selected.size() == 2 && selected.get(0).model.getArmy().getStrength() > 1) {
+		if (selected.size() == 2 && selected.get(0).model.getArmy().getNumberOfUnits() > 1) {
 			getButton(attackButton).show();
 			moveAttackButton(selected.get(0), selected.get(1));
 		} else {

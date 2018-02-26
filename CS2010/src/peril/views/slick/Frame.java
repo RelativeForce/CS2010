@@ -43,8 +43,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-19
- * @version 1.02.03
+ * @since 2018-02-26
+ * @version 1.02.04
  * 
  * @see Clickable
  * @see Point
@@ -71,6 +71,9 @@ public final class Frame {
 	 */
 	public Graphics g;
 
+	/**
+	 * The {@link GameContainer} that displays this {@link Frame}.
+	 */
 	public GameContainer gc;
 
 	/**

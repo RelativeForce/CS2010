@@ -8,15 +8,13 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import net.java.games.input.Component;
 import peril.controllers.GameController;
-import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
 import peril.model.states.Setup;
 import peril.views.slick.Frame;
 import peril.views.slick.util.Point;
 
 /**
- * The state where the user selects which {@link ModelPlayer} gets what
- * {@link ModelCountry}s before the game properly begins.
+ * Displays the {@link Setup} state to the user.
  * 
  * @author Joshua_Eddy, Joseph_Rolli
  * 
@@ -24,27 +22,28 @@ import peril.views.slick.util.Point;
  * @version 1.01.01
  * 
  * @see CoreGameState
+ * @see Setup
  *
  */
-public final class SetupState extends CoreGameState {
+public final class SlickSetup extends CoreGameState {
 
 	/**
-	 * Constructs a new {@link SetupState}.
+	 * Constructs a new {@link SlickSetup}.
 	 * 
 	 * @param game
-	 *            The {@link GameController} that allows this {@link SetupState} to
+	 *            The {@link GameController} that allows this {@link SlickSetup} to
 	 *            query the state of the game.
 	 * @param id
-	 *            The ID of this {@link SetupState}
+	 *            The ID of this {@link SlickSetup}
 	 */
-	public SetupState(GameController game, int id, Setup model) {
+	public SlickSetup(GameController game, int id, Setup model) {
 		super(game, model.getName(), id, model);
 
 		model.addObserver(this);
 	}
 
 	/**
-	 * Enters the {@link SetupState}.
+	 * Enters the {@link SlickSetup}.
 	 */
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
@@ -54,7 +53,7 @@ public final class SetupState extends CoreGameState {
 	}
 
 	/**
-	 * Renders this {@link SetupState}.
+	 * Renders this {@link SlickSetup}.
 	 */
 	@Override
 	public void render(GameContainer gc, Frame frame) {
@@ -71,7 +70,7 @@ public final class SetupState extends CoreGameState {
 	}
 
 	/**
-	 * Parses a button press on this {@link SetupState}.
+	 * Parses a button press on this {@link SlickSetup}.
 	 */
 	@Override
 	public void parseButton(int key, Point mousePosition) {
@@ -114,7 +113,7 @@ public final class SetupState extends CoreGameState {
 	}
 
 	/**
-	 * Moves all the {@link Component}s of this {@link SetupState}.
+	 * Moves all the {@link Component}s of this {@link SlickSetup}.
 	 */
 	@Override
 	protected void panElements(Point panVector) {

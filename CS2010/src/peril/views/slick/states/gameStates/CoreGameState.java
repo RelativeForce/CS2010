@@ -553,7 +553,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 				if (slick.menus.menuVisible()) {
 					return;
-				} else if (!(CoreGameState.this instanceof SetupState) && game.getCurrentModelPlayer().ai != AI.USER) {
+				} else if (!(CoreGameState.this instanceof SlickSetup) && game.getCurrentModelPlayer().ai != AI.USER) {
 					return;
 				}
 

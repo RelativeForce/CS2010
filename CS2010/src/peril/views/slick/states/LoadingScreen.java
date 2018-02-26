@@ -17,7 +17,7 @@ import peril.views.slick.components.ProgressBar;
 import peril.views.slick.components.menus.HelpMenu;
 import peril.views.slick.io.ImageReader;
 import peril.views.slick.states.gameStates.CoreGameState;
-import peril.views.slick.states.gameStates.SetupState;
+import peril.views.slick.states.gameStates.SlickSetup;
 import peril.views.slick.util.Font;
 import peril.views.slick.util.Point;
 import peril.views.slick.util.Viewable;
@@ -166,7 +166,7 @@ public final class LoadingScreen extends InteractiveState {
 	/**
 	 * Parses the line from the current {@link FileParser}. When all the
 	 * {@link FileParser}s are finished this {@link LoadingScreen} enters
-	 * {@link SetupState} unless the map file specifies otherwise.
+	 * {@link SlickSetup} unless the map file specifies otherwise.
 	 */
 	@Override
 	public void update(GameContainer gc, int delta, Frame frame) {

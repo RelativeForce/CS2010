@@ -16,7 +16,7 @@ import peril.views.slick.util.Point;
 /**
  * Displays the {@link Setup} state to the user.
  * 
- * @author Joshua_Eddy, Joseph_Rolli
+ * @author Joshua_Eddy, Joseph_Rolli, Gurdeep_Pol
  * 
  * @since 2018-02-26
  * @version 1.01.01

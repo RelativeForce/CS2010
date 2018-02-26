@@ -23,7 +23,7 @@ import peril.views.slick.util.Point;
  * the {@link Game#getCurrent()} chooses which of their {@link SlickCountry}s
  * they will move units to another {@link SlickCountry}.
  * 
- * @author Joshua_Eddy, Joseph_Rolli
+ * @author Joshua_Eddy, Joseph_Rolli, Gurdeep_Pol
  *
  */
 public final class MovementState extends CoreGameState {

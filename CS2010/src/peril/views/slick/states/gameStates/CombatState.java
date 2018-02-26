@@ -25,7 +25,7 @@ import peril.views.slick.util.Point;
  * the {@link Game#getCurrent()} chooses which of their {@link SlickCountry}s
  * they will attack other {@link SlickCountry}s with.
  * 
- * @author Joseph_Rolli, Joshua_Eddy
+ * @author Joseph_Rolli, Joshua_Eddy, Gurdeep_Pol
  *
  */
 public final class CombatState extends CoreGameState {

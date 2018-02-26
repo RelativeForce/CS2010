@@ -2,6 +2,7 @@ package peril.views.slick.states;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
+
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
@@ -14,31 +15,33 @@ import peril.views.slick.util.Font;
 
 /**
  * 
- * The {@link InteractiveState} of the {@link Game} where the credits
- * are displayed.
+ * The {@link InteractiveState} of the {@link Game} where the instructions
+ * of the entire game are displayed.
  * 
  * @author Adrian_Wong
  *
  */
-public final class Credits extends InteractiveState {
+
+public final class HelpState extends InteractiveState {
 	
 	/**
-	 * The name of a specific {@link Credits}.
+	 * The name of a specific {@link HelpState}.
 	 */
-	private static final String NAME = "Credits";
+	private static final String NAME = "Help";
 	
 	/**
-	 * The {@link Font} that the entire {@link Credits} will be displayed in.
+	 * The {@link Font} that the entire {@link HelpState} will be displayed in.
 	 */
-	private final Font creditsFont;	
+	private final Font helpFont;
 	
 	/**
-	 * The background music for this {@link Credits}.
+	 * The background music for this {@link HelpState}.
 	 */
 	private Music music;
 	
+	
 	/**
-	 * Constructs a new {@link Credits}.
+	 * Constructs a new {@link HelpState}.
 	 * 
 	 * @param game
 	 *            The {@link Game} this state is a part of.
@@ -46,14 +49,13 @@ public final class Credits extends InteractiveState {
 	 *            The id of this {@link Credits}.
 	 * @throws SlickException 
 	 */
-	public Credits(GameController game, int id) throws SlickException {
-		super(game, NAME, id, HelpMenu.NULL_PAGE);	
-		creditsFont = new Font("Arial", Color.black, 20);
-		
-	}	
+	public HelpState(GameController game, int id) throws SlickException {
+		super(game, NAME, id, HelpMenu.NULL_PAGE);
+		helpFont = new Font("Arial", Color.black, 20);
+	}
 	
 	/**
-	 * Initialise the visual elements of the {@link Credits}.
+	 * Initialise the visual elements of the {@link HelpState}.
 	 */
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
@@ -62,27 +64,28 @@ public final class Credits extends InteractiveState {
 		//music = slick.music.read("..."); //add later
 
 		// Initialise Fonts
-		creditsFont.init();
+		helpFont.init();
 	}
-
+	
 	@Override
-	public void update(GameContainer gc, int delta, Frame frame) {	
+	public void update(GameContainer gc, int delta, Frame frame) {
+		
 		
 	}
 
 	/**
-	 * Render the {@link Credits}.
+	 * Render the {@link HelpState}.
 	 */
 	@Override
 	public void render(GameContainer gc, Frame frame) {
 		
 		drawImages();
 		drawButtons();
-
+		
 	}
-	
+
 	/**
-	 * Retrieves the {@link Music} of this {@link Credits}.
+	 * Retrieves the {@link Music} of this {@link HelpState}.
 	 */
 	@Override
 	public Music getMusic() {

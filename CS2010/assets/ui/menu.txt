@@ -12,3 +12,5 @@ image,Select,playerSelectionScreen.png,900,700,0,0
 // Credits
 image,Credits,credits.png,900,700,0,0
 button,Credits,12,mainMenuButton.png,180,80,10,610,menu
+
+// Help

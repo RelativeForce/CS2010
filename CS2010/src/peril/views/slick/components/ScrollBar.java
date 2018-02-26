@@ -23,6 +23,8 @@ public class ScrollBar extends Clickable implements Component {
 	 */
 	private boolean visible;
 
+	private boolean numbers;
+
 	private int index;
 
 	private int maxValue;
@@ -46,12 +48,14 @@ public class ScrollBar extends Clickable implements Component {
 	 */
 	public ScrollBar(Point position, int width, int height, int maxValue) {
 		super(new Region(width, height, position));
+
 		this.visible = true;
 		this.textFont = new Font("Arial", Color.white, 12);
 		this.maxValue = maxValue;
-		index = 1;
-		spacing = getHeight() / (maxValue);
-		slider = new Slider(new Point(position.x, position.y), width, spacing);
+		this.index = 1;
+		this.spacing = getHeight() / (maxValue);
+		this.slider = new Slider(new Point(position.x, position.y), width, spacing);
+		this.numbers = true;
 	}
 
 	/**
@@ -84,13 +88,29 @@ public class ScrollBar extends Clickable implements Component {
 	 * @param newPosition
 	 * 
 	 */
-	public void processMouseClick(Point clickPosition) {
-		// check that when starting to drag it starts at the oldPosition
+	public void click(Point clickPosition) {
 		if (isClicked(clickPosition)) {
-			// Test if its being clicked or not
 			moveSlider(clickPosition);
-			System.out.println("THE SLIDER HAS BEEN CLICKED");
-			System.out.println("SliderY:" + slider.getPosition().y + "Index:" + index);
+		}
+	}
+
+	public void showNumbers() {
+		this.numbers = true;
+	}
+
+	public void hideNumbers() {
+		this.numbers = false;
+	}
+
+	public void up() {
+		if(index > 0) {
+			setIndex(index - 1);
+		}
+	}
+
+	public void down() {
+		if(index < maxValue) {
+			setIndex(index + 1);
 		}
 	}
 
@@ -103,11 +123,17 @@ public class ScrollBar extends Clickable implements Component {
 	 * index.
 	 */
 	public void moveSlider(Point clickPosition) {
-		int newPosition = clickPosition.y;
-		int space = Math.floorDiv(newPosition, spacing);
-		slider.setPosition(new Point(slider.getPosition().x, space * spacing));
-		index = 1 + Math.floorDiv((slider.getPosition().y - getPosition().y), spacing);
 
+		final int newPosition = clickPosition.y;
+		final int space = Math.floorDiv(newPosition, spacing);
+
+		setIndex(space);
+
+	}
+
+	private void setIndex(int space) {
+		slider.setPosition(new Point(slider.getPosition().x, space * spacing));
+		index = 1 + Math.floorDiv((slider.getPosition().y - this.getPosition().y), spacing);
 	}
 
 	/**
@@ -119,6 +145,10 @@ public class ScrollBar extends Clickable implements Component {
 	 */
 	private void drawNumbers(Frame frame) {
 
+		if(numbers) {
+			return;
+		}
+		
 		for (int i = 0; i <= maxValue - 1; i++) {
 
 			frame.draw(textFont, String.valueOf(i + 1), getPosition().x + getWidth(), (spacing * i) + getPosition().y);

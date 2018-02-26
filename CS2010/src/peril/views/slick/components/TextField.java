@@ -14,8 +14,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-23
- * @version 1.01.01
+ * @since 2018-02-26
+ * @version 1.01.02
  * 
  * @see Component
  *
@@ -33,11 +33,6 @@ public final class TextField implements Component {
 	private final Font font;
 
 	/**
-	 * The {@link Font} of this {@link TextField}.
-	 */
-	private Point position;
-
-	/**
 	 * The maximum width of this {@link TextField}.
 	 */
 	private final int maxWidth;
@@ -46,6 +41,11 @@ public final class TextField implements Component {
 	 * The padding between the text and the board of the backing box.
 	 */
 	private final int padding;
+
+	/**
+	 * The {@link Font} of this {@link TextField}.
+	 */
+	private Point position;
 
 	/**
 	 * The actual width of the {@link TextField}.

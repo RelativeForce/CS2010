@@ -111,6 +111,8 @@ public final class InstructionsState extends InteractiveState {
 		for (String line : TextFileReader.scanFile(game.getDirectory().getTextPath(), "instructions.txt")) {
 			text.addText(line);
 		}
+		
+		scrollBar.hideNumbers();
 
 	}
 

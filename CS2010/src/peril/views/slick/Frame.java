@@ -41,10 +41,10 @@ import peril.views.slick.util.Region;
  * {@link Clickable#isClicked(Point)} and if not checking all the planes below.
  * </p>
  * 
- * @author Joshua_Eddy
+ * @author Joshua_Eddy, Gurdeep_Pol
  * 
  * @since 2018-02-26
- * @version 1.02.04
+ * @version 1.02.05
  * 
  * @see Clickable
  * @see Point
@@ -147,8 +147,10 @@ public final class Frame {
 	 *            The position of the tool tip.
 	 * @param duration
 	 *            The number of milliseconds this tool tip will be displayed for.
+	 * @param pan
+	 *            Whether or not the {@link ToolTip} will pan.
 	 */
-	public void addToolTip(String message, Point position, long duration) {
+	public void addToolTip(String message, Point position, long duration, boolean pan) {
 
 		// If the message is already being displayed, dont display it again.
 		for (ToolTip temp : toolTips) {
@@ -157,7 +159,7 @@ public final class Frame {
 			}
 		}
 
-		final ToolTip tt = new ToolTip(message, position, duration);
+		final ToolTip tt = new ToolTip(message, position, duration, pan);
 
 		final Point toolTipPos = new Point(position.x, position.y + (toolTips.size() * tt.getHeight()));
 
@@ -175,7 +177,7 @@ public final class Frame {
 	 */
 	public void panToolTips(Point vector) {
 
-		toolTips.forEach(toolTip -> {
+		toolTips.stream().filter(tooltip -> tooltip.willPan).forEach(toolTip -> {
 			final Point current = toolTip.getPosition();
 			toolTip.setPosition(new Point(current.x + vector.x, current.y + vector.y));
 		});
@@ -586,10 +588,10 @@ public final class Frame {
 	 * Encapsulates the behaviours of a tool tip that will be displayed over the
 	 * {@link Frame}.
 	 * 
-	 * @author Joshua_Eddy
+	 * @author Joshua_Eddy, Gurdeep_Pol
 	 * 
-	 * @since 2018-02-19
-	 * @version 1.01.02
+	 * @since 2018-02-26
+	 * @version 1.01.03
 	 *
 	 */
 	private final class ToolTip {
@@ -598,6 +600,10 @@ public final class Frame {
 		 * The message this {@link ToolTip} displays.
 		 */
 		public final String messaage;
+		/**
+		 * Whether or not this {@link ToolTip} will pan.
+		 */
+		public final boolean willPan;
 
 		/**
 		 * The {@link TextField} that displays the message to the user.
@@ -619,13 +625,16 @@ public final class Frame {
 		 * @param duration
 		 *            The number of milliseconds this {@link ToolTip} will be displayed
 		 *            for.
+		 * @param willPan
+		 *            Whether or not this {@link ToolTip} will pan.
 		 */
-		public ToolTip(String message, Point position, long duration) {
+		public ToolTip(String message, Point position, long duration, boolean willPan) {
 			this.text = new TextField(800, position);
 			this.delay = new Delay(duration);
 			this.messaage = message;
 			this.text.init();
 			this.text.addText(message);
+			this.willPan = willPan;
 		}
 
 		/**
@@ -676,6 +685,7 @@ public final class Frame {
 		public int getHeight() {
 			return text.getHeight();
 		}
+
 	}
 
 	/**

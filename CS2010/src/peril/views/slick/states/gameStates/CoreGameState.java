@@ -7,7 +7,6 @@ import java.util.Observer;
 import java.util.Random;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
@@ -37,14 +36,19 @@ import peril.views.slick.util.Point;
  * 
  * @author Joseph_Rolli, Joshua_Eddy
  * 
- * @since 2018-02-25
- * @version 1.01.07
+ * @since 2018-02-26
+ * @version 1.01.08
  * 
  * @see InteractiveState
  * @see Observer
  * @see ModelState
  */
 public abstract class CoreGameState extends InteractiveState implements Observer {
+
+	/**
+	 * The number of pixels per second that this {@link CoreGameState} will pan.
+	 */
+	private static final int PAN_SPEED = 50;
 
 	/**
 	 * The {@link ModelState} that this {@link CoreGameState} observes.
@@ -77,7 +81,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * Constructs a new {@link CoreGameState}.
 	 * 
 	 * @param game
-	 *            The {@link Game} this state is a part of.
+	 *            The {@link GameController} that allows this {@link CoreGameState}
+	 *            to query the state of the game.
 	 * @param stateName
 	 *            Holds the name of a specific {@link CoreGameState}.
 	 * @param id
@@ -298,7 +303,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		if (country != null) {
 
 			// Holds the ruler of the country
-			SlickPlayer ruler = slick.modelView.getVisual(country.model.getRuler());
+			final SlickPlayer ruler = slick.modelView.getVisual(country.model.getRuler());
 
 			// If there is a ruler then return the colour of the country to that of the
 			// ruler. Otherwise remove the highlight effect.
@@ -340,11 +345,13 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * {@link Color}.
 	 * 
 	 * @param frame
-	 *            {@link Frame}
+	 *             The {@link Frame} that displays this {@link CoreGameState} to the user.
 	 */
 	protected final void drawPlayerName(Frame frame) {
-		SlickPlayer p = slick.modelView.getVisual(game.getCurrentModelPlayer());
-		frame.draw(p, new EventListener() {
+
+		final SlickPlayer player = slick.modelView.getVisual(game.getCurrentModelPlayer());
+
+		frame.draw(player, new EventListener() {
 
 			@Override
 			public void mouseHover(Point mouse, int delta) {
@@ -359,7 +366,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 			@Override
 			public void draw(Frame frame) {
-				frame.draw(p.getImage(), p.getPosition().x, p.getPosition().y);
+				frame.draw(player.getImage(), player.getPosition().x, player.getPosition().y);
 			}
 
 			@Override
@@ -373,7 +380,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * Draws all the links between all the {@link SlickCountry}s.
 	 * 
 	 * @param frame
-	 *            {@link Graphics}
+	 *            The {@link Frame} that displays this {@link CoreGameState} to the
+	 *            user.
 	 */
 	protected final void drawAllLinks(Frame frame) {
 
@@ -413,8 +421,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * is located.
 	 * 
 	 * @param frame
-	 *            A graphics context that can be used to render primitives to the
-	 *            accelerated canvas provided by LWJGL.
+	 *            The {@link Frame} that displays this {@link CoreGameState} to the
+	 *            user.
 	 */
 	protected final void drawArmies(Frame frame) {
 
@@ -478,7 +486,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 *            The direction that the {@link Button} will be panned.
 	 */
 	protected final void panButton(Button button, Point panVector) {
-		Point current = button.getPosition();
+		final Point current = button.getPosition();
 		button.setPosition(new Point(current.x + panVector.x, current.y + panVector.y));
 	}
 
@@ -497,10 +505,12 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	}
 
 	/**
-	 * Pans the {@link Game#board} according to the
-	 * {@link CoreGameState#panDirection}.
+	 * Retrieves the {@link Point} vector that the {@link SlickBoard} panned when
+	 * the specified {@link Point} pan vector was applied.
 	 * 
 	 * @param panVector
+	 *            The {@link Point} vector defining how the far the
+	 *            {@link SlickBoard} should move and in what direction.
 	 */
 	private Point pan(Point panVector) {
 
@@ -524,11 +534,12 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * Draws this {@link SlickBoard} on screen.
 	 * 
 	 * @param frame
-	 *            {@link Graphics}
+	 *            The {@link Frame} that displays this {@link CoreGameState} to the
+	 *            user.
 	 */
 	private void drawBoard(Frame frame) {
 
-		SlickBoard board = slick.modelView.getVisual(game.getModelBoard());
+		final SlickBoard board = slick.modelView.getVisual(game.getModelBoard());
 
 		frame.draw(board, new EventListener() {
 
@@ -585,31 +596,28 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	private Point processPan(Point mousePosition) {
 
 		// Holds the dimensions of the game container.
-		int screenWidth = slick.getScreenWidth();
-		int screenHeight = slick.getScreenHeight();
+		final int screenWidth = slick.getScreenWidth();
+		final int screenHeight = slick.getScreenHeight();
 
 		// Set the padding of the window
-		int xPadding = screenWidth / 10;
-		int yPadding = screenHeight / 10;
-
-		// The pixels per frame the state will pan at.
-		int panSpeed = 50;
+		final int xPadding = screenWidth / 20;
+		final int yPadding = screenHeight / 20;
 
 		int x = 0;
 		int y = 0;
 
 		// If the x is within the padding pan left or right
 		if (mousePosition.x < xPadding) {
-			x = panSpeed;
+			x = PAN_SPEED;
 		} else if (mousePosition.x > screenWidth - xPadding) {
-			x = -panSpeed;
+			x = -PAN_SPEED;
 		}
 
 		// If the y is within the padding pan up or down
 		if (mousePosition.y < yPadding) {
-			y = panSpeed;
+			y = PAN_SPEED;
 		} else if (mousePosition.y > screenHeight - yPadding) {
-			y = -panSpeed;
+			y = -PAN_SPEED;
 		}
 
 		return new Point(x, y);

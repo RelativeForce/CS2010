@@ -13,10 +13,10 @@ import peril.views.slick.util.Point;
 /**
  * The visual representation of the {@link ModelBoard}.
  * 
- * @author Joshua_Eddy
+ * @author Joshua_Eddy, Gurdeep_Pol
  * 
- * @since 2018-02-19
- * @version 1.01.02
+ * @since 2018-02-26
+ * @version 1.01.03
  * 
  * @see Clickable
  * @see ModelBoard
@@ -188,7 +188,7 @@ public final class SlickBoard extends Clickable {
 					
 					final String text = hazard.model.name + " - upto " + hazard.model.maxCasualties + "% casualties at " + hazard.model.chance + "% chance";
 					
-					frame.addToolTip(text, new Point(icon.getPosition().x, icon.getPosition().y - 70), 5000);
+					frame.addToolTip(text, new Point(icon.getPosition().x, icon.getPosition().y - 70), 5000, true);
 				}
 
 				@Override

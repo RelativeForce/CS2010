@@ -29,10 +29,10 @@ import peril.views.slick.util.Viewable;
  * A {@link BasicGameState} that allows the user to click on {@link Buttons} and
  * displays {@link Viewable} objects. It is also a {@link Container}.
  * 
- * @author Joshua_Eddy
+ * @author Joshua_Eddy, Gurdeep_Pol
  * 
- * @since 2018-02-19
- * @version 1.01.02
+ * @since 2018-02-26
+ * @version 1.01.03
  * 
  * @see Container
  * @see BasicGameState
@@ -274,13 +274,34 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 * Adds a String as a tool tip to this {@link InteractiveState} to be displayed
 	 * to the user.
 	 * 
-	 * @param toolTip
-	 *            <code>String</code>
+	 * @param message
+	 *            The message displayed on the tooltip.
+	 * @param position
+	 *            The position of the tooltip.
+	 * 
 	 */
-	public final void showToolTip(String toolTip, Point position) {
+	public final void showToolTip(String message, Point position) {
 
 		// Display the tool tip for 8 seconds
-		frame.addToolTip(toolTip, position, 8000);
+		frame.addToolTip(message, position, 8000, false);
+
+	}
+
+	/**
+	 * Adds a String as a tool tip to this {@link InteractiveState} to be displayed
+	 * to the user.
+	 * 
+	 * @param message
+	 *            The message displayed on the tooltip.
+	 * @param position
+	 *            The position of the tooltip.
+	 * @param pan
+	 *            Whether or not the tooltip will pan.
+	 */
+	public final void showToolTip(String message, Point position, boolean pan) {
+
+		// Display the tool tip for 8 seconds
+		frame.addToolTip(message, position, 8000, pan);
 
 	}
 

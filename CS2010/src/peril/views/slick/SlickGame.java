@@ -321,6 +321,7 @@ public final class SlickGame extends StateBasedGame implements View {
 		final SlickAttack combat = new SlickAttack(game, 4, game.getAttack());
 		final SlickFortify movement = new SlickFortify(game, 5, game.getFortify());
 		final Credits credits = new Credits(game, 8);
+		final HelpState help = new HelpState(game, 15);
 
 		// Subscribe the core game states to the board
 		final ModelBoard board = game.getModelBoard();
@@ -331,7 +332,7 @@ public final class SlickGame extends StateBasedGame implements View {
 
 		// Add all the states to the state helper.
 		this.states = new StateHelper(opening, mainMenu, combat, reinforcement, setup, movement, end, loadingScreen,
-				playerSelection, credits);
+				playerSelection, credits, help);
 
 		// Set the containers that visual elements will be loaded into.
 
@@ -351,6 +352,7 @@ public final class SlickGame extends StateBasedGame implements View {
 		containers.add(statsMenu);
 		containers.add(upgradeMenu);
 		containers.add(credits);
+		containers.add(help);
 
 		// User the containers to create the IO helper.
 		this.io = new IOHelper(game, containers);
@@ -758,6 +760,12 @@ public final class SlickGame extends StateBasedGame implements View {
 	public void enterCredits() {
 		enterState(states.credits);
 	}
+	
+	@Override
+	public void enterHelp() {
+		enterState(states.help);
+	}
+	
 
 	@Override
 	public void blockLink() {

@@ -30,10 +30,10 @@ import peril.views.slick.util.Point;
  * {@link SlickPlayer}s. The user may also select the the speed of the
  * {@link AI}s.
  * 
- * @author Joshua_Eddy
+ * @author Joshua_Eddy, Gurdeep_Pol
  * 
- * @since 2018-02-23
- * @version 1.01.03
+ * @since 2018-02-26
+ * @version 1.01.04
  * 
  * @see InteractiveState
  * @see AI
@@ -481,8 +481,15 @@ public final class PlayerSelection extends InteractiveState {
 	private void changeAISpeed() {
 
 		final int newSpeed = aiSpeeds.getSelected();
+		
+		//Display warning
+		final String message = "Increasing AI speed, reduces game perfromance.";
+		final int x = aiSpeeds.getPosition().x + aiSpeeds.getWidth();
+		final int y = aiSpeeds.getPosition().y + (aiSpeeds.getHeight()/2);
+		slick.showToolTip(message, new Point(x,y));
 
 		game.getAIs().forEach(ai -> ai.setSpeed(newSpeed));
+		
 	}
 
 	/**

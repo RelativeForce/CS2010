@@ -10,7 +10,7 @@ import peril.views.slick.components.MiniMap;
 import peril.views.slick.components.menus.WarMenu;
 import peril.views.slick.states.Credits;
 import peril.views.slick.states.EndState;
-import peril.views.slick.states.HelpState;
+import peril.views.slick.states.InstructionsState;
 import peril.views.slick.states.InteractiveState;
 import peril.views.slick.states.LoadingScreen;
 import peril.views.slick.states.MainMenu;
@@ -93,9 +93,9 @@ public final class StateHelper {
 	public final Credits credits;
 
 	/**
-	 * The {@link HelpState} that displays the instructions of the {@link Game}.
+	 * The {@link InstructionsState} that displays the instructions of the {@link Game}.
 	 */
-	public final HelpState help;
+	public final InstructionsState help;
 
 	/**
 	 * Constructs a new {@link StateHelper}.
@@ -131,7 +131,7 @@ public final class StateHelper {
 	 */
 	public StateHelper(Opening opening, MainMenu mainMenu, SlickAttack combat, SlickReinforce reinforcement,
 			SlickSetup setup, SlickFortify movement, EndState end, LoadingScreen loadingScreen,
-			PlayerSelection playerSelection, Credits credits, HelpState help) {
+			PlayerSelection playerSelection, Credits credits, InstructionsState help) {
 		this.opening = opening;
 		this.mainMenu = mainMenu;
 		this.end = end;

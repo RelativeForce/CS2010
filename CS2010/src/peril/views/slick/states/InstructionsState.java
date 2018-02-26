@@ -7,7 +7,6 @@ import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.Game;
 import peril.controllers.GameController;
 import peril.views.slick.Frame;
 import peril.views.slick.components.menus.HelpMenu;
@@ -15,81 +14,78 @@ import peril.views.slick.util.Font;
 
 /**
  * 
- * The {@link InteractiveState} of the {@link Game} where the instructions
- * of the entire game are displayed.
+ * The {@link InteractiveState} of the {@link Game} where the instructions of
+ * the entire game are displayed.
  * 
  * @author Adrian_Wong
+ * 
+ * @since 2018-02-26
+ * @version 1.01.01
+ * 
+ * @see InteractiveState
  *
  */
 
-public final class HelpState extends InteractiveState {
-	
+public final class InstructionsState extends InteractiveState {
+
 	/**
-	 * The name of a specific {@link HelpState}.
+	 * The name of a specific {@link InstructionsState}.
 	 */
-	private static final String NAME = "Help";
-	
+	private static final String NAME = "Instructions";
+
 	/**
-	 * The {@link Font} that the entire {@link HelpState} will be displayed in.
+	 * The {@link Font} that the entire {@link InstructionsState} will be displayed
+	 * in.
 	 */
 	private final Font helpFont;
-	
+
 	/**
-	 * The background music for this {@link HelpState}.
-	 */
-	private Music music;
-	
-	
-	/**
-	 * Constructs a new {@link HelpState}.
+	 * Constructs a new {@link InstructionsState}.
 	 * 
 	 * @param game
-	 *            The {@link Game} this state is a part of.
+	 *            The {@link GameController} that allows this
+	 *            {@link InstructionsState} to query the state of the game.
 	 * @param id
 	 *            The id of this {@link Credits}.
-	 * @throws SlickException 
 	 */
-	public HelpState(GameController game, int id) throws SlickException {
+	public InstructionsState(GameController game, int id) {
 		super(game, NAME, id, HelpMenu.NULL_PAGE);
 		helpFont = new Font("Arial", Color.black, 20);
 	}
-	
+
 	/**
-	 * Initialise the visual elements of the {@link HelpState}.
+	 * Initialise the visual elements of the {@link InstructionsState}.
 	 */
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
-
-		//music = slick.music.read("..."); //add later
-
+		
 		// Initialise Fonts
 		helpFont.init();
 	}
-	
+
 	@Override
 	public void update(GameContainer gc, int delta, Frame frame) {
-		
-		
+
 	}
 
 	/**
-	 * Render the {@link HelpState}.
+	 * Render the {@link InstructionsState}.
 	 */
 	@Override
 	public void render(GameContainer gc, Frame frame) {
-		
+
 		drawImages();
 		drawButtons();
-		
+
 	}
 
 	/**
-	 * Retrieves the {@link Music} of this {@link HelpState}.
+	 * Retrieves the {@link Music} of this {@link InstructionsState}.
 	 */
 	@Override
 	public Music getMusic() {
-		return music;
+		return null;
 	}
 
 }

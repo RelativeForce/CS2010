@@ -107,6 +107,8 @@ public final class FunctionHelper {
 			return hideUpgradeMenu();
 		case 32:
 			return enterCredits();
+		case 33:
+			return enterHelp();
 
 		}
 
@@ -233,6 +235,15 @@ public final class FunctionHelper {
 	 */
 	private Action<?> enterCredits() {
 		return new Action<GameController>(game, game -> game.getView().enterCredits());
+	}
+	
+	/**
+	 * Retrieves the {@link Action} that moves the to the help state
+	 * 
+	 * @return
+	 */
+	private Action<?> enterHelp() {
+		return new Action<GameController>(game, game -> game.getView().enterHelp());
 	}
 
 	/**

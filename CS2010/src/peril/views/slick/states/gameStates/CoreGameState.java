@@ -16,6 +16,7 @@ import peril.Update;
 import peril.ai.AI;
 import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
+import peril.model.board.links.ModelLinkState;
 import peril.model.states.ModelState;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
@@ -345,7 +346,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * {@link Color}.
 	 * 
 	 * @param frame
-	 *             The {@link Frame} that displays this {@link CoreGameState} to the user.
+	 *            The {@link Frame} that displays this {@link CoreGameState} to the
+	 *            user.
 	 */
 	protected final void drawPlayerName(Frame frame) {
 
@@ -385,11 +387,6 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 */
 	protected final void drawAllLinks(Frame frame) {
 
-		// If the links are toggled off do nothing
-		if (!menus.linksVisible()) {
-			return;
-		}
-
 		frame.setColor(Color.black);
 
 		// Get all the countries from the board.
@@ -408,9 +405,12 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 				// The link from the country to its neighbour
 				final SlickLinkState link = slick.modelView.getVisual(model.getLinkTo(modelNeighbour).getState());
 
-				// Draw the link
-				link.draw(frame, countryPosition, neighbourPosition);
-
+				// If the links are toggled on or the link is blocked
+				if (menus.linksVisible() || link.model == ModelLinkState.BLOCKADE) {
+					
+					// Draw the link
+					link.draw(frame, countryPosition, neighbourPosition);
+				}
 			});
 		});
 

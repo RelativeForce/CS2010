@@ -22,8 +22,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Adrian_Wong, Joshua_Eddy
  * 
- * @since 2018-02-26
- * @version 1.01.02
+ * @since 2018-02-27
+ * @version 1.01.03
  * 
  * @see InteractiveState
  *
@@ -68,9 +68,9 @@ public final class InstructionsState extends InteractiveState {
 	public InstructionsState(GameController game, int id) {
 		super(game, NAME, id, HelpMenu.NULL_PAGE);
 
-		this.scrollBar = new ScrollBar(new Point(MainMenu.WIDTH - 30, 5), 30, MainMenu.HEIGHT - 10, MAX);
+		this.scrollBar = new ScrollBar(new Point(MainMenu.WIDTH - 50, 53), 30, MainMenu.HEIGHT - 111, MAX);
 
-		this.text = new TextField(MainMenu.WIDTH - 90, new Point(30, 30));
+		this.text = new TextField(MainMenu.WIDTH - 105, new Point(46, 53));
 
 		super.addComponent(scrollBar);
 		super.addComponent(text);
@@ -111,7 +111,7 @@ public final class InstructionsState extends InteractiveState {
 		for (String line : TextFileReader.scanFile(game.getDirectory().getTextPath(), "instructions.txt")) {
 			text.addText(line);
 		}
-		
+
 		scrollBar.hideNumbers();
 
 	}
@@ -133,12 +133,12 @@ public final class InstructionsState extends InteractiveState {
 	 */
 	@Override
 	public void render(GameContainer gc, Frame frame) {
-
+		
+		text.draw(frame);
+		
 		drawImages();
 
 		frame.draw(scrollBar, scrollListener);
-
-		text.draw(frame);
 
 		drawButtons();
 	}
@@ -178,7 +178,7 @@ public final class InstructionsState extends InteractiveState {
 	 * {@link #scrollBar}.
 	 */
 	private void setTextPosition() {
-		text.setPosition(new Point(30, 30 - ((text.getHeight() - MainMenu.HEIGHT + 60) / MAX) * scrollBar.getIndex()));
+		text.setPosition(new Point(text.getPosition().x, 50 - ((text.getHeight() - MainMenu.HEIGHT + 100) / MAX) * scrollBar.getIndex()));
 	}
 
 }

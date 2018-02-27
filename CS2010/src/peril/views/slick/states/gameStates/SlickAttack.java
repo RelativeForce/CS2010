@@ -20,8 +20,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joseph_Rolli, Joshua_Eddy
  * 
- * @since 2018-02-26
- * @version 1.01.01
+ * @since 2018-02-27
+ * @version 1.01.02
  * 
  * @see CoreGameState
  * @see Attack
@@ -115,7 +115,11 @@ public final class SlickAttack extends CoreGameState {
 		super.getButton(upgradeButton).hide();
 
 		menus.showSaveOption();
-		slick.showToolTip("Click the '?' for help");
+		
+		if(game.getRoundNumber() == 0) {
+			slick.showToolTip("Click the '?' for help");
+		}
+		
 	}
 
 	/**

@@ -32,8 +32,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy, Gurdeep_Pol
  * 
- * @since 2018-02-26
- * @version 1.01.04
+ * @since 2018-02-27
+ * @version 1.01.05
  * 
  * @see InteractiveState
  * @see AI
@@ -447,6 +447,12 @@ public final class PlayerSelection extends InteractiveState {
 			@Override
 			public void mouseClick(Point mouse, int mouseButton) {
 				aiSpeeds.click(mouse);
+				
+				// If the user has selected the max AI speed warn them.
+				if(aiSpeeds.getSelected() == AI.MAX_SPEED) {
+					showAISpeedWarning();
+				}
+				
 				changeAISpeed();
 			}
 
@@ -462,9 +468,21 @@ public final class PlayerSelection extends InteractiveState {
 
 					if (key == Input.KEY_UP) {
 						aiSpeeds.up();
+						
+						// If the user has selected the max AI speed warn them.
+						if(aiSpeeds.getSelected() == AI.MAX_SPEED) {
+							showAISpeedWarning();
+						}
+						
 						changeAISpeed();
 					} else if (key == Input.KEY_DOWN) {
 						aiSpeeds.down();
+						
+						// If the user has selected the max AI speed warn them.
+						if(aiSpeeds.getSelected() == AI.MAX_SPEED) {
+							showAISpeedWarning();
+						}
+						
 						changeAISpeed();
 					}
 				}
@@ -481,15 +499,23 @@ public final class PlayerSelection extends InteractiveState {
 	private void changeAISpeed() {
 
 		final int newSpeed = aiSpeeds.getSelected();
-		
-		//Display warning
+		game.getAIs().forEach(ai -> ai.setSpeed(newSpeed));
+
+	}
+
+	/**
+	 * Displays a tool tip that warns the user that the faster the {@link AI} are
+	 * the worse the game performance will be.
+	 */
+	private void showAISpeedWarning() {
+
+		// Display warning
 		final String message = "Increasing AI speed, reduces game perfromance.";
 		final int x = aiSpeeds.getPosition().x + aiSpeeds.getWidth();
-		final int y = aiSpeeds.getPosition().y + (aiSpeeds.getHeight()/2);
-		slick.showToolTip(message, new Point(x,y));
+		final int y = aiSpeeds.getPosition().y + (aiSpeeds.getHeight() / 2);
 
-		game.getAIs().forEach(ai -> ai.setSpeed(newSpeed));
-		
+		slick.showToolTip(message, new Point(x, y));
+
 	}
 
 	/**

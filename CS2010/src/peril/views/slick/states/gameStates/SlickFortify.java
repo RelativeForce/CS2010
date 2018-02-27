@@ -22,8 +22,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy, Joseph_Rolli
  * 
- * @since 2018-02-26
- * @version 1.01.01
+ * @since 2018-02-27
+ * @version 1.01.02
  * 
  * @see Fortify
  * @see CoreGameState
@@ -76,7 +76,11 @@ public final class SlickFortify extends CoreGameState {
 		menus.showSaveOption();
 		getButton(fortifyButton).hide();
 		getButton(upgradeButton).hide();
-		slick.showToolTip("Click '?' for help");
+		
+		if(game.getRoundNumber() == 0) {
+			slick.showToolTip("Click '?' for help");
+		}
+		
 	}
 
 	/**

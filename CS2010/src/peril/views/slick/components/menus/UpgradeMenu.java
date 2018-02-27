@@ -37,8 +37,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Joseph_Rolli, Joshua_Eddy
  * 
- * @since 2018-02-25
- * @version 1.01.01
+ * @since 2018-02-37
+ * @version 1.01.02
  *
  * @see Menu
  * @see UnitTrader
@@ -353,8 +353,8 @@ public final class UpgradeMenu extends Menu {
 				// If the current unit is not the strongest unit in the game.
 				if (!isStrongest) {
 					traders.add(new UnitTrader(current, new Point(x, y)));
-					x -= (interval * 2);
 				}
+				x -= (interval * 2);
 			}
 
 			// Move to the unit below.
@@ -447,15 +447,17 @@ public final class UpgradeMenu extends Menu {
 				final int costX = x + (SlickUnit.WIDTH / 2) - (costFont.getHeight(text) / 2);
 				frame.draw(costFont, text, costX, y - costFont.getHeight(text));
 
-				// Draw the trader
-				traders.get(index).draw(frame);
-
 				// Draws the number of the current unit.
 				final int numberOfCurrent = army.getNumberOf(current);
 				final String number = Integer.toString(numberOfCurrent);
 				final int fontX = x + (SlickUnit.WIDTH / 2) - (armyFont.getWidth(number) / 2);
 				final int fontY = y + (SlickUnit.HEIGHT / 2) - (armyFont.getHeight() / 2);
 				frame.draw(armyFont, number, fontX, fontY);
+
+				// Draw the trader assuming its not the strongest unit.
+				if (index != traders.size()) {
+					traders.get(index).draw(frame);
+				}
 
 				index++;
 				x -= (interval * 2);

@@ -37,7 +37,7 @@ Country,Madagascar,000200100,soldier:1,-10,-10,-
 Country,Ural,000200150,soldier:1,-20,20,-
 Country,Siberia,000200200,soldier:1,0,0,-
 Country,Yakutsk,000200250,soldier:1,0,0,-
-Country,Kamchatka,000250000,soldier:1,-40,-50,-
+Country,Kamchatka,000250000,soldier:1,-80,-100,-
 Country,Irkutsk,000250050,soldier:1,0,0,-
 Country,Mongolia,000250100,soldier:1,0,0,-
 Country,Japan,000250150,soldier:1,10,0,-

@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,8 +26,8 @@ import peril.helpers.UnitHelper;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.02.02
- * @since 2018-02-25
+ * @version 1.02.03
+ * @since 2018-02-27
  * 
  * @see Observable
  * @see Iterable
@@ -565,23 +566,15 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	@Override
 	public ModelUnit getWeakestUnit() {
 
-		/**
-		 * Starting from the weakest unit currently in the game step up in strength
-		 * until a unit of the current type is in the army.
-		 */
+		final UnitHelper unitHelper = UnitHelper.getInstance();
 
-		ModelUnit current = UnitHelper.getInstance().getWeakest();
+		// Map all the key set unit names to their model unit counter parts then
+		// retrieve the unit with the minimum strength.
+		final Optional<ModelUnit> result = units.keySet().stream().map(unitName -> unitHelper.get(unitName))
+				.min((unit1, unit2) -> Integer.compare(unit1.getStrength(), unit2.getStrength()));
 
-		while (current != null) {
-
-			if (hasUnit(current)) {
-				return current;
-			} else {
-				current = UnitHelper.getInstance().getUnitAbove(current);
-			}
-		}
-
-		return null;
+		// Only return the result value if one was found.
+		return result.isPresent() ? result.get() : null;
 	}
 
 	/**
@@ -592,21 +585,15 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	@Override
 	public ModelUnit getStrongestUnit() {
 
-		/**
-		 * Starting from the strongest unit currently in the game step down in strength
-		 * until a unit of the current type is in the army.
-		 */
-		ModelUnit current = UnitHelper.getInstance().getStrongest();
+		final UnitHelper unitHelper = UnitHelper.getInstance();
 
-		while (current != null) {
-			if (hasUnit(current)) {
-				return current;
-			} else {
-				current = UnitHelper.getInstance().getUnitBelow(current);
-			}
-		}
+		// Map all the key set unit names to their model unit counter parts then
+		// retrieve the unit with the maximum strength.
+		final Optional<ModelUnit> result = units.keySet().stream().map(unitName -> unitHelper.get(unitName))
+				.max((unit1, unit2) -> Integer.compare(unit1.getStrength(), unit2.getStrength()));
 
-		return null;
+		// Only return the result value if one was found.
+		return result.isPresent() ? result.get() : null;
 	}
 
 	/**

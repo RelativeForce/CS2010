@@ -12,8 +12,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Ezekiel_Trinidad, Joshua_Eddy, Joseph_Rolli
  * 
- * @since 2018-02-26
- * @version 1.02.01
+ * @since 2018-02-27
+ * @version 1.02.02
  * 
  * @see Clickable
  * @see Component
@@ -38,7 +38,7 @@ public final class ScrollBar extends Clickable implements Component {
 	/**
 	 * The spacing between each position on the {@link ScrollBar}.
 	 */
-	private final int spacing;
+	private final float spacing;
 
 	/**
 	 * Whether or not this {@link ScrollBar} is visible or not.
@@ -48,7 +48,7 @@ public final class ScrollBar extends Clickable implements Component {
 	/**
 	 * Whether or not the numbers are displayed next to the {@link ScrollBar}.
 	 */
-	private boolean numbers;
+	private boolean showNumbers;
 
 	/**
 	 * The current index of the {@link ScrollBar}.
@@ -56,7 +56,7 @@ public final class ScrollBar extends Clickable implements Component {
 	private int index;
 
 	/**
-	 * Constructs a {@link ScrollBar}.
+	 * Constructs a new {@link ScrollBar}.
 	 * 
 	 * @param position
 	 *            The {@link Point} position of the {@link ScrollBar}.
@@ -64,6 +64,8 @@ public final class ScrollBar extends Clickable implements Component {
 	 *            The width of the {@link ScrollBar}.
 	 * @param height
 	 *            The height of the {@link ScrollBar}.
+	 * @param maxValue
+	 *            The maximum index for the {@link ScrollBar}.
 	 */
 	public ScrollBar(Point position, int width, int height, int maxValue) {
 		super(new Region(width, height, position));
@@ -71,10 +73,10 @@ public final class ScrollBar extends Clickable implements Component {
 		this.visible = true;
 		this.textFont = new Font("Arial", Color.white, 12);
 		this.maxValue = maxValue;
-		this.index = 1;
-		this.spacing = getHeight() / (maxValue);
-		this.slider = new Slider(new Point(position.x, position.y), width, spacing);
-		this.numbers = true;
+		this.index = 0;
+		this.spacing = (float) this.getHeight() / (maxValue + 1);
+		this.slider = new Slider(new Point(position.x, position.y), width, (int) spacing);
+		this.showNumbers = true;
 	}
 
 	/**
@@ -82,15 +84,23 @@ public final class ScrollBar extends Clickable implements Component {
 	 */
 	public void draw(Frame frame) {
 		if (visible) {
+
 			frame.setColor(Color.darkGray);
-			frame.fillRect(getPosition().x, getPosition().y, getWidth(), getHeight());
+
+			final int width = (getWidth() / 5);
+			final int height = getHeight() - (int) spacing;
+			final int x = getPosition().x + (getWidth() / 2) - (width / 2);
+			final int y = getPosition().y + (int) (spacing / 2);
+
+			frame.fillRect(x, y, width, height);
+
 			drawNumbers(frame);
 			slider.draw(frame);
 		}
 	}
 
 	/**
-	 * Initialises all Visual Elements of the {@link ScrollBar}.
+	 * Initialises all visual elements of the {@link ScrollBar}.
 	 */
 	public void init() {
 		textFont.init();
@@ -106,10 +116,12 @@ public final class ScrollBar extends Clickable implements Component {
 	public void click(Point mouse) {
 		if (isClicked(mouse)) {
 
-			final int newPosition = mouse.y;
-			final int space = Math.floorDiv(newPosition, spacing);
+			// Mouse position relative to start of scroll bar.
+			final int y = mouse.y - getPosition().y;
 
-			setIndex(space);
+			final int index = Math.floorDiv(y, (int) spacing);
+
+			setIndex(index);
 		}
 	}
 
@@ -117,14 +129,14 @@ public final class ScrollBar extends Clickable implements Component {
 	 * Sets the number as visible for the {@link ScrollBar}.
 	 */
 	public void showNumbers() {
-		this.numbers = true;
+		this.showNumbers = true;
 	}
 
 	/**
 	 * Sets the number as invisible for the {@link ScrollBar}.
 	 */
 	public void hideNumbers() {
-		this.numbers = false;
+		this.showNumbers = false;
 	}
 
 	/**
@@ -158,11 +170,20 @@ public final class ScrollBar extends Clickable implements Component {
 	 * Sets the index of the {@link ScrollBar} based on the specified slider index.
 	 * 
 	 * @param newIndex
-	 *            The new index.
+	 *            The new index of the {@link ScrollBar}.
 	 */
-	private void setIndex(int newIndex) {
-		slider.setPosition(new Point(slider.getPosition().x, newIndex * spacing));
-		index = 1 + Math.floorDiv((slider.getPosition().y - this.getPosition().y), spacing);
+	public void setIndex(int newIndex) {
+
+		// If the new index is valid.
+		if (newIndex >= 0 && newIndex <= maxValue) {
+
+			final int x = slider.getPosition().x;
+			final int y = this.getPosition().y + (int) (spacing * newIndex);
+
+			this.slider.setPosition(new Point(x, y));
+			this.index = newIndex;
+		}
+
 	}
 
 	/**
@@ -175,13 +196,18 @@ public final class ScrollBar extends Clickable implements Component {
 	 */
 	private void drawNumbers(Frame frame) {
 
-		if (!numbers) {
+		// If the number are invisible don't proceed.
+		if (!showNumbers) {
 			return;
 		}
 
-		for (int i = 0; i <= maxValue - 1; i++) {
+		// For each index draw its number on screen.
+		for (int index = 0; index < maxValue; index++) {
 
-			frame.draw(textFont, String.valueOf(i + 1), getPosition().x + getWidth(), (spacing * i) + getPosition().y);
+			final int x = getPosition().x + getWidth();
+			final int y = (int) (index * spacing) + getPosition().y;
+
+			frame.draw(textFont, String.valueOf(index + 1), x, y);
 
 		}
 
@@ -196,6 +222,7 @@ public final class ScrollBar extends Clickable implements Component {
 	 * @version 1.01.01
 	 * 
 	 * @see Clickable
+	 * @see ScrollBar
 	 *
 	 */
 	private final class Slider extends Clickable {

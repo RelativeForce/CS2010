@@ -19,15 +19,25 @@ public class Test_ModelArmy {
 	@Test
 	public void test_GetStrength() {
 		
-		ModelUnit testUnit = new ModelUnit("test", 1, "fileName");
-		UnitHelper.getInstance().addUnit(testUnit);
+		ModelUnit testUnitOne = new ModelUnit("testOne", 1, "fileNameOne");
+		ModelUnit testUnitTwo = new ModelUnit("testTwo", 2, "fileNameTwo");
+		ModelUnit testUnitThree = new ModelUnit("testThree", 3 , "fileNameThree");
+		
+		UnitHelper.getInstance().clear();
+		UnitHelper.getInstance().addUnit(testUnitOne);
+		UnitHelper.getInstance().addUnit(testUnitTwo);
+		UnitHelper.getInstance().addUnit(testUnitThree);
 		
 		ModelArmy modelArmyOne = new ModelArmy();
-		modelArmyOne.add(testUnit);
-		modelArmyOne.setStrength(1);
 		
-		System.out.println("This is the ModelArmy strength " + modelArmyOne.getStrength());
+		modelArmyOne.add(testUnitOne);
 		assertEquals(1, modelArmyOne.getStrength());
+		modelArmyOne.add(testUnitTwo);
+		assertEquals(3, modelArmyOne.getStrength());
+		modelArmyOne.add(testUnitThree);
+		assertEquals(6, modelArmyOne.getStrength());
+		//System.out.println("This is the ModelArmy strength " + modelArmyOne.getStrength());
+
 		
 	}
 

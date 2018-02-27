@@ -23,7 +23,7 @@ import peril.views.slick.util.Point;
  * @author Adrian_Wong, Joshua_Eddy
  * 
  * @since 2018-02-27
- * @version 1.01.03
+ * @version 1.01.04
  * 
  * @see InteractiveState
  *
@@ -67,8 +67,10 @@ public final class InstructionsState extends InteractiveState {
 	 */
 	public InstructionsState(GameController game, int id) {
 		super(game, NAME, id, HelpMenu.NULL_PAGE);
+		
+		final String sliderImagePath = game.getDirectory().getUIPath() + "slider.png";
 
-		this.scrollBar = new ScrollBar(new Point(MainMenu.WIDTH - 50, 53), 30, MainMenu.HEIGHT - 111, MAX);
+		this.scrollBar = new ScrollBar(new Point(MainMenu.WIDTH - 50, 53), 30, MainMenu.HEIGHT - 111, MAX, sliderImagePath);
 
 		this.text = new TextField(MainMenu.WIDTH - 105, new Point(46, 53));
 

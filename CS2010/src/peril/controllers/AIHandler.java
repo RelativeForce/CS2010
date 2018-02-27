@@ -23,8 +23,8 @@ import peril.model.states.ModelState;
  * 
  * @author Joshua_Eddy, Joseph_Rolli
  * 
- * @version 1.01.05
- * @since 2018-02-23
+ * @version 1.01.06
+ * @since 2018-02-27
  * 
  * @see AIController
  *
@@ -214,13 +214,8 @@ public final class AIHandler implements AIController {
 		}
 
 		// Iterate over every country on the board
-		getBoard().getCountries().forEach(country -> {
-
-			// If the country is owned by the current player perform the task.
-			if (player.equals(country.getOwner())) {
-				task.accept(country);
-			}
-		});
+		getBoard().getCountries().stream().filter(c -> player.equals(c.getOwner()))
+				.forEach(country -> task.accept(country));
 
 	}
 
@@ -251,13 +246,8 @@ public final class AIHandler implements AIController {
 		}
 
 		// Iterate over every neighbour of the specified country
-		country.getNeighbours().forEach(neighbour -> {
-
-			// If the neighbour is an enemy country then perform the task.
-			if (!country.getOwner().equals(neighbour.getOwner())) {
-				task.accept(neighbour);
-			}
-		});
+		country.getNeighbours().stream().filter(n -> !country.getOwner().equals(n.getOwner()))
+				.forEach(neighbour -> task.accept(neighbour));
 
 	}
 
@@ -305,12 +295,12 @@ public final class AIHandler implements AIController {
 		final ModelUnit checkedUnit = (ModelUnit) unit;
 
 		final boolean hasTraded = checkedSource.getArmy().tradeUp(checkedUnit);
-		
-		if(hasTraded) {
-			
+
+		if (hasTraded) {
+
 			player.spendPoints(PointHelper.TRADE_UNIT_COST);
 		}
-		
+
 		return hasTraded;
 	}
 

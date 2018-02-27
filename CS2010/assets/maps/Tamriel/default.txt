@@ -27,8 +27,8 @@ Country,Solstheim,000100150,spider:1,0,0,-
 Country,Blacklight,000100200,spider:1,0,0,-
 Country,Ald'Rhun,000100250,spider:1,0,0,-
 Country,Balmora,000150000,spider:1,0,0,-
-Country,Necrom,000150050,spider:1,40,110,-
-Country,Mournhold,000150100,spider:1,-50,70,-
+Country,Necrom,000150050,spider:1,80,220,-
+Country,Mournhold,000150100,spider:1,-100,140,-
 Country,Narsis,000150150,spider:1,0,0,-
 Country,Tear,000150200,spider:1,0,0,-
 
@@ -84,7 +84,7 @@ Country,Senchal,050200050,spider:1,0,0,-
 //BlackMarsh
 Country,Stormhold,050200100,spider:1,-25,0,-
 Country,Helstrom,050200150,spider:1,0,0,-
-Country,Thorn,050200200,spider:1,0,0,-
+Country,Thorn,050200200,spider:1,0,-10,-
 Country,Gideon,050200250,spider:1,0,0,-
 Country,Archon,050250000,spider:1,0,0,-
 Country,Blackrose,050250050,spider:1,0,0,-

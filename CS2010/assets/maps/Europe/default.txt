@@ -6,15 +6,15 @@ Unit,Cannon,15,tankIcon.png
 // Country, name, rgb, reinforcements, x offset, y offset
 Country,Ireland,000000050,Knight:1,0,0,-
 Country,Wales,000000100,Knight:1,0,0,-
-Country,England,000000150,Knight:1,0,0,-
+Country,England,000000150,Knight:1,70,60,-
 Country,Scotland,000000200,Knight:1,0,0,-
 Country,Brittany,000000250,Knight:1,0,0,-
 Country,France,000050000,Knight:1,0,0,-
-Country,Normandy,000200000,Knight:1,0,0,-
+Country,Normandy,000200000,Knight:1,35,30,-
 Country,Lorraine,000150250,Knight:1,0,0,-
 Country,Norway,100200100,Knight:1,0,0,-
-Country,Sweden,000250000,Knight:1,0,0,-
-Country,Finland,000050050,Knight:1,0,0,-
+Country,Sweden,000250000,Knight:1,-70,-100,-
+Country,Finland,000050050,Knight:1,-100,-40,-
 Country,Navarre,000050100,Knight:1,0,0,-
 Country,Barcelona,000050150,Knight:1,0,0,-
 Country,Valencia,000050250,Knight:1,0,0,-
@@ -23,14 +23,14 @@ Country,Leon Castille,000100050,Knight:1,0,0,-
 Country,Portugal,000100100,Knight:1,0,0,-
 Country,Morocco,000100150,Knight:1,0,0,-
 Country,Algeria,000100200,Knight:1,0,0,-
-Country,Tunisia,000100250,Knight:1,0,0,-
+Country,Tunisia,000100250,Knight:1,-100,0,-
 Country,Burgundy,000150000,Knight:1,0,0,-
 Country,Lombardy,000150050,Knight:1,0,0,-
 Country,Swabia,000150100,Knight:1,0,0,-
 Country,Franconia,000150150,Knight:1,0,0,-
 Country,Bavaria,000150200,Knight:1,0,0,-
 Country,Friesland,050000250,Knight:1,0,0,-
-Country,Denmark,050000200,Knight:1,0,0,-
+Country,Denmark,050000200,Knight:1,-140,-70,-
 Country,Pomerania,000200050,Knight:1,0,0,-
 Country,Prussia,000200150,Knight:1,0,0,-
 Country,Lithuania,000200200,Knight:1,0,0,-
@@ -44,7 +44,7 @@ Country,Sardinia,000250250,Knight:1,0,0,-
 Country,Rome,050000000,Knight:1,0,0,-
 Country,Kingdom of Sicily,050000050,Knight:1,0,0,-
 Country,Poland,050000100,Knight:1,0,0,-
-Country,Greece,100000000,Knight:1,0,0,-
+Country,Greece,100000000,Knight:1,-80,0,-
 Country,Turkey,100000050,Knight:1,0,0,-
 Country,Polotsk,100000100,Knight:1,0,0,-
 Country,Estonia,100000150,Knight:1,0,0,-

@@ -29,10 +29,10 @@ Game set up
 
 When the map loads users assign which player owns which country. To change the ownership of a country click the country so that it is highlighted then press the number of the player you want to assign to it.
 
-Player 1
-Player 2
-Player 3
-Player 4 
+Player 1 - '1'
+Player 2 - '2'
+Player 3 - '3'
+Player 4 - '4'
 
 Alternatively, press ‘auto’ to randomly and evenly distribute the countries. Click ‘play’ to begin the game.
 

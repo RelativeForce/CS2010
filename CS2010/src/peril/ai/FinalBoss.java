@@ -19,7 +19,7 @@ import peril.controllers.api.Unit;
  * @author Joshua_Eddy
  * 
  * @since 2018-02-27
- * @version 1.01.01
+ * @version 1.01.02
  * 
  * @see AI
  * @see AIController
@@ -30,7 +30,7 @@ public final class FinalBoss extends AI {
 	/**
 	 * The name of this {@link AI}.
 	 */
-	private static final String NAME = "Final Boss";
+	private static final String NAME = "Hard";
 
 	/**
 	 * Denotes how much larger a enemy army must be in order for the

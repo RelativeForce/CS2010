@@ -14,9 +14,9 @@ import peril.controllers.GameController;
  * 
  * @author James_Rowntree, Joshua_Eddy
  * 
- * @since 2018-02-23
+ * @since 2018-02-27
  * 
- * @version 1.01.03
+ * @version 1.01.04
  * 
  * @see Iterable
  * @see AI
@@ -59,25 +59,25 @@ public final class AIHelper implements Iterable<AI> {
 
 		// Define all AIs
 		final AI user = AI.USER;
-		final Monkey monkey = new Monkey(api);
+		// final Monkey monkey = new Monkey(api);
 		final FinalBoss finalBoss = new FinalBoss(api);
-		final Goat goat = new Goat(api);
-		final NegativeFiveIQ nfiq = new NegativeFiveIQ(api);
-		final Ocelot ocelot = new Ocelot(api);
+		// final Goat goat = new Goat(api);
+		// final NegativeFiveIQ nfiq = new NegativeFiveIQ(api);
+		// final Ocelot ocelot = new Ocelot(api);
 		final Knight knight = new Knight(api);
 		final Ernie ernie = new Ernie(api);
-		final Noob noob = new Noob(api);
+		// final Noob noob = new Noob(api);
 
 		// Add AIs to ai map
 		ai.put(user.name, user);
-		ai.put(monkey.name, monkey);
+		// ai.put(monkey.name, monkey);
 		ai.put(finalBoss.name, finalBoss);
-		ai.put(goat.name, goat);
-		ai.put(nfiq.name, nfiq);
-		ai.put(ocelot.name, ocelot);
+		// ai.put(goat.name, goat);
+		// ai.put(nfiq.name, nfiq);
+		// ai.put(ocelot.name, ocelot);
 		ai.put(knight.name, knight);
 		ai.put(ernie.name, ernie);
-		ai.put(noob.name, noob);
+		// ai.put(noob.name, noob);
 
 	}
 

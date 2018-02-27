@@ -33,7 +33,7 @@ import peril.views.slick.util.Point;
  * @author Joshua_Eddy, Gurdeep_Pol
  * 
  * @since 2018-02-27
- * @version 1.01.05
+ * @version 1.01.06
  * 
  * @see InteractiveState
  * @see AI
@@ -121,7 +121,7 @@ public final class PlayerSelection extends InteractiveState {
 		final Font listFont = new Font("Arial", Color.black, 19);
 
 		// Define the AI list
-		this.aiList = new VisualList<>(new Point(400, 100), 100, 24, 5, 5);
+		this.aiList = new VisualList<>(new Point(400, 100), 100, 24, 4, 5);
 		this.aiList.setFont(listFont);
 		populateAIList();
 

@@ -2,18 +2,22 @@ package peril.ai;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
+import java.util.function.Predicate;
 
 import peril.controllers.AIController;
 import peril.controllers.api.Country;
 import peril.controllers.api.Player;
 
-public class Ernie extends AI {
+public final class Ernie extends AI {
 
 	private Random rand;
+	
+	private static final String NAME = "Easy";
 
 	public Ernie(AIController api) {
-		super("Ernie", MAX_SPEED, api);
+		super(NAME, MAX_SPEED, api);
 		// TODO Auto-generated constructor stub
 		rand = new Random(10);
 	}
@@ -86,10 +90,10 @@ public class Ernie extends AI {
 		}
 
 		final AIOperation op = new AIOperation();
-		
+
 		if (highest == Integer.MIN_VALUE) {
 			op.processAgain = false;
-		}else {
+		} else {
 			op.select.add(countries.get(highest).a);
 			op.select.add(countries.get(highest).b);
 			op.processAgain = true;
@@ -101,7 +105,51 @@ public class Ernie extends AI {
 
 	@Override
 	protected AIOperation processFortify(AIController api) {
-		return new AIOperation();
+
+		final Map<Integer, Entry> countries = new HashMap<>();
+		final Player current = api.getCurrentPlayer();
+
+		// A country is internal if it is ruled by the current player, has no enemy
+		// neighbours and has more than one unit.
+		final Predicate<Country> isInternal = c -> current.equals(c.getOwner())
+				&& c.getNeighbours().stream().filter(n -> !current.equals(n.getOwner())).count() == 0
+				&& c.getArmy().getNumberOfUnits() > 1;
+
+		// A country is a front line country if it has enemy neighbours.
+		final Predicate<Country> isFrontline = c -> c.getNeighbours().stream()
+				.filter(n -> !current.equals(n.getOwner())).count() > 0;
+
+		// Iterate over all the internal countries
+		api.getBoard().getCountries().stream().filter(isInternal).forEach(i -> {
+
+			// Is true if there is a path between the current internal and the country.
+			final Predicate<Country> isConnected = c -> api.isPathBetween(i, c);
+
+			// Iterate over all the front line countries that are also connected to i.
+			api.getBoard().getCountries().stream().filter(isFrontline).filter(isConnected).forEach(f -> {
+
+				countries.put(rand.nextInt(10), new Entry(i, f));
+
+			});
+
+		});
+		
+		// The value of the best entry.
+		final Optional<Integer> result = countries.keySet().stream().max(Integer::compareTo);
+
+		final AIOperation op = new AIOperation();
+		
+		if(result.isPresent()) {
+			
+			final Entry best = countries.get(result.get());
+			
+			op.processAgain = true;
+			op.select.add(best.a);
+			op.select.add(best.b);
+			
+		}
+
+		return op;
 	}
 
 	private class Entry {

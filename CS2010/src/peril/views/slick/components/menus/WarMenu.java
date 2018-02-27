@@ -40,7 +40,7 @@ import peril.views.slick.util.Region;
  * @author Joshua_Eddy, Ezekiel_Trinidad
  * 
  * @since 2018-02-27
- * @version 1.01.04
+ * @version 1.01.05
  * 
  * @see Menu
  * @see Attack
@@ -237,8 +237,11 @@ public final class WarMenu extends Menu {
 		getButton(attackButton).hide();
 		defendingSquad.autoPopulate(state.getSecondary().getArmy());
 		
-		slick.showToolTip("Click here to select the attacking units.", new Point(getPosition().x + (getWidth() / 2), getPosition().y + getHeight() - 120));
-
+		// Only show this on the first round!
+		if(game.getRoundNumber() == 0) {
+			slick.showToolTip("Click here to select the attacking units.", new Point(getPosition().x + (getWidth() / 2), getPosition().y + getHeight() - 120));			
+		}
+		
 	}
 
 	/**

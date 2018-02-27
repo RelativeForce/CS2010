@@ -1,7 +1,10 @@
 package peril.views.slick.components;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Image;
+
 import peril.views.slick.Frame;
+import peril.views.slick.io.ImageReader;
 import peril.views.slick.util.Clickable;
 import peril.views.slick.util.Font;
 import peril.views.slick.util.Point;
@@ -13,7 +16,7 @@ import peril.views.slick.util.Region;
  * @author Ezekiel_Trinidad, Joshua_Eddy, Joseph_Rolli
  * 
  * @since 2018-02-27
- * @version 1.02.02
+ * @version 1.02.03
  * 
  * @see Clickable
  * @see Component
@@ -41,6 +44,11 @@ public final class ScrollBar extends Clickable implements Component {
 	private final float spacing;
 
 	/**
+	 * The file path to the {@link ScrollBar} {@link Slider} image.
+	 */
+	private final String imagePath;
+
+	/**
 	 * Whether or not this {@link ScrollBar} is visible or not.
 	 */
 	private boolean visible;
@@ -66,8 +74,10 @@ public final class ScrollBar extends Clickable implements Component {
 	 *            The height of the {@link ScrollBar}.
 	 * @param maxValue
 	 *            The maximum index for the {@link ScrollBar}.
+	 * @param imagePath
+	 *            The file path to the {@link ScrollBar} {@link Slider} image.
 	 */
-	public ScrollBar(Point position, int width, int height, int maxValue) {
+	public ScrollBar(Point position, int width, int height, int maxValue, String imagePath) {
 		super(new Region(width, height, position));
 
 		this.visible = true;
@@ -77,6 +87,7 @@ public final class ScrollBar extends Clickable implements Component {
 		this.spacing = (float) this.getHeight() / (maxValue + 1);
 		this.slider = new Slider(new Point(position.x, position.y), width, (int) spacing);
 		this.showNumbers = true;
+		this.imagePath = imagePath;
 	}
 
 	/**
@@ -104,6 +115,7 @@ public final class ScrollBar extends Clickable implements Component {
 	 */
 	public void init() {
 		textFont.init();
+		slider.init();
 	}
 
 	/**
@@ -225,7 +237,7 @@ public final class ScrollBar extends Clickable implements Component {
 	 * @see ScrollBar
 	 *
 	 */
-	private final class Slider extends Clickable {
+	private final class Slider extends Clickable implements Component {
 
 		/**
 		 * Constructs a new {@link Slider}.
@@ -247,9 +259,28 @@ public final class ScrollBar extends Clickable implements Component {
 		 * @param frame
 		 *            The {@link Frame} that draws the {@link Slider} on screen.
 		 */
+		@Override
 		public void draw(Frame frame) {
 			frame.setColor(Color.lightGray);
-			frame.fillRect(this.getPosition().x, this.getPosition().y, this.getWidth(), this.getHeight());
+
+			if (hasImage()) {
+				frame.draw(getImage(), this.getPosition().x, this.getPosition().y);
+			} else {
+				frame.fillRect(this.getPosition().x, this.getPosition().y, this.getWidth(), this.getHeight());
+			}
+
+		}
+
+		@Override
+		public void init() {
+
+			if (imagePath == null || imagePath.isEmpty()) {
+				return;
+			}
+
+			final Image slider = ImageReader.getImage(imagePath);
+			replaceImage(slider.getScaledCopy(this.getWidth(), this.getHeight()));
+
 		}
 	}
 

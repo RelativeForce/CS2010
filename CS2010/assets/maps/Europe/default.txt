@@ -1,60 +1,271 @@
 // Unit, name, strength, filename
-Unit,soldier,1,soldierIcon.png
-Unit,car,5,carIcon.png
-Unit,tank,15,tankIcon.png
+Unit,Knight,1,knightIcon.png
+Unit,Horse,5,knightHorseIcon.png
+Unit,Cannon,15,tankIcon.png
 
-// Country, name, rgb, x offset, y offset
-Country,Great Britian,000000050,1,0,0,-
-Country,France,000000100,1,0,0,-
-Country,Germany,000000150,1,-10,0,-
-Country,Poland,000000200,1,0,-10,-
-Country,Italy,000000250,1,0,-15,-
-Country,Greece,000050000,1,-15,0,-
-Country,Spain,000100000,1,-20,0,-
-Country,Russia,000150000,1,0,0,-
-Country,Sweden,000200000,1,-15,0,-
-Country,Norway,000250000,1,-50,30,-
-Country,Finland,050050000,1,0,0,-
-Country,Umple,050100000,1,0,0,-
-Country,Flump,050150000,1,0,0,-
-Country,Chump,050200000,1,0,-10,-
-Country,Mump,050250000,1,0,0,-
-Country,Slump,100050000,1,0,0,-
+// Country, name, rgb, reinforcements, x offset, y offset
+Country,Ireland,000000050,Knight:1,0,0,-
+Country,Wales,000000100,Knight:1,0,0,-
+Country,England,000000150,Knight:1,70,60,-
+Country,Scotland,000000200,Knight:1,0,0,-
+Country,Brittany,000000250,Knight:1,0,0,-
+Country,France,000050000,Knight:1,0,0,-
+Country,Normandy,000200000,Knight:1,35,30,-
+Country,Lorraine,000150250,Knight:1,0,0,-
+Country,Norway,100200100,Knight:1,0,0,-
+Country,Sweden,000250000,Knight:1,-70,-100,-
+Country,Finland,000050050,Knight:1,-100,-40,-
+Country,Navarre,000050100,Knight:1,0,0,-
+Country,Barcelona,000050150,Knight:1,0,0,-
+Country,Valencia,000050250,Knight:1,0,0,-
+Country,Granada,000100000,Knight:1,0,0,-
+Country,Leon Castille,000100050,Knight:1,0,0,-
+Country,Portugal,000100100,Knight:1,0,0,-
+Country,Morocco,000100150,Knight:1,0,0,-
+Country,Algeria,000100200,Knight:1,0,0,-
+Country,Tunisia,000100250,Knight:1,-100,0,-
+Country,Burgundy,000150000,Knight:1,0,0,-
+Country,Lombardy,000150050,Knight:1,0,0,-
+Country,Swabia,000150100,Knight:1,0,0,-
+Country,Franconia,000150150,Knight:1,0,0,-
+Country,Bavaria,000150200,Knight:1,0,0,-
+Country,Friesland,050000250,Knight:1,0,0,-
+Country,Denmark,050000200,Knight:1,-140,-70,-
+Country,Pomerania,000200050,Knight:1,0,0,-
+Country,Prussia,000200150,Knight:1,0,0,-
+Country,Lithuania,000200200,Knight:1,0,0,-
+Country,Saxony,000200250,Knight:1,0,0,-
+Country,Bohemia,050000150,Knight:1,0,0,-
+Country,Hungary,000250050,Knight:1,0,0,-
+Country,Venice,000250100,Knight:1,0,0,-
+Country,Serbia,000250150,Knight:1,0,0,-
+Country,Bulgaria,000250200,Knight:1,0,0,-
+Country,Sardinia,000250250,Knight:1,0,0,-
+Country,Rome,050000000,Knight:1,0,0,-
+Country,Kingdom of Sicily,050000050,Knight:1,0,0,-
+Country,Poland,050000100,Knight:1,0,0,-
+Country,Greece,100000000,Knight:1,-80,0,-
+Country,Turkey,100000050,Knight:1,0,0,-
+Country,Polotsk,100000100,Knight:1,0,0,-
+Country,Estonia,100000150,Knight:1,0,0,-
+Country,Republic of Novgorod,100000200,Knight:1,0,0,-
+Country,Smolensk,100000250,Knight:1,0,0,-
+Country,Rusland,100050000,Knight:1,0,0,-
+Country,Galicia,100050050,Knight:1,0,0,-
+Country,Highlands,100050150,Knight:1,0,0,-
 
-// Continent, name, hazard, countries
-Continent,West,Hurricane,Great Britian-France-Germany-Spain
-Continent,Center,Tornado,Greece-Poland-Italy-Chump-Mump
-Continent,East,Hurricane,Russia-Umple-Flump-Slump
-Continent,North,Tsunami,Sweden-Norway-Finland
+//Continent, name, hazard, countries
+Continent,UK,Hurricane,Ireland-Scotland-Wales-England
+Continent,North Europe,Tornado,Norway-Sweden-Finland-Estonia-Republic of Novgorod-Denmark-Lithuania-Smolensk
+Continent,Mainland Europe,Volcanic Eruption,Friesland-Saxony-Bohemia-Brittany-France-Normandy-Lorraine-Barcelona-Burgundy-Lombardy-Swabia-Franconia
+Continent,South Europe,Tsunami,Morocco-Algeria-Tunisia-Sardinia-Rome-Kingdom of Sicily-Granada-Portugal-Leon Castille-Navarre-Valencia-Venice
+Continent,East Europe,Tornado,Rusland-Polotsk-Bavaria-Pomerania-Prussia-Hungary-Serbia-Bulgaria-Poland-Turkey-Greece-Galicia-Highlands
 
-// Link, country1, country2
-Link,Great Britian,France
-Link,Great Britian,Germany
-Link,France,Germany
-Link,France,Spain
-Link,France,Italy
-Link,Germany,Italy
-Link,Germany,Sweden
-Link,Germany,Chump
-Link,Germany,Poland
-Link,Italy,Chump
-Link,Chump,Poland
-Link,Chump,Flump
-Link,Chump,Mump
-Link,Mump,Greece
-Link,Mump,Flump
-Link,Greece,Slump
-Link,Poland,Umple
-Link,Poland,Flump
-Link,Norway,Sweden
-Link,Norway,Russia
-Link,Sweden,Finland
-Link,Finland,Russia
-Link,Umple,Russia
-Link,Flump,Russia
-Link,Flump,Umple
-Link,Slump,Russia
-Link,Russia,Finland
+
+//Link, country1, country2, default state, current state, duration
+Link,Ireland,Scotland,Open,Open,0
+Link,Ireland,Wales,Open,Open,0
+Link,Ireland,Brittany,Open,Open,0
+Link,Wales,Ireland,Open,Open,0
+Link,Wales,England,Open,Open,0
+Link,England,Scotland,Open,Open,0
+Link,England,Normandy,Open,Open,0
+Link,England,Wales,Open,Open,0
+Link,England,Lorraine,Open,Open,0
+Link,Scotland,England,Open,Open,0
+Link,Scotland,Norway,Open,Open,0
+Link,Scotland,Ireland,Open,Open,0
+Link,Brittany,Ireland,Open,Open,0
+Link,Brittany,Leon Castille,Open,Open,0
+Link,Brittany,Normandy,Open,Open,0
+Link,Brittany,France,Open,Open,0
+Link,France,Brittany,Open,Open,0
+Link,France,Normandy,Open,Open,0
+Link,France,Lorraine,Open,Open,0
+Link,France,Burgundy,Open,Open,0
+Link,France,Barcelona,Open,Open,0
+Link,France,Navarre,Open,Open,0
+Link,Normandy,Brittany,Open,Open,0
+Link,Normandy,England,Open,Open,0
+Link,Normandy,France,Open,Open,0
+Link,Lorraine,England,Open,Open,0
+Link,Lorraine,France,Open,Open,0
+Link,Lorraine,Burgundy,Open,Open,0
+Link,Lorraine,Swabia,Open,Open,0
+Link,Lorraine,Saxony,Open,Open,0
+Link,Lorraine,Friesland,Open,Open,0
+Link,Lorraine,Franconia,Open,Open,0
+Link,Norway,Scotland,Open,Open,0
+Link,Norway,Denmark,Open,Open,0
+Link,Norway,Sweden,Open,Open,0
+Link,Sweden,Norway,Open,Open,0
+Link,Sweden,Denmark,Open,Open,0
+Link,Sweden,Finland,Open,Open,0
+Link,Finland,Sweden,Open,Open,0
+Link,Finland,Estonia,Open,Open,0
+Link,Finland,Republic of Novgorod,Open,Open,0
+Link,Navarre,Leon Castille,Open,Open,0
+Link,Navarre,Valencia,Open,Open,0
+Link,Navarre,France,Open,Open,0
+Link,Navarre,Barcelona,Open,Open,0
+Link,Barcelona,Burgundy,Open,Open,0
+Link,Barcelona,France,Open,Open,0
+Link,Barcelona,Navarre,Open,Open,0
+Link,Barcelona,Valencia,Open,Open,0
+Link,Valencia,Algeria,Open,Open,0
+Link,Valencia,Barcelona,Open,Open,0
+Link,Valencia,Leon Castille,Open,Open,0
+Link,Valencia,Granada,Open,Open,0
+Link,Valencia,Navarre,Open,Open,0
+Link,Granada,Leon Castille,Open,Open,0
+Link,Granada,Valencia,Open,Open,0
+Link,Leon Castille,Brittany,Open,Open,0
+Link,Leon Castille,Navarre,Open,Open,0
+Link,Leon Castille,Granada,Open,Open,0
+Link,Leon Castille,Valencia,Open,Open,0
+Link,Leon Castille,Portugal,Open,Open,0
+Link,Leon Castille,Morocco,Open,Open,0
+Link,Portugal,Leon Castille,Open,Open,0
+Link,Morocco,Leon Castille,Open,Open,0
+Link,Morocco,Algeria,Open,Open,0
+Link,Algeria,Morocco,Open,Open,0
+Link,Algeria,Valencia,Open,Open,0
+Link,Algeria,Tunisia,Open,Open,0
+Link,Tunisia,Algeria,Open,Open,0
+Link,Tunisia,Sardinia,Open,Open,0
+Link,Tunisia,Greece,Open,Open,0
+Link,Burgundy,Barcelona,Open,Open,0
+Link,Burgundy,France,Open,Open,0
+Link,Burgundy,Lorraine,Open,Open,0
+Link,Burgundy,Swabia,Open,Open,0
+Link,Burgundy,Lombardy,Open,Open,0
+Link,Lombardy,Burgundy,Open,Open,0
+Link,Lombardy,Swabia,Open,Open,0
+Link,Lombardy,Bavaria,Open,Open,0
+Link,Lombardy,Rome,Open,Open,0
+Link,Swabia,Lorraine,Open,Open,0
+Link,Swabia,Burgundy,Open,Open,0
+Link,Swabia,Lombardy,Open,Open,0
+Link,Swabia,Bavaria,Open,Open,0
+Link,Swabia,Franconia,Open,Open,0
+Link,Franconia,Saxony,Open,Open,0
+Link,Franconia,Lorraine,Open,Open,0
+Link,Franconia,Swabia,Open,Open,0
+Link,Franconia,Bavaria,Open,Open,0
+Link,Franconia,Bohemia,Open,Open,0
+Link,Bavaria,Lombardy,Open,Open,0
+Link,Bavaria,Swabia,Open,Open,0
+Link,Bavaria,Franconia,Open,Open,0
+Link,Bavaria,Bohemia,Open,Open,0
+Link,Bavaria,Highlands,Open,Open,0
+Link,Bavaria,Hungary,Open,Open,0
+Link,Bavaria,Venice,Open,Open,0
+Link,Friesland,Lorraine,Open,Open,0
+Link,Friesland,Saxony,Open,Open,0
+Link,Friesland,Denmark,Open,Open,0
+Link,Denmark,Norway,Open,Open,0
+Link,Denmark,Sweden,Open,Open,0
+Link,Denmark,Friesland,Open,Open,0
+Link,Denmark,Saxony,Open,Open,0
+Link,Denmark,Bohemia,Open,Open,0
+Link,Denmark,Poland,Open,Open,0
+Link,Denmark,Pomerania,Open,Open,0
+Link,Pomerania,Denmark,Open,Open,0
+Link,Pomerania,Poland,Open,Open,0
+Link,Pomerania,Prussia,Open,Open,0
+Link,Pomerania,Lithuania,Open,Open,0
+Link,Prussia,Pomerania,Open,Open,0
+Link,Prussia,Lithuania,Open,Open,0
+Link,Prussia,Poland,Open,Open,0
+Link,Prussia,Polotsk,Open,Open,0
+Link,Lithuania,Pomerania,Open,Open,0
+Link,Lithuania,Prussia,Open,Open,0
+Link,Lithuania,Polotsk,Open,Open,0
+Link,Lithuania,Smolensk,Open,Open,0
+Link,Lithuania,Estonia,Open,Open,0
+Link,Saxony,Lorraine,Open,Open,0
+Link,Saxony,Franconia,Open,Open,0
+Link,Saxony,Bohemia,Open,Open,0
+Link,Saxony,Denmark,Open,Open,0
+Link,Saxony,Friesland,Open,Open,0
+Link,Bohemia,Saxony,Open,Open,0
+Link,Bohemia,Denmark,Open,Open,0
+Link,Bohemia,Poland,Open,Open,0
+Link,Bohemia,Highlands,Open,Open,0
+Link,Bohemia,Bavaria,Open,Open,0
+Link,Bohemia,Franconia,Open,Open,0
+Link,Hungary,Bavaria,Open,Open,0
+Link,Hungary,Highlands,Open,Open,0
+Link,Hungary,Poland,Open,Open,0
+Link,Hungary,Galicia,Open,Open,0
+Link,Hungary,Bulgaria,Open,Open,0
+Link,Hungary,Serbia,Open,Open,0
+Link,Hungary,Venice,Open,Open,0
+Link,Venice,Bavaria,Open,Open,0
+Link,Venice,Hungary,Open,Open,0
+Link,Venice,Serbia,Open,Open,0
+Link,Venice,Kingdom of Sicily,Open,Open,0
+Link,Bulgaria,Hungary,Open,Open,0
+Link,Bulgaria,Galicia,Open,Open,0
+Link,Bulgaria,Serbia,Open,Open,0
+Link,Bulgaria,Greece,Open,Open,0
+Link,Bulgaria,Turkey,Open,Open,0
+Link,Sardinia,Rome,Open,Open,0
+Link,Sardinia,Tunisia,Open,Open,0
+Link,Rome,Sardinia,Open,Open,0
+Link,Rome,Kingdom of Sicily,Open,Open,0
+Link,Rome,Lombardy,Open,Open,0
+Link,Kingdom of Sicily,Rome,Open,Open,0
+Link,Kingdom of Sicily,Venice,Open,Open,0
+Link,Poland,Denmark,Open,Open,0
+Link,Poland,Pomerania,Open,Open,0
+Link,Poland,Prussia,Open,Open,0
+Link,Poland,Polotsk,Open,Open,0
+Link,Poland,Rusland,Open,Open,0
+Link,Poland,Galicia,Open,Open,0
+Link,Poland,Hungary,Open,Open,0
+Link,Poland,Highlands,Open,Open,0
+Link,Poland,Bohemia,Open,Open,0
+Link,Greece,Serbia,Open,Open,0
+Link,Greece,Bulgaria,Open,Open,0
+Link,Greece,Turkey,Open,Open,0
+Link,Greece,Tunisia,Open,Open,0
+Link,Turkey,Bulgaria,Open,Open,0
+Link,Turkey,Greece,Open,Open,0
+Link,Polotsk,Prussia,Open,Open,0
+Link,Polotsk,Lithuania,Open,Open,0
+Link,Polotsk,Smolensk,Open,Open,0
+Link,Polotsk,Rusland,Open,Open,0
+Link,Polotsk,Poland,Open,Open,0
+Link,Estonia,Finland,Open,Open,0
+Link,Estonia,Republic of Novgorod,Open,Open,0
+Link,Estonia,Smolensk,Open,Open,0
+Link,Estonia,Lithuania,Open,Open,0
+Link,Republic of Novgorod,Finland,Open,Open,0
+Link,Republic of Novgorod,Estonia,Open,Open,0
+Link,Republic of Novgorod,Smolensk,Open,Open,0
+Link,Smolensk,Republic of Novgorod,Open,Open,0
+Link,Smolensk,Estonia,Open,Open,0
+Link,Smolensk,Lithuania,Open,Open,0
+Link,Smolensk,Polotsk,Open,Open,0
+Link,Smolensk,Rusland,Open,Open,0
+Link,Rusland,Smolensk,Open,Open,0
+Link,Rusland,Galicia,Open,Open,0
+Link,Rusland,Polotsk,Open,Open,0
+Link,Rusland,Poland,Open,Open,0
+Link,Galicia,Rusland,Open,Open,0
+Link,Galicia,Poland,Open,Open,0
+Link,Galicia,Hungary,Open,Open,0
+Link,Galicia,Bulgaria,Open,Open,0
+Link,Highlands,Bohemia,Open,Open,0
+Link,Highlands,Poland,Open,Open,0
+Link,Highlands,Hungary,Open,Open,0
+Link,Highlands,Bavaria,Open,Open,0
+Link,Serbia,Venice,Open,Open,0
+Link,Serbia,Hungary,Open,Open,0
+Link,Serbia,Bulgaria,Open,Open,0
+Link,Serbia,Greece,Open,Open,0
+
 
 // Type, goal, reward
 ArmySize,20,5

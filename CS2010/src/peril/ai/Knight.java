@@ -17,9 +17,9 @@ import peril.controllers.api.Player;
  * 
  * @author Gurdeep_Pol
  * 
- * @since 2018-02-23
+ * @since 2018-02-27
  * 
- * @version 1.01.04
+ * @version 1.01.05
  * 
  * @see AI
  *
@@ -29,7 +29,7 @@ public final class Knight extends AI {
 	/**
 	 * The name of this {@link Knight}.
 	 */
-	private static final String NAME = "Knight";
+	private static final String NAME = "Medium";
 
 	/**
 	 * Constructs a new {@link Knight} {@link AI}.

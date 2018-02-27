@@ -10,10 +10,10 @@ import peril.model.board.ModelArmy;
 import peril.model.board.ModelUnit;
 
 public class Test_ModelArmy {
-
+	
 	@Before
 	public void setUp() throws Exception {
-		
+
 	}
 	
 	@Test
@@ -28,19 +28,31 @@ public class Test_ModelArmy {
 		UnitHelper.getInstance().addUnit(testUnitTwo);
 		UnitHelper.getInstance().addUnit(testUnitThree);
 		
-		ModelArmy modelArmyOne = new ModelArmy();
+		ModelArmy modelArmy = new ModelArmy();
 		
-		modelArmyOne.add(testUnitOne);
-		assertEquals(1, modelArmyOne.getStrength());
-		modelArmyOne.add(testUnitTwo);
-		assertEquals(3, modelArmyOne.getStrength());
-		modelArmyOne.add(testUnitThree);
-		assertEquals(6, modelArmyOne.getStrength());
+		modelArmy.add(testUnitOne);
+		assertEquals(1, modelArmy.getStrength());
+		modelArmy.add(testUnitTwo);
+		assertEquals(3, modelArmy.getStrength());
+		modelArmy.add(testUnitThree);
+		assertEquals(6, modelArmy.getStrength());
 		//System.out.println("This is the ModelArmy strength " + modelArmyOne.getStrength());
-
-		
 	}
 
-
+	@Test
+	public void test_SetStrength() {
+		
+		UnitHelper.getInstance().clear();
+		
+		ModelUnit testUnit = new ModelUnit("testUnit", 1, "fileName");
+		ModelArmy modelArmy = new ModelArmy();
+		
+		UnitHelper.getInstance().addUnit(testUnit);
+		
+		modelArmy.add(testUnit);
+		modelArmy.setStrength(2);
+		assertEquals(2, modelArmy.getStrength());
+		
+	}
 	
 }

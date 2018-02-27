@@ -39,8 +39,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Joshua_Eddy, Ezekiel_Trinidad
  * 
- * @since 2018-02-25
- * @version 1.01.03
+ * @since 2018-02-27
+ * @version 1.01.04
  * 
  * @see Menu
  * @see Attack
@@ -276,8 +276,8 @@ public final class WarMenu extends Menu {
 			final ModelCountry defender = state.getSecondary();
 			final CombatRound round = new CombatRound(attacker, defender, attackingSquad.model, defendingSquad.model);
 
-			// If the army of the attacker country is larger that 1 unit in size
-			if (attackingSquad.model.getAliveUnits() > 1) {
+			// If the army of the attacker country is larger that 0 unit in size
+			if (attackingSquad.model.getAliveUnits() > 0) {
 
 				// If the defending squad is full of alive units.
 				if(defendingSquad.model.getAliveUnits() != defendingSquad.model.size()) {

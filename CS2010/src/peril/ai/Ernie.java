@@ -14,7 +14,7 @@ public final class Ernie extends AI {
 
 	private Random rand;
 	
-	private static final String NAME = "Ernie";
+	private static final String NAME = "Easy";
 
 	public Ernie(AIController api) {
 		super(NAME, MAX_SPEED, api);

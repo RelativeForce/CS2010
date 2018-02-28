@@ -1,106 +1,84 @@
----------------------------------- Peril : Instructions ----------------------------------
+--------------------------------- Peril : Instructions ---------------------------------
 
+In peril, the game is over when all the players but one have no countries. Players are added to the finishing podium based on the order they were knocked out. This is mainly done through the player having a strong strategy and to be able to make good decisions in the reinforce, attack and fortify states. The game supports up to 4 players and AI.
 
+------------------------------------- Main Menu -------------------------------------
 
+To select the map you wish to play, click on a choice under the map heading at the bottom of the screen. If you have recently saved a game and want to resume, under the load heading select the save slot you saved the game in. Alternatively, select default to start a new game. 
 
+To select the number and type of players in a default game select the number of players under the player's header. Next, to each player on the menu, click the pencil icon to edit whether the player is an AI or not. Use the scroll wheel to scroll through the list of AI players, alternatively select ‘none’ if you want to control the player yourself. Hit the tick button to confirm. If you have selected to use an AI player, control the speed of this player by selecting a choice under the AI speed header.
 
+Select the play button at the bottom of the main menu screen when a map and load are selected. Alternatively, select the main menu to return to the menu to re-choose a map and/or load.
 
+------------------------------------- The basics -------------------------------------
 
-I like toast
+Every country has an army which is comprised of units. The number of a specific unit in an army is shown as a number on top of that unit. A country’s army must have at least one unit in it at all times to defend it against enemy attacks. A country’s colour denotes the player that owns it. 
 
+Player 1: Red
+Player 2: Blue
+Player 3: Green
+Player 4: Pink
+Neutral: White
 
+Neutral countries won’t attack but they will defend themselves. Players can earn points by completing challenges and conquering countries throughout the game. These points can be used to buy upgrades via the upgrade menu.
 
+Each country is linked to its neighbouring countries. These links allow units to transfer between countries. Links can be made visible via the pause menu. Open links are green but blockaded links are red.
 
+Blockades prevent the army the red line touches from attacking along that link. They are also mono-directional meaning that while one army is blocked the other is free to attack, provided that another blockade is not set up in the opposite direction. 
+Game set up
 
+When the map loads users assign which player owns which country. To change the ownership of a country click the country so that it is highlighted then press the number of the player you want to assign to it.
 
+Player 1 - '1'
+Player 2 - '2'
+Player 3 - '3'
+Player 4 - '4'
 
+Alternatively, press ‘auto’ to randomly and evenly distribute the countries. Click ‘play’ to begin the game.
 
+------------------------------------- Reinforce --------------------------------------
 
+The number in the top left corner shows you how many free units you have to reinforce your countries with. The units that are given are the weakest in the game. Click on one of your countries and click ‘reinforce’ to add one unit to that country’s army.
 
+------------------------------- Upgrading countries -------------------------------
 
+During any stage, you can upgrade a country and by extension its army by first clicking that country then clicking ‘upgrade’. Players points are shown in the top left corner. 
 
-Everything is fine
+Blockades can only be created between enemy countries not your own. They last for three rounds and cost 4 points to purchase. To create a blockade click the country you would like to blockade then click the block button.
 
+Units of the same type can be combined to form stronger units. This costs 3 points to perform. When a number of the same unit are combined they form one unit that has the same strength as all the units that were combined to form it. 
 
+The price of combining units is fixed. For example: combining 5 soldiers into 1 car is the same price as combining 20 soldiers into 4 cars. The player is charged 3 points each time they combine units so timing is key.
 
+----------------------------------------- Attack -----------------------------------------
 
+This is the stage in which the player tries to take over other players countries. Click on the appropriate country which your army occupies and then click on an enemy country that you wish to attack. You may only attack the neighbours of the attacking country. 
 
+Press ‘attack’ and the war begins. When at war you select up to three units to attack the other country. These units form your attacking squad. To add a unit to your squad click the unit from the army at the bottom of the menu. Remember there must be one unit in the army at all times.
 
+The defending squad will be auto-generated and will consist of the best units that the defending country has at its disposal. A country is conquered when the defending army and squad are wiped out.
 
+Click ‘attack’ to start this battle of the war. Each member of both squads rolls a dice. These dice are then compared. If the attacker's dice is higher than that corresponding defending units dice, the attacking unit inflicts its entire strengths worth of damage to the defending army. The same is true if the defending units dice is higher or the same.
 
+Units that are killed in the squad are shown with a red cross over them. In some situations, a unit may be returned to its country’s army so that the army can receive the damage dealt by the other squad. In this situation, the units that were returned will have a green arrow pointing downwards above them.
 
-UIDT is bae
+---------------------------------------- Fortify ----------------------------------------
 
+This stage is where you can transfer troops between friendly countries to prepare you countries for enemy attack. Select the country which has more than one unit in its army then select another that is connected to the first by a chain of friendly countries. Click ‘fortify’ to move one trope along the path between the countries. 
 
+If you wish to move a specific unit, select both the countries then click the unit from the source country’s army to select it. It will have a blue ring around it. Click fortify and this unit will be moved. By default, the strongest unit in the source army is transferred unless one is select. 
 
+------------------------------------------ Help ------------------------------------------
 
+At any of the three states in the game, press the question mark at the top of the screen to see the help menu for that specific state. Press the arrows to switch between the pages. More in-depth information can be found on the main menu.
 
+---------------------------------------- Pause ----------------------------------------
 
+At any point in the game, you can pause the game either by selecting the pause button or escape button on your keyboard. From here you can toggle music on and off by selecting the option under the music heading. 
 
+You can also view challenges by selecting the challenges button. There is an option to save the game, select an empty save slot or alternatively select an existing save slot to overwrite the previously saved game. Hit save to save the game.
 
+You can toggle links in the game on and off by selecting an option under the links heading. Click ‘exit game’ to immediately close the game and click ‘main menu’ to go to the starting menu.
 
-
-
-Gurdeep cheated
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Ovals are just fat circles
-
-
-
-
-
-
-
-
-
-Subs vs Dubs... Why not both?
-
-
-
-
-
-
-
-If you cut a hole in a net, there are less holes in it than before.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-What if dogs only fetch balls because they think you like throwing them.
-
-
-
-
-
-
-
-
-
-
-
-
---------------------------------------- Good Luck --------------------------------------
+-------------------------------------- Good Luck -------------------------------------
+-

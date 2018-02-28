@@ -44,14 +44,52 @@ public class Test_ModelArmy {
 		
 		UnitHelper.getInstance().clear();
 		
-		ModelUnit testUnit = new ModelUnit("testUnit", 1, "fileName");
-		ModelArmy modelArmy = new ModelArmy();
+		ModelUnit testUnitOne = new ModelUnit("testUnitOne", 1, "fileName");
+		ModelUnit testUnitTwo = new ModelUnit("testUnitTwo", 10 , "fileName");
+				
+		ModelArmy modelArmyOne = new ModelArmy();
+		ModelArmy modelArmyTwo = new ModelArmy();
+		//Combination of Three units
+		ModelArmy modelArmyThree = new ModelArmy();
 		
-		UnitHelper.getInstance().addUnit(testUnit);
+		UnitHelper.getInstance().addUnit(testUnitOne);
+		UnitHelper.getInstance().addUnit(testUnitTwo);
 		
-		modelArmy.add(testUnit);
-		modelArmy.setStrength(2);
-		assertEquals(2, modelArmy.getStrength());
+		modelArmyOne.add(testUnitOne);
+		modelArmyOne.setStrength(2);
+		assertEquals(2, modelArmyOne.getStrength());
+		
+		modelArmyTwo.add(testUnitTwo);
+		modelArmyTwo.setStrength(1);
+		assertEquals(1, modelArmyTwo.getStrength());
+		
+		modelArmyThree.add(testUnitOne);
+		modelArmyThree.add(testUnitTwo);
+		assertEquals(11, modelArmyThree.getStrength());
+		
+	}
+	
+	@Test
+	public void test_Remove() {
+		
+		ModelUnit testUnitOne = new ModelUnit("testOne", 1, "fileNameOne");
+		ModelUnit testUnitTwo = new ModelUnit("testTwo", 2, "fileNameTwo");
+		ModelUnit testUnitThree = new ModelUnit("testThree", 3 , "fileNameThree");
+		
+		UnitHelper.getInstance().clear();
+		UnitHelper.getInstance().addUnit(testUnitOne);
+		UnitHelper.getInstance().addUnit(testUnitTwo);
+		UnitHelper.getInstance().addUnit(testUnitThree);
+		
+		ModelArmy modelArmyOne = new ModelArmy();
+		modelArmyOne.add(testUnitOne);
+		modelArmyOne.add(testUnitTwo);
+		modelArmyOne.add(testUnitThree);
+		
+		modelArmyOne.remove(testUnitOne);
+		assertEquals(5, modelArmyOne.getStrength());
+		modelArmyOne.remove(3);
+		assertEquals(2, modelArmyOne.getStrength());
 		
 	}
 	

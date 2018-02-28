@@ -28,8 +28,8 @@ import peril.views.slick.states.gameStates.SlickSetup;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-17
- * @version 1.01.01
+ * @since 2018-02-28
+ * @version 1.01.02
  * 
  * @see InteractiveState
  * @see SlickGame
@@ -65,8 +65,8 @@ public final class StateHelper {
 	public final SlickSetup setup;
 
 	/**
-	 * The {@link SlickReinforce} that allows the {@link SlickPlayer} to
-	 * distribute their {@link ModelArmy} to the {@link SlickCountry}s they rule.
+	 * The {@link SlickReinforce} that allows the {@link SlickPlayer} to distribute
+	 * their {@link ModelArmy} to the {@link SlickCountry}s they rule.
 	 */
 	public final SlickReinforce reinforcement;
 
@@ -77,8 +77,8 @@ public final class StateHelper {
 	public final SlickAttack combat;
 
 	/**
-	 * The {@link SlickFortify} which lets the user move {@link ModelArmy}s from
-	 * one {@link SlickCountry} to another.
+	 * The {@link SlickFortify} which lets the user move {@link ModelArmy}s from one
+	 * {@link SlickCountry} to another.
 	 */
 	public final SlickFortify movement;
 
@@ -88,12 +88,13 @@ public final class StateHelper {
 	public final EndState end;
 
 	/**
-	 * The {@link Credits} page for this game. 
+	 * The {@link Credits} page for this game.
 	 */
 	public final Credits credits;
 
 	/**
-	 * The {@link InstructionsState} that displays the instructions of the {@link Game}.
+	 * The {@link InstructionsState} that displays the instructions of the
+	 * {@link Game}.
 	 */
 	public final InstructionsState help;
 
@@ -106,8 +107,8 @@ public final class StateHelper {
 	 *            The state that displays combat to the user. This is heavily
 	 *            couples with {@link WarMenu}.
 	 * @param reinforcement
-	 *            The {@link SlickReinforce} that allows the {@link SlickPlayer}
-	 *            to distribute their {@link ModelArmy} to the {@link SlickCountry}s
+	 *            The {@link SlickReinforce} that allows the {@link SlickPlayer} to
+	 *            distribute their {@link ModelArmy} to the {@link SlickCountry}s
 	 *            they rule.
 	 * @param setup
 	 *            The {@link SlickSetup} that will allow the user to set up which
@@ -183,10 +184,12 @@ public final class StateHelper {
 	 *            The width of the screen.
 	 * @param screenHeight
 	 *            The height of the screen.
+	 * @param uiPath
+	 *            The path to the UI folder.
 	 */
-	public void addMiniMap(SlickBoard slickBoard, int screenWidth, int screenHeight) {
+	public void addMiniMap(SlickBoard slickBoard, int screenWidth, int screenHeight, String uiPath) {
 
-		final MiniMap miniMap = new MiniMap(slickBoard, screenWidth, screenHeight);
+		final MiniMap miniMap = new MiniMap(slickBoard, screenWidth, screenHeight, uiPath);
 
 		setup.setMiniMap(miniMap);
 		reinforcement.setMiniMap(miniMap);

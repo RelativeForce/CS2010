@@ -14,10 +14,11 @@ import peril.views.slick.util.Region;
  * 
  * @author Joshua_Eddy
  *
- * @since 2018-02-25
- * @version 1.01.01
+ * @since 2018-02-28
+ * @version 1.01.02
  *
  * @see Menu
+ * @see Challenge
  */
 public final class ChallengeMenu extends Menu {
 
@@ -64,7 +65,7 @@ public final class ChallengeMenu extends Menu {
 		this.paddingY = (getHeight() / 8);
 		this.text = new TextField(getWidth() - (paddingX * 2),
 				new Point(getPosition().x + paddingX, getPosition().y + paddingY));
-		this.titleFont = new Font("Arial", Color.white, 30);
+		this.titleFont = new Font("Arial", Color.white,45);
 	}
 
 	/**
@@ -90,7 +91,7 @@ public final class ChallengeMenu extends Menu {
 
 		super.draw(frame);
 
-		frame.draw(titleFont, "Challenges", getPosition().x + paddingX, getPosition().y + 30);
+		frame.draw(titleFont, "Challenges", getPosition().x + paddingX, getPosition().y + 15);
 
 		text.draw(frame);
 
@@ -115,7 +116,7 @@ public final class ChallengeMenu extends Menu {
 
 		// List all the challenges
 		game.getChallenges()
-				.forEach(challenge -> text.addText(challenge.toString() + " - Reward: " + challenge.reward + " Units"));
+				.forEach(challenge -> text.addText(challenge.toString() + " - Reward: " + challenge.reward + " Points"));
 
 	}
 

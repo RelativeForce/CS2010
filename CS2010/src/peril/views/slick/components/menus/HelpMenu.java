@@ -23,8 +23,8 @@ import peril.views.slick.util.Viewable;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-18
- * @version 1.01.01
+ * @since 2018-02-28
+ * @version 1.01.02
  * 
  * @see Menu
  *
@@ -130,7 +130,7 @@ public final class HelpMenu extends Menu {
 		this.numberOfPages = 0;
 		this.previous = "previous";
 		this.next = "next";
-		this.titleFont = new Font("Arial", Color.white, 20);
+		this.titleFont = new Font("Arial", Color.white, 40);
 	}
 
 	/**
@@ -452,7 +452,7 @@ public final class HelpMenu extends Menu {
 		@Override
 		public void draw(Frame frame) {
 			frame.setColor(Color.white);
-			frame.draw(titleFont, title, text.getPosition().x, text.getPosition().y - (titleFont.getHeight() * 2));
+			frame.draw(titleFont, title, text.getPosition().x, text.getPosition().y - titleFont.getHeight() - 5);
 			text.draw(frame);
 		}
 

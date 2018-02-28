@@ -26,8 +26,8 @@ import peril.helpers.UnitHelper;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.02.03
- * @since 2018-02-27
+ * @version 1.02.04
+ * @since 2018-02-28
  * 
  * @see Observable
  * @see Iterable
@@ -328,7 +328,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 
 		// Whether the combined strength of all the units is enough to make one of the
 		// unit above.
-		final boolean strongerThanAbove = strengthCombined > above.strength;
+		final boolean strongerThanAbove = strengthCombined >= above.strength;
 
 		// If the combined strength of all the units is not enough to make one of the
 		// unit above.
@@ -551,10 +551,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 		clearUnits();
 
 		// Set the army to its weakest not empty value.
-		units.put(UnitHelper.getInstance().getWeakest().name, 1);
-
-		setChanged();
-		notifyObservers();
+		add(UnitHelper.getInstance().getWeakest());
 
 	}
 

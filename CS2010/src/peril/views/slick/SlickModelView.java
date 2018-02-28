@@ -14,6 +14,7 @@ import peril.model.board.ModelUnit;
 import peril.model.board.links.ModelLinkState;
 import peril.model.states.ModelState;
 import peril.views.ModelView;
+import peril.views.View;
 import peril.views.slick.board.SlickArmy;
 import peril.views.slick.board.SlickBoard;
 import peril.views.slick.board.SlickContinent;
@@ -24,20 +25,74 @@ import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.board.SlickUnit;
 import peril.views.slick.states.gameStates.CoreGameState;
 
+/**
+ * This maps model objects to their slick visual representations.
+ * 
+ * @author Joshua_Eddy, Joseph_Rolli
+ * 
+ * @since 2018-02-28
+ * @version 1.01.01
+ * 
+ * @see ModelView
+ * @see View
+ *
+ */
 public final class SlickModelView implements ModelView {
 
+	/**
+	 * The {@link Map} of {@link ModelCountry}s to their {@link SlickCountry}s.
+	 */
 	private final Map<ModelCountry, SlickCountry> countries;
+
+	/**
+	 * The {@link Map} of the {@link ModelContinent}s to their
+	 * {@link SlickContinent}s.
+	 */
 	private final Map<ModelContinent, SlickContinent> continents;
+
+	/**
+	 * The {@link Map} of {@link ModelBoard}s to their {@link SlickBoard}s.
+	 */
 	private final Map<ModelBoard, SlickBoard> boards;
+
+	/**
+	 * The {@link Map} of {@link ModelHazard}s to their {@link SlickHazard}s.
+	 */
 	private final Map<ModelHazard, SlickHazard> hazards;
+
+	/**
+	 * The {@link Map} of {@link ModelState}s of their {@link CoreGameState}s.
+	 */
 	private final Map<ModelState, CoreGameState> states;
+
+	/**
+	 * The {@link Map} of {@link ModelArmy}s and their {@link SlickArmy}s.
+	 */
 	private final Map<ModelArmy, SlickArmy> armies;
+
+	/**
+	 * The {@link Map} of {@link ModelPlayer}s to their {@link SlickPlayer}s.
+	 */
 	private final Map<ModelPlayer, SlickPlayer> players;
+
+	/**
+	 * THe {@link Map} of {@link ModelUnit}s to their {@link SlickUnit}s.
+	 */
 	private final Map<ModelUnit, SlickUnit> units;
+
+	/**
+	 * The {@link Map} of {@link ModelLinkState}s to their {@link SlickLinkState}s.
+	 */
 	private final Map<ModelLinkState, SlickLinkState> links;
 
+	/**
+	 * Whether or not {@link SlickModelView} has been initialised.
+	 */
 	private boolean isInitialised;
-	
+
+	/**
+	 * Constructs a new {@link SlickModelView}.
+	 */
 	public SlickModelView() {
 		countries = new IdentityHashMap<>();
 		continents = new IdentityHashMap<>();
@@ -51,6 +106,10 @@ public final class SlickModelView implements ModelView {
 		isInitialised = false;
 	}
 
+	/**
+	 * Clears all the model to visual mappings from this {@link SlickModelView}.
+	 */
+	@Override
 	public void clear() {
 		countries.clear();
 		continents.clear();
@@ -60,6 +119,7 @@ public final class SlickModelView implements ModelView {
 		units.clear();
 	}
 
+	@Override
 	public SlickCountry getVisual(ModelCountry country) {
 		return countries.get(country);
 	}
@@ -97,7 +157,7 @@ public final class SlickModelView implements ModelView {
 	public SlickUnit getVisual(ModelUnit unit) {
 		return units.get(unit);
 	}
-	
+
 	@Override
 	public void init(GameController gc) {
 
@@ -110,20 +170,15 @@ public final class SlickModelView implements ModelView {
 			for (SlickHazard hazard : SlickHazard.values()) {
 				addHazard(hazard);
 			}
-			
-			for(SlickLinkState link : SlickLinkState.values()) {
+
+			for (SlickLinkState link : SlickLinkState.values()) {
 				addLinkState(link);
 			}
 
 		}
 	}
 
-	private void checkInitialised() {
-		if (!isInitialised) {
-			throw new IllegalStateException("The Slick model view is not initialised.");
-		}
-	}
-
+	@Override
 	public void addUnit(Object unit) {
 		checkInitialised();
 
@@ -240,13 +295,13 @@ public final class SlickModelView implements ModelView {
 	}
 
 	@Override
-	public SlickLinkState getVisual(ModelLinkState link) {		
+	public SlickLinkState getVisual(ModelLinkState link) {
 		return links.get(link);
 	}
 
 	@Override
 	public void addLinkState(Object linkState) {
-		
+
 		checkInitialised();
 
 		if (!(linkState instanceof SlickLinkState)) {
@@ -256,7 +311,12 @@ public final class SlickModelView implements ModelView {
 		SlickLinkState slickLinkState = (SlickLinkState) linkState;
 
 		links.put(slickLinkState.model, slickLinkState);
-		
+
 	}
 
+	private void checkInitialised() {
+		if (!isInitialised) {
+			throw new IllegalStateException("The Slick model view is not initialised.");
+		}
+	}
 }

@@ -2,6 +2,8 @@ package peril.board;
 
 import static org.junit.Assert.*;
 
+import javax.jws.WebParam.Mode;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,6 +18,10 @@ public class Test_ModelArmy {
 
 	}
 
+	/**
+	 * This test confirms if the {@link ModelArmy#getStrength()} method retrieves
+	 * the correct strength of a {@link ModelArmy}.
+	 */
 	@Test
 	public void test_GetStrength() {
 
@@ -23,13 +29,17 @@ public class Test_ModelArmy {
 		ModelUnit testUnitTwo = new ModelUnit("testTwo", 2, "fileNameTwo");
 		ModelUnit testUnitThree = new ModelUnit("testThree", 3, "fileNameThree");
 
+		// Clear instance of UnitHelper
 		UnitHelper.getInstance().clear();
+		// Add the units to UnitHelper
 		UnitHelper.getInstance().addUnit(testUnitOne);
 		UnitHelper.getInstance().addUnit(testUnitTwo);
 		UnitHelper.getInstance().addUnit(testUnitThree);
 
 		ModelArmy modelArmy = new ModelArmy();
 
+		// Add units to modelArmy
+		// and asserts the correct values
 		modelArmy.add(testUnitOne);
 		assertEquals(1, modelArmy.getStrength());
 		modelArmy.add(testUnitTwo);
@@ -40,6 +50,10 @@ public class Test_ModelArmy {
 		// modelArmyOne.getStrength());
 	}
 
+	/**
+	 * This test confirms if the {@link ModelArmy#setStrength()} method sets the
+	 * correct strength of a {@link ModelArmy}
+	 */
 	@Test
 	public void test_SetStrength() {
 
@@ -70,6 +84,11 @@ public class Test_ModelArmy {
 
 	}
 
+	/**
+	 * This test confirms if {@link ModelArmy#remove(int)} and
+	 * {@link ModelArmy#remove(ModelUnit)} works.
+	 * 
+	 */
 	@Test
 	public void test_Remove() {
 

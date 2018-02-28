@@ -60,7 +60,7 @@ button,Challenge Menu,21,xButton.png,60,60,490,10,close
 image,Challenge Menu,toolTipBox.png,600,600,0,0
 
 // Stats Menu
-button,Stats Menu,25,xButton.png,60,60,490,10,close
+button,Stats Menu,25,xButton.png,60,60,500,30,close
 image,Stats Menu,stats.png,600,600,0,0
 
 //Upgrade Menu

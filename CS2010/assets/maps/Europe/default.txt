@@ -268,9 +268,8 @@ Link,Serbia,Greece,Open,Open,0
 
 // 66 Countries
 // Type, goal, reward
-ArmySize,20,5
-ArmySize,35,10
-CountriesOwned,12,5
-CountriesOwned,14,10
-//ContinentsOwned,2,5
-//ContinentsOwned,3,5
+ArmySize,80,5
+ArmySize,100,5
+ArmySize,120,5
+CountriesOwned,46,5
+CountriesOwned,52,5

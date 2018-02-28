@@ -45,8 +45,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy, Joseph Rolli
  * 
- * @since 2018-02-21
- * @version 1.01.11
+ * @since 2018-02-28
+ * @version 1.01.12
  * 
  * @see StateBasedGame
  * @see View
@@ -166,7 +166,7 @@ public final class SlickGame extends StateBasedGame implements View {
 		container.getInput().addMouseListener(eventHandler);
 
 		// Hide FPS counter and enable v sync
-		container.setShowFPS(true);
+		container.setShowFPS(false);
 		container.setVSync(true);
 	}
 

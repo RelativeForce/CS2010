@@ -1,10 +1,13 @@
 package peril.views.slick.components;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Image;
+
 import peril.model.board.ModelBoard;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
 import peril.views.slick.board.SlickBoard;
+import peril.views.slick.io.ImageReader;
 import peril.views.slick.util.Clickable;
 import peril.views.slick.util.Point;
 import peril.views.slick.util.Region;
@@ -16,8 +19,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Ezekiel_Trinidad, Joshua_Eddy
  * 
- * @since 2018-02-23
- * @version 1.01.01
+ * @since 2018-02-28
+ * @version 1.01.02
  * 
  * @see Clickable
  * @see Component
@@ -57,6 +60,11 @@ public final class MiniMap extends Clickable implements Component {
 	private Window window;
 
 	/**
+	 * The border around the {@link MiniMap}.
+	 */
+	private Image windowBorder;
+
+	/**
 	 * Constructs a MiniMap
 	 * 
 	 * @param board
@@ -65,13 +73,17 @@ public final class MiniMap extends Clickable implements Component {
 	 *            The width of the screen.
 	 * @param screenHeight
 	 *            The height of the screen.
+	 * @param uiPath
+	 *            The path to the UI folder.
 	 */
-	public MiniMap(SlickBoard board, int screenWidth, int screenHeight) {
+	public MiniMap(SlickBoard board, int screenWidth, int screenHeight, String uiPath) {
 		super(new Region(WIDTH, HEIGHT, new Point(screenWidth - WIDTH, 0)));
 
 		this.board = board;
 		this.screenWidth = screenWidth;
 		this.screenHeight = screenHeight;
+
+		windowBorder = ImageReader.getImage(uiPath + "minimapBorder.png").getScaledCopy(WIDTH + 16, HEIGHT + 16);
 
 		reScale();
 
@@ -101,7 +113,7 @@ public final class MiniMap extends Clickable implements Component {
 	 */
 	@Override
 	public void init() {
-
+		// Do nothing
 	}
 
 	/**
@@ -109,10 +121,10 @@ public final class MiniMap extends Clickable implements Component {
 	 */
 	@Override
 	public void draw(Frame frame) {
+
 		frame.draw(board.getImage().getScaledCopy(WIDTH, HEIGHT), getPosition().x, getPosition().y);
-		frame.setLineWidth(5f); //
-		frame.setColor(Color.red);
-		frame.drawRect(getPosition().x, getPosition().y, getWidth(), getHeight());
+
+		frame.draw(windowBorder, getPosition().x - 8, getPosition().y - 8);
 
 		frame.draw(window, new EventListener() {
 
@@ -195,8 +207,8 @@ public final class MiniMap extends Clickable implements Component {
 	 * 
 	 * @author Ezekiel_Trinidad, Joshua_Eddy
 	 * 
-	 * @since 2018-02-23
-	 * @version 1.01.01
+	 * @since 2018-02-28
+	 * @version 1.01.02
 	 * 
 	 * @see Clickable
 	 * @see Component
@@ -223,9 +235,14 @@ public final class MiniMap extends Clickable implements Component {
 		 *            The {@link Frame} that draws the {@link Window}.
 		 */
 		public void draw(Frame frame) {
-			frame.setLineWidth(3);
-			frame.drawRect(Window.this.getPosition().x, Window.this.getPosition().y, Window.this.getWidth(),
-					Window.this.getHeight());
+
+			frame.setLineWidth(7f);
+			frame.setColor(Color.red);
+
+			final int x = Window.this.getPosition().x;
+			final int y = Window.this.getPosition().y;
+
+			frame.drawRect(x, y, Window.this.getWidth(), Window.this.getHeight());
 		}
 
 	}

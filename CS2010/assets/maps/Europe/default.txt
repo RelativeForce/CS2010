@@ -266,7 +266,7 @@ Link,Serbia,Hungary,Open,Open,0
 Link,Serbia,Bulgaria,Open,Open,0
 Link,Serbia,Greece,Open,Open,0
 
-
+// 66 Countries
 // Type, goal, reward
 ArmySize,20,5
 ArmySize,35,10

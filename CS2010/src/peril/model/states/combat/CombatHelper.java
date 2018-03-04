@@ -22,8 +22,8 @@ import peril.model.board.ModelUnit;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-27
- * @version 1.01.04
+ * @since 2018-03-04
+ * @version 1.01.05
  *
  * @see Observable
  * @see CombatRound
@@ -267,7 +267,7 @@ public final class CombatHelper extends Observable {
 		}
 
 		// If the defending army was cleared.
-		if (defendingArmy.getNumberOfUnits() == 0) {
+		if (defendingArmy.getNumberOfUnits() + round.defenderSquad.getAliveUnits() == 0) {
 
 			// Reset the army to its weakest.
 			defendingArmy.setWeakest();

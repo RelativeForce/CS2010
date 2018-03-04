@@ -16,6 +16,7 @@ import peril.controllers.GameController;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
 import peril.model.ModelPlayer;
+import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.board.SlickUnit;
 import peril.model.board.ModelArmy;
@@ -39,8 +40,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Joshua_Eddy, Ezekiel_Trinidad
  * 
- * @since 2018-02-27
- * @version 1.01.05
+ * @since 2018-03-04
+ * @version 1.01.06
  * 
  * @see Menu
  * @see Attack
@@ -125,6 +126,16 @@ public final class WarMenu extends Menu {
 	private final SlickSquad defendingSquad;
 
 	/**
+	 * The current {@link SlickCountry} that is attacking in this war.
+	 */
+	private SlickCountry attacker;
+
+	/**
+	 * The current {@link SlickCountry} that is defending in this war.
+	 */
+	private SlickCountry defender;
+
+	/**
 	 * Constructs a new {@link WarMenu}.
 	 * 
 	 * @param position
@@ -168,8 +179,8 @@ public final class WarMenu extends Menu {
 			public void accept(SlickUnit unit) {
 
 				// If there is more that one unit in the attacking army
-				if (state.getPrimary().getArmy().getNumberOfUnits() > 1) {
-					attackingSquad.model.moveToSquad(unit.model, state.getPrimary().getArmy());
+				if (attacker.model.getArmy().getNumberOfUnits() > 1) {
+					attackingSquad.model.moveToSquad(unit.model, attacker.model.getArmy());
 					getButton(attackButton).show();
 				}
 			}
@@ -205,19 +216,19 @@ public final class WarMenu extends Menu {
 			return;
 		}
 
-		if (state.getPrimary() == null) {
+		if (attacker.model == null) {
 			hide();
 			return;
 		}
 
-		final int size = attackingSquad.model.size() + state.getPrimary().getArmy().getNumberOfUnits();
+		final int size = attackingSquad.model.size() + attacker.model.getArmy().getNumberOfUnits();
 
 		// Attacker has failed to conquer country
 		if (size == 1) {
 			failedConquer(frame);
 		}
 		// Attacker has conquered country
-		else if (state.getPrimary().getRuler().equals(state.getSecondary().getRuler())) {
+		else if (attacker.model.getRuler().equals(defender.model.getRuler())) {
 			succesfulConquer(frame);
 		}
 		// Normal Combat
@@ -235,13 +246,20 @@ public final class WarMenu extends Menu {
 		super.show();
 
 		getButton(attackButton).hide();
-		defendingSquad.autoPopulate(state.getSecondary().getArmy());
-		
+
+		resetWar();
+
+		attacker = slick.modelView.getVisual(state.getPrimary());
+		defender = slick.modelView.getVisual(state.getSecondary());
+
+		defendingSquad.autoPopulate(defender.model.getArmy());
+
 		// Only show this on the first round!
-		if(game.getRoundNumber() == 0) {
-			slick.showToolTip("Click here to select the attacking units.", new Point(getPosition().x + (getWidth() / 2), getPosition().y + getHeight() - 120));			
+		if (game.getRoundNumber() == 0) {
+			slick.showToolTip("Click here to select the attacking units.",
+					new Point(getPosition().x + (getWidth() / 2), getPosition().y + getHeight() - 120));
 		}
-		
+
 	}
 
 	/**
@@ -251,14 +269,7 @@ public final class WarMenu extends Menu {
 	public void hide() {
 		super.hide();
 
-		if (state.getPrimary() != null) {
-			attackingSquad.model.returnSquadToArmy(state.getPrimary().getArmy());
-			attackingSquad.model.clear();
-		}
-		if (state.getSecondary() != null) {
-			defendingSquad.model.returnSquadToArmy(state.getSecondary().getArmy());
-			defendingSquad.model.clear();
-		}
+		resetWar();
 
 		dice.clear();
 
@@ -275,17 +286,16 @@ public final class WarMenu extends Menu {
 		// If there is two countries highlighted
 		if (state.numberOfSelected() == 2) {
 
-			final ModelCountry attacker = state.getPrimary();
-			final ModelCountry defender = state.getSecondary();
-			final CombatRound round = new CombatRound(attacker, defender, attackingSquad.model, defendingSquad.model);
+			final ModelCountry attacker = this.attacker.model;
+			final ModelCountry defender = this.defender.model;
+
+			defendingSquad.autoPopulate(defender.getArmy());
 
 			// If the army of the attacker country is larger that 0 unit in size
-			if (attackingSquad.model.getAliveUnits() > 0) {
+			if (attackingSquad.model.getAliveUnits() > 0 && defendingSquad.model.getAliveUnits() > 0) {
 
-				// If the defending squad is full of alive units.
-				if(defendingSquad.model.getAliveUnits() != defendingSquad.model.size()) {
-					defendingSquad.autoPopulate(defender.getArmy());
-				}
+				final CombatRound round = new CombatRound(attacker, defender, attackingSquad.model,
+						defendingSquad.model);
 
 				// Execute the combat
 				state.combat.fight(round);
@@ -302,16 +312,21 @@ public final class WarMenu extends Menu {
 				dice.set(state.combat.view.attackerDiceRolls, state.combat.view.defenderDiceRolls,
 						new Point(attackX, y), new Point(defendX, y));
 
-				// Check the state of the countries
-				final boolean validAttackArmy = attackingSquad.model.getAliveUnits() > 1;
-				final boolean sameRuler = state.getPrimary().getRuler().equals(state.getSecondary().getRuler());
+			}
 
-				if (validAttackArmy && !sameRuler) {
-					getButton(attackButton).show();
-				} else {
-					getButton(attackButton).hide();
-				}
+			// Check the state of the countries
+			final boolean validAttackArmy = attackingSquad.model.getAliveUnits() > 1;
+			final boolean sameRuler = attacker.getRuler().equals(defender.getRuler());
 
+			if (validAttackArmy && !sameRuler) {
+				getButton(attackButton).show();
+			} else {
+				getButton(attackButton).hide();
+			}
+
+			if (attacker.getArmy().getStrength() == 0
+					|| defender.getArmy().getStrength() + defendingSquad.model.geStrength() == 0) {
+				System.out.println("ooo moo");
 			}
 		}
 	}
@@ -345,7 +360,7 @@ public final class WarMenu extends Menu {
 	 */
 	public void selectMaxUnits() {
 
-		final ModelArmy army = state.getPrimary().getArmy();
+		final ModelArmy army = attacker.model.getArmy();
 
 		attackingSquad.autoPopulate(army);
 
@@ -363,9 +378,9 @@ public final class WarMenu extends Menu {
 
 		defendingSquad.draw(frame);
 
-		drawPlayer(state.getSecondary().getRuler(), (getWidth() / 4), frame);
+		drawPlayer(defender.model.getRuler(), (getWidth() / 4), frame);
 
-		drawPlayer(state.getPrimary().getRuler(), -(getWidth() / 4), frame);
+		drawPlayer(attacker.model.getRuler(), -(getWidth() / 4), frame);
 
 		drawTitle(frame);
 
@@ -387,7 +402,7 @@ public final class WarMenu extends Menu {
 	 */
 	private void drawArmyPool(Frame frame, Point position) {
 
-		final ModelArmy model = state.getPrimary().getArmy();
+		final ModelArmy model = attacker.model.getArmy();
 
 		int x = position.x - (((model.getVarietyOfUnits() - 1) * SlickUnit.WIDTH) / 2) - (SlickUnit.WIDTH / 2);
 		int y = position.y - (SlickUnit.HEIGHT / 2);
@@ -430,8 +445,8 @@ public final class WarMenu extends Menu {
 	private void failedConquer(Frame frame) {
 		String failure = "has insufficient units to attack.";
 
-		frame.draw(countryFont, state.getPrimary().getName(),
-				getPosition().x + (getWidth() / 2) - (countryFont.getWidth(state.getPrimary().getName()) / 2),
+		frame.draw(countryFont, attacker.model.getName(),
+				getPosition().x + (getWidth() / 2) - (countryFont.getWidth(attacker.model.getName()) / 2),
 				getPosition().y + (getHeight() / 2) - 45);
 
 		frame.draw(resultFont, failure, getPosition().x + (getWidth() / 2) - (resultFont.getWidth(failure) / 2),
@@ -439,8 +454,8 @@ public final class WarMenu extends Menu {
 
 		getButton(attackButton).hide();
 
-		drawPlayer(state.getPrimary().getRuler(), -(getWidth() / 4), frame);
-		drawPlayer(state.getSecondary().getRuler(), (getWidth() / 4), frame);
+		drawPlayer(attacker.model.getRuler(), -(getWidth() / 4), frame);
+		drawPlayer(defender.model.getRuler(), (getWidth() / 4), frame);
 
 		drawTitle(frame);
 
@@ -462,20 +477,20 @@ public final class WarMenu extends Menu {
 		frame.draw(resultFont, success, resultX, resultY);
 
 		// Draw the attacking country's name
-		final String attackerName = state.getPrimary().getName();
+		final String attackerName = attacker.model.getName();
 		final int attackerX = getPosition().x + (getWidth() / 2) - (countryFont.getWidth(attackerName) / 2);
 		final int attackerY = getPosition().y + (getHeight() / 2) - ((countryFont.getHeight(attackerName) * 3) / 2);
 		frame.draw(countryFont, attackerName, attackerX, attackerY);
 
 		// Draw the defending country's name
-		final String conqueredName = state.getSecondary().getName();
+		final String conqueredName = defender.model.getName();
 		final int conqueredX = getPosition().x + (getWidth() / 2) - (countryFont.getWidth(conqueredName) / 2);
 		final int conqueredY = getPosition().y + (getHeight() / 2) + ((countryFont.getHeight(attackerName) * 3) / 2);
 		frame.draw(countryFont, conqueredName, conqueredX, conqueredY);
 
 		// Draw the player icons
-		drawPlayer(state.getPrimary().getRuler(), -(getWidth() / 4), frame);
-		drawPlayer(state.getSecondary().getRuler(), (getWidth() / 4), frame);
+		drawPlayer(attacker.model.getRuler(), -(getWidth() / 4), frame);
+		drawPlayer(defender.model.getRuler(), (getWidth() / 4), frame);
 
 		// Draw the country titles
 		drawTitle(frame);
@@ -494,8 +509,8 @@ public final class WarMenu extends Menu {
 		final int yOffset = 190;
 
 		// The strengths of both armies
-		final int attack = state.getPrimary().getArmy().getStrength() + attackingSquad.model.geStrength();
-		final int defend = state.getSecondary().getArmy().getStrength() + defendingSquad.model.geStrength();
+		final int attack = attacker.model.getArmy().getStrength() + attackingSquad.model.geStrength();
+		final int defend = defender.model.getArmy().getStrength() + defendingSquad.model.geStrength();
 
 		// The strengths as strings
 		final String attackStr = Integer.toString(attack);
@@ -525,8 +540,8 @@ public final class WarMenu extends Menu {
 		final int y = getPosition().y + 150;
 
 		final String vs = "VS";
-		final String attackerStr = state.getPrimary().getName();
-		final String enemyStr = state.getSecondary().getName();
+		final String attackerStr = attacker.model.getName();
+		final String enemyStr = defender.model.getName();
 
 		// The centre of the menu
 		final int centreX = getPosition().x + (getWidth() / 2);
@@ -564,6 +579,30 @@ public final class WarMenu extends Menu {
 		final int x = centreX + offset - (slickPlayer.getWidth() / 2);
 		final int y = this.getPosition().y + 80;
 		frame.draw(slickPlayer.getImage(), x, y);
+	}
+
+	/**
+	 * Returns the {@link SlickSquad} members of the {@link #defender} and
+	 * {@link #attacker} then resets the state of the war to empty.
+	 */
+	private void resetWar() {
+
+		// If there is an attacker.
+		if (attacker != null) {
+
+			attackingSquad.model.returnSquadToArmy(attacker.model.getArmy());
+			attackingSquad.model.clear();
+			attacker = null;
+		}
+
+		// If there is a defender.
+		if (defender != null) {
+
+			defendingSquad.model.returnSquadToArmy(defender.model.getArmy());
+			defendingSquad.model.clear();
+			defender = null;
+		}
+
 	}
 
 	/**
@@ -797,7 +836,7 @@ public final class WarMenu extends Menu {
 					public void mouseClick(Point mouse, int mouseButton) {
 
 						if (isUser) {
-							attackingSquad.model.returnUnitToArmy(state.getPrimary().getArmy(), member.model);
+							attackingSquad.model.returnUnitToArmy(attacker.model.getArmy(), member.model);
 
 							// If all the alive units have been removed hide the attack button and clear the
 							// dice.
@@ -816,7 +855,9 @@ public final class WarMenu extends Menu {
 								slick.showToolTip("This unit is dead.", mouse);
 								break;
 							case RETURNED:
-								slick.showToolTip("This unit was returned to the army to help with the damage recieved from the last attack.", mouse);
+								slick.showToolTip(
+										"This unit was returned to the army to help with the damage recieved from the last attack.",
+										mouse);
 								break;
 							default:
 								break;

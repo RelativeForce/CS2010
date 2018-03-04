@@ -25,10 +25,10 @@ import peril.views.View;
  * 
  * @author Joshua_Eddy
  * 
- * @see GameController
+ * @version 1.01.04
+ * @since 2018-03-04
  * 
- * @version 1.01.03
- * @since 2018-02-06
+ * @see GameController
  *
  */
 public final class GameHandler implements GameController {
@@ -61,14 +61,14 @@ public final class GameHandler implements GameController {
 
 	@Override
 	public void resetGame() {
-		
+
 		// Delete all the players and clear the challenges.
 		game.players.emptyPlaying();
 		game.players.challenges.clear();
-		
+
 		// Reset the game back to round zero
 		game.setRoundNumber(0);
-		
+
 		// Remove all the units.
 		UnitHelper.getInstance().clear();
 	}
@@ -241,22 +241,31 @@ public final class GameHandler implements GameController {
 			final ModelStateHelper states = game.states;
 			final ModelPlayer current = getCurrentModelPlayer();
 
-			if (view.isCurrentState(states.reinforce) && !current.ai.reinforce(delta)) {
-				view.enterCombat();
-			} else if (view.isCurrentState(states.attack) && !current.ai.attack(delta)) {
-				view.enterFortify();
-			} else if (view.isCurrentState(states.fortify) && !current.ai.fortify(delta)) {
-				view.enterReinforce();
-				nextPlayer();
+			if (view.isCurrentState(states.reinforce)) {
+				
+				if (!current.ai.reinforce(delta)) {
+					view.enterCombat();
+				}
+				
+			} else if (view.isCurrentState(states.attack)) {
+				
+				if (!current.ai.attack(delta)) {
+					view.enterFortify();
+				}
+
+			} else if (view.isCurrentState(states.fortify)) {
+				
+				if (!current.ai.fortify(delta)) {
+					view.enterReinforce();
+					nextPlayer();
+				}
 			}
-
 		}
-
 	}
 
 	@Override
 	public void addPoints(int points) {
-		
+
 		// Add the specified number of points to the current player.
 		final ModelPlayer currentPlayer = game.players.getCurrent();
 		currentPlayer.setPoints(currentPlayer.getPoints());
@@ -269,10 +278,10 @@ public final class GameHandler implements GameController {
 
 	@Override
 	public ModelState getCurrentState() {
-		
+
 		final ModelStateHelper states = game.states;
 		final View view = game.view;
-		
+
 		if (view.isCurrentState(states.reinforce)) {
 			return states.reinforce;
 		} else if (view.isCurrentState(states.attack)) {
@@ -280,7 +289,7 @@ public final class GameHandler implements GameController {
 		} else if (view.isCurrentState(states.fortify)) {
 			return states.fortify;
 		}
-		
+
 		return null;
 	}
 

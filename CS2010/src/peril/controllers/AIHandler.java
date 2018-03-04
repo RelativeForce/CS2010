@@ -23,8 +23,8 @@ import peril.model.states.ModelState;
  * 
  * @author Joshua_Eddy, Joseph_Rolli
  * 
- * @version 1.01.06
- * @since 2018-02-27
+ * @version 1.01.07
+ * @since 2018-03-04
  * 
  * @see AIController
  *
@@ -168,6 +168,9 @@ public final class AIHandler implements AIController {
 	 * Clears the selected {@link Country}s from all the game states.
 	 */
 	public void clearSelected() {
+		
+		game.view.toggleWarMenu(false);
+		
 		game.states.clearAll();
 	}
 

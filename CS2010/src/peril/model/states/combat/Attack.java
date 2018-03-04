@@ -16,8 +16,8 @@ import peril.model.states.ModelState;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-23
- * @version 1.01.02
+ * @since 2018-03-04
+ * @version 1.01.03
  * 
  * @see ModelState
  *
@@ -57,6 +57,9 @@ public final class Attack extends ModelState {
 		// Whether the country is a valid secondary country.
 		final boolean validSecondary = selectSecondary(country);
 
+		// Whether there is a target country selected.
+		final boolean hasSecondary = getSecondary() != null;
+
 		// If it a valid primary or secondary country
 		if (validPrimary || validSecondary) {
 
@@ -65,6 +68,13 @@ public final class Attack extends ModelState {
 
 				deselectAt(0);
 				addSelected(country, 0);
+
+				// If the current secondary is not a valid target of the new primary de-select
+				// it.
+				if (hasSecondary && !isValidTarget(getPrimary(), getSecondary())) {
+					deselectAt(1);
+				}
+
 			}
 			// Otherwise the current secondary is de-selected and then the country is
 			// selected.
@@ -118,33 +128,30 @@ public final class Attack extends ModelState {
 			// valid target.
 			if (primary.isNeighbour(target)) {
 
-				// If the army size of the primary country is greater than 1.
-				if (primary.getArmy().getNumberOfUnits() > 1) {
+				// Holds the link between the two countries.
+				final ModelLink link = primary.getLinkTo(target);
 
-					// Holds the link between the two countries.
-					final ModelLink link = primary.getLinkTo(target);
+				// Whether a unit can be transfer between the primary and the target.
+				boolean canTranfer = false;
 
-					// Whether a unit can be transfer between the primary and the target.
-					boolean canTranfer = false;
+				/*
+				 * Iterate over all the units in the army and if any can be transfered across
+				 * the link.
+				 */
+				for (ModelUnit unit : primary.getArmy()) {
 
-					/*
-					 * Iterate over all the units in the army and if any can be transfered across
-					 * the link.
-					 */
-					for (ModelUnit unit : primary.getArmy()) {
-
-						// If the current unit can be transfered.
-						if (link.canTransfer(unit, primary, target)) {
-							canTranfer = true;
-							break;
-						}
-					}
-
-					// If there is a unit that can be transfered then it is a valid target.
-					if (canTranfer) {
-						return true;
+					// If the current unit can be transfered.
+					if (link.canTransfer(unit, primary, target)) {
+						canTranfer = true;
+						break;
 					}
 				}
+
+				// If there is a unit that can be transfered then it is a valid target.
+				if (canTranfer) {
+					return true;
+				}
+
 			}
 		}
 

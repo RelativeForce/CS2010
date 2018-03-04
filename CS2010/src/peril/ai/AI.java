@@ -5,6 +5,7 @@ import peril.controllers.api.Player;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -99,6 +100,11 @@ public abstract class AI {
 	private final Function<AIOperation, Boolean> completeFortify;
 
 	/**
+	 * The {@link Executor} that performs the {@link AI} operations.
+	 */
+	private final ExecutorService executor;
+
+	/**
 	 * The number of milliseconds that this {@link AI} will wait before performing
 	 * another operation.
 	 */
@@ -135,6 +141,7 @@ public abstract class AI {
 		this.api = api;
 		setSpeed(defaultSpeed);
 		this.future = null;
+		this.executor = Executors.newSingleThreadExecutor();
 
 		// The function that will be called when the reinforce function is completed.
 		this.completeReinforce = result -> {
@@ -424,8 +431,6 @@ public abstract class AI {
 			wait = speed;
 			api.clearSelected();
 
-			// Set the next task to be performed.
-			final ExecutorService executor = Executors.newFixedThreadPool(1);
 			future = executor.submit(operation);
 
 		}

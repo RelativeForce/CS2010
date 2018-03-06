@@ -37,8 +37,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Joseph_Rolli, Joshua_Eddy
  * 
- * @since 2018-02-37
- * @version 1.01.02
+ * @since 2018-03-06
+ * @version 1.01.03
  *
  * @see Menu
  * @see UnitTrader
@@ -262,7 +262,7 @@ public final class UpgradeMenu extends Menu {
 		super.draw(frame);
 
 		drawCountry(frame);
-		drawUpgrades(frame);
+		drawBlockades(frame);
 		drawPoints(frame);
 		drawPlayer(frame);
 		drawUnits(frame);
@@ -432,6 +432,12 @@ public final class UpgradeMenu extends Menu {
 		int index = 0;
 		ModelUnit current = helper.getStrongest();
 
+		// Draw the cost to trade the unit.
+		final String text = "Trade Units [Cost: " + PointHelper.TRADE_UNIT_COST + "]";
+		final int costX = x + SlickUnit.WIDTH - costFont.getWidth(text);
+		final int costY = y - costFont.getHeight(text);
+		frame.draw(costFont, text, costX, costY);
+
 		// Iterate over all the units.
 		while (current != null) {
 
@@ -441,11 +447,6 @@ public final class UpgradeMenu extends Menu {
 				// Draw the unit icon
 				final Image unit = slick.modelView.getVisual(current).getImage();
 				frame.draw(unit, x, y);
-
-				// Draw the cost to trade the unit.
-				final String text = "[Cost: " + PointHelper.TRADE_UNIT_COST + "]";
-				final int costX = x + (SlickUnit.WIDTH / 2) - (costFont.getHeight(text) / 2);
-				frame.draw(costFont, text, costX, y - costFont.getHeight(text));
 
 				// Draws the number of the current unit.
 				final int numberOfCurrent = army.getNumberOf(current);
@@ -486,21 +487,30 @@ public final class UpgradeMenu extends Menu {
 	 * @param frame
 	 *            The {@link Frame} that displays the {@link UpgradeMenu} on screen.
 	 */
-	private void drawUpgrades(Frame frame) {
+	private void drawBlockades(Frame frame) {
 
-		final String block = "Blockade [Cost: " + PointHelper.BLOCKADE_COST + "]";
-		final int x = neighbours.getPosition().x + (neighbours.getWidth() / 2) - (costFont.getWidth(block) / 2);
-		final int y = neighbours.getPosition().y - costFont.getHeight(block) - 5;
+		// The basic x and y of the blockades section title.
+		final int x = neighbours.getPosition().x + (neighbours.getWidth() / 2);
+		final int y = neighbours.getPosition().y - 5;
 
 		// If there are possible blockades.
 		if (hasBlockableLinks) {
 
-			frame.draw(costFont, block, x, y);
+			// Draw the blockades title
+			final String block = "Create Blockade [Cost: " + PointHelper.BLOCKADE_COST + "]";
+			final int blockX = x - (costFont.getWidth(block) / 2);
+			final int blockY = y - costFont.getHeight(block);
+			frame.draw(costFont, block, blockX, blockY);
+			
+			// Draw available blockades list.
 			frame.draw(neighbours, neighbourListener);
 		} else {
 
+			// Display that there are no blockades available.
 			final String text = "No blockades available.";
-			frame.draw(costFont, text, x, y);
+			final int textX = x - (costFont.getWidth(text) / 2);
+			final int textY = x - costFont.getHeight(text);
+			frame.draw(costFont, text, textX, textY);
 		}
 	}
 

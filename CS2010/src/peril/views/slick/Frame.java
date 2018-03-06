@@ -114,18 +114,7 @@ public final class Frame {
 	 *            {@link Frame#newFrame(Graphics)} was called.
 	 */
 	public void updateFrame(int delta) {
-
-		List<ToolTip> toRemove = new LinkedList<>();
-
-		toolTips.forEach(toolTip -> {
-
-			// If the tool tip has elapsed remove it.
-			if (toolTip.elapse(delta)) {
-				toRemove.add(toolTip);
-			}
-		});
-
-		toRemove.forEach(toolTip -> toolTips.remove(toolTip));
+		toolTips.removeIf(toolTip -> toolTip.elapse(delta));
 	}
 
 	/**
@@ -152,7 +141,7 @@ public final class Frame {
 	 */
 	public void addToolTip(String message, Point position, long duration, boolean pan) {
 
-		// If the message is already being displayed, dont display it again.
+		// If the message is already being displayed, don't display it again.
 		for (ToolTip temp : toolTips) {
 			if (temp.messaage.equals(message)) {
 				return;

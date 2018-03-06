@@ -19,11 +19,11 @@ import peril.model.board.ModelUnit;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.03
- * @since 2018-02-25
+ * @version 1.01.04
+ * @since 2018-03-06
  *
  */
-public class PlayerHelper {
+public final class PlayerHelper {
 
 	/**
 	 * The maximum number of {@link ModelPlayer}s in the game at any given time.
@@ -125,23 +125,17 @@ public class PlayerHelper {
 	 */
 	public void checkChallenges() {
 
-		// Holds the completed challenges
-		List<Challenge> toRemove = new LinkedList<>();
+		// Remove all the completed challenges.
+		challenges.removeIf(challenge -> {
 
-		// Iterate though all the objectives to see if the the current player has
-		// completed them.
-		challenges.forEach(challenge -> {
+			final boolean completed = challenge.hasCompleted(getCurrent(), game.board);
 
-			// If the current player has completed the challenge remove it from the list of
-			// available challenges.
-			if (challenge.hasCompleted(getCurrent(), game.board)) {
-				toRemove.add(challenge);
+			if (completed) {
 				game.view.showToolTip(challenge.completed());
 			}
-		});
 
-		// Remove the completed challenges.
-		toRemove.forEach(challenge -> challenges.remove(challenge));
+			return completed;
+		});
 
 		// Refresh the challenge view
 		game.view.updateChallenges();
@@ -293,13 +287,11 @@ public class PlayerHelper {
 	/**
 	 * Gives the current {@link ModelPlayer} reinforcements based on the number of
 	 * countries they own.
-	 * 
-	 * @param model
-	 *            {@link ModelPlayer}
 	 */
 	public void reinforceCurrent() {
 
-		ModelPlayer player = getCurrent();
+		// The current player.
+		final ModelPlayer player = getCurrent();
 
 		// Scale reinforcements with round progression.
 		final int roundScale = game.getRoundNumber() != 0 ? game.getRoundNumber() * 2 : 1;
@@ -307,13 +299,12 @@ public class PlayerHelper {
 		// The factor is based on player progression.
 		final int factor = (player.getCountriesRuled() < 12 ? 9 : player.getCountriesRuled()) / 3;
 
+		// The weakest unit.
 		final ModelUnit weakest = UnitHelper.getInstance().getWeakest();
-		
+
 		for (int index = 0; index < factor * roundScale; index++) {
-				player.distributableArmy.add(weakest);
+			player.distributableArmy.add(weakest);
 		}
-		
-	
 
 	}
 

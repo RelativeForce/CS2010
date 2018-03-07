@@ -31,8 +31,8 @@ import peril.views.slick.util.Viewable;
  * 
  * @author Joshua_Eddy, Gurdeep_Pol
  * 
- * @since 2018-02-26
- * @version 1.01.03
+ * @since 2018-03-07
+ * @version 1.01.04
  * 
  * @see Container
  * @see BasicGameState
@@ -282,8 +282,8 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 	 */
 	public final void showToolTip(String message, Point position) {
 
-		// Display the tool tip for 8 seconds
-		frame.addToolTip(message, position, 8000, false);
+		// Display the tool tip for 3 seconds
+		frame.addToolTip(message, position, 3000, false);
 
 	}
 

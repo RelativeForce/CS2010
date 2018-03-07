@@ -45,8 +45,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy, Joseph Rolli
  * 
- * @since 2018-02-28
- * @version 1.01.13
+ * @since 2018-03-07
+ * @version 1.01.14
  * 
  * @see StateBasedGame
  * @see View
@@ -55,7 +55,7 @@ import peril.views.slick.util.Point;
 public final class SlickGame extends StateBasedGame implements View {
 
 	/**
-	 * The target fps of the game.
+	 * The target FPS of the game.
 	 */
 	public static final int FPS = 60;
 	
@@ -596,7 +596,7 @@ public final class SlickGame extends StateBasedGame implements View {
 
 		// Change the window to the specified size.
 		if (board.getWidth() >= getScreenWidth() || board.getHeight() >= getScreenHeight()) {
-			states.addMiniMap(board, getScreenWidth(), getScreenHeight(), game.getDirectory().getUIPath());
+			states.addMiniMap(board, getScreenWidth(), getScreenHeight(), game);
 		} else {
 			states.removeMiniMap();
 		}

@@ -2,6 +2,7 @@ package peril.views.slick.helpers;
 
 import org.newdawn.slick.SlickException;
 
+import peril.controllers.GameController;
 import peril.views.slick.SlickGame;
 import peril.views.slick.board.SlickBoard;
 import peril.views.slick.board.SlickCountry;
@@ -28,8 +29,8 @@ import peril.views.slick.states.gameStates.SlickSetup;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-28
- * @version 1.01.02
+ * @since 2018-03-07
+ * @version 1.01.03
  * 
  * @see InteractiveState
  * @see SlickGame
@@ -184,12 +185,13 @@ public final class StateHelper {
 	 *            The width of the screen.
 	 * @param screenHeight
 	 *            The height of the screen.
-	 * @param uiPath
-	 *            The path to the UI folder.
+	 * @param game
+	 *            The {@link GameController} that allows the {@link MiniMap} to
+	 *            query the state of the game.
 	 */
-	public void addMiniMap(SlickBoard slickBoard, int screenWidth, int screenHeight, String uiPath) {
+	public void addMiniMap(SlickBoard slickBoard, int screenWidth, int screenHeight, GameController game) {
 
-		final MiniMap miniMap = new MiniMap(slickBoard, screenWidth, screenHeight, uiPath);
+		final MiniMap miniMap = new MiniMap(slickBoard, screenWidth, screenHeight, game);
 
 		setup.setMiniMap(miniMap);
 		reinforcement.setMiniMap(miniMap);

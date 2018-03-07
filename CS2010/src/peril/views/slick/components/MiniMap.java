@@ -2,11 +2,13 @@ package peril.views.slick.components;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
-
+import peril.controllers.GameController;
 import peril.model.board.ModelBoard;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
+import peril.views.slick.SlickModelView;
 import peril.views.slick.board.SlickBoard;
+import peril.views.slick.board.SlickCountry;
 import peril.views.slick.io.ImageReader;
 import peril.views.slick.util.Clickable;
 import peril.views.slick.util.Point;
@@ -19,8 +21,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Ezekiel_Trinidad, Joshua_Eddy
  * 
- * @since 2018-02-28
- * @version 1.01.02
+ * @since 2018-03-07
+ * @version 1.01.03
  * 
  * @see Clickable
  * @see Component
@@ -55,14 +57,25 @@ public final class MiniMap extends Clickable implements Component {
 	private final int screenHeight;
 
 	/**
-	 * The {@link Window} that appears over the {@link MiniMap}.
+	 * The {@link GameController} that allows the {@link MiniMap} to query the state
+	 * of the game.
 	 */
-	private Window window;
+	private final GameController game;
+
+	/**
+	 * The {@link Image} of the {@link #board} on screen.
+	 */
+	private final Image boardImage;
 
 	/**
 	 * The border around the {@link MiniMap}.
 	 */
-	private Image windowBorder;
+	private final Image windowBorder;
+
+	/**
+	 * The {@link Window} that appears over the {@link MiniMap}.
+	 */
+	private Window window;
 
 	/**
 	 * Constructs a MiniMap
@@ -73,17 +86,22 @@ public final class MiniMap extends Clickable implements Component {
 	 *            The width of the screen.
 	 * @param screenHeight
 	 *            The height of the screen.
-	 * @param uiPath
-	 *            The path to the UI folder.
+	 * @param game
+	 *            The {@link GameController} that allows this {@link MiniMap} to
+	 *            query the state of the game.
 	 */
-	public MiniMap(SlickBoard board, int screenWidth, int screenHeight, String uiPath) {
+	public MiniMap(SlickBoard board, int screenWidth, int screenHeight, GameController game) {
 		super(new Region(WIDTH, HEIGHT, new Point(screenWidth - WIDTH, 0)));
 
+		this.game = game;
 		this.board = board;
 		this.screenWidth = screenWidth;
 		this.screenHeight = screenHeight;
 
-		windowBorder = ImageReader.getImage(uiPath + "minimapBorder.png").getScaledCopy(WIDTH + 16, HEIGHT + 16);
+		this.boardImage = board.getImage().getScaledCopy(WIDTH, HEIGHT);
+
+		this.windowBorder = ImageReader.getImage(game.getDirectory().getUIPath() + "minimapBorder.png")
+				.getScaledCopy(WIDTH + 16, HEIGHT + 16);
 
 		reScale();
 
@@ -122,9 +140,14 @@ public final class MiniMap extends Clickable implements Component {
 	@Override
 	public void draw(Frame frame) {
 
-		frame.draw(board.getImage().getScaledCopy(WIDTH, HEIGHT), getPosition().x, getPosition().y);
+		final int x = getPosition().x;
+		final int y = getPosition().y;
 
-		frame.draw(windowBorder, getPosition().x - 8, getPosition().y - 8);
+		frame.draw(boardImage, x, y);
+
+		drawCountries(frame);
+
+		frame.draw(windowBorder, x - 8, y - 8);
 
 		frame.draw(window, new EventListener() {
 
@@ -200,6 +223,51 @@ public final class MiniMap extends Clickable implements Component {
 
 		window.setPosition(new Point(x, y));
 
+	}
+
+	/**
+	 * Draws the colours of the countries on the {@link MiniMap}.
+	 * 
+	 * @param frame
+	 *            The {@link Frame} that will be used to display this
+	 *            {@link MiniMap} to the user.
+	 */
+	private void drawCountries(Frame frame) {
+
+		// The position of the mini map
+		final int x = getPosition().x;
+		final int y = getPosition().y;
+
+		final SlickModelView view = (SlickModelView) game.getView().getModelView();
+
+		// The horizontal and vertical ratios of the size of the mini map relative to
+		// the size of the board.
+		final float scaleFactorX = (float) WIDTH / board.getWidth();
+		final float scaleFactorY = (float) HEIGHT / board.getHeight();
+
+		// Iterate over each country on the board.
+		board.model.forEachCountry(country -> {
+
+			final SlickCountry slickCountry = view.getVisual(country);
+
+			// The un scaled details of the country image
+			final float unScaledX = slickCountry.getPosition().x - board.getPosition().x;
+			final float unScaledY = slickCountry.getPosition().y - board.getPosition().y;
+			final float unScaledWidth = slickCountry.getWidth();
+			final float unScaledHeight = slickCountry.getHeight();
+
+			// The scaled details of the country image.
+			final int scaledX = (int) (unScaledX * scaleFactorX);
+			final int scaledY = (int) (unScaledY * scaleFactorY);
+			final int scaledWidth = (int) (unScaledWidth * scaleFactorX);
+			final int scaledHeight = (int) (unScaledHeight * scaleFactorY);
+
+			final Image scaledCountry = slickCountry.getImage().getScaledCopy(scaledWidth, scaledHeight);
+
+			// Draw the country
+			frame.draw(scaledCountry, x + scaledX, y + scaledY);
+
+		});
 	}
 
 	/**

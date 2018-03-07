@@ -32,10 +32,10 @@ import peril.views.slick.util.Point;
  * {@link SlickPlayer}s. The user may also select the the speed of the
  * {@link AI}s.
  * 
- * @author Joshua_Eddy, Gurdeep_Pol
+ * @author Joshua_Eddy, Gurdeep_Pol, Ezekiel_Trinidad
  * 
- * @since 2018-02-27
- * @version 1.01.06
+ * @since 2018-03-07
+ * @version 1.01.07
  * 
  * @see InteractiveState
  * @see AI
@@ -241,47 +241,21 @@ public final class PlayerSelection extends InteractiveState {
 	 */
 	public void loadGame() throws SlickException {
 
-		// Reset the board
+		// Reset the game and board
 		game.resetGame();
 		game.getModelBoard().reset();
 
-		// list of players that have been filtered
-		final List<Player> temp = players.stream().filter(player -> player.inPlay).collect(Collectors.toList());
+		// List of players that have been filtered
+		final List<Player> inPlay = players.stream().filter(player -> player.inPlay).collect(Collectors.toList());
+		final Player[] ordered = inPlay.toArray(new Player[inPlay.size()]);
 
-		final Player[] newOrder = temp.toArray(new Player[temp.size()]);
-
-		final Random random = new Random();
-
+		// If the user selected to randomly order the players.
 		if (randomOrderToggle.getSelected()) {
-
-			for (int i = 0; i < newOrder.length; i++) {
-
-				int index1 = random.nextInt(newOrder.length);
-				int index2 = random.nextInt(newOrder.length);
-
-				Player tempPlayer = newOrder[index2];
-
-				newOrder[index2] = newOrder[index1];
-				newOrder[index1] = tempPlayer;
-
-			}
+			randomiseOrder(ordered);
 		}
 
-		// Iterate through the number of players the player has selected
-		for (Player player : newOrder) {
-
-			// The colour assigned to that player.
-			final Color color = slick.getColor(player.number);
-
-			// Set the player with the AI that the user selected.
-			final SlickPlayer slickPlayer = new SlickPlayer(player.number, color, player.ai);
-
-			// Set the player Icon for that player.
-			slickPlayer.replaceImage(slick.getPlayerIcon(player.number));
-
-			game.addPlayer(slickPlayer.model);
-			slick.modelView.addPlayer(slickPlayer);
-		}
+		// Add the players to the game.
+		addToGame(ordered);
 
 		// Load the game
 		slick.reSize(width, height);
@@ -314,6 +288,53 @@ public final class PlayerSelection extends InteractiveState {
 		this.width = width;
 		this.height = height;
 
+	}
+
+	/**
+	 * Adds a array of {@link Player}s to the game.
+	 * 
+	 * @param ordered
+	 *            The {@link Player}s to add to the game.
+	 */
+	private void addToGame(final Player[] ordered) {
+
+		// Iterate through the number of players the player has selected
+		for (Player player : ordered) {
+
+			// The colour assigned to that player.
+			final Color color = slick.getColor(player.number);
+
+			// Set the player with the AI that the user selected.
+			final SlickPlayer slickPlayer = new SlickPlayer(player.number, color, player.ai);
+
+			// Set the player Icon for that player.
+			slickPlayer.replaceImage(slick.getPlayerIcon(player.number));
+
+			game.addPlayer(slickPlayer.model);
+			slick.modelView.addPlayer(slickPlayer);
+		}
+	}
+
+	/**
+	 * Randomise the order of an array of {@link Player}s.
+	 * 
+	 * @param ordered
+	 *            The array of {@link Player}s to reorder.
+	 */
+	private void randomiseOrder(final Player[] ordered) {
+
+		final Random random = new Random();
+
+		for (int index = 0; index < ordered.length; index++) {
+
+			final int index1 = random.nextInt(ordered.length);
+			final int index2 = random.nextInt(ordered.length);
+
+			final Player tempPlayer = ordered[index2];
+			ordered[index2] = ordered[index1];
+			ordered[index1] = tempPlayer;
+
+		}
 	}
 
 	/**

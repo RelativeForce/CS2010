@@ -2,6 +2,8 @@ package peril.views.slick.states;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -70,6 +72,13 @@ public final class PlayerSelection extends InteractiveState {
 	private final VisualList<Integer> aiSpeeds;
 
 	/**
+	 * A {@link VisualList} containing Boolean values that will enable or disable
+	 * the random {@link Player} order.
+	 * 
+	 */
+	private final VisualList<Boolean> randomOrderToggle;
+
+	/**
 	 * The {@link List} of {@link Player}s that will be used to construct the game.
 	 */
 	private final List<Player> players;
@@ -135,11 +144,18 @@ public final class PlayerSelection extends InteractiveState {
 		this.aiSpeeds.setFont(listFont);
 		populateAISpeeds();
 
+		this.randomOrderToggle = new VisualList<>(new Point(100, topPlayer.y + 250), 85, 24, 2, 5);
+		this.randomOrderToggle.setFont(listFont);
+
+		this.randomOrderToggle.add("Enabled", true);
+		this.randomOrderToggle.add("Disabled", false);
+
 		textFont = new Font("Arial", Color.white, 20);
 
 		super.addComponent(aiList);
 		super.addComponent(numberOfPlayers);
 		super.addComponent(aiSpeeds);
+		super.addComponent(randomOrderToggle);
 
 	}
 
@@ -200,6 +216,7 @@ public final class PlayerSelection extends InteractiveState {
 
 		drawAISpeeds(frame);
 
+		drawRandomOrderToggle(frame);
 	}
 
 	/**
@@ -228,23 +245,42 @@ public final class PlayerSelection extends InteractiveState {
 		game.resetGame();
 		game.getModelBoard().reset();
 
-		// Iterate through the number of players the player has selected
-		for (Player player : players) {
+		// list of players that have been filtered
+		final List<Player> temp = players.stream().filter(player -> player.inPlay).collect(Collectors.toList());
 
-			if (player.inPlay) {
+		final Player[] newOrder = temp.toArray(new Player[temp.size()]);
 
-				// The colour assigned to that player.
-				final Color color = slick.getColor(player.number);
+		final Random random = new Random();
 
-				// Set the player with the AI that the user selected.
-				final SlickPlayer slickPlayer = new SlickPlayer(player.number, color, player.ai);
+		if (randomOrderToggle.getSelected()) {
 
-				// Set the player Icon for that player.
-				slickPlayer.replaceImage(slick.getPlayerIcon(player.number));
+			for (int i = 0; i < newOrder.length; i++) {
 
-				game.addPlayer(slickPlayer.model);
-				slick.modelView.addPlayer(slickPlayer);
+				int index1 = random.nextInt(newOrder.length);
+				int index2 = random.nextInt(newOrder.length);
+
+				Player tempPlayer = newOrder[index2];
+
+				newOrder[index2] = newOrder[index1];
+				newOrder[index1] = tempPlayer;
+
 			}
+		}
+
+		// Iterate through the number of players the player has selected
+		for (Player player : newOrder) {
+
+			// The colour assigned to that player.
+			final Color color = slick.getColor(player.number);
+
+			// Set the player with the AI that the user selected.
+			final SlickPlayer slickPlayer = new SlickPlayer(player.number, color, player.ai);
+
+			// Set the player Icon for that player.
+			slickPlayer.replaceImage(slick.getPlayerIcon(player.number));
+
+			game.addPlayer(slickPlayer.model);
+			slick.modelView.addPlayer(slickPlayer);
 		}
 
 		// Load the game
@@ -447,12 +483,12 @@ public final class PlayerSelection extends InteractiveState {
 			@Override
 			public void mouseClick(Point mouse, int mouseButton) {
 				aiSpeeds.click(mouse);
-				
+
 				// If the user has selected the max AI speed warn them.
-				if(aiSpeeds.getSelected() == AI.MAX_SPEED) {
+				if (aiSpeeds.getSelected() == AI.MAX_SPEED) {
 					showAISpeedWarning();
 				}
-				
+
 				changeAISpeed();
 			}
 
@@ -468,21 +504,21 @@ public final class PlayerSelection extends InteractiveState {
 
 					if (key == Input.KEY_UP) {
 						aiSpeeds.up();
-						
+
 						// If the user has selected the max AI speed warn them.
-						if(aiSpeeds.getSelected() == AI.MAX_SPEED) {
+						if (aiSpeeds.getSelected() == AI.MAX_SPEED) {
 							showAISpeedWarning();
 						}
-						
+
 						changeAISpeed();
 					} else if (key == Input.KEY_DOWN) {
 						aiSpeeds.down();
-						
+
 						// If the user has selected the max AI speed warn them.
-						if(aiSpeeds.getSelected() == AI.MAX_SPEED) {
+						if (aiSpeeds.getSelected() == AI.MAX_SPEED) {
 							showAISpeedWarning();
 						}
-						
+
 						changeAISpeed();
 					}
 				}
@@ -663,6 +699,52 @@ public final class PlayerSelection extends InteractiveState {
 		for (AI ai : game.getAIs()) {
 			aiList.add(ai.name, ai);
 		}
+	}
+
+	private void drawRandomOrderToggle(Frame frame) {
+		frame.draw(randomOrderToggle, new EventListener() {
+
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// DO NOTHING
+
+			}
+
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
+
+				randomOrderToggle.click(mouse);
+
+			}
+
+			@Override
+			public void draw(Frame frame) {
+
+				randomOrderToggle.draw(frame);
+
+			}
+
+			@Override
+			public void buttonPress(int key, Point mouse) {
+				if (randomOrderToggle.isClicked(mouse)) {
+
+					if (key == Input.KEY_UP) {
+						randomOrderToggle.up();
+
+					} else if (key == Input.KEY_DOWN) {
+						randomOrderToggle.down();
+
+					}
+				}
+
+			}
+		});
+
+		final String text = "Random Order: ";
+
+		frame.draw(textFont, text, randomOrderToggle.getPosition().x,
+				randomOrderToggle.getPosition().y - textFont.getHeight(text) - 5);
+
 	}
 
 	/**

@@ -22,8 +22,8 @@ import peril.controllers.api.Board;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-25
- * @version 1.01.01
+ * @since 2018-03-08
+ * @version 1.01.02
  * 
  * @see AIController
  *
@@ -272,6 +272,15 @@ public abstract class AI {
 		}
 
 		this.speed = speed;
+	}
+
+	/**
+	 * Retrieves the speed of this {@link AI}.
+	 * 
+	 * @return {@link AI} speed.
+	 */
+	public final int getSpeed() {
+		return speed;
 	}
 
 	/**

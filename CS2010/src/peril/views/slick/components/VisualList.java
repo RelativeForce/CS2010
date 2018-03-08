@@ -22,8 +22,8 @@ import peril.views.slick.util.Region;
  * @param <T>
  *            The type of this lists elements.
  * 
- * @since 2018-02-23
- * @version 1.01.01
+ * @since 2018-03-08
+ * @version 1.01.02
  * 
  * @see Clickable
  * @see Component
@@ -175,7 +175,7 @@ public final class VisualList<T> extends Clickable implements Component {
 		 * equal to the specified T then set that element as the selected.
 		 */
 		for (Element e : elements) {
-			if (e.payload == selected) {
+			if (e.payload.equals(selected)) {
 				this.selected = e;
 				return;
 			}

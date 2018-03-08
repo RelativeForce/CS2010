@@ -3,12 +3,15 @@ package peril.views.slick.components.menus;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Input;
 
+import peril.ai.AI;
 import peril.controllers.GameController;
 import peril.io.MapWriter;
 import peril.io.SaveFile;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
+import peril.views.slick.components.Component;
 import peril.views.slick.components.VisualList;
+import peril.views.slick.states.PlayerSelection;
 import peril.views.slick.util.Button;
 import peril.views.slick.util.Font;
 import peril.views.slick.util.Point;
@@ -19,8 +22,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Ezekiel_Trinidad, Joshua_Eddy
  * 
- * @since 2018-02-25
- * @version 1.01.01
+ * @since 2018-03-08
+ * @version 1.01.02
  * 
  * @see Menu
  *
@@ -50,6 +53,12 @@ public final class PauseMenu extends Menu {
 	private final VisualList<SaveFile> saveFiles;
 
 	/**
+	 * The {@link VisualList} containing the different {@link AI} speeds available
+	 * for the user to select.
+	 */
+	private final VisualList<Integer> aiSpeeds;
+
+	/**
 	 * Holds the id of the save {@link Button}.
 	 */
 	private final String saveButton;
@@ -76,6 +85,12 @@ public final class PauseMenu extends Menu {
 	 * {@link #saveFiles} list.
 	 */
 	private final EventListener savesListener;
+
+	/**
+	 * The {@link EventListener} that handles the events that occur to the
+	 * {@link #aiSpeeds} list.
+	 */
+	private final EventListener aiSpeedsListener;
 
 	/**
 	 * Denotes whether or not the save option will be displayed to the user.
@@ -107,8 +122,8 @@ public final class PauseMenu extends Menu {
 		this.toggleMusic.setFont(toggleFont);
 
 		// Construct all links toggle
-		this.toggleAllLinks = new VisualList<>(
-				new Point(position.x + ((getWidth() * 3) / 4), position.y + (getHeight() / 4)), 60, 30, 2, 10);
+		this.toggleAllLinks = new VisualList<>(new Point(position.x + 350, position.y + (getHeight() / 4)), 60, 30, 2,
+				10);
 		this.toggleAllLinks.add(Toggle.OFF.name, Toggle.OFF);
 		this.toggleAllLinks.add(Toggle.ON.name, Toggle.ON);
 		this.toggleAllLinks.setFont(toggleFont);
@@ -116,8 +131,13 @@ public final class PauseMenu extends Menu {
 		this.textFont = new Font("Arial", Color.black, 20);
 
 		// Construct save file list
-		this.saveFiles = new VisualList<>(new Point(position.x + (getWidth() / 2), position.y + 250), 180, 30, 3, 10);
+		this.saveFiles = new VisualList<>(new Point(position.x + 350, position.y + 250), 180, 30, 3, 10);
 		this.saveFiles.setFont(toggleFont);
+
+		// Define the AI speeds list
+		this.aiSpeeds = new VisualList<>(new Point(position.x + 150, position.y + 250), 50, 24, 4, 5);
+		this.aiSpeeds.setFont(toggleFont);
+		populateAISpeeds();
 
 		this.linksToggleListener = new EventListener() {
 
@@ -220,6 +240,59 @@ public final class PauseMenu extends Menu {
 			}
 		};
 
+		this.aiSpeedsListener = new EventListener() {
+
+			@Override
+			public void mouseHover(Point mouse, int delta) {
+				// Do nothing
+			}
+
+			@Override
+			public void mouseClick(Point mouse, int mouseButton) {
+				aiSpeeds.click(mouse);
+
+				// If the user has selected the max AI speed warn them.
+				if (aiSpeeds.getSelected() == AI.MAX_SPEED) {
+					showAISpeedWarning();
+				}
+
+				changeAISpeed();
+			}
+
+			@Override
+			public void draw(Frame frame) {
+				aiSpeeds.draw(frame);
+			}
+
+			@Override
+			public void buttonPress(int key, Point mouse) {
+
+				if (aiSpeeds.isClicked(mouse)) {
+
+					if (key == Input.KEY_UP) {
+						aiSpeeds.up();
+
+						// If the user has selected the max AI speed warn them.
+						if (aiSpeeds.getSelected() == AI.MAX_SPEED) {
+							showAISpeedWarning();
+						}
+
+						changeAISpeed();
+					} else if (key == Input.KEY_DOWN) {
+						aiSpeeds.down();
+
+						// If the user has selected the max AI speed warn them.
+						if (aiSpeeds.getSelected() == AI.MAX_SPEED) {
+							showAISpeedWarning();
+						}
+
+						changeAISpeed();
+					}
+				}
+			}
+
+		};
+
 	}
 
 	/**
@@ -229,6 +302,7 @@ public final class PauseMenu extends Menu {
 	public void show() {
 		super.show();
 		toggleMusic.setSelected(slick.isMusicOn() ? Toggle.ON : Toggle.OFF);
+		getCurrentAISpeed();
 	}
 
 	/**
@@ -247,7 +321,11 @@ public final class PauseMenu extends Menu {
 			drawSaveOption(frame);
 		}
 
-		drawToggles(frame);
+		drawMusicToggle(frame);
+
+		drawLinksToggle(frame);
+
+		drawAISpeeds(frame);
 
 	}
 
@@ -260,6 +338,7 @@ public final class PauseMenu extends Menu {
 		toggleAllLinks.init();
 		toggleMusic.init();
 		saveFiles.init();
+		aiSpeeds.init();
 
 	}
 
@@ -268,12 +347,10 @@ public final class PauseMenu extends Menu {
 	 */
 	@Override
 	public void moveComponents(Point vector) {
-
-		toggleMusic
-				.setPosition(new Point(toggleMusic.getPosition().x + vector.x, toggleMusic.getPosition().y + vector.y));
-		toggleAllLinks.setPosition(
-				new Point(toggleAllLinks.getPosition().x + vector.x, toggleAllLinks.getPosition().y + vector.y));
-		saveFiles.setPosition(new Point(saveFiles.getPosition().x + vector.x, saveFiles.getPosition().y + vector.y));
+		moveComponent(toggleMusic, vector);
+		moveComponent(toggleAllLinks, vector);
+		moveComponent(saveFiles, vector);
+		moveComponent(aiSpeeds, vector);
 	}
 
 	/**
@@ -333,28 +410,125 @@ public final class PauseMenu extends Menu {
 	}
 
 	/**
+	 * Retrieves the current speed that the AIs are set to.
+	 */
+	private void getCurrentAISpeed() {
+
+		final int currentSpeed = game.getAIs().iterator().next().getSpeed();
+
+		aiSpeeds.setSelected((Integer) currentSpeed);
+
+	}
+
+	/**
+	 * Populates the {@link PauseMenu#aiSpeeds} with all the {@link AI} speeds that
+	 * is available for the user to select.
+	 */
+	private void populateAISpeeds() {
+
+		final int multipler = 4;
+
+		for (int index = 0; index < 4; index++) {
+
+			final int speed = (int) (AI.MAX_SPEED * Math.pow(2, index));
+			final String text = Integer.toString(multipler - index) + "x";
+
+			aiSpeeds.add(text, speed);
+
+		}
+
+	}
+
+	/**
+	 * Moves a {@link Component} along a specified point vector.
+	 * 
+	 * @param component
+	 *            The {@link Component} to be moved.
+	 * @param vector
+	 *            The {@link Point} vector that the {@link Component} will be moves
+	 *            along.
+	 */
+	private void moveComponent(Component component, Point vector) {
+		final Point current = component.getPosition();
+		component.setPosition(new Point(current.x + vector.x, current.y + vector.y));
+	}
+
+	/**
+	 * Changes the speed of all the {@link AI}s in the game to the speed selected in
+	 * {@link PlayerSelection#aiSpeeds}.
+	 */
+	private void changeAISpeed() {
+
+		final int newSpeed = aiSpeeds.getSelected();
+		game.getAIs().forEach(ai -> ai.setSpeed(newSpeed));
+
+	}
+
+	/**
+	 * Displays a tool tip that warns the user that the faster the {@link AI} are
+	 * the worse the game performance will be.
+	 */
+	private void showAISpeedWarning() {
+
+		// Display warning
+		final String message = "Increasing AI speed, reduces game perfromance.";
+		final int x = aiSpeeds.getPosition().x + aiSpeeds.getWidth();
+		final int y = aiSpeeds.getPosition().y + (aiSpeeds.getHeight() / 2);
+
+		slick.showToolTip(message, new Point(x, y));
+
+	}
+
+	/**
+	 * Draws the AI speeds list on the {@link PauseMenu}.
+	 * 
+	 * @param frame
+	 *            The {@link Frame} that draws the {@link PauseMenu} on screen.
+	 */
+	private void drawAISpeeds(Frame frame) {
+
+		final String text = "AI speed:";
+
+		frame.draw(textFont, text, aiSpeeds.getPosition().x, aiSpeeds.getPosition().y - textFont.getHeight(text) - 5);
+
+		frame.draw(aiSpeeds, aiSpeedsListener);
+
+	}
+
+	/**
+	 * Draws the links toggle on the {@link PauseMenu}.
+	 * 
+	 * @param frame
+	 *            The {@link Frame} that draws the {@link PauseMenu} on screen.
+	 */
+	private void drawLinksToggle(Frame frame) {
+
+		String links = "Links:";
+
+		frame.draw(textFont, links, toggleAllLinks.getPosition().x,
+				toggleAllLinks.getPosition().y - textFont.getHeight(links) - 5);
+
+		// Draw the links toggle.
+		frame.draw(toggleAllLinks, linksToggleListener);
+
+	}
+
+	/**
 	 * Draws the music toggle on the {@link PauseMenu}.
 	 * 
 	 * @param frame
 	 *            The {@link Frame} that draws the {@link PauseMenu} on screen.
 	 */
-	private void drawToggles(Frame frame) {
+	private void drawMusicToggle(Frame frame) {
 
-		String music = "Music:";
+		final String music = "Music:";
+		final int y = toggleMusic.getPosition().y - textFont.getHeight(music) - 5;
+		final int x = toggleMusic.getPosition().x;
 
-		String links = "Links:";
-
-		frame.draw(textFont, music, toggleMusic.getPosition().x - textFont.getWidth(music) - 5,
-				toggleMusic.getPosition().y);
-		frame.draw(textFont, links, toggleAllLinks.getPosition().x - textFont.getWidth(links) - 5,
-				toggleAllLinks.getPosition().y);
+		frame.draw(textFont, music, x, y);
 
 		// Draw the music toggle.
 		frame.draw(toggleMusic, musicToggleListener);
-
-		// Draw the links toggle.
-		frame.draw(toggleAllLinks, linksToggleListener);
-
 	}
 
 	/**
@@ -367,8 +541,7 @@ public final class PauseMenu extends Menu {
 
 		String save = "Save Game:";
 
-		frame.draw(textFont, save, getPosition().x - textFont.getWidth(save) + (getWidth() / 2) - 10,
-				getPosition().y + 240);
+		frame.draw(textFont, save, saveFiles.getPosition().x, saveFiles.getPosition().y - textFont.getHeight(save) - 5);
 
 		frame.draw(saveFiles, savesListener);
 	}

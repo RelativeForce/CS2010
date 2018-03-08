@@ -34,8 +34,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy, Gurdeep_Pol, Ezekiel_Trinidad
  * 
- * @since 2018-03-07
- * @version 1.01.07
+ * @since 2018-03-08
+ * @version 1.01.08
  * 
  * @see InteractiveState
  * @see AI
@@ -722,6 +722,13 @@ public final class PlayerSelection extends InteractiveState {
 		}
 	}
 
+	/**
+	 * Draws the {@link #randomOrderToggle} on the {@link PlayerSelection}.
+	 * 
+	 * @param frame
+	 *            The {@link Frame} that displays the {@link PlayerSelection} to the
+	 *            user.
+	 */
 	private void drawRandomOrderToggle(Frame frame) {
 		frame.draw(randomOrderToggle, new EventListener() {
 

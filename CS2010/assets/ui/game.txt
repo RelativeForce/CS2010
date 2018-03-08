@@ -6,6 +6,7 @@ button,Reinforcement,1,endButton.png,180,80,20,155,end
 button,Reinforcement,13,helpButton.png,80,80,410,5,help
 button,Reinforcement,17,pauseButton.png,180,80,490,5,pause
 button,Reinforcement,28,upgradeButton.png,180,80,1030,5,upgrades
+button,Reinforcement,20,challengesButton.png,180,80,670,5,challenges
 image,Reinforcement,reinforceStateBox.png,400,250,5,5
 
 // Movement State
@@ -14,6 +15,7 @@ button,Movement,3,endButton.png,180,80,20,155,end
 button,Movement,13,helpButton.png,80,80,410,5,help
 button,Movement,17,pauseButton.png,180,80,490,5,pause
 button,Movement,28,upgradeButton.png,180,80,1030,5,upgrades
+button,Movement,20,challengesButton.png,180,80,670,5,challenges
 image,Movement,movementStateBox.png,400,250,5,5
 
 // Combat State
@@ -22,6 +24,7 @@ button,Combat,9,attackButton.png,180,80,10,800,attack
 button,Combat,13,helpButton.png,80,80,410,5,help
 button,Combat,17,pauseButton.png,180,80,490,5,pause
 button,Combat,28,upgradeButton.png,180,80,1030,5,upgrades
+button,Combat,20,challengesButton.png,180,80,670,5,challenges
 image,Combat,combatStateBox.png,400,250,5,5
 
 // Setup State
@@ -29,6 +32,7 @@ button,Setup,4,playButton.png,180,80,205,80,play
 button,Setup,8,autoButton.png,180,80,20,80,auto
 button,Setup,13,helpButton.png,80,80,410,5,help
 button,Setup,17,pauseButton.png,180,80,490,5,pause
+button,Setup,20,challengesButton.png,180,80,670,5,challenges
 image,Setup,setUpStateBox.png,400,250,5,5
 
 // War Menu
@@ -39,9 +43,8 @@ image,War Menu,warMenu.png,800,600,0,0
 // Pause Menu
 button,Pause Menu,10,exitGameButton.png,180,80,360,430,exit
 button,Pause Menu,12,mainMenuButton.png,180,80,60,430,menu
-button,Pause Menu,11,saveButton.png,120,70,170,270,save
+button,Pause Menu,11,saveButton.png,180,80,360,360,save
 button,Pause Menu,18,xButton.png,60,60,490,20,close
-button,Pause Menu,20,challengesButton.png,180,80,360,360,challenges
 image,Pause Menu,pauseMenu.png,600,600,0,0
 
 // End Screen

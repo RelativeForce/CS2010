@@ -1,4 +1,4 @@
-package peril.board;
+package peril.model.board;
 
 import static org.junit.Assert.*;
 

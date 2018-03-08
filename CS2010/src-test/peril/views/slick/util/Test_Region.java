@@ -1,4 +1,4 @@
-package peril.board;
+package peril.views.slick.util;
 
 import static org.junit.Assert.*;
 

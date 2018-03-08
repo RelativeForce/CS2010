@@ -1,4 +1,4 @@
-package peril.board;
+package peril.model.board;
 
 import static org.junit.Assert.*;
 
@@ -18,7 +18,7 @@ import peril.model.board.links.ModelLinkState;
  * @author James_Rowntree
  *
  */
-public class Test_Country {
+public class Test_ModelCountry {
 
 	/**
 	 * Hold the current {@link SlickCountry} that is being used for testing.
@@ -26,7 +26,7 @@ public class Test_Country {
 	private ModelCountry testCountry;
 
 	/**
-	 * Holds the name of the {@link Test_Country#testCountry}, used for testing.
+	 * Holds the name of the {@link Test_ModelCountry#testCountry}, used for testing.
 	 */
 	private String testName;
 

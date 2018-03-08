@@ -1,4 +1,4 @@
-package peril;
+package peril.helpers;
 
 import static org.junit.Assert.*;
 

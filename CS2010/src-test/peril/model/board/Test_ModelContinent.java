@@ -1,4 +1,4 @@
-package peril.board;
+package peril.model.board;
 
 import static org.junit.Assert.*;
 
@@ -13,7 +13,7 @@ import peril.views.slick.board.SlickContinent;
  * @author Joshua_Eddy
  *
  */
-public class Test_Continent {
+public class Test_ModelContinent {
 
 	/**
 	 * Performed before each test.

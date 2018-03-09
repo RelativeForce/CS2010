@@ -8,8 +8,8 @@ import peril.controllers.Points;
  * 
  * @author Joseph_Rolli, Joshua_Eddy
  * 
- * @since 2018-03-06
- * @version 1.01.04
+ * @since 2018-03-09
+ * @version 1.01.05
  * 
  * @see Points
  *
@@ -25,13 +25,13 @@ public final class PointHelper implements Points {
 	/**
 	 * The point cost for blockading a link between two countries.
 	 */
-	public static final int BLOCKADE_COST = 4;
+	public static final int BLOCKADE_COST = 10;
 
 	/**
 	 * The point cost for trading a set of units for the unit directly above that
 	 * set of units in terms of strength.
 	 */
-	public static final int TRADE_UNIT_COST = 3;
+	public static final int TRADE_UNIT_COST = 4;
 
 	/**
 	 * The singleton instance of the {@link PointHelper}.

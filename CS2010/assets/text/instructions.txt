@@ -44,11 +44,11 @@ The number in the top left corner shows you how many free units you have to rein
 
 During any stage, you can upgrade a country and by extension its army by first clicking that country then clicking ‘upgrade’. Players points are shown in the top left corner. 
 
-Blockades can only be created between enemy countries not your own. They last for three rounds and cost 4 points to purchase. To create a blockade click the country you would like to blockade then click the block button.
+Blockades can only be created between enemy countries not your own. They last for three rounds and cost 10 points to purchase. To create a blockade click the country you would like to blockade then click the block button.
 
 Units of the same type can be combined to form stronger units. This costs 3 points to perform. When a number of the same unit are combined they form one unit that has the same strength as all the units that were combined to form it. 
 
-The price of combining units is fixed. For example: combining 5 soldiers into 1 car is the same price as combining 20 soldiers into 4 cars. The player is charged 3 points each time they combine units so timing is key.
+The price of combining units is fixed. For example: combining 5 soldiers into 1 car is the same price as combining 20 soldiers into 4 cars. The player is charged 4 points each time they combine units so timing is key.
 
 ----------------------------------------- Attack -----------------------------------------
 

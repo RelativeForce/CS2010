@@ -14,6 +14,7 @@ import peril.ai.AI;
 import peril.controllers.GameController;
 import peril.helpers.UnitHelper;
 import peril.io.FileParser;
+import peril.io.LineType;
 import peril.io.SaveFile;
 import peril.model.ModelColor;
 import peril.model.ModelPlayer;
@@ -44,13 +45,6 @@ import peril.views.slick.util.Region;
  *
  */
 public final class MapReader extends FileParser {
-
-	/**
-	 * A constant string used in the map file.
-	 */
-	private static final String COUNTRY = "Country", UNIT = "Unit", LINK = "Link", CONTINENT = "Continent",
-			STATE = "State", PLAYER = "Player", ARMY_STRENGTH = "ArmySize", COUNTRIES_OWNED = "CountriesOwned",
-			CONTINENTS_OWNED = "ContinentsOwned";
 
 	/**
 	 * The {@link List} of all the {@link SlickContinent}s on the
@@ -157,40 +151,30 @@ public final class MapReader extends FileParser {
 	private void parseLineType() {
 
 		// Split the line by ','
-		String[] details = lines[index].split(",");
+		final String[] details = lines[index].split(",");
 
 		// The first section of the line denotes the type of instruction.
-		String type = details[0];
+		final String type = details[0];
 
 		// Parse the line differently based on the type of instruction.
-		switch (type) {
-		case COUNTRY:
+		if (LineType.COUNTRY.text.equals(type)) {
 			parseCountry(details);
-			break;
-		case UNIT:
+		} else if (LineType.UNIT.text.equals(type)) {
 			parseUnit(details);
-			break;
-		case LINK:
+		} else if (LineType.LINK.text.equals(type)) {
 			parseLink(details);
-			break;
-		case CONTINENT:
+		} else if (LineType.CONTINENT.text.equals(type)) {
 			parseContinent(details);
-			break;
-		case STATE:
+		} else if (LineType.STATE.text.equals(type)) {
 			parseState(details);
-			break;
-		case PLAYER:
+		} else if (LineType.PLAYER.text.equals(type)) {
 			parsePlayer(details);
-			break;
-		case ARMY_STRENGTH:
+		} else if (LineType.ARMY_SIZE.text.equals(type)) {
 			parseArmyStrength(details);
-			break;
-		case COUNTRIES_OWNED:
+		} else if (LineType.COUNTRIES_OWNED.text.equals(type)) {
 			parseCountriesOwned(details);
-			break;
-		case CONTINENTS_OWNED:
-			parseContinentsOwned(details);
-			break;
+		} else if (LineType.UNITS_KILLED.text.equals(type)) {
+			parseUnitsKilled(details);
 		}
 
 		index++;
@@ -451,7 +435,7 @@ public final class MapReader extends FileParser {
 						"Line " + index + ": " + numberStr + " is not a valid number of " + unitName + ".");
 			}
 
-			// Retrieve  the model unit with the name specifed by the pair.
+			// Retrieve the model unit with the name specifed by the pair.
 			final ModelUnit unit = UnitHelper.getInstance().get(unitName);
 
 			if (unit == null) {
@@ -681,7 +665,7 @@ public final class MapReader extends FileParser {
 			throw new IllegalArgumentException(
 					"Line " + index + ": " + details[5] + " is not a valid number of countries taken.");
 		}
-		
+
 		// Holds the number of armies a player has destroyed.
 		int unitsKilled;
 
@@ -691,7 +675,7 @@ public final class MapReader extends FileParser {
 			throw new IllegalArgumentException(
 					"Line " + index + ": " + details[6] + " is not a valid number of units killed.");
 		}
-		
+
 		// Holds the number of points a player has spent.
 		int pointsSpent;
 
@@ -709,8 +693,8 @@ public final class MapReader extends FileParser {
 		player.model.distributableArmy.setStrength(armyStrength);
 		player.model.setPoints(points);
 		player.model.setCountriesTaken(countriesTaken);
-		player.model.setUnitsKilled(unitsKilled);	
-		player.model.setPointsSpent(pointsSpent);		
+		player.model.setUnitsKilled(unitsKilled);
+		player.model.setPointsSpent(pointsSpent);
 		player.replaceImage(slickGame.getPlayerIcon(playerNumber));
 
 		// Add to the view
@@ -774,31 +758,31 @@ public final class MapReader extends FileParser {
 	 *            <li>The reward of the challenge</li>
 	 *            </ol>
 	 */
-	private void parseContinentsOwned(String[] details) {
+	private void parseUnitsKilled(String[] details) {
 
-		int CONTINENTS_LENGTH = 3;
+		int UNIT_KILLED_LENGTH = 3;
 
 		// Check there is the correct number of details
-		if (details.length != CONTINENTS_LENGTH) {
+		if (details.length != UNIT_KILLED_LENGTH) {
 			throw new IllegalArgumentException(
-					"Line " + index + ": Incorrect number of elements, there should be " + CONTINENTS_LENGTH + ".");
+					"Line " + index + ": Incorrect number of elements, there should be " + UNIT_KILLED_LENGTH + ".");
 		}
 
 		// Enter try-catch as many parts of this section can throw erroneous exceptions.
 		try {
 
-			// Holds the number of continents that the player must own in order to complete
+			// Holds the number of units that the player must kill in order to complete
 			// this challenge.
-			final int numberOfContinets = Integer.parseInt(details[1]);
+			final int numberOfUnits = Integer.parseInt(details[1]);
 
 			final int reward = Integer.parseInt(details[2]);
 
-			game.addChallenge(new Challenge(details[0], numberOfContinets, reward) {
+			game.addChallenge(new Challenge(details[0], numberOfUnits, reward) {
 
 				@Override
 				public boolean hasCompleted(ModelPlayer player, ModelBoard board) {
 
-					if (player.getContinentsRuled() >= goal) {
+					if (player.getUnitsKilled() >= goal) {
 						// Give the player points
 						player.addPoints(reward);
 						return true;
@@ -810,7 +794,7 @@ public final class MapReader extends FileParser {
 
 				@Override
 				public String toString() {
-					return "Own " + numberOfContinets + " Continents";
+					return "Kill " + goal + " Units";
 				}
 
 			});

@@ -17,7 +17,7 @@ import peril.model.states.ModelState;
  * 
  * @author Joshua_Eddy
  *
- * @version 1.01.05
+ * @version 1.01.06
  * @since 2018-03-09
  */
 public final class MapWriter {
@@ -96,8 +96,10 @@ public final class MapWriter {
 	 */
 	private String parseUnit(ModelUnit unit) {
 
-		StringBuilder line = new StringBuilder();
-		line.append("Unit,");
+		final StringBuilder line = new StringBuilder();
+		
+		line.append(LineType.UNIT.text);
+		line.append(',');
 
 		line.append(unit.name);
 		line.append(',');
@@ -125,8 +127,10 @@ public final class MapWriter {
 			throw new IllegalStateException("The current state cannot be saved.");
 		}
 
-		StringBuilder line = new StringBuilder();
-		line.append("State,");
+		final StringBuilder line = new StringBuilder();
+		
+		line.append(LineType.STATE.text);
+		line.append(',');
 
 		line.append(state.getName());
 		line.append(',');
@@ -153,9 +157,10 @@ public final class MapWriter {
 	 */
 	private String parsePlayer(ModelPlayer player, Boolean isActive) {
 
-		StringBuilder line = new StringBuilder();
+		final StringBuilder line = new StringBuilder();
 
-		line.append("Player,");
+		line.append(LineType.PLAYER.text);
+		line.append(',');
 
 		line.append(player.number);
 		line.append(',');
@@ -202,9 +207,10 @@ public final class MapWriter {
 	 */
 	private void parseLink(ModelCountry country, ModelCountry neighbour) {
 
-		StringBuilder line = new StringBuilder();
+		final StringBuilder line = new StringBuilder();
 
-		line.append("Link,");
+		line.append(LineType.LINK.text);
+		line.append(',');
 		line.append(country.getName());
 		line.append(',');
 		line.append(neighbour.getName());
@@ -233,9 +239,10 @@ public final class MapWriter {
 	 */
 	private String parseContinent(ModelContinent continent) {
 
-		StringBuilder line = new StringBuilder();
+		final StringBuilder line = new StringBuilder();
 
-		line.append("Continent,");
+		line.append(LineType.CONTINENT.text);
+		line.append(',');
 
 		// Country name
 		line.append(continent.getName());
@@ -267,16 +274,16 @@ public final class MapWriter {
 	 */
 	private String parseCountry(ModelCountry country) {
 
-		StringBuilder line = new StringBuilder();
+		final StringBuilder line = new StringBuilder();
 
-		line.append("Country");
+		line.append(LineType.COUNTRY.text);
 		line.append(',');
 
 		// Country name
 		line.append(country.getName());
 		line.append(',');
 
-		ModelColor color = country.getColor();
+		final ModelColor color = country.getColor();
 
 		// Country RGB
 		line.append(formatRGB(color.red));
@@ -366,7 +373,8 @@ public final class MapWriter {
 	 * @return <code>String</code>
 	 */
 	private String parseChallenge(Challenge challenge) {
-		StringBuilder line = new StringBuilder();
+		
+		final StringBuilder line = new StringBuilder();
 
 		line.append(challenge.type);
 		line.append(',');

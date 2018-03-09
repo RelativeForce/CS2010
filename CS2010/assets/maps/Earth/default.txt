@@ -234,3 +234,5 @@ ArmySize,100,5
 ArmySize,120,5
 CountriesOwned,30,5
 CountriesOwned,38,5
+UnitsKilled,100,5
+UnitsKilled,175,5

@@ -22,8 +22,8 @@ import peril.model.board.ModelUnit;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-03-04
- * @version 1.01.05
+ * @since 2018-03-09
+ * @version 1.01.06
  *
  * @see Observable
  * @see CombatRound
@@ -222,11 +222,34 @@ public final class CombatHelper extends Observable {
 
 			// Attacker won
 			if (attackerDiceRolls[index] > defenderDiceRolls[index]) {
-				warEnded = attackerWon(round, attackingUnit);
+
+				final ModelPlayer victor = round.attacker.getRuler();
+				final ModelPlayer loser = round.defender.getRuler();
+				final ModelArmy army = round.defender.getArmy();
+				final ModelSquad squad = round.defenderSquad;
+
+				warEnded = processDamage(victor, loser, army, squad, attackingUnit);
+
+				// If the war ended then assign the attacker as the ruler of the defending country.
+				if (warEnded) {
+					victor.totalArmy.add(UnitHelper.getInstance().getWeakest());
+					round.defender.setRuler(victor);
+				}
 			}
 			// Attacker lost
 			else {
-				warEnded = attackerLost(round, defendingUnit);
+
+				final ModelPlayer victor = round.defender.getRuler();
+				final ModelPlayer loser = round.attacker.getRuler();
+				final ModelArmy army = round.attacker.getArmy();
+				final ModelSquad squad = round.attackerSquad;
+
+				warEnded = processDamage(victor, loser, army, squad, defendingUnit);
+
+				// If the war ended add one unit to the losers army.
+				if (warEnded) {
+					loser.totalArmy.add(UnitHelper.getInstance().getWeakest());
+				}
 			}
 
 			index++;
@@ -234,90 +257,59 @@ public final class CombatHelper extends Observable {
 	}
 
 	/**
-	 * Processes a fight where the attacker won and the strength of the specified
-	 * attacking {@link ModelUnit} is dealt as damage to the defenders
+	 * Processes a fight with the specified victor and loser. The strength of the
+	 * specified {@link ModelUnit} is dealt as damage to the specified
 	 * {@link ModelArmy} and {@link ModelSquad}.
 	 * 
-	 * @param round
-	 *            The {@link CombatRound} specifying the details of this fight.
-	 * @param attackingUnit
-	 *            The unit that will damage the defenders {@link ModelArmy} and
-	 *            {@link ModelSquad}.
-	 * @return Whether this {@link ModelUnit}'s damage has caused the round to end.
-	 */
-	private boolean attackerWon(CombatRound round, ModelUnit attackingUnit) {
-
-		// Whether this units damage has ended the war.
-		boolean warEnded = false;
-
-		final ModelPlayer defender = round.defender.getRuler();
-		final ModelPlayer attacker = round.attacker.getRuler();
-		final ModelArmy defendingArmy = round.defender.getArmy();
-		final int totalStrength = defendingArmy.getStrength() + round.defenderSquad.geStrength();
-
-		removeUnitFromArmy(round.defenderSquad, defendingArmy, attackingUnit);
-
-		// Remove the units from the defending army.
-		if (defender != null) {
-
-			final int strengthToRemove = attackingUnit.strength > totalStrength ? totalStrength
-					: attackingUnit.strength;
-
-			defender.totalArmy.remove(strengthToRemove);
-		}
-
-		// If the defending army was cleared.
-		if (defendingArmy.getNumberOfUnits() + round.defenderSquad.getAliveUnits() == 0) {
-
-			// Reset the army to its weakest.
-			defendingArmy.setWeakest();
-
-			// Change the ruler.
-			round.defender.setRuler(attacker);
-			attacker.totalArmy.add(UnitHelper.getInstance().getWeakest());
-
-			warEnded = true;
-		}
-
-		return warEnded;
-	}
-
-	/**
-	 * Processes a fight where the defender won and the strength of the specified
-	 * defending {@link ModelUnit} is dealt as damage to the attackers
-	 * {@link ModelArmy} and {@link ModelSquad}.
-	 * 
-	 * @param round
-	 *            The {@link CombatRound} specifying the details of this fight.
-	 * @param defendingUnit
+	 * @param victor
+	 *            The {@link ModelPlayer} that rules the {@link ModelCountry} that
+	 *            has won this round of the war.
+	 * @param loser
+	 *            The {@link ModelPlayer} that rules the {@link ModelCountry} that
+	 *            has lost this round of the war.
+	 * @param army
+	 *            The army from the {@link ModelCountry} that has lost this round of
+	 *            the war.
+	 * @param squad
+	 *            The squad that was defending the {@link ModelCountry} that has
+	 *            lost this round of the war.
+	 * @param unit
 	 *            The unit that will damage the attacker {@link ModelArmy} and
 	 *            {@link ModelSquad}.
-	 * @return Whether this {@link ModelUnit}'s damage has caused the round to end.
+	 * @return Whether this {@link ModelUnit}'s damage has caused the war to end.
 	 */
-	private boolean attackerLost(CombatRound round, ModelUnit defendingUnit) {
+	private boolean processDamage(ModelPlayer victor, ModelPlayer loser, ModelArmy army, ModelSquad squad,
+			ModelUnit unit) {
 
-		// Whether this units damage has ended the war.
-		boolean warEnded = false;
+		// The number of units in the squad and army before the units damage was dealt.
+		final int preCombatUnitCount = army.getNumberOfUnits() + squad.getAliveUnits();
 
-		final ModelPlayer attacker = round.attacker.getRuler();
-		final ModelArmy attackingArmy = round.attacker.getArmy();
-		final int totalStrength = attackingArmy.getStrength() + round.attackerSquad.geStrength();
+		// Remove the unit from the army or squad.
+		removeUnitFromArmy(squad, army, unit);
 
-		removeUnitFromArmy(round.attackerSquad, attackingArmy, defendingUnit);
-		
-		attacker.totalArmy.remove(defendingUnit.strength > totalStrength ? totalStrength : defendingUnit.strength);
+		// The number of units in the squad and army after the units damage was dealt.
+		final int postCombatUnitCount = army.getNumberOfUnits() + squad.getAliveUnits();
 
-		// If the attacking army weakened to the point they can no longer
-		// attack.
-		if (attackingArmy.getNumberOfUnits() == 0) {
-
-			attackingArmy.setWeakest();
-			attacker.totalArmy.add(UnitHelper.getInstance().getWeakest());
-
-			warEnded = true;
+		// Remove the units from the losers total army.
+		if (loser != null) {
+			loser.totalArmy.remove(unit.strength);
 		}
 
-		return warEnded;
+		// Add the change in units to the victors units killed.
+		victor.addUnitsKilled(preCombatUnitCount - postCombatUnitCount);
+
+		// If the army and squad weakened to the point they can no longer attack.
+		if (postCombatUnitCount == 0) {
+
+			// Reset the army to its weakest.
+			army.setWeakest();
+
+			// The war has ended.
+			return true;
+		}
+
+		// The war can continue.
+		return false;
 	}
 
 	/**

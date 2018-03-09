@@ -15,8 +15,8 @@ import peril.model.board.ModelArmy;
  * 
  * @author Joshua_Eddy, Ezekiel_Trinidad, Joseph_Rolli
  * 
- * @since 2018-02-20
- * @version 1.01.03
+ * @since 2018-03-09
+ * @version 1.01.04
  * 
  * @see Player
  * @see Observable
@@ -70,9 +70,9 @@ public final class ModelPlayer extends Observable implements Player {
 	private int continents;
 
 	/**
-	 * The number of {@link ModelArmy}s the {@link ModelPlayer} has destroyed.
+	 * The number of units the {@link ModelPlayer} has killed.
 	 */
-	private int armiesDestroyed;
+	private int unitsKilled;
 
 	/**
 	 * The number of {@link ModelCountry}s the {@link ModelPlayer} has conquered.
@@ -235,17 +235,17 @@ public final class ModelPlayer extends Observable implements Player {
 	}
 
 	/**
-	 * Retrieves the total {@link Army}s destroyed by this {@link ModelPlayer}.
+	 * Retrieves the total number of units killed by this {@link ModelPlayer}.
 	 */
-	public int getArmiesDestroyed() {
-		return armiesDestroyed;
+	public int getUnitsKilled() {
+		return unitsKilled;
 	}
 
 	/**
-	 * Sets the total {@link Army}s destroyed by this {@link ModelPlayer}.
+	 * Sets the total units killed by this {@link ModelPlayer}.
 	 */
-	public void setArmiesDestroyed(int armiesDestroyed) {
-		this.armiesDestroyed = armiesDestroyed;
+	public void setUnitsKilled(int unitsKilled) {
+		this.unitsKilled = unitsKilled;
 	}
 
 	/**
@@ -292,4 +292,13 @@ public final class ModelPlayer extends Observable implements Player {
 		this.pointsSpent = pointsSpent;
 	}
 
+	/**
+	 * Adds units killed to this {@link ModelPlayer}'s total units killed.
+	 * 
+	 * @param unitsKilled
+	 *            The number of units killed.
+	 */
+	public void addUnitsKilled(int unitsKilled) {
+		this.unitsKilled += unitsKilled;
+	}
 }

@@ -36,8 +36,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Joshua_Eddy, Joseph_Rolli
  * 
- * @since 2018-02-20
- * @version 1.01.03
+ * @since 2018-03-09
+ * @version 1.01.04
  * 
  * @see FileParser
  * @see SaveFile
@@ -679,17 +679,17 @@ public final class MapReader extends FileParser {
 			countriesTaken = Integer.parseInt(details[5]);
 		} catch (Exception e) {
 			throw new IllegalArgumentException(
-					"Line " + index + ": " + details[5] + " is not a valid number of points.");
+					"Line " + index + ": " + details[5] + " is not a valid number of countries taken.");
 		}
 		
 		// Holds the number of armies a player has destroyed.
-		int armiesDestroyed;
+		int unitsKilled;
 
 		try {
-			armiesDestroyed = Integer.parseInt(details[6]);
+			unitsKilled = Integer.parseInt(details[6]);
 		} catch (Exception e) {
 			throw new IllegalArgumentException(
-					"Line " + index + ": " + details[6] + " is not a valid number of points.");
+					"Line " + index + ": " + details[6] + " is not a valid number of units killed.");
 		}
 		
 		// Holds the number of points a player has spent.
@@ -699,7 +699,7 @@ public final class MapReader extends FileParser {
 			pointsSpent = Integer.parseInt(details[7]);
 		} catch (Exception e) {
 			throw new IllegalArgumentException(
-					"Line " + index + ": " + details[7] + " is not a valid number of points.");
+					"Line " + index + ": " + details[7] + " is not a valid number of points spent.");
 		}
 
 		// Holds the slick player.
@@ -709,7 +709,7 @@ public final class MapReader extends FileParser {
 		player.model.distributableArmy.setStrength(armyStrength);
 		player.model.setPoints(points);
 		player.model.setCountriesTaken(countriesTaken);
-		player.model.setArmiesDestroyed(armiesDestroyed);	
+		player.model.setUnitsKilled(unitsKilled);	
 		player.model.setPointsSpent(pointsSpent);		
 		player.replaceImage(slickGame.getPlayerIcon(playerNumber));
 

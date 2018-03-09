@@ -14,8 +14,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Joseph_Rolli
  * 
- * @since 2018-02-28
- * @version 1.01.06
+ * @since 2018-03-09
+ * @version 1.01.07
  * 
  * @see Menu
  * @see ModelPlayer
@@ -126,7 +126,7 @@ public final class StatsMenu extends Menu {
 
 		final String countriesRuled = "Countries owned: " + currentPlayer.model.getCountriesRuled();
 		final String armyStrength = "Total army strength: " + currentPlayer.model.getTotalArmyStrength();
-		final String armiesDestroyed = "Armies destroyed: " + currentPlayer.model.getArmiesDestroyed();
+		final String unitsKilled = "Units killed: " + currentPlayer.model.getUnitsKilled();
 		final String currentPoints = "Current points: " + currentPlayer.model.getPoints();
 		final String pointsSpent = "Points spent: " + currentPlayer.model.getPointsSpent();
 		final String countriesTaken = "Countries taken: " + currentPlayer.model.getCountriesTaken();
@@ -135,7 +135,7 @@ public final class StatsMenu extends Menu {
 		// Draw the statistics
 		frame.draw(textFont, countriesRuled, x, getPosition().y + 190);
 		frame.draw(textFont, armyStrength, x, getPosition().y + 240);
-		frame.draw(textFont, armiesDestroyed, x, getPosition().y + 290);
+		frame.draw(textFont, unitsKilled, x, getPosition().y + 290);
 		frame.draw(textFont, currentPoints, x, getPosition().y + 340);
 		frame.draw(textFont, pointsSpent, x, getPosition().y + 390);
 		frame.draw(textFont, countriesTaken, x, getPosition().y + 440);

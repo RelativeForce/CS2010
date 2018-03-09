@@ -20,8 +20,8 @@ import peril.model.board.links.ModelLinkState;
  * 
  * @author Joshua_Eddy, James_Rowntree
  * 
- * @since 2018-02-14
- * @version 1.01.01
+ * @since 2018-03-09
+ * @version 1.01.02
  * 
  * @see Observable
  * @see Observer
@@ -110,7 +110,7 @@ public final class ModelCountry extends Observable implements Country, Observer 
 	public void changeLinkTo(ModelCountry country, ModelLinkState linkState, int duration) {
 
 		// If the specified country is a neighbour
-		if (!isNeighbour(country)) {
+		if (isNeighbour(country)) {
 
 			// Set the new link duration
 			neighbours.get(country).setState(linkState, duration);

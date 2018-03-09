@@ -14,17 +14,16 @@ import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
-import peril.model.board.links.ModelLink;
 import peril.model.board.links.ModelLinkState;
 import peril.model.states.ModelState;
 
 /**
- * The controller for all AI -> {@link Game} interactions.
+ * The controller for all AI to {@link Game} interactions.
  * 
  * @author Joshua_Eddy, Joseph_Rolli
  * 
- * @version 1.01.07
- * @since 2018-03-04
+ * @version 1.01.08
+ * @since 2018-03-09
  * 
  * @see AIController
  *
@@ -168,9 +167,9 @@ public final class AIHandler implements AIController {
 	 * Clears the selected {@link Country}s from all the game states.
 	 */
 	public void clearSelected() {
-		
+
 		game.view.toggleWarMenu(false);
-		
+
 		game.states.clearAll();
 	}
 
@@ -352,9 +351,6 @@ public final class AIHandler implements AIController {
 			throw new IllegalArgumentException("The specifed countries must be neighbours.");
 		}
 
-		// Get the link from the destination to the source
-		final ModelLink link = checkedDestination.getLinkTo(checkedSource);
-
 		if (source.getOwner() != getCurrentPlayer()) {
 			throw new IllegalStateException("The source country must be owned by the current player.");
 		}
@@ -368,7 +364,8 @@ public final class AIHandler implements AIController {
 
 		final int duration = 3;
 
-		link.setState(ModelLinkState.BLOCKADE, duration);
+		// Get the link from the destination to the source
+		checkedDestination.changeLinkTo(checkedSource, ModelLinkState.BLOCKADE, duration);
 		game.players.getCurrent().spendPoints(price);
 
 	}

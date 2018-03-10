@@ -12,17 +12,20 @@ import peril.views.slick.util.Point;
 import peril.views.slick.util.Region;
 
 /**
- * Tests {@link Region}. In specific the ability for the {@link Region} to store
- * and perform actions on the hit detection box of an object.
+ * Tests {@link Region}.
  * 
  * @author Joshua_Eddy
+ * 
+ * @version 1.01.01
+ * @since 2018-03-10
  * 
  * @see Region
  * @see LinkedList
  * @see List
+ * @see Point
  *
  */
-public class Test_Region {
+public final class Test_Region {
 
 	/**
 	 * The array that will be used to create the {@link Region} to be tested.
@@ -30,12 +33,12 @@ public class Test_Region {
 	private boolean[] testArray;
 
 	/**
-	 * The {@link Region}
+	 * The {@link Region} that will be the primary source of the test.
 	 */
 	private Region testRegion;
 
 	/**
-	 * Sets up the inital objects that will be used in the tests.
+	 * Sets up the initial objects that will be used in the tests.
 	 * 
 	 * @throws Exception
 	 *             Triggered by set up fail.
@@ -74,7 +77,7 @@ public class Test_Region {
 		// Assert that the height is 2 as the height of the region should be 2.
 		assertTrue(testRegion.getHeight() == 2);
 
-		boolean[] object = testRegion.getObject();
+		final boolean[] object = testRegion.getObject();
 
 		// Assert that the Region reducer has shrunk the array to the 2x2.
 		assertTrue(object[0] && object[1] && object[2] && object[3]);
@@ -86,7 +89,7 @@ public class Test_Region {
 	 * {@link Test_Region#testRegion}.
 	 */
 	@Test(expected = IllegalArgumentException.class)
-	public void test_IsInside() {
+	public void test_IsValid() {
 
 		// Assert that the (0,0) is not inside the region
 		assertTrue(!testRegion.isValid(new Point(0, 0)));
@@ -107,19 +110,19 @@ public class Test_Region {
 	public void test_Combine() {
 
 		// Construct a 4x4 image boolean array with a 1x1 true region in the at (1,4).
-		boolean[] testArrayToCombine = new boolean[] {  false, false, false, false ,
-				 false, false, false, true ,  false, false, false, false ,  false, false, false, false  };
+		final boolean[] testArrayToCombine = new boolean[] { false, false, false, false, false, false, false, true,
+				false, false, false, false, false, false, false, false };
 
 		// Creates a Region that is to be combined with the test region.
-		Region testRegionToCombine = new Region(testArrayToCombine, 4, 4);
+		final Region testRegionToCombine = new Region(testArrayToCombine, 4, 4);
 
 		// Add both regions to the list of regions to combine.
-		List<Region> toCombineList = new LinkedList<>();
+		final List<Region> toCombineList = new LinkedList<>();
 		toCombineList.add(testRegionToCombine);
 		toCombineList.add(testRegion);
 
 		// Combine the regions and then store it.
-		Region combined = Region.combine(toCombineList, 4, 4);
+		final Region combined = Region.combine(toCombineList, 4, 4);
 
 		// Assert that the position of the region is (1,1)
 		assertTrue(combined.getPosition().x == 1);
@@ -129,7 +132,7 @@ public class Test_Region {
 		assertTrue(combined.getWidth() == 2);
 		assertTrue(combined.getHeight() == 3);
 
-		boolean[] object = combined.getObject();
+		final boolean[] object = combined.getObject();
 
 		// Assert that the points in the region have the correct boolean state.
 		assertTrue(object[0]);
@@ -138,6 +141,32 @@ public class Test_Region {
 		assertTrue(object[3]);
 		assertTrue(object[4]);
 		assertTrue(!object[5]);
+
+	}
+
+	/**
+	 * Test the {@link Region#overlap(Region, Region)}
+	 */
+	@Test
+	public void test_overlap() {
+
+		// A test 1x1 region to test over lap with test 2x2 region.
+		final Region testRegionToOverlap = new Region(new boolean[] { true }, 1, 1);
+
+		// Assert the default position of the region.
+		assertTrue(testRegionToOverlap.getPosition().x == 0);
+		assertTrue(testRegionToOverlap.getPosition().y == 0);
+
+		// Assert that the 1x1 region at (0,0) does not over lap with the 2x2 test
+		// region at (1,1)
+		assertTrue(!Region.overlap(testRegion, testRegionToOverlap));
+
+		// Move the region to (1,1)
+		testRegionToOverlap.setPosition(new Point(1, 1));
+
+		// Assert that the 1x1 region at (1,1) does not over lap with the 2x2 test
+		// region at (1,1)
+		assertTrue(Region.overlap(testRegion, testRegionToOverlap));
 
 	}
 

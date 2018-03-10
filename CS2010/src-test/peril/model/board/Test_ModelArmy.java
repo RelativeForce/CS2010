@@ -2,20 +2,39 @@ package peril.model.board;
 
 import static org.junit.Assert.*;
 
-import javax.jws.WebParam.Mode;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import peril.helpers.UnitHelper;
-import peril.model.board.ModelArmy;
-import peril.model.board.ModelUnit;
 
-public class Test_ModelArmy {
+/**
+ * 
+ * Tests {@link ModelArmy}.
+ * 
+ * @author Ezekiel_Trinidad, Joshua_Eddy
+ * 
+ * @version 1.01.02
+ * @since 2018-03-10
+ * 
+ * @see UnitHelper
+ * @see ModelUnit
+ *
+ */
+public final class Test_ModelArmy {
 
+	/**
+	 * The {@link UnitHelper} that holds the instance of
+	 * {@link UnitHelper#getInstance()}.
+	 */
+	private UnitHelper unitHelper;
+
+	/**
+	 * The pre-test setup operations. 
+	 * @throws Exception
+	 */
 	@Before
 	public void setUp() throws Exception {
-
+		unitHelper = UnitHelper.getInstance();
 	}
 
 	/**
@@ -23,28 +42,28 @@ public class Test_ModelArmy {
 	 * the correct strength of a {@link ModelArmy}.
 	 */
 	@Test
-	public void test_GetStrength() {
+	public void test_getStrength() {
 
-		ModelUnit testUnitOne = new ModelUnit("testOne", 1, "fileNameOne");
-		ModelUnit testUnitTwo = new ModelUnit("testTwo", 2, "fileNameTwo");
-		ModelUnit testUnitThree = new ModelUnit("testThree", 3, "fileNameThree");
+		final ModelUnit testUnit1 = new ModelUnit("testOne", 1, "fileNameOne");
+		final ModelUnit testUnit2 = new ModelUnit("testTwo", 2, "fileNameTwo");
+		final ModelUnit testUnit3 = new ModelUnit("testThree", 3, "fileNameThree");
 
 		// Clear instance of UnitHelper
-		UnitHelper.getInstance().clear();
+		unitHelper.clear();
 		// Add the units to UnitHelper
-		UnitHelper.getInstance().addUnit(testUnitOne);
-		UnitHelper.getInstance().addUnit(testUnitTwo);
-		UnitHelper.getInstance().addUnit(testUnitThree);
+		unitHelper.addUnit(testUnit1);
+		unitHelper.addUnit(testUnit2);
+		unitHelper.addUnit(testUnit3);
 
-		ModelArmy modelArmy = new ModelArmy();
+		final ModelArmy modelArmy = new ModelArmy();
 
 		// Add units to modelArmy
 		// and asserts the correct values
-		modelArmy.add(testUnitOne);
+		modelArmy.add(testUnit1);
 		assertEquals(1, modelArmy.getStrength());
-		modelArmy.add(testUnitTwo);
+		modelArmy.add(testUnit2);
 		assertEquals(3, modelArmy.getStrength());
-		modelArmy.add(testUnitThree);
+		modelArmy.add(testUnit3);
 		assertEquals(6, modelArmy.getStrength());
 		// System.out.println("This is the ModelArmy strength " +
 		// modelArmyOne.getStrength());
@@ -54,33 +73,25 @@ public class Test_ModelArmy {
 	 * This test confirms if the {@link ModelArmy#setStrength()} method sets the
 	 * correct strength of a {@link ModelArmy}
 	 */
-	@Test
-	public void test_SetStrength() {
+	@Test(expected = IllegalArgumentException.class)
+	public void test_setStrength() {
 
-		UnitHelper.getInstance().clear();
+		final ModelUnit testUnit1 = new ModelUnit("testUnit", 1, "na");
 
-		ModelUnit testUnitOne = new ModelUnit("testUnitOne", 1, "fileName");
-		ModelUnit testUnitTwo = new ModelUnit("testUnitTwo", 10, "fileName");
+		unitHelper.clear();
+		unitHelper.addUnit(testUnit1);
 
-		ModelArmy modelArmyOne = new ModelArmy();
-		ModelArmy modelArmyTwo = new ModelArmy();
-		// Combination of Three units
-		ModelArmy modelArmyThree = new ModelArmy();
+		// Create the test army
+		final ModelArmy modelArmy1 = new ModelArmy();
 
-		UnitHelper.getInstance().addUnit(testUnitOne);
-		UnitHelper.getInstance().addUnit(testUnitTwo);
+		final int testStrength = 5;
 
-		modelArmyOne.add(testUnitOne);
-		modelArmyOne.setStrength(2);
-		assertEquals(2, modelArmyOne.getStrength());
+		// Set the army to the test strength
+		modelArmy1.setStrength(testStrength);
+		assertEquals(testStrength, modelArmy1.getStrength());
 
-		modelArmyTwo.add(testUnitTwo);
-		modelArmyTwo.setStrength(1);
-		assertEquals(1, modelArmyTwo.getStrength());
-
-		modelArmyThree.add(testUnitOne);
-		modelArmyThree.add(testUnitTwo);
-		assertEquals(11, modelArmyThree.getStrength());
+		// Should throw an illegal argument exception
+		modelArmy1.setStrength(-1);
 
 	}
 
@@ -90,23 +101,23 @@ public class Test_ModelArmy {
 	 * 
 	 */
 	@Test
-	public void test_Remove() {
+	public void test_remove_strength() {
 
-		ModelUnit testUnitOne = new ModelUnit("testOne", 1, "fileNameOne");
-		ModelUnit testUnitTwo = new ModelUnit("testTwo", 2, "fileNameTwo");
-		ModelUnit testUnitThree = new ModelUnit("testThree", 3, "fileNameThree");
+		final ModelUnit testUnit1 = new ModelUnit("testOne", 1, "fileNameOne");
+		final ModelUnit testUnit2 = new ModelUnit("testTwo", 2, "fileNameTwo");
+		final ModelUnit testUnit3 = new ModelUnit("testThree", 3, "fileNameThree");
 
-		UnitHelper.getInstance().clear();
-		UnitHelper.getInstance().addUnit(testUnitOne);
-		UnitHelper.getInstance().addUnit(testUnitTwo);
-		UnitHelper.getInstance().addUnit(testUnitThree);
+		unitHelper.clear();
+		unitHelper.addUnit(testUnit1);
+		unitHelper.addUnit(testUnit2);
+		unitHelper.addUnit(testUnit3);
 
 		ModelArmy modelArmyOne = new ModelArmy();
-		modelArmyOne.add(testUnitOne);
-		modelArmyOne.add(testUnitTwo);
-		modelArmyOne.add(testUnitThree);
+		modelArmyOne.add(testUnit1);
+		modelArmyOne.add(testUnit2);
+		modelArmyOne.add(testUnit3);
 
-		modelArmyOne.remove(testUnitOne);
+		modelArmyOne.remove(testUnit1);
 		assertEquals(5, modelArmyOne.getStrength());
 		modelArmyOne.remove(3);
 		assertEquals(2, modelArmyOne.getStrength());
@@ -119,17 +130,17 @@ public class Test_ModelArmy {
 	 * break the units down until the unit can be remove.
 	 */
 	@Test
-	public void test_Remove_BreakUnit() {
+	public void test_remove_unit() {
 
 		final ModelUnit testUnit1 = new ModelUnit("test1", 1, "na");
 		final ModelUnit testUnit2 = new ModelUnit("test2", 5, "na");
 		final ModelUnit testUnit3 = new ModelUnit("test3", 15, "na");
 
 		// Add the units to the unit helper
-		UnitHelper.getInstance().clear();
-		UnitHelper.getInstance().addUnit(testUnit1);
-		UnitHelper.getInstance().addUnit(testUnit2);
-		UnitHelper.getInstance().addUnit(testUnit3);
+		unitHelper.clear();
+		unitHelper.addUnit(testUnit1);
+		unitHelper.addUnit(testUnit2);
+		unitHelper.addUnit(testUnit3);
 
 		// The army being tested
 		final ModelArmy testArmy = new ModelArmy();
@@ -157,13 +168,6 @@ public class Test_ModelArmy {
 		assertTrue(testArmy.getNumberOf(testUnit3) == 0);
 		assertTrue(testArmy.getNumberOf(testUnit2) == 2);
 		assertTrue(testArmy.getNumberOf(testUnit1) == 4);
-
-		System.out.println("Test: remove() - Breaking down units");
-
-		// Print the number of units for feed back sake.
-		for (ModelUnit unit : testArmy) {
-			System.out.println(unit.name + " " + unit.strength + " " + testArmy.getNumberOf(unit));
-		}
 
 	}
 

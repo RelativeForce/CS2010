@@ -23,7 +23,7 @@ import peril.model.board.ModelUnit;
  * @author Joshua_Eddy
  * 
  * @since 2018-03-11
- * @version 1.01.07
+ * @version 1.01.08
  *
  * @see Observable
  * @see CombatRound
@@ -84,32 +84,11 @@ public final class CombatHelper extends Observable {
 	 */
 	public void fight(CombatRound round) {
 
-		// Check the countries aren't ruled by the same player.
-		if (round.attacker.getRuler().equals(round.defender.getRuler())) {
-			throw new IllegalArgumentException("The two countries can not be ruler by the same player.");
-		}
-
-		// Check the countries aren't the same country
-		if (round.attacker.equals(round.defender)) {
-			throw new IllegalArgumentException("The two countries can not be the same country.");
-		}
-
-		// Check the squads aren't the same.
-		if (round.attackerSquad.equals(round.defenderSquad)) {
-			throw new IllegalArgumentException("The two squads can not be the same squad.");
-		}
-
 		// Check the attacking squad.
 		final int attackSquadSize = round.attackerSquad.getAliveUnits();
-		if (attackSquadSize > MAX_ATTACK_SQUAD_SIZE || attackSquadSize == 0) {
-			throw new IllegalArgumentException(attackSquadSize + " is not a valid attacking squad size.");
-		}
 
 		// Check the defending squad.
 		final int defendSquadSize = round.defenderSquad.getAliveUnits();
-		if (defendSquadSize > MAX_DEFEND_SQUAD_SIZE || defendSquadSize == 0) {
-			throw new IllegalArgumentException(defendSquadSize + " is not a valid defending squad size.");
-		}
 
 		// Get the dice rolls for the attackers and defenders.
 		final Integer[] attackerDiceRolls = getDiceRolls(attackSquadSize);

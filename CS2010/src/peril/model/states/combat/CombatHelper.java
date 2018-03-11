@@ -23,7 +23,7 @@ import peril.model.board.ModelUnit;
  * @author Joshua_Eddy
  * 
  * @since 2018-03-11
- * @version 1.01.08
+ * @version 1.01.09
  *
  * @see Observable
  * @see CombatRound
@@ -83,6 +83,14 @@ public final class CombatHelper extends Observable {
 	 *            The {@link CombatRound} specifying the details of this fight.
 	 */
 	public void fight(CombatRound round) {
+
+		// Null check
+		if (round == null) {
+			throw new NullPointerException("Combat round cannot be null.");
+		}
+
+		// Ensure that the round is valid.
+		round.checkState();
 
 		// Check the attacking squad.
 		final int attackSquadSize = round.attackerSquad.getAliveUnits();

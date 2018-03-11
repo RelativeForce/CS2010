@@ -21,8 +21,8 @@ import peril.model.board.links.ModelLink;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-23
- * @version 1.01.04
+ * @since 2018-03-11
+ * @version 1.01.05
  *
  * @see ModelState
  */
@@ -122,6 +122,8 @@ public final class Fortify extends ModelState {
 
 			// Populate the path between the start and the target.
 			isPath(path, traversed, start, target, unit);
+			
+			
 		}
 
 		// Return the path as a list so that it is clear which end is the start.
@@ -157,12 +159,10 @@ public final class Fortify extends ModelState {
 			if (primaryArmy.getNumberOfUnits() > 1 && primaryArmy.getNumberOf(unit) > 0) {
 
 				// The path between the two countries.
-				// final List<ModelCountry> path = getPathBetween(primary, target, unit);
+				 final List<ModelCountry> path = getPathBetween(primary, target, unit);
 
 				// Transfer the unit along the path
-				// transferAlongPath(path, unit);
-				primary.getArmy().remove(unit);
-				target.getArmy().add(unit);
+				 transferAlongPath(path, unit);
 
 				// If there is one unit left in the primary army then de-select the countries.
 				if (primaryArmy.getNumberOfUnits() == 1) {
@@ -359,7 +359,7 @@ public final class Fortify extends ModelState {
 			ModelCountry target, ModelUnit unit) {
 
 		// Add the current country to the path
-		path.push(current);
+		path.addLast(current);
 
 		// Holds the children of the current country that can be traversed.
 		final Set<ModelCountry> validChildren = new HashSet<>();
@@ -373,7 +373,7 @@ public final class Fortify extends ModelState {
 			 * node to return true also.
 			 */
 			if (country.equals(target)) {
-				path.push(country);
+				path.addLast(country);
 				return true;
 			}
 
@@ -399,7 +399,7 @@ public final class Fortify extends ModelState {
 		 * current county is not on the path.
 		 */
 		if (validChildren.isEmpty()) {
-			path.pop();
+			path.removeLast();
 			return false;
 		}
 
@@ -417,7 +417,7 @@ public final class Fortify extends ModelState {
 		 * This will only be performed if non of the children have reached the target.
 		 * Therefore the current country is not on the path to the target.
 		 */
-		path.pop();
+		path.removeLast();
 		return false;
 	}
 

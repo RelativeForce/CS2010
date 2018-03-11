@@ -22,8 +22,8 @@ import peril.model.board.ModelUnit;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-03-09
- * @version 1.01.06
+ * @since 2018-03-11
+ * @version 1.01.07
  *
  * @see Observable
  * @see CombatRound
@@ -84,9 +84,19 @@ public final class CombatHelper extends Observable {
 	 */
 	public void fight(CombatRound round) {
 
-		// Check the countries
+		// Check the countries aren't ruled by the same player.
 		if (round.attacker.getRuler().equals(round.defender.getRuler())) {
-			throw new IllegalArgumentException("The two countries can be ruler by the same player.");
+			throw new IllegalArgumentException("The two countries can not be ruler by the same player.");
+		}
+
+		// Check the countries aren't the same country
+		if (round.attacker.equals(round.defender)) {
+			throw new IllegalArgumentException("The two countries can not be the same country.");
+		}
+
+		// Check the squads aren't the same.
+		if (round.attackerSquad.equals(round.defenderSquad)) {
+			throw new IllegalArgumentException("The two squads can not be the same squad.");
 		}
 
 		// Check the attacking squad.
@@ -230,7 +240,8 @@ public final class CombatHelper extends Observable {
 
 				warEnded = processDamage(victor, loser, army, squad, attackingUnit);
 
-				// If the war ended then assign the attacker as the ruler of the defending country.
+				// If the war ended then assign the attacker as the ruler of the defending
+				// country.
 				if (warEnded) {
 					victor.totalArmy.add(UnitHelper.getInstance().getWeakest());
 					round.defender.setRuler(victor);

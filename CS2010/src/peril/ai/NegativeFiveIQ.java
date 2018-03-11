@@ -12,10 +12,14 @@ import peril.controllers.api.Player;
  * An {@link AI} that's about as smart as an actual Duckling.
  * 
  * @author Ezekiel_Trinidad
+ * 
+ * @version 1.01.02
+ * @since 2018-03-11
  *
+ * @see AI
  */
 
-public class NegativeFiveIQ extends AI {
+public final class NegativeFiveIQ extends AI {
 
 	private static final String NAME = "Duckling";
 
@@ -36,7 +40,7 @@ public class NegativeFiveIQ extends AI {
 				strongest = value;
 			}
 		}
-		
+
 		final AIOperation op = new AIOperation();
 		op.select.add(countries.get(strongest));
 		op.processAgain = true;
@@ -46,7 +50,7 @@ public class NegativeFiveIQ extends AI {
 
 	@Override
 	protected AIOperation processAttack(AIController api) {
-		
+
 		Map<Integer, Entry> countries = getAttackWeightings(api);
 
 		int highest = Integer.MIN_VALUE;
@@ -70,17 +74,17 @@ public class NegativeFiveIQ extends AI {
 
 	@Override
 	protected AIOperation processFortify(AIController api) {
-		
+
 		Map<Integer, Country> countries = fortify(api);
-		
+
 		int weakest = 1;
-		
+
 		for (int value : countries.keySet()) {
-			if(value < weakest) {
+			if (value < weakest) {
 				value = weakest;
 			}
 		}
-		
+
 		return new AIOperation();
 	}
 
@@ -94,16 +98,16 @@ public class NegativeFiveIQ extends AI {
 
 			if (current.equals(country.getOwner())) {
 
-				int value = -country.getArmyStrength();
+				int value = -country.getArmy().getStrength();
 
 				for (Country neighbour : country.getNeighbours()) {
 
 					if (!current.equals(neighbour.getOwner())) {
-						value += neighbour.getArmyStrength();
+						value += neighbour.getArmy().getStrength();
 					}
 				}
 
-				if (value != -country.getArmyStrength()) {
+				if (value != -country.getArmy().getStrength()) {
 					countries.put(value, country);
 				}
 
@@ -125,18 +129,17 @@ public class NegativeFiveIQ extends AI {
 
 				for (Country neighbour : country.getNeighbours()) {
 
-					if(api.hasOpenLinkBetween(country, neighbour)) {
-						
-						int value = country.getArmyStrength();
+					if (api.hasOpenLinkBetween(country, neighbour)) {
+
+						int value = country.getArmy().getStrength();
 
 						if (!current.equals(neighbour.getOwner())) {
 
-							value -= neighbour.getArmyStrength();
+							value -= neighbour.getArmy().getStrength();
 
 							countries.put(value, new Entry(country, neighbour));
 						}
 					}
-					
 
 				}
 			}
@@ -144,22 +147,22 @@ public class NegativeFiveIQ extends AI {
 
 		return countries;
 	}
-	
+
 	private Map<Integer, Country> fortify(AIController api) {
 		Map<Integer, Country> friendlies = new HashMap<>();
-		
+
 		Player current = api.getCurrentPlayer();
-		
+
 		api.forEachCountry(country -> {
-			if(current.equals(country.getOwner())) {
-				friendlies.put(country.getArmyStrength(), country);
+			if (current.equals(country.getOwner())) {
+				friendlies.put(country.getArmy().getStrength(), country);
 			}
 		});
-		
+
 		return friendlies;
 	}
-	
-	//just gonna borrow this class, lmao
+
+	// just gonna borrow this class, lmao
 	/**
 	 * Holds a pair of {@link Country}s.
 	 * 

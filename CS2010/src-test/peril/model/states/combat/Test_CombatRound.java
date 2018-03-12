@@ -22,8 +22,8 @@ import peril.model.board.links.ModelLinkState;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.01
- * @since 2018-03-11
+ * @version 1.01.03
+ * @since 2018-03-12
  * 
  * @see CombatRound
  *
@@ -83,9 +83,17 @@ public final class Test_CombatRound {
 		country1.setRuler(player1);
 		country2.setRuler(player2);
 
+		// Set the players as owning one country
+		player1.setCountriesRuled(1);
+		player2.setCountriesRuled(1);
+
 		// Build the armies
 		country1.getArmy().add(testArmyUnits);
 		country2.getArmy().add(testArmyUnits);
+
+		// Add the units to the players total armies.
+		player1.totalArmy.add(testArmyUnits);
+		player2.totalArmy.add(testArmyUnits);
 
 		// Define the squads
 		final ModelSquad attackSquad = new ModelSquad(CombatHelper.MAX_ATTACK_SQUAD_SIZE);
@@ -125,9 +133,17 @@ public final class Test_CombatRound {
 		country1.setRuler(player1);
 		country2.setRuler(player2);
 
+		// Set the players as owning one country
+		player1.setCountriesRuled(1);
+		player2.setCountriesRuled(1);
+
 		// Build the armies
 		country1.getArmy().add(testArmyUnits);
 		country2.getArmy().add(testArmyUnits);
+
+		// Add the units to the players total armies.
+		player1.totalArmy.add(testArmyUnits);
+		player2.totalArmy.add(testArmyUnits);
 
 		// Define the squads
 		final ModelSquad attackSquad = new ModelSquad(CombatHelper.MAX_ATTACK_SQUAD_SIZE);
@@ -165,9 +181,17 @@ public final class Test_CombatRound {
 		country1.setRuler(player1);
 		country2.setRuler(player2);
 
+		// Set the players as owning one country
+		player1.setCountriesRuled(1);
+		player2.setCountriesRuled(1);
+
 		// Build the armies
 		country1.getArmy().add(testArmyUnits);
 		country2.getArmy().add(testArmyUnits);
+
+		// Add the units to the players total armies.
+		player1.totalArmy.add(testArmyUnits);
+		player2.totalArmy.add(testArmyUnits);
 
 		// Define the squads
 		final ModelSquad defendSquad = new ModelSquad(CombatHelper.MAX_DEFEND_SQUAD_SIZE);
@@ -205,9 +229,15 @@ public final class Test_CombatRound {
 		country1.setRuler(player1);
 		country2.setRuler(player1);
 
+		// Set the player as owning two country
+		player1.setCountriesRuled(2);
+
 		// Build the armies
 		country1.getArmy().add(testArmyUnits);
 		country2.getArmy().add(testArmyUnits);
+
+		// Add the units to the players total armies.
+		player1.totalArmy.add(testArmyUnits);
 
 		// Define the squads
 		final ModelSquad attackSquad = new ModelSquad(CombatHelper.MAX_ATTACK_SQUAD_SIZE);
@@ -240,8 +270,14 @@ public final class Test_CombatRound {
 		// Assign the rulers
 		country1.setRuler(player1);
 
+		// Set the player as owning one country
+		player1.setCountriesRuled(1);
+
 		// Build the armies
 		country1.getArmy().add(testArmyUnits);
+
+		// Add the units to the players total armies.
+		player1.totalArmy.add(testArmyUnits);
 
 		// Define the squads
 		final ModelSquad attackSquad = new ModelSquad(CombatHelper.MAX_ATTACK_SQUAD_SIZE);
@@ -282,9 +318,17 @@ public final class Test_CombatRound {
 		country1.setRuler(player1);
 		country2.setRuler(player2);
 
+		// Set the players as owning one country
+		player1.setCountriesRuled(1);
+		player2.setCountriesRuled(1);
+
 		// Build the armies
 		country1.getArmy().add(testArmyUnits);
 		country2.getArmy().add(testArmyUnits);
+
+		// Add the units to the players total armies.
+		player1.totalArmy.add(testArmyUnits);
+		player2.totalArmy.add(testArmyUnits);
 
 		// Define the squads
 		final ModelSquad attackSquad = new ModelSquad(CombatHelper.MAX_ATTACK_SQUAD_SIZE + 1);
@@ -324,9 +368,17 @@ public final class Test_CombatRound {
 		country1.setRuler(player1);
 		country2.setRuler(player2);
 
+		// Set the players as owning one country
+		player1.setCountriesRuled(1);
+		player2.setCountriesRuled(1);
+
 		// Build the armies
 		country1.getArmy().add(testArmyUnits);
 		country2.getArmy().add(testArmyUnits);
+
+		// Add the units to the players total armies.
+		player1.totalArmy.add(testArmyUnits);
+		player2.totalArmy.add(testArmyUnits);
 
 		// Define the squads
 		final ModelSquad attackSquad = new ModelSquad(CombatHelper.MAX_ATTACK_SQUAD_SIZE);

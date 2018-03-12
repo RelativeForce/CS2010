@@ -76,11 +76,8 @@ public final class Reinforce extends ModelState {
 	/**
 	 * Reinforces the currently selected {@link ModelCountry}.
 	 * 
-	 * @param game
-	 *            The {@link GameController} that allows this {@link Reinforce} to
-	 *            query the state of the game.
 	 */
-	public void reinforce(GameController game) {
+	public void reinforce() {
 
 		// Holds the currently highlighted country
 		final ModelCountry selectedCountry = getSelected(0);

@@ -2,6 +2,7 @@ package peril.model.states.combat;
 
 import static org.junit.Assert.*;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -14,9 +15,14 @@ import peril.controllers.AIController;
 import peril.controllers.Directory;
 import peril.controllers.GameController;
 import peril.helpers.AIHelper;
+import peril.helpers.UnitHelper;
+import peril.model.ModelColor;
 import peril.model.ModelPlayer;
+import peril.model.board.ModelArmy;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelCountry;
+import peril.model.board.ModelUnit;
+import peril.model.board.links.ModelLink;
 import peril.model.board.links.ModelLinkState;
 import peril.model.states.Fortify;
 import peril.model.states.ModelState;
@@ -58,6 +64,12 @@ public final class Test_Attack {
 	private ModelPlayer testEnemyPlayer;
 
 	/**
+	 * The {@link List} of {@link ModelUnit}s that will make up a standard
+	 * {@link ModelArmy}.
+	 */
+	private List<ModelUnit> testArmyUnits;
+
+	/**
 	 * Sets up the elements that will be used by every test to test {@link Attack}.
 	 * 
 	 * @throws Exception
@@ -68,6 +80,23 @@ public final class Test_Attack {
 		this.testCurrentPlayer = new ModelPlayer(1, AI.USER);
 		this.testEnemyPlayer = new ModelPlayer(2, AI.USER);
 		this.testAttack = new Attack(new TestGC());
+
+		// Set the players as owning one country
+		this.testCurrentPlayer.setCountriesRuled(1);
+		this.testEnemyPlayer.setCountriesRuled(1);
+
+		final ModelUnit testUnit1 = new ModelUnit("testUnit1", 1, "na");
+
+		UnitHelper.getInstance().clear();
+		UnitHelper.getInstance().addUnit(testUnit1);
+
+		// The basic units for a standard army.
+		this.testArmyUnits = new LinkedList<>();
+		this.testArmyUnits.add(testUnit1);
+		this.testArmyUnits.add(testUnit1);
+		this.testArmyUnits.add(testUnit1);
+		this.testArmyUnits.add(testUnit1);
+		this.testArmyUnits.add(testUnit1);
 
 	}
 
@@ -81,16 +110,91 @@ public final class Test_Attack {
 	 */
 	@Test
 	public void test_select_normal() {
-		fail("Not yet implemented");
+
+		// Reset test fields to initial state
+		testCurrentPlayer.totalArmy.clearUnits();
+		testEnemyPlayer.totalArmy.clearUnits();
+		testAttack.deselectAll();
+
+		// The countries taking part in the war.
+		final ModelCountry country1 = new ModelCountry("country1", new ModelColor(0, 0, 0));
+		final ModelCountry country2 = new ModelCountry("country2", new ModelColor(0, 0, 1));
+
+		// Set the countries as linked.
+		country1.addNeighbour(country2, new ModelLink(ModelLinkState.OPEN));
+		country2.addNeighbour(country1, new ModelLink(ModelLinkState.OPEN));
+
+		// Assign the rulers.
+		country1.setRuler(testCurrentPlayer);
+		country2.setRuler(testEnemyPlayer);
+
+		// Build the armies
+		country1.getArmy().add(testArmyUnits);
+		country2.getArmy().add(testArmyUnits);
+
+		// Add the units to the players total armies.
+		testCurrentPlayer.totalArmy.add(testArmyUnits);
+		testEnemyPlayer.totalArmy.add(testArmyUnits);
+
+		// Assert that the friendly country with a army with more than one unit.
+		assertTrue(testAttack.select(country1));
+
+		// Assert the the enemy country that is a neighbour connected by a valid link
+		assertTrue(testAttack.select(country2));
+
+		// Assert that there is two countries selected and they are in the correct
+		// order.
+		assertTrue(testAttack.numberOfSelected() == 2);
+		assertTrue(testAttack.getPrimary().equals(country1));
+		assertTrue(testAttack.getSecondary().equals(country2));
+
 	}
 
 	/**
-	 * This method asserts that two {@link ModelCountry}s ruled by the same
-	 * {@link ModelPlayer} can not be selected at the same time.
+	 * This method asserts that if two {@link ModelCountry}s ruled by the same
+	 * {@link ModelPlayer} can be selected but when the second is selected it will
+	 * replace the primary.
 	 */
 	@Test
-	public void test_select_friendlyCountries() {
-		fail("Not yet implemented");
+	public void test_select_swapPrimary() {
+
+		// Reset test fields to initial state
+		testCurrentPlayer.totalArmy.clearUnits();
+		testEnemyPlayer.totalArmy.clearUnits();
+		testAttack.deselectAll();
+
+		// The countries taking part in the war.
+		final ModelCountry country1 = new ModelCountry("country1", new ModelColor(0, 0, 0));
+		final ModelCountry country2 = new ModelCountry("country2", new ModelColor(0, 0, 1));
+
+		// Set the countries as linked.
+		country1.addNeighbour(country2, new ModelLink(ModelLinkState.OPEN));
+		country2.addNeighbour(country1, new ModelLink(ModelLinkState.OPEN));
+
+		// Assign both the countries with the same ruler.
+		country1.setRuler(testCurrentPlayer);
+		country2.setRuler(testCurrentPlayer);
+
+		// Build the armies
+		country1.getArmy().add(testArmyUnits);
+		country2.getArmy().add(testArmyUnits);
+
+		// Add the units to the players total armies.
+		testCurrentPlayer.totalArmy.add(testArmyUnits);
+		testEnemyPlayer.totalArmy.add(testArmyUnits);
+
+		// Assert that the friendly country with a army with more than one unit.
+		assertTrue(testAttack.select(country1));
+
+		// Assert the the second friendly country can be selected but it will be the new
+		// primary.
+		assertTrue(testAttack.select(country2));
+
+		// Assert that there is one country selected and it is the second.
+		assertTrue(testAttack.numberOfSelected() == 1);
+		assertTrue(testAttack.getPrimary().equals(country2));
+		assertTrue(testAttack.getSecondary() == null);
+
 	}
 
 	/**
@@ -98,8 +202,30 @@ public final class Test_Attack {
 	 * selected before the valid friendly {@link ModelCountry}.
 	 */
 	@Test
-	public void test_select_wrongOrder() {
-		fail("Not yet implemented");
+	public void test_select_enemy() {
+
+		// Reset test fields to initial state
+		testCurrentPlayer.totalArmy.clearUnits();
+		testEnemyPlayer.totalArmy.clearUnits();
+		testAttack.deselectAll();
+
+		// The countries taking part in the war.
+		final ModelCountry country1 = new ModelCountry("country1", new ModelColor(0, 0, 0));
+
+		// Assign both the countries with the same ruler.
+		country1.setRuler(testEnemyPlayer);
+
+		// Build the armies
+		country1.getArmy().add(testArmyUnits);
+
+		// Add the units to the players total armies.
+		testEnemyPlayer.totalArmy.add(testArmyUnits);
+
+		// Assert that the friendly country with a army with more than one unit.
+		assertTrue(!testAttack.select(country1));
+
+		// Assert that there is one country selected and it is the second.
+		assertTrue(testAttack.numberOfSelected() == 0);
 	}
 
 	/**
@@ -108,7 +234,37 @@ public final class Test_Attack {
 	 */
 	@Test
 	public void test_select_notNeighbours() {
-		fail("Not yet implemented");
+
+		// Reset test fields to initial state
+		testCurrentPlayer.totalArmy.clearUnits();
+		testEnemyPlayer.totalArmy.clearUnits();
+		testAttack.deselectAll();
+
+		// The countries taking part in the war.
+		final ModelCountry country1 = new ModelCountry("country1", new ModelColor(0, 0, 0));
+		final ModelCountry country2 = new ModelCountry("country2", new ModelColor(0, 0, 1));
+
+		// Assign the rulers.
+		country1.setRuler(testCurrentPlayer);
+		country2.setRuler(testEnemyPlayer);
+
+		// Build the armies
+		country1.getArmy().add(testArmyUnits);
+		country2.getArmy().add(testArmyUnits);
+
+		// Add the units to the players total armies.
+		testCurrentPlayer.totalArmy.add(testArmyUnits);
+		testEnemyPlayer.totalArmy.add(testArmyUnits);
+
+		// Assert that the friendly country with a army with more than one unit.
+		assertTrue(testAttack.select(country1));
+
+		// Assert the the enemy country that is a neighbour connected by a valid link
+		assertTrue(!testAttack.select(country2));
+
+		// Assert that the primary was de-selected.
+		assertTrue(testAttack.numberOfSelected() == 0);
+
 	}
 
 	/**

@@ -16,8 +16,8 @@ import peril.model.states.ModelState;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-03-04
- * @version 1.01.03
+ * @since 2018-03-12
+ * @version 1.01.04
  * 
  * @see ModelState
  *
@@ -52,7 +52,7 @@ public final class Attack extends ModelState {
 	public boolean select(ModelCountry country) {
 
 		// Whether the country is a valid primary country.
-		final boolean validPrimary = selectPrimary(country, game);
+		final boolean validPrimary = selectPrimary(country);
 
 		// Whether the country is a valid secondary country.
 		final boolean validSecondary = selectSecondary(country);
@@ -165,12 +165,9 @@ public final class Attack extends ModelState {
 	 * 
 	 * @param country
 	 *            The {@link ModelCountry} that could be selected.
-	 * @param game
-	 *            The {@link GameController} that allows this {@link Attack} to
-	 *            query the state of the game.
 	 * @return Whether or not the specified {@link ModelCountry} could be selected.
 	 */
-	private boolean selectPrimary(ModelCountry country, GameController game) {
+	private boolean selectPrimary(ModelCountry country) {
 
 		// If the country is null then it cannot be selected.
 		if (country == null) {

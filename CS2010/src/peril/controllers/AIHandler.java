@@ -22,8 +22,8 @@ import peril.model.states.ModelState;
  * 
  * @author Joshua_Eddy, Joseph_Rolli
  * 
- * @version 1.01.08
- * @since 2018-03-09
+ * @version 1.01.09
+ * @since 2018-03-12
  * 
  * @see AIController
  *
@@ -189,7 +189,7 @@ public final class AIHandler implements AIController {
 			throw new IllegalStateException("There is no country selected.");
 		}
 
-		game.states.reinforce.reinforce(game.getGameController());
+		game.states.reinforce.reinforce();
 
 	}
 

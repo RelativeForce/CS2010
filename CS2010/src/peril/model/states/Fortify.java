@@ -21,8 +21,8 @@ import peril.model.board.links.ModelLink;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-03-11
- * @version 1.01.05
+ * @since 2018-03-12
+ * @version 1.01.06
  *
  * @see ModelState
  */
@@ -53,10 +53,10 @@ public final class Fortify extends ModelState {
 	public boolean select(ModelCountry country) {
 
 		// Whether the country is a valid primary country.
-		final boolean validPrimary = selectPrimary(country, game);
+		final boolean validPrimary = selectPrimary(country);
 
 		// Whether the country is a valid secondary country.
-		final boolean validSecondary = selectSecondary(country, game);
+		final boolean validSecondary = selectSecondary(country);
 
 		// If it a valid primary or secondary country
 		if (validPrimary || validSecondary) {
@@ -220,12 +220,9 @@ public final class Fortify extends ModelState {
 	 * 
 	 * @param country
 	 *            The {@link ModelCountry} that could be selected.
-	 * @param game
-	 *            The {@link GameController} that allows this {@link Fortify} to
-	 *            query the state of the game.
 	 * @return Whether or not the specified {@link ModelCountry} could be selected.
 	 */
-	private boolean selectPrimary(ModelCountry country, GameController game) {
+	private boolean selectPrimary(ModelCountry country) {
 
 		// If the country is null then it is not a valid primary.
 		if (country == null) {
@@ -252,12 +249,9 @@ public final class Fortify extends ModelState {
 	 * 
 	 * @param country
 	 *            The {@link ModelCountry} that could be selected.
-	 * @param game
-	 *            The {@link GameController} that allows this {@link Fortify} to
-	 *            query the state of the game.
 	 * @return Whether or not the specified {@link ModelCountry} could be selected.
 	 */
-	private boolean selectSecondary(ModelCountry country, GameController game) {
+	private boolean selectSecondary(ModelCountry country) {
 
 		if (country == null || getPrimary() == null) {
 			return false;

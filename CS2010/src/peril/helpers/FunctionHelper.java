@@ -11,8 +11,8 @@ import peril.controllers.GameController;
  * 
  * @author Mohammad_ali_Sayed_Ackbar, Joshua_Eddy, Joseph_Rolli, Adrian_Wong
  * 
- * @version 1.01.05
- * @since 2018-02-21
+ * @version 1.01.06
+ * @since 2018-03-12
  *
  */
 public final class FunctionHelper {
@@ -263,7 +263,7 @@ public final class FunctionHelper {
 	 * @return {@link Action}
 	 */
 	private Action<?> reinforceCountry() {
-		return new Action<GameController>(game, game -> game.getReinforce().reinforce(game));
+		return new Action<GameController>(game, game -> game.getReinforce().reinforce());
 	}
 
 	/**

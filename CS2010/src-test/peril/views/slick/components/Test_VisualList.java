@@ -1,4 +1,4 @@
-package peril.model;
+package peril.views.slick.components;
 
 import static org.junit.Assert.*;
 
@@ -7,7 +7,7 @@ import org.junit.Test;
 
 /**
  * 
- * Tests {@link ModelPlayer}.
+ * Tests {@link VisualList}.
  * 
  * @author Joseph_Rolli
  * 
@@ -16,7 +16,7 @@ import org.junit.Test;
  * 
  *
  */
-public class Test_ModelPlayer {
+public class Test_VisualList {
 
 	/**
 	 * The pre-test setup operations. 
@@ -30,5 +30,4 @@ public class Test_ModelPlayer {
 	public void test() {
 		fail("Not yet implemented");
 	}
-
 }

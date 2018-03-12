@@ -26,8 +26,8 @@ import peril.helpers.UnitHelper;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.02.04
- * @since 2018-02-28
+ * @version 1.02.05
+ * @since 2018-03-12
  * 
  * @see Observable
  * @see Iterable
@@ -681,7 +681,7 @@ public final class ModelArmy extends Observable implements Iterable<ModelUnit>, 
 	 * Removes all the {@link ModelUnit}s from this {@link ModelArmy} provided there
 	 * are {@link ModelUnit}s to remove.
 	 */
-	private void clearUnits() {
+	public void clearUnits() {
 
 		// Clear the current map of units if there are units to clear.
 		if (!units.isEmpty())

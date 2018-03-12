@@ -14,6 +14,7 @@ import peril.views.slick.Frame;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.components.menus.WarMenu;
 import peril.views.slick.util.Point;
+import peril.views.slick.util.Region;
 
 /**
  * Displays the {@link Attack} state to the user.
@@ -191,7 +192,18 @@ public final class SlickAttack extends CoreGameState {
 		final int x = ((p2.x - p1.x) / 2) + p1.x;
 		final int y = ((p2.y - p1.y) / 2) + p1.y;
 
-		getButton(attackButton).setPosition(new Point(x, y));
+		//Upgrade Button x co-ordinate
+		final int baseX = getButton(upgradeButton).getPosition().x;
+		//Upgrade Button y co-ordinate
+		final int baseY = getButton(upgradeButton).getPosition().y;
+		
+		if(Region.overlap(getButton(attackButton).getRegion(), getButton(upgradeButton).getRegion() )) {
+			getButton(attackButton).setPosition(new Point(x + getButton(upgradeButton).getWidth(), y + getButton(upgradeButton).getHeight()));
+		}
+		else {
+			getButton(attackButton).setPosition(new Point(x, y));
+		}
+	
 
 	}
 

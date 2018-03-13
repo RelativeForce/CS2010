@@ -13,6 +13,7 @@ import peril.model.states.combat.Attack;
 import peril.views.slick.Frame;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.components.menus.WarMenu;
+import peril.views.slick.util.Button;
 import peril.views.slick.util.Point;
 import peril.views.slick.util.Region;
 
@@ -186,23 +187,28 @@ public final class SlickAttack extends CoreGameState {
 	 *            {@link SlickCountry}
 	 */
 	private void moveAttackButton(SlickCountry primary, SlickCountry target) {
-
+		
 		final Point p1 = primary.getArmyPosition();
 		final Point p2 = target.getArmyPosition();
-		final int x = ((p2.x - p1.x) / 2) + p1.x;
-		final int y = ((p2.y - p1.y) / 2) + p1.y;
-
-		//Upgrade Button x co-ordinate
-		final int baseX = getButton(upgradeButton).getPosition().x;
-		//Upgrade Button y co-ordinate
-		final int baseY = getButton(upgradeButton).getPosition().y;
 		
-		if(Region.overlap(getButton(attackButton).getRegion(), getButton(upgradeButton).getRegion() )) {
-			getButton(attackButton).setPosition(new Point(x + getButton(upgradeButton).getWidth(), y + getButton(upgradeButton).getHeight()));
+		final Button attack = getButton(attackButton);
+		final Button upgrade = getButton(upgradeButton);
+		
+		final int x = ((p2.x - p1.x) / 2) + p1.x - (attack.getWidth() / 2);
+		final int y = ((p2.y - p1.y) / 2) + p1.y - (attack.getHeight() / 2);
+
+		// Set the attack button with its new position
+		attack.setPosition(new Point(x, y));
+		
+		// If the attack button at its new position overlaps 
+		if(Region.overlap(attack.getRegion(), upgrade.getRegion() )) {
+			
+			final int newX = upgrade.getPosition().x + upgrade.getWidth();
+			final int newY = upgrade.getPosition().y;
+
+			attack.setPosition(new Point(newX , newY));
 		}
-		else {
-			getButton(attackButton).setPosition(new Point(x, y));
-		}
+		
 	
 
 	}

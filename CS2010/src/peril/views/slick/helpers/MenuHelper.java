@@ -326,7 +326,7 @@ public final class MenuHelper {
 		final int reinforcePage = states.reinforcement.getID();
 		int attackPage = states.combat.getID();
 		int fortifyPage = states.movement.getID();
-
+		int upgradePage=29;
 		int hazardPage = 30;
 
 		int warPage1 = 31;
@@ -335,7 +335,9 @@ public final class MenuHelper {
 		addPage(setupPage, HelpMenu.NULL_PAGE, HelpMenu.NULL_PAGE, directory, "setup1.txt");
 
 		addPage(reinforcePage, hazardPage, HelpMenu.NULL_PAGE, directory, "reinforce1.txt");
-		addPage(hazardPage, HelpMenu.NULL_PAGE, reinforcePage, directory, "reinforce2.txt");
+		addPage(hazardPage, upgradePage, reinforcePage, directory, "reinforce2.txt");
+		addPage(upgradePage, HelpMenu.NULL_PAGE, hazardPage, directory, "reinforce3.txt");
+		
 
 		addPage(fortifyPage, HelpMenu.NULL_PAGE, HelpMenu.NULL_PAGE, directory, "fortify1.txt");
 

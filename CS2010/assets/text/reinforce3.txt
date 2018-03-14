@@ -1,0 +1,8 @@
+
+You can also upgrade your army using points you have accumulated throughout the game. In the upgrade menu you can view the number of points you have and the cost of upgrades.
+Troops can be exchanged for stronger units.
+
+How to:
+1. Select one of your countries you wish to upgrade and press 'Upgrade'.
+2. If you wish to buy a blockade select the country you want to place it on.
+3. If you have sufficient points select the upgrade you want to purchase.

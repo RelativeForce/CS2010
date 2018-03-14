@@ -14,8 +14,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-26
- * @version 1.01.02
+ * @since 2018-03-14
+ * @version 1.01.03
  * 
  * @see Component
  *
@@ -53,6 +53,11 @@ public final class TextField implements Component {
 	private int width;
 
 	/**
+	 * Whether or not this {@link TextField} will draw a background box.
+	 */
+	private boolean drawBackground;
+
+	/**
 	 * Constructs a new {@link TextField}.
 	 * 
 	 * @param maxWidth
@@ -67,7 +72,7 @@ public final class TextField implements Component {
 		this.width = 0;
 		this.font = new Font("Arial", Color.black, 25);
 		this.lines = new ArrayList<>();
-
+		this.drawBackground = true;
 	}
 
 	/**
@@ -172,9 +177,11 @@ public final class TextField implements Component {
 		final int x = position.x + padding;
 		final int height = getHeight();
 
-		// Draw the font on the back found.
-		frame.setColor(Color.lightGray);
-		frame.fillRect(position.x, position.y, width, height);
+		if (drawBackground) {
+			// Draw the font on the back found.
+			frame.setColor(Color.lightGray);
+			frame.fillRect(position.x, position.y, width, height);
+		}
 
 		// Draw the text on screen.
 		for (int index = 0; index < lines.size(); index++) {
@@ -182,6 +189,20 @@ public final class TextField implements Component {
 			y += font.getHeight();
 		}
 
+	}
+
+	/**
+	 * Shows the background box of this {@link TextField}.
+	 */
+	public void showBackground() {
+		this.drawBackground = true;
+	}
+
+	/**
+	 * Hides the background box of this {@link TextField}.
+	 */
+	public void hideBackground() {
+		this.drawBackground = false;
 	}
 
 	/**

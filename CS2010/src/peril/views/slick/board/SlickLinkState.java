@@ -33,6 +33,11 @@ public enum SlickLinkState {
 			final float width = frame.getLineWidth();
 			final Point middle = Point.getMiddle(origin, destination);
 
+			frame.setColor(Color.white);
+			frame.setLineWidth(9);
+
+			frame.drawLine(origin, middle);
+			
 			frame.setColor(Color.green);
 			frame.setLineWidth(3);
 
@@ -58,6 +63,11 @@ public enum SlickLinkState {
 			final float width = frame.getLineWidth();
 			final Point middle = Point.getMiddle(origin, destination);
 
+			frame.setColor(Color.white);
+			frame.setLineWidth(9);
+
+			frame.drawLine(origin, middle);
+			
 			frame.setColor(Color.red);
 			frame.setLineWidth(3);
 

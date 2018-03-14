@@ -16,10 +16,10 @@ import peril.views.slick.util.Point;
  * A helper class that holds all the {@link Menu}s for the {@link SlickGame}.
  * This ensures that only one {@link Menu} is visible at any given time.
  * 
- * @author Joshua_Eddy
+ * @author Joshua_Eddy, Hannah_Miller
  * 
- * @since 2018-02-18
- * @version 1.02.01
+ * @since 2018-03-14
+ * @version 1.02.02
  * 
  * @see Menu
  *
@@ -324,26 +324,34 @@ public final class MenuHelper {
 
 		final int setupPage = states.setup.getID();
 		final int reinforcePage = states.reinforcement.getID();
-		int attackPage = states.combat.getID();
-		int fortifyPage = states.movement.getID();
-		int upgradePage=29;
-		int hazardPage = 30;
+		final int attackPage = states.combat.getID();
+		final int fortifyPage = states.movement.getID();
 
-		int warPage1 = 31;
-		int warPage2 = 32;
+		final int hazardPage1 = 30;
+		final int hazardPage2 = 31;
+		final int upgradePage1 = 32;
+		final int upgradePage2 = 33;
 
+		final int warPage1 = 40;
+		final int warPage2 = 41;
+
+		// Set up pages
 		addPage(setupPage, HelpMenu.NULL_PAGE, HelpMenu.NULL_PAGE, directory, "setup1.txt");
 
-		addPage(reinforcePage, hazardPage, HelpMenu.NULL_PAGE, directory, "reinforce1.txt");
-		addPage(hazardPage, upgradePage, reinforcePage, directory, "reinforce2.txt");
-		addPage(upgradePage, HelpMenu.NULL_PAGE, hazardPage, directory, "reinforce3.txt");
-		
+		// Reinforce pages
+		addPage(reinforcePage, hazardPage1, HelpMenu.NULL_PAGE, directory, "reinforce1.txt");
+		addPage(hazardPage1, hazardPage2, reinforcePage, directory, "reinforce2.txt");
+		addPage(hazardPage2, upgradePage1, hazardPage1, directory, "reinforce3.txt");
+		addPage(upgradePage1, upgradePage2, hazardPage2, directory, "reinforce4.txt");
+		addPage(upgradePage2, HelpMenu.NULL_PAGE, upgradePage1, directory, "reinforce5.txt");
 
-		addPage(fortifyPage, HelpMenu.NULL_PAGE, HelpMenu.NULL_PAGE, directory, "fortify1.txt");
-
+		// Attack pages
 		addPage(attackPage, warPage1, HelpMenu.NULL_PAGE, directory, "attack1.txt");
 		addPage(warPage1, warPage2, attackPage, directory, "attack2.txt");
 		addPage(warPage2, HelpMenu.NULL_PAGE, warPage1, directory, "attack3.txt");
+
+		// Fortify pages
+		addPage(fortifyPage, HelpMenu.NULL_PAGE, HelpMenu.NULL_PAGE, directory, "fortify1.txt");
 
 	}
 
@@ -372,7 +380,7 @@ public final class MenuHelper {
 		if (upgrade == null) {
 			throw new NullPointerException("There is no upgrade menu in this menu helper.");
 		}
-		
+
 		upgrade.blockLink();
 
 	}

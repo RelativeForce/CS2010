@@ -1,0 +1,7 @@
+Upgrading Countries pt.2
+How to:
+1. Select one of your countries you wish to upgrade and press 'Upgrade'.
+
+2a. To buy a blockade, select the name of the country you want to blockade and click the adjacent button.
+
+2b. To trade a unit, click the arrow to the right of that unit. There will be no arrow if it is the strongest unit in the game.

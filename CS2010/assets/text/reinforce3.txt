@@ -1,8 +1,14 @@
+Environmental Hazards pt.2
+Hazard Weightings:
 
-You can also upgrade your army using points you have accumulated throughout the game. In the upgrade menu you can view the number of points you have and the cost of upgrades.
-Troops can be exchanged for stronger units.
+- Volcanic Eruption
+  Up to 20% casualties at 10% chance
 
-How to:
-1. Select one of your countries you wish to upgrade and press 'Upgrade'.
-2. If you wish to buy a blockade select the country you want to place it on.
-3. If you have sufficient points select the upgrade you want to purchase.
+- Tornado
+  Up to 30% casualties at 12% chance
+
+- Hurricane
+  Up to 10% casualties at 20% chance
+
+- Tsunami
+  Up to 40% casualties at 17% chance

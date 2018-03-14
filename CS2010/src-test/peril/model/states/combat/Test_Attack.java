@@ -259,7 +259,7 @@ public final class Test_Attack {
 		// Assert that the friendly country with a army with more than one unit.
 		assertTrue(testAttack.select(country1));
 
-		// Assert the the enemy country that is a neighbour connected by a valid link
+		// Assert the the enemy country that is a not a neighbour is not selected.
 		assertTrue(!testAttack.select(country2));
 
 		// Assert that the primary was de-selected.
@@ -273,7 +273,42 @@ public final class Test_Attack {
 	 */
 	@Test
 	public void test_select_blockadedLink() {
-		fail("Not yet implemented");
+
+		// Reset test fields to initial state
+		testCurrentPlayer.totalArmy.clearUnits();
+		testEnemyPlayer.totalArmy.clearUnits();
+		testAttack.deselectAll();
+
+		// The countries taking part in the war.
+		final ModelCountry country1 = new ModelCountry("country1", new ModelColor(0, 0, 0));
+		final ModelCountry country2 = new ModelCountry("country2", new ModelColor(0, 0, 1));
+
+		// Set the countries as linked.
+		country1.addNeighbour(country2, new ModelLink(ModelLinkState.BLOCKADE));
+		country2.addNeighbour(country1, new ModelLink(ModelLinkState.OPEN));
+
+		// Assign the rulers.
+		country1.setRuler(testCurrentPlayer);
+		country2.setRuler(testEnemyPlayer);
+
+		// Build the armies
+		country1.getArmy().add(testArmyUnits);
+		country2.getArmy().add(testArmyUnits);
+
+		// Add the units to the players total armies.
+		testCurrentPlayer.totalArmy.add(testArmyUnits);
+		testEnemyPlayer.totalArmy.add(testArmyUnits);
+
+		// Assert that the friendly country with a army with more than one unit.
+		assertTrue(testAttack.select(country1));
+		assertTrue(testAttack.numberOfSelected() == 1);
+
+		// Assert the the enemy country that is a neighbour connected by a blockaded
+		// link was not selected.
+		assertTrue(!testAttack.select(country2));
+
+		// Assert that the first was de-elected as well.
+		assertTrue(testAttack.numberOfSelected() == 0);
 	}
 
 	/**

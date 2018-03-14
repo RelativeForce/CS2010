@@ -54,7 +54,7 @@ image,End,finishScreen.png,w,w,0,0
 
 // Help Menu
 image,Help,helpMenu.png,600,600,0,0
-button,Help,14,xButton.png,40,40,515,15,close
+button,Help,14,xButton.png,60,60,495,20,close
 button,Help,15,rightButton.png,40,150,550,210,next
 button,Help,16,leftButton.png,40,150,10,210,previous
 

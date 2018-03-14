@@ -56,13 +56,13 @@ public final class HelpMenu extends Menu {
 	 * The padding in the horizontal direction between the edge of the
 	 * {@link HelpMenu} and the edge of the {@link TextField}.
 	 */
-	private static final int PADDING_X = WIDTH / 12;
+	private static final int PADDING_X = 54;
 
 	/**
 	 * The padding in the vertical direction between the edge of the
 	 * {@link HelpMenu} and the edge of the {@link TextField}.
 	 */
-	private static final int PADDING_Y = HEIGHT / 10;
+	private static final int PADDING_Y = 90;
 
 	/**
 	 * The {@link Font} that the title of the {@link HelpPage} is drawn in.
@@ -130,7 +130,7 @@ public final class HelpMenu extends Menu {
 		this.numberOfPages = 0;
 		this.previous = "previous";
 		this.next = "next";
-		this.titleFont = new Font("Arial", Color.white, 40);
+		this.titleFont = new Font("Arial", Color.white, 30);
 	}
 
 	/**
@@ -175,6 +175,8 @@ public final class HelpMenu extends Menu {
 		// Construct the text feild that will show this page.
 		final TextField text = new TextField(WIDTH - (PADDING_X * 2),
 				new Point(this.getPosition().x + PADDING_X, this.getPosition().y + PADDING_Y));
+
+		text.hideBackground();
 
 		// Construct the help page
 		final HelpPage newPage = new HelpPage(text, nextPage, previousPage, title);
@@ -295,12 +297,27 @@ public final class HelpMenu extends Menu {
 
 		// Draw the current page
 		if (pages.containsKey(currentPage)) {
-			pages.get(currentPage).draw(frame);
-		}
 
-		if (numberOfPages != 0) {
-			frame.draw(titleFont, pageNumber + "/" + numberOfPages, getPosition().x + PADDING_X,
-					getPosition().y + getHeight() - PADDING_Y);
+			final int textY = getPosition().y + getHeight() - 80;
+			final HelpPage page = pages.get(currentPage);
+
+			page.draw(frame);
+
+			final int titleX = getPosition().x + PADDING_X;
+			frame.draw(titleFont, page.title, titleX, textY);
+
+			final String pageNumber = this.pageNumber + "/" + this.numberOfPages;
+			final int pageX = getPosition().x + getWidth() - PADDING_X - titleFont.getWidth(pageNumber);
+
+			frame.draw(titleFont, pageNumber, pageX, textY);
+		} else {
+
+			final String text = "No Help Availiable";
+			final int x = getPosition().x + (getWidth() / 2) - (titleFont.getWidth(text) / 2);
+			final int y = getPosition().y + (getHeight() / 2) - (titleFont.getHeight(text) / 2);
+
+			frame.draw(titleFont, text, x, y);
+
 		}
 
 	}
@@ -352,8 +369,8 @@ public final class HelpMenu extends Menu {
 	 * 
 	 * @author Joshua_Eddy
 	 * 
-	 * @serial 2018-02-25
-	 * @version 1.01.01
+	 * @serial 2018-03-14
+	 * @version 1.01.02
 	 * 
 	 * @see Component
 	 *
@@ -371,14 +388,14 @@ public final class HelpMenu extends Menu {
 		public final int previous;
 
 		/**
+		 * The string title of this {@link HelpPage}.
+		 */
+		public final String title;
+
+		/**
 		 * The {@link TextField} that will display the text to the user.
 		 */
 		private final TextField text;
-
-		/**
-		 * The string title of this {@link HelpPage}.
-		 */
-		private final String title;
 
 		/**
 		 * Holds the lines of text that have been give to this {@link HelpMenu} before
@@ -451,8 +468,6 @@ public final class HelpMenu extends Menu {
 		 */
 		@Override
 		public void draw(Frame frame) {
-			frame.setColor(Color.white);
-			frame.draw(titleFont, title, text.getPosition().x, text.getPosition().y - titleFont.getHeight() - 5);
 			text.draw(frame);
 		}
 

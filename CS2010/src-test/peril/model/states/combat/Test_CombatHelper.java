@@ -31,8 +31,8 @@ import peril.views.View;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.03
- * @since 2018-03-11
+ * @version 1.01.04
+ * @since 2018-03-14
  * 
  * @see CombatHelper
  * @see CombatRound
@@ -84,7 +84,7 @@ public final class Test_CombatHelper {
 	 * lowest.
 	 */
 	@Test
-	public void test_diceOrder() {
+	public void test_fight_diceOrder() {
 
 		combat.clear();
 
@@ -97,6 +97,70 @@ public final class Test_CombatHelper {
 		// Check the dice rolls.
 		checkDiceRolls(view.attackerDiceRolls);
 		checkDiceRolls(view.defenderDiceRolls);
+
+	}
+
+	/**
+	 * This test confirms that when if a dice if the attackers dice was higher than
+	 * the defenders dice that the unit is removes from the appropriate squad. This
+	 * assumes that there is only a single atomic {@link ModelUnit} in the
+	 * {@link UnitHelper}.
+	 */
+	@Test
+	public void test_fight_unitsKilled() {
+
+		// The number of times this test will be repeated to minimise the effects of the
+		// random nature of combat.
+		final int numberOfTests = 1000;
+
+		// Repeat the test the specifed number of times.
+		for (int testIndex = 0; testIndex < numberOfTests; testIndex++) {
+
+			combat.clear();
+
+			// Create a basic combat round.
+			final CombatRound round = getStandardRound();
+
+			// Retrieve the number of units in the squads before the combat.
+			final int preComabt_AliveAttackUnits = round.attackerSquad.getAliveUnits();
+			final int preComabt_AliveDefendUnits = round.defenderSquad.getAliveUnits();
+
+			combat.fight(round);
+
+			final CombatView view = combat.view;
+
+			// Retrieve the number of alive units in the squads post combat.
+			final int postComabt_AliveAttackUnits = view.round.attackerSquad.getAliveUnits();
+			final int postComabt_AliveDefendUnits = view.round.defenderSquad.getAliveUnits();
+
+			// Receive the details about the dice.
+			final int attackDice = view.attackerDiceRolls.length;
+			final int defendDice = view.defenderDiceRolls.length;
+			final int diceToCheck = attackDice > defendDice ? defendDice : attackDice;
+
+			// Holds the number of units for each quad that were killed during the comabt.
+			int attackKilled = 0;
+			int defendKilled = 0;
+
+			// Iterate over all the dice and compare them. If the attacker dice won then one
+			// defending unit was killed and vice versa.
+			for (int diceIndex = 0; diceIndex < diceToCheck; diceIndex++) {
+
+				if (view.attackerDiceRolls[diceIndex] > view.defenderDiceRolls[diceIndex]) {
+					defendKilled++;
+				} else {
+					attackKilled++;
+				}
+
+			}
+
+			// Confirm that the number of units that were killed plus the number of units
+			// that are still alive is equal to the original number of units for each
+			// squad.
+			assertTrue(preComabt_AliveAttackUnits == postComabt_AliveAttackUnits + attackKilled);
+			assertTrue(preComabt_AliveDefendUnits == postComabt_AliveDefendUnits + defendKilled);
+
+		}
 
 	}
 

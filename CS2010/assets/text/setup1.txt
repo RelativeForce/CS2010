@@ -1,4 +1,4 @@
-Help: Setup
+
 In Setup, the players select who initially owns which countries.
 To set the ruler of a country, simply click on the country then press the number button that corresponds to the number of the player. For example: '1' corresponds to 'Player 1'. 'Space' makes the country neutral.
 Click 'Auto' to randomly divide all the countries equally, between all the players.

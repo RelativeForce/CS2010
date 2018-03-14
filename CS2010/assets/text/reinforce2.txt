@@ -1,4 +1,4 @@
-Help: Environmental Hazards
+
 After the first round, environmental hazards may occur in any country. These hazards will kill a random percentage of the army stationed at the country the hazard occurred in, up to a maximum value.
 These hazards appear as icons over the countries they have affected.
 

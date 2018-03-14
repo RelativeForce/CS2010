@@ -1,4 +1,4 @@
-Help: Movement
+
 In Movement, the current player can move units from one country to another, provided that both countries are:
 - Ruled by the same player.
 - Connected by a chain of countries ruled by that player.

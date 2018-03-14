@@ -1,4 +1,4 @@
-Help: Combat
+
 In Combat, the current player can attack adjacent enemy countries using their countries.
 Valid targets will be shown by a line linking them to the selected country.
 How to:

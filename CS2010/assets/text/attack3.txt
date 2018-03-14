@@ -1,4 +1,4 @@
-Help: War pt.2
+
 In the situation where the attacking and defending armies are not equal, all the dice will be rolled but only the highest dice will be used in the battle, the extra dice will discarded.
 
 For example: If the attacker has 3 units but the defender only has 1. The best dice of the attacker's 3 will be pit against the defender's only dice.

@@ -1,11 +1,9 @@
 package peril.views.slick.components.menus;
 
-import org.newdawn.slick.Color;
 import peril.Challenge;
 import peril.controllers.GameController;
 import peril.views.slick.Frame;
 import peril.views.slick.components.TextField;
-import peril.views.slick.util.Font;
 import peril.views.slick.util.Point;
 import peril.views.slick.util.Region;
 
@@ -14,8 +12,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Joshua_Eddy
  *
- * @since 2018-02-28
- * @version 1.01.02
+ * @since 2018-03-14
+ * @version 1.01.03
  *
  * @see Menu
  * @see Challenge
@@ -45,11 +43,6 @@ public final class ChallengeMenu extends Menu {
 	private final int paddingY;
 
 	/**
-	 * The {@link Font} of the title of the page.
-	 */
-	private final Font titleFont;
-
-	/**
 	 * Constructs a new {@link ChallengeMenu}.
 	 * 
 	 * @param position
@@ -60,12 +53,12 @@ public final class ChallengeMenu extends Menu {
 	 */
 	public ChallengeMenu(Point position, GameController game) {
 		super(NAME, game, new Region(600, 600, position));
-		
-		this.paddingX = (getWidth() / 12);
-		this.paddingY = (getHeight() / 8);
+
+		this.paddingX = (getWidth() / 11);
+		this.paddingY = (getHeight() / 6);
 		this.text = new TextField(getWidth() - (paddingX * 2),
 				new Point(getPosition().x + paddingX, getPosition().y + paddingY));
-		this.titleFont = new Font("Arial", Color.white,45);
+		this.text.hideBackground();
 	}
 
 	/**
@@ -74,7 +67,6 @@ public final class ChallengeMenu extends Menu {
 	@Override
 	public void init() {
 		text.init();
-		titleFont.init();
 		refreshChallenges();
 	}
 
@@ -90,8 +82,6 @@ public final class ChallengeMenu extends Menu {
 		}
 
 		super.draw(frame);
-
-		frame.draw(titleFont, "Challenges", getPosition().x + paddingX, getPosition().y + 15);
 
 		text.draw(frame);
 
@@ -115,8 +105,8 @@ public final class ChallengeMenu extends Menu {
 		text.clear();
 
 		// List all the challenges
-		game.getChallenges()
-				.forEach(challenge -> text.addText(challenge.toString() + " - Reward: " + challenge.reward + " Points"));
+		game.getChallenges().forEach(
+				challenge -> text.addText(challenge.toString() + " - Reward: " + challenge.reward + " Points"));
 
 	}
 

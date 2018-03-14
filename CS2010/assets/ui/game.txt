@@ -59,7 +59,7 @@ button,Help,15,rightButton.png,40,150,550,210,next
 button,Help,16,leftButton.png,40,150,10,210,previous
 
 // Challenge Menu
-button,Challenge Menu,21,xButton.png,60,60,490,10,close
+button,Challenge Menu,21,xButton.png,60,60,540,0,close
 image,Challenge Menu,challengesMenu.png,600,600,0,0
 
 // Stats Menu

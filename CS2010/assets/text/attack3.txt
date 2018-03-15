@@ -1,5 +1,4 @@
+War pt.2
+The defending army can roll a maximum of 2 dice but the defending unit will win if the dice rolled are the same.
 
 In the situation where the attacking and defending armies are not equal, all the dice will be rolled but only the highest dice will be used in the battle, the extra dice will discarded.
-
-For example: If the attacker has 3 units but the defender only has 1. The best dice of the attacker's 3 will be pit against the defender's only dice.
-If the player has successfully conquered the enemy country, the last defending unit of the enemy country will desert and join the player's army.

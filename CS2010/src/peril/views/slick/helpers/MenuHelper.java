@@ -18,8 +18,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy, Hannah_Miller
  * 
- * @since 2018-03-14
- * @version 1.02.02
+ * @since 2018-03-15
+ * @version 1.02.03
  * 
  * @see Menu
  *
@@ -334,6 +334,7 @@ public final class MenuHelper {
 
 		final int warPage1 = 40;
 		final int warPage2 = 41;
+		final int warPage3 = 42;
 
 		// Set up pages
 		addPage(setupPage, HelpMenu.NULL_PAGE, HelpMenu.NULL_PAGE, directory, "setup1.txt");
@@ -348,7 +349,8 @@ public final class MenuHelper {
 		// Attack pages
 		addPage(attackPage, warPage1, HelpMenu.NULL_PAGE, directory, "attack1.txt");
 		addPage(warPage1, warPage2, attackPage, directory, "attack2.txt");
-		addPage(warPage2, HelpMenu.NULL_PAGE, warPage1, directory, "attack3.txt");
+		addPage(warPage2, warPage3, warPage1, directory, "attack3.txt");
+		addPage(warPage3, HelpMenu.NULL_PAGE, warPage2, directory, "attack4.txt");
 
 		// Fortify pages
 		addPage(fortifyPage, HelpMenu.NULL_PAGE, HelpMenu.NULL_PAGE, directory, "fortify1.txt");

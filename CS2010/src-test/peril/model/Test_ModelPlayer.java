@@ -8,7 +8,6 @@ import org.junit.Test;
 import peril.ai.AI;
 import peril.helpers.PlayerHelper;
 import peril.helpers.UnitHelper;
-import peril.model.board.ModelArmy;
 
 /**
  * 
@@ -54,11 +53,14 @@ public class Test_ModelPlayer {
 	
 	/**
 	 * This test confirms if the {@link ModelPlayer#getCountriesRuled()} method retrieves
-	 * the correct strength of a {@link ModelPlayer}.
+	 * the correct number of countries ruled by a {@link ModelPlayer}.
 	 */
 	@Test
 	public void test_getCountriesRuled() {
-		fail("Not yet implemented");
+		ModelPlayer modelPlayer = new ModelPlayer(0, AI.USER);
+		assertEquals(0,modelPlayer.getCountriesRuled());
+		modelPlayer.setCountriesRuled(7);
+		assertEquals(5,modelPlayer.getCountriesRuled());
 	}
 
 	@Test(expected = IllegalArgumentException.class)

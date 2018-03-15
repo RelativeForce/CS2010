@@ -23,7 +23,7 @@ import peril.views.slick.util.Region;
  * provides operations for retrieving {@link Clickable} objects based on a click
  * at a certain {@link Point} on screen. Each frame that is rendered the current
  * objects drawn on the frame must be cleared using
- * {@link Frame#newFrame(Graphics)}.
+ * {@link Frame#newFrame(Graphics, GameContainer)}.
  * </p>
  * <h3>Conceptual Description</h3>
  * <p>
@@ -107,11 +107,11 @@ public final class Frame {
 
 	/**
 	 * Updates the {@link Frame} on how many milliseconds have passed since the last
-	 * time {@link Frame#newFrame(Graphics)} was called.
+	 * time {@link Frame#newFrame(Graphics, GameContainer)} was called.
 	 * 
 	 * @param delta
 	 *            How many milliseconds have passed since the last time
-	 *            {@link Frame#newFrame(Graphics)} was called.
+	 *            {@link Frame#newFrame(Graphics, GameContainer)} was called.
 	 */
 	public void updateFrame(int delta) {
 		toolTips.removeIf(toolTip -> toolTip.elapse(delta));
@@ -289,8 +289,8 @@ public final class Frame {
 	 *            {@link Font} the text will be drawn in.
 	 * @param text
 	 *            Text to be drawn on screen.
-	 * @param xThe
-	 *            x position on screen.
+	 * @param x
+	 *			  The x position on screen.
 	 * @param y
 	 *            The y position on screen.
 	 */
@@ -372,7 +372,7 @@ public final class Frame {
 	 * Assigns a new line width to the geometric objects will be drawn in.
 	 * 
 	 * @param width
-	 *            Line width >0.
+	 *            Line width &gt;0.
 	 */
 	public void setLineWidth(float width) {
 		g.setLineWidth(width);
@@ -697,7 +697,7 @@ public final class Frame {
 		 * Constructs a new {@link Delay}.
 		 * 
 		 * @param time
-		 *            The number of {@link Delay#hasElapsed()} executions before this
+		 *            The number of {@link Delay#hasElapsed(int)} executions before this
 		 *            {@link Delay} has elapsed.
 		 */
 		public Delay(long time) {

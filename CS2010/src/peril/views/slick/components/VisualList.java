@@ -109,6 +109,9 @@ public final class VisualList<T> extends Clickable implements Component {
 	/**
 	 * Add an {@link Element} to the {@link VisualList}.
 	 * 
+	 * @param text
+	 *            The text to represent the {@link Element}.
+	 * 
 	 * @param payload
 	 *            {@link Element}
 	 */
@@ -224,6 +227,8 @@ public final class VisualList<T> extends Clickable implements Component {
 	 * 
 	 * @param click
 	 *            The {@link Point} click.
+	 * 
+	 * @return <code>boolean</code> Return if click is true or false.
 	 */
 	public boolean click(Point click) {
 
@@ -391,7 +396,7 @@ public final class VisualList<T> extends Clickable implements Component {
 	/**
 	 * 
 	 * An element of the {@link VisualList} that can be displayed on screen using
-	 * {@link Element#draw(Graphics, Font)}. This element wraps &lt;T&gt;.
+	 * {@link Element#draw(Frame, Font, int)}. This element wraps &lt;T&gt;.
 	 * 
 	 * @author Joshua_Eddy
 	 * 
@@ -445,15 +450,6 @@ public final class VisualList<T> extends Clickable implements Component {
 
 		/**
 		 * Initialises the {@link Element}.
-		 * 
-		 * @param x
-		 *            <code>int</code> x coordinate of the {@link Element} on screen.
-		 * @param y
-		 *            <code>int</code> y coordinate of the {@link Element} on screen.
-		 * @param width
-		 *            <code>int</code> width of the {@link Element} on screen.
-		 * @param height
-		 *            <code>int</code> height of the {@link Element} on screen.
 		 */
 		public void init() {
 			replaceImage(getRegion().convert(Color.yellow));

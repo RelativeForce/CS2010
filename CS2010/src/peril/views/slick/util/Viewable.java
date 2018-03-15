@@ -71,6 +71,9 @@ public class Viewable {
 	/**
 	 * Sets the {@link Image} of the {@link Viewable} and {@link Image#destroy()}s
 	 * the previous one.
+	 * 
+	 * @param image
+	 * 			The {@link Image} to replace the current one.
 	 */
 	public void replaceImage(Image image) {
 
@@ -90,6 +93,9 @@ public class Viewable {
 	/**
 	 * Sets the {@link Image} of the {@link Viewable} without
 	 * {@link Image#destroy()}ing the previous one.
+	 * 
+	 * @param image
+	 * 			The {@link Image} to be set.
 	 */
 	public void swapImage(Image image) {
 		this.image = image;

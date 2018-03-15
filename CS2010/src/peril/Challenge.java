@@ -53,7 +53,7 @@ public abstract class Challenge {
 	 * @param player
 	 *            {@link ModelPlayer} that will be checked.
 	 * @param board
-	 *            The {@link SlickBoard} the {@link ModelPlayer} is on.
+	 *            The {@link ModelBoard} the {@link ModelPlayer} is on.
 	 * @return <code>boolean</code> {@link Challenge} completion status.
 	 */
 	public abstract boolean hasCompleted(ModelPlayer player, ModelBoard board);
@@ -61,6 +61,8 @@ public abstract class Challenge {
 	/**
 	 * The string representation of the {@link Challenge} when it has been
 	 * completed.
+	 * 
+	 * @return <code>String</code>
 	 */
 	public String completed() {
 		return "Challenge Completed: " + this.toString();

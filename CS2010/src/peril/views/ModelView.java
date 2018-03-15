@@ -136,8 +136,8 @@ public interface ModelView {
 	/**
 	 * Retrieves the visual counterpart to the specified {@link ModelContinent}.
 	 * 
-	 * @param The
-	 *            {@link ModelContinent}.
+	 * @param continent 
+	 * The {@link ModelContinent}.
 	 * @return The {@link View} specific object for displaying the specified
 	 *         {@link ModelContinent}.
 	 */

@@ -1,11 +1,12 @@
 package peril.views;
 
 import java.util.function.Consumer;
-
+import java.util.Observer;
 import peril.Challenge;
 import peril.controllers.GameController;
 import peril.controllers.api.Player;
 import peril.io.FileParser;
+import peril.Game;
 import peril.io.SaveFile;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;

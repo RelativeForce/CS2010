@@ -19,6 +19,7 @@ import peril.controllers.GameController;
 import peril.helpers.PlayerHelper;
 import peril.io.FileParser;
 import peril.io.SaveFile;
+import peril.Game;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelCountry;
@@ -191,6 +192,7 @@ public final class SlickGame extends StateBasedGame implements View {
 	 * @param height
 	 *            <code>int</code> new height of the screen.
 	 * @throws SlickException
+	 * 			Exception thrown if window cannot be resized.
 	 */
 	public void reSize(int width, int height) throws SlickException {
 
@@ -714,7 +716,9 @@ public final class SlickGame extends StateBasedGame implements View {
 	 * Retrieves the {@link Color} associated with a {@link SlickPlayer}
 	 * 
 	 * @param playerNumber
+	 * 			The number of the associated player.
 	 * @return
+	 * 			The {@link Color} associated with the player.
 	 */
 	public Color getColor(int playerNumber) {
 		return colors[playerNumber - 1];

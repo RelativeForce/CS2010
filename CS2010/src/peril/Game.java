@@ -76,6 +76,9 @@ public final class Game {
 
 	/**
 	 * Constructs a new {@link Game}.
+	 *
+	 *@param view
+	 *		The current view of the game.
 	 */
 	private Game(View view) {
 
@@ -116,6 +119,7 @@ public final class Game {
 	 * Assigns the current round number to this {@link Game}
 	 * 
 	 * @param roundNumber
+	 * 			The round number to be assigned.
 	 */
 	public void setRoundNumber(int roundNumber) {
 		this.currentRound = roundNumber;

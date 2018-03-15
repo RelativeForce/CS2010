@@ -10,7 +10,7 @@ import peril.controllers.AIController;
 import peril.controllers.GameController;
 
 /**
- * This class is responsible for retrieving and storing all the {@linkAI} which
+ * This class is responsible for retrieving and storing all the {@link AI} which
  * will be used in the game.
  * 
  * @author James_Rowntree, Joshua_Eddy
@@ -39,8 +39,8 @@ public final class AIHelper implements Iterable<AI> {
 	/**
 	 * Constructs a new {@link AIHelper} object.
 	 * 
-	 * @param The
-	 *            {@link GameController} that allows the {@link AIHelper} to
+	 * @param game
+	 * 			  The {@link GameController} that allows the {@link AIHelper} to
 	 *            interact with the game.
 	 * 
 	 */

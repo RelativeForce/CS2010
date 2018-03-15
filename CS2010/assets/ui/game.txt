@@ -1,31 +1,31 @@
-//type,State,case,assetname,scalex,scaley,posx,posy,name
+//type,State,case,asset name,scaled width,scale height,x,y,name
 
-// Reinforcement State
-button,Reinforcement,0,reinforceButton.png,180,80,10,800,reinforce
-button,Reinforcement,1,endButton.png,180,80,20,155,end
-button,Reinforcement,13,helpButton.png,80,80,410,5,help
-button,Reinforcement,17,pauseButton.png,180,80,490,5,pause
-button,Reinforcement,28,upgradeButton.png,180,80,1030,5,upgrades
-button,Reinforcement,20,challengesButton.png,180,80,670,5,challenges
-image,Reinforcement,reinforceStateBox.png,400,250,5,5
+// Reinforce State
+button,Reinforce,0,reinforceButton.png,180,80,10,800,reinforce
+button,Reinforce,1,endButton.png,180,80,20,155,end
+button,Reinforce,13,helpButton.png,80,80,410,5,help
+button,Reinforce,17,pauseButton.png,180,80,490,5,pause
+button,Reinforce,28,upgradeButton.png,180,80,1030,5,upgrades
+button,Reinforce,20,challengesButton.png,180,80,670,5,challenges
+image,Reinforce,reinforceStateBox.png,400,250,5,5
 
-// Movement State
-button,Movement,5,fortifyButton.png,180,80,10,800,fortify
-button,Movement,3,endButton.png,180,80,20,155,end
-button,Movement,13,helpButton.png,80,80,410,5,help
-button,Movement,17,pauseButton.png,180,80,490,5,pause
-button,Movement,28,upgradeButton.png,180,80,1030,5,upgrades
-button,Movement,20,challengesButton.png,180,80,670,5,challenges
-image,Movement,movementStateBox.png,400,250,5,5
+// Fortify State
+button,Fortify,5,fortifyButton.png,180,80,10,800,fortify
+button,Fortify,3,endButton.png,180,80,20,155,end
+button,Fortify,13,helpButton.png,80,80,410,5,help
+button,Fortify,17,pauseButton.png,180,80,490,5,pause
+button,Fortify,28,upgradeButton.png,180,80,1030,5,upgrades
+button,Fortify,20,challengesButton.png,180,80,670,5,challenges
+image,Fortify,movementStateBox.png,400,250,5,5
 
-// Combat State
-button,Combat,2,endButton.png,180,80,20,155,end
-button,Combat,9,attackButton.png,180,80,10,800,attack
-button,Combat,13,helpButton.png,80,80,410,5,help
-button,Combat,17,pauseButton.png,180,80,490,5,pause
-button,Combat,28,upgradeButton.png,180,80,1030,5,upgrades
-button,Combat,20,challengesButton.png,180,80,670,5,challenges
-image,Combat,combatStateBox.png,400,250,5,5
+// Attack State
+button,Attack,2,endButton.png,180,80,20,155,end
+button,Attack,9,attackButton.png,180,80,10,800,attack
+button,Attack,13,helpButton.png,80,80,410,5,help
+button,Attack,17,pauseButton.png,180,80,490,5,pause
+button,Attack,28,upgradeButton.png,180,80,1030,5,upgrades
+button,Attack,20,challengesButton.png,180,80,670,5,challenges
+image,Attack,combatStateBox.png,400,250,5,5
 
 // Setup State
 button,Setup,4,playButton.png,180,80,205,80,play

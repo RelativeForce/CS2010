@@ -4,8 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
-
 import peril.views.slick.Frame;
 import peril.views.slick.states.InteractiveState;
 import peril.views.slick.util.Clickable;

@@ -18,7 +18,7 @@ import peril.views.View;
 
 /**
  * 
- * The API for all {@link View} -> {@link Game} interactions. Any invalid
+ * The API for all {@link View} to {@link Game} interactions. Any invalid
  * operations will throw the appropriate exceptions.
  * 
  * @author Joshua_Eddy, James_Rowntree
@@ -211,7 +211,7 @@ public interface GameController {
 	 * Performs a specified task for each {@link ModelPlayer}.
 	 * 
 	 * @param task
-	 *            The task to be performed on each {@link ModelPlayer.}
+	 *            The task to be performed on each {@link ModelPlayer}.
 	 */
 	void forEachModelPlayer(Consumer<ModelPlayer> task);
 
@@ -255,7 +255,7 @@ public interface GameController {
 	void confirmMovement();
 
 	/**
-	 * Automatically distributes the {@link Country}s for each {@link ModelPlayer}
+	 * Automatically distributes the {@link ModelCountry}s for each {@link ModelPlayer}
 	 * in the game.
 	 */
 	void autoDistributeCountries();
@@ -273,6 +273,7 @@ public interface GameController {
 	 * a country = 10 points
 	 * 
 	 * @param points
+	 * 			The points to be added.
 	 */
 	void addPoints(int points);
 

@@ -3,6 +3,7 @@ package peril.helpers;
 import java.io.IOException;
 
 import peril.concurrent.Action;
+import peril.views.slick.components.menus.HelpMenu;
 import peril.controllers.GameController;
 
 /**
@@ -149,7 +150,7 @@ public final class FunctionHelper {
 	 * Retrieves the {@link Action} that causes the {@link GameController} to exit
 	 * the player selection screen.
 	 * 
-	 * @return
+	 * @return {@link Action} The action returned.
 	 */
 	private Action<?> leavePlayerSelect() {
 		return new Action<GameController>(game, game -> {
@@ -166,7 +167,7 @@ public final class FunctionHelper {
 	/**
 	 * Retrieves the {@link Action} that hides the challenge menu.
 	 * 
-	 * @return
+	 * @return {@link Action} The action returned.
 	 */
 	private Action<?> hideChallengeMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleChallengeMenu(false));
@@ -175,7 +176,8 @@ public final class FunctionHelper {
 	/**
 	 * Retrieves the {@link Action} that shows the challenge menu.
 	 * 
-	 * @return
+	 * @return {@link Action} The action returned.
+	 * 
 	 */
 	private Action<?> showChallengeMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleChallengeMenu(true));
@@ -184,7 +186,7 @@ public final class FunctionHelper {
 	/**
 	 * Retrieves the {@link Action} that hides the war menu.
 	 * 
-	 * @return
+	 * @return {@link Action} The action returned.
 	 */
 	private Action<?> hideWarMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleWarMenu(false));
@@ -193,7 +195,7 @@ public final class FunctionHelper {
 	/**
 	 * Retrieves the {@link Action} that hides the pause menu.
 	 * 
-	 * @return
+	 * @return {@link Action} The action returned.
 	 */
 	private Action<?> hidePauseMenu() {
 		return new Action<GameController>(game, game -> game.getView().togglePauseMenu(false));
@@ -202,7 +204,7 @@ public final class FunctionHelper {
 	/**
 	 * Retrieves the {@link Action} that shows the pause menu.
 	 * 
-	 * @return
+	 * @return {@link Action} The action returned.
 	 */
 	private Action<?> showPauseMenu() {
 		return new Action<GameController>(game, game -> game.getView().togglePauseMenu(true));
@@ -212,7 +214,7 @@ public final class FunctionHelper {
 	 * Retrieves the {@link Action} that moves the {@link HelpMenu} to the previous
 	 * page.
 	 * 
-	 * @return
+	 * @return {@link Action} The action returned.
 	 */
 	private Action<?> previousHelpPage() {
 		return new Action<GameController>(game, game -> game.getView().previousHelpPage());
@@ -222,7 +224,7 @@ public final class FunctionHelper {
 	 * Retrieves the {@link Action} that moves the {@link HelpMenu} to the next
 	 * page.
 	 * 
-	 * @return
+	 * * @return {@link Action} The action returned.
 	 */
 	private Action<?> nextHelpPage() {
 		return new Action<GameController>(game, game -> game.getView().nextHelpPage());
@@ -231,16 +233,16 @@ public final class FunctionHelper {
 	/**
 	 * Retrieves the {@link Action} that moves the to the credits page
 	 * 
-	 * @return
+	 * @return {@link Action} The action returned.
 	 */
 	private Action<?> enterCredits() {
 		return new Action<GameController>(game, game -> game.getView().enterCredits());
 	}
-	
+
 	/**
 	 * Retrieves the {@link Action} that moves the to the help state
 	 * 
-	 * @return
+	 * @return {@link Action} The action returned.
 	 */
 	private Action<?> enterHelp() {
 		return new Action<GameController>(game, game -> game.getView().enterHelp());

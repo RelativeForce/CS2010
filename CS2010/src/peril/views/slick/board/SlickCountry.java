@@ -10,6 +10,7 @@ import peril.Update;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelHazard;
+import peril.model.board.ModelArmy;
 import peril.views.slick.SlickModelView;
 import peril.views.slick.util.Clickable;
 import peril.views.slick.util.Point;
@@ -24,8 +25,6 @@ import peril.views.slick.util.Region;
  * @since 2018-02-19
  * @version 1.01.02
  * 
- * @see LinkedList
- * @see List
  * @see Clickable
  * @see Observer
  * @see ModelCountry

@@ -98,7 +98,20 @@ public final class AIHelper implements Iterable<AI> {
 			}
 		}
 
-		return null;
+		// Try to find the class for that AI and if it is found, add it to the map of
+		// all the AIs and return it.
+		try {
+
+			final AI newAI = (AI) Class.forName("peril.ai." + name).newInstance();
+			
+			ai.put(newAI, false);
+
+			return newAI;
+
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			throw new AINotFound("The '" + name + "' (AI) could not be fonud.");
+		}
+
 	}
 
 	/**

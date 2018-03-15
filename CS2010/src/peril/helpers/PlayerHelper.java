@@ -181,7 +181,7 @@ public final class PlayerHelper {
 	 * Retrieves whether or not a player specified by number is in this game. If the
 	 * player has lost then this will return false.
 	 * 
-	 * @param model
+	 * @param number
 	 *            {@link ModelPlayer} number
 	 * @return <code>boolean</code>
 	 */
@@ -234,7 +234,7 @@ public final class PlayerHelper {
 	}
 
 	/**
-	 * Empties the {@link List} of playing {@link SlickPlayer}s.
+	 * Empties the {@link List} of playing {@link ModelPlayer}s.
 	 */
 	public void emptyPlaying() {
 		playing.clear();
@@ -246,6 +246,7 @@ public final class PlayerHelper {
 	 * playing.
 	 * 
 	 * @param player
+	 *            The player to be added.
 	 */
 	public void addPlayer(ModelPlayer player) {
 

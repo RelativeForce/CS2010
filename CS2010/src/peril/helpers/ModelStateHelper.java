@@ -4,6 +4,7 @@ import peril.Game;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
+import peril.model.board.ModelArmy;
 import peril.model.states.*;
 import peril.model.states.combat.Attack;
 

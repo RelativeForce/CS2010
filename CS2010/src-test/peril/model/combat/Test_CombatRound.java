@@ -1,4 +1,4 @@
-package peril.model.states.combat;
+package peril.model.combat;
 
 import java.util.LinkedList;
 import java.util.List;

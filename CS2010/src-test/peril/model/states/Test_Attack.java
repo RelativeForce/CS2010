@@ -1,4 +1,4 @@
-package peril.model.states.combat;
+package peril.model.states;
 
 import static org.junit.Assert.*;
 

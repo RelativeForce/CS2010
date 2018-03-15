@@ -1,4 +1,4 @@
-package peril.model.states.combat;
+package peril.model.combat;
 
 import static org.junit.Assert.*;
 import java.util.LinkedList;

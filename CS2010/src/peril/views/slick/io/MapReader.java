@@ -11,6 +11,7 @@ import org.newdawn.slick.Image;
 import peril.Challenge;
 import peril.Game;
 import peril.ai.AI;
+import peril.ai.AINotFound;
 import peril.controllers.GameController;
 import peril.helpers.UnitHelper;
 import peril.io.FileParser;
@@ -37,8 +38,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Joshua_Eddy, Joseph_Rolli
  * 
- * @since 2018-03-09
- * @version 1.01.04
+ * @since 2018-03-15
+ * @version 1.01.05
  * 
  * @see FileParser
  * @see SaveFile
@@ -612,7 +613,7 @@ public final class MapReader extends FileParser {
 	 */
 	private void parsePlayer(String[] details) {
 
-		final int PLAYER_LENGTH = 8;
+		final int PLAYER_LENGTH = 9;
 
 		// Check there is the correct number of details
 		if (details.length != PLAYER_LENGTH) {
@@ -629,65 +630,74 @@ public final class MapReader extends FileParser {
 			throw new IllegalArgumentException("Line " + index + ": " + details[1] + " is not a valid player number.");
 		}
 
+		// Holds the AI that controls the player.
+		AI ai;
+
+		try {
+			ai = game.getAIs().getAI(details[2]);
+		} catch (AINotFound e) {
+			throw new IllegalArgumentException("Line " + index + ": " + e.getMessage());
+		}
+
 		// Holds the strength of the players distrubutable army.
 		int armyStrength;
 
 		try {
-			armyStrength = Integer.parseInt(details[2]);
+			armyStrength = Integer.parseInt(details[3]);
 		} catch (Exception e) {
-			throw new IllegalArgumentException("Line " + index + ": " + details[2] + " is not a valid army strength.");
+			throw new IllegalArgumentException("Line " + index + ": " + details[3] + " is not a valid army strength.");
 		}
 
-		// Holds whether the player is not a loser.
-		boolean notLoser;
-		try {
-			notLoser = Boolean.parseBoolean(details[3]);
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Line " + index + ": " + details[3] + " is not a valid player state.");
-		}
-
-		// Holds the number of points a player has.
-		int points;
-
-		try {
-			points = Integer.parseInt(details[4]);
-		} catch (Exception e) {
-			throw new IllegalArgumentException(
-					"Line " + index + ": " + details[4] + " is not a valid number of points.");
-		}
-		//
 		// Holds the number of countries a player has taken.
 		int countriesTaken;
 
 		try {
-			countriesTaken = Integer.parseInt(details[5]);
+			countriesTaken = Integer.parseInt(details[4]);
 		} catch (Exception e) {
 			throw new IllegalArgumentException(
-					"Line " + index + ": " + details[5] + " is not a valid number of countries taken.");
+					"Line " + index + ": " + details[4] + " is not a valid number of countries taken.");
 		}
 
 		// Holds the number of armies a player has destroyed.
 		int unitsKilled;
 
 		try {
-			unitsKilled = Integer.parseInt(details[6]);
+			unitsKilled = Integer.parseInt(details[5]);
 		} catch (Exception e) {
 			throw new IllegalArgumentException(
-					"Line " + index + ": " + details[6] + " is not a valid number of units killed.");
+					"Line " + index + ": " + details[5] + " is not a valid number of units killed.");
 		}
 
 		// Holds the number of points a player has spent.
 		int pointsSpent;
 
 		try {
-			pointsSpent = Integer.parseInt(details[7]);
+			pointsSpent = Integer.parseInt(details[6]);
 		} catch (Exception e) {
 			throw new IllegalArgumentException(
-					"Line " + index + ": " + details[7] + " is not a valid number of points spent.");
+					"Line " + index + ": " + details[6] + " is not a valid number of points spent.");
+		}
+
+		// Holds whether the player is not a loser.
+		boolean notLoser;
+		try {
+			notLoser = Boolean.parseBoolean(details[7]);
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Line " + index + ": " + details[7] + " is not a valid player state.");
+		}
+
+		// Holds the number of points a player has.
+		int points;
+
+		try {
+			points = Integer.parseInt(details[8]);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(
+					"Line " + index + ": " + details[8] + " is not a valid number of points.");
 		}
 
 		// Holds the slick player.
-		final SlickPlayer player = new SlickPlayer(playerNumber, slickGame.getColor(playerNumber), AI.USER);
+		final SlickPlayer player = new SlickPlayer(playerNumber, slickGame.getColor(playerNumber), ai);
 
 		// Set the state of the player
 		player.model.distributableArmy.setStrength(armyStrength);

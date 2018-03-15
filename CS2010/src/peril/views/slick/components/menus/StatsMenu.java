@@ -14,8 +14,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Joseph_Rolli
  * 
- * @since 2018-03-09
- * @version 1.01.07
+ * @since 2018-03-15
+ * @version 1.01.08
  * 
  * @see Menu
  * @see ModelPlayer
@@ -124,22 +124,37 @@ public final class StatsMenu extends Menu {
 	 */
 	private void drawStats(Frame frame) {
 
-		final String countriesRuled = "Countries owned: " + currentPlayer.model.getCountriesRuled();
-		final String armyStrength = "Total army strength: " + currentPlayer.model.getTotalArmyStrength();
-		final String unitsKilled = "Units killed: " + currentPlayer.model.getUnitsKilled();
-		final String currentPoints = "Current points: " + currentPlayer.model.getPoints();
-		final String pointsSpent = "Points spent: " + currentPlayer.model.getPointsSpent();
-		final String countriesTaken = "Countries taken: " + currentPlayer.model.getCountriesTaken();
-		final int x = getPosition().x + 100;
-
 		// Draw the statistics
-		frame.draw(textFont, countriesRuled, x, getPosition().y + 190);
-		frame.draw(textFont, armyStrength, x, getPosition().y + 240);
-		frame.draw(textFont, unitsKilled, x, getPosition().y + 290);
-		frame.draw(textFont, currentPoints, x, getPosition().y + 340);
-		frame.draw(textFont, pointsSpent, x, getPosition().y + 390);
-		frame.draw(textFont, countriesTaken, x, getPosition().y + 440);
+		drawStat(frame, "AI:", currentPlayer.model.ai.name, 190);
+		drawStat(frame, "Countries owned:", Integer.toString(currentPlayer.model.getCountriesRuled()), 230);
+		drawStat(frame, "Total army strength:", Integer.toString(currentPlayer.model.getTotalArmyStrength()), 270);
+		drawStat(frame, "Units killed:", Integer.toString(currentPlayer.model.getUnitsKilled()), 310);
+		drawStat(frame, "Current points:", Integer.toString(currentPlayer.model.getPoints()), 350);
+		drawStat(frame, "Points spent:", Integer.toString(currentPlayer.model.getPointsSpent()), 390);
+		drawStat(frame, "Countries taken:", Integer.toString(currentPlayer.model.getCountriesTaken()), 430);
 
+	}
+
+	/**
+	 * Draws a specific statistic on screen.
+	 * 
+	 * @param frame
+	 *            The {@link Frame} that displays the {@link StatsMenu} to the user.
+	 * @param stat
+	 *            The string statistic.
+	 * @param value
+	 *            The value of that statistic.
+	 * @param yOffset
+	 *            The y off set of the text on screen.
+	 */
+	private void drawStat(Frame frame, String stat, String value, int yOffset) {
+
+		final int y = getPosition().y + yOffset;
+		final int statX = getPosition().x + 100;
+		final int valueX = getPosition().x + getWidth() - 100 - textFont.getWidth(value);
+
+		frame.draw(textFont, stat, statX, y);
+		frame.draw(textFont, value, valueX, y);
 	}
 
 }

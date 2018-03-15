@@ -15,8 +15,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy, Gurdeep_Pol
  * 
- * @since 2018-02-26
- * @version 1.01.03
+ * @since 2018-03-15
+ * @version 1.01.04
  * 
  * @see Clickable
  * @see ModelBoard
@@ -176,18 +176,19 @@ public final class SlickBoard extends Clickable {
 		hazards.forEach((icon, hazard )-> {
 
 			frame.draw(icon, new EventListener() {
-
+				
 				@Override
 				public void mouseHover(Point mouse, int delta) {
-					// Do nothing
-
+					
+					final String text = hazard.model.name + " - upto " + hazard.model.maxCasualties + "% casualties at " + hazard.model.chance + "% chance";
+					frame.addToolTip(text, new Point(icon.getPosition().x, icon.getPosition().y - 70), 5000, true);
+					
 				}
 
 				@Override
 				public void mouseClick(Point mouse, int mouseButton) {
 					
 					final String text = hazard.model.name + " - upto " + hazard.model.maxCasualties + "% casualties at " + hazard.model.chance + "% chance";
-					
 					frame.addToolTip(text, new Point(icon.getPosition().x, icon.getPosition().y - 70), 5000, true);
 				}
 

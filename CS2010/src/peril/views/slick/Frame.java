@@ -8,6 +8,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 
 import peril.views.slick.components.TextField;
 import peril.views.slick.util.Button;
@@ -67,6 +68,12 @@ public final class Frame {
 	private final List<ToolTip> toolTips;
 
 	/**
+	 * The {@link HoverHandler} that handles the mouse hovering over an object on
+	 * the {@link Frame}.
+	 */
+	private final HoverHandler hover;
+
+	/**
 	 * The {@link Graphics} of the current frame.
 	 */
 	public Graphics g;
@@ -82,6 +89,7 @@ public final class Frame {
 	public Frame() {
 		planes = new ArrayList<>();
 		toolTips = new LinkedList<>();
+		hover = new HoverHandler(750);
 	}
 
 	/**
@@ -114,7 +122,17 @@ public final class Frame {
 	 *            {@link Frame#newFrame(Graphics, GameContainer)} was called.
 	 */
 	public void updateFrame(int delta) {
-		toolTips.removeIf(toolTip -> toolTip.elapse(delta));
+
+		toolTips.removeIf(toolTip -> toolTip.hasElapsed(delta));
+
+		if (gc != null) {
+
+			final Input input = gc.getInput();
+			final Point mouse = new Point(input.getAbsoluteMouseX(), input.getAbsoluteMouseY());
+
+			hover.hover(mouse, delta);
+		}
+
 	}
 
 	/**
@@ -290,7 +308,7 @@ public final class Frame {
 	 * @param text
 	 *            Text to be drawn on screen.
 	 * @param x
-	 *			  The x position on screen.
+	 *            The x position on screen.
 	 * @param y
 	 *            The y position on screen.
 	 */
@@ -533,6 +551,90 @@ public final class Frame {
 	}
 
 	/**
+	 * Handles the mouse hovering at one {@link Point} position and calling
+	 * {@link EventListener#mouseHover(Point, int)} when a fixed time has elapsed.
+	 * 
+	 * @author Joshua_Eddy
+	 * 
+	 * @version 1.01.01
+	 * @since 2018-03-15
+	 * 
+	 * @see Frame
+	 *
+	 */
+	private final class HoverHandler {
+
+		/**
+		 * The number of milliseconds that this {@link HoverHandler} will wait while the
+		 * mouse remains still before performing
+		 * {@link EventListener#mouseHover(Point, int)}.
+		 */
+		private final int duration;
+
+		/**
+		 * The previous {@link Point} position of the mouse.
+		 */
+		private Point previous;
+
+		/**
+		 * The number of milliseconds that have elapsed since the mouse position last
+		 * changed.
+		 */
+		private int elapsed;
+
+		/**
+		 * Constructs a new {@link HoverHandler}.
+		 * 
+		 * @param duration
+		 *            The number of milliseconds that this {@link HoverHandler} will
+		 *            wait while the mouse remains still before performing
+		 *            {@link EventListener#mouseHover(Point, int)}.
+		 */
+		public HoverHandler(int duration) {
+			this.duration = duration;
+			this.elapsed = 0;
+			this.previous = new Point(0, 0);
+		}
+
+		/**
+		 * Processes a mouse hovering at the specified {@link Point} position.
+		 * 
+		 * @param mouse
+		 *            The current position of the mouse.
+		 * @param delta
+		 *            The time that has passed since when the mouse was last polled.
+		 */
+		public void hover(Point mouse, int delta) {
+
+			// If the mouse has not moved since the last time the mouse was polled.
+			if (mouse.equals(previous)) {
+
+				// Increase the elapsd time.
+				elapsed += delta;
+
+				// If the duration has elapsed the mouse has hovered for long enough.
+				if (elapsed >= duration) {
+
+					final Entry clicked = getClicked(mouse);
+
+					// If the mouse is hovering over a item.
+					if (clicked != null) {
+						clicked.handler.mouseHover(mouse, delta);
+					}
+
+					elapsed = 0;
+
+				}
+
+			} else {
+				elapsed = 0;
+				previous = mouse;
+			}
+
+		}
+	}
+
+	/**
 	 * Holds a {@link Clickable} and {@link EventListener} pair that will be stored
 	 * in the planes.
 	 * 
@@ -579,8 +681,8 @@ public final class Frame {
 	 * 
 	 * @author Joshua_Eddy, Gurdeep_Pol
 	 * 
-	 * @since 2018-02-26
-	 * @version 1.01.03
+	 * @since 2018-03-15
+	 * @version 1.01.04
 	 *
 	 */
 	private final class ToolTip {
@@ -633,7 +735,7 @@ public final class Frame {
 		 *            The number of milliseconds between the last frame and this one.
 		 * @return Whether or not this {@link ToolTip} should disappear or not.
 		 */
-		public boolean elapse(int delta) {
+		public boolean hasElapsed(int delta) {
 			return delay.hasElapsed(delta);
 		}
 

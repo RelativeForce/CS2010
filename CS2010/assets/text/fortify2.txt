@@ -1,0 +1,9 @@
+How to: Fortify pt.2
+How to:
+1. Select the origin country. Must have more than one unit.
+
+2. Select the destination country. If the movement is valid, a link will be shown.
+
+3a. Click 'Fortify' to move one unit.
+
+3b. Click the unit from the source army you want to move, then click 'Fortify' to move one unit.

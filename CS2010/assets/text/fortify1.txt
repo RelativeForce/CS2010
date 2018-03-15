@@ -1,10 +1,9 @@
+How to: Fortify pt.1
+In Fortify, the current player can move units from one country to another.
 
-In Movement, the current player can move units from one country to another, provided that both countries are:
+Provided that both countries are:
 - Ruled by the same player.
 - Connected by a chain of countries ruled by that player.
-A valid troop movement will be shown by a line linking the selected countries.
+- There is more than one unit in the source country's army.
 
-How to:
-1. Select the origin country. Must have more than one unit.
-2. Select the destination country. If the movement is valid, a link will be shown.
-3. Click 'Fortify' to move one unit.
+A valid unit movement will be shown by a line linking the selected countries.

@@ -12,8 +12,8 @@ import peril.model.board.ModelUnit;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.02
- * @since 2018-02-18
+ * @version 1.01.03
+ * @since 2018-03-15
  * 
  * @see Observable
  * @see ModelLinkState
@@ -67,7 +67,11 @@ public final class ModelLink extends Observable {
 					"The duration of " + state.name + " cannot be less than or equal to zero.");
 		}
 
-		this.duration = duration;
+		if (state == null) {
+			throw new NullPointerException("State cannot be null.");
+		}
+
+		this.duration = (state == defaultState) ? 0 : duration;
 		this.current = state;
 
 		setChanged();

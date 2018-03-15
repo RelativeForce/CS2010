@@ -407,7 +407,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 
 				// If the links are toggled on or the link is blocked
 				if (menus.linksVisible() || link.model == ModelLinkState.BLOCKADE) {
-					
+
 					// Draw the link
 					link.draw(frame, countryPosition, neighbourPosition);
 				}
@@ -596,7 +596,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	private Point processPan(Point mousePosition) {
 
 		final SlickBoard board = slick.modelView.getVisual(game.getModelBoard());
-		
+
 		// Holds the dimensions of the game container.
 		final int screenWidth = slick.getScreenWidth();
 		final int screenHeight = slick.getScreenHeight();
@@ -605,24 +605,24 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		final int xPadding = screenWidth / 20;
 		final int yPadding = screenHeight / 20;
 
-		float widthRatio = (float) screenWidth/board.getWidth();
-		float heightRatio = (float) screenHeight/board.getHeight();
-		
+		float widthRatio = (float) screenWidth / board.getWidth();
+		float heightRatio = (float) screenHeight / board.getHeight();
+
 		int x = 0;
 		int y = 0;
 
 		// If the x is within the padding pan left or right
 		if (mousePosition.x < xPadding) {
-			x = (int) (widthRatio*PAN_SPEED);
+			x = (int) (widthRatio * PAN_SPEED);
 		} else if (mousePosition.x > screenWidth - xPadding) {
-			x = (int) (widthRatio*-PAN_SPEED);
+			x = (int) (widthRatio * -PAN_SPEED);
 		}
 
 		// If the y is within the padding pan up or down
 		if (mousePosition.y < yPadding) {
-			y = (int) (heightRatio*PAN_SPEED);
+			y = (int) (heightRatio * PAN_SPEED);
 		} else if (mousePosition.y > screenHeight - yPadding) {
-			y = (int) (heightRatio*-PAN_SPEED);
+			y = (int) (heightRatio * -PAN_SPEED);
 		}
 
 		return new Point(x, y);

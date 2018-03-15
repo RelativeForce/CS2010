@@ -16,8 +16,8 @@ import peril.model.states.ModelState;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-03-12
- * @version 1.01.04
+ * @since 2018-03-15
+ * @version 1.01.05
  * 
  * @see ModelState
  *
@@ -27,7 +27,7 @@ public final class Attack extends ModelState {
 	/**
 	 * The name of the {@link Attack} state.
 	 */
-	private static final String STATE_NAME = "Combat";
+	private static final String STATE_NAME = "Attack";
 
 	/**
 	 * Holds the {@link CombatHelper} that will handle combat during the

@@ -14,7 +14,7 @@ import peril.model.board.ModelUnit;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-25
+ * @since 2018-03-15
  * @version 1.01.03
  * 
  * @see ModelState
@@ -25,7 +25,7 @@ public final class Reinforce extends ModelState {
 	/**
 	 * The name of the {@link Reinforce} state.
 	 */
-	private static final String STATE_NAME = "Reinforcement";
+	private static final String STATE_NAME = "Reinforce";
 
 	/**
 	 * Constructs a new {@link Reinforce}.

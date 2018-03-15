@@ -21,8 +21,8 @@ import peril.model.board.links.ModelLink;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-03-12
- * @version 1.01.06
+ * @since 2018-03-15
+ * @version 1.01.07
  *
  * @see ModelState
  */
@@ -31,7 +31,7 @@ public final class Fortify extends ModelState {
 	/**
 	 * The name of the {@link Fortify} state.
 	 */
-	private static final String STATE_NAME = "Movement";
+	private static final String STATE_NAME = "Fortify";
 
 	/**
 	 * Constructs an new {@link Fortify}.

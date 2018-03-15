@@ -180,7 +180,7 @@ public final class SlickBoard extends Clickable {
 				@Override
 				public void mouseHover(Point mouse) {
 					
-					final String text = hazard.model.name + " - upto " + hazard.model.maxCasualties + "% casualties at " + hazard.model.chance + "% chance";
+					final String text = hazard.model.name + " - up to " + hazard.model.maxCasualties + "% casualties at " + hazard.model.chance + "% chance";
 					frame.addToolTip(text, new Point(icon.getPosition().x, icon.getPosition().y - 70), 5000, true);
 					
 				}
@@ -188,7 +188,7 @@ public final class SlickBoard extends Clickable {
 				@Override
 				public void mouseClick(Point mouse, int mouseButton) {
 					
-					final String text = hazard.model.name + " - upto " + hazard.model.maxCasualties + "% casualties at " + hazard.model.chance + "% chance";
+					final String text = hazard.model.name + " - up to " + hazard.model.maxCasualties + "% casualties at " + hazard.model.chance + "% chance";
 					frame.addToolTip(text, new Point(icon.getPosition().x, icon.getPosition().y - 70), 5000, true);
 				}
 

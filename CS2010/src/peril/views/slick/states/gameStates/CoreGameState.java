@@ -37,7 +37,7 @@ import peril.views.slick.util.Point;
  * 
  * @author Joseph_Rolli, Joshua_Eddy
  * 
- * @since 2018-02-26
+ * @since 2018-03-15
  * @version 1.01.08
  * 
  * @see InteractiveState
@@ -356,7 +356,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		frame.draw(player, new EventListener() {
 
 			@Override
-			public void mouseHover(Point mouse, int delta) {
+			public void mouseHover(Point mouse) {
 				// Do nothing
 			}
 
@@ -456,7 +456,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		frame.draw(miniMap, new EventListener() {
 
 			@Override
-			public void mouseHover(Point mouse, int delta) {
+			public void mouseHover(Point mouse) {
 				// Do nothing
 			}
 
@@ -544,7 +544,7 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 		frame.draw(board, new EventListener() {
 
 			@Override
-			public void mouseHover(Point mouse, int delta) {
+			public void mouseHover(Point mouse) {
 				// Do nothing
 			}
 

@@ -298,7 +298,7 @@ public final class SlickSetup extends CoreGameState {
 				frame.draw(player, new EventListener() {
 
 					@Override
-					public void mouseHover(Point mouse, int delta) {
+					public void mouseHover(Point mouse) {
 						// Do nothing
 					}
 

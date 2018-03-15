@@ -20,8 +20,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-19
- * @version 1.01.02
+ * @since 2018-03-15
+ * @version 1.01.03
  * 
  * @see Observer
  * @see ModelArmy
@@ -360,7 +360,7 @@ public final class SlickArmy implements Observer {
 		frame.draw(unit, new EventListener() {
 
 			@Override
-			public void mouseHover(Point mouse, int delta) {
+			public void mouseHover(Point mouse) {
 				// Do nothing
 			}
 

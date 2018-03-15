@@ -22,8 +22,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Ezekiel_Trinidad, Joshua_Eddy
  * 
- * @since 2018-03-08
- * @version 1.01.02
+ * @since 2018-03-15
+ * @version 1.01.05
  * 
  * @see Menu
  *
@@ -142,7 +142,7 @@ public final class PauseMenu extends Menu {
 		this.linksToggleListener = new EventListener() {
 
 			@Override
-			public void mouseHover(Point mouse, int delta) {
+			public void mouseHover(Point mouse) {
 				// Do nothing
 			}
 
@@ -173,7 +173,7 @@ public final class PauseMenu extends Menu {
 		this.musicToggleListener = new EventListener() {
 
 			@Override
-			public void mouseHover(Point mouse, int delta) {
+			public void mouseHover(Point mouse) {
 				// Do nothing
 			}
 
@@ -212,7 +212,7 @@ public final class PauseMenu extends Menu {
 		this.savesListener = new EventListener() {
 
 			@Override
-			public void mouseHover(Point mouse, int delta) {
+			public void mouseHover(Point mouse) {
 				// Do nothing
 			}
 
@@ -243,7 +243,7 @@ public final class PauseMenu extends Menu {
 		this.aiSpeedsListener = new EventListener() {
 
 			@Override
-			public void mouseHover(Point mouse, int delta) {
+			public void mouseHover(Point mouse) {
 				// Do nothing
 			}
 

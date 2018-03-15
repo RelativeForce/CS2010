@@ -33,11 +33,9 @@ public interface EventListener {
 	 * Process the mouse hovering at a certain {@link Point} position on screen.
 	 * 
 	 * @param mouse
-	 *            The mouse position {@link Point}.0
-	 * @param delta
-	 *            The amount of milliseconds that have elapsed at that position.
+	 *            The mouse position {@link Point}.
 	 */
-	void mouseHover(Point mouse, int delta);
+	void mouseHover(Point mouse);
 
 	/**
 	 * Processes a button press while the mouse is at the specified position on

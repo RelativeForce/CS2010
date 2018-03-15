@@ -22,8 +22,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-26
- * @version 1.01.03
+ * @since 2018-03-15
+ * @version 1.01.04
  * 
  * @see InteractiveState
  *
@@ -133,7 +133,7 @@ public final class MainMenu extends InteractiveState {
 		frame.draw(maps, new EventListener() {
 
 			@Override
-			public void mouseHover(Point mouse, int delta) {
+			public void mouseHover(Point mouse) {
 				// Do nothing
 			}
 
@@ -167,7 +167,7 @@ public final class MainMenu extends InteractiveState {
 		frame.draw(saves, new EventListener() {
 
 			@Override
-			public void mouseHover(Point mouse, int delta) {
+			public void mouseHover(Point mouse) {
 				// Do nothing
 			}
 

@@ -178,7 +178,7 @@ public final class SlickBoard extends Clickable {
 			frame.draw(icon, new EventListener() {
 				
 				@Override
-				public void mouseHover(Point mouse, int delta) {
+				public void mouseHover(Point mouse) {
 					
 					final String text = hazard.model.name + " - upto " + hazard.model.maxCasualties + "% casualties at " + hazard.model.chance + "% chance";
 					frame.addToolTip(text, new Point(icon.getPosition().x, icon.getPosition().y - 70), 5000, true);

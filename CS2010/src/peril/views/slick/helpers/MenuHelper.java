@@ -401,7 +401,7 @@ public final class MenuHelper {
 			frame.draw(visible, new EventListener() {
 
 				@Override
-				public void mouseHover(Point mouse, int delta) {
+				public void mouseHover(Point mouse) {
 					// Do nothing
 				}
 

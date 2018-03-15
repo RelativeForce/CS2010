@@ -258,7 +258,7 @@ public final class Frame {
 			final Entry entry = new Entry(button, new EventListener() {
 
 				@Override
-				public final void mouseHover(Point mouse, int delta) {
+				public final void mouseHover(Point mouse) {
 					// Do nothing
 				}
 
@@ -619,7 +619,7 @@ public final class Frame {
 
 					// If the mouse is hovering over a item.
 					if (clicked != null) {
-						clicked.handler.mouseHover(mouse, delta);
+						clicked.handler.mouseHover(mouse);
 					}
 
 					elapsed = 0;

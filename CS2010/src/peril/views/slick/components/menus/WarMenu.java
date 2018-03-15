@@ -40,7 +40,7 @@ import peril.views.slick.util.Region;
  * 
  * @author Joshua_Eddy, Ezekiel_Trinidad
  * 
- * @since 2018-03-04
+ * @since 2018-03-15
  * @version 1.01.06
  * 
  * @see Menu
@@ -828,7 +828,7 @@ public final class WarMenu extends Menu {
 				frame.draw(member, new EventListener() {
 
 					@Override
-					public void mouseHover(Point mouse, int delta) {
+					public void mouseHover(Point mouse) {
 						// Do nothing
 					}
 

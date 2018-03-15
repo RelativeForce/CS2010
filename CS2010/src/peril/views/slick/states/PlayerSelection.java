@@ -34,8 +34,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy, Gurdeep_Pol, Ezekiel_Trinidad
  * 
- * @since 2018-03-08
- * @version 1.01.08
+ * @since 2018-03-15
+ * @version 1.01.09
  * 
  * @see InteractiveState
  * @see AI
@@ -382,7 +382,7 @@ public final class PlayerSelection extends InteractiveState {
 		frame.draw(aiList, new EventListener() {
 
 			@Override
-			public void mouseHover(Point mouse, int delta) {
+			public void mouseHover(Point mouse) {
 				// Do nothing
 			}
 
@@ -448,7 +448,7 @@ public final class PlayerSelection extends InteractiveState {
 		frame.draw(numberOfPlayers, new EventListener() {
 
 			@Override
-			public void mouseHover(Point mouse, int delta) {
+			public void mouseHover(Point mouse) {
 				// Do nothing
 			}
 
@@ -497,7 +497,7 @@ public final class PlayerSelection extends InteractiveState {
 		frame.draw(aiSpeeds, new EventListener() {
 
 			@Override
-			public void mouseHover(Point mouse, int delta) {
+			public void mouseHover(Point mouse) {
 				// Do nothing
 			}
 
@@ -590,7 +590,7 @@ public final class PlayerSelection extends InteractiveState {
 				frame.draw(player, new EventListener() {
 
 					@Override
-					public void mouseHover(Point mouse, int delta) {
+					public void mouseHover(Point mouse) {
 					}
 
 					@Override
@@ -623,7 +623,7 @@ public final class PlayerSelection extends InteractiveState {
 						frame.draw(player.change, new EventListener() {
 
 							@Override
-							public void mouseHover(Point mouse, int delta) {
+							public void mouseHover(Point mouse) {
 								// Do nothing
 							}
 
@@ -733,7 +733,7 @@ public final class PlayerSelection extends InteractiveState {
 		frame.draw(randomOrderToggle, new EventListener() {
 
 			@Override
-			public void mouseHover(Point mouse, int delta) {
+			public void mouseHover(Point mouse) {
 				// DO NOTHING
 
 			}

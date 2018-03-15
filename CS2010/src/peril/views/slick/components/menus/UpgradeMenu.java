@@ -37,8 +37,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Joseph_Rolli, Joshua_Eddy
  * 
- * @since 2018-03-06
- * @version 1.01.03
+ * @since 2018-03-15
+ * @version 1.01.04
  *
  * @see Menu
  * @see UnitTrader
@@ -170,7 +170,7 @@ public final class UpgradeMenu extends Menu {
 		this.neighbourListener = new EventListener() {
 
 			@Override
-			public void mouseHover(Point mouse, int delta) {
+			public void mouseHover(Point mouse) {
 				// Do nothing
 			}
 
@@ -602,7 +602,7 @@ public final class UpgradeMenu extends Menu {
 			this.listener = new EventListener() {
 
 				@Override
-				public void mouseHover(Point mouse, int delta) {
+				public void mouseHover(Point mouse) {
 					// Do nothing
 				}
 

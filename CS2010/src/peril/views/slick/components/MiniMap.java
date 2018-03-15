@@ -21,8 +21,8 @@ import peril.views.slick.util.Region;
  * 
  * @author Ezekiel_Trinidad, Joshua_Eddy
  * 
- * @since 2018-03-07
- * @version 1.01.03
+ * @since 2018-03-15
+ * @version 1.01.04
  * 
  * @see Clickable
  * @see Component
@@ -152,7 +152,7 @@ public final class MiniMap extends Clickable implements Component {
 		frame.draw(window, new EventListener() {
 
 			@Override
-			public void mouseHover(Point mouse, int delta) {
+			public void mouseHover(Point mouse) {
 				// Do nothing
 			}
 

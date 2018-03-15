@@ -22,7 +22,7 @@ import peril.views.slick.util.Point;
  * 
  * @author Adrian_Wong, Joshua_Eddy
  * 
- * @since 2018-02-27
+ * @since 2018-03-15
  * @version 1.01.04
  * 
  * @see InteractiveState
@@ -80,8 +80,8 @@ public final class InstructionsState extends InteractiveState {
 		this.scrollListener = new EventListener() {
 
 			@Override
-			public void mouseHover(Point mouse, int delta) {
-
+			public void mouseHover(Point mouse) {
+				// Do nothing
 			}
 
 			@Override

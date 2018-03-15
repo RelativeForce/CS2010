@@ -11,10 +11,10 @@ import peril.io.SaveFile;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
 import peril.model.board.links.ModelLink;
+import peril.model.states.Attack;
 import peril.model.states.Fortify;
 import peril.model.states.ModelState;
 import peril.model.states.Reinforce;
-import peril.model.states.combat.Attack;
 
 /**
  * This defines the behaviours of a object that will display the state of the

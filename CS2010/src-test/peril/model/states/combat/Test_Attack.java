@@ -24,6 +24,7 @@ import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
 import peril.model.board.links.ModelLink;
 import peril.model.board.links.ModelLinkState;
+import peril.model.states.Attack;
 import peril.model.states.Fortify;
 import peril.model.states.ModelState;
 import peril.model.states.Reinforce;

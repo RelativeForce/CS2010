@@ -15,6 +15,9 @@ import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
 import peril.model.board.links.ModelLink;
 import peril.model.board.links.ModelLinkState;
+import peril.model.combat.CombatHelper;
+import peril.model.combat.CombatRound;
+import peril.model.combat.ModelSquad;
 
 /**
  * Tests that {@link CombatRound} is constructed properly and only with valid

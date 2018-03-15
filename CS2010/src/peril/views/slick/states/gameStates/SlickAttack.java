@@ -9,7 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import peril.controllers.GameController;
 import peril.model.board.ModelCountry;
-import peril.model.states.combat.Attack;
+import peril.model.states.Attack;
 import peril.views.slick.Frame;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.components.menus.WarMenu;

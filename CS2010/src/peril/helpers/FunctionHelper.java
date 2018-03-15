@@ -3,8 +3,9 @@ package peril.helpers;
 import java.io.IOException;
 
 import peril.concurrent.Action;
-import peril.views.slick.components.menus.HelpMenu;
+import peril.views.slick.components.menus.*;
 import peril.controllers.GameController;
+import peril.views.slick.util.Button;
 
 /**
  * 
@@ -224,7 +225,7 @@ public final class FunctionHelper {
 	 * Retrieves the {@link Action} that moves the {@link HelpMenu} to the next
 	 * page.
 	 * 
-	 * * @return {@link Action} The action returned.
+	 * @return {@link Action} The action returned.
 	 */
 	private Action<?> nextHelpPage() {
 		return new Action<GameController>(game, game -> game.getView().nextHelpPage());
@@ -384,6 +385,8 @@ public final class FunctionHelper {
 
 	/**
 	 * Retrieves the {@link Action} that will return the game back to the main menu.
+	 *
+	 * @return {@link Action}
 	 */
 	private Action<?> enterMainMenu() {
 		return new Action<GameController>(game, game -> game.getView().enterMainMenu());
@@ -410,7 +413,7 @@ public final class FunctionHelper {
 	/**
 	 * Retrieves the {@link Action} that opens the {@link HelpMenu} window.
 	 * 
-	 * @return
+	 * @return {@link Action}
 	 */
 	private Action<?> showHelpMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleHelpMenu(true));
@@ -419,7 +422,7 @@ public final class FunctionHelper {
 	/**
 	 * Retrieves the {@link Action} that closes the {@link HelpMenu} window.
 	 * 
-	 * @return
+	 * @return {@link Action}
 	 */
 	private Action<?> hideHelpMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleHelpMenu(false));
@@ -428,7 +431,7 @@ public final class FunctionHelper {
 	/**
 	 * Retrieves the {@link Action} that opens the {@link StatsMenu} window.
 	 * 
-	 * @return
+	 * @return {@link Action}
 	 */
 	private Action<?> showStatsMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleStatsMenu(true));
@@ -437,7 +440,7 @@ public final class FunctionHelper {
 	/**
 	 * Retrieves the {@link Action} that closes the {@link StatsMenu} window.
 	 * 
-	 * @return
+	 * @return {@link Action}
 	 */
 	private Action<?> hideStatsMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleStatsMenu(false));
@@ -446,7 +449,7 @@ public final class FunctionHelper {
 	/**
 	 * Retrieves the {@link Action} that opens the {@link UpgradeMenu} window.
 	 * 
-	 * @return
+	 * @return {@link Action}
 	 */
 	private Action<?> showUpgradeMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleUpgradeMenu(true));
@@ -455,7 +458,7 @@ public final class FunctionHelper {
 	/**
 	 * Retrieves the {@link Action} that closes the {@link UpgradeMenu} window.
 	 * 
-	 * @return
+	 * @return {@link Action}
 	 */
 	private Action<?> hideUpgradeMenu() {
 		return new Action<GameController>(game, game -> game.getView().toggleUpgradeMenu(false));

@@ -25,7 +25,7 @@ public interface AIController {
 	/**
 	 * Retrieves the {@link Board}.
 	 * 
-	 * @return <{@link Board} 
+	 * @return {@link Board} 
 	 * 			Returns the board.
 	 * 
 	 */

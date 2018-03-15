@@ -30,6 +30,7 @@ public final class Test_UnitHelper {
 	 * Clear the {@link UnitHelper} before any testing.
 	 * 
 	 * @throws Exception
+	 * 		Thrown when helper fails to clear.
 	 */
 	@Before
 	public void setUp() throws Exception {

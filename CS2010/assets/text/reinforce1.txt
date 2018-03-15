@@ -1,7 +1,7 @@
 How to: Reinforce
 In Reinforce, the current player distributes their available units to their countries. The available units are shown in the top left corner.
 
-The number of units given each round is dependent on the round and the number of countries owned. More can be earned through challenges.
+The number of units given each round is dependent on the round and the number of countries owned.
 
 1. Select the country you wish to reinforce.
 2. Click 'Reinforce' to add a unit to the selected country.

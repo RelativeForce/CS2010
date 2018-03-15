@@ -2,6 +2,6 @@ War pt.3
 For example: 
 If the attacker has 3 units but the defender only has 1.
 
-The best dice of the attacker's 3 will be pit against the defender's only dice.
+The best dice of the attacker's 3 will be matched against the defender's only dice.
 
 If the player has successfully conquered the enemy country, the last defending unit of the enemy country will desert and join the player's army.

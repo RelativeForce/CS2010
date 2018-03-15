@@ -1,8 +1,8 @@
 Upgrading Countries pt.1
-You can upgrade your countries using points you have accumulated throughout the game.
+You can upgrade your countries and units using points you have accumulated throughout the game.
 
 In the upgrade menu you can view the number of points you have and the cost of upgrades.
 
 A number of a specific type of unit can be exchanged for a unit of equal strength.
 
-Blockades can be purchased which prevent attack from the blockaded country for 3 rounds.
+Blockades can be purchased to prevent attacks from the blockaded country for 3 rounds.

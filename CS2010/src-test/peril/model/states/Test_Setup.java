@@ -145,7 +145,7 @@ public class Test_Setup {
 			}
 
 		}
-		System.out.println("P1" + player1Owned + "P2" + player2Owned);
+
 		assertTrue(player1Owned == 1 && player2Owned == 1);
 	}
 

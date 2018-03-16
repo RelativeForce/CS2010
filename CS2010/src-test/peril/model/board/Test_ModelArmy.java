@@ -67,8 +67,7 @@ public final class Test_ModelArmy {
 		assertEquals(3, modelArmy.getStrength());
 		modelArmy.add(testUnit3);
 		assertEquals(6, modelArmy.getStrength());
-		// System.out.println("This is the ModelArmy strength " +
-		// modelArmyOne.getStrength());
+		
 	}
 
 	/**

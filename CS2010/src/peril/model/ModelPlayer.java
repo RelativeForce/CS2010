@@ -16,8 +16,8 @@ import peril.model.board.ModelContinent;
  * 
  * @author Joshua_Eddy, Ezekiel_Trinidad, Joseph_Rolli
  * 
- * @since 2018-03-09
- * @version 1.01.04
+ * @since 2018-03-16
+ * @version 1.01.05
  * 
  * @see Player
  * @see Observable
@@ -138,7 +138,7 @@ public final class ModelPlayer extends Observable implements Player {
 	 *            owns.
 	 */
 	public void setContinentsRuled(int continentsRuled) {
-		if (continentsRuled <= 0) {
+		if (continentsRuled < 0) {
 			throw new IllegalArgumentException("Continents ruled must be >=0");
 		}
 		continents = continentsRuled;
@@ -213,7 +213,7 @@ public final class ModelPlayer extends Observable implements Player {
 	 *            The new amount of points the {@link ModelPlayer} will have.
 	 */
 	public void setPoints(int points) {
-		if (points <= 0) {
+		if (points < 0) {
 			throw new IllegalArgumentException("Set points requires positive int.");
 		}
 		this.points = points;
@@ -226,7 +226,7 @@ public final class ModelPlayer extends Observable implements Player {
 	 *            points to add.
 	 */
 	public void addPoints(int points) {
-		if (points <= 0) {
+		if (points < 0) {
 			throw new IllegalArgumentException("Add points requires positive int.");
 		}
 		this.points += points;

@@ -9,6 +9,7 @@ import java.util.Set;
 
 import peril.ai.api.Country;
 import peril.ai.api.Player;
+import peril.ai.AIController;
 
 /**
  * A hopefully somewhat clever AI. We'll see. {@link AI}.
@@ -40,19 +41,18 @@ public final class Ocelot extends AI {
 	 */
 	@Override
 	public AIOperation processReinforce(AIController api) {
-		
+
 		final AIOperation op = new AIOperation();
-		
+
 		for (Country country : calcBiggestTerritory(api)) {
 			if (api.getCurrentPlayer().getDistributableArmy().getStrength() != 0) {
-				
-				if(!op.select.isEmpty()) {
+
+				if (!op.select.isEmpty()) {
 					op.select.clear();
 				}
 				op.select.add(country);
 				op.processAgain = true;
-				
-			
+
 			}
 		}
 
@@ -74,7 +74,6 @@ public final class Ocelot extends AI {
 			highest = value > highest ? value : highest;
 		}
 
-		
 		final AIOperation op = new AIOperation();
 
 		if (highest == Integer.MIN_VALUE) {
@@ -120,7 +119,7 @@ public final class Ocelot extends AI {
 			op.processAgain = false;
 			return op;
 		}
-		
+
 		final Country safe = possibleMoves.get(weights[0]).a;
 		final Country border = possibleMoves.get(weights[0]).b;
 
@@ -207,6 +206,8 @@ public final class Ocelot extends AI {
 	 * Retrieves the weighting for every possible fortification possible on the
 	 * board..
 	 * 
+	 * @param api
+	 *            {@link AIController} The AIControllor for interaction.
 	 * @param internal
 	 *            {@link Country}s that border NO enemy {@link Country}s
 	 * @param frontline
@@ -230,14 +231,19 @@ public final class Ocelot extends AI {
 		return possibleMoves;
 	}
 
-
 	/**
-	 * Iterates through each {@link Country} on the {@link ModelBoard} and adds the
+	 * Iterates through each {@link Country} on the ModelBoard and adds the
 	 * {@link Country}s that border enemy {@link Country}s to 'frontline' and
 	 * {@link Country}s that border NO enemy {@link Country}s to 'internal'.
 	 * 
 	 * @param api
-	 *            {@link AIController}
+	 *            {@link AIController} The AIControllor for interaction.
+	 *            
+	 * @param internal
+	 * 				Set of countries bordering no enemies.
+	 * 
+	 * @param frontline
+	 * 				Set of countries bordering enemies.
 	 * 
 	 */
 	private void defineFrontline(AIController api, Set<Country> internal, Map<Country, Integer> frontline) {
@@ -278,7 +284,7 @@ public final class Ocelot extends AI {
 			}
 		});
 	}
-	
+
 	/**
 	 * Holds a pair of {@link Country}s.
 	 * 
@@ -300,7 +306,9 @@ public final class Ocelot extends AI {
 		 * Constructs a new {@link Entry}.
 		 * 
 		 * @param a
+		 * 		Country a.
 		 * @param b
+		 * 		Country b.
 		 */
 		public Entry(Country a, Country b) {
 			this.a = a;

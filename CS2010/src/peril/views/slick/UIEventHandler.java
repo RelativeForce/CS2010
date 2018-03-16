@@ -4,6 +4,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.KeyListener;
 import org.newdawn.slick.MouseListener;
 
+import peril.views.slick.states.Instructions;
 import peril.views.slick.util.Point;
 
 /**
@@ -12,8 +13,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy, Adrian_Wong
  * 
- * @since 2018-02-16
- * @version 1.01.01
+ * @since 2018-03-16
+ * @version 1.01.02
  *
  * @see MouseListener
  * @see KeyListener
@@ -66,7 +67,15 @@ public final class UIEventHandler implements MouseListener, KeyListener {
 
 	@Override
 	public void mouseDragged(int oldx, int oldy, int newx, int newy) {
-		// Do nothing
+
+		// Only process mouse drag in instructions state
+		if (game.getCurrentState() instanceof Instructions) {
+			try {
+				game.getCurrentState().click(new Point(newx, newy), Input.MOUSE_LEFT_BUTTON);
+			} catch (Exception e) {
+				game.showToolTip(e.getMessage());
+			}
+		}
 	}
 
 	@Override

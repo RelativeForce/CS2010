@@ -12,8 +12,8 @@ import peril.model.board.ModelUnit;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.03
- * @since 2018-03-15
+ * @version 1.01.04
+ * @since 2018-03-16
  * 
  * @see Observable
  * @see ModelLinkState
@@ -122,15 +122,11 @@ public final class ModelLink extends Observable {
 	 * 
 	 * @param unit
 	 *            {@link ModelUnit}
-	 * @param origin
-	 *            {@link ModelCountry}
-	 * @param destination
-	 *            {@link ModelCountry}
 	 * @return Whether or not a {@link ModelUnit} can be transfered along this
 	 *         {@link ModelLinkState} between the two {@link ModelCountry}s.
 	 */
-	public boolean canTransfer(ModelUnit unit, ModelCountry origin, ModelCountry destination) {
-		return current.canTransfer(unit, origin, destination);
+	public boolean canTransfer(ModelUnit unit) {
+		return current.canTransfer(unit);
 	}
 
 	/**
@@ -179,12 +175,12 @@ public final class ModelLink extends Observable {
 		}
 
 		// If the unit can be transfered across the link return false
-		if (!current.canTransfer(unit, origin, destination)) {
+		if (!current.canTransfer(unit)) {
 			return false;
 		}
 
 		// Process the transfer
-		current.transferBetween(unit, origin, destination);
+		current.transfer(unit, origin, destination);
 
 		return true;
 

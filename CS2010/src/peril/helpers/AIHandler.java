@@ -22,8 +22,8 @@ import peril.model.states.ModelState;
  * 
  * @author Joshua_Eddy, Joseph_Rolli
  * 
- * @version 1.01.09
- * @since 2018-03-12
+ * @version 1.01.10
+ * @since 2018-03-16
  * 
  * @see AIController
  *
@@ -311,7 +311,7 @@ public final class AIHandler implements AIController {
 	 */
 	@Override
 	public boolean hasOpenLinkBetween(Country country, Country neighbour) {
-		// Ensure that both the parameter Countrys is a valid model country, This should
+		// Ensure that both the parameter country's is a valid model country, This should
 		// never be false.
 		if (!(country instanceof ModelCountry)) {
 			throw new IllegalArgumentException("The parmameter 'source' country is not a valid country.");
@@ -326,7 +326,7 @@ public final class AIHandler implements AIController {
 			throw new IllegalArgumentException("The specifed countries must be neighbours.");
 		}
 
-		return checkedSource.getLinkTo(checkedDestination).canTransfer(null, checkedSource, checkedDestination);
+		return checkedSource.getLinkTo(checkedDestination).canTransfer(null);
 	}
 
 	/**

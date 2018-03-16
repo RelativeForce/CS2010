@@ -21,8 +21,8 @@ import peril.model.board.links.ModelLink;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-03-15
- * @version 1.01.07
+ * @since 2018-03-16
+ * @version 1.01.08
  *
  * @see ModelState
  */
@@ -330,7 +330,7 @@ public final class Fortify extends ModelState {
 	 * {@link ModelCountry}) recursively perform a depth first search from one node
 	 * to another. If a link between two {@link ModelCountry}s does not allow the
 	 * specified {@link ModelUnit} to be transfered
-	 * ({@link ModelLink#canTransfer(ModelUnit, ModelCountry, ModelCountry)}) then
+	 * ({@link ModelLink#canTransfer(ModelUnit)}) then
 	 * the link will to be used in the path.
 	 * 
 	 * @param path
@@ -364,11 +364,11 @@ public final class Fortify extends ModelState {
 		for (ModelCountry country : current.getNeighbours()) {
 
 			/*
-			 * If the target country is a neighbour of the current country add it to the
-			 * path then return true. This will result in all the parents of the current
-			 * node to return true also.
+			 * If the target country is a neighbour of the current country and has an open
+			 * link, add it to the path then return true. This will result in all the
+			 * parents of the current node to return true also.
 			 */
-			if (country.equals(target)) {
+			if (country.equals(target) && current.getLinkTo(country).canTransfer(unit)) {
 				path.addLast(country);
 				return true;
 			}
@@ -381,7 +381,7 @@ public final class Fortify extends ModelState {
 
 				// If the unit can be transfered over the link then set the country as a valid
 				// child and set it as traversed.
-				if (link.canTransfer(unit, current, country)) {
+				if (link.canTransfer(unit)) {
 					validChildren.add(country);
 					travsersed.add(country);
 				}

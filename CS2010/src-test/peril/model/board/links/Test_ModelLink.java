@@ -14,8 +14,8 @@ import peril.model.board.ModelUnit;
  * 
  * @author Joseph_Rolli, Joshua_Eddy
  * 
- * @version 1.01.02
- * @since 2018-03-15
+ * @version 1.01.03
+ * @since 2018-03-16
  * 
  * @see ModelLink
  *
@@ -90,9 +90,9 @@ public final class Test_ModelLink {
 
 	/**
 	 * Confirm that that
-	 * {@link ModelLink#canTransfer(ModelUnit, ModelCountry, ModelCountry)} returns
+	 * {@link ModelLink#canTransfer(ModelUnit)} returns
 	 * the same value as the
-	 * {@link ModelLinkState#canTransfer(ModelUnit, ModelCountry, ModelCountry)}
+	 * {@link ModelLinkState#canTransfer(ModelUnit)}
 	 * that is given by the links current state.
 	 */
 	@Test
@@ -104,9 +104,9 @@ public final class Test_ModelLink {
 		final ModelLink link = new ModelLink(defaultState);
 		final ModelUnit unit = new ModelUnit("test", 1, "na");
 
-		origin.addNeighbour(origin, link);
+		origin.addNeighbour(destination, link);
 
-		assertTrue(defaultState.canTransfer(unit, origin, destination) == link.canTransfer(unit, origin, destination));
+		assertTrue(defaultState.canTransfer(unit) == link.canTransfer(unit));
 
 	}
 

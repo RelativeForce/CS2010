@@ -9,8 +9,8 @@ import peril.model.board.ModelUnit;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.02
- * @since 2018-02-18
+ * @version 1.01.03
+ * @since 2018-03-16
  *
  */
 public enum ModelLinkState {
@@ -22,12 +22,12 @@ public enum ModelLinkState {
 	OPEN("Open") {
 
 		@Override
-		public boolean canTransfer(ModelUnit unit, ModelCountry origin, ModelCountry destination) {
+		public boolean canTransfer(ModelUnit unit) {
 			return true;
 		}
 
 		@Override
-		public void transferBetween(ModelUnit unit, ModelCountry origin, ModelCountry destination) {
+		public void transfer(ModelUnit unit, ModelCountry origin, ModelCountry destination) {
 
 			// Move the unit.
 			origin.getArmy().remove(unit);
@@ -41,12 +41,12 @@ public enum ModelLinkState {
 	BLOCKADE("Blockade") {
 
 		@Override
-		public boolean canTransfer(ModelUnit unit, ModelCountry origin, ModelCountry destination) {
+		public boolean canTransfer(ModelUnit unit) {
 			return false;
 		}
 
 		@Override
-		public void transferBetween(ModelUnit unit, ModelCountry origin, ModelCountry destination) {
+		public void transfer(ModelUnit unit, ModelCountry origin, ModelCountry destination) {
 			throw new IllegalStateException(name + " cannot transfer units.");
 		}
 	};
@@ -92,15 +92,11 @@ public enum ModelLinkState {
 	 * {@link ModelLinkState} between the two {@link ModelCountry}s.
 	 * 
 	 * @param unit
-	 *            {@link ModelUnit}
-	 * @param origin
-	 *            {@link ModelCountry}
-	 * @param destination
-	 *            {@link ModelCountry}
+	 *           The {@link ModelUnit} to be transfered.
 	 * @return boolean Retrieves whether or not a {@link ModelUnit} can be
 	 *         transfered.
 	 */
-	public abstract boolean canTransfer(ModelUnit unit, ModelCountry origin, ModelCountry destination);
+	public abstract boolean canTransfer(ModelUnit unit);
 
 	/**
 	 * Performs the transfer operation on the {@link ModelUnit}.
@@ -112,6 +108,6 @@ public enum ModelLinkState {
 	 * @param destination
 	 *            {@link ModelCountry}
 	 */
-	public abstract void transferBetween(ModelUnit unit, ModelCountry origin, ModelCountry destination);
+	public abstract void transfer(ModelUnit unit, ModelCountry origin, ModelCountry destination);
 
 }

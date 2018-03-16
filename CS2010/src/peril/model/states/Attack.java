@@ -16,8 +16,8 @@ import peril.model.combat.CombatHelper;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-03-15
- * @version 1.01.05
+ * @since 2018-03-16
+ * @version 1.01.06
  * 
  * @see ModelState
  *
@@ -145,7 +145,7 @@ public final class Attack extends ModelState {
 				for (ModelUnit unit : primary.getArmy()) {
 
 					// If the current unit can be transfered.
-					if (link.canTransfer(unit, primary, target)) {
+					if (link.canTransfer(unit)) {
 						canTranfer = true;
 						break;
 					}

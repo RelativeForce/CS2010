@@ -35,8 +35,8 @@ public abstract class FileParser {
 	/**
 	 * Constructs a new {@link FileParser}.
 	 * 
-	 * @param directoryPath
-	 *            The directory of the file.
+	 * @param directory
+	 *            The {@link Directory} of the file.
 	 * @param filename
 	 *            The file name.
 	 */

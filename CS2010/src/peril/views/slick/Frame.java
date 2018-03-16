@@ -552,7 +552,7 @@ public final class Frame {
 
 	/**
 	 * Handles the mouse hovering at one {@link Point} position and calling
-	 * {@link EventListener#mouseHover(Point, int)} when a fixed time has elapsed.
+	 * {@link EventListener#mouseHover(Point)} when a fixed time has elapsed.
 	 * 
 	 * @author Joshua_Eddy
 	 * 
@@ -567,7 +567,7 @@ public final class Frame {
 		/**
 		 * The number of milliseconds that this {@link HoverHandler} will wait while the
 		 * mouse remains still before performing
-		 * {@link EventListener#mouseHover(Point, int)}.
+		 * {@link EventListener#mouseHover(Point)}.
 		 */
 		private final int duration;
 
@@ -588,7 +588,7 @@ public final class Frame {
 		 * @param duration
 		 *            The number of milliseconds that this {@link HoverHandler} will
 		 *            wait while the mouse remains still before performing
-		 *            {@link EventListener#mouseHover(Point, int)}.
+		 *            {@link EventListener#mouseHover(Point)}.
 		 */
 		public HoverHandler(int duration) {
 			this.duration = duration;
@@ -609,7 +609,7 @@ public final class Frame {
 			// If the mouse has not moved since the last time the mouse was polled.
 			if (mouse.equals(previous)) {
 
-				// Increase the elapsd time.
+				// Increase the elapsed time.
 				elapsed += delta;
 
 				// If the duration has elapsed the mouse has hovered for long enough.

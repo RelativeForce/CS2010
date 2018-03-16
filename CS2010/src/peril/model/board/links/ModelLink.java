@@ -82,7 +82,9 @@ public final class ModelLink extends Observable {
 	 * Retrieves whether of not this {@link ModelLink} is in its default
 	 * {@link ModelLinkState}.
 	 * 
-	 * @return
+	 * @return Whether of not this {@link ModelLink} is in its default
+	 *         {@link ModelLinkState}.
+	 * 
 	 */
 	public boolean isDefault() {
 		return current.name.equals(defaultState.name);

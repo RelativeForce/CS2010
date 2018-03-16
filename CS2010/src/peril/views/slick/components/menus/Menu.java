@@ -36,7 +36,7 @@ import peril.views.slick.util.Viewable;
 public abstract class Menu extends Clickable implements Container, Component {
 
 	/**
-	 * The {@link Game} that this {@link Menu} is a part of.
+	 * The {@link GameController} that this {@link Menu} is a part of.
 	 */
 	protected final GameController game;
 
@@ -120,7 +120,7 @@ public abstract class Menu extends Clickable implements Container, Component {
 
 	/**
 	 * Draws this {@link Menu} and all its {@link Button}s and {@link Viewable}s on
-	 * screen. The {@link Buttons} are drawn on top of {@link Viewable}s.
+	 * screen. The {@link Button}s are drawn on top of {@link Viewable}s.
 	 */
 	public void draw(Frame frame) {
 		if (visible) {

@@ -13,8 +13,8 @@ import peril.views.slick.components.menus.*;
 import peril.views.slick.util.Point;
 
 /**
- * A helper class that holds all the {@link Menu}s for the {@link SlickGame}.
- * This ensures that only one {@link Menu} is visible at any given time.
+ * A helper class that holds all the {@link Menu}s for the game. This ensures
+ * that only one {@link Menu} is visible at any given time.
  * 
  * @author Joshua_Eddy, Hannah_Miller
  * 
@@ -319,13 +319,15 @@ public final class MenuHelper {
 	 * 
 	 * @param states
 	 *            The {@link StateHelper} that contains all the game states.
+	 * @param directory
+	 *            The {@link Directory} that provides that path to the text files.
 	 */
 	public void createHelpPages(StateHelper states, Directory directory) {
 
 		final int setupPage = states.setup.getID();
-		final int reinforcePage = states.reinforcement.getID();
-		final int attackPage = states.combat.getID();
-		final int fortifyPage1 = states.movement.getID();
+		final int reinforcePage = states.reinforce.getID();
+		final int attackPage = states.attack.getID();
+		final int fortifyPage1 = states.fortify.getID();
 
 		final int hazardPage1 = 30;
 		final int hazardPage2 = 31;
@@ -335,7 +337,7 @@ public final class MenuHelper {
 		final int warPage1 = 40;
 		final int warPage2 = 41;
 		final int warPage3 = 42;
-		
+
 		final int fortifyPage2 = 50;
 
 		// Set up pages

@@ -115,11 +115,7 @@ public final class HelpMenu extends Menu {
 	 *            The {@link GameController} that allows the {@link HelpMenu} to
 	 *            query the state of the game.
 	 * @param position
-	 *            The {@link Point} position of the {@link HelpMenu}
-	 * @param width
-	 *            The width of the {@link HelpMenu}
-	 * @param height
-	 *            The height of {@link HelpMenu}}
+	 *            The {@link Point} position of the {@link HelpMenu}.
 	 */
 	public HelpMenu(Point position, GameController game) {
 		super(NAME, game, new Region(WIDTH, HEIGHT, position));
@@ -276,6 +272,7 @@ public final class HelpMenu extends Menu {
 	 * @param pageId
 	 *            The uniquely identifying ID number of the {@link HelpPage}.
 	 * @param text
+	 *            The text to be displayed on the {@link HelpPage}.
 	 */
 	public void addText(int pageId, String text) {
 		if (!pages.containsKey(pageId)) {

@@ -278,6 +278,10 @@ public final class MainMenu extends InteractiveState {
 	/**
 	 * Loads the {@link MainMenu#maps} {@link VisualList#getSelected()} into the
 	 * {@link GameController} and re-sizes the window of the game.
+	 * 
+	 * @throws SlickException
+	 *             This is thrown if the window fails to resize to the dimensions
+	 *             denoted by the map file.
 	 */
 	public void loadGame() throws SlickException {
 

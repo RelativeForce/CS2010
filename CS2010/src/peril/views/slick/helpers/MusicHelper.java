@@ -62,7 +62,7 @@ public final class MusicHelper implements MusicListener {
 	}
 
 	/**
-	 * When the {@link Music} playing in this {@link Game} has changed.
+	 * When the {@link Music} playing in this game has changed.
 	 */
 	@Override
 	public void musicSwapped(Music music1, Music music2) {

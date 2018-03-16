@@ -21,7 +21,7 @@ import peril.views.slick.util.Region;
 public class ImageReader {
 
 	/**
-	 * The {@link File} that denotes the image this {@link ImageReader} will read.
+	 * The path that denotes the image this {@link ImageReader} will read.
 	 */
 	private final String path;
 

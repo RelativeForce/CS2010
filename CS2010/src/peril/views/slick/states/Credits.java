@@ -44,9 +44,8 @@ public final class Credits extends InteractiveState {
 	 *            The {@link Game} this state is a part of.
 	 * @param id
 	 *            The id of this {@link Credits}.
-	 * @throws SlickException 
 	 */
-	public Credits(GameController game, int id) throws SlickException {
+	public Credits(GameController game, int id) {
 		super(game, NAME, id, HelpMenu.NULL_PAGE);	
 		creditsFont = new Font("Arial", Color.black, 20);
 		
@@ -56,18 +55,18 @@ public final class Credits extends InteractiveState {
 	 * Initialise the visual elements of the {@link Credits}.
 	 */
 	@Override
-	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-		super.init(gc, sbg);
-
-		//music = slick.music.read("..."); //add later
-
+	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException{
+		
 		// Initialise Fonts
 		creditsFont.init();
 	}
 
+	/**
+	 * Updates this {@link Credits}.
+	 */
 	@Override
 	public void update(GameContainer gc, int delta, Frame frame) {	
-		
+		// Do nothing
 	}
 
 	/**

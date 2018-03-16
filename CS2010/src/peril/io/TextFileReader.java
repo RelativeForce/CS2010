@@ -12,12 +12,12 @@ import java.util.Scanner;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.01
- * @since 2018-02-06
+ * @version 1.01.02
+ * @since 2018-03-16
  *
  * @see java.io.File
  */
-public class TextFileReader {
+public final class TextFileReader {
 
 	/**
 	 * The directory that holds all the map {@link File}s.
@@ -28,6 +28,7 @@ public class TextFileReader {
 	 * Constructs a new {@link TextFileReader}.
 	 * 
 	 * @param directoryPath
+	 *            The path to the folder containing the text file.
 	 */
 	private TextFileReader(String directoryPath) {
 		directory = getDirectory(directoryPath);
@@ -37,9 +38,9 @@ public class TextFileReader {
 	 * Retrieves the array of lines that denote a specified text file in a specified
 	 * directory.
 	 * 
-	 * @param fileName
+	 * @param filename
 	 *            The filename of the file.
-	 * @param directory
+	 * @param directoryPath
 	 *            The path of the parent directory to the file.
 	 * @return The lines of the file.
 	 */
@@ -94,8 +95,6 @@ public class TextFileReader {
 	 * 
 	 * @param fileName
 	 *            The filename of the file.
-	 * @param directory
-	 *            The path of the parent directory to the file.
 	 * @return A raw File.
 	 */
 	private File getFile(String fileName) {

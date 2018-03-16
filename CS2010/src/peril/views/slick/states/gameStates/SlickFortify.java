@@ -50,7 +50,8 @@ public final class SlickFortify extends CoreGameState {
 	 * Constructs a new {@link SlickFortify}.
 	 * 
 	 * @param game
-	 *            The {@link Game} that houses this {@link SlickFortify}.
+	 *            The {@link GameController} that allows this {@link SlickFortify}
+	 *            to query the state of the game.
 	 * @param id
 	 *            The ID of this {@link SlickFortify}.
 	 * @param model
@@ -76,11 +77,11 @@ public final class SlickFortify extends CoreGameState {
 		menus.showSaveOption();
 		getButton(fortifyButton).hide();
 		getButton(upgradeButton).hide();
-		
-		if(game.getRoundNumber() == 0) {
+
+		if (game.getRoundNumber() == 0) {
 			slick.showToolTip("Click '?' for help");
 		}
-		
+
 	}
 
 	/**

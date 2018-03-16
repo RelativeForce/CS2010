@@ -34,8 +34,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy, Gurdeep_Pol, Ezekiel_Trinidad
  * 
- * @since 2018-03-15
- * @version 1.01.09
+ * @since 2018-03-16
+ * @version 1.01.10
  * 
  * @see InteractiveState
  * @see AI
@@ -238,6 +238,10 @@ public final class PlayerSelection extends InteractiveState {
 	/**
 	 * Load the game based on the current state of the elements in this
 	 * {@link PlayerSelection}.
+	 * 
+	 * @throws SlickException
+	 *             This is thrown if the window fails to resize to the dimensions
+	 *             denoted by the map file.
 	 */
 	public void loadGame() throws SlickException {
 
@@ -338,8 +342,8 @@ public final class PlayerSelection extends InteractiveState {
 	}
 
 	/**
-	 * Configures which {@link PlayerSelection#selectors} are visible based on the
-	 * selected value of {@link PlayerSelection#numberOfPlayers}.
+	 * Returns the {@link PlayerSelection#players} to contain the minimum number of
+	 * players.
 	 */
 	private void resetPlayers() {
 
@@ -347,6 +351,8 @@ public final class PlayerSelection extends InteractiveState {
 			player.inPlay = player.number <= PlayerHelper.MIN_PLAYERS;
 			player.ai = AI.USER;
 		});
+
+		numberOfPlayers.setSelected((Integer) PlayerHelper.MIN_PLAYERS);
 
 	}
 

@@ -417,8 +417,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	}
 
 	/**
-	 * Draws the {@link army} in its current state over the {@link SlickCountry} it
-	 * is located.
+	 * Draws the {@link SlickArmy} in its current state over the
+	 * {@link SlickCountry} it is located.
 	 * 
 	 * @param frame
 	 *            The {@link Frame} that displays this {@link CoreGameState} to the
@@ -511,6 +511,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * @param panVector
 	 *            The {@link Point} vector defining how the far the
 	 *            {@link SlickBoard} should move and in what direction.
+	 * @return The actual {@link Point} vector that the screen and its elements
+	 *         panned.
 	 */
 	private Point pan(Point panVector) {
 
@@ -633,8 +635,8 @@ public abstract class CoreGameState extends InteractiveState implements Observer
 	 * Updates the currently selected {@link SlickCountry}.
 	 * 
 	 * @param update
-	 *            {@link Update} where {@link Update#newValue} is a
-	 *            {@link List}<{@link ModelCountry}>.
+	 *            A {@link Update} where {@link Update#newValue} is a
+	 *            {@link List}&lt;{@link ModelCountry}&gt;.
 	 */
 	private void updateSelected(Update update) {
 

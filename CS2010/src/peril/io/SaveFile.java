@@ -58,6 +58,7 @@ public enum SaveFile {
 	 * Checks if this {@link SaveFile} exists in the specified map directory.
 	 * 
 	 * @param mapDirectory
+	 *            The path to the directory that contains the map folders.
 	 * @return <code>boolean</code>
 	 */
 	public boolean existsIn(String mapDirectory) {

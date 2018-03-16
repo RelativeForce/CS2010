@@ -9,7 +9,6 @@ import java.util.Set;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 import peril.Challenge;
-import peril.Game;
 import peril.GameController;
 import peril.ai.AI;
 import peril.ai.AINotFound;
@@ -59,9 +58,8 @@ public final class MapReader extends FileParser {
 	private final Map<String, SlickCountry> countries;
 
 	/**
-	 * Holds the {@link Game} which contains the {@link SlickBoard} this
-	 * {@link MapReader} will populate when {@link MapReader#parseBoard(SlickBoard)}
-	 * is performed.
+	 * Holds the {@link GameController} which contains the {@link SlickBoard} this
+	 * {@link MapReader}.
 	 */
 	private final GameController game;
 

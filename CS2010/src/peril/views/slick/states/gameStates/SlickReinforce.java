@@ -12,6 +12,7 @@ import peril.model.states.Reinforce;
 import peril.views.slick.Frame;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickUnit;
+import peril.views.slick.util.Button;
 import peril.views.slick.util.Font;
 import peril.views.slick.util.Point;
 

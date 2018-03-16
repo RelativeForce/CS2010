@@ -26,7 +26,7 @@ import peril.views.slick.util.Viewable;
 
 /**
  * 
- * A {@link BasicGameState} that allows the user to click on {@link Buttons} and
+ * A {@link BasicGameState} that allows the user to click on {@link Button} and
  * displays {@link Viewable} objects. It is also a {@link Container}.
  * 
  * @author Joshua_Eddy, Gurdeep_Pol
@@ -238,6 +238,8 @@ public abstract class InteractiveState extends BasicGameState implements Contain
 
 	/**
 	 * Returns the name of the current state, as a String.
+	 * 
+	 * @return The name of the {@link InteractiveState}.
 	 */
 	public final String getStateName() {
 		return stateName;

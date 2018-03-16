@@ -205,7 +205,7 @@ public final class WarMenu extends Menu {
 	}
 
 	/**
-	 * Draws the {@link War Menu} on the screen.
+	 * Draws the {@link WarMenu} on the screen.
 	 */
 	@Override
 	public void draw(Frame frame) {

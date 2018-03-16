@@ -37,6 +37,9 @@ public abstract class FileParser {
 	 * 
 	 * @param directory
 	 *            The {@link Directory} of the file.
+	 * @param sourceFilePath
+	 *            The path to the directory containing the text file this
+	 *            {@link FileParser} will parse.
 	 * @param filename
 	 *            The file name.
 	 */

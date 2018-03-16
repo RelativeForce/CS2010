@@ -26,6 +26,7 @@ import peril.views.slick.board.SlickUnit;
 import peril.views.slick.components.Component;
 import peril.views.slick.components.VisualList;
 import peril.views.slick.states.gameStates.CoreGameState;
+import peril.views.slick.util.Button;
 import peril.views.slick.util.Clickable;
 import peril.views.slick.util.Font;
 import peril.views.slick.util.Point;

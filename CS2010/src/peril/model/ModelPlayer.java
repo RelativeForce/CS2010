@@ -5,9 +5,10 @@ import java.util.Observable;
 import peril.Update;
 import peril.ai.AI;
 import peril.ai.api.Army;
-import peril.ai.api.Country;
 import peril.ai.api.Player;
 import peril.model.board.ModelArmy;
+import peril.model.board.ModelCountry;
+import peril.model.board.ModelContinent;
 
 /**
  * The internal representation of a player of the game. This object will hold
@@ -236,6 +237,8 @@ public final class ModelPlayer extends Observable implements Player {
 
 	/**
 	 * Retrieves the total number of units killed by this {@link ModelPlayer}.
+	 * 
+	 * @return The number of units killed.
 	 */
 	public int getUnitsKilled() {
 		return unitsKilled;
@@ -243,20 +246,28 @@ public final class ModelPlayer extends Observable implements Player {
 
 	/**
 	 * Sets the total units killed by this {@link ModelPlayer}.
+	 * 
+	 * @param unitsKilled
+	 *            The number of unit killed.
 	 */
 	public void setUnitsKilled(int unitsKilled) {
 		this.unitsKilled = unitsKilled;
 	}
 
 	/**
-	 * Retrieves the total {@link Country}s this {@link ModelPlayer} has taken.
+	 * Retrieves the total {@link ModelCountry}s this {@link ModelPlayer} has taken.
+	 * 
+	 * @return The number of {@link ModelCountry}s taken.
 	 */
 	public int getCountriesTaken() {
 		return countriesTaken;
 	}
 
 	/**
-	 * Sets the total {@link Country}s this {@link ModelPlayer} has taken.
+	 * Sets the total {@link ModelCountry}s this {@link ModelPlayer} has taken.
+	 * 
+	 * @param countriesTaken
+	 *            The number of {@link ModelCountry}s taken.
 	 */
 	public void setCountriesTaken(int countriesTaken) {
 		this.countriesTaken = countriesTaken;
@@ -264,6 +275,8 @@ public final class ModelPlayer extends Observable implements Player {
 
 	/**
 	 * Retrieves the total points this {@link ModelPlayer} has spent.
+	 * 
+	 * @return The number of points spend.
 	 */
 	public int getPointsSpent() {
 		return pointsSpent;
@@ -274,7 +287,7 @@ public final class ModelPlayer extends Observable implements Player {
 	 * player has {@link #getPoints()} must remain greater than or equal to zero.
 	 * 
 	 * @param points
-	 *            Points to spend.
+	 *            The number of points to spend.
 	 */
 	public void spendPoints(int points) {
 
@@ -287,6 +300,9 @@ public final class ModelPlayer extends Observable implements Player {
 
 	/**
 	 * Sets the total points this {@link ModelPlayer} has spent.
+	 * 
+	 * @param pointsSpent
+	 *            The number of points spent.
 	 */
 	public void setPointsSpent(int pointsSpent) {
 		this.pointsSpent = pointsSpent;

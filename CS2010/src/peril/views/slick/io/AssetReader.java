@@ -204,8 +204,8 @@ public final class AssetReader extends FileParser {
 	/**
 	 * Parses a {@link Image} from a specified file and dimensions.
 	 * 
-	 * @param fileName
-	 *            The file name of the {@link Image} in the assets folder
+	 * @param filePath
+	 *            The file name and path of the {@link Image} in the assets folder.
 	 * @param widthStr
 	 *            The desired scaled width of the {@link Image}
 	 * @param heightStr
@@ -307,7 +307,7 @@ public final class AssetReader extends FileParser {
 	/**
 	 * Parses a dimension of a {@link Image} from a specified string.
 	 * 
-	 * @param dimension
+	 * @param dimensionStr
 	 *            The dimension of the {@link Image} as a string.
 	 * @return The dimension of the {@link Image}
 	 */

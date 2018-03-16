@@ -3,11 +3,13 @@ package peril.views.slick.helpers;
 import java.util.Set;
 
 import peril.io.SaveFile;
+import peril.model.board.ModelBoard;
 import peril.GameController;
 import peril.io.MapWriter;
 import peril.views.slick.Container;
 import peril.views.slick.SlickGame;
 import peril.views.slick.io.AssetReader;
+import peril.views.slick.states.InteractiveState;
 
 /**
  * This is a helper class of {@link SlickGame} which holds all the input/output
@@ -50,7 +52,7 @@ public final class IOHelper {
 	}
 
 	/**
-	 * Saves the {@link ModelBoard} from the {@link Game} to a specified
+	 * Saves the {@link ModelBoard} from the {@link GameController} to a specified
 	 * {@link SaveFile}.
 	 * 
 	 * @param game

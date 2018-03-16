@@ -13,7 +13,8 @@ import peril.model.board.links.ModelLink;
 import peril.model.states.ModelState;
 
 /**
- * Used for writing the {@link ModelBoard} from the game into memory.
+ * Writes the current state of the game into a text file so that it can be
+ * loaded at a later time.
  * 
  * @author Joshua_Eddy
  *
@@ -97,7 +98,7 @@ public final class MapWriter {
 	private String parseUnit(ModelUnit unit) {
 
 		final StringBuilder line = new StringBuilder();
-		
+
 		line.append(LineType.UNIT.text);
 		line.append(',');
 
@@ -128,7 +129,7 @@ public final class MapWriter {
 		}
 
 		final StringBuilder line = new StringBuilder();
-		
+
 		line.append(LineType.STATE.text);
 		line.append(',');
 
@@ -164,19 +165,19 @@ public final class MapWriter {
 
 		line.append(player.number);
 		line.append(',');
-		
+
 		line.append(player.ai.name);
 		line.append(',');
 
 		line.append(player.distributableArmy.getStrength());
 		line.append(',');
-		
+
 		line.append(player.getCountriesTaken());
 		line.append(',');
-		
+
 		line.append(player.getUnitsKilled());
 		line.append(',');
-		
+
 		line.append(player.getPointsSpent());
 		line.append(',');
 
@@ -236,8 +237,8 @@ public final class MapWriter {
 	 * representation that will be used to store the {@link ModelContinent} in the
 	 * file.
 	 * 
-	 * @param country
-	 *            {@link ModelContinent}
+	 * @param continent
+	 *            The {@link ModelContinent} to be parsed.
 	 * @return <code>String</code>
 	 */
 	private String parseContinent(ModelContinent continent) {
@@ -321,8 +322,8 @@ public final class MapWriter {
 	private String parseArmy(ModelArmy army) {
 
 		final StringBuilder line = new StringBuilder();
-		
-		//Whether the current unit is the first.
+
+		// Whether the current unit is the first.
 		boolean firstUnit = true;
 
 		// Iterate over every unit in the army.
@@ -347,7 +348,7 @@ public final class MapWriter {
 	 * 
 	 * @param value
 	 *            0 - 255
-	 * @return
+	 * @return The String 3 bit representation of the RGB.
 	 */
 	private String formatRGB(int value) {
 
@@ -371,12 +372,12 @@ public final class MapWriter {
 	 * Processes a {@link Challenge} into its <code>String</code> representation
 	 * that will be used to store the {@link Challenge} in the file.
 	 * 
-	 * @param challlenge
+	 * @param challenge
 	 *            {@link Challenge}
 	 * @return <code>String</code>
 	 */
 	private String parseChallenge(Challenge challenge) {
-		
+
 		final StringBuilder line = new StringBuilder();
 
 		line.append(challenge.type);

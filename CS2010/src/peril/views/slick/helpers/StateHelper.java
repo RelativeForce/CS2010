@@ -3,12 +3,12 @@ package peril.views.slick.helpers;
 import org.newdawn.slick.SlickException;
 
 import peril.GameController;
+import peril.model.states.Attack;
 import peril.views.slick.SlickGame;
 import peril.views.slick.board.SlickBoard;
 import peril.views.slick.board.SlickCountry;
 import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.components.MiniMap;
-import peril.views.slick.components.menus.WarMenu;
 import peril.views.slick.states.Credits;
 import peril.views.slick.states.EndState;
 import peril.views.slick.states.InstructionsState;
@@ -29,8 +29,8 @@ import peril.views.slick.states.gameStates.SlickSetup;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-03-07
- * @version 1.01.03
+ * @since 2018-03-16
+ * @version 1.01.04
  * 
  * @see InteractiveState
  * @see SlickGame
@@ -66,22 +66,19 @@ public final class StateHelper {
 	public final SlickSetup setup;
 
 	/**
-	 * The {@link SlickReinforce} that allows the {@link SlickPlayer} to distribute
-	 * their {@link ModelArmy} to the {@link SlickCountry}s they rule.
+	 * The {@link SlickReinforce}.
 	 */
-	public final SlickReinforce reinforcement;
+	public final SlickReinforce reinforce;
 
 	/**
-	 * The state that displays combat to the user. This is heavily couples with
-	 * {@link WarMenu}.
+	 * The {@link SlickAttack}.
 	 */
-	public final SlickAttack combat;
+	public final SlickAttack attack;
 
 	/**
-	 * The {@link SlickFortify} which lets the user move {@link ModelArmy}s from one
-	 * {@link SlickCountry} to another.
+	 * The {@link SlickFortify}.
 	 */
-	public final SlickFortify movement;
+	public final SlickFortify fortify;
 
 	/**
 	 * The {@link EndState} that displays the results of the {@link SlickGame}.
@@ -95,7 +92,7 @@ public final class StateHelper {
 
 	/**
 	 * The {@link InstructionsState} that displays the instructions of the
-	 * {@link Game}.
+	 * {@link SlickGame}.
 	 */
 	public final InstructionsState help;
 
@@ -103,23 +100,18 @@ public final class StateHelper {
 	 * Constructs a new {@link StateHelper}.
 	 * 
 	 * @param mainMenu
-	 *            The {@link MainMenu} of the {@link Game}.
-	 * @param combat
-	 *            The state that displays combat to the user. This is heavily
-	 *            couples with {@link WarMenu}.
-	 * @param reinforcement
-	 *            The {@link SlickReinforce} that allows the {@link SlickPlayer} to
-	 *            distribute their {@link ModelArmy} to the {@link SlickCountry}s
-	 *            they rule.
+	 *            The {@link MainMenu} of the {@link SlickGame}.
+	 * @param attack
+	 *            The {@link Attack}
+	 * @param reinforce
+	 *            The {@link SlickReinforce}.
 	 * @param setup
-	 *            The {@link SlickSetup} that will allow the user to set up which
-	 *            {@link SlickPlayer} owns which {@link SlickCountry}.
-	 * @param movement
-	 *            The {@link SlickFortify} which lets the user move
-	 *            {@link ModelArmy}s from one {@link SlickCountry} to another.
+	 *            The {@link SlickSetup}.
+	 * @param fortify
+	 *            The {@link SlickFortify}.
 	 * @param end
 	 *            The {@link EndState} that displays the results of the
-	 *            {@link Game}.
+	 *            {@link SlickGame}.
 	 * @param loadingScreen
 	 *            The {@link LoadingScreen} that will load the map specified files
 	 *            from memory.
@@ -131,16 +123,16 @@ public final class StateHelper {
 	 * @param credits
 	 *            The credits page for this game.
 	 */
-	public StateHelper(Opening opening, MainMenu mainMenu, SlickAttack combat, SlickReinforce reinforcement,
-			SlickSetup setup, SlickFortify movement, EndState end, LoadingScreen loadingScreen,
+	public StateHelper(Opening opening, MainMenu mainMenu, SlickAttack attack, SlickReinforce reinforce,
+			SlickSetup setup, SlickFortify fortify, EndState end, LoadingScreen loadingScreen,
 			PlayerSelection playerSelection, Credits credits, InstructionsState help) {
 		this.opening = opening;
 		this.mainMenu = mainMenu;
 		this.end = end;
-		this.combat = combat;
-		this.reinforcement = reinforcement;
+		this.attack = attack;
+		this.reinforce = reinforce;
 		this.setup = setup;
-		this.movement = movement;
+		this.fortify = fortify;
 		this.loadingScreen = loadingScreen;
 		this.playerSelection = playerSelection;
 		this.credits = credits;
@@ -168,9 +160,9 @@ public final class StateHelper {
 
 		// Add all the game states to game container.
 		game.addState(setup);
-		game.addState(reinforcement);
-		game.addState(combat);
-		game.addState(movement);
+		game.addState(reinforce);
+		game.addState(attack);
+		game.addState(fortify);
 		game.addState(credits);
 		game.addState(help);
 
@@ -194,9 +186,9 @@ public final class StateHelper {
 		final MiniMap miniMap = new MiniMap(slickBoard, screenWidth, screenHeight, game);
 
 		setup.setMiniMap(miniMap);
-		reinforcement.setMiniMap(miniMap);
-		combat.setMiniMap(miniMap);
-		movement.setMiniMap(miniMap);
+		reinforce.setMiniMap(miniMap);
+		attack.setMiniMap(miniMap);
+		fortify.setMiniMap(miniMap);
 
 	}
 
@@ -206,9 +198,9 @@ public final class StateHelper {
 	public void removeMiniMap() {
 
 		setup.setMiniMap(null);
-		reinforcement.setMiniMap(null);
-		combat.setMiniMap(null);
-		movement.setMiniMap(null);
+		reinforce.setMiniMap(null);
+		attack.setMiniMap(null);
+		fortify.setMiniMap(null);
 
 	}
 
@@ -222,12 +214,12 @@ public final class StateHelper {
 	 */
 	public CoreGameState getSaveState(String name) {
 
-		if (combat.getName().equals(name)) {
-			return combat;
-		} else if (movement.getName().equals(name)) {
-			return movement;
-		} else if (reinforcement.getName().equals(name)) {
-			return reinforcement;
+		if (attack.getName().equals(name)) {
+			return attack;
+		} else if (fortify.getName().equals(name)) {
+			return fortify;
+		} else if (reinforce.getName().equals(name)) {
+			return reinforce;
 		}
 
 		throw new NullPointerException(name + " is not a valid game state to save in.");

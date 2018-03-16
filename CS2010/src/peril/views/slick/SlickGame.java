@@ -559,7 +559,7 @@ public final class SlickGame extends StateBasedGame implements View {
 	 */
 	@Override
 	public void enterReinforce() {
-		enterState(states.reinforcement);
+		enterState(states.reinforce);
 	}
 
 	/**
@@ -567,7 +567,7 @@ public final class SlickGame extends StateBasedGame implements View {
 	 */
 	@Override
 	public void enterCombat() {
-		enterState(states.combat);
+		enterState(states.attack);
 	}
 
 	/**
@@ -575,7 +575,7 @@ public final class SlickGame extends StateBasedGame implements View {
 	 */
 	@Override
 	public void enterFortify() {
-		enterState(states.movement);
+		enterState(states.fortify);
 
 	}
 

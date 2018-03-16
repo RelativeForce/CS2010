@@ -117,11 +117,11 @@ public final class SlickAttack extends CoreGameState {
 		super.getButton(upgradeButton).hide();
 
 		menus.showSaveOption();
-		
-		if(game.getRoundNumber() == 0) {
+
+		if (game.getRoundNumber() == 0) {
 			slick.showToolTip("Click the '?' for help");
 		}
-		
+
 	}
 
 	/**
@@ -142,7 +142,7 @@ public final class SlickAttack extends CoreGameState {
 	}
 
 	/**
-	 * Draws a line between the {@link CoreGameState#getSelected()} and or all its
+	 * Draws a line between the selected primary {@link SlickCountry} and or all its
 	 * valid targets.
 	 * 
 	 * @param frame
@@ -187,29 +187,27 @@ public final class SlickAttack extends CoreGameState {
 	 *            {@link SlickCountry}
 	 */
 	private void moveAttackButton(SlickCountry primary, SlickCountry target) {
-		
+
 		final Point p1 = primary.getArmyPosition();
 		final Point p2 = target.getArmyPosition();
-		
+
 		final Button attack = getButton(attackButton);
 		final Button upgrade = getButton(upgradeButton);
-		
+
 		final int x = ((p2.x - p1.x) / 2) + p1.x - (attack.getWidth() / 2);
 		final int y = ((p2.y - p1.y) / 2) + p1.y - (attack.getHeight() / 2);
 
 		// Set the attack button with its new position
 		attack.setPosition(new Point(x, y));
-		
-		// If the attack button at its new position overlaps 
-		if(Region.overlap(attack.getRegion(), upgrade.getRegion() )) {
-			
+
+		// If the attack button at its new position overlaps
+		if (Region.overlap(attack.getRegion(), upgrade.getRegion())) {
+
 			final int newX = upgrade.getPosition().x + upgrade.getWidth();
 			final int newY = upgrade.getPosition().y;
 
-			attack.setPosition(new Point(newX , newY));
+			attack.setPosition(new Point(newX, newY));
 		}
-		
-	
 
 	}
 

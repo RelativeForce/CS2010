@@ -10,20 +10,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 import peril.Challenge;
-import peril.Game;
+import peril.Directory;
+import peril.GameController;
 import peril.ai.AI;
-import peril.controllers.AIController;
-import peril.controllers.Directory;
-import peril.controllers.GameController;
+import peril.ai.AIController;
 import peril.helpers.AIHelper;
-import peril.helpers.PlayerHelper;
 import peril.helpers.UnitHelper;
 import peril.model.ModelColor;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
-import peril.model.states.combat.Attack;
 import peril.views.View;
 
 public class Test_Reinforce {
@@ -71,7 +68,7 @@ public class Test_Reinforce {
 		reinforce.select(country);
 		reinforce.reinforce();
 		
-		assertEquals(1 ,  country.getArmyStrength());	
+		assertEquals(1 ,  country.getArmy().getStrength());	
 		
 	}
 	

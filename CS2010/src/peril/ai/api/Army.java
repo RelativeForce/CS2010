@@ -7,37 +7,41 @@ import java.util.Set;
  * 
  * @author Joshua_Eddy
  * 
- * @version 1.01.04
- * @since 2018-01-21
+ * @version 1.01.05
+ * @since 2018-03-16
  *
  */
 public interface Army {
 
 	/**
-	 * Retrieves the {@link Unit}s from this army.
+	 * Retrieves the {@link Unit}s from this {@link Army}. This does not reflect the
+	 * number of each {@link Unit} in the {@link Army}
 	 * 
-	 * @return {@link Set}&lt;{@link Unit}&gt;
+	 * @return The {@link Set}&lt;{@link Unit}&gt; of {@link Unit}s.
 	 */
 	Set<? extends Unit> getUnits();
 
 	/**
-	 * Retrieves the strongest {@link Unit} in this {@link Army}.
+	 * Retrieves the strongest {@link Unit} in this {@link Army}. If there are no
+	 * {@link Unit}s in this {@link Army} this returns null.
 	 * 
 	 * @return Strongest {@link Unit} in this {@link Army}.
 	 */
 	Unit getStrongestUnit();
 
 	/**
-	 * Retrieves the weakest {@link Unit} in this {@link Army}.
+	 * Retrieves the weakest {@link Unit} in this {@link Army}. If there are no
+	 * {@link Unit}s in this {@link Army} this returns null.
 	 * 
 	 * @return Weakest {@link Unit} in this {@link Army}.
 	 */
 	Unit getWeakestUnit();
 
 	/**
-	 * Retrieves the strength of the {@link Army}.
+	 * Retrieves the combined strength of all the {@link Unit}s in this
+	 * {@link Army}.
 	 * 
-	 * @return Strength
+	 * @return The {@link Army}'s total strength.
 	 */
 	int getStrength();
 
@@ -46,8 +50,8 @@ public interface Army {
 	 * this {@link Army}.
 	 * 
 	 * @param unit
-	 *            Type of {@link Unit}
-	 * @return Number of that {@link Unit}
+	 *            The {@link Unit}.
+	 * @return The number of the specified {@link Unit}.
 	 */
 	int getNumberOf(Unit unit);
 
@@ -56,7 +60,7 @@ public interface Army {
 	 * {@link Army}.
 	 * 
 	 * @param unit
-	 *            {@link Army}
+	 *            {@link Unit}
 	 * @return Whether a specific type of {@link Unit} is currently in this
 	 *         {@link Army}.
 	 */

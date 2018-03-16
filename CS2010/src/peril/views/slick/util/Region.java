@@ -131,7 +131,7 @@ public final class Region {
 		for (int index = 0; index < object.length; index++) {
 			object[index] = true;
 		}
-		
+
 		this.versions = new HashMap<>();
 
 	}
@@ -360,9 +360,9 @@ public final class Region {
 		if (color == null) {
 			throw new NullPointerException("Colour cannot be null");
 		}
-		
+
 		// If the version already exists.
-		if(versions.containsKey(color)) {
+		if (versions.containsKey(color)) {
 			return versions.get(color);
 		}
 
@@ -384,11 +384,11 @@ public final class Region {
 				}
 			}
 		}
-		
+
 		final Image version = imagebuffer.getImage();
-		
+
 		versions.put(color, version);
-		
+
 		return version;
 
 	}
@@ -420,20 +420,21 @@ public final class Region {
 	 *            The y coordinate of the position.
 	 * @param height
 	 *            The height of the {@link Region#object}.
+	 * 
+	 * @return The index in a boolean[] based on the specified parameters.
 	 */
-
 	private static int getIndex(int x, int y, int height) {
 		return (x * height) + y;
 	}
 
 	/**
-	 * Retrieves a <code>boolean[][]</code> where if a pixel from the specified
+	 * Retrieves a <code>boolean[]</code> where if a pixel from the specified
 	 * {@link Image} is not {@link Color#transparent} it is assigned true, otherwise
 	 * it is false.
 	 * 
 	 * @param image
 	 *            The {@link Image} to be converted into an {@link Image}.
-	 * @return <code>boolean[][]</code>
+	 * @return <code>boolean[]</code>
 	 */
 	private static boolean[] getRegion(Image image) {
 		return getRegion(image, null);
@@ -545,7 +546,7 @@ public final class Region {
 		 * Constructs a new {@link Reducer}.Reduces a specified <code>boolean[]</code>
 		 * from the specified width and height to the its smallest possible size without
 		 * loss of data. This also assigns {@link Region#width}, {@link Region#height},
-		 * {@link Region#x} and {@link Region#y}.
+		 * {@link Region#position}.
 		 * 
 		 * @param toReduce
 		 *            The <code>boolean[]</code> to reduce in size.
@@ -553,7 +554,6 @@ public final class Region {
 		 *            The initial width of the <code>boolean[]</code> array.
 		 * @param height
 		 *            The initial height of the <code>boolean[]</code> array.
-		 * @return <code>boolean[]</code> reduced array.
 		 */
 		public Reducer(boolean[] toReduce, int width, int height) {
 

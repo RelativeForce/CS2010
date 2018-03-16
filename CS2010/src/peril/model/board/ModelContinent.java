@@ -107,9 +107,9 @@ public final class ModelContinent extends Observable implements Continent, Obser
 	}
 
 	/**
-	 * Returns the {@link Name} of the {@link ModelContinent}.
+	 * Returns the name of the {@link ModelContinent}.
 	 * 
-	 * @return
+	 * @return The name of this {@link ModelContinent}.
 	 */
 	public String getName() {
 		return name;

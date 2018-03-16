@@ -144,7 +144,8 @@ public final class Font {
 	 * Retrieves the <code>int</code> width of a specified string.
 	 * 
 	 * @param text
-	 * @return
+	 *            The string of text that will have its width measured.
+	 * @return The width of the specified text.
 	 */
 	public int getWidth(String text) {
 		return uFont.getWidth(text);

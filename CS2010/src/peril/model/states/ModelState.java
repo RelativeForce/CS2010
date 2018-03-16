@@ -93,8 +93,14 @@ public abstract class ModelState extends Observable {
 	}
 
 	/**
-	 * Returns a the current highlighted {@link SlickCountry} in this state.
+	 * Returns a the current highlighted {@link ModelCountry} in this state.
 	 * 
+	 * @param index
+	 *            The index of the selected {@link ModelCountry} to be retrieved.
+	 * 
+	 * @return The {@link ModelCountry} that is selected at the specified index. If
+	 *         there is no {@link ModelCountry} at that specified index this returns
+	 *         NULL.
 	 */
 	public final ModelCountry getSelected(int index) {
 
@@ -151,6 +157,9 @@ public abstract class ModelState extends Observable {
 
 	/**
 	 * Sets the currently selected {@link ModelCountry} as <code>null</code>.
+	 * 
+	 * @param index
+	 *            The index of the {@link ModelCountry} to be de-selected.
 	 */
 	protected final void deselectAt(int index) {
 
@@ -169,6 +178,11 @@ public abstract class ModelState extends Observable {
 	/**
 	 * Set the {@link ModelCountry} as the selected {@link ModelCountry} at the
 	 * specified index.
+	 * 
+	 * @param country
+	 *            The {@link ModelCountry} to be selected.
+	 * @param index
+	 *            The index that {@link ModelCountry} will be selected at.
 	 */
 	protected final void addSelected(ModelCountry country, int index) {
 

@@ -30,6 +30,10 @@ public final class Setup extends ModelState {
 
 	/**
 	 * Constructs a new {@link Setup}.
+	 * 
+	 * @param game
+	 *            The {@link GameController} that allows this {@link Setup} to query
+	 *            the state of the game.
 	 */
 	public Setup(GameController game) {
 		super(STATE_NAME, game);
@@ -55,9 +59,9 @@ public final class Setup extends ModelState {
 	 * @param board
 	 *            The {@link ModelBoard} that contains all the
 	 *            {@link ModelCountry}s.
-	 * @param The
-	 *            {@link PlayerHelper} that contains all the {@link ModelPlayer}s in
-	 *            the game.
+	 * @param players
+	 *            The {@link PlayerHelper} that contains all the
+	 *            {@link ModelPlayer}s in the game.
 	 */
 	public void autoDistributeCountries(ModelBoard board, PlayerHelper players) {
 

@@ -38,6 +38,9 @@ public final class ModelUnit implements Comparable<ModelUnit>, Unit {
 	 *            The name of the {@link ModelUnit}.
 	 * @param strength
 	 *            The strength of this {@link ModelUnit}.
+	 * @param fileName
+	 *            The file name of the image that denotes this {@link ModelUnit}s
+	 *            visual representation.
 	 */
 	public ModelUnit(String name, int strength, String fileName) {
 		this.strength = strength;

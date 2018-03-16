@@ -37,6 +37,10 @@ public final class Attack extends ModelState {
 
 	/**
 	 * Constructs a new {@link Attack}.
+	 * 
+	 * @param game
+	 *            The {@link GameController} that allows this {@link Attack} to
+	 *            query the state of the game.
 	 */
 	public Attack(GameController game) {
 		super(STATE_NAME, game);
@@ -161,7 +165,7 @@ public final class Attack extends ModelState {
 
 	/**
 	 * Retrieves whether or not the specified {@link ModelCountry} could be selected
-	 * as the {@link Attack}'s primary {@link ModelCounrty}.
+	 * as the {@link Attack}'s primary {@link ModelCountry}.
 	 * 
 	 * @param country
 	 *            The {@link ModelCountry} that could be selected.
@@ -180,7 +184,7 @@ public final class Attack extends ModelState {
 
 	/**
 	 * Retrieves whether or not the specified {@link ModelCountry} could be selected
-	 * as the {@link Attack}'s secondary {@link ModelCounrty}.
+	 * as the {@link Attack}'s secondary {@link ModelCountry}.
 	 * 
 	 * @param country
 	 *            The {@link ModelCountry} that could be selected.

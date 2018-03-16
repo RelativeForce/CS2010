@@ -160,7 +160,7 @@ public final class UnitHelper {
 	 * @version 1.01.01
 	 * @since 2018-02-06
 	 */
-	private class OrderedList<T extends Comparable<T>> extends LinkedList<T> {
+	private final class OrderedList<T extends Comparable<T>> extends LinkedList<T> {
 
 		/**
 		 * The unique id of this subclass of {@link LinkedList}.
@@ -169,7 +169,7 @@ public final class UnitHelper {
 
 		/**
 		 * Positions the elements in the {@link LinkedList} based on its
-		 * {@link T#compareTo(Comparable)} value.
+		 * {@link Comparable#compareTo(Object)}.
 		 */
 		@Override
 		public boolean add(T element) {

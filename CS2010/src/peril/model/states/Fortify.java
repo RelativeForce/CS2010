@@ -100,12 +100,15 @@ public final class Fortify extends ModelState {
 
 	/**
 	 * Retrieves the path between two path between two {@link ModelCountry}s ruled
-	 * by the same {@link ModelPlayer}.
+	 * by the same {@link ModelPlayer} that the specified {@link ModelUnit} can
+	 * traverse.
 	 * 
 	 * @param start
 	 *            The {@link ModelCountry} where the path will begin.
 	 * @param target
 	 *            The {@link ModelCountry} where the path will end.
+	 * @param unit
+	 *            THe {@link ModelUnit} that will be transfered across the path.
 	 * @return The path of {@link ModelCountry}s between the two specified
 	 *         {@link ModelCountry}s.
 	 */
@@ -122,8 +125,7 @@ public final class Fortify extends ModelState {
 
 			// Populate the path between the start and the target.
 			isPath(path, traversed, start, target, unit);
-			
-			
+
 		}
 
 		// Return the path as a list so that it is clear which end is the start.
@@ -159,10 +161,10 @@ public final class Fortify extends ModelState {
 			if (primaryArmy.getNumberOfUnits() > 1 && primaryArmy.getNumberOf(unit) > 0) {
 
 				// The path between the two countries.
-				 final List<ModelCountry> path = getPathBetween(primary, target, unit);
+				final List<ModelCountry> path = getPathBetween(primary, target, unit);
 
 				// Transfer the unit along the path
-				 transferAlongPath(path, unit);
+				transferAlongPath(path, unit);
 
 				// If there is one unit left in the primary army then de-select the countries.
 				if (primaryArmy.getNumberOfUnits() == 1) {
@@ -216,7 +218,7 @@ public final class Fortify extends ModelState {
 
 	/**
 	 * Retrieves whether or not the specified {@link ModelCountry} could be selected
-	 * as the {@link Fortify}'s primary {@link ModelCounrty}.
+	 * as the {@link Fortify}'s primary {@link ModelCountry}.
 	 * 
 	 * @param country
 	 *            The {@link ModelCountry} that could be selected.
@@ -245,7 +247,7 @@ public final class Fortify extends ModelState {
 
 	/**
 	 * Retrieves whether or not the specified {@link ModelCountry} could be selected
-	 * as the {@link Fortify}'s secondary {@link ModelCounrty}.
+	 * as the {@link Fortify}'s secondary {@link ModelCountry}.
 	 * 
 	 * @param country
 	 *            The {@link ModelCountry} that could be selected.

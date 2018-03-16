@@ -82,6 +82,10 @@ public final class ModelCountry extends Observable implements Country, Observer 
 
 	/**
 	 * Performs the end round operation for this {@link ModelCountry}.
+	 * 
+	 * @param hazard
+	 *            The {@link ModelHazard} that should act on this
+	 *            {@link ModelCountry}.
 	 */
 	public void endRound(ModelHazard hazard) {
 
@@ -143,7 +147,7 @@ public final class ModelCountry extends Observable implements Country, Observer 
 	}
 
 	/**
-	 * Sets the current {@link Ruler} of this {@link ModelCountry}.
+	 * Sets the current ruler of this {@link ModelCountry}.
 	 * 
 	 * @param ruler
 	 *            {@link ModelPlayer}

@@ -21,8 +21,8 @@ import peril.views.slick.util.Point;
  * 
  * @author Joshua_Eddy
  *
- * @since 2018-02-26
- * @version 1.02.01
+ * @since 2018-03-16
+ * @version 1.02.02
  *
  * @see InteractiveState
  *
@@ -53,7 +53,7 @@ public final class Opening extends InteractiveState {
 	 * The position of the splash screen.
 	 */
 	private Point splashPosition;
-	
+
 	/**
 	 * The backgound {@link Image}.
 	 */
@@ -81,7 +81,8 @@ public final class Opening extends InteractiveState {
 	private float fadeFactor;
 
 	/**
-	 * The incrementing value used to determine {@link #fadeFactor} after each frame.
+	 * The incrementing value used to determine {@link #fadeFactor} after each
+	 * frame.
 	 */
 	private float fade;
 
@@ -119,9 +120,10 @@ public final class Opening extends InteractiveState {
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		super.init(gc, sbg);
-		
-		this.background = ImageReader.getImage(game.getDirectory().getSplashPath() + "background.jpg").getScaledCopy(gc.getWidth(), gc.getHeight());
-		
+
+		this.background = ImageReader.getImage(game.getDirectory().getSplashPath() + "background.jpg")
+				.getScaledCopy(gc.getWidth(), gc.getHeight());
+
 		this.initialSplash = ImageReader.getImage(game.getDirectory().getSplashPath() + "logo.png");
 		this.initialSplashScale = (float) (gc.getWidth() / 3) / initialSplash.getWidth();
 		this.splashScale = initialSplashScale;
@@ -136,7 +138,8 @@ public final class Opening extends InteractiveState {
 	 */
 	@Override
 	public void render(GameContainer gc, Frame frame) {
-		frame.draw(background,0, 0);
+		frame.setColor(new Color(0, 0, 0, fadeFactor));
+		frame.draw(background, 0, 0);
 		frame.draw(splash, splashPosition.x, splashPosition.y);
 		frame.fillRect(0, 0, gc.getWidth(), gc.getHeight());
 	}
@@ -159,7 +162,7 @@ public final class Opening extends InteractiveState {
 				this.fade += (fadeIncrement * ratio);
 				this.fadeFactor = (float) (255 * Math.pow(fade, 2));
 
-			} 
+			}
 			// If the bah has not been played.
 			else if (!bah) {
 				try {
@@ -169,8 +172,6 @@ public final class Opening extends InteractiveState {
 					e.printStackTrace();
 				}
 			}
-
-			frame.setColor(new Color(0, 0, 0, fadeFactor));
 
 			this.splashScale += ((float) (maxSplashScale - initialSplashScale) / (DURATION * SlickGame.FPS)) / ratio;
 			this.splash = initialSplash.getScaledCopy(splashScale);

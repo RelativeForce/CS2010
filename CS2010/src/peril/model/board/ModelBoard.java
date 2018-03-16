@@ -10,8 +10,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import peril.Update;
-import peril.controllers.api.Board;
-import peril.controllers.api.Country;
+import peril.ai.api.Board;
+import peril.ai.api.Country;
 
 /**
  * Encapsulates the behaviour of the the game board. The board consists of many

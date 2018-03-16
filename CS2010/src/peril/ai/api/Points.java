@@ -1,4 +1,4 @@
-package peril.controllers;
+package peril.ai.api;
 
 /**
  * 

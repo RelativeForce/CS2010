@@ -4,8 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
 
+import peril.GameController;
 import peril.Update;
-import peril.controllers.GameController;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelCountry;

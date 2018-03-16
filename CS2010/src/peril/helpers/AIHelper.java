@@ -5,9 +5,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import peril.GameController;
 import peril.ai.*;
-import peril.controllers.AIController;
-import peril.controllers.GameController;
 
 /**
  * This class is responsible for retrieving and storing all the {@link AI} which

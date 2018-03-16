@@ -3,8 +3,7 @@ package peril.ai;
 import java.util.LinkedList;
 import java.util.List;
 
-import peril.controllers.AIController;
-import peril.controllers.api.Country;
+import peril.ai.api.Country;
 
 /**
  * 

@@ -3,8 +3,8 @@ package peril.views.slick.components.menus;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Input;
 
+import peril.GameController;
 import peril.ai.AI;
-import peril.controllers.GameController;
 import peril.io.MapWriter;
 import peril.io.SaveFile;
 import peril.views.slick.EventListener;

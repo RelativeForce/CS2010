@@ -6,11 +6,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import peril.controllers.AIController;
-import peril.controllers.api.Army;
-import peril.controllers.api.Country;
-import peril.controllers.api.Player;
-import peril.controllers.api.Unit;
+import peril.ai.api.Army;
+import peril.ai.api.Country;
+import peril.ai.api.Player;
+import peril.ai.api.Unit;
 
 /**
  * An {@link AI} built with the sole intention of out performing all other

@@ -8,8 +8,8 @@ import java.util.Observer;
 import java.util.Set;
 
 import peril.Update;
-import peril.controllers.api.Country;
-import peril.controllers.api.Player;
+import peril.ai.api.Country;
+import peril.ai.api.Player;
 import peril.model.ModelColor;
 import peril.model.ModelPlayer;
 import peril.model.board.links.ModelLink;

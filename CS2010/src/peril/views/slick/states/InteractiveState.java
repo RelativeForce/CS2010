@@ -14,7 +14,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.controllers.GameController;
+import peril.GameController;
 import peril.views.slick.Container;
 import peril.views.slick.Frame;
 import peril.views.slick.SlickGame;

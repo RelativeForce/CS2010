@@ -6,9 +6,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.function.Predicate;
 
-import peril.controllers.AIController;
-import peril.controllers.api.Country;
-import peril.controllers.api.Player;
+import peril.ai.api.Country;
+import peril.ai.api.Player;
 
 public final class Ernie extends AI {
 

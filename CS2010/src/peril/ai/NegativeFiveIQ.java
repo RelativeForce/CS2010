@@ -3,9 +3,8 @@ package peril.ai;
 import java.util.HashMap;
 import java.util.Map;
 
-import peril.controllers.AIController;
-import peril.controllers.api.Country;
-import peril.controllers.api.Player;
+import peril.ai.api.Country;
+import peril.ai.api.Player;
 
 /**
  * 

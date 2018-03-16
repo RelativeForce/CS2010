@@ -7,7 +7,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.Game;
-import peril.controllers.GameController;
+import peril.GameController;
 import peril.views.slick.Frame;
 import peril.views.slick.components.menus.HelpMenu;
 import peril.views.slick.util.Font;

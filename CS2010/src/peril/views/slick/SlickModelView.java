@@ -3,7 +3,7 @@ package peril.views.slick;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import peril.controllers.GameController;
+import peril.GameController;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelArmy;
 import peril.model.board.ModelBoard;

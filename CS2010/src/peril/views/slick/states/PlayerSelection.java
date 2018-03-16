@@ -13,8 +13,8 @@ import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import peril.GameController;
 import peril.ai.AI;
-import peril.controllers.GameController;
 import peril.helpers.PlayerHelper;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;

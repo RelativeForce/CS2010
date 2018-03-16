@@ -1,6 +1,6 @@
 package peril.helpers;
 
-import peril.controllers.Points;
+import peril.ai.api.Points;
 
 /**
  * Provides the point reward and cost amounts for in-game transactions..

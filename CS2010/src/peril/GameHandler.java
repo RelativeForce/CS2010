@@ -1,11 +1,10 @@
-package peril.controllers;
+package peril;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-import peril.Challenge;
-import peril.Game;
 import peril.ai.AI;
+import peril.ai.AIController;
 import peril.helpers.AIHelper;
 import peril.helpers.ModelStateHelper;
 import peril.helpers.UnitHelper;

@@ -4,7 +4,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import peril.controllers.Directory;
+import peril.Directory;
 import peril.io.TextFileReader;
 import peril.model.board.ModelCountry;
 import peril.views.slick.EventListener;

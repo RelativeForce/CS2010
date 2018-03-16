@@ -1,13 +1,14 @@
-package peril.controllers;
+package peril.ai;
 
 import java.util.Set;
 import java.util.function.Consumer;
 
-import peril.controllers.api.Army;
-import peril.controllers.api.Board;
-import peril.controllers.api.Country;
-import peril.controllers.api.Player;
-import peril.controllers.api.Unit;
+import peril.ai.api.Army;
+import peril.ai.api.Board;
+import peril.ai.api.Country;
+import peril.ai.api.Player;
+import peril.ai.api.Points;
+import peril.ai.api.Unit;
 
 /**
  * The API for all AI interactions with the game. This API is unable to directly

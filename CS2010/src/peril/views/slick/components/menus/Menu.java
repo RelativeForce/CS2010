@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import peril.controllers.GameController;
+import peril.GameController;
 import peril.views.slick.Container;
 import peril.views.slick.Frame;
 import peril.views.slick.SlickGame;

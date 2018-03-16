@@ -2,7 +2,7 @@ package peril.views.slick.helpers;
 
 import org.newdawn.slick.SlickException;
 
-import peril.controllers.GameController;
+import peril.GameController;
 import peril.views.slick.SlickGame;
 import peril.views.slick.board.SlickBoard;
 import peril.views.slick.board.SlickCountry;

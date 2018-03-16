@@ -2,7 +2,8 @@ package peril.views.slick.components;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
-import peril.controllers.GameController;
+
+import peril.GameController;
 import peril.model.board.ModelBoard;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;

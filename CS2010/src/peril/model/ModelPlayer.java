@@ -4,9 +4,9 @@ import java.util.Observable;
 
 import peril.Update;
 import peril.ai.AI;
-import peril.controllers.api.Army;
-import peril.controllers.api.Country;
-import peril.controllers.api.Player;
+import peril.ai.api.Army;
+import peril.ai.api.Country;
+import peril.ai.api.Player;
 import peril.model.board.ModelArmy;
 
 /**

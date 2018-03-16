@@ -1,7 +1,5 @@
 package peril.ai;
 
-import peril.controllers.AIController;
-
 public class Goat extends AI {
 
 	private static final String NAME = "Goat";

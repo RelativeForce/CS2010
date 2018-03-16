@@ -9,9 +9,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import peril.Challenge;
-import peril.controllers.AIController;
-import peril.controllers.Directory;
-import peril.controllers.GameController;
+import peril.Directory;
+import peril.GameController;
+import peril.ai.AIController;
 import peril.helpers.AIHelper;
 import peril.model.ModelColor;
 import peril.model.ModelPlayer;

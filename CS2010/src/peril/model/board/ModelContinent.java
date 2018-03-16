@@ -6,8 +6,8 @@ import java.util.Observer;
 import java.util.Set;
 
 import peril.Update;
-import peril.controllers.api.Continent;
-import peril.controllers.api.Player;
+import peril.ai.api.Continent;
+import peril.ai.api.Player;
 import peril.model.ModelPlayer;
 
 /**

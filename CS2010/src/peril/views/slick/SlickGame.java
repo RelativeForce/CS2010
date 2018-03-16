@@ -14,12 +14,12 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.controllers.Directory;
-import peril.controllers.GameController;
 import peril.helpers.PlayerHelper;
 import peril.io.FileParser;
 import peril.io.SaveFile;
+import peril.Directory;
 import peril.Game;
+import peril.GameController;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelCountry;

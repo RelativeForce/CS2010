@@ -1,6 +1,6 @@
 package peril.model.states;
 
-import peril.controllers.GameController;
+import peril.GameController;
 import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelArmy;

@@ -7,10 +7,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-//import peril.ai.TheDarkKnight.Entry;
-import peril.controllers.AIController;
-import peril.controllers.api.Country;
-import peril.controllers.api.Player;
+import peril.ai.api.Country;
+import peril.ai.api.Player;
 
 /**
  * A very basic {@link AI} which will hopefully win the battle, we can only pray

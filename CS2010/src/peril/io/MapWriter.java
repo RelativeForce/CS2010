@@ -1,7 +1,7 @@
 package peril.io;
 
 import peril.Challenge;
-import peril.controllers.GameController;
+import peril.GameController;
 import peril.helpers.UnitHelper;
 import peril.model.ModelColor;
 import peril.model.ModelPlayer;

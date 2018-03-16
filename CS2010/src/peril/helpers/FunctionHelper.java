@@ -2,9 +2,9 @@ package peril.helpers;
 
 import java.io.IOException;
 
+import peril.GameController;
 import peril.concurrent.Action;
 import peril.views.slick.components.menus.*;
-import peril.controllers.GameController;
 import peril.views.slick.util.Button;
 
 /**

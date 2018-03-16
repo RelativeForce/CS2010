@@ -7,7 +7,7 @@ import java.util.Observable;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import peril.controllers.GameController;
+import peril.GameController;
 import peril.helpers.PointHelper;
 import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;

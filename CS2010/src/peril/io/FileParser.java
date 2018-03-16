@@ -1,6 +1,6 @@
 package peril.io;
 
-import peril.controllers.Directory;
+import peril.Directory;
 
 /**
  * 

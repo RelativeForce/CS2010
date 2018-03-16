@@ -2,7 +2,7 @@ package peril.helpers;
 
 import java.io.File;
 
-import peril.controllers.Directory;
+import peril.Directory;
 
 /**
  * Provides the file paths to all the game assets. Realises {@link Directory}.

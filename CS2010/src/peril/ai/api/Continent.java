@@ -1,4 +1,4 @@
-package peril.controllers.api;
+package peril.ai.api;
 
 import java.util.Set;
 

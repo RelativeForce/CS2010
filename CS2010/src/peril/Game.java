@@ -1,7 +1,8 @@
 package peril;
 
 import java.io.File;
-import peril.controllers.*;
+
+import peril.ai.AIController;
 import peril.helpers.*;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
@@ -19,8 +20,8 @@ import peril.views.slick.SlickGame;
  * 
  * @author Joshua_Eddy, James_Rowntree
  * 
- * @version 1.01.03
- * @since 2018-02-23
+ * @version 1.01.04
+ * @since 2018-03-16
  *
  */
 public final class Game {

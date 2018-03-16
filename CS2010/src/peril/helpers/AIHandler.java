@@ -1,16 +1,16 @@
-package peril.controllers;
+package peril.helpers;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
 import peril.Game;
-import peril.controllers.api.Board;
-import peril.controllers.api.Country;
-import peril.controllers.api.Player;
-import peril.controllers.api.Unit;
-import peril.helpers.PointHelper;
-import peril.helpers.UnitHelper;
+import peril.ai.AIController;
+import peril.ai.api.Board;
+import peril.ai.api.Country;
+import peril.ai.api.Player;
+import peril.ai.api.Points;
+import peril.ai.api.Unit;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;

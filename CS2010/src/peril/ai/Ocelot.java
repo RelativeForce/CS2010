@@ -7,9 +7,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import peril.controllers.AIController;
-import peril.controllers.api.Country;
-import peril.controllers.api.Player;
+import peril.ai.api.Country;
+import peril.ai.api.Player;
 
 /**
  * A hopefully somewhat clever AI. We'll see. {@link AI}.

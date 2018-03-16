@@ -6,8 +6,8 @@ import java.util.Set;
 
 import org.newdawn.slick.Image;
 
+import peril.GameController;
 import peril.concurrent.Action;
-import peril.controllers.GameController;
 import peril.helpers.FunctionHelper;
 import peril.io.FileParser;
 import peril.views.slick.Container;

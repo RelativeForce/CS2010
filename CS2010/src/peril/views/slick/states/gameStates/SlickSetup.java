@@ -10,7 +10,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import peril.views.slick.components.Component;
-import peril.controllers.GameController;
+import peril.GameController;
 import peril.model.board.ModelCountry;
 import peril.model.states.Setup;
 import peril.views.slick.EventListener;

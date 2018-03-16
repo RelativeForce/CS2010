@@ -11,8 +11,8 @@ import java.util.function.Consumer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
+import peril.GameController;
 import peril.concurrent.Action;
-import peril.controllers.GameController;
 import peril.views.slick.EventListener;
 import peril.views.slick.Frame;
 import peril.model.ModelPlayer;

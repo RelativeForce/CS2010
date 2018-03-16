@@ -1,8 +1,5 @@
 package peril.ai;
 
-import peril.controllers.api.Country;
-import peril.controllers.api.Player;
-
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -11,8 +8,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 
-import peril.controllers.AIController;
-import peril.controllers.api.Board;
+import peril.ai.api.Board;
+import peril.ai.api.Country;
+import peril.ai.api.Player;
 
 /**
  * An AI player of the game. This AI will perform an action based on the current

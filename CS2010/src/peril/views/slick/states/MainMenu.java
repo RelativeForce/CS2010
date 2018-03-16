@@ -7,7 +7,7 @@ import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.controllers.GameController;
+import peril.GameController;
 import peril.io.SaveFile;
 import peril.io.TextFileReader;
 import peril.views.slick.EventListener;

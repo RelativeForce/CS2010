@@ -10,7 +10,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
-import peril.controllers.GameController;
+import peril.GameController;
 import peril.helpers.PointHelper;
 import peril.helpers.UnitHelper;
 import peril.model.ModelPlayer;

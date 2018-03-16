@@ -1,7 +1,7 @@
 package peril.views.slick.components.menus;
 
 import peril.Challenge;
-import peril.controllers.GameController;
+import peril.GameController;
 import peril.views.slick.Frame;
 import peril.views.slick.components.TextField;
 import peril.views.slick.util.Point;

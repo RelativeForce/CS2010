@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import peril.Update;
-import peril.controllers.api.Army;
-import peril.controllers.api.Unit;
+import peril.ai.api.Army;
+import peril.ai.api.Unit;
 import peril.helpers.UnitHelper;
 
 /**

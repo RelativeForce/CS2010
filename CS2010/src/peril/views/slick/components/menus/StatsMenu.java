@@ -1,7 +1,8 @@
 package peril.views.slick.components.menus;
 
 import org.newdawn.slick.Color;
-import peril.controllers.GameController;
+
+import peril.GameController;
 import peril.model.ModelPlayer;
 import peril.views.slick.Frame;
 import peril.views.slick.board.SlickPlayer;

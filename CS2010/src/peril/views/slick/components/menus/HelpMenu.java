@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.newdawn.slick.Color;
-import peril.controllers.GameController;
+
+import peril.GameController;
 import peril.views.slick.Frame;
 import peril.views.slick.components.Component;
 import peril.views.slick.components.TextField;

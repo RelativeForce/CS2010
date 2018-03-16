@@ -1,6 +1,6 @@
 package peril.model.board;
 
-import peril.controllers.api.Unit;
+import peril.ai.api.Unit;
 
 /**
  * A unit that is part of a {@link ModelArmy}.

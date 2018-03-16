@@ -7,7 +7,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import peril.controllers.GameController;
+import peril.GameController;
 import peril.model.states.Reinforce;
 import peril.views.slick.Frame;
 import peril.views.slick.board.SlickCountry;

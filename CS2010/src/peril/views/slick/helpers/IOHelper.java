@@ -2,8 +2,8 @@ package peril.views.slick.helpers;
 
 import java.util.Set;
 
-import peril.controllers.GameController;
 import peril.io.SaveFile;
+import peril.GameController;
 import peril.io.MapWriter;
 import peril.views.slick.Container;
 import peril.views.slick.SlickGame;

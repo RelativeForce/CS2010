@@ -11,7 +11,7 @@ import peril.views.slick.board.SlickPlayer;
 import peril.views.slick.components.MiniMap;
 import peril.views.slick.states.Credits;
 import peril.views.slick.states.EndState;
-import peril.views.slick.states.InstructionsState;
+import peril.views.slick.states.Instructions;
 import peril.views.slick.states.InteractiveState;
 import peril.views.slick.states.LoadingScreen;
 import peril.views.slick.states.MainMenu;
@@ -91,10 +91,10 @@ public final class StateHelper {
 	public final Credits credits;
 
 	/**
-	 * The {@link InstructionsState} that displays the instructions of the
+	 * The {@link Instructions} that displays the instructions of the
 	 * {@link SlickGame}.
 	 */
-	public final InstructionsState help;
+	public final Instructions instructions;
 
 	/**
 	 * Constructs a new {@link StateHelper}.
@@ -119,13 +119,15 @@ public final class StateHelper {
 	 *            The {@link PlayerSelection} that allows the user to select how
 	 *            many players will be in the game.
 	 * @param opening
-	 *            The splash screen of the game.
+	 *            The {@link Opening} splash screen of the game.
 	 * @param credits
-	 *            The credits page for this game.
+	 *            The {@link Credits} page for this game.
+	 * @param instructions
+	 *            The {@link Instructions} for the game.
 	 */
 	public StateHelper(Opening opening, MainMenu mainMenu, SlickAttack attack, SlickReinforce reinforce,
 			SlickSetup setup, SlickFortify fortify, EndState end, LoadingScreen loadingScreen,
-			PlayerSelection playerSelection, Credits credits, InstructionsState help) {
+			PlayerSelection playerSelection, Credits credits, Instructions instructions) {
 		this.opening = opening;
 		this.mainMenu = mainMenu;
 		this.end = end;
@@ -136,7 +138,7 @@ public final class StateHelper {
 		this.loadingScreen = loadingScreen;
 		this.playerSelection = playerSelection;
 		this.credits = credits;
-		this.help = help;
+		this.instructions = instructions;
 	}
 
 	/**
@@ -164,7 +166,7 @@ public final class StateHelper {
 		game.addState(attack);
 		game.addState(fortify);
 		game.addState(credits);
-		game.addState(help);
+		game.addState(instructions);
 
 	}
 

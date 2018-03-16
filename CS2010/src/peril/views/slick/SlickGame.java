@@ -323,7 +323,7 @@ public final class SlickGame extends StateBasedGame implements View {
 		final SlickAttack combat = new SlickAttack(game, 4, game.getAttack());
 		final SlickFortify movement = new SlickFortify(game, 5, game.getFortify());
 		final Credits credits = new Credits(game, 8);
-		final InstructionsState help = new InstructionsState(game, 15);
+		final Instructions help = new Instructions(game, 15);
 
 		// Subscribe the core game states to the board
 		final ModelBoard board = game.getModelBoard();
@@ -767,7 +767,7 @@ public final class SlickGame extends StateBasedGame implements View {
 	
 	@Override
 	public void enterHelp() {
-		enterState(states.help);
+		enterState(states.instructions);
 	}
 	
 

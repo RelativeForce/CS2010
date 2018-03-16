@@ -28,10 +28,10 @@ import peril.views.slick.util.Point;
  * @see InteractiveState
  *
  */
-public final class InstructionsState extends InteractiveState {
+public final class Instructions extends InteractiveState {
 
 	/**
-	 * The name of a specific {@link InstructionsState}.
+	 * The name of a specific {@link Instructions}.
 	 */
 	private static final String NAME = "Instructions";
 
@@ -57,15 +57,15 @@ public final class InstructionsState extends InteractiveState {
 	private final EventListener scrollListener;
 
 	/**
-	 * Constructs a new {@link InstructionsState}.
+	 * Constructs a new {@link Instructions}.
 	 * 
 	 * @param game
 	 *            The {@link GameController} that allows this
-	 *            {@link InstructionsState} to query the state of the game.
+	 *            {@link Instructions} to query the state of the game.
 	 * @param id
-	 *            The id of this {@link InstructionsState}.
+	 *            The id of this {@link Instructions}.
 	 */
-	public InstructionsState(GameController game, int id) {
+	public Instructions(GameController game, int id) {
 		super(game, NAME, id, HelpMenu.NULL_PAGE);
 		
 		final String sliderImagePath = game.getDirectory().getUIPath() + "slider.png";
@@ -104,7 +104,7 @@ public final class InstructionsState extends InteractiveState {
 	}
 
 	/**
-	 * Initialise the visual elements of the {@link InstructionsState}.
+	 * Initialise the visual elements of the {@link Instructions}.
 	 */
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
@@ -119,7 +119,7 @@ public final class InstructionsState extends InteractiveState {
 	}
 
 	/**
-	 * Updates the {@link InstructionsState}.
+	 * Updates the {@link Instructions}.
 	 */
 	@Override
 	public void update(GameContainer gc, int delta, Frame frame) {
@@ -131,7 +131,7 @@ public final class InstructionsState extends InteractiveState {
 	}
 
 	/**
-	 * Render the {@link InstructionsState}.
+	 * Render the {@link Instructions}.
 	 */
 	@Override
 	public void render(GameContainer gc, Frame frame) {
@@ -146,7 +146,7 @@ public final class InstructionsState extends InteractiveState {
 	}
 
 	/**
-	 * Processes a button press on this {@link InstructionsState}.
+	 * Processes a button press on this {@link Instructions}.
 	 */
 	@Override
 	public void parseButton(int key, Point mousePosition) {
@@ -168,7 +168,7 @@ public final class InstructionsState extends InteractiveState {
 	}
 
 	/**
-	 * Retrieves the {@link Music} of this {@link InstructionsState}.
+	 * Retrieves the {@link Music} of this {@link Instructions}.
 	 */
 	@Override
 	public Music getMusic() {

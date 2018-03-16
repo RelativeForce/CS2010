@@ -5,16 +5,12 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import peril.model.ModelColor;
-import peril.model.board.links.ModelLink;
-
 /**
  * This class tests {@link ModelHazard}.
  * 
  * @author Adrian_Wong
  *
  */
-
 public class Test_ModelHazard {
 	
 	@Before
@@ -45,8 +41,7 @@ public class Test_ModelHazard {
 	 */
 	@Test
 	public void test_act() {
-		
-	
+		// I don't know	
 	}
 
 }

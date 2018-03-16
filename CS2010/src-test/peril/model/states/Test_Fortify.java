@@ -70,6 +70,7 @@ public final class Test_Fortify {
 	 * Sets up the elements that will be used by every test to test {@link Fortify}.
 	 * 
 	 * @throws Exception
+	 *             If setup fails throw Exception.
 	 */
 	@Before
 	public void setUp() throws Exception {
@@ -317,7 +318,7 @@ public final class Test_Fortify {
 		assertTrue(testDestination.getArmy().getNumberOfUnits() == 2);
 
 		testFortify.deselectAll();
-		
+
 		// Attempt to select the source and destination.
 		assertTrue(testFortify.select(testSource));
 		assertTrue(testFortify.select(testDestination));

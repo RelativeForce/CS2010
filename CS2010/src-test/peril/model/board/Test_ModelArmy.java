@@ -29,8 +29,10 @@ public final class Test_ModelArmy {
 	private UnitHelper unitHelper;
 
 	/**
-	 * The pre-test setup operations. 
+	 * The pre-test setup operations.
+	 * 
 	 * @throws Exception
+	 *             If setup fails throw Exception.
 	 */
 	@Before
 	public void setUp() throws Exception {
@@ -70,7 +72,7 @@ public final class Test_ModelArmy {
 	}
 
 	/**
-	 * This test confirms if the {@link ModelArmy#setStrength()} method sets the
+	 * This test confirms if the {@link ModelArmy#setStrength(int)} method sets the
 	 * correct strength of a {@link ModelArmy}
 	 */
 	@Test(expected = IllegalArgumentException.class)

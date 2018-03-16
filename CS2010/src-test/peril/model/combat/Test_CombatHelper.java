@@ -61,6 +61,7 @@ public final class Test_CombatHelper {
 	 * Sets up the {@link CombatHelper} that will be used by every test.
 	 * 
 	 * @throws Exception
+	 * 			If setup fails throw Exception.
 	 */
 	@Before
 	public void setUp() throws Exception {

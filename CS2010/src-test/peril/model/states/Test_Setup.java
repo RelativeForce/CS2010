@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -17,8 +16,6 @@ import peril.Game;
 import peril.GameController;
 import peril.ai.AI;
 import peril.ai.AIController;
-import peril.ai.api.Board;
-import peril.ai.api.Continent;
 import peril.ai.api.Country;
 import peril.helpers.AIHelper;
 import peril.helpers.PlayerHelper;
@@ -29,7 +26,6 @@ import peril.model.board.ModelBoard;
 import peril.model.board.ModelContinent;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
-import peril.model.board.links.ModelLinkState;
 import peril.model.states.Setup;
 import peril.views.View;
 
@@ -62,8 +58,11 @@ public class Test_Setup {
 	private ModelPlayer player2;
 
 	/**
-	 * This method sets up the {@link Setup} state, with 2 players, a {@link Game} instance, and 
-	 * a unit for the {@link UnitHelper}
+	 * This method sets up the {@link Setup} state, with 2 players, a {@link Game}
+	 * instance, and a unit for the {@link UnitHelper}
+	 * 
+	 * @throws Exception
+	 *             If setup fails throw Exception.
 	 */
 	@Before
 	public void setUp() throws Exception {
@@ -78,8 +77,8 @@ public class Test_Setup {
 	}
 
 	/**
-	 * This method asserts that on valid {@link ModelCountry} can be selected by
-	 * the {@link Setup}. When a second country is selected the first should be cleared,
+	 * This method asserts that on valid {@link ModelCountry} can be selected by the
+	 * {@link Setup}. When a second country is selected the first should be cleared,
 	 * and the second one indexed instead.
 	 */
 	@Test
@@ -87,7 +86,8 @@ public class Test_Setup {
 		final ModelCountry country1 = new ModelCountry("country1", new ModelColor(0, 0, 0));
 		final ModelCountry country2 = new ModelCountry("country2", new ModelColor(0, 0, 1));
 
-		// Select country 1 and test how many are selected, and whether index 0 is the right country.
+		// Select country 1 and test how many are selected, and whether index 0 is the
+		// right country.
 		testSetup.select(country1);
 		assertTrue(testSetup.numberOfSelected() == 1);
 		assertTrue(testSetup.getSelected(0) == country1);
@@ -102,37 +102,38 @@ public class Test_Setup {
 	}
 
 	/**
-	 * This method asserts that the {@link Setup} distributes countries between players correctly,
-	 * and fairly. Where two countries are distributed among two players each player should always recieve one.
+	 * This method asserts that the {@link Setup} distributes countries between
+	 * players correctly, and fairly. Where two countries are distributed among two
+	 * players each player should always recieve one.
 	 */
 	@Test
 	public void test_autoDistributeCountries() {
-		
-		//Setup playerhelper with players
+
+		// Setup playerhelper with players
 		PlayerHelper players = new PlayerHelper(null);
 		players.addPlayer(player1);
 		players.addPlayer(player2);
-		
-		//Setup countries
+
+		// Setup countries
 		final ModelCountry country1 = new ModelCountry("country1", new ModelColor(0, 0, 0));
 		final ModelCountry country2 = new ModelCountry("country2", new ModelColor(0, 0, 1));
 
-		//Setup continent and add countries to it.
+		// Setup continent and add countries to it.
 		ModelContinent continent = new ModelContinent(null, null);
 		continent.addCountry(country1);
 		continent.addCountry(country2);
-		
+
 		Set<ModelContinent> newContinents = new HashSet<ModelContinent>();
 		newContinents.add(continent);
-		
-		//Setup board, add continents to it.
+
+		// Setup board, add continents to it.
 		ModelBoard board = new ModelBoard("Board");
 		board.setContinents(newContinents);
-		
-		//Distribute countries between players.
+
+		// Distribute countries between players.
 		testSetup.autoDistributeCountries(board, players);
-		
-		//Count the number of countries owned by each player, if equal, pass
+
+		// Count the number of countries owned by each player, if equal, pass
 		int player1Owned = 0;
 		int player2Owned = 0;
 		for (Country country : continent.getCountries()) {
@@ -144,7 +145,7 @@ public class Test_Setup {
 			}
 
 		}
-		System.out.println("P1"+player1Owned+"P2"+player2Owned);
+		System.out.println("P1" + player1Owned + "P2" + player2Owned);
 		assertTrue(player1Owned == 1 && player2Owned == 1);
 	}
 

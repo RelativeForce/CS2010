@@ -74,6 +74,7 @@ public final class Test_Attack {
 	 * Sets up the elements that will be used by every test to test {@link Attack}.
 	 * 
 	 * @throws Exception
+	 *             If setup fails throw Exception.
 	 */
 	@Before
 	public void setUp() throws Exception {

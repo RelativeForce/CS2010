@@ -43,6 +43,8 @@ public final class Test_CombatRound {
 	 * Sets up the {@link #testArmyUnits} that will be used by every test.
 	 * 
 	 * @throws Exception
+	 *             If setup fails throw Exception.
+	 * 
 	 */
 	@Before
 	public void setUp() throws Exception {

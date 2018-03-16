@@ -6,8 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import peril.ai.AI;
-import peril.helpers.PlayerHelper;
-import peril.helpers.UnitHelper;
 import peril.model.board.ModelArmy;
 
 /**
@@ -24,22 +22,17 @@ import peril.model.board.ModelArmy;
 public class Test_ModelPlayer {
 
 	/**
-	 * The {@link UnitHelper} that holds the instance of
-	 * {@link UnitHelper#getInstance()}.
-	 */
-	private PlayerHelper playerHelper;
-
-	/**
 	 * The pre-test setup operations.
 	 * 
 	 * @throws Exception
+	 *             If setup fails throw Exception.
 	 */
 	@Before
 	public void setUp() throws Exception {
 	}
 
 	/**
-	 * This test confirms if the {@link ModelPlayer#setCountriesRuled()} method sets
+	 * This test confirms if the {@link ModelPlayer#setCountriesRuled(int)} method sets
 	 * the correct strength of a {@link ModelPlayer}
 	 */
 	@Test(expected = IllegalArgumentException.class)
@@ -66,7 +59,7 @@ public class Test_ModelPlayer {
 	}
 
 	/**
-	 * This test confirms if the {@link ModelPlayer#setContinentsRuled()} method
+	 * This test confirms if the {@link ModelPlayer#setContinentsRuled(int)} method
 	 * sets the correct number of continents of a {@link ModelPlayer}
 	 */
 	@Test(expected = IllegalArgumentException.class)
@@ -93,7 +86,7 @@ public class Test_ModelPlayer {
 	}
 
 	/**
-	 * This test confirms if the {@link ModelPlayer#setPoints()} method sets the
+	 * This test confirms if the {@link ModelPlayer#setPoints(int)} method sets the
 	 * correct number of points for a {@link ModelPlayer}.
 	 */
 	@Test(expected = IllegalArgumentException.class)
@@ -105,7 +98,7 @@ public class Test_ModelPlayer {
 	}
 
 	/**
-	 * This test confirms if the {@link ModelPlayer#setCountriesRuled()} method adds
+	 * This test confirms if the {@link ModelPlayer#setCountriesRuled(int)} method adds
 	 * the correct number of points to{@link ModelPlayer}
 	 */
 	@Test(expected = IllegalArgumentException.class)

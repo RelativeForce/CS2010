@@ -9,18 +9,43 @@ import java.util.function.Predicate;
 import peril.ai.api.Country;
 import peril.ai.api.Player;
 
+/**
+ * A {@link AI} that acts in a completely random manner. This {@link AI} will
+ * not block links or upgrade units. Named after my dog.
+ * 
+ * @author Hannah_Miller
+ *
+ * @version 1.02.01
+ * @since 2018-03-12
+ */
 public final class Ernie extends AI {
 
-	private Random rand;
-
+	/**
+	 * The display name of {@link Ernie}.
+	 */
 	private static final String NAME = "Easy";
 
+	/**
+	 * The {@link Random} that is used to determine the actions of {@link Ernie}.
+	 */
+	private final Random rand;
+
+	/**
+	 * Constructs a new {@link Ernie}.
+	 * 
+	 * @param api
+	 *            The {@link AIController} that allows {@link Ernie} to query the
+	 *            state of the game.
+	 */
 	public Ernie(AIController api) {
 		super(NAME, MAX_SPEED, api);
-		// TODO Auto-generated constructor stub
-		rand = new Random(10);
+
+		this.rand = new Random(10);
 	}
 
+	/**
+	 * Randomly reinforces friendly countries until it runs out of units.
+	 */
 	@Override
 	protected AIOperation processReinforce(AIController api) {
 
@@ -57,31 +82,37 @@ public final class Ernie extends AI {
 		return op;
 	}
 
+	/**
+	 * Randomly attacks until there are no more valid attacks left.
+	 */
 	@Override
 	protected AIOperation processAttack(AIController api) {
 
-		Map<Integer, Entry> countries = new HashMap<>();
-		Player current = api.getCurrentPlayer();
-		// go through each of the countries owned by that player
-		// see the neighbouring countries of each
-		// put them in array with values for the amount of troops
-		// find own country and neighbouring non friendly country with biggest gap
-		// between the two
-		// attack it
+		final Map<Integer, Entry> countries = new HashMap<>();
+		final Player current = api.getCurrentPlayer();
+
 		int highest = Integer.MIN_VALUE;
 
-		api.forEachCountry(country -> {
-			if (current.equals(country.getOwner())) {
-				if (country.getArmy().getNumberOfUnits() > 1) {
-					for (Country neighbour : country.getNeighbours()) {
+		api.forEachFriendlyCountry(current, country -> {
 
-						if (!current.equals(neighbour.getOwner())) {
-							int value = rand.nextInt(10);
+			if (country.getArmy().getNumberOfUnits() > 1) {
+
+				country.getNeighbours().stream()
+
+						// Filter out all the invalid targets.
+						.filter(neighbour -> !current.equals(neighbour.getOwner())
+								&& api.hasOpenLinkBetween(country, neighbour))
+
+						// Iterate over each valid target.
+						.forEach(neighbour -> {
+
+							// Assign a random value to this attack.
+							final int value = rand.nextInt(10);
 							countries.put(value, new Entry(country, neighbour));
-						}
-					}
-				}
+
+						});
 			}
+
 		});
 
 		for (int value : countries.keySet()) {
@@ -102,6 +133,10 @@ public final class Ernie extends AI {
 
 	}
 
+	/**
+	 * Randomly move units from safe {@link Country}s to {@link Country}s that
+	 * border enemy {@link Country}s.
+	 */
 	@Override
 	protected AIOperation processFortify(AIController api) {
 
@@ -151,7 +186,13 @@ public final class Ernie extends AI {
 		return op;
 	}
 
-	private class Entry {
+	/**
+	 * Borrowed this from Josh.
+	 * 
+	 * @author Hannah_Miller
+	 *
+	 */
+	private final class Entry {
 
 		/**
 		 * {@link Country} a

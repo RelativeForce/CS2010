@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import peril.ai.api.Army;
+import peril.ai.api.Board;
 import peril.ai.api.Country;
 import peril.ai.api.Player;
 import peril.ai.api.Unit;
@@ -17,8 +18,8 @@ import peril.ai.api.Unit;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-27
- * @version 1.01.02
+ * @since 2018-03-16
+ * @version 1.01.03
  * 
  * @see AI
  * @see AIController
@@ -644,12 +645,18 @@ public final class FinalBoss extends AI {
 		}
 
 		/**
-		 * Iterates through each {@link Country} on the {@link ModelBoard} and adds the
-		 * {@link Country}s that border enemy {@link Country}s to 'frontline' and
+		 * Iterates through each {@link Country} on the {@link Board} and adds the
+		 * {@link Country}s that border enemy {@link Country}s to 'front line' and
 		 * {@link Country}s that border NO enemy {@link Country}s to 'internal'.
 		 * 
 		 * @param api
 		 *            {@link AIController}
+		 * @param internal
+		 *            The {@link Country}s that have no enemy {@link Country}s
+		 *            neighbouring them.
+		 * @param frontline
+		 *            The {@link Country}s that have enemy {@link Country}s neighbouring
+		 *            them. The value is the number of enemies the {@link Country} has.
 		 * 
 		 */
 		private void defineFrontline(AIController api, Set<Country> internal, Map<Country, Integer> frontline) {
@@ -690,8 +697,8 @@ public final class FinalBoss extends AI {
 	 * 
 	 * @author Joshua_Eddy
 	 * 
-	 * @since 2018-02-27
-	 * @version 1.01.01
+	 * @since 2018-03-16
+	 * @version 1.01.02
 	 * 
 	 * @see FinalBoss
 	 */
@@ -711,7 +718,9 @@ public final class FinalBoss extends AI {
 		 * Constructs a new {@link Entry}.
 		 * 
 		 * @param a
+		 *            {@link Country} a
 		 * @param b
+		 *            {@link Country} b
 		 */
 		public Entry(Country a, Country b) {
 			this.a = a;

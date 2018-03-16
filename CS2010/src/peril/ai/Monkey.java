@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import peril.ai.api.Board;
 import peril.ai.api.Country;
 import peril.ai.api.Player;
 
@@ -12,7 +13,11 @@ import peril.ai.api.Player;
  * A very stupid and predictable {@link AI}.
  * 
  * @author Joshua_Eddy
- *
+ * 
+ * @version 1.01.04
+ * @since 2018-03-16
+ * 
+ * @see AI
  */
 public final class Monkey extends AI {
 
@@ -141,11 +146,13 @@ public final class Monkey extends AI {
 	 * Retrieves the weighting for every possible fortification possible on the
 	 * board..
 	 * 
+	 * @param api
+	 *            The {@link AIController}.
 	 * @param internal
 	 *            {@link Country}s that border NO enemy {@link Country}s
 	 * @param frontline
 	 *            {@link Country}s that border enemy {@link Country}s
-	 * @return weightings
+	 * @return weightings The {@link Map} of weighting to the entry.
 	 */
 	private Map<Integer, Entry> getFortifyWeightings(AIController api, Set<Country> internal,
 			Map<Country, Integer> frontline) {
@@ -165,17 +172,23 @@ public final class Monkey extends AI {
 	}
 
 	/**
-	 * Iterates through each {@link Country} on the {@link ModelBoard} and adds the
+	 * Iterates through each {@link Country} on the {@link Board} and adds the
 	 * {@link Country}s that border enemy {@link Country}s to 'frontline' and
 	 * {@link Country}s that border NO enemy {@link Country}s to 'internal'.
 	 * 
 	 * @param api
 	 *            {@link AIController}
+	 * @param internal
+	 *            The {@link Country}s that have no enemy {@link Country}s
+	 *            neighbouring them.
+	 * @param frontline
+	 *            The {@link Country}s that have enemy {@link Country}s neighbouring
+	 *            them. The value is the number of enemies the {@link Country} has.
 	 * 
 	 */
 	private void defineFrontline(AIController api, Set<Country> internal, Map<Country, Integer> frontline) {
 
-		Player current = api.getCurrentPlayer();
+		final Player current = api.getCurrentPlayer();
 
 		/*
 		 * Iterate through each country on the board and if it is owned by the current
@@ -293,6 +306,9 @@ public final class Monkey extends AI {
 	 * Holds a pair of {@link Country}s.
 	 * 
 	 * @author Joshua_Eddy
+	 * 
+	 * @version 1.01.3
+	 * @since 2018-03-16
 	 */
 	private class Entry {
 
@@ -310,7 +326,9 @@ public final class Monkey extends AI {
 		 * Constructs a new {@link Entry}.
 		 * 
 		 * @param a
+		 *            {@link Country} a
 		 * @param b
+		 *            {@link Country} b
 		 */
 		public Entry(Country a, Country b) {
 			this.a = a;

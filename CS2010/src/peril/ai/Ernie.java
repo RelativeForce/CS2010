@@ -12,7 +12,7 @@ import peril.ai.api.Player;
 public final class Ernie extends AI {
 
 	private Random rand;
-	
+
 	private static final String NAME = "Easy";
 
 	public Ernie(AIController api) {
@@ -132,20 +132,20 @@ public final class Ernie extends AI {
 			});
 
 		});
-		
+
 		// The value of the best entry.
 		final Optional<Integer> result = countries.keySet().stream().max(Integer::compareTo);
 
 		final AIOperation op = new AIOperation();
-		
-		if(result.isPresent()) {
-			
+
+		if (result.isPresent()) {
+
 			final Entry best = countries.get(result.get());
-			
+
 			op.processAgain = true;
 			op.select.add(best.a);
 			op.select.add(best.b);
-			
+
 		}
 
 		return op;
@@ -167,7 +167,9 @@ public final class Ernie extends AI {
 		 * Constructs a new {@link Entry}.
 		 * 
 		 * @param a
+		 *            {@link Country} a
 		 * @param b
+		 *            {@link Country} b
 		 */
 		public Entry(Country a, Country b) {
 			this.a = a;

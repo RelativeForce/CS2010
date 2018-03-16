@@ -34,7 +34,7 @@ public final class Noob extends AI {
 		HashMap<Integer, Country> countries = getReinforceWeightings(api);
 
 		int highest = Integer.MIN_VALUE;
-		int lowest = Integer.MAX_VALUE+1;
+		int lowest = Integer.MAX_VALUE + 1;
 
 		// Find the highest weight
 		for (int value : countries.keySet()) {
@@ -52,7 +52,7 @@ public final class Noob extends AI {
 		op.processAgain = true;
 
 		return op;
-		
+
 	}
 
 	/**
@@ -105,7 +105,7 @@ public final class Noob extends AI {
 			op.processAgain = false;
 			return op;
 		}
-		
+
 		final Country safe = possibleMoves.get(weights[0]).a;
 		final Country border = possibleMoves.get(weights[0]).b;
 
@@ -249,6 +249,8 @@ public final class Noob extends AI {
 	/**
 	 * Holds a pair of {@link Country}s.
 	 * 
+	 * @author Joshua_Eddy
+	 * 
 	 */
 	public class Entry {
 
@@ -266,7 +268,9 @@ public final class Noob extends AI {
 		 * Constructs a new {@link Entry}.
 		 * 
 		 * @param a
+		 *            {@link Country} a
 		 * @param b
+		 *            {@link Country} b
 		 */
 		public Entry(Country a, Country b) {
 			this.a = a;

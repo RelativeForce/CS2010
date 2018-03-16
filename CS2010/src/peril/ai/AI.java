@@ -262,6 +262,7 @@ public abstract class AI {
 	 * Set the number of milliseconds between each action of this {@link AI}.
 	 * 
 	 * @param speed
+	 *            The new speed of the {@link AI}.
 	 */
 	public final void setSpeed(int speed) {
 		if (speed < MAX_SPEED) {
@@ -298,7 +299,7 @@ public abstract class AI {
 	 * 
 	 * This method must:
 	 * <ol>
-	 * <li>Select a {@link Country} by adding one {@link Counrty} to
+	 * <li>Select a {@link Country} by adding one {@link Country} to
 	 * {@link AIOperation#select} that is returned.</li>
 	 * <li>Set {@link AIOperation#processAgain}, which is whether or not this
 	 * {@link AI} wishes to perform another operation or not. If not the

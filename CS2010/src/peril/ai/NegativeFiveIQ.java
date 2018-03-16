@@ -183,7 +183,9 @@ public final class NegativeFiveIQ extends AI {
 		 * Constructs a new {@link Entry}.
 		 * 
 		 * @param a
+		 *            {@link Country} a
 		 * @param b
+		 *            {@link Country} b
 		 */
 		public Entry(Country a, Country b) {
 			this.a = a;

@@ -63,7 +63,7 @@ public final class Knight extends AI {
 			op.processAgain = false;
 			return op;
 		}
-		
+
 		final Country safe = possibleMoves.get(weights[0]).a;
 		final Country border = possibleMoves.get(weights[0]).b;
 
@@ -258,7 +258,9 @@ public final class Knight extends AI {
 		 * Constructs a new {@link Entry}.
 		 * 
 		 * @param a
+		 *            {@link Country} a
 		 * @param b
+		 *            {@link Country} b
 		 */
 		public Entry(Country a, Country b) {
 			this.a = a;

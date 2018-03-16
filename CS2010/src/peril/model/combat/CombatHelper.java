@@ -293,8 +293,18 @@ public final class CombatHelper extends Observable {
 			loser.totalArmy.remove(unit.strength);
 		}
 
-		// Add the change in units to the victors units killed.
-		victor.addUnitsKilled(preCombatUnitCount - postCombatUnitCount);
+		// In no units were broken down.
+		if (preCombatUnitCount > postCombatUnitCount) {
+			// Add the change in units to the victors units killed.
+			victor.addUnitsKilled(preCombatUnitCount - postCombatUnitCount);
+
+		}
+		// If a unit was broken down there will be more units. Therefore only one unit
+		// will be killed.
+		else {
+			// Add one unit to the victors units killed.
+			victor.addUnitsKilled(1);
+		}
 
 		// If the army and squad weakened to the point they can no longer attack.
 		if (postCombatUnitCount == 0) {

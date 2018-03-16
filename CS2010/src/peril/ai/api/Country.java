@@ -12,15 +12,6 @@ import java.util.Set;
  *
  */
 public interface Country {
-
-	/**
-	 * @deprecated use {@link Country#getArmy()} then {@link Army#getStrength()}
-	 * 
-	 * Returns the strength of this {@link Country}'s army.
-	 * 
-	 * @return strength of army.
-	 */
-	int getArmyStrength();
 	
 	/**
 	 * Returns this {@link Country}'s {@link Army}.

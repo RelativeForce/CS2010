@@ -24,22 +24,18 @@ import peril.ai.api.Unit;
 public interface AIController {
 
 	/**
-	 * Retrieves the {@link Board}.
+	 * Creates a blockade that prevents the neighbour {@link Country} from
+	 * transferring units to the source {@link Country}. This also prevents attack
+	 * from the neighbour however the source can still attack the neighbour.
+	 * Blockades last 3 rounds.
 	 * 
-	 * @return {@link Board} 
-	 * 			Returns the board.
-	 * 
+	 * @param source
+	 *            The {@link Country} that is will be the source of the blockade.
+	 * @param neighbour
+	 *            The {@link Country} that is will be blocked from transferring
+	 *            units.
 	 */
-	Board getBoard();
-
-	/**
-	 * Selects the {@link Country} from the current state.
-	 * 
-	 * @param country
-	 *            {@link Country} to select.
-	 * @return Whether or not the {@link Country} was selected.
-	 */
-	boolean select(Country country);
+	void createBlockade(Country source, Country neighbour);
 
 	/**
 	 * Performs a {@link Consumer} function on all the {@link Country}s on the
@@ -87,31 +83,6 @@ public interface AIController {
 	void fortify();
 
 	/**
-	 * A pre-check for {@link AIController#fortify()}, this retrieves whether or not
-	 * there is a valid path between two {@link Country}s owned by the same
-	 * {@link Player}.
-	 * 
-	 * @param a
-	 *            The first {@link Country}
-	 * @param b
-	 *            The second {@link Country}
-	 * @return <code>boolean</code>
-	 */
-	boolean isPathBetween(Country a, Country b);
-
-	/**
-	 * Clears the currently selected {@link Country}(s) from all the states.
-	 */
-	void clearSelected();
-
-	/**
-	 * Retrieves the current {@link Player}.
-	 * 
-	 * @return {@link Player}
-	 */
-	Player getCurrentPlayer();
-
-	/**
 	 * Performs a {@link Consumer} task on every {@link Country} that is owned by
 	 * the specified {@link Player}.
 	 * 
@@ -123,11 +94,9 @@ public interface AIController {
 	void forEachFriendlyCountry(Player player, Consumer<Country> task);
 
 	/**
-	 * Retrieves all the {@link Player}s that are currently active in the game.
-	 * 
-	 * @return {@link Set} of {@link Player}s
+	 * Clears the currently selected {@link Country}(s) from all the states.
 	 */
-	Set<? extends Player> getPlayers();
+	void clearSelected();
 
 	/**
 	 * Performs a {@link Consumer} task on every {@link Country} that is not owned
@@ -142,11 +111,27 @@ public interface AIController {
 	void forEachEnemyNeighbour(Country country, Consumer<Country> task);
 
 	/**
-	 * Retrieves all the point reward values for actions in the game.
+	 * A pre-check for {@link AIController#fortify()}, this retrieves whether or not
+	 * there is a valid path between two {@link Country}s owned by the same
+	 * {@link Player}. If there is no {@link Unit} from the source {@link Country}
+	 * that can traverse the path found this will return false;
 	 * 
-	 * @return {@link Points}
+	 * @param source
+	 *            The {@link Country} at the start of the path.
+	 * @param destination
+	 *            The {@link Country} at the end of the path.
+	 * @return <code>boolean</code>
 	 */
-	Points getPoints();
+	boolean isPathBetween(Country source, Country destination);
+
+	/**
+	 * Selects the {@link Country} from the current state.
+	 * 
+	 * @param country
+	 *            {@link Country} to select.
+	 * @return Whether or not the {@link Country} was selected.
+	 */
+	boolean select(Country country);
 
 	/**
 	 * Converts as many of the {@link Unit}s from this {@link Army} into the
@@ -174,18 +159,25 @@ public interface AIController {
 	boolean hasOpenLinkBetween(Country country, Country neighbour);
 
 	/**
-	 * Creates a blockade that prevents the neighbour {@link Country} from
-	 * transferring units to the source {@link Country}. This also prevents attack
-	 * from the neighbour however the source can still attack the neighbour.
-	 * Blockades last 3 rounds.
+	 * Retrieves the current {@link Player}.
 	 * 
-	 * @param source
-	 *            The {@link Country} that is will be the source of the blockade.
-	 * @param neighbour
-	 *            The {@link Country} that is will be blocked from transferring
-	 *            units.
+	 * @return Current {@link Player}
 	 */
-	void createBlockade(Country source, Country neighbour);
+	Player getCurrentPlayer();
+
+	/**
+	 * Retrieves all the {@link Player}s that are currently active in the game.
+	 * 
+	 * @return {@link Set} of {@link Player}s
+	 */
+	Set<? extends Player> getPlayers();
+
+	/**
+	 * Retrieves all the point reward values for actions in the game.
+	 * 
+	 * @return {@link Points}
+	 */
+	Points getPoints();
 
 	/**
 	 * Retrieves the {@link Unit} above the specified {@link Unit} in terms of
@@ -196,4 +188,12 @@ public interface AIController {
 	 *            The {@link Unit} above the specifed unit in terms of strength.
 	 */
 	Unit getUnitAbove(Unit unit);
+
+	/**
+	 * Retrieves the {@link Board}.
+	 * 
+	 * @return {@link Board} Returns the board.
+	 * 
+	 */
+	Board getBoard();
 }

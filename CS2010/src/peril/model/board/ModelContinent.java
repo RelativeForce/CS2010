@@ -16,8 +16,8 @@ import peril.model.ModelPlayer;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-13
- * @version 1.01.01
+ * @since 2018-03-16
+ * @version 1.01.02
  * 
  * @see ModelCountry
  * @see Observable
@@ -203,6 +203,23 @@ public final class ModelContinent extends Observable implements Continent, Obser
 		setChanged();
 		notifyObservers(new Update("ruler", ruler));
 
+	}
+
+	/**
+	 * Retrieves {@link #hazard} {@link ModelHazard#maxCasualties}.
+	 */
+	@Override
+	public int getMaxHazardCausalties() {
+		return (hazard == null) ? 0 : hazard.maxCasualties;
+	}
+
+	/**
+	 * Retrieves {@link #hazard} {@link ModelHazard#chance}.
+	 */
+
+	@Override
+	public int getHazardFrequency() {
+		return (hazard == null) ? 0 : hazard.chance;
 	}
 
 }

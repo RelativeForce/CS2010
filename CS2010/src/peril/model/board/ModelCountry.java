@@ -20,8 +20,8 @@ import peril.model.board.links.ModelLinkState;
  * 
  * @author Joshua_Eddy, James_Rowntree
  * 
- * @since 2018-03-09
- * @version 1.01.02
+ * @since 2018-03-16
+ * @version 1.01.03
  * 
  * @see Observable
  * @see Observer
@@ -168,14 +168,6 @@ public final class ModelCountry extends Observable implements Country, Observer 
 			setChanged();
 			notifyObservers();
 		}
-	}
-
-	/**
-	 * Returns the strength of this {@link ModelCountry}'s {@link ModelArmy}.
-	 */
-	@Override
-	public int getArmyStrength() {
-		return army.getStrength();
 	}
 
 	/**

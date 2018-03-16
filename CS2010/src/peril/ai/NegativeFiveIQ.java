@@ -24,7 +24,6 @@ public final class NegativeFiveIQ extends AI {
 
 	public NegativeFiveIQ(AIController api) {
 		super(NAME, MAX_SPEED, api);
-
 	}
 
 	@Override

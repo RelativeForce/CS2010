@@ -35,7 +35,7 @@ import peril.views.slick.util.Point;
  * @author Joshua_Eddy, Gurdeep_Pol, Ezekiel_Trinidad
  * 
  * @since 2018-03-16
- * @version 1.01.10
+ * @version 1.01.11
  * 
  * @see InteractiveState
  * @see AI
@@ -123,28 +123,28 @@ public final class PlayerSelection extends InteractiveState {
 
 		this.width = 100;
 		this.height = 100;
-		this.topPlayer = new Point((MainMenu.WIDTH / 3), MainMenu.HEIGHT / 3);
+		this.topPlayer = new Point((MainMenu.WIDTH / 3) + 65, MainMenu.HEIGHT / 3);
 		this.players = new LinkedList<>();
 		this.selected = null;
 
 		final Font listFont = new Font("Arial", Color.black, 19);
 
 		// Define the AI list
-		this.aiList = new VisualList<>(new Point(400, 100), 100, 24, 4, 5);
+		this.aiList = new VisualList<>(new Point(465, 100), 100, 24, 4, 5);
 		this.aiList.setFont(listFont);
 		populateAIList();
 
 		// Define the number of players list
-		this.numberOfPlayers = new VisualList<>(new Point(100, topPlayer.y), 20, 24, 3, 5);
+		this.numberOfPlayers = new VisualList<>(new Point(165, topPlayer.y), 20, 24, 3, 5);
 		this.numberOfPlayers.setFont(listFont);
 		populatePlayers();
 
 		// Define the AI speeds list
-		this.aiSpeeds = new VisualList<>(new Point(100, topPlayer.y + 110), 50, 24, 4, 5);
+		this.aiSpeeds = new VisualList<>(new Point(165, topPlayer.y + 110), 50, 24, 4, 5);
 		this.aiSpeeds.setFont(listFont);
 		populateAISpeeds();
 
-		this.randomOrderToggle = new VisualList<>(new Point(100, topPlayer.y + 250), 85, 24, 2, 5);
+		this.randomOrderToggle = new VisualList<>(new Point(165, topPlayer.y + 250), 85, 24, 2, 5);
 		this.randomOrderToggle.setFont(listFont);
 
 		this.randomOrderToggle.add("Enabled", true);

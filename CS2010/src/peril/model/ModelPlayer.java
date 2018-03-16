@@ -112,6 +112,9 @@ public final class ModelPlayer extends Observable implements Player {
 	 *            owns.
 	 */
 	public void setCountriesRuled(int countriesRuled) {
+		if (countriesRuled < 0) {
+			throw new IllegalArgumentException("Countries ruled requires >0 int.");
+		}
 		countries = countriesRuled;
 
 		notifyObservers(new Update("countries", countries));
@@ -135,6 +138,9 @@ public final class ModelPlayer extends Observable implements Player {
 	 *            owns.
 	 */
 	public void setContinentsRuled(int continentsRuled) {
+		if (continentsRuled <= 0) {
+			throw new IllegalArgumentException("Continents ruled must be >=0");
+		}
 		continents = continentsRuled;
 
 		notifyObservers(new Update("continents", continentsRuled));
@@ -146,6 +152,7 @@ public final class ModelPlayer extends Observable implements Player {
 	 * @return continents Number of {@link ModelContinent}s.
 	 */
 	public int getContinentsRuled() {
+		
 		return continents;
 	}
 
@@ -206,6 +213,9 @@ public final class ModelPlayer extends Observable implements Player {
 	 *            The new amount of points the {@link ModelPlayer} will have.
 	 */
 	public void setPoints(int points) {
+		if (points <= 0) {
+			throw new IllegalArgumentException("Set points requires positive int.");
+		}
 		this.points = points;
 	}
 
@@ -216,6 +226,9 @@ public final class ModelPlayer extends Observable implements Player {
 	 *            points to add.
 	 */
 	public void addPoints(int points) {
+		if (points <= 0) {
+			throw new IllegalArgumentException("Add points requires positive int.");
+		}
 		this.points += points;
 	}
 
@@ -270,6 +283,9 @@ public final class ModelPlayer extends Observable implements Player {
 	 *            The number of {@link ModelCountry}s taken.
 	 */
 	public void setCountriesTaken(int countriesTaken) {
+		if (countriesTaken < 0) {
+			throw new IllegalArgumentException("Set countries taken requires positive int.");
+		}
 		this.countriesTaken = countriesTaken;
 	}
 
@@ -305,6 +321,9 @@ public final class ModelPlayer extends Observable implements Player {
 	 *            The number of points spent.
 	 */
 	public void setPointsSpent(int pointsSpent) {
+		if (pointsSpent < 0) {
+			throw new IllegalArgumentException("Set points spent requires positive int.");
+		}
 		this.pointsSpent = pointsSpent;
 	}
 
@@ -315,6 +334,9 @@ public final class ModelPlayer extends Observable implements Player {
 	 *            The number of units killed.
 	 */
 	public void addUnitsKilled(int unitsKilled) {
+		if (unitsKilled < 0) {
+			throw new IllegalArgumentException("Add units killed requires positive int.");
+		}
 		this.unitsKilled += unitsKilled;
 	}
 }

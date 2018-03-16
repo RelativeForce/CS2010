@@ -42,6 +42,7 @@ public final class Test_ModelContinent {
 	 * {@link #testContinent}.
 	 * 
 	 * @throws Exception
+	 *             If setup fails throw Exception.
 	 */
 	@Before
 	public void setUp() throws Exception {

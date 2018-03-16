@@ -17,6 +17,7 @@ import peril.helpers.AIHelper;
 import peril.helpers.UnitHelper;
 import peril.model.ModelColor;
 import peril.model.ModelPlayer;
+import peril.model.board.ModelArmy;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelCountry;
 import peril.model.board.ModelUnit;
@@ -29,8 +30,8 @@ import peril.views.View;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-03-15
- * @version 1.01.01
+ * @since 2018-03-16
+ * @version 1.01.03
  * 
  * @see Fortify
  *
@@ -69,6 +70,7 @@ public final class Test_Fortify {
 	 * Sets up the elements that will be used by every test to test {@link Fortify}.
 	 * 
 	 * @throws Exception
+	 *             If setup fails throw Exception.
 	 */
 	@Before
 	public void setUp() throws Exception {
@@ -120,7 +122,7 @@ public final class Test_Fortify {
 		// Create the links from destination -> source
 		testDestination.addNeighbour(chainMember5, new ModelLink(ModelLinkState.OPEN));
 		chainMember5.addNeighbour(chainMember4, new ModelLink(ModelLinkState.OPEN));
-		chainMember4.addNeighbour(chainMember3, new ModelLink(ModelLinkState.OPEN));
+		chainMember4.addNeighbour(chainMember3, new ModelLink(ModelLinkState.BLOCKADE));
 		chainMember3.addNeighbour(chainMember2, new ModelLink(ModelLinkState.OPEN));
 		chainMember2.addNeighbour(chainMember1, new ModelLink(ModelLinkState.OPEN));
 		chainMember1.addNeighbour(testSource, new ModelLink(ModelLinkState.OPEN));
@@ -130,10 +132,10 @@ public final class Test_Fortify {
 	/**
 	 * Tests that
 	 * {@link Fortify#getPathBetween(ModelCountry, ModelCountry, ModelUnit)}
-	 * functions properly.
+	 * functions properly. The path from origin to destination is completely open.
 	 */
 	@Test
-	public void test_getPathBetween() {
+	public void test_getPathBetween_normal() {
 		final List<ModelCountry> path = testFortify.getPathBetween(testSource, testDestination,
 				UnitHelper.getInstance().getWeakest());
 
@@ -141,6 +143,192 @@ public final class Test_Fortify {
 		assertTrue(path.size() == 7);
 		assertTrue(path.get(0) == testSource);
 		assertTrue(path.get(6) == testDestination);
+
+	}
+
+	/**
+	 * Tests that
+	 * {@link Fortify#getPathBetween(ModelCountry, ModelCountry, ModelUnit)}
+	 * functions properly. The path from origin to destination has one blockaded
+	 * link.
+	 */
+	@Test
+	public void test_getPathBetween_reverse() {
+
+		// The path should be empty as there is a blockade.
+		final List<ModelCountry> path = testFortify.getPathBetween(testDestination, testSource,
+				UnitHelper.getInstance().getWeakest());
+
+		assertTrue(path.isEmpty());
+
+	}
+
+	/**
+	 * Tests the {@link Fortify#select(ModelCountry)} will not select the source
+	 * {@link ModelCountry} if there is only one {@link ModelUnit} in the
+	 * {@link ModelArmy}.
+	 */
+	@Test
+	public void test_select_notEnoughUnits() {
+
+		// Clear the source army and add one unit
+		testSource.getArmy().clearUnits();
+		testSource.getArmy().add(UnitHelper.getInstance().getWeakest());
+
+		// Attempt to select the source.
+		testFortify.deselectAll();
+		assertTrue(!testFortify.select(testSource));
+		assertTrue(testFortify.numberOfSelected() == 0);
+
+	}
+
+	/**
+	 * Tests the {@link Fortify#select(ModelCountry)} will select the source
+	 * {@link ModelCountry} if there is more than one {@link ModelUnit} in the
+	 * {@link ModelArmy}.
+	 */
+	@Test
+	public void test_select_enoughUnits() {
+
+		// Clear the source army and add two units
+		testSource.getArmy().clearUnits();
+		testSource.getArmy().add(UnitHelper.getInstance().getWeakest());
+		testSource.getArmy().add(UnitHelper.getInstance().getWeakest());
+
+		// Attempt to select the source.
+		testFortify.deselectAll();
+		assertTrue(testFortify.select(testSource));
+		assertTrue(testFortify.numberOfSelected() == 1);
+
+	}
+
+	/**
+	 * Tests the {@link Fortify#select(ModelCountry)} will select the source and
+	 * destination {@link ModelCountry} if there an open path between them.
+	 */
+	@Test
+	public void test_select_openPath() {
+
+		// Clear the source army and add two units
+		testSource.getArmy().clearUnits();
+		testSource.getArmy().add(UnitHelper.getInstance().getWeakest());
+		testSource.getArmy().add(UnitHelper.getInstance().getWeakest());
+
+		// Clear the destination army and add two units
+		testDestination.getArmy().clearUnits();
+		testDestination.getArmy().add(UnitHelper.getInstance().getWeakest());
+		testDestination.getArmy().add(UnitHelper.getInstance().getWeakest());
+
+		// Attempt to select the source and destination.
+		testFortify.deselectAll();
+		assertTrue(testFortify.select(testSource));
+		assertTrue(testFortify.select(testDestination));
+		assertTrue(testFortify.numberOfSelected() == 2);
+
+	}
+
+	/**
+	 * Tests the {@link Fortify#select(ModelCountry)} will not select the source and
+	 * destination {@link ModelCountry} if there an blocked path between them.
+	 */
+	@Test
+	public void test_select_blockedPath() {
+
+		// Clear the source army and add two units
+		testSource.getArmy().clearUnits();
+		testSource.getArmy().add(UnitHelper.getInstance().getWeakest());
+		testSource.getArmy().add(UnitHelper.getInstance().getWeakest());
+
+		// Clear the destination army and add two units
+		testDestination.getArmy().clearUnits();
+		testDestination.getArmy().add(UnitHelper.getInstance().getWeakest());
+		testDestination.getArmy().add(UnitHelper.getInstance().getWeakest());
+
+		testFortify.deselectAll();
+
+		// Assert the destination was selected as the primary.
+		assertTrue(testFortify.select(testDestination));
+		assertTrue(testFortify.numberOfSelected() == 1);
+
+		// Assert that the source was not connected to the destination by a valid link
+		// so it is not selected.
+		assertTrue(!testFortify.select(testSource));
+		assertTrue(testFortify.numberOfSelected() == 0);
+
+	}
+
+	/**
+	 * Tests that {@link Fortify#select(ModelCountry)} will not select null.
+	 */
+	@Test
+	public void test_select_null() {
+
+		testFortify.deselectAll();
+
+		// Assert that null cannot be selected.
+		assertTrue(!testFortify.select(null));
+		assertTrue(testFortify.numberOfSelected() == 0);
+	}
+
+	/**
+	 * Tests that {@link Fortify#select(ModelCountry)} will not select null but will
+	 * also de-select any {@link ModelCountry}s that are selected.
+	 */
+	@Test
+	public void test_select_nullDeselect() {
+
+		// Clear the source army and add two units
+		testSource.getArmy().clearUnits();
+		testSource.getArmy().add(UnitHelper.getInstance().getWeakest());
+		testSource.getArmy().add(UnitHelper.getInstance().getWeakest());
+
+		testFortify.deselectAll();
+
+		// Assert the destination was selected as the primary.
+		assertTrue(testFortify.select(testSource));
+		assertTrue(testFortify.numberOfSelected() == 1);
+
+		// Assert that after the null select there are no selected countries.
+		assertTrue(!testFortify.select(null));
+		assertTrue(testFortify.numberOfSelected() == 0);
+
+	}
+
+	/**
+	 * Tests {@link Fortify#fortify()} moves one unit if two valid
+	 * {@link ModelCountry}s are selected.
+	 */
+	@Test
+	public void test_fortify_moveUnit() {
+
+		// Clear the source army and add two units
+		testSource.getArmy().clearUnits();
+		testSource.getArmy().add(UnitHelper.getInstance().getWeakest());
+		testSource.getArmy().add(UnitHelper.getInstance().getWeakest());
+
+		// Assert the army size
+		assertTrue(testSource.getArmy().getNumberOfUnits() == 2);
+
+		// Clear the destination army and add two units
+		testDestination.getArmy().clearUnits();
+		testDestination.getArmy().add(UnitHelper.getInstance().getWeakest());
+		testDestination.getArmy().add(UnitHelper.getInstance().getWeakest());
+
+		// Assert the army size
+		assertTrue(testDestination.getArmy().getNumberOfUnits() == 2);
+
+		testFortify.deselectAll();
+
+		// Attempt to select the source and destination.
+		assertTrue(testFortify.select(testSource));
+		assertTrue(testFortify.select(testDestination));
+		assertTrue(testFortify.numberOfSelected() == 2);
+
+		testFortify.fortify();
+
+		// Assert a unit has moved.
+		assertTrue(testSource.getArmy().getNumberOfUnits() == 1);
+		assertTrue(testDestination.getArmy().getNumberOfUnits() == 3);
 
 	}
 

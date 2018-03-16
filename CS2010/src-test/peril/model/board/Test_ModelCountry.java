@@ -22,7 +22,7 @@ import peril.model.board.links.ModelLinkState;
 public class Test_ModelCountry {
 
 	/**
-	 * Hold the current {@link SlickCountry} that is being used for testing.
+	 * Hold the current {@link ModelCountry} that is being used for testing.
 	 */
 	private ModelCountry testCountry;
 
@@ -36,6 +36,7 @@ public class Test_ModelCountry {
 	 * Constructs a new country with the given name.
 	 * 
 	 * @throws Exception
+	 *             If setup fails throw Exception.
 	 */
 	@Before
 	public void setUp() throws Exception {
@@ -64,7 +65,7 @@ public class Test_ModelCountry {
 
 		// Adds a country to the list of neighbours in the testCountry.
 		testCountry.addNeighbour(testNeighbour, new ModelLink(ModelLinkState.OPEN));
-		
+
 		// Assert the country is a neighbour.
 		assertTrue(testCountry.isNeighbour(testNeighbour));
 

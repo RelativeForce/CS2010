@@ -2,6 +2,7 @@ package peril.model.states;
 
 import static org.junit.Assert.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,11 +22,13 @@ import peril.ai.api.Continent;
 import peril.ai.api.Country;
 import peril.helpers.AIHelper;
 import peril.helpers.PlayerHelper;
+import peril.helpers.UnitHelper;
 import peril.model.ModelColor;
 import peril.model.ModelPlayer;
 import peril.model.board.ModelBoard;
 import peril.model.board.ModelContinent;
 import peril.model.board.ModelCountry;
+import peril.model.board.ModelUnit;
 import peril.model.board.links.ModelLinkState;
 import peril.model.states.Setup;
 import peril.views.View;
@@ -36,8 +39,8 @@ import peril.views.View;
  * 
  * @author Joseph_Rolli
  * 
- * @version 1.01.02
- * @since 2018-03-15
+ * @version 1.01.07
+ * @since 2018-03-16
  * 
  *
  */
@@ -58,12 +61,17 @@ public class Test_Setup {
 	 */
 	private ModelPlayer player2;
 
+	/**
+	 * This method sets up the {@link Setup} state, with 2 players, a {@link Game} instance, and 
+	 * a unit for the {@link UnitHelper}
+	 */
 	@Before
 	public void setUp() throws Exception {
 		this.player1 = new ModelPlayer(1, AI.USER);
 		this.player2 = new ModelPlayer(2, AI.USER);
 		this.testSetup = new Setup(new TestGC());
-
+		UnitHelper.getInstance().clear();
+		UnitHelper.getInstance().addUnit(new ModelUnit("Unit", 1, null));
 		testSetup.game.addPlayer(player1);
 		testSetup.game.addPlayer(player2);
 
@@ -110,15 +118,15 @@ public class Test_Setup {
 		final ModelCountry country2 = new ModelCountry("country2", new ModelColor(0, 0, 1));
 
 		//Setup continent and add countries to it.
-		ModelContinent continent = null;
+		ModelContinent continent = new ModelContinent(null, null);
 		continent.addCountry(country1);
 		continent.addCountry(country2);
 		
-		Set<ModelContinent> newContinents = null;
+		Set<ModelContinent> newContinents = new HashSet<ModelContinent>();
 		newContinents.add(continent);
 		
 		//Setup board, add continents to it.
-		ModelBoard board = null;
+		ModelBoard board = new ModelBoard("Board");
 		board.setContinents(newContinents);
 		
 		//Distribute countries between players.
@@ -136,6 +144,7 @@ public class Test_Setup {
 			}
 
 		}
+		System.out.println("P1"+player1Owned+"P2"+player2Owned);
 		assertTrue(player1Owned == 1 && player2Owned == 1);
 	}
 

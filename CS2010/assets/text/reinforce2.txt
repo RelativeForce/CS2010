@@ -1,5 +1,5 @@
 Environmental Hazards pt.1
-After the first round, environmental hazards may randomly occur in any country. 
+At the end of each round, environmental hazards may randomly occur in any country. 
 
 These hazards will randomly kill a percentage of the army stationed at the country the hazard occurred in.
 

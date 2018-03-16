@@ -5,6 +5,9 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import peril.model.ModelColor;
+import peril.model.board.links.ModelLink;
+
 /**
  * This class tests {@link ModelHazard}.
  * 
@@ -13,32 +16,37 @@ import org.junit.Test;
  */
 
 public class Test_ModelHazard {
-
-	private String VOLCANIC_ERUPTION;
 	
-	private String TORNADO;
-	
-	private String HURRICANE;
-	
-	private String TSUNAMI;
-	
-
 	@Before
-	public void setUp() throws Exception {
-
-		VOLCANIC_ERUPTION = "Volcanic Eruption";
-		TORNADO = "Tornado";
-		HURRICANE = "Hurricane";
-		TSUNAMI = "Tsunami";;
-					
+	public void setUp() throws Exception {	
+		
 	}
 
+	/**
+	 * Checks that the {@link ModelHazard#getByName(String)}
+	 * method works correctly.
+	 */
 	@Test
 	public void test_getByName() {
-		assertEquals(VOLCANIC_ERUPTION, ModelHazard.VOLCANIC_ERUPTION.toString());
-		assertEquals(TORNADO, ModelHazard.TORNADO.toString());
-		assertEquals(HURRICANE, ModelHazard.HURRICANE.toString());
-		assertEquals(TSUNAMI, ModelHazard.TSUNAMI.toString());
+		
+		// Checks that the returned string is equal to the name of the Volcanic Eruption hazard
+		assertEquals("Volcanic Eruption", ModelHazard.VOLCANIC_ERUPTION.toString());
+		// Checks that the returned string is equal to the name of the Tornado hazard
+		assertEquals("Tornado", ModelHazard.TORNADO.toString());
+		// Checks that the returned string is equal to the name of the Hurricane hazard
+		assertEquals("Hurricane", ModelHazard.HURRICANE.toString());
+		// Checks that the returned string is equal to the name of the Tsunami hazard
+		assertEquals("Tsunami", ModelHazard.TSUNAMI.toString());
+	}
+	
+	/**
+	 * Checks that the {@link ModelHazard#act(ModelArmy)}
+	 * method works correctly.
+	 */
+	@Test
+	public void test_act() {
+		
+	
 	}
 
 }

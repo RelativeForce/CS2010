@@ -1,5 +1,6 @@
 package peril.helpers;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -14,9 +15,9 @@ import peril.ai.*;
  * 
  * @author James_Rowntree, Joshua_Eddy
  * 
- * @since 2018-03-15
+ * @since 2018-03-17
  * 
- * @version 1.01.05
+ * @version 1.01.06
  * 
  * @see Iterable
  * @see AI
@@ -39,7 +40,7 @@ public final class AIHelper implements Iterable<AI> {
 	 * Constructs a new {@link AIHelper} object.
 	 * 
 	 * @param game
-	 * 			  The {@link GameController} that allows the {@link AIHelper} to
+	 *            The {@link GameController} that allows the {@link AIHelper} to
 	 *            interact with the game.
 	 * 
 	 */
@@ -101,13 +102,17 @@ public final class AIHelper implements Iterable<AI> {
 		// all the AIs and return it.
 		try {
 
-			final AI newAI = (AI) Class.forName("peril.ai." + name).newInstance();
-			
+			final Class<?> newAIclass = Class.forName("peril.ai." + name);
+
+			final AI newAI = (AI) newAIclass.getDeclaredConstructor(AIController.class)
+					.newInstance(game.getAIController());
+
 			ai.put(newAI, false);
 
 			return newAI;
 
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IllegalArgumentException
+				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			throw new AINotFound("The '" + name + "' (AI) could not be fonud.");
 		}
 

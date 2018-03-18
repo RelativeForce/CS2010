@@ -30,8 +30,8 @@ import peril.views.slick.util.Viewable;
  * 
  * @author Joshua_Eddy
  * 
- * @since 2018-02-26
- * @version 1.01.01
+ * @since 2018-03-18
+ * @version 1.01.03
  * 
  * @see InteractiveState
  *
@@ -87,6 +87,12 @@ public final class LoadingScreen extends InteractiveState {
 	private boolean terminated;
 
 	/**
+	 * The error message from the {@link Exception} that caused the game loading to
+	 * be {@link #terminated}.
+	 */
+	private String errorMessage;
+
+	/**
 	 * Constructs a new {@link LoadingScreen}.
 	 * 
 	 * @param game
@@ -103,6 +109,7 @@ public final class LoadingScreen extends InteractiveState {
 		this.progressBar = new ProgressBar(new Point(0, 0), 100, 20);
 		this.textFont = new Font("Arial", Color.red, 25);
 		this.terminated = false;
+		this.errorMessage = "";
 
 		super.addComponent(progressBar);
 	}
@@ -113,7 +120,8 @@ public final class LoadingScreen extends InteractiveState {
 	@Override
 	public void enter(GameContainer gc, StateBasedGame sbg) {
 
-		this.terminated = false;
+		terminated = false;
+		errorMessage = "";
 
 		// Scale the background image to fill the screen.
 		background = ImageReader.getImage(game.getDirectory().getUIPath() + "perilLogo.png")
@@ -149,6 +157,19 @@ public final class LoadingScreen extends InteractiveState {
 		drawImages();
 		drawButtons();
 
+		// If the game loading has been terminated.
+		if (terminated) {
+
+			final String info = "Press any button to return to Main Menu.";
+			final int x = progressBar.getPosition().x;
+			final int infoY = progressBar.getPosition().y - textFont.getHeight(info) - 5;
+			final int messageY = infoY - textFont.getHeight(errorMessage) - 5;
+
+			frame.draw(textFont, info, x, infoY);
+			frame.draw(textFont, errorMessage, x, messageY);
+
+		}
+
 		progressBar.draw(frame);
 
 		// If all the file parsers are done, display that the game is "finishing up" in
@@ -171,7 +192,7 @@ public final class LoadingScreen extends InteractiveState {
 	@Override
 	public void update(GameContainer gc, int delta, Frame frame) {
 
-		// If the loading has been interupted.
+		// If the loading has been interrupted.
 		if (terminated) {
 			return;
 		}
@@ -195,9 +216,8 @@ public final class LoadingScreen extends InteractiveState {
 					reader.parseLine();
 					progressBar.increment();
 				} catch (Exception e) {
-					slick.showToolTip(e.getMessage());
-					slick.showToolTip("Press any button to return to Main Menu.");
-					this.terminated = true;
+					errorMessage = e.getMessage();
+					terminated = true;
 				}
 			}
 			// Otherwise move to the next reader.
@@ -257,7 +277,8 @@ public final class LoadingScreen extends InteractiveState {
 			slick.menus.hideVisible();
 		}
 
-		this.terminated = false;
+		terminated = false;
+		errorMessage = "";
 
 	}
 

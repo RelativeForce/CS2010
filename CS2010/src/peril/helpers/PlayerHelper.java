@@ -211,6 +211,15 @@ public final class PlayerHelper {
 		}
 
 		current = player;
+		
+		index = playing.keySet().iterator();
+
+		// Bring the iterator through the lit until it finds the player.
+		while (index.hasNext()) {
+			if (index.next() == current.number) {
+				break;
+			}
+		}
 
 	}
 

@@ -15,6 +15,9 @@ import peril.ai.AIController;
  * A hopefully somewhat clever AI. We'll see. {@link AI}.
  * 
  * @author Joseph_Rolli
+ * 
+ * @version 1.01.01
+ * @since 2018-02-10
  *
  */
 public final class Ocelot extends AI {

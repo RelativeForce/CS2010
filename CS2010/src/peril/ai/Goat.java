@@ -1,6 +1,16 @@
 package peril.ai;
 
-public class Goat extends AI {
+/**
+ * 
+ * My {@link AI}.
+ * 
+ * @author James_Rowntree
+ * 
+ * @since 2018-02-16
+ * @version 1.01.01
+ *
+ */
+public final class Goat extends AI {
 
 	private static final String NAME = "Goat";
 

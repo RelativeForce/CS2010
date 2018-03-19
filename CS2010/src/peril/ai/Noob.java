@@ -10,6 +10,14 @@ import java.util.Set;
 import peril.ai.api.Country;
 import peril.ai.api.Player;
 
+/**
+ * An {@link AI} that is basically a copy of monkey.
+ * 
+ * @author Adrian_Wong
+ *
+ * @since 2018-02-20
+ * @version 1.01.02
+ */
 public final class Noob extends AI {
 
 	/**

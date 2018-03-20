@@ -17,7 +17,6 @@ import peril.ai.api.Player;
  *
  * @see AI
  */
-
 public final class NegativeFiveIQ extends AI {
 
 	private static final String NAME = "Duckling";

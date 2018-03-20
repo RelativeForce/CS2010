@@ -3,6 +3,6 @@ At the end of each round, environmental hazards may randomly occur in any countr
 
 These hazards will randomly kill a percentage of the army stationed at the country the hazard occurred in.
 
-These hazards appear as icons over the countries they have affected.
+Hazards appear as icons over the countries they have affected.
 
-Each hazard has a unique icon, this icon can be clicked to bring up a tooltip displaying more information about the hazard.
+Each has a unique icon, click or hover over it to bring up a tool tip displaying more information about the hazard.

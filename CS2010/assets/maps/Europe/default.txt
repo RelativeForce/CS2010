@@ -1,7 +1,7 @@
 // Unit, name, strength, filename
 Unit,Knight,1,knightIcon.png
 Unit,Horse,5,knightHorseIcon.png
-Unit,Cannon,15,tankIcon.png
+Unit,Dragon,15,dragonIcon.png
 
 // Country, name, rgb, reinforcements, x offset, y offset
 Country,Ireland,000000050,Knight:1,0,0,-

@@ -1,5 +1,8 @@
 package peril;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -240,25 +243,40 @@ public final class GameHandler implements GameController {
 			final ModelStateHelper states = game.states;
 			final ModelPlayer current = getCurrentModelPlayer();
 
-			if (view.isCurrentState(states.reinforce)) {
-				
-				if (!current.ai.reinforce(delta)) {
-					view.enterCombat();
-				}
-				
-			} else if (view.isCurrentState(states.attack)) {
-				
-				if (!current.ai.attack(delta)) {
-					view.enterFortify();
-				}
+			// Perform the state appropriate task and if there is an error caused by it
+			// print it to an exceptions file.
+			try {
 
-			} else if (view.isCurrentState(states.fortify)) {
-				
-				if (!current.ai.fortify(delta)) {
-					view.enterReinforce();
-					nextPlayer();
+				if (view.isCurrentState(states.reinforce)) {
+
+					if (!current.ai.reinforce(delta)) {
+						view.enterCombat();
+					}
+
+				} else if (view.isCurrentState(states.attack)) {
+
+					if (!current.ai.attack(delta)) {
+						view.enterFortify();
+					}
+
+				} else if (view.isCurrentState(states.fortify)) {
+
+					if (!current.ai.fortify(delta)) {
+						view.enterReinforce();
+						nextPlayer();
+					}
+				}
+			} catch (Exception e) {
+
+				game.view.showToolTip("AI Error: " + e.getMessage());
+
+				try (PrintWriter pw = new PrintWriter(new File("exeptions.txt"))) {
+					e.printStackTrace(pw);
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
 				}
 			}
+
 		}
 	}
 
